@@ -42,7 +42,9 @@
     <Reference Include="Script.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console.cs" />
     <Compile Include="EventEmitter.cs" />
+    <Compile Include="FS.cs" />
     <Compile Include="HttpServer.cs" />
   </ItemGroup>
   <ItemGroup>

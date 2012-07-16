@@ -1,10 +1,10 @@
-using ShufflyNode.GameServer;
+using ShufflyNode.Common;
 
 namespace ShufflyNode
 {
     public class SocketClientMessage
     {
-        //{ user: user, channel: eventChannel, content: content }
+        //{ User: User, channel: EventChannel, Content: Content }
         public User User;
         public string Channel;
         public string Content;

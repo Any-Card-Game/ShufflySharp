@@ -3,9 +3,9 @@ using NodeJS;
 
 namespace ShufflyNode.Libs
 {
-    public class Guid : NodeModule
+    public static class Guid  
     { 
-        public string NewGuid()
+        public  static string NewGuid()
         {
             string guid = "";
             for (int i = 0; i < 25; i++)

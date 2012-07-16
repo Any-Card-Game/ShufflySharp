@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Html;
 using NodeJS;
 using ShufflyNode.Common;
-using ShufflyNode.GameServer;
 using ShufflyNode.Libs;
 using SocketIO;
 
@@ -27,13 +26,12 @@ namespace ShufflyNode
             });
 
             SocketIoClient io = Node.Require<SocketIO.SocketIO>("socket.io").Listen(app);
-            FS fs = Node.Require<FS>("fs");
-            Guid guid = new Guid();
+            FS fs = Node.Require<FS>("fs"); 
             QueueManager queueManager;
             int port = 1800 + Math.Truncate((Number)(Math.Random() * 4000));
             app.Listen(port);
             io.Set("log lvl", 1);
-            string myName = "Gateway " + guid.NewGuid();
+            string myName = "Gateway " + Guid.NewGuid();
 
             ps = new PubSub(delegate()
             {
@@ -47,10 +45,10 @@ namespace ShufflyNode
             });
 
             queueManager = new QueueManager(myName,
-                                            new QueueManagerOptions(new QueueManagerWatcher[]
+                                            new QueueManagerOptions(new QueueWatcher[]
                                                                         {
-                                                                            new QueueManagerWatcher("GatewayServer",messageReceived),
-                                                                            new QueueManagerWatcher(myName,messageReceived)
+                                                                            new QueueWatcher("GatewayServer",messageReceived),
+                                                                            new QueueWatcher(myName,messageReceived)
                                                                         },
                                                                     new string[]
                                                                         {
@@ -84,7 +82,7 @@ namespace ShufflyNode
                             channel = "ChatServer";
                             break;
                     }
-                    queueManager.SendMessage(user, data.GameServer ?? channel, data.Content);
+                    queueManager.SendMessage(user, data.GameServer ?? channel, data.Channel,data.Content);
                 });
 
                 socket.On("Gateway.Login", delegate(GatewayLoginMessage data)
@@ -121,7 +119,7 @@ namespace ShufflyNode
     /*
      
 var redis = require("redis")
-redis.debug_mode = false;
+redis.DebugMode = false;
 
 
 var pubsub = function (ready) {
@@ -161,8 +159,8 @@ var pubsub = function (ready) {
     });
 
 
-    self.publish = function (channel, content) {
-        pubclient.publish(channel, content);
+    self.publish = function (channel, Content) {
+        pubclient.publish(channel, Content);
     }
     self.subscribe = function (channel, callback) {
         subclient.subscribe(channel);

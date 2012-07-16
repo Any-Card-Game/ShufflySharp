@@ -6,5 +6,10 @@ namespace ShufflyNode.Common
         {
             get { return ""; }
         }
+
+        public static string RedisIP
+        {
+            get { return ""; }
+        }
     }
 }

@@ -10,11 +10,7 @@ namespace SocketIO
         public void Set(string option, int value)
         {
         }
-        [ScriptName("sockets")]
-        public SocketNamespace Sockets
-        {
-            get { return sockets; }
-            set { sockets=value; }
-        }
+
+        [ScriptName("sockets")] public SocketNamespace Sockets;
     }
 }

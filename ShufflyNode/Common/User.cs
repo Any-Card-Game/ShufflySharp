@@ -1,6 +1,6 @@
 using SocketIO;
 
-namespace ShufflyNode.GameServer
+namespace ShufflyNode.Common
 {
     public class User
     {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NodeJS;
 
 namespace ShufflyNode.Common
 {
@@ -10,17 +11,17 @@ namespace ShufflyNode.Common
         public List<QueueWatcher> qw;
         public List<QueuePusher> qp;
 
-        public void AddChannel(string channel, Action<User, object> callback)
+        public void AddChannel<T>(string channel, Action<User,object> callback)
         {
             channels[channel] = callback;
         }
-        private void messageReceived(string name, User user, string eventChannel, string content)
+        private void messageReceived(string name, User user, string eventChannel, object content)
         {
 
 
               if (channels.ContainsKey(eventChannel))
               {
-                  channels[eventChannel](user, content);
+                  channels[eventChannel].Invoke(user, content);
               }
         }
 
@@ -51,11 +52,11 @@ namespace ShufflyNode.Common
         private QueueItemCollection  qwCollection;
         private QueueItemCollection  qpCollection;
         
-        public void SendMessage(User user, string channel,string eventChannel, string content)
+        public void SendMessage(User user, string channel,string eventChannel, object content)
         {
             if(this.qpCollection.GetByChannel(channel)==null)
             {
-                Console.Log(channel + " No Existy");
+                Global.Console.Log(channel + " No Existy");
                 return;
             }
 

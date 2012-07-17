@@ -23,17 +23,53 @@ ShufflyNode.Libs.Guid.newGuid = function ShufflyNode_Libs_Guid$newGuid() {
 Type.registerNamespace('ShufflyNode.Common');
 
 ////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.Common.Consumer
+
+ShufflyNode.Common.Consumer = function ShufflyNode_Common_Consumer(obj) {
+    /// <param name="obj" type="Object">
+    /// </param>
+    var tf = (this);
+    var $enum1 = ss.IEnumerator.getEnumerator(Object.keys(obj));
+    while ($enum1.moveNext()) {
+        var v = $enum1.current;
+        tf[v] = obj[v];
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.Common.Help
+
+ShufflyNode.Common.Help = function ShufflyNode_Common_Help() {
+}
+ShufflyNode.Common.Help.sanitize = function ShufflyNode_Common_Help$sanitize(name, value) {
+    /// <param name="name" type="String">
+    /// </param>
+    /// <param name="value" type="Object">
+    /// </param>
+    /// <returns type="Object"></returns>
+    if (Type.getInstanceType(value) === Function) {
+        return null;
+    }
+    if (!!name.indexOf('_') && name.toLowerCase() !== 'socket' && name.toLowerCase() !== 'fiber' && name.toLowerCase() !== 'debuggingsocket') {
+        return value;
+    }
+    return null;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // ShufflyNode.Common.IPs
 
 ShufflyNode.Common.IPs = function ShufflyNode_Common_IPs() {
 }
 ShufflyNode.Common.IPs.get_gatewayIP = function ShufflyNode_Common_IPs$get_gatewayIP() {
     /// <value type="String"></value>
-    return '';
+    return '50.116.22.241';
 }
 ShufflyNode.Common.IPs.get_redisIP = function ShufflyNode_Common_IPs$get_redisIP() {
     /// <value type="String"></value>
-    return '';
+    return '50.116.28.16';
 }
 
 
@@ -59,14 +95,14 @@ ShufflyNode.Common.PubSub = function ShufflyNode_Common_PubSub(ready) {
     this._subClient = redis.createClient(6379, ShufflyNode.Common.IPs.get_redisIP());
     this._pubClient = redis.createClient(6379, ShufflyNode.Common.IPs.get_redisIP());
     this._subClient.on('subscribe', function(channel, count) {
-        console.log('subscribed: ' + channel + ' ' + count);
+        global.console.log('subscribed: ' + channel + ' ' + count);
     });
     this._subClient.on('unsubscribe', function(channel, count) {
-        console.log('unsubscribed: ' + channel + ' ' + count);
+        global.console.log('unsubscribed: ' + channel + ' ' + count);
     });
     this._subClient.on('message', ss.Delegate.create(this, function(channel, message) {
         if (Object.keyExists(this._subbed, channel)) {
-            this._subbed[channel];
+            this._subbed[channel](message);
         }
     }));
     this._subClient.on('ready', ss.Delegate.create(this, function() {
@@ -220,10 +256,10 @@ ShufflyNode.Common.QueueManager.prototype = {
         /// </param>
         /// <param name="eventChannel" type="String">
         /// </param>
-        /// <param name="content" type="String">
+        /// <param name="content" type="Object">
         /// </param>
         if (Object.keyExists(this.channels, eventChannel)) {
-            this.channels[eventChannel];
+            this.channels[eventChannel](user, content);
         }
     },
     
@@ -237,10 +273,10 @@ ShufflyNode.Common.QueueManager.prototype = {
         /// </param>
         /// <param name="eventChannel" type="String">
         /// </param>
-        /// <param name="content" type="String">
+        /// <param name="content" type="Object">
         /// </param>
         if (this._qpCollection.getByChannel(channel) == null) {
-            console.log(channel + ' No Existy');
+            global.console.log(channel + ' No Existy');
             return;
         }
         (this._qpCollection.getByChannel(channel)).message(channel, this.name, user, eventChannel, content);
@@ -306,6 +342,7 @@ ShufflyNode.Common.QueueWatcher = function ShufflyNode_Common_QueueWatcher(queue
     this.set_channel(queue);
     this._callback$1 = callback;
     var redis = require('redis');
+    (redis)['foo'] = 2;
     this._client1$1 = redis.createClient(6379, ShufflyNode.Common.IPs.get_redisIP());
     this.cycle(queue);
 }
@@ -326,10 +363,11 @@ ShufflyNode.Common.QueueWatcher.prototype = {
     cycle: function ShufflyNode_Common_QueueWatcher$cycle(channel) {
         /// <param name="channel" type="String">
         /// </param>
-        this._client1$1.blpop([ channel, 0 ], ss.Delegate.create(this, function(caller, data) {
-            if (data != null) {
-                var dt = JSON.parse(data);
-                this.get_callback()(dt.get_name(), dt.get_user(), dt.get_eventChannel(), dt.get_content());
+        this._client1$1.blpop([ channel, 0 ], ss.Delegate.create(this, function(caller, dtj) {
+            var data = dtj;
+            if (dtj != null) {
+                var dt = JSON.parse(data[1]);
+                this.get_callback()(dt.name, dt.user, dt.eventChannel, dt.content);
             }
             this.cycle(channel);
         }));
@@ -362,9 +400,9 @@ ShufflyNode.Common.QueuePusher.prototype = {
         /// </param>
         /// <param name="eventChannel" type="String">
         /// </param>
-        /// <param name="content" type="String">
+        /// <param name="content" type="Object">
         /// </param>
-        this._client1$1.rpush(channel, JSON.stringify(new ShufflyNode.Common.QueueMessage(name, user, eventChannel, content)));
+        this._client1$1.rpush(channel, JSON.stringify(new ShufflyNode.Common.QueueMessage(name, user, eventChannel, content), ShufflyNode.Common.Help.sanitize));
     }
 }
 
@@ -379,7 +417,7 @@ ShufflyNode.Common.QueueMessage = function ShufflyNode_Common_QueueMessage(name,
     /// </param>
     /// <param name="eventChannel" type="String">
     /// </param>
-    /// <param name="content" type="String">
+    /// <param name="content" type="Object">
     /// </param>
     /// <field name="name" type="String">
     /// </field>
@@ -387,58 +425,18 @@ ShufflyNode.Common.QueueMessage = function ShufflyNode_Common_QueueMessage(name,
     /// </field>
     /// <field name="eventChannel" type="String">
     /// </field>
-    /// <field name="content" type="String">
+    /// <field name="content" type="Object">
     /// </field>
-    this.set_name(name);
-    this.set_user(user);
-    this.set_eventChannel(eventChannel);
-    this.set_content(content);
+    this.name = name;
+    this.user = user;
+    this.eventChannel = eventChannel;
+    this.content = content;
 }
 ShufflyNode.Common.QueueMessage.prototype = {
     name: null,
     user: null,
     eventChannel: null,
-    content: null,
-    
-    get_name: function ShufflyNode_Common_QueueMessage$get_name() {
-        /// <value type="String"></value>
-        return this.name;
-    },
-    set_name: function ShufflyNode_Common_QueueMessage$set_name(value) {
-        /// <value type="String"></value>
-        this.name = value;
-        return value;
-    },
-    
-    get_user: function ShufflyNode_Common_QueueMessage$get_user() {
-        /// <value type="ShufflyNode.Common.User"></value>
-        return this.user;
-    },
-    set_user: function ShufflyNode_Common_QueueMessage$set_user(value) {
-        /// <value type="ShufflyNode.Common.User"></value>
-        this.user = value;
-        return value;
-    },
-    
-    get_eventChannel: function ShufflyNode_Common_QueueMessage$get_eventChannel() {
-        /// <value type="String"></value>
-        return this.eventChannel;
-    },
-    set_eventChannel: function ShufflyNode_Common_QueueMessage$set_eventChannel(value) {
-        /// <value type="String"></value>
-        this.eventChannel = value;
-        return value;
-    },
-    
-    get_content: function ShufflyNode_Common_QueueMessage$get_content() {
-        /// <value type="String"></value>
-        return this.content;
-    },
-    set_content: function ShufflyNode_Common_QueueMessage$set_content(value) {
-        /// <value type="String"></value>
-        this.content = value;
-        return value;
-    }
+    content: null
 }
 
 
@@ -446,34 +444,263 @@ ShufflyNode.Common.QueueMessage.prototype = {
 // ShufflyNode.Common.User
 
 ShufflyNode.Common.User = function ShufflyNode_Common_User() {
-    /// <field name="_userName" type="String">
+    /// <field name="socket" type="SocketIO.SocketIOConnection">
     /// </field>
-    /// <field name="_socket" type="SocketIO.SocketIOConnection">
+    /// <field name="gateway" type="String">
+    /// </field>
+    /// <field name="userName" type="String">
     /// </field>
 }
 ShufflyNode.Common.User.prototype = {
-    _userName: null,
-    _socket: null,
+    socket: null,
+    gateway: null,
+    userName: null
+}
+
+
+Type.registerNamespace('ShufflyNode.GameServer');
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameServer
+
+ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer() {
+    /// <field name="_qManager" type="ShufflyNode.Common.QueueManager">
+    /// </field>
+    /// <field name="_verbose" type="Boolean">
+    /// </field>
+    /// <field name="_gameData" type="ShufflyNode.GameServer.GameData">
+    /// </field>
+    /// <field name="_rooms" type="Array">
+    /// </field>
+    /// <field name="_startTime" type="Date">
+    /// </field>
+    /// <field name="_cachedGames" type="Object">
+    /// </field>
+    /// <field name="_requiredShuff" type="ShufflyGame.Shuff">
+    /// </field>
+    require('Help');
+    var fs = require('fs');
+    var childProcess = require('child_process');
+    var dataManager = new ShufflyNode.GameServer.DataManager();
+    var gameServerIndex = 'GameServer' + ShufflyNode.Libs.Guid.newGuid();
+    this._cachedGames = {};
+    this._requiredShuff = require('./../gameFramework/shuff.js');
+    this._qManager = new ShufflyNode.Common.QueueManager(gameServerIndex, new ShufflyNode.Common.QueueManagerOptions([ new ShufflyNode.Common.QueueWatcher('GameServer', null), new ShufflyNode.Common.QueueWatcher(gameServerIndex, null) ], [ 'GameServer', 'GatewayServer', 'Gateway*' ]));
+    require('fibers');
+    this._rooms = [];
+    this._gameData = new ShufflyNode.GameServer.GameData();
+    global.process.on('exit', function() {
+        global.console.log('exi');
+    });
+    this._qManager.addChannel('Area.Game.Create', ss.Delegate.create(this, function() {
+        var room;
+        this._rooms.add(room = new ShufflyNode.GameServer._gameRoom());
+    }));
+    this._qManager.addChannel('Area.Debug.Create', ss.Delegate.create(this, function(user, arg2) {
+        var data = arg2;
+        var room;
+        this._rooms.add(room = new ShufflyNode.GameServer._gameRoom());
+        room.name = data.name;
+        room.maxUsers = 6;
+        room.debuggable = true;
+        room.gameName = data.gameName;
+        room.roomID = ShufflyNode.Libs.Guid.newGuid();
+        room.answers = [];
+        room.players = [];
+        room.started = false;
+        room.gameServer = gameServerIndex;
+        room.players.add(user);
+        var gameObject;
+        if (Object.keyExists(this._cachedGames, data.gameName)) {
+            gameObject = this._cachedGames[data.gameName];
+        }
+        else {
+            gameObject = this._cachedGames[data.gameName] = require('./../games/' + data.gameName + '/app.js');
+        }
+        room.fiber = this._createFiber(room, gameObject, true);
+        room.unwind = ss.Delegate.create(this, function(players) {
+            this._gameData.finishedGames++;
+            global.console.log('--game closed');
+        });
+        this._emitAll(room, 'Area.Game.RoomInfo', JSON.parse(JSON.stringify(room, ShufflyNode.Common.Help.sanitize)));
+    }));
+    this._qManager.addChannel('Area.Game.Join', ss.Delegate.create(this, function(user, arg2) {
+        var data = (arg2);
+        var room = null;
+        var $enum1 = ss.IEnumerator.getEnumerator(this._rooms);
+        while ($enum1.moveNext()) {
+            var gameRoom = $enum1.current;
+            if (gameRoom.roomID === data.roomID) {
+                room = gameRoom;
+                break;
+            }
+        }
+        if (room == null) {
+            return;
+        }
+        room.players.add(user);
+        room.players.add(user);
+        this._emitAll(room, 'Area.Game.RoomInfo', JSON.parse(JSON.stringify(room, ShufflyNode.Common.Help.sanitize)));
+    }));
+}
+ShufflyNode.GameServer.GameServer.prototype = {
+    _qManager: null,
+    _verbose: false,
+    _gameData: null,
+    _rooms: null,
+    _startTime: null,
+    _cachedGames: null,
+    _requiredShuff: null,
     
-    get_socket: function ShufflyNode_Common_User$get_socket() {
-        /// <value type="SocketIO.SocketIOConnection"></value>
-        return this._socket;
-    },
-    set_socket: function ShufflyNode_Common_User$set_socket(value) {
-        /// <value type="SocketIO.SocketIOConnection"></value>
-        this._socket = value;
-        return value;
+    _emitAll: function ShufflyNode_GameServer_GameServer$_emitAll(room, areaGameRoominfo, val) {
+        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// </param>
+        /// <param name="areaGameRoominfo" type="String">
+        /// </param>
+        /// <param name="val" type="Object">
+        /// </param>
     },
     
-    get_userName: function ShufflyNode_Common_User$get_userName() {
-        /// <value type="String"></value>
-        return this._userName;
-    },
-    set_userName: function ShufflyNode_Common_User$set_userName(value) {
-        /// <value type="String"></value>
-        this._userName = value;
-        return value;
+    _createFiber: function ShufflyNode_GameServer_GameServer$_createFiber(room, gameObject, emulating) {
+        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// </param>
+        /// <param name="gameObject" type="ShufflyGame.GameObject">
+        /// </param>
+        /// <param name="emulating" type="Boolean">
+        /// </param>
+        /// <returns type="Fibers.Fiber`1"></returns>
+        return new Fibers.Fiber`1(ss.Delegate.create(this, function(players) {
+            if (players == null || !players.length) {
+                return true;
+            }
+            room.players = players;
+            global.console.log('game started');
+            var sev = null;
+            eval('sev= new gameObject();');
+            sev.cardGame.emulating = emulating;
+            room.game = sev;
+            sev.shuff = this._requiredShuff;
+            sev.cardGame.setAnswers(room.answers);
+            sev.cardGame.setPlayers(players);
+            this._gameData.totalGames++;
+            this._gameData.totalPlayers += players.length;
+            sev.cardGame.answerIndex = 0;
+            sev.constructor();
+            sev.runGame();
+            room.unwind(players);
+            return true;
+        }));
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.JoinGameRequest
+
+ShufflyNode.GameServer.JoinGameRequest = function ShufflyNode_GameServer_JoinGameRequest() {
+    /// <field name="roomID" type="String">
+    /// </field>
+}
+ShufflyNode.GameServer.JoinGameRequest.prototype = {
+    roomID: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.CreateGameRequest
+
+ShufflyNode.GameServer.CreateGameRequest = function ShufflyNode_GameServer_CreateGameRequest() {
+    /// <field name="name" type="String">
+    /// </field>
+    /// <field name="gameName" type="String">
+    /// </field>
+}
+ShufflyNode.GameServer.CreateGameRequest.prototype = {
+    name: null,
+    gameName: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer._gameRoom
+
+ShufflyNode.GameServer._gameRoom = function ShufflyNode_GameServer__gameRoom() {
+    /// <field name="name" type="String">
+    /// </field>
+    /// <field name="gameName" type="String">
+    /// </field>
+    /// <field name="debuggable" type="Boolean">
+    /// </field>
+    /// <field name="maxUsers" type="Number" integer="true">
+    /// </field>
+    /// <field name="players" type="Array">
+    /// </field>
+    /// <field name="answers" type="Array">
+    /// </field>
+    /// <field name="roomID" type="String">
+    /// </field>
+    /// <field name="gameServer" type="String">
+    /// </field>
+    /// <field name="started" type="Boolean">
+    /// </field>
+    /// <field name="fiber" type="Fibers.Fiber`1">
+    /// </field>
+    /// <field name="unwind" type="System.Action`1">
+    /// </field>
+    /// <field name="game" type="ShufflyGame.GameObject">
+    /// </field>
+}
+ShufflyNode.GameServer._gameRoom.prototype = {
+    name: null,
+    gameName: null,
+    debuggable: false,
+    maxUsers: 0,
+    players: null,
+    answers: null,
+    roomID: null,
+    gameServer: null,
+    started: false,
+    fiber: null,
+    unwind: null,
+    game: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameData
+
+ShufflyNode.GameServer.GameData = function ShufflyNode_GameServer_GameData() {
+    /// <field name="totalGames" type="Number" integer="true">
+    /// </field>
+    /// <field name="totalQuestionsAnswered" type="Number" integer="true">
+    /// </field>
+    /// <field name="totalPlayers" type="Number" integer="true">
+    /// </field>
+    /// <field name="finishedGames" type="Number" integer="true">
+    /// </field>
+}
+ShufflyNode.GameServer.GameData.prototype = {
+    totalGames: 0,
+    totalQuestionsAnswered: 0,
+    totalPlayers: 0,
+    finishedGames: 0,
+    
+    toString: function ShufflyNode_GameServer_GameData$toString() {
+        /// <returns type="String"></returns>
+        return 'Total: ' + this.totalGames + '\n Running: ' + this._runningGames() + '\n Total Players: ' + this.totalPlayers + '\n Answered: ' + this.totalQuestionsAnswered;
+    },
+    
+    _runningGames: function ShufflyNode_GameServer_GameData$_runningGames() {
+        /// <returns type="Number" integer="true"></returns>
+        return this.totalGames - this.finishedGames;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.DataManager
+
+ShufflyNode.GameServer.DataManager = function ShufflyNode_GameServer_DataManager() {
 }
 
 
@@ -520,13 +747,13 @@ ShufflyNode.SocketClientMessage = function ShufflyNode_SocketClientMessage(user,
     /// </param>
     /// <param name="channel" type="String">
     /// </param>
-    /// <param name="content" type="String">
+    /// <param name="content" type="Object">
     /// </param>
     /// <field name="user" type="ShufflyNode.Common.User">
     /// </field>
     /// <field name="channel" type="String">
     /// </field>
-    /// <field name="content" type="String">
+    /// <field name="content" type="Object">
     /// </field>
     this.user = user;
     this.channel = channel;
@@ -539,10 +766,121 @@ ShufflyNode.SocketClientMessage.prototype = {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GatewayServer
+Type.registerNamespace('ShufflyNode.HeadServer');
 
-ShufflyNode.GatewayServer = function ShufflyNode_GatewayServer() {
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.HeadServer.HeadServer
+
+ShufflyNode.HeadServer.HeadServer = function ShufflyNode_HeadServer_HeadServer() {
+    /// <field name="_fs" type="ShufflyNode.Libs.FS">
+    /// </field>
+    /// <field name="__dirname" type="String">
+    /// </field>
+    /// <field name="_indexPageData" type="String">
+    /// </field>
+    /// <field name="_qManager" type="ShufflyNode.Common.QueueManager">
+    /// </field>
+    /// <field name="_pubsub" type="ShufflyNode.Common.PubSub">
+    /// </field>
+    /// <field name="_indexForSites" type="Array">
+    /// </field>
+    /// <field name="_gateways" type="Array">
+    /// </field>
+    /// <field name="_oldGateways" type="Array">
+    /// </field>
+    /// <field name="_oldIndex" type="Array">
+    /// </field>
+    /// <field name="_siteIndex" type="Number" integer="true">
+    /// </field>
+    this._fs = require('fs');
+    this._indexForSites = [];
+    this._gateways = [];
+    this._oldGateways = [];
+    this._oldIndex = [];
+    this._qManager = new ShufflyNode.Common.QueueManager('Head1', new ShufflyNode.Common.QueueManagerOptions([ new ShufflyNode.Common.QueueWatcher('HeadServer', null), new ShufflyNode.Common.QueueWatcher('Head1', null) ], [ 'GatewayServer' ]));
+    this._fs.readFile(this.__dirname + '/index.html', ss.Delegate.create(this, this.ready));
+    this._pubsub = new ShufflyNode.Common.PubSub(ss.Delegate.create(this, function() {
+        this._pubsub.subscribe('PUBSUB.GatewayServers', ss.Delegate.create(this, function(message) {
+            this._indexForSites.add(this._indexPageData.replaceAll('{{gateway}}', message.toString()));
+            this._gateways.add(message.toString());
+        }));
+    }));
+    require('http').createServer(ss.Delegate.create(this, this._handlerWS)).listen(8844);
+    this._qManager.addChannel('Head.GatewayUpdate', ss.Delegate.create(this, function(user, data) {
+        this._indexForSites.add(this._indexPageData.replaceAll('{{gateway}}', data.toString()));
+        this._gateways.add(data.toString());
+    }));
+    setInterval(ss.Delegate.create(this, this._pollGateways), 5000);
+    this._pollGateways();
+}
+ShufflyNode.HeadServer.HeadServer.prototype = {
+    __dirname: '/usr/local/src/headServer',
+    _indexPageData: null,
+    _qManager: null,
+    _pubsub: null,
+    _siteIndex: 0,
+    
+    _pollGateways: function ShufflyNode_HeadServer_HeadServer$_pollGateways() {
+        this._pubsub.publish('PUBSUB.GatewayServers.Ping', '');
+        if (this._indexForSites.length > 0) {
+            this._oldIndex = this._indexForSites;
+        }
+        if (this._gateways.length > 0) {
+            this._oldGateways = this._gateways;
+        }
+        this._indexForSites = [];
+        this._gateways = [];
+        this._siteIndex = 0;
+    },
+    
+    _handlerWS: function ShufflyNode_HeadServer_HeadServer$_handlerWS(request, response) {
+        /// <param name="request" type="NodeJS.HttpRequest">
+        /// </param>
+        /// <param name="response" type="NodeJS.HttpResponse">
+        /// </param>
+        if (this._oldGateways.length > 0) {
+            var inj = (this._siteIndex++) % this._oldIndex.length;
+            response.end(this._oldGateways[inj]);
+            return;
+        }
+        response.end();
+    },
+    
+    _handler: function ShufflyNode_HeadServer_HeadServer$_handler(request, response) {
+        /// <param name="request" type="NodeJS.HttpRequest">
+        /// </param>
+        /// <param name="response" type="NodeJS.HttpResponse">
+        /// </param>
+        var dict = {};
+        dict['Content-Type'] = 'text/html';
+        if (this._oldIndex.length > 0) {
+            response.writeHead(200, dict);
+            var inj = (this._siteIndex++) % this._oldIndex.length;
+            response.end(this._oldIndex[inj]);
+        }
+        else {
+            response.writeHead(200, dict);
+            response.end();
+        }
+    },
+    
+    ready: function ShufflyNode_HeadServer_HeadServer$ready(error, content) {
+        /// <param name="error" type="ShufflyNode.Libs.FileSystemError">
+        /// </param>
+        /// <param name="content" type="Object">
+        /// </param>
+        this._indexPageData = content.toString();
+        require('http').createServer(ss.Delegate.create(this, this._handler)).listen(80);
+    }
+}
+
+
+Type.registerNamespace('ShufflyNode.GatewayServer');
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GatewayServer.GatewayServer
+
+ShufflyNode.GatewayServer.GatewayServer = function ShufflyNode_GatewayServer_GatewayServer() {
     /// <field name="users" type="Object">
     /// </field>
     /// <field name="_ps" type="ShufflyNode.Common.PubSub">
@@ -570,7 +908,7 @@ ShufflyNode.GatewayServer = function ShufflyNode_GatewayServer() {
         var user = null;
         socket.on('Gateway.Message', function(data) {
             var channel = 'Bad';
-            switch (data.channel.split('.')[0]) {
+            switch (data.channel.split('.')[1]) {
                 case 'Game':
                     channel = 'GameServer';
                     break;
@@ -591,36 +929,38 @@ ShufflyNode.GatewayServer = function ShufflyNode_GatewayServer() {
         });
         socket.on('Gateway.Login', ss.Delegate.create(this, function(data) {
             user = new ShufflyNode.Common.User();
-            user.set_socket(socket);
-            user.set_userName(data.userName);
+            user.socket = socket;
+            user.userName = data.userName;
             this.users[data.userName] = user;
         }));
         socket.on('disconnect', ss.Delegate.create(this, function(data) {
-            delete this.users[user.get_userName()];
+            delete this.users[user.userName];
         }));
     }));
 }
-ShufflyNode.GatewayServer.prototype = {
+ShufflyNode.GatewayServer.GatewayServer.prototype = {
     _ps: null,
     
-    _messageReceived: function ShufflyNode_GatewayServer$_messageReceived(gateway, user, eventChannel, content) {
+    _messageReceived: function ShufflyNode_GatewayServer_GatewayServer$_messageReceived(gateway, user, eventChannel, content) {
         /// <param name="gateway" type="String">
         /// </param>
         /// <param name="user" type="ShufflyNode.Common.User">
         /// </param>
         /// <param name="eventChannel" type="String">
         /// </param>
-        /// <param name="content" type="String">
+        /// <param name="content" type="Object">
         /// </param>
-        if (Object.keyExists(this.users, user.get_userName())) {
-            var u = this.users[user.get_userName()];
-            u.get_socket().emit('Client.Message', new ShufflyNode.SocketClientMessage(user, eventChannel, content));
+        if (Object.keyExists(this.users, user.userName)) {
+            var u = this.users[user.userName];
+            u.socket.emit('Client.Message', new ShufflyNode.SocketClientMessage(user, eventChannel, content));
         }
     }
 }
 
 
 ShufflyNode.Libs.Guid.registerClass('ShufflyNode.Libs.Guid');
+ShufflyNode.Common.Consumer.registerClass('ShufflyNode.Common.Consumer');
+ShufflyNode.Common.Help.registerClass('ShufflyNode.Common.Help');
 ShufflyNode.Common.IPs.registerClass('ShufflyNode.Common.IPs');
 ShufflyNode.Common.PubSub.registerClass('ShufflyNode.Common.PubSub');
 ShufflyNode.Common.QueueItem.registerClass('ShufflyNode.Common.QueueItem');
@@ -631,10 +971,17 @@ ShufflyNode.Common.QueueWatcher.registerClass('ShufflyNode.Common.QueueWatcher',
 ShufflyNode.Common.QueuePusher.registerClass('ShufflyNode.Common.QueuePusher', ShufflyNode.Common.QueueItem);
 ShufflyNode.Common.QueueMessage.registerClass('ShufflyNode.Common.QueueMessage');
 ShufflyNode.Common.User.registerClass('ShufflyNode.Common.User');
+ShufflyNode.GameServer.GameServer.registerClass('ShufflyNode.GameServer.GameServer');
+ShufflyNode.GameServer.JoinGameRequest.registerClass('ShufflyNode.GameServer.JoinGameRequest');
+ShufflyNode.GameServer.CreateGameRequest.registerClass('ShufflyNode.GameServer.CreateGameRequest');
+ShufflyNode.GameServer._gameRoom.registerClass('ShufflyNode.GameServer._gameRoom');
+ShufflyNode.GameServer.GameData.registerClass('ShufflyNode.GameServer.GameData');
+ShufflyNode.GameServer.DataManager.registerClass('ShufflyNode.GameServer.DataManager');
 ShufflyNode.GatewayLoginMessage.registerClass('ShufflyNode.GatewayLoginMessage');
 ShufflyNode.GatewayMessage.registerClass('ShufflyNode.GatewayMessage');
 ShufflyNode.SocketClientMessage.registerClass('ShufflyNode.SocketClientMessage');
-ShufflyNode.GatewayServer.registerClass('ShufflyNode.GatewayServer');
+ShufflyNode.HeadServer.HeadServer.registerClass('ShufflyNode.HeadServer.HeadServer');
+ShufflyNode.GatewayServer.GatewayServer.registerClass('ShufflyNode.GatewayServer.GatewayServer');
 })();
 
 //! This script was generated using Script# v0.7.4.0

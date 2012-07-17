@@ -14,18 +14,18 @@ namespace ShufflyNode.Common
         private RedisClient pubClient;
         public PubSub(Action ready)
         {
-            Redis.Redis redis = Node.Require<Redis.Redis>("redis");
+            Redis.Redis redis = Global.Require<Redis.Redis>("redis");
             redis.DebugMode = false;
             subClient = redis.CreateClient(6379, IPs.RedisIP);
             pubClient = redis.CreateClient(6379, IPs.RedisIP);
-            subClient.On("subscribe", delegate(string channel, int count) { Console.Log("subscribed: " + channel + " " + count); });
-            subClient.On("unsubscribe", delegate(string channel, int count) { Console.Log("unsubscribed: " + channel + " " + count); });
+            subClient.On("subscribe", delegate(string channel, int count) { Global.Console.Log("subscribed: " + channel + " " + count); });
+            subClient.On("unsubscribe", delegate(string channel, int count) { Global.Console.Log("unsubscribed: " + channel + " " + count); });
 
             subClient.On("message", delegate(string channel, object message)
                                         {
                                             if (subbed.ContainsKey(channel))
                                             {
-                                                subbed[channel](message);
+                                                subbed[channel].Invoke(message);
                                             }
                                         });
             subClient.On("ready", delegate

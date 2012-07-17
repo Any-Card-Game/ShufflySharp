@@ -44,8 +44,15 @@
     <Reference Include="Script.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DebugServer\debugServerApp.js" />
+    <Content Include="GameFramework\GameAPI.js" />
+    <Content Include="GameFramework\gameUtils.js" />
+    <Content Include="GameFramework\shuff.js" />
+    <Content Include="GameServer\gameApp.js" />
     <Content Include="Properties\ShufflyNode.ruleset" />
     <Content Include="Properties\ShufflyNode.script" />
+    <Compile Include="Common\Consumer.cs" />
+    <Compile Include="Common\Help.cs" />
     <Compile Include="Common\IPs.cs" />
     <Compile Include="Common\PubSub.cs" />
     <Compile Include="Common\QueueItem.cs" />
@@ -55,14 +62,23 @@
     <Compile Include="Common\QueueWatcher.cs" />
     <Compile Include="Common\QueuePusher.cs" />
     <Compile Include="Common\User.cs" />
+    <Compile Include="GameServer\GameServer.cs" />
     <Compile Include="GatewayServer\GatewayLoginMessage.cs" />
     <Compile Include="GatewayServer\GatewayMessage.cs" />
     <Compile Include="GatewayServer\SocketClientMessage.cs" />
+    <Compile Include="HeadServer\HeadServer.cs" />
     <Compile Include="Libs\Guid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GatewayServer\GatewayServer.cs" />
+    <Content Include="ServerAdmin\admin.js" />
+    <Content Include="ServerAdmin\memcachedtest.js" />
+    <Content Include="ServerAdmin\mongotest.js" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fibers\Fibers.csproj">
+      <Project>{E05BFE3E-88F4-4986-9B24-892416A9D46A}</Project>
+      <Name>Fibers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NodeJS\NodeJS.csproj">
       <Project>{B7FF3F2A-C5AF-4C50-B9B2-A72B6EA85C93}</Project>
       <Name>NodeJS</Name>
@@ -71,15 +87,22 @@
       <Project>{023BADE5-0054-42F2-8C81-906CC778BFC4}</Project>
       <Name>Redis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ShufflyGame\ShufflyGame.csproj">
+      <Project>{EF887FF2-DF7A-43F6-9AC3-B9E37E3091C5}</Project>
+      <Name>ShufflyGame</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SocketIO\SocketIO.csproj">
       <Project>{D3AB6B2A-7510-4F9A-95B8-B48FF8F75395}</Project>
       <Name>SocketIO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="GameServer\" />
-    <Folder Include="HeadServer\" />
+    <Folder Include="ChatServer\" />
+    <Folder Include="Client\" />
     <Folder Include="SiteServer\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ScriptSharpBugs.md" />
   </ItemGroup>
   <Import Project="$(ProgramFiles)\ScriptSharp\v1.0\ScriptSharp.targets" />
 </Project>

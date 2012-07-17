@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Serialization;
 using NodeJS;
 using Redis;
 
@@ -10,55 +13,35 @@ namespace ShufflyNode.Common
 
         public QueuePusher(string pusher)
         {
-            Redis.Redis redis = Node.Require<Redis.Redis>("redis");
+            Redis.Redis redis = Global.Require<Redis.Redis>("redis");
             Channel = pusher;
             client1 = redis.CreateClient(6379, IPs.RedisIP);
 
         }
 
-        public void Message(string channel, string name, User user, string eventChannel, string content)
+        public void Message(string channel, string name, User user, string eventChannel, object content)
         {
-            client1.RPush(channel, JSON.Stringify(new QueueMessage(name, user, eventChannel, content))); //todo:maybe sanitize
+            client1.RPush(channel, Json.Stringify(new QueueMessage(name, user, eventChannel, content), Help.Sanitize)); //todo:maybe sanitize
         }
+
     }
 
-    public class QueueMessage
-    {
-        public string name;
-        public User user;
-        public string eventChannel;
-        public string content;
+    public class QueueMessage 
+    { 
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-        public User User
-        {
-            get { return user; }
-            set { user = value; }
-        }
+        public string Name;
+        public User User;
+        public string EventChannel;
+        public object Content;
+ 
 
-        public string EventChannel
-        {
-            get { return eventChannel; }
-            set { eventChannel = value; }
-        }
-
-        public string Content
-        {
-            get { return content; }
-            set { content = value; }
-        }
-
-
-        public QueueMessage(string name, User user, string eventChannel, string content)
+        public QueueMessage(string name, User user, string eventChannel, object content)
         {
             this.Name = name;
             this.User = user;
             this.EventChannel = eventChannel;
-            this.Content = content;
+            this.Content = content; 
         }
+         
     }
 }

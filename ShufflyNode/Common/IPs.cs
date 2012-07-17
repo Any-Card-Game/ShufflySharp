@@ -4,12 +4,12 @@ namespace ShufflyNode.Common
     {
         public static string GatewayIP
         {
-            get { return ""; }
+            get { return "50.116.22.241"; }
         }
 
         public static string RedisIP
         {
-            get { return ""; }
+            get { return "50.116.28.16"; }
         }
     }
 }

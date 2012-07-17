@@ -1,30 +1,18 @@
 using System.Runtime.CompilerServices;
 
-[ScriptName("console")]
-public static class Console
+namespace NodeJS
 {
-    [ScriptName("log")]
-    public static void Log(string val)
+    [ScriptName("console")]
+    public class Console
     {
-    }
-    [ScriptName("log")]
-    public static void Log()
-    {
-    }
-}
-[ScriptName("JSON")]
-
-public static class JSON
-{
-    [ScriptName("stringify")]
-    public static string Stringify(object obj)
-    {
-        return null;
+        [ScriptName("log")]
+        public void Log(object val)
+        {
+        }
+        [ScriptName("log")]
+        public void Log()
+        {
+        }
     }
 
-    [ScriptName("parse")]
-    public static T Parse<T>(string data)
-    {
-        return default(T);
-    }
 }

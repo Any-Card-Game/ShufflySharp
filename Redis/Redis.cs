@@ -24,7 +24,7 @@ namespace Redis
     {
         [ScriptName("publish")]
 
-        public void Publish(string channel, string content)
+        public void Publish(string channel, object content)
         {
             
         }
@@ -35,12 +35,12 @@ namespace Redis
         }
 
         [ScriptName("rpush")]
-        public void RPush(string channel, string value)
+        public void RPush(string channel, object value)
         {
         }
 
         [ScriptName("blpop")]
-        public void BLPop(object[] objects, Action<string, string> action)
+        public void BLPop(object[] objects, Action<string, object> action)
         {
             
         }

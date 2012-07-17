@@ -3,13 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Html;
 using NodeJS;
 using ShufflyNode.Common;
 using ShufflyNode.Libs;
 using SocketIO;
 
-namespace ShufflyNode
+namespace ShufflyNode.GatewayServer
 {
     public class GatewayServer
     {
@@ -19,16 +18,18 @@ namespace ShufflyNode
         public GatewayServer()
         {
 
-            Http http = Node.Require<Http>("http");
+            Http http = Global.Require<Http>("http");
             HttpServer app = http.CreateServer(delegate(HttpRequest req, HttpResponse res)
             {
                 res.End();
             });
 
-            SocketIoClient io = Node.Require<SocketIO.SocketIO>("socket.io").Listen(app);
-            FS fs = Node.Require<FS>("fs"); 
+            SocketIoClient io = Global.Require<SocketIO.SocketIO>("socket.io").Listen(app);
+            FS fs = Global.Require<FS>("fs"); 
             QueueManager queueManager;
             int port = 1800 + Math.Truncate((Number)(Math.Random() * 4000));
+             
+
             app.Listen(port);
             io.Set("log lvl", 1);
             string myName = "Gateway " + Guid.NewGuid();
@@ -64,7 +65,7 @@ namespace ShufflyNode
                 socket.On("Gateway.Message", delegate(GatewayMessage data)
                 {
                     string channel = "Bad";
-                    switch (data.Channel.Split('.')[0])
+                    switch (data.Channel.Split('.')[1])
                     {
                         case "Game":
                             channel = "GameServer";
@@ -104,7 +105,7 @@ namespace ShufflyNode
 
 
 
-        private void messageReceived(string gateway, User user, string eventChannel, string content)
+        private void messageReceived(string gateway, User user, string eventChannel, object content)
         {
             if (users.ContainsKey(user.UserName))
             {

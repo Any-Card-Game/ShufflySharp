@@ -7,8 +7,8 @@ namespace ShufflyNode
         //{ User: User, channel: EventChannel, Content: Content }
         public User User;
         public string Channel;
-        public string Content;
-        public SocketClientMessage(User user, string channel, string content)
+        public object Content;
+        public SocketClientMessage(User user, string channel, object content)
         {
             User = user;
             Channel = channel;

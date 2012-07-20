@@ -6,7 +6,7 @@ using ShufflyNode.Common;
 
 namespace ShufflyNode.GameServer
 {
-    internal class GameRoom
+    public class GameRoom
     {
         public string Name;
         public string GameName;
@@ -23,11 +23,4 @@ namespace ShufflyNode.GameServer
 
         public User DebuggingSender;
     }
-    public class GameAnswerRequest
-    {
-        public int AnswerIndex;
-        public string RoomID;
-    }
-
-
 }

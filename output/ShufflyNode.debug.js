@@ -481,10 +481,26 @@ ShufflyNode.GameServer.CreateGameRequest.prototype = {
 ShufflyNode.GameServer.DataManager = function ShufflyNode_GameServer_DataManager() {
     /// <field name="gameData" type="ShufflyNode.GameServer.DataManagerGameData">
     /// </field>
+    /// <field name="client" type="MongoDB">
+    /// </field>
+    /// <field name="_server" type="MongoServer">
+    /// </field>
+    /// <field name="_connection" type="MongoConnection">
+    /// </field>
     this.gameData = new ShufflyNode.GameServer.DataManagerGameData(this);
+    var mongo = require('mongodb');
+    var Db = mongo.Db;
+    this._connection = mongo.Connection;
+    this._server = mongo.Server;
+    this.client = eval("new Db('test', new Server('50.116.28.16', 27017, {}))");
+    this.client.open(function() {
+    });
 }
 ShufflyNode.GameServer.DataManager.prototype = {
-    gameData: null
+    gameData: null,
+    client: null,
+    _server: null,
+    _connection: null
 }
 
 
@@ -501,12 +517,33 @@ ShufflyNode.GameServer.DataManagerGameData = function ShufflyNode_GameServer_Dat
 ShufflyNode.GameServer.DataManagerGameData.prototype = {
     _manager: null,
     
-    insert: function ShufflyNode_GameServer_DataManagerGameData$insert(key, value) {
-        /// <param name="key" type="String">
+    insert: function ShufflyNode_GameServer_DataManagerGameData$insert(gameName, answerIndex) {
+        /// <param name="gameName" type="String">
         /// </param>
-        /// <param name="value" type="Object">
+        /// <param name="answerIndex" type="Number" integer="true">
         /// </param>
+        this._manager.client.collection('gameInfo', function(err, collection) {
+            var gmo = new ShufflyNode.GameServer.GameInfoObject();
+            gmo.gameName = gameName;
+            gmo.answerIndex = answerIndex;
+            collection.insert(gmo);
+        });
     }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameInfoObject
+
+ShufflyNode.GameServer.GameInfoObject = function ShufflyNode_GameServer_GameInfoObject() {
+    /// <field name="gameName" type="String">
+    /// </field>
+    /// <field name="answerIndex" type="Number" integer="true">
+    /// </field>
+}
+ShufflyNode.GameServer.GameInfoObject.prototype = {
+    gameName: null,
+    answerIndex: 0
 }
 
 
@@ -528,6 +565,21 @@ ShufflyNode.GameServer.FiberYieldResponse.prototype = {
     question: null,
     contents: 0,
     lineNumber: 0
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameAnswerRequest
+
+ShufflyNode.GameServer.GameAnswerRequest = function ShufflyNode_GameServer_GameAnswerRequest() {
+    /// <field name="answerIndex" type="Number" integer="true">
+    /// </field>
+    /// <field name="roomID" type="String">
+    /// </field>
+}
+ShufflyNode.GameServer.GameAnswerRequest.prototype = {
+    answerIndex: 0,
+    roomID: null
 }
 
 
@@ -563,9 +615,30 @@ ShufflyNode.GameServer.GameData.prototype = {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer._gameRoom
+// ShufflyNode.GameServer.GameQuestionAnswer
 
-ShufflyNode.GameServer._gameRoom = function ShufflyNode_GameServer__gameRoom() {
+ShufflyNode.GameServer.GameQuestionAnswer = function ShufflyNode_GameServer_GameQuestionAnswer() {
+    /// <field name="user" type="ShufflyNode.Common.User">
+    /// </field>
+    /// <field name="question" type="String">
+    /// </field>
+    /// <field name="answers" type="Array" elementType="String">
+    /// </field>
+    /// <field name="cardGame" type="ShufflyGame.GameCardGame">
+    /// </field>
+}
+ShufflyNode.GameServer.GameQuestionAnswer.prototype = {
+    user: null,
+    question: null,
+    answers: null,
+    cardGame: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameRoom
+
+ShufflyNode.GameServer.GameRoom = function ShufflyNode_GameServer_GameRoom() {
     /// <field name="name" type="String">
     /// </field>
     /// <field name="gameName" type="String">
@@ -593,7 +666,7 @@ ShufflyNode.GameServer._gameRoom = function ShufflyNode_GameServer__gameRoom() {
     /// <field name="debuggingSender" type="ShufflyNode.Common.User">
     /// </field>
 }
-ShufflyNode.GameServer._gameRoom.prototype = {
+ShufflyNode.GameServer.GameRoom.prototype = {
     name: null,
     gameName: null,
     debuggable: false,
@@ -611,17 +684,17 @@ ShufflyNode.GameServer._gameRoom.prototype = {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer.GameAnswerRequest
+// ShufflyNode.GameServer.GameSendAnswer
 
-ShufflyNode.GameServer.GameAnswerRequest = function ShufflyNode_GameServer_GameAnswerRequest() {
-    /// <field name="answerIndex" type="Number" integer="true">
+ShufflyNode.GameServer.GameSendAnswer = function ShufflyNode_GameServer_GameSendAnswer() {
+    /// <field name="question" type="String">
     /// </field>
-    /// <field name="roomID" type="String">
+    /// <field name="answers" type="Array" elementType="String">
     /// </field>
 }
-ShufflyNode.GameServer.GameAnswerRequest.prototype = {
-    answerIndex: 0,
-    roomID: null
+ShufflyNode.GameServer.GameSendAnswer.prototype = {
+    question: null,
+    answers: null
 }
 
 
@@ -676,12 +749,12 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
     });
     this._qManager.addChannel('Area.Game.Create', ss.Delegate.create(this, function() {
         var room;
-        this._rooms.add(room = new ShufflyNode.GameServer._gameRoom());
+        this._rooms.add(room = new ShufflyNode.GameServer.GameRoom());
     }));
     this._qManager.addChannel('Area.Debug.Create', ss.Delegate.create(this, function(user, arg2) {
         var data = arg2;
         var room;
-        this._rooms.add(room = new ShufflyNode.GameServer._gameRoom());
+        this._rooms.add(room = new ShufflyNode.GameServer.GameRoom());
         room.name = data.name;
         room.maxUsers = 6;
         room.debuggable = true;
@@ -809,8 +882,6 @@ ShufflyNode.GameServer.GameServer.prototype = {
             dict.value = data.answerIndex;
             room.answers.add(dict);
             var answ = room.fiber.run(dict);
-            this._gameData.totalQuestionsAnswered++;
-            this._dataManager.gameData.insert(room.name, answ);
             if (answ == null) {
                 this._emitAll(room, 'Area.Game.GameOver', 'a');
                 room.fiber.run();
@@ -818,6 +889,8 @@ ShufflyNode.GameServer.GameServer.prototype = {
                 room.unwind(room.players);
                 continue;
             }
+            this._gameData.totalQuestionsAnswered++;
+            this._dataManager.gameData.insert(room.name, answ.contents);
             this._handleYield(room, answ);
         }
         if (!ind) {
@@ -832,7 +905,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
     },
     
     _handleYield: function ShufflyNode_GameServer_GameServer$_handleYield(room, answer) {
-        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// <param name="room" type="ShufflyNode.GameServer.GameRoom">
         /// </param>
         /// <param name="answer" type="ShufflyNode.GameServer.FiberYieldResponse">
         /// </param>
@@ -882,10 +955,10 @@ ShufflyNode.GameServer.GameServer.prototype = {
     _askQuestion: function ShufflyNode_GameServer_GameServer$_askQuestion(answ, room) {
         /// <param name="answ" type="ShufflyNode.GameServer.GameQuestionAnswer">
         /// </param>
-        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// <param name="room" type="ShufflyNode.GameServer.GameRoom">
         /// </param>
         var user = this._getPlayerByUsername(room, answ.user.userName);
-        var gameAnswer = new ShufflyNode.GameServer._gameSendAnswer();
+        var gameAnswer = new ShufflyNode.GameServer.GameSendAnswer();
         gameAnswer.answers = answ.answers;
         gameAnswer.question = answ.question;
         this._qManager.sendMessage(user, user.gateway, 'Area.Game.AskQuestion', JSON.parse(JSON.stringify(gameAnswer, ShufflyNode.Common.Help.sanitize)));
@@ -902,7 +975,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
     },
     
     _getPlayerByUsername: function ShufflyNode_GameServer_GameServer$_getPlayerByUsername(room, userName) {
-        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// <param name="room" type="ShufflyNode.GameServer.GameRoom">
         /// </param>
         /// <param name="userName" type="String">
         /// </param>
@@ -918,7 +991,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
     },
     
     _emitAll: function ShufflyNode_GameServer_GameServer$_emitAll(room, message, val) {
-        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// <param name="room" type="ShufflyNode.GameServer.GameRoom">
         /// </param>
         /// <param name="message" type="String">
         /// </param>
@@ -932,7 +1005,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
     },
     
     _createFiber: function ShufflyNode_GameServer_GameServer$_createFiber(room, gameObject, emulating) {
-        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// <param name="room" type="ShufflyNode.GameServer.GameRoom">
         /// </param>
         /// <param name="gameObject" type="ShufflyGame.GameObject">
         /// </param>
@@ -961,42 +1034,6 @@ ShufflyNode.GameServer.GameServer.prototype = {
             return true;
         }));
     }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer._gameSendAnswer
-
-ShufflyNode.GameServer._gameSendAnswer = function ShufflyNode_GameServer__gameSendAnswer() {
-    /// <field name="question" type="String">
-    /// </field>
-    /// <field name="answers" type="Array" elementType="String">
-    /// </field>
-}
-ShufflyNode.GameServer._gameSendAnswer.prototype = {
-    question: null,
-    answers: null
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer.GameQuestionAnswer
-
-ShufflyNode.GameServer.GameQuestionAnswer = function ShufflyNode_GameServer_GameQuestionAnswer() {
-    /// <field name="user" type="ShufflyNode.Common.User">
-    /// </field>
-    /// <field name="question" type="String">
-    /// </field>
-    /// <field name="answers" type="Array" elementType="String">
-    /// </field>
-    /// <field name="cardGame" type="ShufflyGame.GameCardGame">
-    /// </field>
-}
-ShufflyNode.GameServer.GameQuestionAnswer.prototype = {
-    user: null,
-    question: null,
-    answers: null,
-    cardGame: null
 }
 
 
@@ -1282,13 +1319,14 @@ ShufflyNode.Common.User.registerClass('ShufflyNode.Common.User');
 ShufflyNode.GameServer.CreateGameRequest.registerClass('ShufflyNode.GameServer.CreateGameRequest');
 ShufflyNode.GameServer.DataManager.registerClass('ShufflyNode.GameServer.DataManager');
 ShufflyNode.GameServer.DataManagerGameData.registerClass('ShufflyNode.GameServer.DataManagerGameData');
+ShufflyNode.GameServer.GameInfoObject.registerClass('ShufflyNode.GameServer.GameInfoObject');
 ShufflyNode.GameServer.FiberYieldResponse.registerClass('ShufflyNode.GameServer.FiberYieldResponse');
-ShufflyNode.GameServer.GameData.registerClass('ShufflyNode.GameServer.GameData');
-ShufflyNode.GameServer._gameRoom.registerClass('ShufflyNode.GameServer._gameRoom');
 ShufflyNode.GameServer.GameAnswerRequest.registerClass('ShufflyNode.GameServer.GameAnswerRequest');
-ShufflyNode.GameServer.GameServer.registerClass('ShufflyNode.GameServer.GameServer');
-ShufflyNode.GameServer._gameSendAnswer.registerClass('ShufflyNode.GameServer._gameSendAnswer');
+ShufflyNode.GameServer.GameData.registerClass('ShufflyNode.GameServer.GameData');
 ShufflyNode.GameServer.GameQuestionAnswer.registerClass('ShufflyNode.GameServer.GameQuestionAnswer');
+ShufflyNode.GameServer.GameRoom.registerClass('ShufflyNode.GameServer.GameRoom');
+ShufflyNode.GameServer.GameSendAnswer.registerClass('ShufflyNode.GameServer.GameSendAnswer');
+ShufflyNode.GameServer.GameServer.registerClass('ShufflyNode.GameServer.GameServer');
 ShufflyNode.GameServer.JoinGameRequest.registerClass('ShufflyNode.GameServer.JoinGameRequest');
 ShufflyNode.GatewayLoginMessage.registerClass('ShufflyNode.GatewayLoginMessage');
 ShufflyNode.GatewayMessage.registerClass('ShufflyNode.GatewayMessage');

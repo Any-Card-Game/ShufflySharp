@@ -65,6 +65,7 @@
     <Compile Include="GameServer\CreateGameRequest.cs" />
     <Compile Include="GameServer\DataManager.cs" />
     <Compile Include="GameServer\FiberYieldResponse.cs" />
+    <Compile Include="GameServer\GameAnswerRequest.cs" />
     <Compile Include="GameServer\GameData.cs" />
     <Compile Include="GameServer\GameQuestionAnswer.cs" />
     <Compile Include="GameServer\GameRoom.cs" />
@@ -86,6 +87,10 @@
     <ProjectReference Include="..\Fibers\Fibers.csproj">
       <Project>{E05BFE3E-88F4-4986-9B24-892416A9D46A}</Project>
       <Name>Fibers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MongoDB\MongoDB.csproj">
+      <Project>{643E85E4-0C97-4199-9DC2-2067E90E7204}</Project>
+      <Name>MongoDB</Name>
     </ProjectReference>
     <ProjectReference Include="..\NodeJS\NodeJS.csproj">
       <Project>{B7FF3F2A-C5AF-4C50-B9B2-A72B6EA85C93}</Project>

@@ -210,8 +210,7 @@ namespace ShufflyNode.GameServer
                 dict.Value = data.AnswerIndex;
                 room.Answers.Add(dict);
                 FiberYieldResponse answ = room.Fiber.Run<FiberYieldResponse>(dict);
-                gameData.TotalQuestionsAnswered++;
-                dataManager.GameData.Insert(room.Name, answ);
+           
 
                 if (answ == null)
                 {
@@ -221,6 +220,8 @@ namespace ShufflyNode.GameServer
                     room.Unwind(room.Players);
                     continue;
                 }
+                gameData.TotalQuestionsAnswered++;
+                dataManager.GameData.Insert(room.Name, answ.Contents);
                 handleYield(room, answ);
             }
 

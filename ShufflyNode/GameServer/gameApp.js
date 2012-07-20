@@ -177,7 +177,8 @@ qManager.addChannel('Area.Game.Join', function (sender, data) {
 
 qManager.addChannel('Area.Game.GetGames', function (sender, data) {
 
-    qManager.sendMessage(sender.user, sender.gateway, 'Area.Game.RoomInfos', JSON.parse(JSON.stringify(rooms, sanitize)));
+    qManager.sendMessage(sender.user, sender.gateway,
+        'Area.Game.RoomInfos', JSON.parse(JSON.stringify(rooms, sanitize)));
 
 });
 

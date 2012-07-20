@@ -16,7 +16,7 @@ namespace ShufflyGame
         [ScriptName("answerIndex")]
         public int AnswerIndex;
 
-        public void SetAnswers(List<int> answers)
+        public void SetAnswers(List<GameAnswer> answers)
         { 
         }
 
@@ -24,4 +24,10 @@ namespace ShufflyGame
         { 
         }
     }
+    public class GameAnswer
+    {
+        public int Value;
+        public int LineNumber;
+    }
+
 }

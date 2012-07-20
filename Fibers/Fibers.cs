@@ -14,5 +14,14 @@ namespace Fibers
         {
 
         }
+
+        public T2 Run<T2>(object obj)
+        {
+            return default(T2);
+        }
+        public T2 Run<T2>()
+        {
+            return default(T2);
+        }
     }
 }

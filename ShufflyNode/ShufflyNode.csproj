@@ -62,7 +62,15 @@
     <Compile Include="Common\QueueWatcher.cs" />
     <Compile Include="Common\QueuePusher.cs" />
     <Compile Include="Common\User.cs" />
+    <Compile Include="GameServer\CreateGameRequest.cs" />
+    <Compile Include="GameServer\DataManager.cs" />
+    <Compile Include="GameServer\FiberYieldResponse.cs" />
+    <Compile Include="GameServer\GameData.cs" />
+    <Compile Include="GameServer\GameQuestionAnswer.cs" />
+    <Compile Include="GameServer\GameRoom.cs" />
+    <Compile Include="GameServer\GameSendAnswer.cs" />
     <Compile Include="GameServer\GameServer.cs" />
+    <Compile Include="GameServer\JoinGameRequest.cs" />
     <Compile Include="GatewayServer\GatewayLoginMessage.cs" />
     <Compile Include="GatewayServer\GatewayMessage.cs" />
     <Compile Include="GatewayServer\SocketClientMessage.cs" />

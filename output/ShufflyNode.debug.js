@@ -461,6 +461,171 @@ ShufflyNode.Common.User.prototype = {
 Type.registerNamespace('ShufflyNode.GameServer');
 
 ////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.CreateGameRequest
+
+ShufflyNode.GameServer.CreateGameRequest = function ShufflyNode_GameServer_CreateGameRequest() {
+    /// <field name="name" type="String">
+    /// </field>
+    /// <field name="gameName" type="String">
+    /// </field>
+}
+ShufflyNode.GameServer.CreateGameRequest.prototype = {
+    name: null,
+    gameName: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.DataManager
+
+ShufflyNode.GameServer.DataManager = function ShufflyNode_GameServer_DataManager() {
+    /// <field name="gameData" type="ShufflyNode.GameServer.DataManagerGameData">
+    /// </field>
+    this.gameData = new ShufflyNode.GameServer.DataManagerGameData(this);
+}
+ShufflyNode.GameServer.DataManager.prototype = {
+    gameData: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.DataManagerGameData
+
+ShufflyNode.GameServer.DataManagerGameData = function ShufflyNode_GameServer_DataManagerGameData(manager) {
+    /// <param name="manager" type="ShufflyNode.GameServer.DataManager">
+    /// </param>
+    /// <field name="_manager" type="ShufflyNode.GameServer.DataManager">
+    /// </field>
+    this._manager = manager;
+}
+ShufflyNode.GameServer.DataManagerGameData.prototype = {
+    _manager: null,
+    
+    insert: function ShufflyNode_GameServer_DataManagerGameData$insert(key, value) {
+        /// <param name="key" type="String">
+        /// </param>
+        /// <param name="value" type="Object">
+        /// </param>
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.FiberYieldResponse
+
+ShufflyNode.GameServer.FiberYieldResponse = function ShufflyNode_GameServer_FiberYieldResponse() {
+    /// <field name="type" type="String">
+    /// </field>
+    /// <field name="question" type="ShufflyNode.GameServer.GameQuestionAnswer">
+    /// </field>
+    /// <field name="contents" type="Number" integer="true">
+    /// </field>
+    /// <field name="lineNumber" type="Number" integer="true">
+    /// </field>
+}
+ShufflyNode.GameServer.FiberYieldResponse.prototype = {
+    type: null,
+    question: null,
+    contents: 0,
+    lineNumber: 0
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameData
+
+ShufflyNode.GameServer.GameData = function ShufflyNode_GameServer_GameData() {
+    /// <field name="totalGames" type="Number" integer="true">
+    /// </field>
+    /// <field name="totalQuestionsAnswered" type="Number" integer="true">
+    /// </field>
+    /// <field name="totalPlayers" type="Number" integer="true">
+    /// </field>
+    /// <field name="finishedGames" type="Number" integer="true">
+    /// </field>
+}
+ShufflyNode.GameServer.GameData.prototype = {
+    totalGames: 0,
+    totalQuestionsAnswered: 0,
+    totalPlayers: 0,
+    finishedGames: 0,
+    
+    toString: function ShufflyNode_GameServer_GameData$toString() {
+        /// <returns type="String"></returns>
+        return 'Total: ' + this.totalGames + '\n Running: ' + this._runningGames() + '\n Total Players: ' + this.totalPlayers + '\n Answered: ' + this.totalQuestionsAnswered;
+    },
+    
+    _runningGames: function ShufflyNode_GameServer_GameData$_runningGames() {
+        /// <returns type="Number" integer="true"></returns>
+        return this.totalGames - this.finishedGames;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer._gameRoom
+
+ShufflyNode.GameServer._gameRoom = function ShufflyNode_GameServer__gameRoom() {
+    /// <field name="name" type="String">
+    /// </field>
+    /// <field name="gameName" type="String">
+    /// </field>
+    /// <field name="debuggable" type="Boolean">
+    /// </field>
+    /// <field name="maxUsers" type="Number" integer="true">
+    /// </field>
+    /// <field name="players" type="Array">
+    /// </field>
+    /// <field name="answers" type="Array">
+    /// </field>
+    /// <field name="roomID" type="String">
+    /// </field>
+    /// <field name="gameServer" type="String">
+    /// </field>
+    /// <field name="started" type="Boolean">
+    /// </field>
+    /// <field name="fiber" type="Fibers.Fiber`1">
+    /// </field>
+    /// <field name="unwind" type="System.Action`1">
+    /// </field>
+    /// <field name="game" type="ShufflyGame.GameObject">
+    /// </field>
+    /// <field name="debuggingSender" type="ShufflyNode.Common.User">
+    /// </field>
+}
+ShufflyNode.GameServer._gameRoom.prototype = {
+    name: null,
+    gameName: null,
+    debuggable: false,
+    maxUsers: 0,
+    players: null,
+    answers: null,
+    roomID: null,
+    gameServer: null,
+    started: false,
+    fiber: null,
+    unwind: null,
+    game: null,
+    debuggingSender: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameAnswerRequest
+
+ShufflyNode.GameServer.GameAnswerRequest = function ShufflyNode_GameServer_GameAnswerRequest() {
+    /// <field name="answerIndex" type="Number" integer="true">
+    /// </field>
+    /// <field name="roomID" type="String">
+    /// </field>
+}
+ShufflyNode.GameServer.GameAnswerRequest.prototype = {
+    answerIndex: 0,
+    roomID: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // ShufflyNode.GameServer.GameServer
 
 ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer() {
@@ -478,14 +643,31 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
     /// </field>
     /// <field name="_requiredShuff" type="ShufflyGame.Shuff">
     /// </field>
+    /// <field name="_QUEUEPERTICK" type="Number" integer="true">
+    /// </field>
+    /// <field name="_total__" type="Number" integer="true">
+    /// </field>
+    /// <field name="_skipped__" type="Number" integer="true">
+    /// </field>
+    /// <field name="_dataManager" type="ShufflyNode.GameServer.DataManager">
+    /// </field>
+    /// <field name="_fs" type="ShufflyNode.Libs.FS">
+    /// </field>
+    /// <field name="_childProcess" type="NodeJS.ChildProcess">
+    /// </field>
+    /// <field name="_queueue" type="Array">
+    /// </field>
+    /// <field name="_gameServerIndex" type="String">
+    /// </field>
+    this._queueue = [];
     require('Help');
-    var fs = require('fs');
-    var childProcess = require('child_process');
-    var dataManager = new ShufflyNode.GameServer.DataManager();
-    var gameServerIndex = 'GameServer' + ShufflyNode.Libs.Guid.newGuid();
+    this._fs = require('fs');
+    this._childProcess = require('child_process');
+    this._dataManager = new ShufflyNode.GameServer.DataManager();
+    this._gameServerIndex = 'GameServer' + ShufflyNode.Libs.Guid.newGuid();
     this._cachedGames = {};
     this._requiredShuff = require('./../gameFramework/shuff.js');
-    this._qManager = new ShufflyNode.Common.QueueManager(gameServerIndex, new ShufflyNode.Common.QueueManagerOptions([ new ShufflyNode.Common.QueueWatcher('GameServer', null), new ShufflyNode.Common.QueueWatcher(gameServerIndex, null) ], [ 'GameServer', 'GatewayServer', 'Gateway*' ]));
+    this._qManager = new ShufflyNode.Common.QueueManager(this._gameServerIndex, new ShufflyNode.Common.QueueManagerOptions([ new ShufflyNode.Common.QueueWatcher('GameServer', null), new ShufflyNode.Common.QueueWatcher(this._gameServerIndex, null) ], [ 'GameServer', 'GatewayServer', 'Gateway*' ]));
     require('fibers');
     this._rooms = [];
     this._gameData = new ShufflyNode.GameServer.GameData();
@@ -508,7 +690,7 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
         room.answers = [];
         room.players = [];
         room.started = false;
-        room.gameServer = gameServerIndex;
+        room.gameServer = this._gameServerIndex;
         room.players.add(user);
         var gameObject;
         if (Object.keyExists(this._cachedGames, data.gameName)) {
@@ -542,6 +724,49 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
         room.players.add(user);
         this._emitAll(room, 'Area.Game.RoomInfo', JSON.parse(JSON.stringify(room, ShufflyNode.Common.Help.sanitize)));
     }));
+    this._qManager.addChannel('Area.Game.GetGames', ss.Delegate.create(this, function(sender, data) {
+        this._qManager.sendMessage(sender, sender.gateway, 'Area.Game.RoomInfos', JSON.parse(JSON.stringify(this._rooms, ShufflyNode.Common.Help.sanitize)));
+    }));
+    this._qManager.addChannel('Area.Game.DebuggerJoin', ss.Delegate.create(this, function(sender, arg2) {
+        var data = (arg2);
+        var room = null;
+        var $enum1 = ss.IEnumerator.getEnumerator(this._rooms);
+        while ($enum1.moveNext()) {
+            var gameRoom = $enum1.current;
+            if (gameRoom.roomID === data.roomID) {
+                room = gameRoom;
+                break;
+            }
+        }
+        if (room == null) {
+            return;
+        }
+        room.debuggingSender = sender;
+        global.console.log('debuggable');
+    }));
+    this._qManager.addChannel('Area.Game.Start', ss.Delegate.create(this, function(sender, arg2) {
+        var data = (arg2);
+        var room = null;
+        var $enum1 = ss.IEnumerator.getEnumerator(this._rooms);
+        while ($enum1.moveNext()) {
+            var gameRoom = $enum1.current;
+            if (gameRoom.roomID === data.roomID) {
+                room = gameRoom;
+                break;
+            }
+        }
+        if (room == null) {
+            return;
+        }
+        this._emitAll(room, 'Area.Game.Started', JSON.parse(JSON.stringify(room, ShufflyNode.Common.Help.sanitize)));
+        room.started = true;
+        var answer = room.fiber.run(room.players);
+        this._handleYield(room, answer);
+    }));
+    this._qManager.addChannel('Area.Game.AnswerQuestion', ss.Delegate.create(this, function(sender, data) {
+        this._queueue.add(data);
+    }));
+    setInterval(ss.Delegate.create(this, this._flushQueue), 50);
 }
 ShufflyNode.GameServer.GameServer.prototype = {
     _qManager: null,
@@ -551,14 +776,159 @@ ShufflyNode.GameServer.GameServer.prototype = {
     _startTime: null,
     _cachedGames: null,
     _requiredShuff: null,
+    _QUEUEPERTICK: 1,
+    _total__: 0,
+    _skipped__: 0,
+    _dataManager: null,
+    _fs: null,
+    _childProcess: null,
+    _gameServerIndex: null,
     
-    _emitAll: function ShufflyNode_GameServer_GameServer$_emitAll(room, areaGameRoominfo, val) {
+    _flushQueue: function ShufflyNode_GameServer_GameServer$_flushQueue() {
+        var ind = 0;
+        for (ind = 0; ind < this._QUEUEPERTICK; ind++) {
+            if (!this._queueue.length) {
+                break;
+            }
+            var arg2 = this._queueue[0];
+            this._queueue.removeAt(0);
+            var data = (arg2);
+            var room = null;
+            var $enum1 = ss.IEnumerator.getEnumerator(this._rooms);
+            while ($enum1.moveNext()) {
+                var gameRoom = $enum1.current;
+                if (gameRoom.roomID === data.roomID) {
+                    room = gameRoom;
+                    break;
+                }
+            }
+            if (room == null) {
+                return;
+            }
+            var dict = new ShufflyGame.GameAnswer();
+            dict.value = data.answerIndex;
+            room.answers.add(dict);
+            var answ = room.fiber.run(dict);
+            this._gameData.totalQuestionsAnswered++;
+            this._dataManager.gameData.insert(room.name, answ);
+            if (answ == null) {
+                this._emitAll(room, 'Area.Game.GameOver', 'a');
+                room.fiber.run();
+                this._rooms.remove(room);
+                room.unwind(room.players);
+                continue;
+            }
+            this._handleYield(room, answ);
+        }
+        if (!ind) {
+            this._skipped__++;
+        }
+        else {
+            this._total__ += ind;
+            if (!((this._total__ + this._skipped__) % 20)) {
+                global.console.log(this._gameServerIndex.substring(0, 19) + '=  tot: __' + (this._total__ + this._skipped__) + '__ + shift: ' + ind + ' + T: ' + this._total__ + ' + skip: ' + this._skipped__ + ' + QSize: ' + this._queueue.length + ' + T Rooms: ' + this._rooms.length);
+            }
+        }
+    },
+    
+    _handleYield: function ShufflyNode_GameServer_GameServer$_handleYield(room, answer) {
         /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
         /// </param>
-        /// <param name="areaGameRoominfo" type="String">
+        /// <param name="answer" type="ShufflyNode.GameServer.FiberYieldResponse">
+        /// </param>
+        switch (answer.type) {
+            case 'askQuestion':
+                var answ = answer.question;
+                if (answ == null) {
+                    this._emitAll(room, 'Area.Game.GameOver', '');
+                    room.fiber.run();
+                    return;
+                }
+                this._askQuestion(answ, room);
+                var dt = new Date();
+                var then = dt.getMilliseconds();
+                global.console.log(this._gameData.totalQuestionsAnswered / ((dt.getTime() - this._startTime.getTime()) / 1000) + ' Answers per seconds');
+                break;
+            case 'gameOver':
+                this._emitAll(room, 'Area.Game.GameOver', '');
+                if (room.debuggingSender != null) {
+                    this._qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', {});
+                }
+                break;
+            case 'log':
+                var answ2 = room.fiber.run();
+                this._handleYield(room, answ2);
+                if (!room.game.cardGame.emulating && room.debuggable) {
+                    var ganswer = new ShufflyGame.GameAnswer();
+                    ganswer.value = answer.contents;
+                    this._qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Log', ganswer);
+                }
+                break;
+            case 'break':
+                if (!room.debuggable) {
+                    var answ3 = room.fiber.run();
+                    this._handleYield(room, answ3);
+                    return;
+                }
+                if (!room.game.cardGame.emulating) {
+                    var ganswer = new ShufflyGame.GameAnswer();
+                    ganswer.lineNumber = answer.lineNumber + 2;
+                    this._qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Break', ganswer);
+                }
+                break;
+        }
+    },
+    
+    _askQuestion: function ShufflyNode_GameServer_GameServer$_askQuestion(answ, room) {
+        /// <param name="answ" type="ShufflyNode.GameServer.GameQuestionAnswer">
+        /// </param>
+        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// </param>
+        var user = this._getPlayerByUsername(room, answ.user.userName);
+        var gameAnswer = new ShufflyNode.GameServer._gameSendAnswer();
+        gameAnswer.answers = answ.answers;
+        gameAnswer.question = answ.question;
+        this._qManager.sendMessage(user, user.gateway, 'Area.Game.AskQuestion', JSON.parse(JSON.stringify(gameAnswer, ShufflyNode.Common.Help.sanitize)));
+        this._emitAll(room, 'Area.Game.UpdateState', JSON.parse(JSON.stringify(answ.cardGame, ShufflyNode.Common.Help.sanitize)));
+        if (this._verbose) {
+            global.console.log(answ.user.userName + ': ' + answ.question + '   ');
+            var ind = 0;
+            var $enum1 = ss.IEnumerator.getEnumerator(answ.answers);
+            while ($enum1.moveNext()) {
+                var answer = $enum1.current;
+                global.console.log('     ' + ind++ + ': ' + answer);
+            }
+        }
+    },
+    
+    _getPlayerByUsername: function ShufflyNode_GameServer_GameServer$_getPlayerByUsername(room, userName) {
+        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// </param>
+        /// <param name="userName" type="String">
+        /// </param>
+        /// <returns type="ShufflyNode.Common.User"></returns>
+        var $enum1 = ss.IEnumerator.getEnumerator(room.players);
+        while ($enum1.moveNext()) {
+            var player = $enum1.current;
+            if (player.userName === userName) {
+                return player;
+            }
+        }
+        return null;
+    },
+    
+    _emitAll: function ShufflyNode_GameServer_GameServer$_emitAll(room, message, val) {
+        /// <param name="room" type="ShufflyNode.GameServer._gameRoom">
+        /// </param>
+        /// <param name="message" type="String">
         /// </param>
         /// <param name="val" type="Object">
         /// </param>
+        var $enum1 = ss.IEnumerator.getEnumerator(room.players);
+        while ($enum1.moveNext()) {
+            var player = $enum1.current;
+            this._qManager.sendMessage(player, player.gateway, message, val);
+        }
     },
     
     _createFiber: function ShufflyNode_GameServer_GameServer$_createFiber(room, gameObject, emulating) {
@@ -595,6 +965,42 @@ ShufflyNode.GameServer.GameServer.prototype = {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer._gameSendAnswer
+
+ShufflyNode.GameServer._gameSendAnswer = function ShufflyNode_GameServer__gameSendAnswer() {
+    /// <field name="question" type="String">
+    /// </field>
+    /// <field name="answers" type="Array" elementType="String">
+    /// </field>
+}
+ShufflyNode.GameServer._gameSendAnswer.prototype = {
+    question: null,
+    answers: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ShufflyNode.GameServer.GameQuestionAnswer
+
+ShufflyNode.GameServer.GameQuestionAnswer = function ShufflyNode_GameServer_GameQuestionAnswer() {
+    /// <field name="user" type="ShufflyNode.Common.User">
+    /// </field>
+    /// <field name="question" type="String">
+    /// </field>
+    /// <field name="answers" type="Array" elementType="String">
+    /// </field>
+    /// <field name="cardGame" type="ShufflyGame.GameCardGame">
+    /// </field>
+}
+ShufflyNode.GameServer.GameQuestionAnswer.prototype = {
+    user: null,
+    question: null,
+    answers: null,
+    cardGame: null
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 // ShufflyNode.GameServer.JoinGameRequest
 
 ShufflyNode.GameServer.JoinGameRequest = function ShufflyNode_GameServer_JoinGameRequest() {
@@ -603,104 +1009,6 @@ ShufflyNode.GameServer.JoinGameRequest = function ShufflyNode_GameServer_JoinGam
 }
 ShufflyNode.GameServer.JoinGameRequest.prototype = {
     roomID: null
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer.CreateGameRequest
-
-ShufflyNode.GameServer.CreateGameRequest = function ShufflyNode_GameServer_CreateGameRequest() {
-    /// <field name="name" type="String">
-    /// </field>
-    /// <field name="gameName" type="String">
-    /// </field>
-}
-ShufflyNode.GameServer.CreateGameRequest.prototype = {
-    name: null,
-    gameName: null
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer._gameRoom
-
-ShufflyNode.GameServer._gameRoom = function ShufflyNode_GameServer__gameRoom() {
-    /// <field name="name" type="String">
-    /// </field>
-    /// <field name="gameName" type="String">
-    /// </field>
-    /// <field name="debuggable" type="Boolean">
-    /// </field>
-    /// <field name="maxUsers" type="Number" integer="true">
-    /// </field>
-    /// <field name="players" type="Array">
-    /// </field>
-    /// <field name="answers" type="Array">
-    /// </field>
-    /// <field name="roomID" type="String">
-    /// </field>
-    /// <field name="gameServer" type="String">
-    /// </field>
-    /// <field name="started" type="Boolean">
-    /// </field>
-    /// <field name="fiber" type="Fibers.Fiber`1">
-    /// </field>
-    /// <field name="unwind" type="System.Action`1">
-    /// </field>
-    /// <field name="game" type="ShufflyGame.GameObject">
-    /// </field>
-}
-ShufflyNode.GameServer._gameRoom.prototype = {
-    name: null,
-    gameName: null,
-    debuggable: false,
-    maxUsers: 0,
-    players: null,
-    answers: null,
-    roomID: null,
-    gameServer: null,
-    started: false,
-    fiber: null,
-    unwind: null,
-    game: null
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer.GameData
-
-ShufflyNode.GameServer.GameData = function ShufflyNode_GameServer_GameData() {
-    /// <field name="totalGames" type="Number" integer="true">
-    /// </field>
-    /// <field name="totalQuestionsAnswered" type="Number" integer="true">
-    /// </field>
-    /// <field name="totalPlayers" type="Number" integer="true">
-    /// </field>
-    /// <field name="finishedGames" type="Number" integer="true">
-    /// </field>
-}
-ShufflyNode.GameServer.GameData.prototype = {
-    totalGames: 0,
-    totalQuestionsAnswered: 0,
-    totalPlayers: 0,
-    finishedGames: 0,
-    
-    toString: function ShufflyNode_GameServer_GameData$toString() {
-        /// <returns type="String"></returns>
-        return 'Total: ' + this.totalGames + '\n Running: ' + this._runningGames() + '\n Total Players: ' + this.totalPlayers + '\n Answered: ' + this.totalQuestionsAnswered;
-    },
-    
-    _runningGames: function ShufflyNode_GameServer_GameData$_runningGames() {
-        /// <returns type="Number" integer="true"></returns>
-        return this.totalGames - this.finishedGames;
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyNode.GameServer.DataManager
-
-ShufflyNode.GameServer.DataManager = function ShufflyNode_GameServer_DataManager() {
 }
 
 
@@ -971,12 +1279,17 @@ ShufflyNode.Common.QueueWatcher.registerClass('ShufflyNode.Common.QueueWatcher',
 ShufflyNode.Common.QueuePusher.registerClass('ShufflyNode.Common.QueuePusher', ShufflyNode.Common.QueueItem);
 ShufflyNode.Common.QueueMessage.registerClass('ShufflyNode.Common.QueueMessage');
 ShufflyNode.Common.User.registerClass('ShufflyNode.Common.User');
-ShufflyNode.GameServer.GameServer.registerClass('ShufflyNode.GameServer.GameServer');
-ShufflyNode.GameServer.JoinGameRequest.registerClass('ShufflyNode.GameServer.JoinGameRequest');
 ShufflyNode.GameServer.CreateGameRequest.registerClass('ShufflyNode.GameServer.CreateGameRequest');
-ShufflyNode.GameServer._gameRoom.registerClass('ShufflyNode.GameServer._gameRoom');
-ShufflyNode.GameServer.GameData.registerClass('ShufflyNode.GameServer.GameData');
 ShufflyNode.GameServer.DataManager.registerClass('ShufflyNode.GameServer.DataManager');
+ShufflyNode.GameServer.DataManagerGameData.registerClass('ShufflyNode.GameServer.DataManagerGameData');
+ShufflyNode.GameServer.FiberYieldResponse.registerClass('ShufflyNode.GameServer.FiberYieldResponse');
+ShufflyNode.GameServer.GameData.registerClass('ShufflyNode.GameServer.GameData');
+ShufflyNode.GameServer._gameRoom.registerClass('ShufflyNode.GameServer._gameRoom');
+ShufflyNode.GameServer.GameAnswerRequest.registerClass('ShufflyNode.GameServer.GameAnswerRequest');
+ShufflyNode.GameServer.GameServer.registerClass('ShufflyNode.GameServer.GameServer');
+ShufflyNode.GameServer._gameSendAnswer.registerClass('ShufflyNode.GameServer._gameSendAnswer');
+ShufflyNode.GameServer.GameQuestionAnswer.registerClass('ShufflyNode.GameServer.GameQuestionAnswer');
+ShufflyNode.GameServer.JoinGameRequest.registerClass('ShufflyNode.GameServer.JoinGameRequest');
 ShufflyNode.GatewayLoginMessage.registerClass('ShufflyNode.GatewayLoginMessage');
 ShufflyNode.GatewayMessage.registerClass('ShufflyNode.GatewayMessage');
 ShufflyNode.SocketClientMessage.registerClass('ShufflyNode.SocketClientMessage');

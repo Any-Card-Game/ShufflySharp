@@ -44,6 +44,7 @@
     <Reference Include="Script.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="debugServerApp.js" />
     <Content Include="Properties\DebugServer.ruleset" />
     <Content Include="Properties\DebugServer.script" />
     <Compile Include="Properties\AssemblyInfo.cs" />

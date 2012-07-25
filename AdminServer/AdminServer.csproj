@@ -44,6 +44,8 @@
     <Reference Include="Script.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="admin.js" />
+    <Content Include="memcachedtest.js" />
     <Content Include="Properties\AdminServer.ruleset" />
     <Content Include="Properties\AdminServer.script" />
     <Compile Include="Properties\AssemblyInfo.cs" />

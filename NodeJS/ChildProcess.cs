@@ -1,4 +1,4 @@
-namespace NodeJS
+namespace NodeJSLibrary
 {
     public class ChildProcess : NodeModule
     {

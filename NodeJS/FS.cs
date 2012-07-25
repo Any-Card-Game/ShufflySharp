@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
-using NodeJS;
 
-namespace ShufflyNode.Libs
+namespace NodeJSLibrary
 {
     public class FS : NodeModule
 

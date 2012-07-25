@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using NodeJS;
+using NodeJSLibrary;
 
-namespace ShufflyGame
+namespace ShufflyGameLibrary
 {
     public class GameObject : NodeModule
     {

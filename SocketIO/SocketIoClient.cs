@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace SocketIO
+namespace SocketIOLibrary
 {
     public class SocketIoClient
     {

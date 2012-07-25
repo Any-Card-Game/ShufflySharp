@@ -7,7 +7,7 @@ using System.Html;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 
-namespace ShufflyGame
+namespace ShufflyGameLibrary
 {
     public class GameCardGame
     {

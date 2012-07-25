@@ -1,6 +1,7 @@
-using NodeJS;
+ 
+using NodeJSLibrary;
 
-namespace SocketIO
+namespace SocketIOLibrary
 {
     public class SocketNamespace : EventEmitter
     {

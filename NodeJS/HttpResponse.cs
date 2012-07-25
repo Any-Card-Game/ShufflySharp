@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
-
-namespace NodeJS
+namespace NodeJSLibrary
 {
     public class HttpResponse
     {

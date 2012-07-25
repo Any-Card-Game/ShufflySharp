@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-
-namespace NodeJS
+namespace NodeJSLibrary
 {
     [GlobalMethods]
     [IgnoreNamespace]

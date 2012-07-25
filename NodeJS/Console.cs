@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace NodeJS
+namespace NodeJSLibrary
 {
     [ScriptName("console")]
     public class Console

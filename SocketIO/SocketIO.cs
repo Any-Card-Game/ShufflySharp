@@ -3,9 +3,9 @@
 
 using System.Html;
 using System.Runtime.CompilerServices;
-using NodeJS;
+using NodeJSLibrary;
 
-namespace SocketIO
+namespace SocketIOLibrary
 {
     [IgnoreNamespace]
     [Imported]

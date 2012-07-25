@@ -3,8 +3,7 @@
 
 using System.Html;
 using System.Runtime.CompilerServices;
-
-namespace NodeJS
+namespace NodeJSLibrary
 {
     public class HttpServer
     {

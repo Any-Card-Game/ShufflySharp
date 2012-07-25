@@ -4,9 +4,9 @@
 using System;
 using System.Html;
 using System.Runtime.CompilerServices;
-using NodeJS;
+using NodeJSLibrary;
 
-namespace Fibers
+namespace FibersLibrary
 {
     [IgnoreNamespace]
     [Imported]

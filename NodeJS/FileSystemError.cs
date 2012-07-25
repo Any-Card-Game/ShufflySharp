@@ -1,4 +1,4 @@
-namespace ShufflyNode.Libs
+namespace NodeJSLibrary
 {
     public class FileSystemError
     {

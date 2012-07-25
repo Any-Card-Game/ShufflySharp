@@ -1,4 +1,4 @@
-namespace NodeJS
+namespace NodeJSLibrary
 {
     public abstract class NodeModule
     {

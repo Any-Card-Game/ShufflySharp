@@ -19,9 +19,9 @@ namespace ShufflyNode.GameServer
 
             MongoDB Db = mongo.DB;
             Connection = mongo.Connection;
-            Server = mongo.Server;
+            MongoServer server=Server = mongo.Server;
 
-            client = (MongoDB)Script.Eval("new Db('test', new Server('50.116.28.16', 27017, {}))");
+            client = (MongoDB)Script.Eval("new Db('test', new server('50.116.28.16', 27017, {}))");
             client.Open(delegate
                             {
                                 //client.Collection("test_insert", "test");

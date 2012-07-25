@@ -8,6 +8,9 @@ using NodeJS;
 
 namespace Fibers
 {
+    [IgnoreNamespace]
+    [Imported]
+    [ScriptName("Fiber")]
     public class Fiber<T> : NodeModule
     {
         public Fiber(Func<T, bool> action)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 
 namespace ShufflyGame
 {
@@ -16,18 +17,32 @@ namespace ShufflyGame
         [ScriptName("answerIndex")]
         public int AnswerIndex;
 
+        [ScriptName("spaces")]
+        public List<GameCardGameSpace> Spaces;
+        [ScriptName("textAreas")]
+        public List<GameCardGameTextArea> TextAreas;
+
+
+        [ScriptName("size")]
+        public Size Size;
+
         public void SetAnswers(List<GameAnswer> answers)
         { 
         }
 
         public void SetPlayers<T>(List<T> players)
-        { 
+        {
         }
     }
-    public class GameAnswer
+
+    public class GameCardGameTextArea
+
     {
-        public int Value;
-        public int LineNumber;
     }
+
+    public class GameCardGameSpace
+    {
+    }
+    
 
 }

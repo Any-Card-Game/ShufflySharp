@@ -258,6 +258,7 @@ ShufflyNode.Common.QueueManager.prototype = {
         /// </param>
         /// <param name="content" type="Object">
         /// </param>
+        user.gateway = name;
         if (Object.keyExists(this.channels, eventChannel)) {
             this.channels[eventChannel](user, content);
         }
@@ -491,8 +492,8 @@ ShufflyNode.GameServer.DataManager = function ShufflyNode_GameServer_DataManager
     var mongo = require('mongodb');
     var Db = mongo.Db;
     this._connection = mongo.Connection;
-    this._server = mongo.Server;
-    this.client = eval("new Db('test', new Server('50.116.28.16', 27017, {}))");
+    var server = this._server = mongo.Server;
+    this.client = eval("new Db('test', new server('50.116.28.16', 27017, {}))");
     this.client.open(function() {
     });
 }
@@ -657,7 +658,7 @@ ShufflyNode.GameServer.GameRoom = function ShufflyNode_GameServer_GameRoom() {
     /// </field>
     /// <field name="started" type="Boolean">
     /// </field>
-    /// <field name="fiber" type="Fibers.Fiber`1">
+    /// <field name="fiber" type="Fiber">
     /// </field>
     /// <field name="unwind" type="System.Action`1">
     /// </field>
@@ -732,14 +733,14 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
     /// </field>
     /// <field name="_gameServerIndex" type="String">
     /// </field>
+    this._startTime = new Date();
     this._queueue = [];
-    require('Help');
     this._fs = require('fs');
     this._childProcess = require('child_process');
     this._dataManager = new ShufflyNode.GameServer.DataManager();
     this._gameServerIndex = 'GameServer' + ShufflyNode.Libs.Guid.newGuid();
     this._cachedGames = {};
-    this._requiredShuff = require('./../gameFramework/shuff.js');
+    this._requiredShuff = require('./gameFramework/shuff.js');
     this._qManager = new ShufflyNode.Common.QueueManager(this._gameServerIndex, new ShufflyNode.Common.QueueManagerOptions([ new ShufflyNode.Common.QueueWatcher('GameServer', null), new ShufflyNode.Common.QueueWatcher(this._gameServerIndex, null) ], [ 'GameServer', 'GatewayServer', 'Gateway*' ]));
     require('fibers');
     this._rooms = [];
@@ -753,6 +754,7 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
     }));
     this._qManager.addChannel('Area.Debug.Create', ss.Delegate.create(this, function(user, arg2) {
         var data = arg2;
+        data.gameName = 'Sevens';
         var room;
         this._rooms.add(room = new ShufflyNode.GameServer.GameRoom());
         room.name = data.name;
@@ -770,7 +772,7 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
             gameObject = this._cachedGames[data.gameName];
         }
         else {
-            gameObject = this._cachedGames[data.gameName] = require('./../games/' + data.gameName + '/app.js');
+            gameObject = this._cachedGames[data.gameName] = require('./games/' + data.gameName + '/app.js');
         }
         room.fiber = this._createFiber(room, gameObject, true);
         room.unwind = ss.Delegate.create(this, function(players) {
@@ -833,8 +835,11 @@ ShufflyNode.GameServer.GameServer = function ShufflyNode_GameServer_GameServer()
         }
         this._emitAll(room, 'Area.Game.Started', JSON.parse(JSON.stringify(room, ShufflyNode.Common.Help.sanitize)));
         room.started = true;
+        global.console.log('started');
         var answer = room.fiber.run(room.players);
+        global.console.log('doign');
         this._handleYield(room, answer);
+        global.console.log('doign2');
     }));
     this._qManager.addChannel('Area.Game.AnswerQuestion', ss.Delegate.create(this, function(sender, data) {
         this._queueue.add(data);
@@ -846,7 +851,6 @@ ShufflyNode.GameServer.GameServer.prototype = {
     _verbose: false,
     _gameData: null,
     _rooms: null,
-    _startTime: null,
     _cachedGames: null,
     _requiredShuff: null,
     _QUEUEPERTICK: 1,
@@ -878,7 +882,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
             if (room == null) {
                 return;
             }
-            var dict = new ShufflyGame.GameAnswer();
+            var dict = new CommonLibraries.GameAnswer();
             dict.value = data.answerIndex;
             room.answers.add(dict);
             var answ = room.fiber.run(dict);
@@ -932,7 +936,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
                 var answ2 = room.fiber.run();
                 this._handleYield(room, answ2);
                 if (!room.game.cardGame.emulating && room.debuggable) {
-                    var ganswer = new ShufflyGame.GameAnswer();
+                    var ganswer = new CommonLibraries.GameAnswer();
                     ganswer.value = answer.contents;
                     this._qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Log', ganswer);
                 }
@@ -944,7 +948,7 @@ ShufflyNode.GameServer.GameServer.prototype = {
                     return;
                 }
                 if (!room.game.cardGame.emulating) {
-                    var ganswer = new ShufflyGame.GameAnswer();
+                    var ganswer = new CommonLibraries.GameAnswer();
                     ganswer.lineNumber = answer.lineNumber + 2;
                     this._qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Break', ganswer);
                 }
@@ -1011,8 +1015,8 @@ ShufflyNode.GameServer.GameServer.prototype = {
         /// </param>
         /// <param name="emulating" type="Boolean">
         /// </param>
-        /// <returns type="Fibers.Fiber`1"></returns>
-        return new Fibers.Fiber`1(ss.Delegate.create(this, function(players) {
+        /// <returns type="Fiber"></returns>
+        return new Fiber(ss.Delegate.create(this, function(players) {
             if (players == null || !players.length) {
                 return true;
             }

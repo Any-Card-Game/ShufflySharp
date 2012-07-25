@@ -5,59 +5,56 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Globals
 
-	if(!global.window){
-		global.window=global;	
-	}
 (function () {
 
-  var globals = {
-    version: '0.7.4.0',
+    var globals = {
+        version: '0.7.4.0',
 
-    isUndefined: function (o) {
-      return (o === undefined);
-    },
+        isUndefined: function (o) {
+            return (o === undefined);
+        },
 
-    isNull: function (o) {
-      return (o === null);
-    },
+        isNull: function (o) {
+            return (o === null);
+        },
 
-    isNullOrUndefined: function (o) {
-      return (o === null) || (o === undefined);
-    },
+        isNullOrUndefined: function (o) {
+            return (o === null) || (o === undefined);
+        },
 
-    isValue: function (o) {
-      return (o !== null) && (o !== undefined);
-    }
-  };
-
-  var started = false;
-  var startCallbacks = [];
-
-  function onStartup(cb) {
-    startCallbacks ? startCallbacks.push(cb) : setTimeout(cb, 0);
-  }
-  function startup() {
-    if (startCallbacks) {
-      var callbacks = startCallbacks;
-      startCallbacks = null;
-      for (var i = 0, l = callbacks.length; i < l; i++) {
-        callbacks[i]();
-      }
-    }
-  }
- setTimeout(startup,10);
- 
-
-  var ss = window.ss;
-  if (!ss) {
-    window.ss = ss = {
-      init: onStartup,
-      ready: onStartup
+        isValue: function (o) {
+            return (o !== null) && (o !== undefined);
+        }
     };
-  }
-  for (var n in globals) {
-    ss[n] = globals[n];
-  }
+
+    var started = false;
+    var startCallbacks = [];
+
+    function onStartup(cb) {
+        startCallbacks ? startCallbacks.push(cb) : setTimeout(cb, 0);
+    }
+    function startup() {
+        if (startCallbacks) {
+            var callbacks = startCallbacks;
+            startCallbacks = null;
+            for (var i = 0, l = callbacks.length; i < l; i++) {
+                callbacks[i]();
+            }
+        }
+    }
+    setTimeout(startup, 10);
+
+
+    var ss = global.ss;
+    if (!ss) {
+        global.ss = ss = {
+            init: onStartup,
+            ready: onStartup
+        };
+    }
+    for (var n in globals) {
+        ss[n] = globals[n];
+    }
 })();
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -172,7 +169,7 @@ Number._commaFormat = function Number$_commaFormat(number, groups, decimal, comm
         if (!length) {
             break;
         }
-        
+
         var part = number.substr(startIndex, length);
         if (s.length) {
             s = part + comma + s;
@@ -190,16 +187,16 @@ Number._commaFormat = function Number$_commaFormat(number, groups, decimal, comm
 
     if (negative) {
         s = '-' + s;
-    }    
+    }
     return decimalPart ? s + decimalPart : s;
 }
 
 Number.prototype._netFormat = function Number$_netFormat(format, useLocale) {
     var nf = useLocale ? ss.CultureInfo.CurrentCulture.numberFormat : ss.CultureInfo.InvariantCulture.numberFormat;
 
-    var s = '';    
+    var s = '';
     var precision = -1;
-    
+
     if (format.length > 1) {
         precision = parseInt(format.substr(1));
     }
@@ -346,7 +343,7 @@ String._format = function String$_format(format, values, useLocale) {
     }
 
     return format.replace(String._formatRE,
-                          function(str, m) {
+                          function (str, m) {
                               var index = parseInt(m.substr(1));
                               var value = values[index + 1];
                               if (ss.isNullOrUndefined(value)) {
@@ -367,7 +364,7 @@ String._format = function String$_format(format, values, useLocale) {
 }
 
 String.format = function String$format(format) {
-    return String._format(format, arguments, /* useLocale */ false);
+    return String._format(format, arguments, /* useLocale */false);
 }
 
 String.fromChar = function String$fromChar(ch, count) {
@@ -451,7 +448,7 @@ String.prototype.lastIndexOfAny = function String$lastIndexOfAny(chars, startInd
 }
 
 String.localeFormat = function String$localeFormat(format) {
-    return String._format(format, arguments, /* useLocale */ true);
+    return String._format(format, arguments, /* useLocale */true);
 }
 
 String.prototype.padLeft = function String$padLeft(totalWidth, ch) {
@@ -510,7 +507,7 @@ String.prototype.trimStart = function String$trimStart() {
 // Array Extensions
 
 Array.__typeName = 'Array';
-Array.__interfaces = [ ss.IEnumerable ];
+Array.__interfaces = [ss.IEnumerable];
 
 Array.prototype.add = function Array$add(item) {
     this[this.length] = item;
@@ -588,7 +585,7 @@ Array.prototype.extract = function Array$extract(index, count) {
 
 if (!Array.prototype.filter) {
     Array.prototype.filter = function Array$filter(callback, instance) {
-        var length = this.length;    
+        var length = this.length;
         var filtered = [];
         for (var i = 0; i < length; i++) {
             if (i in this) {
@@ -602,12 +599,24 @@ if (!Array.prototype.filter) {
     }
 }
 
+console.log('starte');
+
 if (!Array.prototype.forEach) {
+    console.log('hia');
     Array.prototype.forEach = function Array$forEach(callback, instance) {
+        console.log('ffafafa');
+
+
         var length = this.length;
         for (var i = 0; i < length; i++) {
+            console.log('ffafa2fa');
+
             if (i in this) {
+
+                console.log('ffafaf3a');
+
                 callback.call(instance, this[i], i, this);
+                console.log('ffafafasdasd3a');
             }
         }
     }
@@ -751,7 +760,7 @@ RegExp.parse = function RegExp$parse(s) {
         }
     }
 
-    return null;    
+    return null;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1018,24 +1027,24 @@ Error.createError = function Error$createError(message, errorInfo, innerExceptio
 ///////////////////////////////////////////////////////////////////////////////
 // Debug Extensions
 
-ss.Debug = window.Debug || function() {};
+ss.Debug = global.Debug || function () { };
 ss.Debug.__typeName = 'Debug';
 
 if (!ss.Debug.writeln) {
     ss.Debug.writeln = function Debug$writeln(text) {
-        if (window.console) {
-            if (window.console.debug) {
-                window.console.debug(text);
+        if (global.console) {
+            if (global.console.debug) {
+                global.console.debug(text);
                 return;
             }
-            else if (window.console.log) {
-                window.console.log(text);
+            else if (global.console.log) {
+                global.console.log(text);
                 return;
             }
         }
-        else if (window.opera &&
-            window.opera.postError) {
-            window.opera.postError(text);
+        else if (global.opera &&
+            global.opera.postError) {
+            global.opera.postError(text);
             return;
         }
     }
@@ -1062,32 +1071,32 @@ ss.Debug.fail = function Debug$fail(message) {
 ///////////////////////////////////////////////////////////////////////////////
 // Type System Implementation
 
-window.Type = Function;
+global.Type = Function;
 Type.__typeName = 'Type';
 
-window.__Namespace = function(name) {
+global.__Namespace = function (name) {
     this.__typeName = name;
 }
 __Namespace.prototype = {
     __namespace: true,
-    getName: function() {
+    getName: function () {
         return this.__typeName;
     }
 }
 
 Type.registerNamespace = function Type$registerNamespace(name) {
-    if (!window.__namespaces) {
-        window.__namespaces = {};
+    if (!global.__namespaces) {
+        global.__namespaces = {};
     }
-    if (!window.__rootNamespaces) {
-        window.__rootNamespaces = [];
+    if (!global.__rootNamespaces) {
+        global.__rootNamespaces = [];
     }
 
-    if (window.__namespaces[name]) {
+    if (global.__namespaces[name]) {
         return;
     }
 
-    var ns = window;
+    var ns = global;
     var nameParts = name.split('.');
 
     for (var i = 0; i < nameParts.length; i++) {
@@ -1096,13 +1105,13 @@ Type.registerNamespace = function Type$registerNamespace(name) {
         if (!nso) {
             ns[part] = nso = new __Namespace(nameParts.slice(0, i + 1).join('.'));
             if (i == 0) {
-                window.__rootNamespaces.add(nso);
+                global.__rootNamespaces.add(nso);
             }
         }
         ns = nso;
     }
 
-    window.__namespaces[name] = ns;
+    global.__namespaces[name] = ns;
 }
 
 Type.prototype.registerClass = function Type$registerClass(name, baseType, interfaceType) {
@@ -1130,7 +1139,7 @@ Type.prototype.registerInterface = function Type$createInterface(name) {
 
 Type.prototype.registerEnum = function Type$createEnum(name, flags) {
     for (var field in this.prototype) {
-         this[field] = this.prototype[field];
+        this[field] = this.prototype[field];
     }
 
     this.__typeName = name;
@@ -1326,7 +1335,7 @@ ss.Delegate = function Delegate$() {
 }
 ss.Delegate.registerClass('Delegate');
 
-ss.Delegate.empty = function() { }
+ss.Delegate.empty = function () { }
 
 ss.Delegate._contains = function Delegate$_contains(targets, object, method) {
     for (var i = 0; i < targets.length; i += 2) {
@@ -1338,7 +1347,7 @@ ss.Delegate._contains = function Delegate$_contains(targets, object, method) {
 }
 
 ss.Delegate._create = function Delegate$_create(targets) {
-    var delegate = function() {
+    var delegate = function () {
         if (targets.length == 2) {
             return targets[1].apply(targets[0], arguments);
         }
@@ -1420,24 +1429,24 @@ ss.Delegate.createExport = function Delegate$createExport(delegate, multiUse, na
     // Generate a unique name if one is not specified
     name = name || '__' + (new Date()).valueOf();
 
-    // Exported delegates go on window (so they are callable using a simple identifier).
+    // Exported delegates go on global (so they are callable using a simple identifier).
 
     // Multi-use delegates are exported directly; for the rest a stub is exported, and the stub
     // first deletes, and then invokes the actual delegate.
-    window[name] = multiUse ? delegate : function() {
-      try { delete window[name]; } catch(e) { window[name] = undefined; }
-      delegate.apply(null, arguments);
+    global[name] = multiUse ? delegate : function () {
+        try { delete global[name]; } catch (e) { global[name] = undefined; }
+        delegate.apply(null, arguments);
     };
 
     return name;
 }
 
 ss.Delegate.deleteExport = function Delegate$deleteExport(name) {
-    delete window[name];
+    delete global[name];
 }
 
 ss.Delegate.clearExport = function Delegate$clearExport(name) {
-    window[name] = ss.Delegate.empty;
+    global[name] = ss.Delegate.empty;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1457,7 +1466,7 @@ ss.CultureInfo.InvariantCulture = new ss.CultureInfo('en-US',
         positiveSign: '+',
         negativeInfinityText: '-Infinity',
         positiveInfinityText: 'Infinity',
-        
+
         percentSymbol: '%',
         percentGroupSizes: [3],
         percentDecimalDigits: 2,
@@ -1466,7 +1475,7 @@ ss.CultureInfo.InvariantCulture = new ss.CultureInfo('en-US',
         percentPositivePattern: '{0} %',
         percentNegativePattern: '-{0} %',
 
-        currencySymbol:'$',
+        currencySymbol: '$',
         currencyGroupSizes: [3],
         currencyDecimalDigits: 2,
         currencyDecimalSeparator: '.',
@@ -1498,12 +1507,12 @@ ss.CultureInfo.InvariantCulture = new ss.CultureInfo('en-US',
         shortTimePattern: 'h:mm tt',
 
         firstDayOfWeek: 0,
-        dayNames: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-        shortDayNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-        minimizedDayNames: ['Su','Mo','Tu','We','Th','Fr','Sa'],
+        dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        shortDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        minimizedDayNames: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
 
-        monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December',''],
-        shortMonthNames: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','']
+        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', ''],
+        shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', '']
     });
 ss.CultureInfo.CurrentCulture = ss.CultureInfo.InvariantCulture;
 
@@ -1613,9 +1622,9 @@ ss.EventArgs.Empty = new ss.EventArgs();
 ///////////////////////////////////////////////////////////////////////////////
 // XMLHttpRequest
 
-if (!window.XMLHttpRequest) {
-    window.XMLHttpRequest = function() {
-        var progIDs = [ 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ];
+if (!global.XMLHttpRequest) {
+    global.XMLHttpRequest = function () {
+        var progIDs = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP'];
 
         for (var i = 0; i < progIDs.length; i++) {
             try {
@@ -1633,21 +1642,21 @@ if (!window.XMLHttpRequest) {
 ///////////////////////////////////////////////////////////////////////////////
 // XmlDocumentParser
 
-ss.parseXml = function(markup) {
+ss.parseXml = function (markup) {
     try {
         if (DOMParser) {
             var domParser = new DOMParser();
             return domParser.parseFromString(markup, 'text/xml');
         }
         else {
-            var progIDs = [ 'Msxml2.DOMDocument.3.0', 'Msxml2.DOMDocument' ];
-        
+            var progIDs = ['Msxml2.DOMDocument.3.0', 'Msxml2.DOMDocument'];
+
             for (var i = 0; i < progIDs.length; i++) {
                 var xmlDOM = new ActiveXObject(progIDs[i]);
                 xmlDOM.async = false;
                 xmlDOM.loadXML(markup);
                 xmlDOM.setProperty('SelectionLanguage', 'XPath');
-                
+
                 return xmlDOM;
             }
         }
@@ -1671,143 +1680,143 @@ ss.CancelEventArgs.registerClass('CancelEventArgs', ss.EventArgs);
 // Tuple
 
 ss.Tuple = function (first, second, third) {
-  this.first = first;
-  this.second = second;
-  if (arguments.length == 3) {
-    this.third = third;
-  }
+    this.first = first;
+    this.second = second;
+    if (arguments.length == 3) {
+        this.third = third;
+    }
 }
 ss.Tuple.registerClass('Tuple');
 
 ///////////////////////////////////////////////////////////////////////////////
 // Observable
 
-ss.Observable = function(v) {
+ss.Observable = function (v) {
     this._v = v;
     this._observers = null;
 }
 ss.Observable.prototype = {
 
-  getValue: function () {
-    this._observers = ss.Observable._captureObservers(this._observers);
-    return this._v;
-  },
-  setValue: function (v) {
-    if (this._v !== v) {
-      this._v = v;
+    getValue: function () {
+        this._observers = ss.Observable._captureObservers(this._observers);
+        return this._v;
+    },
+    setValue: function (v) {
+        if (this._v !== v) {
+            this._v = v;
 
-      var observers = this._observers;
-      if (observers) {
-        this._observers = null;
-        ss.Observable._invalidateObservers(observers);
-      }
+            var observers = this._observers;
+            if (observers) {
+                this._observers = null;
+                ss.Observable._invalidateObservers(observers);
+            }
+        }
     }
-  }
 };
 
 ss.Observable._observerStack = [];
 ss.Observable._observerRegistration = {
-  dispose: function () {
-    ss.Observable._observerStack.pop();
-  }
+    dispose: function () {
+        ss.Observable._observerStack.pop();
+    }
 }
 ss.Observable.registerObserver = function (o) {
-  ss.Observable._observerStack.push(o);
-  return ss.Observable._observerRegistration;
+    ss.Observable._observerStack.push(o);
+    return ss.Observable._observerRegistration;
 }
 ss.Observable._captureObservers = function (observers) {
-  var registeredObservers = ss.Observable._observerStack;
-  var observerCount = registeredObservers.length;
+    var registeredObservers = ss.Observable._observerStack;
+    var observerCount = registeredObservers.length;
 
-  if (observerCount) {
-    observers = observers || [];
-    for (var i = 0; i < observerCount; i++) {
-      var observer = registeredObservers[i];
-      if (!observers.contains(observer)) {
-        observers.push(observer);
-      }
+    if (observerCount) {
+        observers = observers || [];
+        for (var i = 0; i < observerCount; i++) {
+            var observer = registeredObservers[i];
+            if (!observers.contains(observer)) {
+                observers.push(observer);
+            }
+        }
+        return observers;
     }
-    return observers;
-  }
-  return null;
+    return null;
 }
 ss.Observable._invalidateObservers = function (observers) {
-  for (var i = 0, len = observers.length; i < len; i++) {
-    observers[i].invalidateObserver();
-  }
+    for (var i = 0, len = observers.length; i < len; i++) {
+        observers[i].invalidateObserver();
+    }
 }
 
 ss.Observable.registerClass('Observable');
 
 
 ss.ObservableCollection = function (items) {
-  this._items = items || [];
-  this._observers = null;
+    this._items = items || [];
+    this._observers = null;
 }
 ss.ObservableCollection.prototype = {
 
-  get_item: function (index) {
-    this._observers = ss.Observable._captureObservers(this._observers);
-    return this._items[index];
-  },
-  set_item: function (index, item) {
-    this._items[index] = item;
-    this._updated();
-  },
-  get_length: function () {
-    this._observers = ss.Observable._captureObservers(this._observers);
-    return this._items.length;
-  },
-  add: function (item) {
-    this._items.push(item);
-    this._updated();
-  },
-  clear: function () {
-    this._items.clear();
-    this._updated();
-  },
-  contains: function (item) {
-    return this._items.contains(item);
-  },
-  getEnumerator: function () {
-    this._observers = ss.Observable._captureObservers(this._observers);
-    return this._items.getEnumerator();
-  },
-  indexOf: function (item) {
-    return this._items.indexOf(item);
-  },
-  insert: function (index, item) {
-    this._items.insert(index, item);
-    this._updated();
-  },
-  remove: function (item) {
-    if (this._items.remove(item)) {
-      this._updated();
-      return true;
+    get_item: function (index) {
+        this._observers = ss.Observable._captureObservers(this._observers);
+        return this._items[index];
+    },
+    set_item: function (index, item) {
+        this._items[index] = item;
+        this._updated();
+    },
+    get_length: function () {
+        this._observers = ss.Observable._captureObservers(this._observers);
+        return this._items.length;
+    },
+    add: function (item) {
+        this._items.push(item);
+        this._updated();
+    },
+    clear: function () {
+        this._items.clear();
+        this._updated();
+    },
+    contains: function (item) {
+        return this._items.contains(item);
+    },
+    getEnumerator: function () {
+        this._observers = ss.Observable._captureObservers(this._observers);
+        return this._items.getEnumerator();
+    },
+    indexOf: function (item) {
+        return this._items.indexOf(item);
+    },
+    insert: function (index, item) {
+        this._items.insert(index, item);
+        this._updated();
+    },
+    remove: function (item) {
+        if (this._items.remove(item)) {
+            this._updated();
+            return true;
+        }
+        return false;
+    },
+    removeAt: function (index) {
+        this._items.removeAt(index);
+        this._updated();
+    },
+    toArray: function () {
+        return this._items;
+    },
+    _updated: function () {
+        var observers = this._observers;
+        if (observers) {
+            this._observers = null;
+            ss.Observable._invalidateObservers(observers);
+        }
     }
-    return false;
-  },
-  removeAt: function (index) {
-    this._items.removeAt(index);
-    this._updated();
-  },
-  toArray: function () {
-    return this._items;
-  },
-  _updated: function() {
-    var observers = this._observers;
-    if (observers) {
-      this._observers = null;
-      ss.Observable._invalidateObservers(observers);
-    }
-  }
 }
 ss.ObservableCollection.registerClass('ObservableCollection', null, ss.IEnumerable);
 
 ///////////////////////////////////////////////////////////////////////////////
 // Interfaces
 
-ss.IApplication = function() { };
+ss.IApplication = function () { };
 ss.IApplication.registerInterface('IApplication');
 
 ss.IContainer = function () { };

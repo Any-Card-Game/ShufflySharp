@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Serialization;
+using CommonLibraries;
 using Fibers;
 using NodeJS;
 using ShufflyGame;
@@ -19,7 +20,7 @@ namespace ShufflyNode.GameServer
         private bool verbose = false;
         private GameData gameData;
         private List<GameRoom> rooms;
-        private Date startTime;
+        private Date startTime=new Date();
         private Dictionary<string, GameObject> cachedGames;
         private Shuff requiredShuff;
         private int QUEUEPERTICK = 1;
@@ -33,7 +34,6 @@ namespace ShufflyNode.GameServer
         public GameServer()
         {
 
-            Global.Require<NodeModule>("Help");
             fs = Global.Require<FS>("fs");
             childProcess = Global.Require<ChildProcess>("child_process");
 
@@ -41,7 +41,7 @@ namespace ShufflyNode.GameServer
             gameServerIndex = "GameServer" + Guid.NewGuid();
             cachedGames = new Dictionary<string, GameObject>();
 
-            requiredShuff = Global.Require<Shuff>("./../gameFramework/shuff.js");
+            requiredShuff = Global.Require<Shuff>("./gameFramework/shuff.js");
 
 
 
@@ -75,6 +75,7 @@ namespace ShufflyNode.GameServer
                                      delegate(User user, object arg2)
                                      {
                                          CreateGameRequest data = (CreateGameRequest)arg2;
+                                         data.GameName = "Sevens";
                                          GameRoom room;
                                          rooms.Add(room = new GameRoom());
                                          room.Name = data.Name;
@@ -87,7 +88,7 @@ namespace ShufflyNode.GameServer
                                          room.Started = false;
                                          room.GameServer = gameServerIndex;
                                          room.Players.Add(user);
-
+                                         
                                          GameObject gameObject;
                                          if (cachedGames.ContainsKey(data.GameName))
                                          {
@@ -95,7 +96,7 @@ namespace ShufflyNode.GameServer
                                          }
                                          else
                                          {
-                                             gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./../games/" + data.GameName + "/app.js");
+                                             gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./games/" + data.GameName + "/app.js");
                                          }
                                          room.Fiber = CreateFiber(room, gameObject, true);
                                          room.Unwind = delegate(List<User> players)
@@ -168,8 +169,13 @@ namespace ShufflyNode.GameServer
                     return;
                 EmitAll(room, "Area.Game.Started", Json.Parse(Json.Stringify(room, Help.Sanitize)));
                 room.Started = true;
+                Global.Console.Log("started");
+
                 FiberYieldResponse answer = room.Fiber.Run<FiberYieldResponse>(room.Players);
+                Global.Console.Log("doign");
                 handleYield(room, answer);
+                Global.Console.Log("doign2");
+
 
             });
 
@@ -210,7 +216,7 @@ namespace ShufflyNode.GameServer
                 dict.Value = data.AnswerIndex;
                 room.Answers.Add(dict);
                 FiberYieldResponse answ = room.Fiber.Run<FiberYieldResponse>(dict);
-           
+
 
                 if (answ == null)
                 {

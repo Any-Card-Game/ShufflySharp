@@ -51,6 +51,10 @@
     <ScriptInfo Include="Properties\ScriptInfo.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+      <Project>{06BA821E-6BCD-418C-B6AF-CE38465405E9}</Project>
+      <Name>CommonLibraries</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NodeJS\NodeJS.csproj">
       <Project>{B7FF3F2A-C5AF-4C50-B9B2-A72B6EA85C93}</Project>
       <Name>NodeJS</Name>

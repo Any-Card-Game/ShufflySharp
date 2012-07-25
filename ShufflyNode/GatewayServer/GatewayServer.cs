@@ -31,7 +31,7 @@ namespace ShufflyNode.GatewayServer
              
 
             app.Listen(port);
-            io.Set("log lvl", 1);
+            io.Set("log level", 1);
             string myName = "Gateway " + Guid.NewGuid();
 
             ps = new PubSub(delegate()
@@ -64,6 +64,7 @@ namespace ShufflyNode.GatewayServer
                 User user = null;
                 socket.On("Gateway.Message", delegate(GatewayMessage data)
                 {
+                    
                     string channel = "Bad";
                     switch (data.Channel.Split('.')[1])
                     {

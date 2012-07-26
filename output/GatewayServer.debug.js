@@ -1,7 +1,7 @@
-//! GatewayServer.debug.js
-//
-
 (function() {
+ require("./CommonLibraries.debug.js");
+ require("./CommonShuffleLibraries.debug.js");
+
 
 Type.registerNamespace('GatewayServer');
 
@@ -150,6 +150,6 @@ GatewayServer.GatewayLoginMessage.registerClass('GatewayServer.GatewayLoginMessa
 GatewayServer.GatewayMessage.registerClass('GatewayServer.GatewayMessage');
 GatewayServer.GatewayServer.registerClass('GatewayServer.GatewayServer');
 GatewayServer.SocketClientMessage.registerClass('GatewayServer.SocketClientMessage');
-})();
 
-//! This script was generated using Script# v0.7.4.0
+new GatewayServer.GatewayServer();
+})();

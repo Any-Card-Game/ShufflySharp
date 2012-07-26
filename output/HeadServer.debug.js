@@ -1,7 +1,7 @@
-//! HeadServer.debug.js
-//
-
 (function() {
+ require("./CommonLibraries.debug.js");
+ require("./CommonShuffleLibraries.debug.js");
+
 
 Type.registerNamespace('HeadServer');
 
@@ -113,6 +113,6 @@ HeadServer.HeadServer.prototype = {
 
 
 HeadServer.HeadServer.registerClass('HeadServer.HeadServer');
-})();
 
-//! This script was generated using Script# v0.7.4.0
+new HeadServer.HeadServer();
+})();

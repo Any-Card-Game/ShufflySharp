@@ -1,8 +1,8 @@
-//! AdminServer.debug.js
-//
-
 (function() {
+ require("./CommonLibraries.debug.js");
+ require("./CommonShuffleLibraries.debug.js");
 
+
+
+new AdminServer.AdminServer();
 })();
-
-//! This script was generated using Script# v0.7.4.0

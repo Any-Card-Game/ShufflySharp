@@ -1,5 +1,4 @@
-// GatewayServer.js
-(function(){
+(function(){require("./CommonLibraries.debug.js");require("./CommonShuffleLibraries.debug.js");
 Type.registerNamespace('GatewayServer');GatewayServer.GatewayLoginMessage=function(){}
 GatewayServer.GatewayLoginMessage.prototype={userName:null,password:null}
 GatewayServer.GatewayMessage=function(){}
@@ -15,4 +14,4 @@ delete this.users[$1_0.userName];}));}));}
 GatewayServer.GatewayServer.prototype={ps:null,$0:function($p0,$p1,$p2,$p3){if(Object.keyExists(this.users,$p1.userName)){var $0=this.users[$p1.userName];$0.socket.emit('Client.Message',new GatewayServer.SocketClientMessage($p1,$p2,$p3));}}}
 GatewayServer.SocketClientMessage=function(user,channel,content){this.user=user;this.channel=channel;this.content=content;}
 GatewayServer.SocketClientMessage.prototype={user:null,channel:null,content:null}
-GatewayServer.GatewayLoginMessage.registerClass('GatewayServer.GatewayLoginMessage');GatewayServer.GatewayMessage.registerClass('GatewayServer.GatewayMessage');GatewayServer.GatewayServer.registerClass('GatewayServer.GatewayServer');GatewayServer.SocketClientMessage.registerClass('GatewayServer.SocketClientMessage');})();// This script was generated using Script# v0.7.4.0
+GatewayServer.GatewayLoginMessage.registerClass('GatewayServer.GatewayLoginMessage');GatewayServer.GatewayMessage.registerClass('GatewayServer.GatewayMessage');GatewayServer.GatewayServer.registerClass('GatewayServer.GatewayServer');GatewayServer.SocketClientMessage.registerClass('GatewayServer.SocketClientMessage');new GatewayServer.GatewayServer();})();

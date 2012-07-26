@@ -1,7 +1,7 @@
-//! GameServer.debug.js
-//
-
 (function() {
+ require("./CommonLibraries.debug.js");
+ require("./CommonShuffleLibraries.debug.js");
+
 
 Type.registerNamespace('GameServer');
 
@@ -609,6 +609,6 @@ GameServer.GameRoom.registerClass('GameServer.GameRoom');
 GameServer.GameSendAnswer.registerClass('GameServer.GameSendAnswer');
 GameServer.GameServer.registerClass('GameServer.GameServer');
 GameServer.JoinGameRequest.registerClass('GameServer.JoinGameRequest');
-})();
 
-//! This script was generated using Script# v0.7.4.0
+new GameServer.GameServer();
+})();

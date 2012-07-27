@@ -1,47 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4292176E-7846-4315-BA40-69605B0E3322}</ProjectGuid>
+    <ProjectGuid>{1B1814D9-2F50-4752-A000-02C19DC492E2}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <NoStdLib>True</NoStdLib>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-    <LangVersion>ISO-2</LangVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Client</RootNamespace>
     <AssemblyName>Client</AssemblyName>
-    <TemplateFile>Properties\Client.script</TemplateFile>
-    <CodeAnalysisRuleSet>Properties\Client.ruleset</CodeAnalysisRuleSet>
-    <ReferencePath>$(ProgramFiles)\ScriptSharp\v1.0\Framework\</ReferencePath>
-    <DeploymentPath>..\output</DeploymentPath>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>True</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;CODE_ANALYSIS;SCRIPTSHARP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0028, 1591, 1684</NoWarn>
-    <DocumentationFile>bin\Debug\Client.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;SCRIPTSHARP</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0028, 1591, 1684</NoWarn>
-    <DocumentationFile>bin\Release\Client.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=0.7.0.0, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL" />
-    <Reference Include="Script.Web" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\cards\101.gif" />
@@ -446,9 +437,6 @@
     <Content Include="lib\WebSocketMainInsecure.swf" />
     <Content Include="lib\WorkerConsole.js" />
     <Content Include="PageHandler.js" />
-    <Content Include="Properties\Client.ruleset" />
-    <Content Include="Properties\Client.script" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="ShuffUIArea.js" />
     <Content Include="ShuffUIManager.js" />
     <Content Include="UIArea.js" />
@@ -458,5 +446,24 @@
   <ItemGroup>
     <Folder Include="lib\jqwidgets\styles\styles\images\t-shirts\bigger\" />
   </ItemGroup>
-  <Import Project="$(ProgramFiles)\ScriptSharp\v1.0\ScriptSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.0.0.0.118\tools\Assemblies\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="Script.Web, Version=0.0.0.58, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Saltarelle.Web.0.0.0.58\lib\Script.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

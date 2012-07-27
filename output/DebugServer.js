@@ -1,2 +1,2 @@
-(function(){require("./CommonLibraries.debug.js");require("./CommonShuffleLibraries.debug.js");
-new DebugServer.DebugServer();})();
+require('./mscorlib.debug.js');
+

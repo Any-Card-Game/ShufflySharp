@@ -1,51 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9B9DFF79-E93A-4BE7-8006-238C46C1659D}</ProjectGuid>
+    <ProjectGuid>{453CCFEB-6D6F-4C10-84C7-E8A897A99AE8}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <NoStdLib>True</NoStdLib>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-    <LangVersion>ISO-2</LangVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GameServer</RootNamespace>
     <AssemblyName>GameServer</AssemblyName>
-    <TemplateFile>Properties\GameServer.script</TemplateFile>
-    <CodeAnalysisRuleSet>Properties\GameServer.ruleset</CodeAnalysisRuleSet>
-    <ReferencePath>$(ProgramFiles)\ScriptSharp\v1.0\Framework\</ReferencePath>
-    <DeploymentPath>..\output</DeploymentPath>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>True</NoStdLib>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;CODE_ANALYSIS;SCRIPTSHARP</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0028, 1591, 1684</NoWarn>
-    <DocumentationFile>bin\Debug\GameServer.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;SCRIPTSHARP</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>0028, 1591, 1684</NoWarn>
-    <DocumentationFile>bin\Release\GameServer.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib, Version=0.7.0.0, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL" />
-    <Reference Include="Script.Web" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Properties\GameServer.ruleset" />
-    <Content Include="Properties\GameServer.script" />
     <Compile Include="CreateGameRequest.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="FiberYieldResponse.cs" />
@@ -59,34 +45,53 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
-      <Project>{06BA821E-6BCD-418C-B6AF-CE38465405E9}</Project>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.0.0.0.118\tools\Assemblies\mscorlib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\CommonLibraries\CommonLibraries.csproj">
+      <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CommonShuffleLibraries\CommonShuffleLibraries.csproj">
-      <Project>{0ED5B149-B1D8-486E-B563-18ED7125BD66}</Project>
-      <Name>CommonShuffleLibraries</Name>
+    <ProjectReference Include="..\..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
+      <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
+      <Name>CommonShuffleLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Fibers\FibersLibrary.csproj">
-      <Project>{E05BFE3E-88F4-4986-9B24-892416A9D46A}</Project>
+    <ProjectReference Include="..\..\Libraries\FibersLibrary\FibersLibrary.csproj">
+      <Project>{1136A53A-3853-4F65-B9ED-176290942582}</Project>
       <Name>FibersLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MongoDBLibrary\MongoDBLibrary.csproj">
-      <Project>{4449D521-8BF2-41B3-9AFD-63F1AF9FE49D}</Project>
+    <ProjectReference Include="..\..\Libraries\MongoDBLibrary\MongoDBLibrary.csproj">
+      <Project>{2C02E0B6-3542-4CA5-AA18-6435BDFD714E}</Project>
       <Name>MongoDBLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NodeJS\NodeJSLibrary.csproj">
-      <Project>{B7FF3F2A-C5AF-4C50-B9B2-A72B6EA85C93}</Project>
+    <ProjectReference Include="..\..\Libraries\NodeJSLibrary\NodeJSLibrary.csproj">
+      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
       <Name>NodeJSLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ShufflyGame\ShufflyGameLibrary.csproj">
-      <Project>{EF887FF2-DF7A-43F6-9AC3-B9E37E3091C5}</Project>
-      <Name>ShufflyGameLibrary</Name>
+    <ProjectReference Include="..\..\Libraries\RedisLibrary\RedisLibrary.csproj">
+      <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
+      <Name>RedisLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SocketIO\SocketIOLibrary.csproj">
-      <Project>{D3AB6B2A-7510-4F9A-95B8-B48FF8F75395}</Project>
+    <ProjectReference Include="..\..\Libraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj">
+      <Project>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</Project>
+      <Name>ShuffleGameLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\SocketIOLibrary\SocketIOLibrary.csproj">
+      <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIOLibrary</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(ProgramFiles)\ScriptSharp\v1.0\ScriptSharp.targets" />
+  <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

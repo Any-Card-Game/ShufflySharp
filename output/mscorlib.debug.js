@@ -2,9 +2,6 @@
 //! More information at http://projects.nikhilk.net/ScriptSharp
 //!
 
-///////////////////////////////////////////////////////////////////////////////
-// Globals
-
 (function () {
   var globals = {
     version: '0.7.4.0',
@@ -23,6 +20,10 @@
 
     isValue: function (o) {
       return (o !== null) && (o !== undefined);
+    },
+
+    referenceEquals: function (a, b) {
+      return ss.isValue(a) ? a === b : !ss.isValue(b);
     }
   };
 
@@ -41,24 +42,23 @@
       }
     }
   }
-  if (document.addEventListener) {
-    document.readyState == 'complete' ? startup() : document.addEventListener('DOMContentLoaded', startup, false);
-  }
-  else if (window.attachEvent) {
-    window.attachEvent('onload', function () {
-      startup();
-    });
-  }
+  
+  setTimeout(startup,10);
 
-  var ss = window.ss;
+  var ss = global.ss;
   if (!ss) {
-    window.ss = ss = {
+    global.ss = ss = {
       init: onStartup,
       ready: onStartup
     };
   }
   for (var n in globals) {
     ss[n] = globals[n];
+  }
+  if (global && !global.Element) {
+    global.Element = function() {
+    };
+    global.Element.isInstanceOfType = function(instance) { return instance && typeof instance.constructor === 'undefined' && typeof instance.tagName === 'string'; };
   }
 })();
 
@@ -70,7 +70,8 @@ Object.__baseType = null;
 
 Object.clearKeys = function Object$clearKeys(d) {
     for (var n in d) {
-        delete d[n];
+		if (d.hasOwnProperty(n))
+			delete d[n];
     }
 }
 
@@ -82,7 +83,8 @@ if (!Object.keys) {
     Object.keys = function Object$keys(d) {
         var keys = [];
         for (var n in d) {
-            keys.push(n);
+			if (d.hasOwnProperty(n))
+		        keys.push(n);
         }
         return keys;
     }
@@ -90,7 +92,8 @@ if (!Object.keys) {
     Object.getKeyCount = function Object$getKeyCount(d) {
         var count = 0;
         for (var n in d) {
-            count++;
+			if (d.hasOwnProperty(n))
+		        count++;
         }
         return count;
     }
@@ -101,10 +104,22 @@ else {
     }
 }
 
+Object.getObjectEnumerator = function Object$getObjectEnumerator(d) {
+	return new ss.ObjectEnumerator(d);
+}
+
+Object.coalesce = function Object$coalesce(a, b) {
+	return ss.isValue(a) ? a : b;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Boolean Extensions
 
 Boolean.__typeName = 'Boolean';
+
+Boolean.getDefaultValue = function Boolean$getDefaultValue(s) {
+	return false;
+}
 
 Boolean.parse = function Boolean$parse(s) {
     return (s.toLowerCase() == 'true');
@@ -114,6 +129,10 @@ Boolean.parse = function Boolean$parse(s) {
 // Number Extensions
 
 Number.__typeName = 'Number';
+
+Number.getDefaultValue = function Number$getDefaultValue(s) {
+	return 0;
+}
 
 Number.parse = function Number$parse(s) {
     if (!s || !s.length) {
@@ -322,9 +341,6 @@ String.prototype.compareTo = function String$compareTo(s, ignoreCase) {
 }
 
 String.concat = function String$concat() {
-    if (arguments.length === 2) {
-        return arguments[0] + arguments[1];
-    }
     return Array.prototype.join.call(arguments, '');
 }
 
@@ -398,6 +414,7 @@ String.prototype.indexOfAny = function String$indexOfAny(chars, startIndex, coun
         return -1;
     }
 
+	chars = String.fromCharCode.apply(null, chars);
     startIndex = startIndex || 0;
     count = count || length;
 
@@ -416,7 +433,7 @@ String.prototype.indexOfAny = function String$indexOfAny(chars, startIndex, coun
 
 String.prototype.insert = function String$insert(index, value) {
     if (!value) {
-        return this;
+        return this.valueOf();
     }
     if (!index) {
         return value + this;
@@ -436,6 +453,7 @@ String.prototype.lastIndexOfAny = function String$lastIndexOfAny(chars, startInd
         return -1;
     }
 
+	chars = String.fromCharCode.apply(null, chars);
     startIndex = startIndex || length - 1;
     count = count || length;
 
@@ -458,18 +476,18 @@ String.localeFormat = function String$localeFormat(format) {
 
 String.prototype.padLeft = function String$padLeft(totalWidth, ch) {
     if (this.length < totalWidth) {
-        ch = ch || ' ';
+        ch = String.fromCharCode(ch || 0x20);
         return String.fromChar(ch, totalWidth - this.length) + this;
     }
-    return this;
+    return this.valueOf();
 }
 
 String.prototype.padRight = function String$padRight(totalWidth, ch) {
     if (this.length < totalWidth) {
-        ch = ch || ' ';
+        ch = String.fromCharCode(ch || 0x20);
         return this + String.fromChar(ch, totalWidth - this.length);
     }
-    return this;
+    return this.valueOf();
 }
 
 String.prototype.remove = function String$remove(index, count) {
@@ -512,14 +530,41 @@ String.prototype.trimStart = function String$trimStart() {
 // Array Extensions
 
 Array.__typeName = 'Array';
-Array.__interfaces = [ ss.IEnumerable ];
+Array.__interfaces = [ ss.IEnumerable, ss.ICollection, ss.IList ];
+
+Array.prototype.get_item = function Array$get_item(index) {
+	return this[index];
+}
+
+Array.prototype.set_item = function Array$set_item(index, value) {
+	this[index] = value;
+}
+
+Array.prototype.get_count = function Array$get_count() {
+	return this.length;
+}
 
 Array.prototype.add = function Array$add(item) {
     this[this.length] = item;
 }
 
 Array.prototype.addRange = function Array$addRange(items) {
-    this.push.apply(this, items);
+	if (items instanceof Array) {
+		this.push.apply(this, items);
+	}
+	else {
+		var e = items.getEnumerator();
+		try {
+			while (e.moveNext()) {
+				this.add(e.get_current());
+			}
+		}
+		finally {
+			if (ss.IDisposable.isInstanceOfType(e)) {
+				Type.cast(e, ss.IDisposable).dispose();
+			}
+		}
+	}
 }
 
 Array.prototype.aggregate = function Array$aggregate(seed, callback, instance) {
@@ -619,45 +664,6 @@ Array.prototype.getEnumerator = function Array$getEnumerator() {
     return new ss.ArrayEnumerator(this);
 }
 
-Array.prototype.groupBy = function Array$groupBy(callback, instance) {
-    var length = this.length;
-    var groups = [];
-    var keys = {};
-    for (var i = 0; i < length; i++) {
-        if (i in this) {
-            var key = callback.call(instance, this[i], i);
-            if (String.isNullOrEmpty(key)) {
-                continue;
-            }
-            var items = keys[key];
-            if (!items) {
-                items = [];
-                items.key = key;
-
-                keys[key] = items;
-                groups.add(items);
-            }
-            items.add(this[i]);
-        }
-    }
-    return groups;
-}
-
-Array.prototype.index = function Array$index(callback, instance) {
-    var length = this.length;
-    var items = {};
-    for (var i = 0; i < length; i++) {
-        if (i in this) {
-            var key = callback.call(instance, this[i], i);
-            if (String.isNullOrEmpty(key)) {
-                continue;
-            }
-            items[key] = this[i];
-        }
-    }
-    return items;
-}
-
 if (!Array.prototype.indexOf) {
     Array.prototype.indexOf = function Array$indexOf(item, startIndex) {
         startIndex = startIndex || 0;
@@ -678,14 +684,30 @@ Array.prototype.insert = function Array$insert(index, item) {
 }
 
 Array.prototype.insertRange = function Array$insertRange(index, items) {
-    if (index === 0) {
-        this.unshift.apply(this, items);
-    }
-    else {
-        for (var i = 0; i < items.length; i++) {
-            this.splice(index + i, 0, items[i]);
-        }
-    }
+	if (items instanceof Array) {
+		if (index === 0) {
+			this.unshift.apply(this, items);
+		}
+		else {
+			for (var i = 0; i < items.length; i++) {
+				this.splice(index + i, 0, items[i]);
+			}
+		}
+	}
+	else {
+		var e = items.getEnumerator();
+		try {
+			while (e.moveNext()) {
+				this.insert(index, e.get_current());
+				index++;
+			}
+		}
+		finally {
+			if (ss.IDisposable.isInstanceOfType(e)) {
+				Type.cast(e, ss.IDisposable).dispose();
+			}
+		}
+	}
 }
 
 if (!Array.prototype.map) {
@@ -719,7 +741,7 @@ Array.prototype.removeAt = function Array$removeAt(index) {
 }
 
 Array.prototype.removeRange = function Array$removeRange(index, count) {
-    return this.splice(index, count);
+    this.splice(index, count);
 }
 
 if (!Array.prototype.some) {
@@ -965,6 +987,173 @@ Date.parseDate = function Date$parse(s) {
     return new Date(Date.parse(s));
 }
 
+Date._parseExact = function Date$_parseExact(val,format, culture, utc) {
+    culture = culture || ss.CultureInfo.CurrentCulture;
+	var AM = culture.amDesignator, PM = culture.pmDesignator;
+
+	var _isInteger = function(val) {
+		var digits="1234567890";
+		for (var i=0; i < val.length; i++) {
+			if (digits.indexOf(val.charAt(i))==-1) {
+				return false;
+			}
+		}
+		return true;
+	};
+
+	var _getInt = function(str,i,minlength,maxlength) {
+		for (var x=maxlength; x>=minlength; x--) {
+			var token=str.substring(i,i+x);
+			if (token.length < minlength) {
+				return null;
+			}
+			if (_isInteger(token)) {
+				return token;
+			}
+		}
+		return null;
+	};
+
+	val = val + "";
+	format = format + "";
+	var i_val = 0;
+	var i_format = 0;
+	var c = "";
+	var token = "";
+
+	var year = 0, month = 1, date = 1, hh = 0, mm = 0, ss = 0, ampm = "";
+		
+	while (i_format < format.length) {
+		// Get next token from format string
+		c = format.charAt(i_format);
+		token = "";
+		while ((format.charAt(i_format) == c) && (i_format < format.length)) {
+			token += format.charAt(i_format++);
+		}
+		// Extract contents of value based on format token
+		if (token=="yyyy" || token=="yy" || token=="y") {
+			if (token == "yyyy")
+				year = _getInt(val, i_val, 4, 4);
+			if (token == "yy")
+				year = _getInt(val, i_val, 2, 2);
+			if (token == "y")
+				year = _getInt(val, i_val, 2, 4);
+
+			if (year == null)
+				return null;
+
+			i_val += year.length;
+			if (year.length == 2) {
+				if (year > 30) {
+					year = 1900 + (year-0);
+				}
+				else {
+					year = 2000 + (year-0);
+				}
+			}
+		}
+		else if (token == "MM" || token == "M") {
+			month = _getInt(val, i_val, token.length, 2);
+			if (month == null || (month < 1) || (month > 12))
+				return null;
+			i_val += month.length;
+		}
+		else if (token=="dd"||token=="d") {
+			date = _getInt(val, i_val, token.length, 2);
+			if (date == null || (date < 1) || (date > 31))
+				return null;
+			i_val += date.length;
+		}
+		else if (token=="hh"||token=="h") {
+			hh = _getInt(val, i_val, token.length, 2);
+			if (hh == null || (hh < 1) || (hh > 12))
+				return null;
+			i_val += hh.length;
+		}
+		else if (token=="HH"||token=="H") {
+			hh = _getInt(val, i_val, token.length, 2);
+			if (hh == null || (hh < 0) || (hh > 23))
+				return null;
+			i_val += hh.length;
+		}
+		else if (token == "mm" || token == "m") {
+			mm = _getInt(val, i_val, token.length, 2);
+			if (mm == null || (mm < 0) || (mm > 59))
+				return null;
+			i_val += mm.length;
+		}
+		else if (token == "ss" || token == "s") {
+			ss = _getInt(val, i_val, token.length, 2);
+			if (ss == null || (ss < 0) || (ss > 59))
+				return null;
+			i_val += ss.length;
+		}
+		else if (token == "t") {
+			if (val.substring(i_val, i_val + 1).toLowerCase() == AM.charAt(0).toLowerCase())
+				ampm = AM;
+			else if (val.substring(i_val, i_val + 1).toLowerCase() == PM.charAt(0).toLowerCase())
+				ampm = PM;
+			else
+				return null;
+			i_val += 1;
+		}
+		else if (token == "tt") {
+			if (val.substring(i_val, i_val + 2).toLowerCase() == AM.toLowerCase())
+				ampm = AM;
+			else if (val.substring(i_val,i_val+2).toLowerCase() == PM.toLowerCase())
+				ampm = PM;
+			else
+				return null;
+			i_val += 2;
+		}
+		else {
+			if (val.substring(i_val, i_val + token.length) != token)
+				return null;
+			else
+				i_val += token.length;
+		}
+	}
+	// If there are any trailing characters left in the value, it doesn't match
+	if (i_val != val.length)
+		return null;
+
+	// Is date valid for month?
+	if (month == 2) {
+		// Check for leap year
+		if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) { // leap year
+			if (date > 29)
+				return null;
+		}
+		else if (date > 28)
+			return null;
+	}
+	if ((month == 4) || (month == 6) || (month == 9) || (month == 11)) {
+		if (date > 30) {
+			return null;
+		}
+	}
+	// Correct hours value
+	if (hh < 12 && ampm == PM) {
+		hh = hh - 0 + 12;
+	}
+	else if (hh > 11 && ampm == AM) {
+		hh -= 12;
+	}
+
+    if (utc)
+	    return new Date(Date.UTC(year, month - 1, date, hh, mm, ss));
+    else
+        return new Date(year, month - 1, date, hh, mm, ss);
+};
+
+Date.parseExact = function Date$parseExact(val, format, culture) {
+    return Date._parseExact(val, format, culture, false);
+}
+
+Date.parseExactUTC = function Date$parseExactUTC(val, format, culture) {
+    return Date._parseExact(val, format, culture, true);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Error Extensions
 
@@ -1018,26 +1207,134 @@ Error.createError = function Error$createError(message, errorInfo, innerExceptio
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Function Extensions
+
+Function.__typeName = 'Function';
+
+Function.empty = function () { };
+
+Function._contains = function Function$_contains(targets, object, method) {
+    for (var i = 0; i < targets.length; i += 2) {
+        if (targets[i] === object && targets[i + 1] === method) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Function._mkdel = function Function$_mkdel(targets) {
+    var delegate = function() {
+        if (targets.length == 2) {
+            return targets[1].apply(targets[0], arguments);
+        }
+        else {
+            var clone = targets.clone();
+            for (var i = 0; i < clone.length; i += 2) {
+                if (Function._contains(targets, clone[i], clone[i + 1])) {
+                    clone[i + 1].apply(clone[i], arguments);
+                }
+            }
+            return null;
+        }
+    };
+    delegate._targets = targets;
+
+    return delegate;
+}
+
+Function.mkdel = function Function$mkdel(object, method) {
+    if (!object) {
+        return method;
+    }
+    return Function._mkdel([object, method]);
+}
+
+Function.combine = function Function$combine(delegate1, delegate2) {
+    if (!delegate1) {
+        if (!delegate2._targets) {
+            return Function.mkdel(null, delegate2);
+        }
+        return delegate2;
+    }
+    if (!delegate2) {
+        if (!delegate1._targets) {
+            return Function.mkdel(null, delegate1);
+        }
+        return delegate1;
+    }
+
+    var targets1 = delegate1._targets ? delegate1._targets : [null, delegate1];
+    var targets2 = delegate2._targets ? delegate2._targets : [null, delegate2];
+
+    return Function._mkdel(targets1.concat(targets2));
+}
+
+Function.remove = function Function$remove(delegate1, delegate2) {
+    if (!delegate1 || (delegate1 === delegate2)) {
+        return null;
+    }
+    if (!delegate2) {
+        return delegate1;
+    }
+
+    var targets = delegate1._targets;
+    var object = null;
+    var method;
+    if (delegate2._targets) {
+        object = delegate2._targets[0];
+        method = delegate2._targets[1];
+    }
+    else {
+        method = delegate2;
+    }
+
+    for (var i = 0; i < targets.length; i += 2) {
+        if ((targets[i] === object) && (targets[i + 1] === method)) {
+            if (targets.length == 2) {
+                return null;
+            }
+            targets.splice(i, 2);
+            return Function._mkdel(targets);
+        }
+    }
+
+    return delegate1;
+}
+
+Function.clone = function Function$clone(source) {
+	return source._targets ? Function._mkdel(source._targets) : function() { return source.apply(this, arguments); };
+}
+
+Function.thisFix = function Function$thisFix(source) {
+    return function() {
+        var x = [this];
+        for(var i = 0; i < arguments.length; i++)
+            x.push(arguments[i]);
+        return source.apply(source, x);
+    };
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Debug Extensions
 
-ss.Debug = window.Debug || function() {};
+ss.Debug = global.Debug || function() {};
 ss.Debug.__typeName = 'Debug';
 
 if (!ss.Debug.writeln) {
     ss.Debug.writeln = function Debug$writeln(text) {
-        if (window.console) {
-            if (window.console.debug) {
-                window.console.debug(text);
+        if (global.console) {
+            if (global.console.debug) {
+                global.console.debug(text);
                 return;
             }
-            else if (window.console.log) {
-                window.console.log(text);
+            else if (global.console.log) {
+                global.console.log(text);
                 return;
             }
         }
-        else if (window.opera &&
-            window.opera.postError) {
-            window.opera.postError(text);
+        else if (global.opera &&
+            global.opera.postError) {
+            global.opera.postError(text);
             return;
         }
     }
@@ -1064,10 +1361,9 @@ ss.Debug.fail = function Debug$fail(message) {
 ///////////////////////////////////////////////////////////////////////////////
 // Type System Implementation
 
-window.Type = Function;
-Type.__typeName = 'Type';
+global.Type = Function;
 
-window.__Namespace = function(name) {
+global.__Namespace = function(name) {
     this.__typeName = name;
 }
 __Namespace.prototype = {
@@ -1078,18 +1374,18 @@ __Namespace.prototype = {
 }
 
 Type.registerNamespace = function Type$registerNamespace(name) {
-    if (!window.__namespaces) {
-        window.__namespaces = {};
+    if (!global.__namespaces) {
+        global.__namespaces = {};
     }
-    if (!window.__rootNamespaces) {
-        window.__rootNamespaces = [];
+    if (!global.__rootNamespaces) {
+        global.__rootNamespaces = [];
     }
 
-    if (window.__namespaces[name]) {
+    if (global.__namespaces[name]) {
         return;
     }
 
-    var ns = window;
+    var ns = global;
     var nameParts = name.split('.');
 
     for (var i = 0; i < nameParts.length; i++) {
@@ -1098,13 +1394,59 @@ Type.registerNamespace = function Type$registerNamespace(name) {
         if (!nso) {
             ns[part] = nso = new __Namespace(nameParts.slice(0, i + 1).join('.'));
             if (i == 0) {
-                window.__rootNamespaces.add(nso);
+                global.__rootNamespaces.add(nso);
             }
         }
         ns = nso;
     }
 
-    window.__namespaces[name] = ns;
+    global.__namespaces[name] = ns;
+    global[name]=ns;
+}
+
+Type.__genericCache = {};
+Type._makeGenericTypeName = function Type$_makeGenericTypeName(genericType, typeArguments) {
+	var result = genericType.__typeName;
+	for (var i = 0; i < typeArguments.length; i++)
+		result += (i === 0 ? '[' : ',') + typeArguments[i].__typeName;
+	result += ']';
+	return result;
+}
+Type.makeGenericType = function Type$makeGenericType(genericType, typeArguments) {
+	var name = Type._makeGenericTypeName(genericType, typeArguments);
+	return Type.__genericCache[name] || genericType.apply(null, typeArguments);
+}
+
+Type.prototype.registerGenericClassInstance = function Type$registerGenericInstance(instance, genericType, typeArguments, baseType, interfaceTypes) {
+	var name = Type._makeGenericTypeName(genericType, typeArguments);
+	Type.__genericCache[name] = instance;
+	instance.__genericTypeDefinition = genericType;
+	instance.__typeArguments = typeArguments;
+	instance.registerClass(name, baseType(), interfaceTypes());
+}
+
+Type.prototype.registerGenericInterfaceInstance = function Type$registerGenericInstance(instance, genericType, typeArguments, baseInterfaces) {
+	var name = Type._makeGenericTypeName(genericType, typeArguments);
+	Type.__genericCache[name] = instance;
+	instance.__genericTypeDefinition = genericType;
+	instance.__typeArguments = typeArguments;
+	instance.registerInterface(name, baseInterfaces());
+}
+
+Type.prototype.get_isGenericTypeDefinition = function Type$get_isGenericTypeDefinition() {
+	return this.__isGenericTypeDefinition || false;
+}
+
+Type.prototype.getGenericTypeDefinition = function Type$getGenericTypeDefinition() {
+	return this.__genericTypeDefinition || null;
+}
+
+Type.prototype.get_genericParameterCount = function Type$get_genericParameterCount() {
+	return this.__typeArgumentCount || 0;
+}
+
+Type.prototype.getGenericArguments = function Type$getGenericArguments() {
+    return this.__typeArguments || null;
 }
 
 Type.prototype.registerClass = function Type$registerClass(name, baseType, interfaceType) {
@@ -1113,10 +1455,13 @@ Type.prototype.registerClass = function Type$registerClass(name, baseType, inter
     this.__class = true;
     this.__baseType = baseType || Object;
     if (baseType) {
-        this.__basePrototypePending = true;
+        this.setupBase(baseType);
     }
 
-    if (interfaceType) {
+	if (interfaceType instanceof Array) {
+		this.__interfaces = interfaceType;
+	}
+	else if (interfaceType) {
         this.__interfaces = [];
         for (var i = 2; i < arguments.length; i++) {
             interfaceType = arguments[i];
@@ -1125,9 +1470,35 @@ Type.prototype.registerClass = function Type$registerClass(name, baseType, inter
     }
 }
 
-Type.prototype.registerInterface = function Type$createInterface(name) {
+Type.prototype.registerGenericClass = function Type$registerGenericClass(name, typeArgumentCount) {
+    this.prototype.constructor = this;
+    this.__typeName = name;
+    this.__class = true;
+	this.__typeArgumentCount = typeArgumentCount;
+	this.__isGenericTypeDefinition = true;
+    this.__baseType = Object;
+}
+
+Type.prototype.registerInterface = function Type$createInterface(name, baseInterface) {
     this.__typeName = name;
     this.__interface = true;
+	if (baseInterface instanceof Array) {
+		this.__interfaces = baseInterface;
+	}
+	else if (baseInterface) {
+        this.__interfaces = [];
+        for (var i = 1; i < arguments.length; i++) {
+            this.__interfaces.add(arguments[i]);
+        }
+    }
+}
+
+Type.prototype.registerGenericInterface = function Type$registerGenericClass(name, typeArgumentCount) {
+    this.prototype.constructor = this;
+    this.__typeName = name;
+    this.__interface = true;;
+	this.__typeArgumentCount = typeArgumentCount;
+	this.__isGenericTypeDefinition = true;
 }
 
 Type.prototype.registerEnum = function Type$createEnum(name, flags) {
@@ -1140,24 +1511,19 @@ Type.prototype.registerEnum = function Type$createEnum(name, flags) {
     if (flags) {
         this.__flags = true;
     }
+    this.getDefaultValue = function() { return 0; };
+    this.isInstanceOfType = function(instance) { return typeof(instance) == 'number'; };
 }
 
 Type.prototype.setupBase = function Type$setupBase() {
-    if (this.__basePrototypePending) {
-        var baseType = this.__baseType;
-        if (baseType.__basePrototypePending) {
-            baseType.setupBase();
-        }
+	var baseType = this.__baseType;
 
-        for (var memberName in baseType.prototype) {
-            var memberValue = baseType.prototype[memberName];
-            if (!this.prototype[memberName]) {
-                this.prototype[memberName] = memberValue;
-            }
-        }
-
-        delete this.__basePrototypePending;
-    }
+	for (var memberName in baseType.prototype) {
+		var memberValue = baseType.prototype[memberName];
+		if (!this.prototype[memberName]) {
+			this.prototype[memberName] = memberValue;
+		}
+	}
 }
 
 if (!Type.prototype.resolveInheritance) {
@@ -1167,10 +1533,6 @@ if (!Type.prototype.resolveInheritance) {
 }
 
 Type.prototype.initializeBase = function Type$initializeBase(instance, args) {
-    if (this.__basePrototypePending) {
-        this.setupBase();
-    }
-
     if (!args) {
         this.__baseType.apply(instance);
     }
@@ -1222,6 +1584,10 @@ Type.prototype.isInstanceOfType = function Type$isInstanceOfType(instance) {
     return this.isAssignableFrom(type);
 }
 
+Type.isInstanceOfType = function Type$isInstanceOfTypeStatic(instance, type) {
+    return instance instanceof type || (type.isInstanceOfType && type.isInstanceOfType(instance)) || false;
+}
+
 Type.prototype.isAssignableFrom = function Type$isAssignableFrom(type) {
     if ((this == Object) || (this == type)) {
         return true;
@@ -1253,20 +1619,24 @@ Type.prototype.isAssignableFrom = function Type$isAssignableFrom(type) {
     return false;
 }
 
-Type.isClass = function Type$isClass(type) {
-    return (type.__class == true);
+Type.hasProperty = function Type$hasProperty(instance, name) {
+	return typeof(instance['get_' + name]) === 'function' || typeof(instance['set_' + name]) === 'function';
 }
 
-Type.isEnum = function Type$isEnum(type) {
-    return (type.__enum == true);
+Type.prototype.get_isClass = function Type$get_isClass() {
+    return (this.__class == true);
 }
 
-Type.isFlags = function Type$isFlags(type) {
-    return ((type.__enum == true) && (type.__flags == true));
+Type.prototype.get_isEnum = function Type$get_isEnum() {
+    return (this.__enum == true);
 }
 
-Type.isInterface = function Type$isInterface(type) {
-    return (type.__interface == true);
+Type.prototype.get_isFlags = function Type$get_isFlags() {
+    return ((this.__enum == true) && (this.__flags == true));
+}
+
+Type.prototype.get_isInterface = function Type$get_isInterface() {
+    return (this.__interface == true);
 }
 
 Type.isNamespace = function Type$isNamespace(object) {
@@ -1274,17 +1644,29 @@ Type.isNamespace = function Type$isNamespace(object) {
 }
 
 Type.canCast = function Type$canCast(instance, type) {
-    return type.isInstanceOfType(instance);
+    return Type.isInstanceOfType(instance, type);
 }
 
 Type.safeCast = function Type$safeCast(instance, type) {
-    if (type.isInstanceOfType(instance)) {
+    if (Type.isInstanceOfType(instance, type)) {
         return instance;
     }
     return null;
 }
 
+Type.cast = function Type$cast(instance, type) {
+	if (instance === null)
+		return null;
+    else if (Type.isInstanceOfType(instance, type)) {
+        return instance;
+    }
+    throw 'Cannot cast object to type ' + type.__typeName;
+}
+
 Type.getInstanceType = function Type$getInstanceType(instance) {
+	if (instance === null) {
+		throw 'Cannot get type of null'
+	}
     var ctor = null;
 
     // NOTE: We have to catch exceptions because the constructor
@@ -1317,130 +1699,82 @@ Type.getType = function Type$getType(typeName) {
     return type;
 }
 
+Type.prototype.getDefaultValue = function Type$getDefaultValue(typeName) {
+	return null;
+}
+
 Type.parse = function Type$parse(typeName) {
     return Type.getType(typeName);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Delegate
+// Enum
 
-ss.Delegate = function Delegate$() {
-}
-ss.Delegate.registerClass('Delegate');
+ss.Enum = function Enum$() {
+};
+ss.Enum.registerClass('Enum');
 
-ss.Delegate.empty = function() { }
+ss.Enum.parse = function  Enum$parse(enumType, s) {
+	var values = enumType.prototype;
+	if (!enumType.__flags) {
+		for (var f in values) {
+			if (f === s) {
+				return values[f];
+			}
+		}
+	}
+	else {
+		var parts = s.split('|');
+		var value = 0;
+		var parsed = true;
 
-ss.Delegate._contains = function Delegate$_contains(targets, object, method) {
-    for (var i = 0; i < targets.length; i += 2) {
-        if (targets[i] === object && targets[i + 1] === method) {
-            return true;
-        }
-    }
-    return false;
-}
+		for (var i = parts.length - 1; i >= 0; i--) {
+			var part = parts[i].trim();
+			var found = false;
 
-ss.Delegate._create = function Delegate$_create(targets) {
-    var delegate = function() {
-        if (targets.length == 2) {
-            return targets[1].apply(targets[0], arguments);
-        }
-        else {
-            var clone = targets.clone();
-            for (var i = 0; i < clone.length; i += 2) {
-                if (ss.Delegate._contains(targets, clone[i], clone[i + 1])) {
-                    clone[i + 1].apply(clone[i], arguments);
-                }
-            }
-            return null;
-        }
-    };
-    delegate._targets = targets;
+			for (var f in values) {
+				if (f === part) {
+					value |= values[f];
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				parsed = false;
+				break;
+			}
+		}
 
-    return delegate;
-}
+		if (parsed) {
+			return value;
+		}
+	}
+	throw 'Invalid Enumeration Value';
+};
 
-ss.Delegate.create = function Delegate$create(object, method) {
-    if (!object) {
-        return method;
-    }
-    return ss.Delegate._create([object, method]);
-}
-
-ss.Delegate.combine = function Delegate$combine(delegate1, delegate2) {
-    if (!delegate1) {
-        if (!delegate2._targets) {
-            return ss.Delegate.create(null, delegate2);
-        }
-        return delegate2;
-    }
-    if (!delegate2) {
-        if (!delegate1._targets) {
-            return ss.Delegate.create(null, delegate1);
-        }
-        return delegate1;
-    }
-
-    var targets1 = delegate1._targets ? delegate1._targets : [null, delegate1];
-    var targets2 = delegate2._targets ? delegate2._targets : [null, delegate2];
-
-    return ss.Delegate._create(targets1.concat(targets2));
-}
-
-ss.Delegate.remove = function Delegate$remove(delegate1, delegate2) {
-    if (!delegate1 || (delegate1 === delegate2)) {
-        return null;
-    }
-    if (!delegate2) {
-        return delegate1;
-    }
-
-    var targets = delegate1._targets;
-    var object = null;
-    var method;
-    if (delegate2._targets) {
-        object = delegate2._targets[0];
-        method = delegate2._targets[1];
-    }
-    else {
-        method = delegate2;
-    }
-
-    for (var i = 0; i < targets.length; i += 2) {
-        if ((targets[i] === object) && (targets[i + 1] === method)) {
-            if (targets.length == 2) {
-                return null;
-            }
-            targets.splice(i, 2);
-            return ss.Delegate._create(targets);
-        }
-    }
-
-    return delegate1;
-}
-
-ss.Delegate.createExport = function Delegate$createExport(delegate, multiUse, name) {
-    // Generate a unique name if one is not specified
-    name = name || '__' + (new Date()).valueOf();
-
-    // Exported delegates go on window (so they are callable using a simple identifier).
-
-    // Multi-use delegates are exported directly; for the rest a stub is exported, and the stub
-    // first deletes, and then invokes the actual delegate.
-    window[name] = multiUse ? delegate : function() {
-      try { delete window[name]; } catch(e) { window[name] = undefined; }
-      delegate.apply(null, arguments);
-    };
-
-    return name;
-}
-
-ss.Delegate.deleteExport = function Delegate$deleteExport(name) {
-    delete window[name];
-}
-
-ss.Delegate.clearExport = function Delegate$clearExport(name) {
-    window[name] = ss.Delegate.empty;
-}
+ss.Enum.toString = function  Enum$toString(enumType, value) {
+	var values = enumType.prototype;
+	if (!enumType.__flags || (value === 0)) {
+		for (var i in values) {
+			if (values[i] === value) {
+				return i;
+			}
+		}
+		throw 'Invalid Enumeration Value';
+	}
+	else {
+		var parts = [];
+		for (var i in values) {
+			if (values[i] & value) {
+				parts.add(i);
+			}
+		}
+		if (!parts.length) {
+			throw 'Invalid Enumeration Value';
+		}
+		return parts.join(' | ');
+	}
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 // CultureInfo
@@ -1519,13 +1853,6 @@ ss.IEnumerator.prototype = {
     reset: null
 }
 
-ss.IEnumerator.getEnumerator = function ss_IEnumerator$getEnumerator(enumerable) {
-    if (enumerable) {
-        return enumerable.getEnumerator ? enumerable.getEnumerator() : new ss.ArrayEnumerator(enumerable);
-    }
-    return null;
-}
-
 ss.IEnumerator.registerInterface('IEnumerator');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1535,7 +1862,214 @@ ss.IEnumerable = function IEnumerable$() { };
 ss.IEnumerable.prototype = {
     getEnumerator: null
 }
+
+ss.IEnumerable.isAssignableFrom = function IEnumerable$isAssignableFrom(type) {
+	if (type == Array)
+		return true;
+	else
+		return Type.prototype.isAssignableFrom.call(this, type);
+};
+
 ss.IEnumerable.registerInterface('IEnumerable');
+
+///////////////////////////////////////////////////////////////////////////////
+// IEnumerable
+
+ss.ICollection = function ICollection$() { };
+ss.ICollection.prototype = {
+	get_count: null,
+	add: null,
+	clear: null,
+	contains: null,
+	remove: null
+}
+
+ss.ICollection.isAssignableFrom = function ICollection$isAssignableFrom(type) {
+	if (type == Array)
+		return true;
+	else
+		return Type.prototype.isAssignableFrom.call(this, type);
+};
+
+ss.ICollection.registerInterface('ICollection', ss.IEnumerable);
+
+///////////////////////////////////////////////////////////////////////////////
+// Nullable
+
+ss.Nullable = function Nullable$() {
+};
+
+ss.Nullable.registerClass('Nullable');
+
+ss.Nullable.unbox = function Nullable$unbox(instance) {
+	if (!ss.isValue(instance))
+		throw 'Instance is null';
+	return instance;
+}
+
+ss.Nullable.eq = function Nullable$eq(a, b) {
+	return !ss.isValue(a) ? !ss.isValue(b) : (a === b);
+}
+
+ss.Nullable.ne = function Nullable$eq(a, b) {
+	return !ss.isValue(a) ? ss.isValue(b) : (a !== b);
+}
+
+ss.Nullable.le = function Nullable$le(a, b) {
+	return ss.isValue(a) && ss.isValue(b) && a <= b;
+}
+
+ss.Nullable.ge = function Nullable$ge(a, b) {
+	return ss.isValue(a) && ss.isValue(b) && a >= b;
+}
+
+ss.Nullable.lt = function Nullable$lt(a, b) {
+	return ss.isValue(a) && ss.isValue(b) && a < b;
+}
+
+ss.Nullable.gt = function Nullable$gt(a, b) {
+	return ss.isValue(a) && ss.isValue(b) && a > b;
+}
+
+ss.Nullable.sub = function Nullable$sub(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a - b : null;
+}
+
+ss.Nullable.add = function Nullable$add(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a + b : null;
+}
+
+ss.Nullable.mod = function Nullable$mod(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a % b : null;
+}
+
+ss.Nullable.div = function Nullable$divf(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a / b : null;
+}
+
+ss.Nullable.mul = function Nullable$mul(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a * b : null;
+}
+
+ss.Nullable.band = function Nullable$band(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a & b : null;
+}
+
+ss.Nullable.bor = function Nullable$bor(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a | b : null;
+}
+
+ss.Nullable.xor = function Nullable$xor(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a ^ b : null;
+}
+
+ss.Nullable.shl = function Nullable$shl(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a << b : null;
+}
+
+ss.Nullable.srs = function Nullable$srs(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a >> b : null;
+}
+
+ss.Nullable.sru = function Nullable$sru(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? a >>> b : null;
+}
+
+ss.Nullable.and = function Nullable$and(a, b) {
+	if (a === true && b === true)
+		return true;
+	else if (a === false || b === false)
+		return false;
+	else
+		return null;
+}
+
+ss.Nullable.or = function Nullable$or(a, b) {
+	if (a === true || b === true)
+		return true;
+	else if (a === false && b === false)
+		return false;
+	else
+		return null;
+}
+
+ss.Nullable.not = function Nullable$not(a) {
+	return ss.isValue(a) ? !a : null;
+}
+
+ss.Nullable.neg = function Nullable$neg(a) {
+	return ss.isValue(a) ? -a : null;
+}
+
+ss.Nullable.pos = function Nullable$pos(a) {
+	return ss.isValue(a) ? +a : null;
+}
+
+ss.Nullable.cpl = function Nullable$cpl(a) {
+	return ss.isValue(a) ? ~a : null;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// IEnumerable
+
+ss.IList = function IList$() { };
+ss.IList.prototype = {
+	get_item: null,
+	set_item: null,
+	indexOf: null,
+	insert: null,
+	removeAt: null
+}
+
+ss.IList.isAssignableFrom = function IList$isAssignableFrom(type) {
+	if (type == Array)
+		return true;
+	else
+		return Type.prototype.isAssignableFrom.call(this, type);
+};
+
+ss.IList.registerInterface('IList', ss.ICollection, ss.IEnumerable);
+
+///////////////////////////////////////////////////////////////////////////////
+// IDictionary
+
+ss.IDictionary = function IDictionary$() { };
+ss.IDictionary.prototype = {
+	get_item: null,
+	set_item: null,
+	get_keys: null,
+	get_values: null,
+	containsKey: null,
+	add: null,
+	remove: null,
+	tryGetValue: null
+}
+
+ss.IDictionary.registerInterface('IDictionary', [ss.IEnumerable]);
+
+///////////////////////////////////////////////////////////////////////////////
+// Int32
+
+ss.Int32 = function Int32$() { };
+
+ss.Int32.registerClass('ss.Int32');
+ss.Int32.__class = false;
+
+ss.Int32.isInstanceOfType = function Int32$isInstanceOfType(instance) {
+	return typeof(instance) === 'number' && isFinite(instance) && Math.round(instance, 0) == instance;
+}
+
+ss.Int32.getDefaultValue = function Int32$getDefaultValue(typeName) {
+	return 0;
+}
+
+ss.Int32.div = function Int32$div(a, b) {
+	return ss.isValue(a) && ss.isValue(b) ? (a / b) | 0 : null;
+}
+
+ss.Int32.trunc = function Int32$trunc(n) {
+	return ss.isValue(n) ? n | 0 : null;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // ArrayEnumerator
@@ -1543,21 +2077,131 @@ ss.IEnumerable.registerInterface('IEnumerable');
 ss.ArrayEnumerator = function ArrayEnumerator$(array) {
     this._array = array;
     this._index = -1;
-    this.current = null;
 }
 ss.ArrayEnumerator.prototype = {
     moveNext: function ArrayEnumerator$moveNext() {
         this._index++;
-        this.current = this._array[this._index];
         return (this._index < this._array.length);
     },
     reset: function ArrayEnumerator$reset() {
         this._index = -1;
-        this.current = null;
-    }
+    },
+	get_current: function ArrayEnumerator$get_current() {
+		if (this._index < 0 || this._index >= this._array.length)
+			throw 'Invalid operation';
+		return this._array[this._index];
+	}
 }
 
 ss.ArrayEnumerator.registerClass('ArrayEnumerator', null, ss.IEnumerator);
+
+///////////////////////////////////////////////////////////////////////////////
+// ObjectEnumerator
+
+ss.ObjectEnumerator = function ObjectEnumerator$(o) {
+    this._keys = Object.keys(o);
+    this._index = -1;
+	this._object = o;
+}
+ss.ObjectEnumerator.prototype = {
+    moveNext: function ObjectEnumerator$moveNext() {
+        this._index++;
+        return (this._index < this._keys.length);
+    },
+    reset: function ObjectEnumerator$reset() {
+        this._index = -1;
+    },
+	get_current: function ObjectEnumerator$get_current() {
+		if (this._index < 0 || this._index >= this._keys.length)
+			throw 'Invalid operation';
+		var k = this._keys[this._index];
+		return { key: k, value: this._object[k] };
+	}
+}
+
+ss.ObjectEnumerator.registerClass('ObjectEnumerator', null, ss.IEnumerator);
+
+///////////////////////////////////////////////////////////////////////////////
+// Dictionary
+ss.Dictionary$2 = function Dictionary$2$(TKey, TValue) {
+	var $type = function(o) {
+		this._o = {};
+		if (ss.IDictionary.isInstanceOfType(o)) {
+			var e = Type.cast(o, ss.IDictionary).getEnumerator();
+			try {
+				while (e.moveNext()) {
+					var c = e.get_current();
+					this._o[c.key] = c.value;
+				}
+			}
+			finally {
+				if (ss.IDisposable.isInstanceOfType(e)) {
+					Type.cast(e, ss.IDisposable).dispose();
+				}
+			}
+		}
+		else if (o) {
+			var keys = Object.keys(o);
+			for (var i = 0; i < keys.length; i++) {
+				this._o[keys[i]] = o[keys[i]];
+			}
+		}
+	};
+	$type.prototype = {
+		_o: null,
+		get_count: function Dictionary$2$get_count() {
+			return Object.getKeyCount(this._o);
+		},
+		get_keys: function Dictionary$2$get_keys() {
+			return Object.keys(this._o);
+		},
+		get_values: function Dictionary$2$get_values() {
+			var result = [];
+			var keys = Object.keys(this._o);
+			for (var i = 0; i < keys.length; i++)
+				result.push(this._o[keys[i]]);
+			return result;
+		},
+		get_item: function Dictionary$2$get_item(key) {
+			if (!Object.keys(this._o, key))
+				throw 'Key ' + key + ' does not exist.';
+			return this._o[key];
+		},
+		set_item: function Dictionary$2$set_item(key, value) {
+			this._o[key] = value;
+		},
+		add: function Dictionary$2$add(key, value) {
+			if (Object.keyExists(this._o, key))
+				throw 'Key ' + key + ' already exists.';
+			this._o[key] = value;
+		},
+		getEnumerator: function Dictionary$2$getEnumerator() {
+			return new ss.ObjectEnumerator(this._o);
+		},
+		remove: function Dictionary$2$remove(key, value) {
+			delete this._o[key];
+		},
+		containsKey: function Dictionary$2$containsKey(key) {
+			return Object.keyExists(this._o, key);
+		},
+		tryGetValue: function Dictionary$2$tryGetValue(key, value) {
+			if (Object.keyExists(this._o, key)) {
+				value.$ = this._o[key];
+				return true;
+			}
+			else {
+				value.$ = TValue.getDefaultValue();
+				return false;
+			}
+		},
+		clear: function Dictionary$2$clear() {
+			Object.clearKeys(this._o);
+		}
+	};
+	$type.registerGenericClassInstance($type, ss.Dictionary$2, [TKey, TValue], function() { return null }, function() { return [ ss.IDictionary, ss.IEnumerable ] });
+	return $type;
+};
+ss.Dictionary$2.registerGenericClass('ss.Dictionary$2', 2);
 
 ///////////////////////////////////////////////////////////////////////////////
 // IDisposable
@@ -1572,17 +2216,21 @@ ss.IDisposable.registerInterface('IDisposable');
 // StringBuilder
 
 ss.StringBuilder = function StringBuilder$(s) {
-    this._parts = !ss.isNullOrUndefined(s) ? [s] : [];
+    this._parts = ss.isNullOrUndefined(s) || s === '' ? [] : [s];
     this.isEmpty = this._parts.length == 0;
 }
 ss.StringBuilder.prototype = {
     append: function StringBuilder$append(s) {
-        if (!ss.isNullOrUndefined(s)) {
+        if (!ss.isNullOrUndefined(s) && s !== '') {
             this._parts.add(s);
             this.isEmpty = false;
         }
         return this;
     },
+
+	appendChar: function StringBuilder$appendChar(c) {
+		return this.append(String.fromCharCode(c));
+	},
 
     appendLine: function StringBuilder$appendLine(s) {
         this.append(s);
@@ -1590,6 +2238,10 @@ ss.StringBuilder.prototype = {
         this.isEmpty = false;
         return this;
     },
+
+	appendLineChar: function StringBuilder$appendLineChar(c) {
+		return this.appendLine(String.fromCharCode(c));
+	},
 
     clear: function StringBuilder$clear() {
         this._parts = [];
@@ -1613,51 +2265,77 @@ ss.EventArgs.registerClass('EventArgs');
 ss.EventArgs.Empty = new ss.EventArgs();
 
 ///////////////////////////////////////////////////////////////////////////////
-// XMLHttpRequest
+// Exception
 
-if (!window.XMLHttpRequest) {
-    window.XMLHttpRequest = function() {
-        var progIDs = [ 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ];
-
-        for (var i = 0; i < progIDs.length; i++) {
-            try {
-                var xmlHttp = new ActiveXObject(progIDs[i]);
-                return xmlHttp;
-            }
-            catch (ex) {
-            }
-        }
-
-        return null;
-    }
+ss.Exception = function Exception$(message, innerException) {
+	this._message = message || null;
+	this._innerException = innerException || null;
 }
+ss.Exception.registerClass('Exception');
+
+ss.Exception.prototype = {
+	get_message: function Exception$get_message() {
+		return this._message;
+	},
+	get_innerException: function Exception$get_innerException() {
+		return this._innerException;
+	}
+};
+
+ss.Exception.wrap = function Exception$get_message(o) {
+	if (ss.Exception.isInstanceOfType(o)) {
+		return o;
+	}
+	else {
+		return new ss.Exception(o);
+	}
+};
+
+ss.EventArgs.Empty = new ss.EventArgs();
 
 ///////////////////////////////////////////////////////////////////////////////
-// XmlDocumentParser
+// XMLHttpRequest and XML parsing helpers
 
-ss.parseXml = function(markup) {
-    try {
-        if (DOMParser) {
-            var domParser = new DOMParser();
-            return domParser.parseFromString(markup, 'text/xml');
-        }
-        else {
-            var progIDs = [ 'Msxml2.DOMDocument.3.0', 'Msxml2.DOMDocument' ];
-        
-            for (var i = 0; i < progIDs.length; i++) {
-                var xmlDOM = new ActiveXObject(progIDs[i]);
-                xmlDOM.async = false;
-                xmlDOM.loadXML(markup);
-                xmlDOM.setProperty('SelectionLanguage', 'XPath');
-                
-                return xmlDOM;
-            }
-        }
-    }
-    catch (ex) {
+if (!global.XMLHttpRequest) {
+  global.XMLHttpRequest = function() {
+    var progIDs = [ 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ];
+
+    for (var i = 0; i < progIDs.length; i++) {
+      try {
+        var xmlHttp = new ActiveXObject(progIDs[i]);
+        return xmlHttp;
+      }
+      catch (ex) {
+      }
     }
 
     return null;
+  }
+}
+
+ss.parseXml = function(markup) {
+  try {
+    if (DOMParser) {
+      var domParser = new DOMParser();
+      return domParser.parseFromString(markup, 'text/xml');
+    }
+    else {
+      var progIDs = [ 'Msxml2.DOMDocument.3.0', 'Msxml2.DOMDocument' ];
+        
+      for (var i = 0; i < progIDs.length; i++) {
+        var xmlDOM = new ActiveXObject(progIDs[i]);
+        xmlDOM.async = false;
+        xmlDOM.loadXML(markup);
+        xmlDOM.setProperty('SelectionLanguage', 'XPath');
+                
+        return xmlDOM;
+      }
+    }
+  }
+  catch (ex) {
+  }
+
+  return null;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1668,18 +2346,6 @@ ss.CancelEventArgs = function CancelEventArgs$() {
     this.cancel = false;
 }
 ss.CancelEventArgs.registerClass('CancelEventArgs', ss.EventArgs);
-
-///////////////////////////////////////////////////////////////////////////////
-// Tuple
-
-ss.Tuple = function (first, second, third) {
-  this.first = first;
-  this.second = second;
-  if (arguments.length == 3) {
-    this.third = third;
-  }
-}
-ss.Tuple.registerClass('Tuple');
 
 ///////////////////////////////////////////////////////////////////////////////
 // Observable

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Serialization;
 using CommonLibraries;
 using CommonShuffleLibraries;
@@ -15,8 +16,8 @@ namespace GameServer
         private bool verbose = false;
         private GameData gameData;
         private List<GameRoom> rooms;
-        private Date startTime=new Date();
-        private Dictionary<string, GameObject> cachedGames;
+        private DateTime startTime = new DateTime();
+        private JsDictionary<string, GameObject> cachedGames;
         private Shuff requiredShuff;
         private int QUEUEPERTICK = 1;
         private int total__ = 0;
@@ -34,7 +35,7 @@ namespace GameServer
 
             dataManager = new DataManager();
             gameServerIndex = "GameServer" + Guid.NewGuid();
-            cachedGames = new Dictionary<string, GameObject>();
+            cachedGames = new JsDictionary<string, GameObject>();
 
             requiredShuff = Global.Require<Shuff>("./gameFramework/shuff.js");
 
@@ -57,7 +58,7 @@ namespace GameServer
 
             gameData = new GameData();
 
-            Global.Process.On("exit", delegate { Global.Console.Log("exi"); });
+            //Global.Process.On("exit", delegate { Console.Log("exi"); });
 
 
             qManager.AddChannel<int>("Area.Game.Create", delegate
@@ -69,7 +70,7 @@ namespace GameServer
             qManager.AddChannel<CreateGameRequest>("Area.Debug.Create",
                                      delegate(User user, object arg2)
                                      {
-                                         CreateGameRequest data = (CreateGameRequest)arg2;
+                                         CreateGameRequest data = (castValue<CreateGameRequest>(arg2));
                                          data.GameName = "Sevens";
                                          GameRoom room;
                                          rooms.Add(room = new GameRoom());
@@ -97,7 +98,7 @@ namespace GameServer
                                          room.Unwind = delegate(List<User> players)
                                          {
                                              gameData.FinishedGames++;
-                                             Global.Console.Log("--game closed");
+                                             Console.Log("--game closed");
 
                                          };
                                          EmitAll(room, "Area.Game.RoomInfo", Json.Parse(Json.Stringify(room, Help.Sanitize)));
@@ -107,7 +108,7 @@ namespace GameServer
             qManager.AddChannel<JoinGameRequest>("Area.Game.Join",
                                                    delegate(User user, object arg2)
                                                    {
-                                                       JoinGameRequest data = ((JoinGameRequest)arg2);
+                                                       JoinGameRequest data = (castValue<JoinGameRequest>(arg2));
                                                        GameRoom room = null;
                                                        foreach (GameRoom gameRoom in rooms)
                                                        {
@@ -132,7 +133,7 @@ namespace GameServer
             qManager.AddChannel<object>("Area.Game.DebuggerJoin", delegate(User sender, object arg2)
             {
 
-                JoinGameRequest data = ((JoinGameRequest)arg2);
+                JoinGameRequest data = (castValue<JoinGameRequest>(arg2));
                 GameRoom room = null;
                 foreach (GameRoom gameRoom in rooms)
                 {
@@ -145,12 +146,12 @@ namespace GameServer
                 if (room == null)
                     return;
                 room.DebuggingSender = sender;
-                Global.Console.Log("debuggable");
+                Console.Log("debuggable");
             });
 
             qManager.AddChannel<object>("Area.Game.Start", delegate(User sender, object arg2)
             {
-                JoinGameRequest data = ((JoinGameRequest)arg2);
+                JoinGameRequest data = castValue<JoinGameRequest>(arg2);
                 GameRoom room = null;
                 foreach (GameRoom gameRoom in rooms)
                 {
@@ -164,12 +165,12 @@ namespace GameServer
                     return;
                 EmitAll(room, "Area.Game.Started", Json.Parse(Json.Stringify(room, Help.Sanitize)));
                 room.Started = true;
-                Global.Console.Log("started");
+                Console.Log("started");
 
                 FiberYieldResponse answer = room.Fiber.Run<FiberYieldResponse>(room.Players);
-                Global.Console.Log("doign");
+                Console.Log("doign");
                 handleYield(room, answer);
-                Global.Console.Log("doign2");
+                Console.Log("doign2");
 
 
             });
@@ -182,6 +183,12 @@ namespace GameServer
 
             Global.SetInterval(flushQueue, 50);
         }
+        [InlineCode("{o}")]
+        private T castValue<T>(object o)
+        {
+            return default(T);
+        }
+
         private void flushQueue()
         {
 
@@ -194,7 +201,7 @@ namespace GameServer
                 object arg2 = queueue[0];
                 queueue.RemoveAt(0);
 
-                GameAnswerRequest data = ((GameAnswerRequest)arg2);
+                GameAnswerRequest data = castValue<GameAnswerRequest>(arg2);
                 GameRoom room = null;
                 foreach (GameRoom gameRoom in rooms)
                 {
@@ -208,7 +215,7 @@ namespace GameServer
                     return;
 
                 GameAnswer dict = new GameAnswer();
-                dict.Value = data.AnswerIndex;
+                dict.Value = data.Answer;
                 room.Answers.Add(dict);
                 FiberYieldResponse answ = room.Fiber.Run<FiberYieldResponse>(dict);
 
@@ -236,7 +243,7 @@ namespace GameServer
             {
                 total__ += ind;
                 if ((total__ + skipped__) % 20 == 0)
-                    Global.Console.Log(gameServerIndex.Substring(0, 19) + "=  tot: __" + (total__ + skipped__) + "__ + shift: " + ind + " + T: " + total__ + " + skip: " + skipped__ + " + QSize: " + queueue.Count + " + T Rooms: " +
+                    Console.Log(gameServerIndex.Substring(0, 19) + "=  tot: __" + (total__ + skipped__) + "__ + shift: " + ind + " + T: " + total__ + " + skip: " + skipped__ + " + QSize: " + queueue.Count + " + T Rooms: " +
                                        rooms.Count);
             }
 
@@ -260,10 +267,10 @@ namespace GameServer
                     askQuestion(answ, room);
                     //console.log(gameData.toString());
 
-                    Date dt = new Date();
+                    DateTime dt = new DateTime();
                     int then = dt.GetMilliseconds();
-                    //Global.Console.Log(then - now + " Milliseconds");
-                    Global.Console.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds");
+                    //Console.Log(then - now + " Milliseconds");
+                    Console.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds");
 
 
 
@@ -326,11 +333,11 @@ namespace GameServer
 
             if (verbose)
             {
-                Global.Console.Log(answ.User.UserName + ": " + answ.Question + "   ");
+                Console.Log(answ.User.UserName + ": " + answ.Question + "   ");
                 int ind = 0;
                 foreach (string answer in answ.Answers)
                 {
-                    Global.Console.Log("     " + ind++ + ": " + answer);
+                    Console.Log("     " + ind++ + ": " + answer);
                 }
             }
 
@@ -363,7 +370,7 @@ namespace GameServer
                                              {
                                                  if (players == null || players.Count == 0) return true;
                                                  room.Players = players;
-                                                 Global.Console.Log("game started");
+                                                 Console.Log("game started");
                                                  GameObject sev = null;
                                                  Script.Eval("sev= new gameObject();");
 

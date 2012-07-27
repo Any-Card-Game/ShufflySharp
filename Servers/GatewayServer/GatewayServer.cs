@@ -13,45 +13,39 @@ namespace GatewayServer
     public class GatewayServer
     {
 
-        public Dictionary<string, User> users = new Dictionary<string, User>();
+        public JsDictionary<string, User> users = new JsDictionary<string, User>();
         PubSub ps;
         public GatewayServer()
         {
 
             Http http = Global.Require<Http>("http");
-            HttpServer app = http.CreateServer(delegate(HttpRequest req, HttpResponse res)
-            {
-                res.End();
-            });
+            HttpServer app = http.CreateServer((req, res) => res.End());
 
             SocketIoClient io = Global.Require<SocketIO>("socket.io").Listen(app);
             FS fs = Global.Require<FS>("fs"); 
             QueueManager queueManager;
-            int port = 1800 + Math.Truncate((Number)(Math.Random() * 4000));
+            int port = 1800 + Math.Truncate((int)(Math.Random() * 4000));
              
 
             app.Listen(port);
             io.Set("log level", 1);
             string myName = "Gateway " + Guid.NewGuid();
 
-            ps = new PubSub(delegate()
+            ps = new PubSub(()=>
             {
-                ps.Subscribe("PUBSUB.GatewayServers.Ping", delegate(object message)
-                {
-                    ps.Publish("PUBSUB.GatewayServers", "http://" + IPs.GatewayIP + ":" + port);
-                });
+                ps.Subscribe("PUBSUB.GatewayServers.Ping", message => ps.Publish("PUBSUB.GatewayServers", "http://" + IPs.GatewayIP + ":" + port));
                 ps.Publish("PUBSUB.GatewayServers", "http://" + IPs.GatewayIP + ":" + port);
 
 
             });
 
             queueManager = new QueueManager(myName,
-                                            new QueueManagerOptions(new QueueWatcher[]
+                                            new QueueManagerOptions(new[]
                                                                         {
                                                                             new QueueWatcher("GatewayServer",messageReceived),
                                                                             new QueueWatcher(myName,messageReceived)
                                                                         },
-                                                                    new string[]
+                                                                    new[]
                                                                         {
                                                                             "SiteServer",
                                                                             "GameServer*",
@@ -59,47 +53,42 @@ namespace GatewayServer
                                                                             "ChatServer", 
                                                                             "HeadServer"
                                                                         }));
-            io.Sockets.On("connection", delegate(SocketIOConnection socket)
-            {
-                User user = null;
-                socket.On("Gateway.Message", delegate(GatewayMessage data)
+            io.Sockets.On("connection", (SocketIOConnection socket) =>
                 {
-                    
-                    string channel = "Bad";
-                    switch (data.Channel.Split('.')[1])
-                    {
-                        case "Game":
-                            channel = "GameServer";
-                            break;
-                        case "Site":
-                            channel = "SiteServer";
-                            break;
-                        case "Debug":
-                            channel = "GameServer";
-                            break;
-                        case "Debug2":
-                            channel = "DebugServer";
-                            break;
-                        case "Chat":
-                            channel = "ChatServer";
-                            break;
-                    }
-                    queueManager.SendMessage(user, data.GameServer ?? channel, data.Channel,data.Content);
-                });
+                    User user = null;
+                    socket.On("Gateway.Message", (GatewayMessage data) =>
+                        {
+                            string channel = "Bad";
+                            switch (data.Channel.Split('.')[1])
+                            {
+                                case "Game":
+                                    channel = "GameServer";
+                                    break;
+                                case "Site":
+                                    channel = "SiteServer";
+                                    break;
+                                case "Debug":
+                                    channel = "GameServer";
+                                    break;
+                                case "Debug2":
+                                    channel = "DebugServer";
+                                    break;
+                                case "Chat":
+                                    channel = "ChatServer";
+                                    break;
+                            }
+                            queueManager.SendMessage(user, data.GameServer ?? channel, data.Channel, data.Content);
+                        });
 
-                socket.On("Gateway.Login", delegate(GatewayLoginMessage data)
-                                               {
-                                                   
-                                                   user  = new User()  ;
-                                                   user.Socket = socket;
-                                                   user.UserName = data.UserName;
-                                                   users[data.UserName] = user;
-                                               });
-                socket.On("disconnect", delegate(string data)
-                                            {
-                                                users.Remove(user.UserName);
-                                            });
-            });
+                    socket.On("Gateway.Login", (GatewayLoginMessage data) =>
+                        {
+                            user = new User();
+                            user.Socket = socket;
+                            user.UserName = data.UserName;
+                            users[data.UserName] = user;
+                        });
+                    socket.On("disconnect", (string data) => users.Remove(user.UserName));
+                });
 
         }
 

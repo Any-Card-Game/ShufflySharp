@@ -84,7 +84,7 @@ namespace HeadServer
 
         private void handler(HttpRequest request, HttpResponse response)
         {
-            Dictionary dict = new Dictionary();
+            JsDictionary dict = new JsDictionary();
             dict["Content-Type"] = "text/html";
             if(oldIndex.Count>0)
             {

@@ -1,8 +1,0 @@
-(function() {
- require("./CommonLibraries.debug.js");
- require("./CommonShuffleLibraries.debug.js");
-
-#include[as-is] "%code%"
-
-new AdminServer.AdminServer();
-})();

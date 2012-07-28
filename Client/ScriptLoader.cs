@@ -1,5 +1,7 @@
 using System;
 using System.Html;
+using System.Runtime.CompilerServices;
+using CommonLibraries;
 
 namespace Client
 {
@@ -14,18 +16,19 @@ namespace Client
             script.SetAttribute("src", url);  // +"?" + (Math.floor(Math.random() * 10000)); //caching
             if (callback != null)
             {
-                script.AddEventListener("onreadystatechange", a =>
+
+               script.Inline().onreadystatechange = (Action<Object>) (a =>
                     {
                         dynamic b = script;
                         if (b.readyState == "loaded") callback();
 
-                    }, true);
-
-                script.AddEventListener("onload", a => callback(), true);
+                    });
+               script.Inline().onload = (Action<Object>)(a => callback());
 
             }
             head.AppendChild(script);
         }
+
         public void Load(string[] items, Action done)
         {
             var counter = 0;

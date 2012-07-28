@@ -9,7 +9,7 @@ namespace HeadServer
     {
         private FS fs = Global.Require<FS>("fs");
 
-        private string __dirname = "/usr/local/src/headServer";
+        private string __dirname = "/usr/local/src/new";
         private string indexPageData;
         private QueueManager qManager;
         private PubSub pubsub;

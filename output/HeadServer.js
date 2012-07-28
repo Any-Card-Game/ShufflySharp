@@ -4,7 +4,7 @@ Type.registerNamespace('HeadServer');
 // HeadServer.HeadServer
 HeadServer.HeadServer = function() {
 	this.$fs = (require('fs'));
-	this.$__dirname = '/usr/local/src/headServer';
+	this.$__dirname = '/usr/local/src/new';
 	this.$indexPageData = null;
 	this.$qManager = null;
 	this.$pubsub = null;

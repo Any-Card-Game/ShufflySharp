@@ -18,37 +18,38 @@ namespace Client
             var url = "http://50.116.22.241:8881/";
             //       window .topLevel = url;
 
-            loadCss(url + "client/lib/jquery-ui-1.8.20.custom.css");
-            loadCss(url + "client/lib/codemirror/codemirror.css");
-            loadCss(url + "client/lib/site.css");
-            loadCss(url + "client/lib/codemirror/theme/night.css");
-            loadCss(url + "client/lib/jqwidgets/styles/jqx.base.css");
+            loadCss(url + "lib/jquery-ui-1.8.20.custom.css");
+            loadCss(url + "lib/codemirror/codemirror.css");
+            loadCss(url + "lib/site.css");
+            loadCss(url + "lib/codemirror/theme/night.css");
+            loadCss(url + "lib/jqwidgets/styles/jqx.base.css");
 
 
-            scriptLoader.LoadSync(new[]{url + "client/lib/jquery-1.7.2.min.js",
-                url + "client/lib/jquery-ui-1.8.20.custom.min.js",
-                url + "client/lib/jqwidgets/scripts/gettheme.js",
-                url + "client/lib/jqwidgets/jqxcore.js"}, () => scriptLoader.Load(new[]{
-                    url + "client/lib/jqwidgets/jqxbuttons.js",
-                    url + "client/lib/jqwidgets/jqxscrollbar.js",
-                    url + "client/lib/linq.js",
-                    url + "client/lib/tween.js",
-                    url + "client/lib/socket.io.js",
-                    url + "client/lib/codemirror/codemirror.js",
-                    url + "client/lib/jqwidgets/jqxlistbox.js"}, () => scriptLoader.Load(new[] {url + "client/ClientHelp.js",
-                        url + "common/Help.js",
-                        url + "client/lib/codemirror/mode/javascript/javascript.js",
-                        url + "client/lib/WorkerConsole.js",
-                        url + "client/Gateway.js",
-                        url + "client/lib/FunctionWorker.js",
-                        url + "client/lib/Stats.js",
-                        url + "client/lib/keyboardjs.js",
-                        url + "client/UIManager.js",
-                        url + "client/UIArea.js",
-                        url + "client/PageHandler.js",
-                        url + "client/uis/genericArea.js",
-                        url + "client/ShuffUIManager.js",
-                        url + "client/lib/Dialog.js",
+            scriptLoader.LoadSync(new[]{url + "lib/jquery-1.7.2.min.js",
+                url + "lib/jquery-ui-1.8.20.custom.min.js",
+                url + "lib/jqwidgets/scripts/gettheme.js",
+                url + "lib/jqwidgets/jqxcore.js"}, () => scriptLoader.Load(new[]{
+                    url + "lib/jqwidgets/jqxbuttons.js",
+                    url + "lib/jqwidgets/jqxscrollbar.js",
+                    url + "lib/linq.js",
+                    url + "lib/tween.js",
+                    url + "lib/socket.io.js",
+                    url + "lib/codemirror/codemirror.js",
+                    url + "lib/jqwidgets/jqxlistbox.js"}, () => scriptLoader.Load(new[] {
+                        //url + "ClientHelp.js",
+                        //url + "common/Help.js",
+                        url + "lib/codemirror/mode/javascript/javascript.js",
+                        url + "lib/WorkerConsole.js",
+                        //url + "Gateway.js",
+                        url + "lib/FunctionWorker.js",
+                        url + "lib/Stats.js",
+                        url + "lib/keyboardjs.js",
+                        //url + "UIManager.js",
+                        //url + "UIArea.js",
+                        //url + "PageHandler.js",
+                        //url + "uis/genericArea.js",
+                        //url + "ShuffUIManager.js",
+                        url + "lib/Dialog.js",
                     }, ready)));
 
         }
@@ -85,7 +86,7 @@ namespace Client
                 Height = 450,
                 AllowClose = true,
                 AllowMinimize = true,
-                Visible = false
+                Visible = true
             });
 
             home.AddButton(new ShuffButton()
@@ -121,7 +122,7 @@ namespace Client
 
         }
 
-        public void loadCss(string filename)
+        private void loadCss(string filename)
         {
             var fileref = Document.CreateElement("link");
             fileref.SetAttribute("rel", "stylesheet");

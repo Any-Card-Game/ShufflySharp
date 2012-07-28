@@ -33,9 +33,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="EventEmitter.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GameAnswer.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="Size.cs" />
+    <Compile Include="TypeOrFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

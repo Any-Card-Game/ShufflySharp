@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{108D8A37-0782-4FFA-9A53-934E07B9B28A}</ProjectGuid>
+    <ProjectGuid>{BBF1829B-3446-4C0D-A75A-9BC713D2A6A1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SocketIOWebLibrary</RootNamespace>
-    <AssemblyName>SocketIOWebLibrary</AssemblyName>
+    <RootNamespace>CodeMirrorLibrary</RootNamespace>
+    <AssemblyName>CodeMirrorLibrary</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
@@ -32,28 +32,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeMirror.cs" />
+    <Compile Include="CodeMirrorOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.0.0.0.118\tools\Assemblies\mscorlib.dll</HintPath>
     </Reference>
+    <Reference Include="Script.Web, Version=0.7.0.0, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Saltarelle.Web.0.0.0.58\lib\Script.Web.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+    <ProjectReference Include="..\..\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeJSLibrary\NodeJSLibrary.csproj">
-      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
-      <Name>NodeJSLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SocketIOClient.cs" />
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

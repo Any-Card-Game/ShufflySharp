@@ -467,21 +467,27 @@
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
     <Compile Include="ShuffUI\ShuffButton.cs" />
-    <Compile Include="ShuffUI\ShuffClickEvent.cs" />
+    <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
     <Compile Include="ShuffUI\ShuffElement.cs" />
+    <Compile Include="ShuffUI\ShuffLabel.cs" />
+    <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />
     <Compile Include="ShuffUI\ShuffWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Libraries\WebLibraries\CodeMirrorLibrary\CodeMirrorLibrary.csproj">
+      <Project>{BBF1829B-3446-4C0D-A75A-9BC713D2A6A1}</Project>
+      <Name>CodeMirrorLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Libraries\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\CommonWebLibraries\CommonWebLibraries.csproj">
+    <ProjectReference Include="..\Libraries\WebLibraries\CommonWebLibraries\CommonWebLibraries.csproj">
       <Project>{6DA30112-FDBD-4E48-9F52-7268FCE19D25}</Project>
       <Name>CommonWebLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\SocketIOWebLibrary\SocketIOWebLibrary.csproj">
+    <ProjectReference Include="..\Libraries\WebLibraries\SocketIOWebLibrary\SocketIOWebLibrary.csproj">
       <Project>{108D8A37-0782-4FFA-9A53-934E07B9B28A}</Project>
       <Name>SocketIOWebLibrary</Name>
     </ProjectReference>

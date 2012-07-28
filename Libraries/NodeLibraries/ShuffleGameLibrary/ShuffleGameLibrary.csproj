@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</ProjectGuid>
+    <ProjectGuid>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SocketIONodeLibrary</RootNamespace>
-    <AssemblyName>SocketIONodeLibrary</AssemblyName>
+    <RootNamespace>ShuffleGameLibrary</RootNamespace>
+    <AssemblyName>ShuffleGameLibrary</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
@@ -32,10 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SocketIO.cs" />
-    <Compile Include="SocketIoClient.cs" />
-    <Compile Include="SocketIOConnection.cs" />
-    <Compile Include="SocketNamespace.cs" />
+    <Compile Include="GameCardGame.cs" />
+    <Compile Include="GameObject.cs" />
+    <Compile Include="Shuff.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -46,7 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+    <ProjectReference Include="..\..\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>

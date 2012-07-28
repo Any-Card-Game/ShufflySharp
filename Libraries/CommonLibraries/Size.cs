@@ -1,6 +1,3 @@
-// Class1.cs
-//
-
 using System.Runtime.CompilerServices;
 
 namespace CommonLibraries

@@ -14,7 +14,7 @@ namespace Build
             string[] projs = new string[]
                 {
                     @"ShuffleSharp\Libraries\CommonLibraries\",
-                    @"ShuffleSharp\Libraries\CommonShuffleLibrary\",
+                    @"ShuffleSharp\Libraries\NodeLibraries\CommonShuffleLibrary\",
                     @"ShuffleSharp\Servers\AdminServer\",
                     @"ShuffleSharp\Servers\ChatServer\",
                     @"ShuffleSharp\Servers\DebugServer\",
@@ -67,7 +67,7 @@ namespace Build
                 }
                 else
                 {
-                    output += "require('./mscorlib.debug.js');";
+                    //output += "require('./mscorlib.debug.js');";
                 }
 
                 foreach (var depe in depend.Value.IncludesAfter)

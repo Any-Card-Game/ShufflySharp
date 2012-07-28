@@ -18,32 +18,32 @@ namespace CommonShuffleLibraries
             redis.DebugMode = false;
             subClient = redis.CreateClient(6379, IPs.RedisIP);
             pubClient = redis.CreateClient(6379, IPs.RedisIP);
-            subClient.On("subscribe", delegate(string channel, int count) { Console.Log("subscribed: " + channel + " " + count); });
-            subClient.On("unsubscribe", delegate(string channel, int count) { Console.Log("unsubscribed: " + channel + " " + count); });
+            subClient.On("subscribe", (string channel, int count) => Console.Log("subscribed: " + channel + " " + count));
+            subClient.On("unsubscribe", (string channel, int count) => Console.Log("unsubscribed: " + channel + " " + count));
 
-            subClient.On("message", delegate(string channel, object message)
-                                        {
-                                            if (subbed.ContainsKey(channel))
-                                            {
-                                                subbed[channel].Invoke(message);
-                                            }
-                                        });
-            subClient.On("ready", delegate
-                                      {
-                                          sready = true;
-                                          if (sready && pready)
-                                          {
-                                              ready();
-                                          }
-                                      });
-            pubClient.On("ready", delegate
-                                      {
-                                          pready = true;
-                                          if (sready && pready)
-                                          {
-                                              ready();
-                                          }
-                                      });
+            subClient.On("message", (string channel, object message) =>
+                {
+                    if (subbed.ContainsKey(channel))
+                    {
+                        subbed[channel].Invoke(message);
+                    }
+                });
+            subClient.On("ready", () =>
+                {
+                    sready = true;
+                    if (sready && pready)
+                    {
+                        ready();
+                    }
+                });
+            pubClient.On("ready", () =>
+                {
+                    pready = true;
+                    if (sready && pready)
+                    {
+                        ready();
+                    }
+                });
         }
          
 

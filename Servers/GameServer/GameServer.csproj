@@ -42,7 +42,6 @@
     <Compile Include="GameSendAnswer.cs" />
     <Compile Include="GameServer.cs" />
     <Compile Include="JoinGameRequest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -85,6 +84,9 @@
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIOLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -11,11 +11,14 @@ namespace CommonShuffleLibraries
         public JsDictionary<string, Action<User, object>> channels;
         public List<QueueWatcher> qw;
         public List<QueuePusher> qp;
+        
+        //todo fix T
         [IgnoreGenericArguments] 
         public void AddChannel<T>(string channel, Action<User, object> callback)
         {
             channels[channel] = callback;
         }
+
         private void messageReceived(string name, User user, string eventChannel, object content)
         {
             user.Gateway = name;

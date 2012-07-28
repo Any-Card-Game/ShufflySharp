@@ -31,9 +31,9 @@ GatewayServer.GatewayServer = function() {
 	var myName = 'Gateway ' + CommonLibraries.Guid.newGuid();
 	this.$ps = new CommonShuffleLibraries.PubSub(Function.mkdel(this, function() {
 		this.$ps.subscribe('PUBSUB.GatewayServers.Ping', Function.mkdel(this, function(message) {
-			this.$ps.publish('PUBSUB.GatewayServers', 'http://' + CommonShuffleLibraries.IPs.get_gatewayIP() + ':' + port);
+			this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibraries.IPs.get_gatewayIP(), port));
 		}));
-		this.$ps.publish('PUBSUB.GatewayServers', 'http://' + CommonShuffleLibraries.IPs.get_gatewayIP() + ':' + port);
+		this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibraries.IPs.get_gatewayIP(), port));
 	}));
 	queueManager = new CommonShuffleLibraries.QueueManager(myName, new CommonShuffleLibraries.QueueManagerOptions([new CommonShuffleLibraries.QueueWatcher('GatewayServer', Function.mkdel(this, this.$messageReceived)), new CommonShuffleLibraries.QueueWatcher(myName, Function.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'DebugServer', 'ChatServer', 'HeadServer']));
 	io.sockets.on('connection', Function.mkdel(this, function(socket) {

@@ -22,6 +22,7 @@ namespace Build
                     @"ShuffleSharp\Servers\GatewayServer\",
                     @"ShuffleSharp\Servers\HeadServer\",
                     @"ShuffleSharp\Servers\SiteServer\",
+                    @"ShuffleSharp\Client\",
                 };
             var pre = Directory.GetCurrentDirectory() + @"\..\..\..\..\..\";
 
@@ -53,6 +54,7 @@ namespace Build
                                 @"./CommonShuffleLibrary.js", 
                             })},
                     {@"ShuffleSharp\Servers\SiteServer\", new Tuple<string, List<string>>("",new List<string>() {})},
+                    {@"ShuffleSharp\Client\", new Tuple<string, List<string>>("",new List<string>() {})},
                 };
             foreach (var depend in depends)
             {

@@ -211,8 +211,9 @@ namespace GameServer
                         break;
                     }
                 }
-                if (room == null)
+                if (room == null) 
                     return;
+                
 
                 GameAnswer dict = new GameAnswer();
                 dict.Value = data.Answer;

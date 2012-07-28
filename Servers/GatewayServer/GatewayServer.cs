@@ -33,8 +33,8 @@ namespace GatewayServer
 
             ps = new PubSub(()=>
             {
-                ps.Subscribe("PUBSUB.GatewayServers.Ping", message => ps.Publish("PUBSUB.GatewayServers", "http://" + IPs.GatewayIP + ":" + port));
-                ps.Publish("PUBSUB.GatewayServers", "http://" + IPs.GatewayIP + ":" + port);
+                ps.Subscribe("PUBSUB.GatewayServers.Ping", message => ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port)));
+                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port));
 
 
             });

@@ -8,15 +8,14 @@ namespace CommonShuffleLibraries
 {
     public class QueueWatcher : QueueItem
     {
-        private Action<string, User, string, object> callback;
         private RedisClient client1;
-        public Action<string, User, string, object> Callback { get { return callback; } set { callback = value; } }
+        public Action<string, User, string, object> Callback { get; set; }
 
 
         public QueueWatcher(string queue, Action<string, User, string, object> callback)
         {
             Channel = queue;
-            this.callback = callback;
+            Callback = callback;
 
             Redis redis = Global.Require<Redis>("redis");
             ((JsDictionary)(object)redis)["foo"] = 2;
@@ -27,16 +26,16 @@ namespace CommonShuffleLibraries
         }
         public void Cycle(string channel)
         {
-            client1.BLPop(new object[] { channel, 0 }, delegate(string caller, object dtj)
-                                                           {
-                                                               string[] data = (string[]) dtj; 
-                                                               if (dtj != null)
-                                                               {
-                                                                   QueueMessage dt = Json.ParseData<QueueMessage>(data[1]);
-                                                                   Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);
-                                                               }
-                                                               Cycle(channel);
-                                                           });
+            client1.BLPop(new object[] { channel, 0 }, (caller, dtj) =>
+                {
+                    string[] data = (string[]) dtj;
+                    if (dtj != null)
+                    {
+                        QueueMessage dt = Json.ParseData<QueueMessage>(data[1]);
+                        Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);
+                    }
+                    Cycle(channel);
+                });
         }
     }
 

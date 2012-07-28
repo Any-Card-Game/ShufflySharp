@@ -11,7 +11,7 @@ CommonShuffleLibraries.$QueueItemCollection.prototype = {
 		try {
 			while ($t1.moveNext()) {
 				var queueWatcher = $t1.get_current();
-				if (ss.referenceEquals(queueWatcher.get_channel(), channel) || channel.indexOf(queueWatcher.get_channel().replaceAll('*', '')) === 0) {
+				if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(queueWatcher.channel.replaceAll('*', '')) === 0) {
 					return queueWatcher;
 				}
 			}
@@ -112,15 +112,7 @@ CommonShuffleLibraries.PubSub.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibraries.QueueItem
 CommonShuffleLibraries.QueueItem = function() {
-	this.$channel = null;
-};
-CommonShuffleLibraries.QueueItem.prototype = {
-	get_channel: function() {
-		return this.$channel;
-	},
-	set_channel: function(value) {
-		this.$channel = value;
-	}
+	this.channel = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibraries.QueueManager
@@ -135,18 +127,16 @@ CommonShuffleLibraries.QueueManager = function(name, options) {
 	this.channels = ({});
 	this.qw = new Array();
 	this.qp = new Array();
-	var $t1 = options.get_watchers();
-	for (var $t2 = 0; $t2 < $t1.length; $t2++) {
-		var queueWatcher = $t1[$t2];
+	for (var $t1 = 0; $t1 < options.watchers.length; $t1++) {
+		var queueWatcher = options.watchers[$t1];
 		if (ss.isNullOrUndefined(queueWatcher.get_callback())) {
 			queueWatcher.set_callback(Function.mkdel(this, this.$messageReceived));
 		}
 		this.qw.add(queueWatcher);
 	}
-	this.qw.addRange(options.get_watchers());
-	var $t3 = options.get_pushers();
-	for (var $t4 = 0; $t4 < $t3.length; $t4++) {
-		var pusher = $t3[$t4];
+	this.qw.addRange(options.watchers);
+	for (var $t2 = 0; $t2 < options.pushers.length; $t2++) {
+		var pusher = options.pushers[$t2];
 		this.qp.add(new CommonShuffleLibraries.QueuePusher(pusher));
 	}
 	this.$qwCollection = new CommonShuffleLibraries.$QueueItemCollection(this.qw);
@@ -174,24 +164,10 @@ CommonShuffleLibraries.QueueManager.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibraries.QueueManagerOptions
 CommonShuffleLibraries.QueueManagerOptions = function(watchers, pushers) {
-	this.$pushers = null;
-	this.$watchers = null;
-	this.set_pushers(pushers);
-	this.set_watchers(watchers);
-};
-CommonShuffleLibraries.QueueManagerOptions.prototype = {
-	get_pushers: function() {
-		return this.$pushers;
-	},
-	set_pushers: function(value) {
-		this.$pushers = value;
-	},
-	get_watchers: function() {
-		return this.$watchers;
-	},
-	set_watchers: function(value) {
-		this.$watchers = value;
-	}
+	this.pushers = null;
+	this.watchers = null;
+	this.pushers = pushers;
+	this.watchers = watchers;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibraries.QueueMessage
@@ -211,7 +187,7 @@ CommonShuffleLibraries.QueuePusher = function(pusher) {
 	this.$client1 = null;
 	CommonShuffleLibraries.QueueItem.call(this);
 	var redis = require('redis');
-	this.set_channel(pusher);
+	this.channel = pusher;
 	this.$client1 = redis.createClient(6379, CommonShuffleLibraries.IPs.get_redisIP());
 };
 CommonShuffleLibraries.QueuePusher.prototype = {
@@ -225,11 +201,11 @@ CommonShuffleLibraries.QueuePusher.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibraries.QueueWatcher
 CommonShuffleLibraries.QueueWatcher = function(queue, callback) {
-	this.$callback = null;
 	this.$client1 = null;
+	this.$2$CallbackField = null;
 	CommonShuffleLibraries.QueueItem.call(this);
-	this.set_channel(queue);
-	this.$callback = callback;
+	this.channel = queue;
+	this.set_callback(callback);
 	var redis = require('redis');
 	redis['foo'] = 2;
 	this.$client1 = redis.createClient(6379, CommonShuffleLibraries.IPs.get_redisIP());
@@ -237,10 +213,10 @@ CommonShuffleLibraries.QueueWatcher = function(queue, callback) {
 };
 CommonShuffleLibraries.QueueWatcher.prototype = {
 	get_callback: function() {
-		return this.$callback;
+		return this.$2$CallbackField;
 	},
 	set_callback: function(value) {
-		this.$callback = value;
+		this.$2$CallbackField = value;
 	},
 	cycle: function(channel) {
 		this.$client1.blpop([channel, 0], Function.mkdel(this, function(caller, dtj) {

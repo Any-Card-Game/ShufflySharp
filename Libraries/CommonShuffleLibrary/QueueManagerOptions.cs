@@ -2,10 +2,8 @@ namespace CommonShuffleLibraries
 {
     public class QueueManagerOptions
     {
-        private string[] pushers;
-        public string[] Pushers { get { return pushers; } set { pushers = value; } }
-        private QueueWatcher[] watchers;
-        public QueueWatcher[] Watchers { get { return watchers; } set { watchers = value; } }
+        public string[] Pushers;
+        public QueueWatcher[] Watchers;
 
         public QueueManagerOptions(QueueWatcher[] watchers, string[] pushers)
         {

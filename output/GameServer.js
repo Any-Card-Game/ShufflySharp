@@ -19,7 +19,7 @@ GameServer.DataManager = function() {
 	this.$connection = mongo.Connection;
 	var server = this.$server = mongo.Server;
 	this.client = (new Db('test', new server('50.116.28.16', 27017, {})));
-	this.client.open(function() {
+	this.client.open(function(arg1, arg2) {
 		//client.Collection("test_insert", "test");
 	});
 };

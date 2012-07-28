@@ -23,10 +23,10 @@ namespace GameServer
             MongoServer server=Server = mongo.Server;
             
             client = getMongo();
-            client.Open(delegate
-                            {
-                                //client.Collection("test_insert", "test");
-                            });
+            client.Open((arg1, arg2) =>
+                {
+                    //client.Collection("test_insert", "test");
+                });
 
         }
         [InlineCode("new Db('test', new server('50.116.28.16', 27017, {}))")]
@@ -47,13 +47,13 @@ namespace GameServer
 
         public void Insert(string gameName, int answerIndex)
         {
-            manager.client.Collection("gameInfo", delegate(string err, MongoCollection collection)
-                                                      {
-                                                          GameInfoObject gmo = new GameInfoObject();
-                                                          gmo.GameName = gameName;
-                                                          gmo.Answer= answerIndex;
-                                                          collection.Insert(gmo);
-                                                      });
+            manager.client.Collection("gameInfo", (err, collection) =>
+                {
+                    GameInfoObject gmo = new GameInfoObject();
+                    gmo.GameName = gameName;
+                    gmo.Answer = answerIndex;
+                    collection.Insert(gmo);
+                });
         }
     }
 

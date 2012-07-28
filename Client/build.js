@@ -6,13 +6,13 @@
     **/
     var scriptLoader = {
         _loadScript: function (url, callback) {
-            var head = document.getElementsByTagName('head')[0];
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
+            var head = document.getElementsByTagName("head")[0];
+            var script = document.createElement("script");
+            script.type = "text/javascript";
             script.src = url; // +"?" + (Math.floor(Math.random() * 10000)); //caching
             if (callback) {
                 script.onreadystatechange = function () {
-                    if (this.readyState == 'loaded') callback();
+                    if (this.readyState == "loaded") callback();
                 };
                 script.onload = callback;
             }
@@ -56,44 +56,44 @@
 
 
 
-    //var url = 'https://s3.amazonaws.com/anycardgame/';
-    var url = 'http://50.116.22.241:8881/';
+    //var url = "https://s3.amazonaws.com/anycardgame/";
+    var url = "http://50.116.22.241:8881/";
     window.topLevel = url;
 
-    loadCss(url + 'client/lib/jquery-ui-1.8.20.custom.css');
-    loadCss(url + 'client/lib/codemirror/codemirror.css');
-    loadCss(url + 'client/lib/site.css');
-    loadCss(url + 'client/lib/codemirror/theme/night.css');
-    loadCss(url + 'client/lib/jqwidgets/styles/jqx.base.css');
+    loadCss(url + "client/lib/jquery-ui-1.8.20.custom.css");
+    loadCss(url + "client/lib/codemirror/codemirror.css");
+    loadCss(url + "client/lib/site.css");
+    loadCss(url + "client/lib/codemirror/theme/night.css");
+    loadCss(url + "client/lib/jqwidgets/styles/jqx.base.css");
 
 
-    scriptLoader.loadSync([url + 'client/lib/jquery-1.7.2.min.js',
-                url + 'client/lib/jquery-ui-1.8.20.custom.min.js',
-                url + 'client/lib/jqwidgets/scripts/gettheme.js',
-                url + 'client/lib/jqwidgets/jqxcore.js'], function () {
+    scriptLoader.loadSync([url + "client/lib/jquery-1.7.2.min.js",
+                url + "client/lib/jquery-ui-1.8.20.custom.min.js",
+                url + "client/lib/jqwidgets/scripts/gettheme.js",
+                url + "client/lib/jqwidgets/jqxcore.js"], function () {
                     scriptLoader.load([
-                            url + 'client/lib/jqwidgets/jqxbuttons.js',
-                            url + 'client/lib/jqwidgets/jqxscrollbar.js',
-                            url + 'client/lib/linq.js',
-                            url + 'client/lib/tween.js',
-                            url + 'client/lib/socket.io.js',
-                            url + 'client/lib/codemirror/codemirror.js',
-                            url + 'client/lib/jqwidgets/jqxlistbox.js'], function () {
+                            url + "client/lib/jqwidgets/jqxbuttons.js",
+                            url + "client/lib/jqwidgets/jqxscrollbar.js",
+                            url + "client/lib/linq.js",
+                            url + "client/lib/tween.js",
+                            url + "client/lib/socket.io.js",
+                            url + "client/lib/codemirror/codemirror.js",
+                            url + "client/lib/jqwidgets/jqxlistbox.js"], function () {
 
-                                scriptLoader.load([url + 'client/ClientHelp.js',
-                                        url + 'common/Help.js',
-                                        url + 'client/lib/codemirror/mode/javascript/javascript.js',
-                                        url + 'client/lib/WorkerConsole.js',
-                                        url + 'client/Gateway.js',
-                                        url + 'client/lib/FunctionWorker.js',
-                                        url + 'client/lib/Stats.js',
-                                        url + 'client/lib/keyboardjs.js',
-                                        url + 'client/UIManager.js',
-                                        url + 'client/UIArea.js',
-                                        url + 'client/PageHandler.js',
-                                        url + 'client/uis/genericArea.js',
-                                        url + 'client/ShuffUIManager.js',
-                                        url + 'client/lib/Dialog.js',
+                                scriptLoader.load([url + "client/ClientHelp.js",
+                                        url + "common/Help.js",
+                                        url + "client/lib/codemirror/mode/javascript/javascript.js",
+                                        url + "client/lib/WorkerConsole.js",
+                                        url + "client/Gateway.js",
+                                        url + "client/lib/FunctionWorker.js",
+                                        url + "client/lib/Stats.js",
+                                        url + "client/lib/keyboardjs.js",
+                                        url + "client/UIManager.js",
+                                        url + "client/UIArea.js",
+                                        url + "client/PageHandler.js",
+                                        url + "client/uis/genericArea.js",
+                                        url + "client/ShuffUIManager.js",
+                                        url + "client/lib/Dialog.js",
                                     ], ready);
                             });
 
@@ -102,7 +102,7 @@
 
 
     function ready() {
-        var elem; (elem = document.getElementById('loading')).parentNode.removeChild(elem);
+        var elem; (elem = document.getElementById("loading")).parentNode.removeChild(elem);
 
         var stats = new xStats;
         document.body.appendChild(stats.element);
@@ -118,7 +118,7 @@
 
         var home = shuffUIManager.createWindow({
             title: "CardGame",
-            x: $('body').innerWidth() - 500,
+            x: $("body").innerWidth() - 500,
             y: 100,
             width: 420,
             height: 450,
@@ -133,9 +133,9 @@
             y: 54,
             width: 150,
             height: 25,
-            text: 'Update Game List',
+            text: "Update Game List",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Game.GetGames', devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.GetGames", devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
             }
         });
@@ -145,9 +145,9 @@
             y: 84,
             width: 150,
             height: 25,
-            text: 'Create Game',
+            text: "Create Game",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Game.Create', { user: { userName: genericArea.txtUserName[0].value} }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.Create", { user: { userName: genericArea.txtUserName[0].value} }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
             }
         });
@@ -158,9 +158,9 @@
             y: 164,
             width: 150,
             height: 25,
-            text: 'Start Game',
+            text: "Start Game",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Game.Start', { roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.Start", { roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
             },
             visible: false
         });
@@ -170,15 +170,15 @@
             y: 164,
             width: 120,
             height: 25,
-            text: 'Start Game',
+            text: "Start Game",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Game.Start', { roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.Start", { roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
             }
         });
 
 
-        var randomName = '';
+        var randomName = "";
         var ra = Math.random() * 10;
         for (var i = 0; i < ra; i++) {
             randomName += String.fromCharCode(65 + (Math.random() * 26));
@@ -190,7 +190,7 @@
             width: 130,
             height: 20,
             text: randomName,
-            label: 'Username:'
+            label: "Username:"
         });
 
 
@@ -200,9 +200,9 @@
             y: 85,
             width: 215,
             height: 25 * 6,
-            label: 'Rooms',
+            label: "Rooms",
             click: function () {
-                window.PageHandler.gateway.emit('Area.Game.Join', { roomID: id, user: { userName: genericArea.txtUserName[0].value} }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.Join", { roomID: id, user: { userName: genericArea.txtUserName[0].value} }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
             }
         });
         genericArea.userList = home.addListBox({
@@ -210,7 +210,7 @@
             y: 280,
             width: 215,
             height: 25 * 5,
-            label: 'Users'
+            label: "Users"
         });
 
 
@@ -235,7 +235,7 @@
                 y: 280,
                 width: 215,
                 height: 25 * 5,
-                label: 'Users',
+                label: "Users",
                 items: users
             });
 
@@ -256,10 +256,10 @@
                 y: 85,
                 width: 215,
                 height: 25 * 6,
-                label: 'Rooms',
+                label: "Rooms",
                 items: rooms,
                 click: function (item) {
-                    window.PageHandler.gateway.emit('Area.Game.Join', { roomID: item.value, user: { userName: genericArea.txtUserName.val()} }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    window.PageHandler.gateway.emit("Area.Game.Join", { roomID: item.value, user: { userName: genericArea.txtUserName.val()} }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
             });
         };
@@ -268,7 +268,7 @@
 
         var devArea = shuffUIManager.createWindow({
             title: "Developer",
-            x: $('body').innerWidth() - 500,
+            x: $("body").innerWidth() - 500,
             y: 100,
             width: 420,
             height: 450,
@@ -282,9 +282,9 @@
             devArea.created = false;
             devArea.joined = 0;
             window.PageHandler.startGameServer();
-            window.PageHandler.gateway.emit('Area.Debug.Create', {
+            window.PageHandler.gateway.emit("Area.Debug.Create", {
                 user: { userName: devArea.txtNumOfPlayers.val() },
-                name: 'main room',
+                name: "main room",
                 source: window.shuffUIManager.codeArea.codeEditor.getValue(),
                 breakPoints: window.shuffUIManager.codeArea.breakPoints
             }); 
@@ -296,7 +296,7 @@
             y: 54,
             width: 150,
             height: 25,
-            text: 'Begin Game',
+            text: "Begin Game",
             click: devArea.beginGame
         });
         
@@ -306,14 +306,14 @@
             y: 80,
             width: 250,
             height: 25,
-            text: 'How Many: '
+            text: "How Many: "
         });
         devArea.lblAnother = devArea.addLabel({
             x: 280 - 200,
             y: 100,
             width: 250,
             height: 25,
-            text: 'Another:  '
+            text: "Another:  "
         });
 
 
@@ -322,9 +322,9 @@
             y: 94,
             width: 150,
             height: 25,
-            text: 'Continue',
+            text: "Continue",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Debug.Continue', {}, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Debug.Continue", {}, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
             }
         });
@@ -334,8 +334,8 @@
             width: 250,
             height: 250,
             itemCreation: function (item, index) {
-                var ik = $("<div style='width:100%;height:25px; background-color:" + (index % 2 == 0 ? 'red' : 'green') + ";'></div>");
-                var ikc = $("<div style='width:50%;height:25px; float:left;'>" + item.key + "</div>");
+                var ik = $("<div style='width:100%;height:25px; background-color:" + (index % 2 == 0 ? "red" : "green") + ";'></div>");
+                var ikc = $("<div style='width:50%;height:25px; float:left;'>"+ item.key + "</div>");
                 ik.append(ikc);
                 var ikd = $("<input type='text' style='width:48%;height:25px' value='" + item.value + "' />");
                 ik.append(ikd);
@@ -345,39 +345,39 @@
             }
         });
 
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
-        devArea.propBox.addItem({ key: 'Foos', value: '99' });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
+        devArea.propBox.addItem({ key: "Foos", value: "99" });
 
         devArea.varText = devArea.addTextbox({
             x: 150,
             y: 134,
             width: 100,
             height: 25,
-            label: 'Var Lookup'
+            label: "Var Lookup"
         });
         devArea.addButton({
             x: 280,
             y: 134,
             width: 150,
             height: 25,
-            text: 'Lookup',
+            text: "Lookup",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Debug.VariableLookup.Request', { variableName: devArea.varText.val() }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Debug.VariableLookup.Request", { variableName: devArea.varText.val() }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
             }
         });
 
@@ -386,10 +386,10 @@
             y: 164,
             width: 150,
             height: 25,
-            text: 'Push New Source',
+            text: "Push New Source",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Debug.PushNewSource', { source: window.shuffUIManager.codeArea.codeEditor.getValue(), breakPoints: window.shuffUIManager.codeArea.breakPoints },
-                    devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Debug.PushNewSource", { source: window.shuffUIManager.codeArea.codeEditor.getValue(), breakPoints: window.shuffUIManager.codeArea.breakPoints },
+                    devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
             }
         });
 
@@ -400,16 +400,16 @@
             
             var count = parseInt(devArea.txtNumOfPlayers.val());
             if (!devArea.created) {
-                window.PageHandler.gateway.emit('Area.Game.DebuggerJoin', { roomID: room.roomID }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.DebuggerJoin", { roomID: room.roomID }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
                 for (var i = 0; i < count; i++) {
-                    window.PageHandler.gateway.emit('Area.Game.Join', { roomID: room.roomID, user: { userName: "player " + (i + 1)} }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    window.PageHandler.gateway.emit("Area.Game.Join", { roomID: room.roomID, user: { userName: "player " + (i + 1)} }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
                 devArea.created = true;
             }
             else {
                 if ((++devArea.joined) == count) {
-                    window.PageHandler.gateway.emit('Area.Game.Start', { roomID: room.roomID }, devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    window.PageHandler.gateway.emit("Area.Game.Start", { roomID: room.roomID }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
             }
         };
@@ -419,9 +419,9 @@
             y: 43,
             width: 130,
             height: 20,
-            text: '6',
-            label: 'Number of players:',
-            labelStyle: 'font-size:13px'
+            text: "6",
+            label: "Number of players:",
+            labelStyle: "font-size:13px"
         });
 
         var codeArea = shuffUIManager.createWindow({
@@ -440,9 +440,9 @@
 
         window.shuffUIManager.codeArea = codeArea;
         window.shuffUIManager.codeArea.breakPoints = [];
-        window.shuffUIManager.codeArea.console = codeArea.addCodeEditor({ height: '20%', lineNumbes: false });
+        window.shuffUIManager.codeArea.console = codeArea.addCodeEditor({ height: "20%", lineNumbes: false });
 
-        window.shuffUIManager.codeArea.codeEditor = codeArea.addCodeEditor({ height: '80%', lineNumbers: true });
+        window.shuffUIManager.codeArea.codeEditor = codeArea.addCodeEditor({ height: "80%", lineNumbers: true });
 
 
         /*
@@ -491,9 +491,9 @@
             y: 5,
             width: 150,
             height: 25,
-            text: '',
+            text: "",
             click: function (e) {
-                window.PageHandler.gateway.emit('Area.Game.GetGames', devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                window.PageHandler.gateway.emit("Area.Game.GetGames", devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
             }
         });
@@ -514,7 +514,7 @@
                 y: 65,
                 width: 215,
                 height: 25 * 5,
-                label: 'Answers',
+                label: "Answers",
                 items: answers,
                 click: function (item) {
                     window.PageHandler.gateway.emit("Area.Game.AnswerQuestion", { answer: item.value, roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer);
@@ -530,7 +530,7 @@
             y: 65,
             width: 215,
             height: 25 * 5,
-            label: 'Answers',
+            label: "Answers",
             click: function (item) {
                 window.PageHandler.gateway.emit("Area.Game.AnswerQuestion", { answer: item.index, roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer);
                 window.shuffUIManager.questionArea.visible = false;
@@ -556,7 +556,7 @@
 
 
 
-        // window.PageHandler.gateway.emit('Area.Game.GetGames', devArea.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+        // window.PageHandler.gateway.emit("Area.Game.GetGames", devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
 
 
@@ -580,22 +580,22 @@
         y: 90,
         width: 100,
         height: 24,
-        text: 'football'
+        text: "football"
         });
         main.addTextbox({
         x: 80,
         y: 140,
         width: 100,
         height: 24,
-        text: 'football',
-        label: 'name'
+        text: "football",
+        label: "name"
         });
         main.addListBox({
         x: 220,
         y: 140,
         width: 180,
         height: 80,
-        label: 'name',
+        label: "name",
         items: ["Affogato", "Americano", "Bicerin", "Breve", "Café Bombón", "Café au lait", "Caffé Corretto", "Café Crema", "Caffé Latte", "Caffé macchiato", "Café mélange", "Coffee milk", "Cafe mocha", "Cappuccino", "Carajillo", "Cortado", "Cuban espresso", "Espresso", "Eiskaffee", "The Flat White", "Frappuccino", "Galao", "Greek frappé coffee", "Iced Coffee﻿", "Indian filter coffee", "Instant coffee", "Irish coffee", "Liqueur coffee"]
         });
         var adWindow = shuffUIManager.createWindow({

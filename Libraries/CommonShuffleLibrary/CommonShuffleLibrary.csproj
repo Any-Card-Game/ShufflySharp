@@ -53,6 +53,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+      <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
+      <Name>CommonLibraries</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NodeJSLibrary\NodeJSLibrary.csproj">
       <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
       <Name>NodeJSLibrary</Name>
@@ -61,9 +65,9 @@
       <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
       <Name>RedisLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SocketIOLibrary\SocketIOLibrary.csproj">
+    <ProjectReference Include="..\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
-      <Name>SocketIOLibrary</Name>
+      <Name>SocketIONodeLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -62,9 +62,9 @@
       <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
       <Name>RedisLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\SocketIOLibrary\SocketIOLibrary.csproj">
+    <ProjectReference Include="..\..\Libraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
-      <Name>SocketIOLibrary</Name>
+      <Name>SocketIONodeLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

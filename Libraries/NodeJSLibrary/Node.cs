@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+
 namespace NodeJSLibrary
 { 
     [IgnoreNamespace]
@@ -24,13 +25,5 @@ namespace NodeJSLibrary
         public static void SetTimeout(Action pollGateways, int poll)
         {
         } 
-    }
-
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    [ScriptName("process")] 
-    public  class Process : EventEmitter
-    {
-
     }
 }

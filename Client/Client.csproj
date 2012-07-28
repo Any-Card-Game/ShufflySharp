@@ -90,8 +90,6 @@
     <Content Include="build.js" />
     <Content Include="ClientHelp.js" />
     <Content Include="editorTest.htm" />
-    <Content Include="Gateway.js" />
-    <Content Include="htmltest.htm" />
     <Content Include="lib\codemirror\codemirror.css" />
     <Content Include="lib\codemirror\codemirror.js" />
     <Content Include="lib\codemirror\mode\javascript\index.html" />
@@ -434,10 +432,8 @@
     <Content Include="lib\WebSocketMainInsecure.swf" />
     <Content Include="lib\WorkerConsole.js" />
     <Content Include="PageHandler.js" />
-    <Content Include="ShuffUIArea.js" />
-    <Content Include="ShuffUIManager.js" />
-    <Content Include="UIArea.js" />
-    <Content Include="UIManager.js" />
+    <Content Include="ShuffUI\ShuffUIArea.js" />
+    <Content Include="ShuffUI\ShuffUIManager.js" />
     <Content Include="uis\genericArea.js" />
   </ItemGroup>
   <ItemGroup>
@@ -451,6 +447,13 @@
     <Reference Include="mscorlib">
       <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.0.0.0.118\tools\Assemblies\mscorlib.dll</HintPath>
     </Reference>
+    <Reference Include="Script.jQuery, Version=0.0.0.45, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Saltarelle.jQuery.0.0.0.45\lib\Script.jQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="Script.jQuery.UI">
+      <HintPath>..\packages\Saltarelle.jQuery.UI.0.0.0.9\lib\Script.jQuery.UI.dll</HintPath>
+    </Reference>
     <Reference Include="Script.Web, Version=0.0.0.58, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Saltarelle.Web.0.0.0.58\lib\Script.Web.dll</HintPath>
@@ -458,6 +461,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
+    <Compile Include="ClientHelp.cs" />
+    <Compile Include="Gateway.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="PageHandler.cs" />
+    <Compile Include="ScriptLoader.cs" />
+    <Compile Include="ShuffUI\ShuffButton.cs" />
+    <Compile Include="ShuffUI\ShuffClickEvent.cs" />
+    <Compile Include="ShuffUI\ShuffElement.cs" />
+    <Compile Include="ShuffUI\ShuffUIManager.cs" />
+    <Compile Include="ShuffUI\ShuffWindow.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\CommonLibraries\CommonLibraries.csproj">
+      <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
+      <Name>CommonLibraries</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\CommonWebLibraries\CommonWebLibraries.csproj">
+      <Project>{6DA30112-FDBD-4E48-9F52-7268FCE19D25}</Project>
+      <Name>CommonWebLibraries</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\SocketIOWebLibrary\SocketIOWebLibrary.csproj">
+      <Project>{108D8A37-0782-4FFA-9A53-934E07B9B28A}</Project>
+      <Name>SocketIOWebLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

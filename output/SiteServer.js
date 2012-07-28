@@ -1,2 +1,2 @@
-require('./mscorlib.debug.js');
+require('./mscorlib.node.debug.js');
 

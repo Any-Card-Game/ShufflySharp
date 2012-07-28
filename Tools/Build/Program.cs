@@ -35,35 +35,42 @@ namespace Build
 
             }
 
-            var depends = new Dictionary<string, Tuple<string,List<string>>>
+            var depends = new Dictionary<string, Application>
                 {
-                    {@"ShuffleSharp\Servers\AdminServer\", new Tuple<string, List<string>>("",new List<string>() {})},
-                    {@"ShuffleSharp\Servers\ChatServer\", new Tuple<string, List<string>>("",new List<string>() {})},
-                    {@"ShuffleSharp\Servers\DebugServer\", new Tuple<string, List<string>>("",new List<string>() {})},
+                    {@"ShuffleSharp\Servers\AdminServer\", new Application(true,"",new List<string>() {})},
+                    {@"ShuffleSharp\Servers\ChatServer\", new Application(true,"",new List<string>() {})},
+                    {@"ShuffleSharp\Servers\DebugServer\", new Application(true,"",new List<string>() {})},
                     {
-                        @"ShuffleSharp\Servers\GameServer\",new Tuple<string, List<string>>("new GameServer.GameServer();",new List<string>() {
+                        @"ShuffleSharp\Servers\GameServer\",new Application(true,"new GameServer.GameServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
                             }) 
                     },
-                    {@"ShuffleSharp\Servers\GatewayServer\", new Tuple<string, List<string>>("new GatewayServer.GatewayServer();",new List<string>() {
+                    {@"ShuffleSharp\Servers\GatewayServer\", new Application(true,"new GatewayServer.GatewayServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
                             })},
-                    {@"ShuffleSharp\Servers\HeadServer\", new Tuple<string, List<string>>("new HeadServer.HeadServer();",new List<string>() { 
+                    {@"ShuffleSharp\Servers\HeadServer\", new Application(true,"new HeadServer.HeadServer();",new List<string>() { 
                                 @"./CommonShuffleLibrary.js", 
                             })},
-                    {@"ShuffleSharp\Servers\SiteServer\", new Tuple<string, List<string>>("",new List<string>() {})},
-                    {@"ShuffleSharp\Client\", new Tuple<string, List<string>>("",new List<string>() {})},
+                    {@"ShuffleSharp\Servers\SiteServer\", new Application(true,"",new List<string>() {})},
+                    {@"ShuffleSharp\Client\", new Application(false,"",new List<string>() {})},
                 };
             foreach (var depend in depends)
             {
                 var to = pre + @"ShuffleSharp\output\" + depend.Key.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 string output="";
 
-                output += "require('./mscorlib.debug.js');";
+                if (depend.Value.Node)
+                {
+                    output += "require('./mscorlib.node.debug.js');";
+                }
+                else
+                {
+                    output += "require('./mscorlib.debug.js');";
+                }
 
-                foreach (var depe in depend.Value.Item2)
+                foreach (var depe in depend.Value.IncludesAfter)
                 {
                     output+=string.Format("require('{0}');", depe);
                 }
@@ -72,10 +79,24 @@ namespace Build
                 lines.Add(output);
                 lines.AddRange(File.ReadAllLines(to));
 
-                lines.Add(depend.Value.Item1);
+                lines.Add(depend.Value.After);
 
                 File.WriteAllLines(to, lines);
             }
+        }
+        public class Application
+        {
+            public Application(bool node, string prepend,List<string> includesAfter)
+            {
+                After = prepend;
+                Node = node;
+                IncludesAfter = includesAfter;
+            }
+
+            public string After { get; set; }
+            public bool Node { get; set; }
+            public List<string> IncludesAfter { get; set; }
+
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using NodeJSLibrary;
+using CommonsLibraries; 
 
-namespace SocketIOLibrary
+namespace SocketIONodeLibrary
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]

@@ -1,15 +1,20 @@
-﻿
-
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Html;
+using Client.ShuffUI;
+using CommonWebLibraries;
+using jQueryApi;
 
 namespace Client
 {
     public class BuildSite
     {
+        private readonly string gatewayServerAddress;
         private ScriptLoader scriptLoader = new ScriptLoader();
         public BuildSite(string gatewayServerAddress)
         {
+            this.gatewayServerAddress = gatewayServerAddress;
             var url = "http://50.116.22.241:8881/";
             //       window .topLevel = url;
 
@@ -48,11 +53,70 @@ namespace Client
 
         }
 
+        private ShuffWindow home;
+        private ShuffWindow devArea;
+        private ShuffWindow genericArea;
         private void ready()
         {
 
             var elem = Document.GetElementById("loading");
             elem.ParentNode.RemoveChild(elem);
+
+            var stats = new XStats();
+            Document.Body.AppendChild(stats.Element);
+
+
+
+            var pageHandler = new PageHandler(gatewayServerAddress);
+
+
+            var shuffUIManager = new ShuffUIManager();
+            Globals.Window.shuffUIManager = shuffUIManager;
+
+            
+            Globals.Window.shuffUIManager.genericArea = genericArea;
+
+            home = shuffUIManager.CreateWindow(new ShuffWindow()
+            {
+                Title = "CardGame",
+                X = jQuery.Select("body").GetInnerWidth() - 500,
+                Y = 100,
+                Width = 420,
+                Height = 450,
+                AllowClose = true,
+                AllowMinimize = true,
+                Visible = false
+            });
+
+            home.AddButton(new ShuffButton()
+            {
+                X = 280,
+                Y = 54,
+                Width = 150,
+                Height = 25,
+                Text = "Update Game List",
+                Click = (e) =>
+                {
+                    Globals.Window.PageHandler.gateway.emit("Area.Game.GetGames",
+                        devArea.Instance.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+
+                }
+            });
+
+            home.AddButton(new ShuffButton()
+            {
+                X = 280,
+                Y = 84,
+                Width = 150,
+                Height = 25,
+                Text = "Create Game",
+                Click = (e) =>
+                {
+                    Globals.Window.PageHandler.gateway.emit("Area.Game.Create",new { User= new { UserName= genericArea.Instance.txtUserName[0].value} }, devArea.Instance.GameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+
+
+                }
+            });
 
 
         }
@@ -64,65 +128,6 @@ namespace Client
             fileref.SetAttribute("type", "text/css");
             fileref.SetAttribute("href", filename);
             Document.GetElementsByTagName("head")[0].AppendChild(fileref);
-        }
-    }
-    public class ScriptLoader
-    {
-        private void loadScript(string url, Action callback)
-        {
-
-            var head = Document.GetElementsByTagName("head")[0];
-            var script = Document.CreateElement("script");
-            script.SetAttribute("type", "text/javascript");
-            script.SetAttribute("src", url);  // +"?" + (Math.floor(Math.random() * 10000)); //caching
-            if (callback != null)
-            {
-                script.AddEventListener("onreadystatechange", a =>
-                    {
-                        dynamic b = script;
-                        if (b.readyState == "loaded") callback();
-
-                    }, true);
-
-                script.AddEventListener("onload", a => callback(), true);
-
-            }
-            head.AppendChild(script);
-        }
-        public void Load(string[] items, Action done)
-        {
-            var counter = 0;
-            for (int i = 0; i < items.Length; i++)
-            {
-                loadScript(items[i], () =>
-                {
-                    counter++;
-                    if (counter >= items.Length)
-                    {
-                        done();
-                    }
-                });
-            }
-        }
-        public void LoadSync(string[] items, Action done)
-        {
-            var counter = 0;
-            Action nextOne = null;
-            nextOne = () =>
-                {
-
-                    counter++;
-                    if (counter >= items.Length)
-                    {
-                        done();
-                    }
-                    else
-                    {
-                        loadScript(items[counter], nextOne);
-                    }
-                };
-            loadScript(items[0], nextOne);
-
         }
     }
 }

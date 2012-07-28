@@ -42,12 +42,18 @@
       }
     }
   }
-  
-  setTimeout(startup,10);
+  if (document.addEventListener) {
+    document.readyState == 'complete' ? startup() : document.addEventListener('DOMContentLoaded', startup, false);
+  }
+  else if (window.attachEvent) {
+    window.attachEvent('onload', function () {
+      startup();
+    });
+  }
 
-  var ss = global.ss;
+  var ss = window.ss;
   if (!ss) {
-    global.ss = ss = {
+    window.ss = ss = {
       init: onStartup,
       ready: onStartup
     };
@@ -55,10 +61,10 @@
   for (var n in globals) {
     ss[n] = globals[n];
   }
-  if (global && !global.Element) {
-    global.Element = function() {
+  if (window && !window.Element) {
+    window.Element = function() {
     };
-    global.Element.isInstanceOfType = function(instance) { return instance && typeof instance.constructor === 'undefined' && typeof instance.tagName === 'string'; };
+    window.Element.isInstanceOfType = function(instance) { return instance && typeof instance.constructor === 'undefined' && typeof instance.tagName === 'string'; };
   }
 })();
 
@@ -1317,24 +1323,24 @@ Function.thisFix = function Function$thisFix(source) {
 ///////////////////////////////////////////////////////////////////////////////
 // Debug Extensions
 
-ss.Debug = global.Debug || function() {};
+ss.Debug = window.Debug || function() {};
 ss.Debug.__typeName = 'Debug';
 
 if (!ss.Debug.writeln) {
     ss.Debug.writeln = function Debug$writeln(text) {
-        if (global.console) {
-            if (global.console.debug) {
-                global.console.debug(text);
+        if (window.console) {
+            if (window.console.debug) {
+                window.console.debug(text);
                 return;
             }
-            else if (global.console.log) {
-                global.console.log(text);
+            else if (window.console.log) {
+                window.console.log(text);
                 return;
             }
         }
-        else if (global.opera &&
-            global.opera.postError) {
-            global.opera.postError(text);
+        else if (window.opera &&
+            window.opera.postError) {
+            window.opera.postError(text);
             return;
         }
     }
@@ -1361,9 +1367,9 @@ ss.Debug.fail = function Debug$fail(message) {
 ///////////////////////////////////////////////////////////////////////////////
 // Type System Implementation
 
-global.Type = Function;
+window.Type = Function;
 
-global.__Namespace = function(name) {
+window.__Namespace = function(name) {
     this.__typeName = name;
 }
 __Namespace.prototype = {
@@ -1374,18 +1380,18 @@ __Namespace.prototype = {
 }
 
 Type.registerNamespace = function Type$registerNamespace(name) {
-    if (!global.__namespaces) {
-        global.__namespaces = {};
+    if (!window.__namespaces) {
+        window.__namespaces = {};
     }
-    if (!global.__rootNamespaces) {
-        global.__rootNamespaces = [];
+    if (!window.__rootNamespaces) {
+        window.__rootNamespaces = [];
     }
 
-    if (global.__namespaces[name]) {
+    if (window.__namespaces[name]) {
         return;
     }
 
-    var ns = global;
+    var ns = window;
     var nameParts = name.split('.');
 
     for (var i = 0; i < nameParts.length; i++) {
@@ -1394,14 +1400,13 @@ Type.registerNamespace = function Type$registerNamespace(name) {
         if (!nso) {
             ns[part] = nso = new __Namespace(nameParts.slice(0, i + 1).join('.'));
             if (i == 0) {
-                global.__rootNamespaces.add(nso);
+                window.__rootNamespaces.add(nso);
             }
         }
         ns = nso;
     }
 
-    global.__namespaces[name] = ns;
-    global[name]=ns;
+    window.__namespaces[name] = ns;
 }
 
 Type.__genericCache = {};
@@ -2296,8 +2301,8 @@ ss.EventArgs.Empty = new ss.EventArgs();
 ///////////////////////////////////////////////////////////////////////////////
 // XMLHttpRequest and XML parsing helpers
 
-if (!global.XMLHttpRequest) {
-  global.XMLHttpRequest = function() {
+if (!window.XMLHttpRequest) {
+  window.XMLHttpRequest = function() {
     var progIDs = [ 'Msxml2.XMLHTTP', 'Microsoft.XMLHTTP' ];
 
     for (var i = 0; i < progIDs.length; i++) {

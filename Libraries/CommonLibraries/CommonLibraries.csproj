@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="EventEmitter.cs" />
     <Compile Include="GameAnswer.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="Size.cs" />

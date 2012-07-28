@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace SocketIOLibrary
+namespace SocketIONodeLibrary
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]

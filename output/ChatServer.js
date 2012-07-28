@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');
+require('./mscorlib.node.debug.js');
 Type.registerNamespace('DebugServer');
 ////////////////////////////////////////////////////////////////////////////////
 // DebugServer.$Code

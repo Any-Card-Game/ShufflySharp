@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonShuffleLibrary.js');
+require('./mscorlib.node.debug.js');require('./CommonShuffleLibrary.js');
 Type.registerNamespace('HeadServer');
 ////////////////////////////////////////////////////////////////////////////////
 // HeadServer.HeadServer

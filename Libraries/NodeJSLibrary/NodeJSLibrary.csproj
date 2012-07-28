@@ -34,7 +34,6 @@
   <ItemGroup>
     <Compile Include="ChildProcess.cs" />
     <Compile Include="Console.cs" />
-    <Compile Include="EventEmitter.cs" />
     <Compile Include="FileSystemError.cs" />
     <Compile Include="FS.cs" />
     <Compile Include="Http.cs" />
@@ -43,6 +42,7 @@
     <Compile Include="HttpServer.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="NodeModule.cs" />
+    <Compile Include="Process.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -54,6 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+      <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
+      <Name>CommonLibraries</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

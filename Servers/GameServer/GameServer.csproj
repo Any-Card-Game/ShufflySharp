@@ -80,9 +80,9 @@
       <Project>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</Project>
       <Name>ShuffleGameLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\SocketIOLibrary\SocketIOLibrary.csproj">
+    <ProjectReference Include="..\..\Libraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
-      <Name>SocketIOLibrary</Name>
+      <Name>SocketIONodeLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

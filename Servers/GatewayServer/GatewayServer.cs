@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibraries;
 using NodeJSLibrary;
-using SocketIOLibrary;
+using SocketIONodeLibrary;
 
 namespace GatewayServer
 {

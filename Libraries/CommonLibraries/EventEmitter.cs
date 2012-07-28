@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace NodeJSLibrary
+namespace CommonsLibraries
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)] 

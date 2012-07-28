@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CodeMirrorLibrary;
 using CommonLibraries;
@@ -22,29 +23,14 @@ namespace Client.ShuffUI
         }
 
         [IntrinsicProperty]
-        public dynamic Instance { get; set; }
-
-        [IntrinsicProperty]
         public List<ShuffElement> Elements { get; set; }
 
         [IntrinsicProperty]
-        public string Title { get; set; }
-
-        [IntrinsicProperty]
-        public int X { get; set; }
-
-        [IntrinsicProperty]
-        public int Y { get; set; }
-
-        [IntrinsicProperty]
-        public int Width { get; set; }
+        public string Title { get; set; } 
 
         [IntrinsicProperty]
         public bool AllowClose { get; set; }
-
-
-        [IntrinsicProperty]
-        public int Height { get; set; }
+         
 
         [IntrinsicProperty]
         public bool AllowMinimize { get; set; }
@@ -146,7 +132,7 @@ namespace Client.ShuffUI
 
         public jQueryObject AddCodeEditor(ShuffCodeEditor element)
         {
-            
+
 
             Elements.Add(element);
             /*
@@ -235,8 +221,40 @@ namespace Client.ShuffUI
             but.CSS("top", element.Y + "px");
 
             var theme = "getTheme()".Inline();
+            /*
+                     var theme = getTheme();
+        but.jqxListBox({ source: options.items, width: options.width, height: options.height, theme: theme });
+        but.bind('select', function (event) {
+            var item = event.args.item;
+            if (options.click)
+                options.click(item);
+        });
+        return but;
+             */
             return but;
         }
 
+        public jQueryObject AddPropertyBox(ShuffPropertyBox shuffPropertyBox)
+        {
+
+            var but = jQuery.Select("<div></div>");
+            Window.Append(but);
+            but.CSS("position", "absolute");
+            but.CSS("left", shuffPropertyBox.X);
+            but.CSS("top", shuffPropertyBox.Y);
+            but.CSS("width", shuffPropertyBox.Width);
+            but.CSS("height", shuffPropertyBox.Height);
+            but.CSS("overflow", "scroll");
+
+
+            but.Inline().items = new dynamic[0];
+            but.Inline().addItem = (Action<dynamic>)((ij) =>
+            {
+                but.Append(shuffPropertyBox.ItemCreation(ij, but.Inline().items.length));
+                but.Inline().items.push(ij);
+            });
+            return but;
+
+        }
     }
 }

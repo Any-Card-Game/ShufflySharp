@@ -445,27 +445,7 @@
         window.shuffUIManager.codeArea.codeEditor = codeArea.addCodeEditor({ height: "80%", lineNumbers: true });
 
 
-        /*
-
-        var consoleArea = shuffUIManager.createWindow({
-        title: "console",
-        x: 100,
-        y: $(window).height()-300, 
-        width: 350,
-        height: 250,
-        allowClose: true,
-        allowMinimize: true,
-        visible: true
-        });
-
-
-
-        window.shuffUIManager.consoleArea = consoleArea;
-
-
-        window.shuffUIManager.consoleArea.codeEditor = consoleArea.addCodeEditor(); */
-
-
+     
 
 
 

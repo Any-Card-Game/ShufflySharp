@@ -7,7 +7,7 @@ Client.BuildSite = function(gatewayServerAddress) {
 	this.$scriptLoader = new Client.ScriptLoader();
 	this.$home = null;
 	this.$devArea = null;
-	this.$genericArea = null;
+	this.$codeArea = null;
 	this.$gatewayServerAddress = gatewayServerAddress;
 	var url = 'http://50.116.22.241:8881/';
 	//       window .topLevel = url;
@@ -31,26 +31,25 @@ Client.BuildSite.prototype = {
 		var pageHandler = new Client.PageHandler(this.$gatewayServerAddress);
 		var shuffUIManager = new Client.ShuffUI.ShuffUIManager();
 		(window).shuffUIManager = shuffUIManager;
-		(window).shuffUIManager.genericArea = this.$genericArea;
 		var $t1 = new Client.ShuffUI.ShuffWindow();
 		$t1.title = 'CardGame';
-		$t1.x = ($('body')).innerWidth() - 500;
-		$t1.y = 100;
-		$t1.width = 420;
-		$t1.height = 450;
+		$t1.set_x(($('body')).innerWidth() - 500);
+		$t1.set_y(100);
+		$t1.set_width('420');
+		$t1.set_height('450');
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
-		$t1.set_visible(true);
+		$t1.set_visible(false);
 		this.$home = shuffUIManager.createWindow($t1);
 		var $t3 = this.$home;
 		var $t2 = new Client.ShuffUI.ShuffButton();
 		$t2.set_x(280);
 		$t2.set_y(54);
-		$t2.set_width(150);
-		$t2.set_height(25);
+		$t2.set_width('150');
+		$t2.set_height('25');
 		$t2.set_text('Update Game List');
 		$t2.set_click(function(e) {
-			(window).PageHandler.gateway.emit('Area.Game.GetGames', this.$devArea.instance.gameServer);
+			(window).PageHandler.gateway.emit('Area.Game.GetGames', (this.$devArea).gameServer);
 			//NO EMIT'ING OUTSIDE OF PageHandler
 		});
 		$t3.addButton($t2);
@@ -58,14 +57,608 @@ Client.BuildSite.prototype = {
 		var $t4 = new Client.ShuffUI.ShuffButton();
 		$t4.set_x(280);
 		$t4.set_y(84);
-		$t4.set_width(150);
-		$t4.set_height(25);
+		$t4.set_width('150');
+		$t4.set_height('25');
 		$t4.set_text('Create Game');
 		$t4.set_click(function(e1) {
-			(window).PageHandler.gateway.emit('Area.Game.Create', { User: { UserName: (this.$genericArea.instance.txtUserName[0]).value } }, this.$devArea.instance.GameServer);
+			(window).PageHandler.gateway.emit('Area.Game.Create', { User: { UserName: ((this.$home).txtUserName[0]).value } }, (this.$devArea).GameServer);
 			//NO EMIT'ING OUTSIDE OF PageHandler
 		});
 		$t5.addButton($t4);
+		var $t7 = this.$home;
+		var $t6 = new Client.ShuffUI.ShuffButton();
+		$t6.set_x(280);
+		$t6.set_y(84);
+		$t6.set_width('150');
+		$t6.set_height('25');
+		$t6.set_text('Create Game');
+		$t6.set_click(function(e2) {
+			(window).PageHandler.gateway.emit('Area.Game.Create', { User: { UserName: ((this.$home).txtUserName[0]).value } }, (this.$devArea).GameServer);
+			//NO EMIT'ING OUTSIDE OF PageHandler
+		});
+		$t7.addButton($t6);
+		var $t10 = (this.$home).btnStartGame;
+		var $t9 = this.$home;
+		var $t8 = new Client.ShuffUI.ShuffButton();
+		$t8.set_x(280);
+		$t8.set_y(164);
+		$t8.set_width('120');
+		$t8.set_height('25');
+		$t8.set_text('Start Game');
+		$t8.set_click(function(e3) {
+			(window).PageHandler.gateway.emit('Area.Game.Start', { roomID: (window).PageHandler.gameStuff.roomID }, (this.$devArea).gameServer);
+			//NO EMIT"ING OUTSIDE OF PageHandler
+		});
+		$t10 = $t9.addButton($t8);
+		var randomName = '';
+		var ra = Math.random() * 10;
+		for (var i = 0; i < ra; i++) {
+			randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
+		}
+		var $t13 = (this.$home).txtUserName;
+		var $t12 = this.$home;
+		var $t11 = new Client.ShuffUI.ShuffTextBox();
+		$t11.set_x(130);
+		$t11.set_y(43);
+		$t11.set_width('130');
+		$t11.set_height('20');
+		$t11.set_text(randomName);
+		$t11.set_label('Username=');
+		$t13 = $t12.addTextbox($t11);
+		//
+		//        genericArea.gameList = home.addListBox({
+		//
+		//        x: 30,
+		//
+		//        y: 85,
+		//
+		//        width: 215,
+		//
+		//        height: 25 * 6,
+		//
+		//        label: "Rooms",
+		//
+		//        click: function () {
+		//
+		//        window.PageHandler.gateway.emit("Area.Game.Join", { roomID: id, user: { userName: genericArea.txtUserName[0].value} }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		//
+		//        }
+		//
+		//        });
+		//
+		//        genericArea.userList = home.addListBox({
+		//
+		//        x: 30,
+		//
+		//        y: 280,
+		//
+		//        width: 215,
+		//
+		//        height: 25 * 5,
+		//
+		//        label: "Users"
+		//
+		//        });
+		//
+		//        
+		//
+		//        
+		//
+		//        
+		//
+		//        genericArea.loadRoomInfo = function (room) {
+		//
+		//        
+		//
+		//        
+		//
+		//        genericArea.userList.remove();
+		//
+		//        genericArea.btnStartGame.visible(true);
+		//
+		//        
+		//
+		//        var users = [];
+		//
+		//        
+		//
+		//        for (var i = 0; i < room.players.length; i++) {
+		//
+		//        
+		//
+		//        users.push(room.players[i]);
+		//
+		//        
+		//
+		//        }
+		//
+		//        
+		//
+		//        
+		//
+		//        genericArea.userList = home.addListBox({
+		//
+		//        x: 30,
+		//
+		//        y: 280,
+		//
+		//        width: 215,
+		//
+		//        height: 25 * 5,
+		//
+		//        label: "Users",
+		//
+		//        items: users
+		//
+		//        });
+		//
+		//        
+		//
+		//        };
+		//
+		//        
+		//
+		//        genericArea.loadRoomInfos = function (room) {
+		//
+		//        genericArea.gameList.remove();
+		//
+		//        
+		//
+		//        var rooms = [];
+		//
+		//        
+		//
+		//        for (var i = 0; i < room.length; i++) {
+		//
+		//        rooms.push({ label: room[i].name, value: room[i].roomID });
+		//
+		//        }
+		//
+		//        
+		//
+		//        
+		//
+		//        genericArea.gameList = home.addListBox({
+		//
+		//        x: 30,
+		//
+		//        y: 85,
+		//
+		//        width: 215,
+		//
+		//        height: 25 * 6,
+		//
+		//        label: "Rooms",
+		//
+		//        items: rooms,
+		//
+		//        click: function (item) {
+		//
+		//        window.PageHandler.gateway.emit("Area.Game.Join", { roomID: item.value, user: { userName: genericArea.txtUserName.val()} }, devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		//
+		//        }
+		//
+		//        });
+		//
+		//        };
+		var $t14 = new Client.ShuffUI.ShuffWindow();
+		$t14.title = 'Developer';
+		$t14.set_x(($('body')).innerWidth() - 500);
+		$t14.set_y(100);
+		$t14.set_width('420');
+		$t14.set_height('450');
+		$t14.allowClose = true;
+		$t14.allowMinimize = true;
+		this.$devArea = shuffUIManager.createWindow($t14);
+		(this.$devArea).beginGame = Function.mkdel(this, function() {
+			(this.$devArea).Created = false;
+			(this.$devArea).Joined = 0;
+			(window).PageHandler.startGameServer();
+			(window).PageHandler.gateway.emit('Area.Debug.Create', { user: { userName: (this.$devArea).txtNumOfPlayers.val() }, Name: 'main room', Source: (window).shuffUIManager.codeArea.codeEditor.getValue(), BreakPoints: (window).shuffUIManager.codeArea.breakPoints });
+		});
+		var $t16 = this.$devArea;
+		var $t15 = new Client.ShuffUI.ShuffButton();
+		$t15.set_x(280);
+		$t15.set_y(54);
+		$t15.set_width('150');
+		$t15.set_height('25');
+		$t15.set_text('Begin Game');
+		$t15.set_click(Type.cast((this.$devArea).beginGame, Function));
+		$t16.addButton($t15);
+		var $t19 = (this.$devArea).lblHowFast;
+		var $t18 = this.$devArea;
+		var $t17 = new Client.ShuffUI.ShuffLabel();
+		$t17.set_x(80);
+		$t17.set_y(80);
+		$t17.set_width('250');
+		$t17.set_height('25');
+		$t17.set_text('How Many= ');
+		$t19 = $t18.addLabel($t17);
+		var $t22 = (this.$devArea).lblAnother;
+		var $t21 = this.$devArea;
+		var $t20 = new Client.ShuffUI.ShuffLabel();
+		$t20.set_x(80);
+		$t20.set_y(100);
+		$t20.set_width('250');
+		$t20.set_height('25');
+		$t20.set_text('Another: ');
+		$t22 = $t21.addLabel($t20);
+		var $t24 = this.$devArea;
+		var $t23 = new Client.ShuffUI.ShuffButton();
+		$t23.set_x(280);
+		$t23.set_y(94);
+		$t23.set_width('150');
+		$t23.set_height('25');
+		$t23.set_text('Continue');
+		$t23.set_click(function(evt) {
+			(window).PageHandler.gateway.emit('Area.Debug.Continue', {}, (this.$devArea).gameServer);
+			//NO EMIT"ING OUTSIDE OF PageHandler
+		});
+		$t24.addButton($t23);
+		var $t26 = this.$devArea;
+		var $t25 = new Client.ShuffUI.ShuffPropertyBox();
+		$t25.set_x(25);
+		$t25.set_y(200);
+		$t25.set_width('250');
+		$t25.set_height('250');
+		$t25.set_itemCreation(function(item, index) {
+			var ik = $('<div style=\'width=100%;height=25px; background-color=' + ((index % 2 === 0) ? 'red' : 'green') + ';\'></div>');
+			var ikc = $(Type.cast('<div style=\'width=50%;height=25px; float=left;\'>' + item.key + '</div>', String));
+			ik.append(ikc);
+			var ikd = $(Type.cast('<input type=\'text\' style=\'width=48%;height=25px\' value=\'' + item.value + '\' />', String));
+			ik.append(ikd);
+			return ik;
+		});
+		var propBox = $t26.addPropertyBox($t25);
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		(propBox).addItem({ key: 'Foos', value: '99' });
+		var $t29 = (this.$devArea).varText;
+		var $t28 = this.$devArea;
+		var $t27 = new Client.ShuffUI.ShuffTextBox();
+		$t27.set_x(150);
+		$t27.set_y(134);
+		$t27.set_width('100');
+		$t27.set_height('25');
+		$t27.set_label('Var Lookup');
+		$t29 = $t28.addTextbox($t27);
+		var $t31 = this.$devArea;
+		var $t30 = new Client.ShuffUI.ShuffButton();
+		$t30.set_x(280);
+		$t30.set_y(134);
+		$t30.set_width('150');
+		$t30.set_height('25');
+		$t30.set_text('Lookup');
+		$t30.set_click(function(evt1) {
+			(window).PageHandler.gateway.emit('Area.Debug.VariableLookup.Request', { variableName: (this.$devArea).varText.val() }, (this.$devArea).gameServer);
+			//NO EMIT"ING OUTSIDE OF PageHandler
+		});
+		$t31.addButton($t30);
+		var $t33 = this.$devArea;
+		var $t32 = new Client.ShuffUI.ShuffButton();
+		$t32.set_x(280);
+		$t32.set_y(164);
+		$t32.set_width('150');
+		$t32.set_height('25');
+		$t32.set_text('Push New Source');
+		$t32.set_click(function(evt2) {
+			(window).PageHandler.gateway.emit('Area.Debug.PushNewSource', { source: (window).shuffUIManager.codeArea.codeEditor.getValue(), breakPoints: (window).shuffUIManager.codeArea.breakPoints }, (this.$devArea).gameServer);
+			//NO EMIT"ING OUTSIDE OF PageHandler
+		});
+		$t33.addButton($t32);
+		(this.$devArea).beginGame = Function.mkdel(this, function(room) {
+			(this.$devArea).gameServer = room.gameServer;
+			(this.$devArea).lblAnother.text(room.gameServer);
+			var count = parseInt(Type.cast((this.$devArea).txtNumOfPlayers.val(), String));
+			if (ss.Nullable.unbox(Type.cast(!(this.$devArea).created, Boolean))) {
+				(window).PageHandler.gateway.emit('Area.Game.DebuggerJoin', { roomID: room.roomID }, (this.$devArea).gameServer);
+				//NO EMIT"ING OUTSIDE OF PageHandler
+				for (var i1 = 0; i1 < count; i1++) {
+					(window).PageHandler.gateway.emit('Area.Game.Join', { roomID: room.roomID, user: { userName: 'player ' + (i1 + 1) } }, (this.$devArea).gameServer);
+					//NO EMIT"ING OUTSIDE OF PageHandler
+				}
+				(this.$devArea).created = true;
+			}
+			else if (ss.Nullable.unbox(Type.cast(ss.referenceEquals(++(this.$devArea).joined, count), Boolean))) {
+				(window).PageHandler.gateway.emit('Area.Game.Start', { roomID: room.roomID }, (this.$devArea).gameServer);
+				//NO EMIT"ING OUTSIDE OF PageHandler
+			}
+		});
+		var $t36 = (this.$devArea).txtNumOfPlayers;
+		var $t35 = this.$devArea;
+		var $t34 = new Client.ShuffUI.ShuffTextBox();
+		$t34.set_x(130);
+		$t34.set_y(43);
+		$t34.set_width('130');
+		$t34.set_height('20');
+		$t34.set_text('6');
+		$t34.set_label('Number of players=');
+		$t34.set_labelStyle('font-size=13px');
+		$t36 = $t35.addTextbox($t34);
+		var $t37 = new Client.ShuffUI.ShuffWindow();
+		$t37.title = 'Code';
+		$t37.set_x(0);
+		$t37.set_y(0);
+		$t37.static = true;
+		$t37.set_width(ss.Int32.trunc(($(window)).width() * 0.5).toString());
+		$t37.set_height(ss.Int32.trunc(($(window)).height() * 0.9).toString());
+		$t37.allowClose = true;
+		$t37.allowMinimize = true;
+		$t37.set_visible(true);
+		this.$codeArea = shuffUIManager.createWindow($t37);
+		(this.$codeArea).breakPoints = new Array();
+		var $t40 = (this.$codeArea).console;
+		var $t39 = this.$codeArea;
+		var $t38 = new Client.ShuffUI.ShuffCodeEditor();
+		$t38.set_height('20%');
+		$t38.set_lineNumbers(false);
+		$t40 = $t39.addCodeEditor($t38);
+		var $t43 = (this.$codeArea).codeEditor;
+		var $t42 = this.$codeArea;
+		var $t41 = new Client.ShuffUI.ShuffCodeEditor();
+		$t41.set_height('80%');
+		$t41.set_lineNumbers(true);
+		$t43 = $t42.addCodeEditor($t41);
+		//
+		//             
+		//        var questionArea = shuffUIManager.createWindow({
+		//
+		//             
+		//        title: "Question",
+		//
+		//             
+		//        x: 600,
+		//
+		//             
+		//        y: 100,
+		//
+		//             
+		//        width: 300,
+		//
+		//             
+		//        height: 275,
+		//
+		//             
+		//        allowClose: true,
+		//
+		//             
+		//        allowMinimize: true,
+		//
+		//             
+		//        visible: false
+		//
+		//             
+		//        
+		//
+		//             
+		//        });
+		//
+		//             
+		//        
+		//
+		//             
+		//        
+		//
+		//             
+		//        
+		//
+		//             
+		//        window.shuffUIManager.questionArea = questionArea;
+		//
+		//             
+		//        
+		//
+		//             
+		//        
+		//
+		//             
+		//        window.shuffUIManager.questionArea.question = questionArea.addLabel({
+		//
+		//             
+		//        x: 20,
+		//
+		//             
+		//        y: 5,
+		//
+		//             
+		//        width: 150,
+		//
+		//             
+		//        height: 25,
+		//
+		//             
+		//        text: "",
+		//
+		//             
+		//        click: function (e) {
+		//
+		//             
+		//        window.PageHandler.gateway.emit("Area.Game.GetGames", devArea.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		//
+		//             
+		//        
+		//
+		//             
+		//        }
+		//
+		//             
+		//        });
+		//
+		//             
+		//        
+		//
+		//             
+		//        
+		//
+		//             
+		//        window.shuffUIManager.questionArea.load = function (question) {
+		//
+		//             
+		//        window.shuffUIManager.questionArea.visible(true);
+		//
+		//             
+		//        window.shuffUIManager.questionArea.question.text = question.question;
+		//
+		//             
+		//        window.shuffUIManager.questionArea.answerBox.remove();
+		//
+		//             
+		//        
+		//
+		//             
+		//        var answers = [];
+		//
+		//             
+		//        for (var i = 0; i < question.answers.length; i++) {
+		//
+		//             
+		//        answers.push({ label: question.answers[i], value: i });
+		//
+		//             
+		//        }
+		//
+		//             
+		//        
+		//
+		//             
+		//        window.shuffUIManager.questionArea.answerBox = questionArea.addListBox({
+		//
+		//             
+		//        x: 30,
+		//
+		//             
+		//        y: 65,
+		//
+		//             
+		//        width: 215,
+		//
+		//             
+		//        height: 25 * 5,
+		//
+		//             
+		//        label: "Answers",
+		//
+		//             
+		//        items: answers,
+		//
+		//             
+		//        click: function (item) {
+		//
+		//             
+		//        window.PageHandler.gateway.emit("Area.Game.AnswerQuestion", { answer: item.value, roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer);
+		//
+		//             
+		//        window.shuffUIManager.questionArea.visible(false);
+		//
+		//             
+		//        
+		//
+		//             
+		//        }
+		//
+		//             
+		//        });
+		//
+		//             
+		//        
+		//
+		//             
+		//        };
+		//
+		//             
+		//        
+		//
+		//             
+		//        window.shuffUIManager.questionArea.answerBox = questionArea.addListBox({
+		//
+		//             
+		//        x: 30,
+		//
+		//             
+		//        y: 65,
+		//
+		//             
+		//        width: 215,
+		//
+		//             
+		//        height: 25 * 5,
+		//
+		//             
+		//        label: "Answers",
+		//
+		//             
+		//        click: function (item) {
+		//
+		//             
+		//        window.PageHandler.gateway.emit("Area.Game.AnswerQuestion", { answer: item.index, roomID: window.PageHandler.gameStuff.roomID }, devArea.gameServer);
+		//
+		//             
+		//        window.shuffUIManager.questionArea.visible = false;
+		//
+		//             
+		//        
+		//
+		//             
+		//        }
+		//
+		//             
+		//        });
+		//
+		//             
+		//        
+		//
+		//             
+		//        
+		//
+		//             
+		//        
+		//
+		//             
+		//        var chatArea = shuffUIManager.createWindow({
+		//
+		//             
+		//        title: "Chat",
+		//
+		//             
+		//        x: 600,
+		//
+		//             
+		//        y: 100,
+		//
+		//             
+		//        width: 300,
+		//
+		//             
+		//        height: 275,
+		//
+		//             
+		//        allowClose: true,
+		//
+		//             
+		//        allowMinimize: true,
+		//
+		//             
+		//        visible: false
+		//
+		//             
+		//        
+		//
+		//             
+		//        });
 	},
 	$loadCss: function(filename) {
 		var fileref = document.createElement('link');
@@ -186,15 +779,24 @@ Client.ShuffUI.ShuffButton.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffCodeEditor
 Client.ShuffUI.ShuffCodeEditor = function() {
+	this.$2$LineNumbersField = false;
 	Client.ShuffUI.ShuffElement.call(this);
+};
+Client.ShuffUI.ShuffCodeEditor.prototype = {
+	get_lineNumbers: function() {
+		return this.$2$LineNumbersField;
+	},
+	set_lineNumbers: function(value) {
+		this.$2$LineNumbersField = value;
+	}
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffElement
 Client.ShuffUI.ShuffElement = function() {
 	this.$1$XField = 0;
 	this.$1$YField = 0;
-	this.$1$WidthField = 0;
-	this.$1$HeightField = 0;
+	this.$1$WidthField = null;
+	this.$1$HeightField = null;
 	this.$1$ElementField = null;
 	this.$visible = false;
 	this.$visible = true;
@@ -255,6 +857,20 @@ Client.ShuffUI.ShuffLabel.prototype = {
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
+// Client.ShuffUI.ShuffPropertyBox
+Client.ShuffUI.ShuffPropertyBox = function() {
+	this.$2$ItemCreationField = null;
+	Client.ShuffUI.ShuffElement.call(this);
+};
+Client.ShuffUI.ShuffPropertyBox.prototype = {
+	get_itemCreation: function() {
+		return this.$2$ItemCreationField;
+	},
+	set_itemCreation: function(value) {
+		this.$2$ItemCreationField = value;
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffTextBox
 Client.ShuffUI.ShuffTextBox = function() {
 	this.$2$LabelStyleField = null;
@@ -295,11 +911,11 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 		ui.outer = outer;
 		outer.css('position', 'absolute');
 		outer.css('padding', '2em 0.8em 0.8em 1.3em');
-		outer.css('left', ui.x + 'px');
-		outer.css('top', ui.y + 'px');
-		outer.css('width', ui.width + 'px');
-		outer.css('height', ui.height + 'px');
-		outer.css('di', ui.height + 'px');
+		outer.css('left', ui.get_x() + 'px');
+		outer.css('top', ui.get_y() + 'px');
+		outer.css('width', ui.get_width() + 'px');
+		outer.css('height', ui.get_height() + 'px');
+		outer.css('di', ui.get_height() + 'px');
 		outer.css('display', ((ui.get_visible() === false) ? 'none' : 'block'));
 		var top = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  \'></div>');
 		outer.append(top);
@@ -339,7 +955,7 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 		});
 		outer.mousedown(Function.mkdel(this, function(evt3) {
 			for (var i = 0; i < this.$uiAreas.length; i++) {
-				(this.$uiAreas[i]).element.CSS('z-index', 1800);
+				(this.$uiAreas[i]).Element.css('z-index', 1800);
 			}
 			outer.css('z-index', 1900);
 		}));
@@ -363,14 +979,9 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffWindow
 Client.ShuffUI.ShuffWindow = function() {
-	this.instance = null;
 	this.elements = null;
 	this.title = null;
-	this.x = 0;
-	this.y = 0;
-	this.width = 0;
 	this.allowClose = false;
-	this.height = 0;
 	this.allowMinimize = false;
 	this.outer = null;
 	this.static = false;
@@ -593,6 +1204,38 @@ Client.ShuffUI.ShuffWindow.prototype = {
 		but.css('left', element.get_x() + 'px');
 		but.css('top', element.get_y() + 'px');
 		var theme = 'getTheme()';
+		//
+		//                     var theme = getTheme();
+		//
+		//                     but.jqxListBox({ source: options.items, width: options.width, height: options.height, theme: theme });
+		//
+		//                     but.bind('select', function (event) {
+		//
+		//                     var item = event.args.item;
+		//
+		//                     if (options.click)
+		//
+		//                     options.click(item);
+		//
+		//                     });
+		//
+		//                     return but;
+		return but;
+	},
+	addPropertyBox: function(shuffPropertyBox) {
+		var but = $('<div></div>');
+		this.get_$window().append(but);
+		but.css('position', 'absolute');
+		but.css('left', shuffPropertyBox.get_x());
+		but.css('top', shuffPropertyBox.get_y());
+		but.css('width', shuffPropertyBox.get_width());
+		but.css('height', shuffPropertyBox.get_height());
+		but.css('overflow', 'scroll');
+		(but).items = [];
+		(but).addItem = function(ij) {
+			but.append(shuffPropertyBox.get_itemCreation()(ij, ss.Nullable.unbox(Type.cast((but).items.length, ss.Int32))));
+			(but).items.push(ij);
+		};
 		return but;
 	}
 };
@@ -608,6 +1251,7 @@ Client.PageHandler.registerClass('Client.PageHandler', Object);
 Client.ScriptLoader.registerClass('Client.ScriptLoader', Object);
 Client.ShuffUI.ShuffElement.registerClass('Client.ShuffUI.ShuffElement', Object);
 Client.ShuffUI.ShuffLabel.registerClass('Client.ShuffUI.ShuffLabel', Client.ShuffUI.ShuffElement);
+Client.ShuffUI.ShuffPropertyBox.registerClass('Client.ShuffUI.ShuffPropertyBox', Client.ShuffUI.ShuffElement);
 Client.ShuffUI.ShuffTextBox.registerClass('Client.ShuffUI.ShuffTextBox', Client.ShuffUI.ShuffElement);
 Client.ShuffUI.ShuffUIManager.registerClass('Client.ShuffUI.ShuffUIManager', Object);
 Client.ShuffUI.ShuffWindow.registerClass('Client.ShuffUI.ShuffWindow', Client.ShuffUI.ShuffElement);

@@ -432,8 +432,6 @@
     <Content Include="lib\WebSocketMainInsecure.swf" />
     <Content Include="lib\WorkerConsole.js" />
     <Content Include="PageHandler.js" />
-    <Content Include="ShuffUI\ShuffUIArea.js" />
-    <Content Include="ShuffUI\ShuffUIManager.js" />
     <Content Include="uis\genericArea.js" />
   </ItemGroup>
   <ItemGroup>
@@ -470,6 +468,7 @@
     <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
     <Compile Include="ShuffUI\ShuffElement.cs" />
     <Compile Include="ShuffUI\ShuffLabel.cs" />
+    <Compile Include="ShuffUI\ShuffPropertyBox.cs" />
     <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />
     <Compile Include="ShuffUI\ShuffWindow.cs" />

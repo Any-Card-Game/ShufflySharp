@@ -81,7 +81,7 @@ namespace Client.ShuffUI
             {
                 for (var i = 0; i < UIAreas.Count; i++)
                 {
-                    UIAreas[i].element.CSS("z-index", 1800);
+                    UIAreas[i].Element.css("z-index", 1800);
                 }
                 outer.CSS("z-index", 1900);
             }); 

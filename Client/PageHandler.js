@@ -14,11 +14,7 @@ function PageHandler(gatewayServer) {
 
     window.PageHandler.gateway = new Gateway(gatewayServer);
 
-
-    self.gameStuff = {
-        roomID: -1
-    };
-
+     
 
     window.PageHandler.gateway.on('Area.Main.Login.Response', function (data) {
         alert(JSON.stringify(data));

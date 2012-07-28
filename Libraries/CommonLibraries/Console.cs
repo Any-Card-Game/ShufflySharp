@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace NodeJSLibrary
+namespace CommonLibraries
 {
 
     [IgnoreNamespace]

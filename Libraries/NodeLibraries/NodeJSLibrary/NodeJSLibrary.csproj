@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ChildProcess.cs" />
-    <Compile Include="Console.cs" />
     <Compile Include="FileSystemError.cs" />
     <Compile Include="FS.cs" />
     <Compile Include="Http.cs" />

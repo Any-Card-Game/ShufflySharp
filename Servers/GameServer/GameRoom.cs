@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibraries;
 using FibersLibrary;
-using ShufflyGameLibrary;
+using global;
 
 namespace GameServer
 {

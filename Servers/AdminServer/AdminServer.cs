@@ -85,17 +85,17 @@ namespace AdminServer
                     head = runProcess("node", new string[] { __dirname + "HeadServer.js" }, 4000);
                     Console.Log("Head Server Started");
 
-                    sites.Add(runProcess("node", new string[] { __dirname + "siteServer/siteApp.js" }, 4100));
+                   // sites.Add(runProcess("node", new string[] { __dirname + "siteServer/siteApp.js" }, 4100));
                     Console.Log(sites.Count + " Site Servers Started");
                     for (int j = 0; j < numOfGateways; j++)
                     {
                         gateways.Add(runProcess("node", new string[] { __dirname + "GatewayServer.js" }, 4400 + j));
                     }
-                    Console.Log(games.Count + " Gateway Servers Started");
+                    Console.Log(gateways.Count + " Gateway Servers Started");
 
                     for (int j = 0; j < numOfGameServers; j++)
                     {
-                        gateways.Add(runProcess("node", new string[] { __dirname + "GameServer.js" }, 4200 + j));
+                        games.Add(runProcess("node", new string[] { __dirname + "GameServer.js" }, 4200 + j));
                     }
                     Console.Log(games.Count + " Game Servers Started");
 

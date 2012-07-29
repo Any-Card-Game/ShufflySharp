@@ -1,6 +1,6 @@
 
 using CommonShuffleLibraries;
-using ShufflyGameLibrary;
+using global;
 
 namespace GameServer
 {

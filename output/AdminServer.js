@@ -61,14 +61,13 @@ AdminServer.AdminServer.prototype = {
 				this.$gateways = new Array();
 				this.$head = this.$runProcess('node', [this.$__dirname + 'HeadServer.js'], 4000, null);
 				console.log('Head Server Started');
-				this.$sites.add(this.$runProcess('node', [this.$__dirname + 'siteServer/siteApp.js'], 4100, null));
 				console.log(this.$sites.length + ' Site Servers Started');
 				for (var j = 0; j < this.$numOfGateways; j++) {
 					this.$gateways.add(this.$runProcess('node', [this.$__dirname + 'GatewayServer.js'], 4400 + j, null));
 				}
-				console.log(this.$games.length + ' Gateway Servers Started');
+				console.log(this.$gateways.length + ' Gateway Servers Started');
 				for (var j1 = 0; j1 < this.$numOfGameServers; j1++) {
-					this.$gateways.add(this.$runProcess('node', [this.$__dirname + 'GameServer.js'], 4200 + j1, null));
+					this.$games.add(this.$runProcess('node', [this.$__dirname + 'GameServer.js'], 4200 + j1, null));
 				}
 				console.log(this.$games.length + ' Game Servers Started');
 				this.$debugs.add(this.$runProcess('node', [this.$__dirname + 'DebugServer.js'], 4300, null));

@@ -4,11 +4,28 @@ using System;
 using System.Runtime.CompilerServices;
 using CommonShuffleLibraries;
 using FibersLibrary;
-using NodeJSLibrary;
-using ShufflyGameLibrary;
+using NodeJSLibrary; 
 
 namespace global
 {
+    public class Card
+    {
+        public int Number { get; set; }
+        public int Type { get; set; }
+
+        public Card(int  number, int type)
+        {
+            this.Number = number;
+            this.Type = type;
+        }
+
+        public string Name
+        {
+            [ScriptName("getName")]
+            get { return this.Number + " " + this.Type; }
+        }
+    } 
+
 
     [ScriptName("shuff")]
     public static class Shuff

@@ -43,6 +43,62 @@ global._.random = function() {
 	return Math.random();
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.Card
+global.Card = function(number, type) {
+	this.$1$NumberField = 0;
+	this.$1$TypeField = 0;
+	this.set_number(number);
+	this.set_type(type);
+};
+global.Card.prototype = {
+	get_number: function() {
+		return this.$1$NumberField;
+	},
+	set_number: function(value) {
+		this.$1$NumberField = value;
+	},
+	get_type: function() {
+		return this.$1$TypeField;
+	},
+	set_type: function(value) {
+		this.$1$TypeField = value;
+	},
+	getName: function() {
+		return this.get_number() + ' ' + this.get_type();
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.CardGame
+global.CardGame = function(name) {
+	this.emulating = false;
+	this.name = null;
+	this.answerIndex = 0;
+	this.spaces = null;
+	this.textAreas = null;
+	this.size = null;
+	this.answers = null;
+	this.name = name;
+};
+global.CardGame.prototype = {
+	setAnswers: function(answers) {
+	},
+	setPlayers: function(players) {
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.CardGameAnswer
+global.CardGameAnswer = function() {
+	this.value = 0;
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.GameCardGameSpace
+global.GameCardGameSpace = function() {
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.GameCardGameTextArea
+global.GameCardGameTextArea = function() {
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.shuff
 global.shuff = function() {
 };
@@ -99,23 +155,11 @@ global.YieldObject.$ctor = function() {
 	$this.value = null;
 	return $this;
 };
-Type.registerNamespace('ShufflyGameLibrary');
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyGameLibrary.CardGameAnswer
-ShufflyGameLibrary.CardGameAnswer = function() {
-	this.value = 0;
-};
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyGameLibrary.GameCardGameSpace
-ShufflyGameLibrary.GameCardGameSpace = function() {
-};
-////////////////////////////////////////////////////////////////////////////////
-// ShufflyGameLibrary.GameCardGameTextArea
-ShufflyGameLibrary.GameCardGameTextArea = function() {
-};
 global._.registerClass('global._', Object);
+global.Card.registerClass('global.Card', Object);
+global.CardGame.registerClass('global.CardGame', Object);
+global.CardGameAnswer.registerClass('global.CardGameAnswer', Object);
+global.GameCardGameSpace.registerClass('global.GameCardGameSpace', Object);
+global.GameCardGameTextArea.registerClass('global.GameCardGameTextArea', Object);
 global.shuff.registerClass('global.shuff', Object);
 global.YieldObject.registerClass('global.YieldObject', Object);
-ShufflyGameLibrary.CardGameAnswer.registerClass('ShufflyGameLibrary.CardGameAnswer', Object);
-ShufflyGameLibrary.GameCardGameSpace.registerClass('ShufflyGameLibrary.GameCardGameSpace', Object);
-ShufflyGameLibrary.GameCardGameTextArea.registerClass('ShufflyGameLibrary.GameCardGameTextArea', Object);

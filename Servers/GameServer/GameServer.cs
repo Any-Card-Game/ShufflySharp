@@ -6,9 +6,8 @@ using CommonLibraries;
 using CommonShuffleLibraries;
 using FibersLibrary;
 using NodeJSLibrary;
-using ShufflyGameLibrary;
+using global;
 using Json = CommonShuffleLibraries.Json;
-
 namespace GameServer
 {
     public class GameServer
@@ -36,7 +35,7 @@ namespace GameServer
             dataManager = new DataManager();
             gameServerIndex = "GameServer" + Guid.NewGuid();
             cachedGames = new JsDictionary<string, GameObject>();
-
+            
             Global.Require("./common/arrayUtils.js");
             Global.Require("./gameFramework/GameAPI.js");
 

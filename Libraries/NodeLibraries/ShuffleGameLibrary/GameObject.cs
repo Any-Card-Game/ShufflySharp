@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
-using NodeJSLibrary;
+using NodeJSLibrary; 
 
-namespace ShufflyGameLibrary
+namespace global
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]

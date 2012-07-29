@@ -1,18 +1,21 @@
-using System;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using CommonShuffleLibraries;
 
-namespace ShufflyGameLibrary
+namespace global
 {
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+
+    [ScriptName("CardGame")]
     public class GameCardGame
     {
         [ScriptName("emulating")]
         [IntrinsicProperty]
         public bool Emulating { get; set; }
+
+        [ScriptName("name")]
+        [IntrinsicProperty]
+        protected string Name { get; set; }
 
         [ScriptName("answerIndex")]
         [IntrinsicProperty]
@@ -44,6 +47,13 @@ namespace ShufflyGameLibrary
         public void SetPlayers(List<User> players)
         {
         }
+
+        public GameCardGame(string name)
+        {
+            Name = name;
+
+        }
+
     }
     public class CardGameAnswer
     {

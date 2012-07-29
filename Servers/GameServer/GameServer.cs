@@ -17,7 +17,7 @@ namespace GameServer
         private GameData gameData;
         private List<GameRoom> rooms;
         private DateTime startTime = new DateTime();
-        private JsDictionary<string, GameObject> cachedGames; 
+        private JsDictionary<string, GameObject> cachedGames;
         private int QUEUEPERTICK = 1;
         private int total__ = 0;
         private int skipped__ = 0;
@@ -28,7 +28,7 @@ namespace GameServer
         private string gameServerIndex;
         public GameServer()
         {
-
+            new ArrayUtils();
             fs = Global.Require<FS>("fs");
             childProcess = Global.Require<ChildProcess>("child_process");
 
@@ -36,7 +36,6 @@ namespace GameServer
             gameServerIndex = "GameServer" + Guid.NewGuid();
             cachedGames = new JsDictionary<string, GameObject>();
             
-            Global.Require("./common/arrayUtils.js");
             //Global.Require("./gameFramework/GameAPI.js");
 
 

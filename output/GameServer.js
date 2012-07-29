@@ -123,12 +123,12 @@ GameServer.GameServer = function() {
 	this.$childProcess = null;
 	this.$queueue = new Array();
 	this.$gameServerIndex = null;
+	new global.ArrayUtils();
 	this.$fs = (require('fs'));
 	this.$childProcess = (require('child_process'));
 	this.$dataManager = new GameServer.DataManager();
 	this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
 	this.$cachedGames = ({});
-	require('./common/arrayUtils.js');
 	//Global.Require("./gameFramework/GameAPI.js");
 	this.$qManager = new CommonShuffleLibraries.QueueManager(this.$gameServerIndex, new CommonShuffleLibraries.QueueManagerOptions([new CommonShuffleLibraries.QueueWatcher('GameServer', null), new CommonShuffleLibraries.QueueWatcher(this.$gameServerIndex, null)], ['GameServer', 'GatewayServer', 'Gateway*']));
 	require('fibers');

@@ -804,3 +804,9 @@
 /Servers/AdminServer/bin/Debug/CommonLibraries.dll
 /Servers/AdminServer/bin/Debug/NodeJSLibrary.dll
 /Servers/AdminServer/obj/Debug/AdminServer.csprojResolveAssemblyReference.cache
+/Client/bin/Debug/CommonShuffleLibrary.dll
+/Client/bin/Debug/FibersLibrary.dll
+/Client/bin/Debug/NodeJSLibrary.dll
+/Client/bin/Debug/RedisLibrary.dll
+/Client/bin/Debug/ShuffleGameLibrary.dll
+/Client/bin/Debug/SocketIONodeLibrary.dll

@@ -43,6 +43,44 @@ global._.random = function() {
 	return Math.random();
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.ArrayUtils
+global.ArrayUtils = function() {
+	eval('Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};');
+	eval('Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};');
+	eval('Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};');
+	eval('Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};');
+};
+global.ArrayUtils.forEach = function(ts, does) {
+	for (var i = 0; i < ts.length; i++) {
+		var df = does(ts[i], i);
+		if (df) {
+			return df;
+		}
+	}
+	return false;
+};
+global.ArrayUtils.sortCards = function(ts) {
+	return ts;
+};
+global.ArrayUtils.where = function(ts, does) {
+	var jf = new Array();
+	for (var i = 0; i < ts.length; i++) {
+		if (does(ts[i], i)) {
+			jf.add(ts[i]);
+		}
+	}
+	return jf;
+};
+global.ArrayUtils.any = function(ts, does) {
+	var jf = new Array();
+	for (var i = 0; i < ts.length; i++) {
+		if (does(ts[i], i)) {
+			return true;
+		}
+	}
+	return false;
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.Card
 global.Card = function(number, type) {
 	this.$1$NumberField = 0;
@@ -428,6 +466,7 @@ global.YieldObject.$ctor = function() {
 	return $this;
 };
 global._.registerClass('global._', Object);
+global.ArrayUtils.registerClass('global.ArrayUtils', Object);
 global.Card.registerClass('global.Card', Object);
 global.Card.registerClass('global.Card', Object);
 global.CardGame.registerClass('global.CardGame', Object);

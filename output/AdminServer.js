@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');
+require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');
 Type.registerNamespace('DebugServer');
 ////////////////////////////////////////////////////////////////////////////////
 // DebugServer.$Code

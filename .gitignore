@@ -795,3 +795,9 @@
 /_ReSharper.ShufflySharp/Decompiler/metadata/19/87ae4ef7/RecordAttribute.cs.p
 /_ReSharper.ShufflySharp/Decompiler/metadata/35/605d6480/ScriptNameAttribute.cs
 /_ReSharper.ShufflySharp/Decompiler/metadata/35/605d6480/ScriptNameAttribute.cs.p
+/Servers/DebugServer/bin/Debug/CommonLibraries.dll
+/Servers/DebugServer/bin/Debug/CommonShuffleLibrary.dll
+/Servers/DebugServer/bin/Debug/NodeJSLibrary.dll
+/Servers/DebugServer/bin/Debug/RedisLibrary.dll
+/Servers/DebugServer/bin/Debug/SocketIONodeLibrary.dll
+/Servers/DebugServer/obj/Debug/DebugServer.csprojResolveAssemblyReference.cache

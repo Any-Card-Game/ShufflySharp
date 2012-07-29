@@ -40,7 +40,7 @@
     <Compile Include="QueueManagerOptions.cs" />
     <Compile Include="QueuePusher.cs" />
     <Compile Include="QueueWatcher.cs" />
-    <Compile Include="QueueWatcherItemCollection.cs" />
+    <Compile Include="QueueItemCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -2,7 +2,7 @@
 
 namespace CommonShuffleLibrary
 {
-    class QueueItemCollection  
+    public class QueueItemCollection  
     {
         private readonly IEnumerable<QueueItem> queueItems;
 

@@ -9,7 +9,7 @@ namespace CommonLibraries
     {
 
         [InlineCode("{script}")]
-        public static dynamic Inline(this object script)
+        public static dynamic me(this object script)
         {
             return script;
         }

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Html;
+using System.Html.Media.Graphics;
 using System.Serialization;
 using CommonLibraries;
 using jQueryApi;
@@ -8,16 +11,29 @@ namespace Client
 {
     public class PageHandler
     {
-        private Gateway gateway;
+        private readonly BuildSite buildSite;
+        public Gateway gateway;
         private dynamic lastMouseMove;
-        private dynamic lastMainArea;
-        private dynamic gameContext;
+        private CardGameArea lastMainArea;
+        private CanvasContext2D gameContext;
+        private DateTime startTime;
+        private int numOfTimes;
+        private int timeValue;
+        private JsDictionary<string, WorkingImageElement> cardImages;
+        private CanvasElement gameCanvas;
 
-        public PageHandler(string gatewayServerAddress)
+        public GameInfo gameStuff;
+        private DateTime endTime;
+
+        public PageHandler(string gatewayServerAddress, BuildSite buildSite)
         {
+            this.buildSite = buildSite;
+            gameStuff = new GameInfo();
+
+            startTime = DateTime.Now;
             Window.SetTimeout(() =>
                 {
-                    Globals.Window.shuffUIManager.devArea.beginGame();
+                    buildSite.devArea.Data.beginGame();
                 }, 2000);
             gateway = new Gateway(gatewayServerAddress);
 
@@ -46,270 +62,268 @@ namespace Client
 
             gateway.Login(randomName);
 
+            gateway.On("Area.Debug.GetGameSource.Response", (data) =>
+                {
+                    var endTime = new DateTime();
+                    var time = endTime - startTime;
+                    numOfTimes++;
+                    timeValue += time;
+                    buildSite.devArea.Data.lblHowFast.Text("How Many: " + (timeValue / numOfTimes));
+                    buildSite.codeArea.Data.codeEditor.SetValue(data);
+                    buildSite.codeArea.Data.codeEditor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
+                    buildSite.codeArea.Data.codeEditor.Refresh();
+                });
+            gateway.Emit("Area.Debug2.GetGameSource.Request", new { gameName = "Sevens" });
+            cardImages = new JsDictionary<string, WorkingImageElement>();
+            for (int i = 101; i < 153; i++)
+            {
+                var img = new WorkingImageElement();
+                var domain = Globals.Window.topLevel + "client/assets";
+                var src = domain + "/cards/" + i;
+                string jm;
+                img.Src = jm = src + ".gif";
+                cardImages[jm] = img;
+            }
+            lastMainArea = null;
+
+            jQuery.Select("body").Append(gameCanvas = (CanvasElement)Document.CreateElement("canvas"));
 
 
-            /*
-             
-    window.PageHandler.gateway.on('Area.Debug.GetGameSource.Response', function (data) {
-        var endTime = new Date();
+            var props = new JsDictionary();
+            props["margin"] = "0px";
+            props["position"] = "absolute";
+            props["top"] = "0px";
+            props["left"] = (jQuery.Window.GetWidth() * .5) + "px";
+            props["z-index"] = (jQuery.Window.GetWidth() * .5) + "px";
 
-        var time = (endTime - startTime);
+            jQuery.FromElement(gameCanvas).CSS(props);//todo css prop object
 
+            gameContext = (CanvasContext2D)gameCanvas.GetContext("2d");
+            gameContext.me().canvas = gameCanvas;
+            gameContext.me().domCanvas = jQuery.FromElement(gameCanvas);
+            gameContext.me().canvas.width = jQuery.Window.GetWidth() * .5;
+            gameContext.me().canvas.height = jQuery.Window.GetHeight();
 
+            lastMouseMove = false;
+            gameCanvas.AddEventListener("DOMMouseScroll", handleScroll, false);
+            gameCanvas.AddEventListener("mousewheel", handleScroll, false);
 
-        numOfTimes++;
-        timevalue += time;
-        window.shuffUIManager.devArea.lblHowFast.text('How Many: ' + (timevalue / numOfTimes));
+            gameCanvas.AddEventListener("touchmove", CanvasMouseMove, true);
+            gameCanvas.AddEventListener("touchstart", CanvasOnClick, true);
+            gameCanvas.AddEventListener("touchend", CanvasMouseUp, true);
 
-        false && setTimeout(function () {
-            startTime = new Date();
-            window.PageHandler.gateway.emit('Area.Debug2.GetGameSource.Request', { gameName: 'Sevens' });
-        }, 10);
+            gameCanvas.AddEventListener("mousedown", CanvasMouseMove, true);
+            gameCanvas.AddEventListener("mouseup", CanvasOnClick, true);
+            gameCanvas.AddEventListener("mousemove", CanvasMouseUp, true);
+            gameCanvas.AddEventListener("contextmenu", e =>
+            {
+                e.PreventDefault();
+                //todo: Sspecial right click menu;
+            }, false);
 
-        window.shuffUIManager.codeArea.codeEditor.setValue(data);
-
-        window.shuffUIManager.codeArea.codeEditor.setMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
-        window.shuffUIManager.codeArea.codeEditor.refresh();
-    });
-
-    var startTime;
-    startTime = new Date();
-    window.PageHandler.gateway.emit('Area.Debug2.GetGameSource.Request', { gameName: 'Sevens' });
-
-    var cardImages = {};
-    for (var i = 101; i < 153; i++) {
-        var img = new Image();
-        var domain = window.topLevel + 'client/assets';
-        var src = domain + '/cards/' + i;
-        var jm;
-        img.src = jm = src + ".gif";
-        cardImages[jm] = img;
-    }
-    this.lastMainArea = undefined;
-
-             */
-
-
-
-
-
-            /*
-             
-    var gameCanvas;
-    $('body').append(gameCanvas = document.createElement('canvas'));
-
-
-    $(gameCanvas).css({ margin: '0px', position: 'absolute', top: '0px', left: ($(window).width() * .5) + 'px', 'z-index': -50 });
-
-
-    self.gameContext = gameCanvas.getContext("2d");
-    self.gameContext.canvas = gameCanvas;
-    self.gameContext.$canvas = $(gameCanvas);
-
-    self.gameContext.canvas.width = $(window).width() * .5;
-    self.gameContext.canvas.height = $(window).height();
-
-    this.lastMouseMove = false;
-
-    gameCanvas.addEventListener('DOMMouseScroll', self.handleScroll.bind(self), false);
-    gameCanvas.addEventListener('mousewheel', self.handleScroll.bind(self), false);
-
-    gameCanvas.addEventListener('touchmove', self.canvasMouseMove.bind(self));
-    gameCanvas.addEventListener('touchstart', self.canvasOnClick.bind(self));
-    gameCanvas.addEventListener('touchend', self.canvasMouseUp.bind(self));
-
-    gameCanvas.addEventListener('mousedown', self.canvasOnClick.bind(self));
-    gameCanvas.addEventListener('mouseup', self.canvasMouseUp.bind(self));
-    gameCanvas.addEventListener('mousemove', self.canvasMouseMove.bind(self));
-
-    gameCanvas.addEventListener('contextmenu', function (evt) {
-        evt.preventDefault();
-        //special right click menu;
-    }, false);
-
-    $(window).resize(self.resizeCanvas.bind(self));
-
-    self.resizeCanvas();
-
-    window.setInterval(self.draw.bind(self), 1000 / 60);
-
-             */
-
+            jQuery.Window.Resize(ResizeCanvas);
+            ResizeCanvas(null);
+            Window.SetInterval(Draw, 1000 / 60);
         }
         public void startGameServer()
         {
-            /*
-              window.PageHandler.gateway.on('Area.Game.RoomInfo', function (data) {
-            self.gameStuff.roomID = data.roomID;
 
-            window.shuffUIManager.genericArea.loadRoomInfo(data);
-            window.shuffUIManager.devArea.loadRoomInfo(data);
-        });
-        window.PageHandler.gateway.on('Area.Game.RoomInfos', function (data) {
-            window.shuffUIManager.genericArea.loadRoomInfos(data);
-        });
+            gateway.On("Area.Game.RoomInfo", data =>
+                {
+                    gameStuff.RoomID = data.roomID;
+                    buildSite.home.Data.loadRoomInfo(data);
+                    buildSite.devArea.Data.loadRoomInfo(data);
 
-        window.PageHandler.gateway.on('Area.Debug.Log', function (data) {
+                });
+            gateway.On("Area.Game.RoomInfos", data =>
+                {
+                    buildSite.devArea.Data.loadRoomInfos(data);
 
-            var lines = window.shuffUIManager.codeArea.console.getValue().split('\n');
-            lines = lines.slice(lines.length - 40, lines.length);
+                });
+            gateway.On("Area.Debug.Log", data =>
+                {
+                    buildSite.devArea.Data.loadRoomInfos(data);
 
-            window.shuffUIManager.codeArea.console.setValue(lines.join('\n') + "\n" + data.value);
-            window.shuffUIManager.codeArea.console.setCursor(window.shuffUIManager.codeArea.console.lineCount(), 0);
-        });
+                    var lines = buildSite.codeArea.Data.console.GetValue().Split('\n');
+                    lines = lines.me().slice(lines.Length - 40, lines.Length);
 
-        window.PageHandler.gateway.on('Area.Debug.Break', function (data) {
+                    buildSite.codeArea.me().console.setValue(lines.me().join('\n') + "\n" + data.value);
+                    buildSite.codeArea.me().console.setCursor(buildSite.codeArea.Data.console.me().lineCount(), 0);
 
-            var cm = window.shuffUIManager.codeArea.codeEditor;
-
-            cm.clearMarker(data.lineNumber);
-
-            cm.setMarker(data.lineNumber, "<span style=\"color: #059\">●</span> %N%");
+                });
 
 
-            cm.setCursor(data.lineNumber + 15, 0);
-            cm.setCursor(data.lineNumber - 15, 0);
-            cm.setCursor(data.lineNumber, 0);
-        });
-        window.PageHandler.gateway.on('Area.Debug.VariableLookup.Response', function (data) {
-            alert(JSON.stringify(data));
-        });
+            gateway.On("Area.Debug.Break", data =>
+                {
+                    buildSite.devArea.Data.loadRoomInfos(data);
 
 
-        window.PageHandler.gateway.on('Area.Game.AskQuestion', function (data) {
-            window.shuffUIManager.questionArea.load(data);
-            //alert(JSON.stringify(data));
-            endTime = new Date();
-            var time = endTime - startTime;
-            window.shuffUIManager.devArea.lblHowFast.text("how long: " + time);
-            setTimeout(function () {
+                    var cm = buildSite.codeArea.Data.codeEditor;
 
-                window.PageHandler.gateway.emit("Area.Game.AnswerQuestion", { answer: 1, roomID: self.gameStuff.roomID }, window.shuffUIManager.devArea.gameServer);
-                window.shuffUIManager.questionArea.visible(false);
-                startTime = new Date();
-            }, 200);
-        });
-        window.PageHandler.gateway.on('Area.Game.UpdateState', function (data) {
-            self.gameContext.clearRect(0, 0, self.gameContext.canvas.width, self.gameContext.canvas.height);
-            self.drawArea(data);
-        });
-        window.PageHandler.gateway.on('Area.Game.Started', function (data) {
-            //alert(JSON.stringify(data));
-        });
-        window.PageHandler.gateway.on('Area.Game.GameOver', function (data) {
+                    cm.ClearMarker(data.lineNumber);
 
-        });
-        window.PageHandler.gateway.on('Area.Debug.GameOver', function (data) {
-            setTimeout(function () {
+                    cm.SetMarker(data.lineNumber, "<span style=\"color: #059\">●</span> %N%");
 
-                window.shuffUIManager.devArea.beginGame();
-            }, 1000);
 
-        });
-             */
+                    cm.SetCursor(data.lineNumber + 15, 0);
+                    cm.SetCursor(data.lineNumber - 15, 0);
+                    cm.SetCursor(data.lineNumber, 0);
+                });
+
+            gateway.On("Area.Debug.VariableLookup.Response", data =>
+                {
+                    Window.Alert(Json.Stringify(data));
+
+                });
+            gateway.On("Area.Game.AskQuestion", data =>
+            {
+                buildSite.questionArea.Data.load(data);
+                //alert(JSON.stringify(data));
+                endTime = new DateTime();
+                var time = endTime - startTime;
+                buildSite.devArea.Data.lblHowFast.Text("how long: " + time);
+                Window.SetTimeout(() =>
+                    {
+
+                        gateway.Emit("Area.Game.AnswerQuestion", new { Answer = 1, RoomID = gameStuff.RoomID }, buildSite.devArea.Data.gameServer);
+                        buildSite.questionArea.Visible=false;
+                        startTime = new DateTime();
+                    }, 200);
+            });
+
+            gateway.On("Area.Game.UpdateState", data =>
+            {
+                gameContext.ClearRect(0, 0, gameContext.me().canvas.width, gameContext.me().canvas.height);
+                drawArea(data);
+            });
+            gateway.On("Area.Game.Started", data =>
+            {
+                //alert(JSON.stringify(data));
+
+            });
+            gateway.On("Area.Game.GameOver", data =>
+            {
+
+            });
+            gateway.On("Area.Debug.GameOver", data =>
+            {
+                Window.SetTimeout(() =>
+                    {
+                        buildSite.devArea.Data.beginGame();
+                    }, 1000); 
+            });
+
+
         }
-        public void drawArea(dynamic mainArea)
+
+        public void drawArea(CardGameArea mainArea)
         {
-            /*
-               var gameboard = self.gameContext;
-        this.lastMainArea = mainArea;
-        var scale = { x: self.gameContext.canvas.width / mainArea.size.width, y: self.gameContext.canvas.height / mainArea.size.height };
+            var gameboard = gameContext;
+            lastMainArea = mainArea;
+            var scale = new Point(gameContext.me().canvas.width / mainArea.Size.Width, gameContext.me().canvas.height / mainArea.Size.Height);
+            gameboard.FillStyle = "rgba(0,0,200,0.5)";
+            foreach (var space in mainArea.Spaces)
+            {
+                var vertical = space.Vertical;
+                gameboard.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
 
-        gameboard.fillStyle = "rgba(0, 0, 200, 0.5)";
+                var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
 
-        var space;
-        for (i = 0; i < mainArea.spaces.length; i++) {
-            space = mainArea.spaces[i];
-            var vertical = space.vertical;
-            gameboard.fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x, space.height * scale.y);
-            var spaceScale = { x: space.width / space.pile.cards.length, y: space.height / space.pile.cards.length };
+                int j = 0;
+                foreach (var card in space.Pile.Cards)
+                {
+                    var xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
+                    var yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
+                    var cardImage = cardImages[drawCard(card)];
+                    gameboard.Save();
+                    gameboard.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
+                    gameboard.Rotate(space.Rotate * Math.PI / 180);
+                    gameboard.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
+                    foreach (var effect in card.Effects)
+                    {
 
-            for (j = 0; j < space.pile.cards.length; j++) {
-                var card = space.pile.cards[j];
-                var xx = Math.floor((space.x) * scale.x) + (!vertical ? j * (spaceScale.x * scale.x) : 0);
-                var yy = Math.floor((space.y) * scale.y) + (vertical ? j * (spaceScale.y * scale.y) : 0);
+                        switch (effect.Type)
+                        {
+                            case EffectType.Highlight:
+                                gameboard.Save();
+                                gameboard.Translate(effect.OffsetX, effect.OffsetY);
+                                gameboard.Rotate(effect.Rotate * Math.PI / 180);
+                                gameboard.Translate(-effect.Radius, -effect.Radius);
+                                gameboard.FillStyle = effect.Color;
+                                gameboard.StrokeStyle = "black";
+                                gameboard.FillRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
+                                gameboard.StrokeRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
+                                gameboard.Restore();
 
-                var cardImage = cardImages[drawCard(card)];
-
-
-                gameboard.save();
-                gameboard.translate(xx + (vertical ? (space.width * scale.x / 2) : 0), yy + (!vertical ? (space.height * scale.y / 2) : 0));
-                gameboard.rotate(space.rotate * Math.PI / 180);
-
-                gameboard.translate((-cardImage.width / 2), (-cardImage.height / 2));
-                for (var jc = 0; jc < card.effects.length; jc++) {
-                    var effect = card.effects[jc];
-                    switch (effect.type) {
-                        case 'highlight':
-                            gameboard.save();
-                            gameboard.translate(effect.offsetX, effect.offsetY);
-                            gameboard.rotate(effect.rotate * Math.PI / 180);
-                            gameboard.translate(-effect.radius, -effect.radius);
-                            gameboard.fillStyle = effect.color;
-                            gameboard.strokeStyle = 'black';
-                            gameboard.fillRect(0, 0, cardImage.width + effect.radius * 2, cardImage.height + effect.radius * 2);
-                            gameboard.strokeRect(0, 0, cardImage.width + effect.radius * 2, cardImage.height + effect.radius * 2);
-                            gameboard.restore();
-
-                            break;
+                                break;
+                        }
                     }
-
+                    //todo gayness
+                    gameboard.DrawImage(cardImage.me(), 0, 0);
+                    gameboard.Restore();
+                    j++;
                 }
 
-                gameboard.drawImage(cardImage, 0, 0);
-                gameboard.restore();
-
             }
+
+
+            foreach (var ta in mainArea.TextAreas)
+            {
+                gameboard.FillStyle = "rgba(200, 0, 200, 0.5)";
+                gameboard.FillText(ta.Text, ta.X*scale.X, ta.Y*scale.Y);
+            }
+
+
+
         }
-        for (i = 0; i < mainArea.textAreas.length; i++) {
-            var ta = mainArea.textAreas[i];
-            gameboard.fillStyle = "rgba(200, 0, 200, 0.5)";
-            gameboard.fillText(ta.text, ta.x * scale.x, ta.y * scale.y);
-        }
-             */
-        }
-        public string drawCard(dynamic card)
+        public string drawCard(CardGameCard card)
         {
             var src = "";
             var domain = Globals.Window.topLevel + "client/assets";
 
 
-            src = domain + "/cards/" + (100 + (card.value + 1) + (card.type) * 13);
+            src = domain + "/cards/" + (100 + (card.Value + 1) + (card.Type) * 13);
 
             return src + ".gif";
         }
 
-        public bool CanvasOnClick(dynamic e)
+        public void CanvasOnClick(ElementEvent e)
         {
-            e.preventDefault();
-            return false;
+            e.PreventDefault();
+
         }
-        public bool CanvasMouseMove(dynamic e)
+        public void CanvasMouseMove(ElementEvent e)
         {
-            e.preventDefault();
+            e.PreventDefault();
+
             Document.Body.Style.Cursor = "default";
             this.lastMouseMove = e;
 
-            return false;
         }
-        public bool CanvasMouseUp(dynamic e)
+        public void CanvasMouseUp(ElementEvent e)
         {
-            e.preventDefault();
-            return false;
+            e.PreventDefault();
+
         }
-        public bool handleScroll(dynamic e)
+        public void handleScroll(ElementEvent e)
         {
-            e.preventDefault();
-            return false;
+            e.PreventDefault();
+
         }
-        public void ResizeCanvas()
+        public void ResizeCanvas(jQueryEvent jQueryEvent)
         {
-            if (gameContext.@canvas.attr("width") != jQuery.Window.GetWidth())
-                gameContext.@canvas.attr("width", jQuery.Window.GetWidth() * .5);
-            if (gameContext.@canvas.attr("height") != jQuery.Window.GetHeight())
-                gameContext.@canvas.attr("height", jQuery.Window.GetHeight());
+            if (gameContext.me().domCanvas.attr("width") != jQuery.Window.GetWidth())
+                gameContext.me().domCanvas.attr("width", jQuery.Window.GetWidth() * .5);
+            if (gameContext.me().domCanvas.attr("height") != jQuery.Window.GetHeight())
+                gameContext.me().domCanvas.attr("height", jQuery.Window.GetHeight());
             if (lastMainArea != null)
                 this.drawArea(lastMainArea);
+        }
+        public void Draw()
+        {
+            this.gameContext.me().canvas.width = this.gameContext.me().canvas.width;
+            if (this.lastMainArea != null)
+                this.drawArea(this.lastMainArea);
         }
     }
 }

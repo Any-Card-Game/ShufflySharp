@@ -25,7 +25,7 @@ namespace Client
         }
 
         protected SocketIOClient GatewaySocket { get; set; }
-        public void Emit(string channel, object content, string gameServer)
+        public void Emit(string channel, object content, string gameServer = null)
         {
             GatewaySocket.Emit("Gateway.Message", new { Channel = channel, Content = content, GameServer = gameServer });
 

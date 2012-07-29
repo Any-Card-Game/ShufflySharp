@@ -21,6 +21,28 @@ CommonLibraries.Guid.newGuid = function() {
 	return guid;
 };
 ////////////////////////////////////////////////////////////////////////////////
+// CommonLibraries.Point
+CommonLibraries.Point = function(x, y) {
+	this.$1$XField = 0;
+	this.$1$YField = 0;
+	this.set_x(x);
+	this.set_y(y);
+};
+CommonLibraries.Point.prototype = {
+	get_x: function() {
+		return this.$1$XField;
+	},
+	set_x: function(value) {
+		this.$1$XField = value;
+	},
+	get_y: function() {
+		return this.$1$YField;
+	},
+	set_y: function(value) {
+		this.$1$YField = value;
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Size
 CommonLibraries.Size = function() {
 	this.width = 0;
@@ -83,4 +105,5 @@ CommonLibraries.TypeOrFunction$1.registerGenericClass('CommonLibraries.TypeOrFun
 CommonLibraries.ExtensionMethods.registerClass('CommonLibraries.ExtensionMethods', Object);
 CommonLibraries.GameAnswer.registerClass('CommonLibraries.GameAnswer', Object);
 CommonLibraries.Guid.registerClass('CommonLibraries.Guid', Object);
+CommonLibraries.Point.registerClass('CommonLibraries.Point', Object);
 CommonLibraries.Size.registerClass('CommonLibraries.Size', Object);

@@ -14,9 +14,10 @@ namespace Client
         private readonly string gatewayServerAddress;
         private ScriptLoader scriptLoader = new ScriptLoader();
 
-        private ShuffWindow home;
-        private ShuffWindow devArea;
-        private ShuffWindow codeArea;
+        public ShuffWindow<HomeAreaInformation> home;
+        public ShuffWindow<DevAreaInformation> devArea;
+        public ShuffWindow<QuestionAreaInformation> questionArea;
+        public ShuffWindow<CodeAreaInformation> codeArea; 
 
 
 
@@ -74,14 +75,14 @@ namespace Client
 
 
 
-            var pageHandler = new PageHandler(gatewayServerAddress);
+            var pageHandler = new PageHandler(gatewayServerAddress,this);
 
 
             var shuffUIManager = new ShuffUIManager();
             Globals.Window.shuffUIManager = shuffUIManager;
 
 
-            home = shuffUIManager.CreateWindow(new ShuffWindow()
+            home = shuffUIManager.CreateWindow(new ShuffWindow<HomeAreaInformation>(new HomeAreaInformation())
                         {
                             Title = "CardGame",
                             X = jQuery.Select("body").GetInnerWidth() - 500,
@@ -102,8 +103,8 @@ namespace Client
                 Text = "Update Game List",
                 Click = (e) =>
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Game.GetGames",
-                        devArea.Inline().gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Game.GetGames",
+                        devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
 
                 }
             });
@@ -117,7 +118,7 @@ namespace Client
                 Text = "Create Game",
                 Click = (e) =>
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Game.Create", new { User = new { UserName = home.Inline().txtUserName[0].value } }, devArea.Inline().GameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Game.Create", new { User = new { UserName = home.Data.txtUserName[0].NodeValue } }, devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
 
 
                 }
@@ -132,12 +133,12 @@ namespace Client
                 Text = "Create Game",
                 Click = (e) =>
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Game.Create", new { User = new { UserName = home.Inline().txtUserName[0].value } }, devArea.Inline().GameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Game.Create", new { User = new { UserName = home.Data.txtUserName.GetElement(0).NodeValue} }, devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
 
 
                 }
             });
-            home.Inline().btnStartGame = home.AddButton(new ShuffButton()
+            home.Data.btnStartGame = home.AddButton(new ShuffButton()
                 {
                     X = 280,
                     Y = 164,
@@ -146,7 +147,7 @@ namespace Client
                     Text = "Start Game",
                     Click = (e) =>
                         {
-                            Globals.Window.PageHandler.gateway.emit("Area.Game.Start", new { roomID = Globals.Window.PageHandler.gameStuff.roomID }, devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                            pageHandler.gateway.Emit("Area.Game.Start", new { roomID = pageHandler.gameStuff.RoomID }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                         }
 
                 });
@@ -160,7 +161,7 @@ namespace Client
             }
 
 
-            home.Inline().txtUserName = home.AddTextbox(new ShuffTextBox()
+            home.Data.txtUserName = home.AddTextbox(new ShuffTextBox()
             {
                 X = 130,
                 Y = 43,
@@ -242,7 +243,7 @@ namespace Client
              */
 
 
-            devArea = shuffUIManager.CreateWindow(new ShuffWindow()
+            devArea = shuffUIManager.CreateWindow(new ShuffWindow<DevAreaInformation>(new DevAreaInformation())
                {
                    Title = "Developer",
                    X = jQuery.Select("body").GetInnerWidth() - 500,
@@ -253,16 +254,16 @@ namespace Client
                    AllowMinimize = true
                });
 
+            
 
-
-            devArea.Inline().beginGame = (Action)(() =>
+            devArea.Data.beginGame = (() =>
                 {
-                    devArea.Inline().Created = false;
-                    devArea.Inline().Joined = 0;
-                    Globals.Window.PageHandler.startGameServer();
-                    Globals.Window.PageHandler.gateway.emit("Area.Debug.Create", new
+                    devArea.Data.Created = false;
+                    devArea.Data.Joined = 0;
+                    pageHandler.startGameServer();
+                    pageHandler.gateway.Emit("Area.Debug.Create", new
                         {
-                            user = new { userName = devArea.Inline().txtNumOfPlayers.val() },
+                            user = new { userName = devArea.Data.txtNumOfPlayers.GetValue() },
                             Name = "main room",
                             Source = Globals.Window.shuffUIManager.codeArea.codeEditor.getValue(),
                             BreakPoints = Globals.Window.shuffUIManager.codeArea.breakPoints
@@ -276,10 +277,10 @@ namespace Client
                 Width = "150",
                 Height = "25",
                 Text = "Begin Game",
-                Click = devArea.Inline().beginGame
+                Click = (e) => devArea.Data.beginGame()
             });
 
-            devArea.Inline().lblHowFast = devArea.AddLabel(new ShuffLabel()
+            devArea.Data.lblHowFast = devArea.AddLabel(new ShuffLabel()
             {
                 X = 280 - 200,
                 Y = 80,
@@ -287,7 +288,7 @@ namespace Client
                 Height = "25",
                 Text = "How Many= "
             });
-            devArea.Inline().lblAnother = devArea.AddLabel(new ShuffLabel()
+            devArea.Data.lblAnother = devArea.AddLabel(new ShuffLabel()
             {
                 X = 280 - 200,
                 Y = 100,
@@ -305,7 +306,7 @@ namespace Client
                 Text = "Continue",
                 Click = (evt) =>
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Debug.Continue", new { }, devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
             });
 
@@ -325,26 +326,26 @@ namespace Client
                             return ik;
                         }
                 });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
-            propBox.Inline().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
+            propBox.me().addItem(new { key = "Foos", value = "99" });
 
 
-            devArea.Inline().varText = devArea.AddTextbox(new ShuffTextBox()
+            devArea.Data.varText = devArea.AddTextbox(new ShuffTextBox()
             {
                 X = 150,
                 Y = 134,
@@ -361,7 +362,7 @@ namespace Client
                 Text = "Lookup",
                 Click = (evt) =>
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Debug.VariableLookup.Request", new { variableName = devArea.Inline().varText.val() }, devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Debug.VariableLookup.Request", new { variableName = devArea.Data.varText.GetValue() }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
             });
 
@@ -375,39 +376,39 @@ namespace Client
                 Text = "Push New Source",
                 Click = (evt) =>
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Debug.PushNewSource", new { source = Globals.Window.shuffUIManager.codeArea.codeEditor.getValue(), breakPoints = Globals.Window.shuffUIManager.codeArea.breakPoints },
-                        devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Debug.PushNewSource", new { source = Globals.Window.shuffUIManager.codeArea.codeEditor.getValue(), breakPoints = Globals.Window.shuffUIManager.codeArea.breakPoints },
+                        devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
             });
 
 
-            devArea.Inline().beginGame = (Action<dynamic>)((room) =>
+            devArea.Data.loadRoomInfo = ((room) =>
             {
-                devArea.Inline().gameServer = room.gameServer;
-                devArea.Inline().lblAnother.text(room.gameServer);
+                devArea.Data.gameServer = room.gameServer;
+                devArea.Data.lblAnother.Text(room.gameServer);
 
-                var count = int.Parse(devArea.Inline().txtNumOfPlayers.val());
-                if (!devArea.Inline().created)
+                var count = int.Parse(devArea.Data.txtNumOfPlayers.GetValue());
+                if (!devArea.Data.Created)
                 {
-                    Globals.Window.PageHandler.gateway.emit("Area.Game.DebuggerJoin", new { roomID = room.roomID }, devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Game.DebuggerJoin", new { roomID = room.roomID }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
                     for (var i = 0; i < count; i++)
                     {
-                        Globals.Window.PageHandler.gateway.emit("Area.Game.Join", new { roomID = room.roomID, user = new { userName = "player " + (i + 1) } }, devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                        pageHandler.gateway.Emit("Area.Game.Join", new { roomID = room.roomID, user = new { userName = "player " + (i + 1) } }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                     }
-                    devArea.Inline().created = true;
+                    devArea.Data.Created = true;
                 }
                 else
                 {
-                    if ((++devArea.Inline().joined) == count)
+                    if ((++devArea.Data.Joined) == count)
                     {
-                        Globals.Window.PageHandler.gateway.emit("Area.Game.Start", new { roomID = room.roomID }, devArea.Inline().gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                        pageHandler.gateway.Emit("Area.Game.Start", new { roomID = room.roomID }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                     }
                 }
             });
 
 
-            devArea.Inline().txtNumOfPlayers = devArea.AddTextbox(new ShuffTextBox()
+            devArea.Data.txtNumOfPlayers = devArea.AddTextbox(new ShuffTextBox()
             {
                 X = 130,
                 Y = 43,
@@ -418,7 +419,7 @@ namespace Client
                 LabelStyle = "font-size=13px"
             });
 
-            codeArea = shuffUIManager.CreateWindow(new ShuffWindow()
+            codeArea = shuffUIManager.CreateWindow(new ShuffWindow<CodeAreaInformation>(new CodeAreaInformation())
             {
                 Title = "Code",
                 X = 0,
@@ -433,10 +434,10 @@ namespace Client
 
 
 
-            codeArea.Inline().breakPoints = new List<int>();
-            codeArea.Inline().console = codeArea.AddCodeEditor(new ShuffCodeEditor() { Height = "20%", LineNumbers = false });
+            codeArea.Data.breakPoints = new List<int>();
+            codeArea.Data.console = codeArea.AddCodeEditor(new ShuffCodeEditor() { Height = "20%", LineNumbers = false });
 
-            codeArea.Inline().codeEditor = codeArea.AddCodeEditor(new ShuffCodeEditor() { Height = "80%", LineNumbers = true });
+            codeArea.Data.codeEditor = codeArea.AddCodeEditor(new ShuffCodeEditor() { Height = "80%", LineNumbers = true });
 
 
 
@@ -536,5 +537,4 @@ namespace Client
             Document.GetElementsByTagName("head")[0].AppendChild(fileref);
         }
     }
-
 }

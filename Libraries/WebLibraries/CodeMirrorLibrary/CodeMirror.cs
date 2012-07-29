@@ -20,6 +20,36 @@ namespace CodeMirrorLibrary
             return null;
 
         }
+        [ScriptName("refresh")]
+        public void Refresh()
+        {
+        }
 
+        [ScriptName("setMarker")]
+        public void SetMarker(int lineIndex, string style)
+        {
+        }
+
+        [ScriptName("setValue")]
+        public void SetValue(object data)
+        {
+            
+        }
+        [ScriptName("clearMarker")]
+        public void ClearMarker(int lineNumber)
+        {
+            
+        }
+
+        [ScriptName("setCursor")]
+        public void SetCursor(int lineNumber, int colNumber)
+        {
+        }
+
+        [ScriptName("getValue")]
+        public string GetValue()
+        {
+            return null;
+        }
     }
 }

@@ -9,8 +9,10 @@ using jQueryApi.UI.Widgets;
 
 namespace Client.ShuffUI
 {
-    public class ShuffWindow : ShuffElement
+    public class ShuffWindow<T> : ShuffElement 
     {
+        
+        public T Data { get; set; }
         internal jQueryObject Window { get { return Element; } set { Element = value; } }
         internal jQueryObject Outer
         {
@@ -41,10 +43,10 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public bool Static { get; set; }
 
-        public ShuffWindow()
+        public ShuffWindow(T data)
         {
-            Elements = new List<ShuffElement>();
-
+            Data = data;  
+            Elements = new List<ShuffElement>();  
         }
 
 
@@ -66,7 +68,7 @@ namespace Client.ShuffUI
 
             but.Button();
             but.Click(element.Click);
-            but.Inline().disableSelection();
+            but.me().disableSelection();
             but.CSS("display", element.Visible == false ? "none" : "block");
 
             return but;
@@ -85,7 +87,7 @@ namespace Client.ShuffUI
             but.CSS("position", "absolute");
             but.CSS("left", element.X + "px");
             but.CSS("top", element.Y + "px");
-            but.Inline().disableSelection();
+            but.me().disableSelection();
 
 
             but.CSS("display", element.Visible == false ? "none" : "block");
@@ -110,7 +112,7 @@ namespace Client.ShuffUI
             but.CSS("top", element.Y + "px");
             but.CSS("width", element.Width + "px");
             but.CSS("height", element.Height + "px");
-            but.Inline().disableSelection();
+            but.me().disableSelection();
 
             if (element.Label != null)
             {
@@ -121,7 +123,7 @@ namespace Client.ShuffUI
                 lbl.CSS("position", "absolute");
                 lbl.CSS("left", element.X - lbl.GetWidth());
                 lbl.CSS("top", element.Y + 2);
-                lbl.Inline().disableSelection();
+                lbl.me().disableSelection();
             }
 
             but.CSS("display", element.Visible == false ? "none" : "block");
@@ -130,7 +132,7 @@ namespace Client.ShuffUI
 
         }
 
-        public jQueryObject AddCodeEditor(ShuffCodeEditor element)
+        public CodeMirror AddCodeEditor(ShuffCodeEditor element)
         {
 
 
@@ -220,7 +222,7 @@ namespace Client.ShuffUI
             but.CSS("left", element.X + "px");
             but.CSS("top", element.Y + "px");
 
-            var theme = "getTheme()".Inline();
+            var theme = "getTheme()".me();
             /*
                      var theme = getTheme();
         but.jqxListBox({ source: options.items, width: options.width, height: options.height, theme: theme });
@@ -247,14 +249,15 @@ namespace Client.ShuffUI
             but.CSS("overflow", "scroll");
 
 
-            but.Inline().items = new dynamic[0];
-            but.Inline().addItem = (Action<dynamic>)((ij) =>
+            but.me().items = new dynamic[0];
+            but.me().addItem = (Action<dynamic>)((ij) =>
             {
-                but.Append(shuffPropertyBox.ItemCreation(ij, but.Inline().items.length));
-                but.Inline().items.push(ij);
+                but.Append(shuffPropertyBox.ItemCreation(ij, but.me().items.length));
+                but.me().items.push(ij);
             });
             return but;
 
         }
-    }
+
+     }
 }

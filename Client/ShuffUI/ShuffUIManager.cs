@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Html;
+using System.Runtime.CompilerServices;
 using CommonLibraries;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
@@ -11,11 +12,11 @@ namespace Client.ShuffUI
     {
         private List<dynamic> UIAreas = new List<dynamic>();
 
-        public ShuffWindow CreateWindow(ShuffWindow ui)
+        public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui) 
         {
             var windowID = ui.Title;
             var outer = jQuery.Select("<div class='window-outer' style='background-color: #87B6D9;'></div>");
-
+            
             jQuery.Select("body").Append(outer);
             ui.outer = outer;
 

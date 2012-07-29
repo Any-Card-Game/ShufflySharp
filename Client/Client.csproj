@@ -431,7 +431,6 @@
     <Content Include="lib\WebSocketMain.swf" />
     <Content Include="lib\WebSocketMainInsecure.swf" />
     <Content Include="lib\WorkerConsole.js" />
-    <Content Include="PageHandler.js" />
     <Content Include="uis\genericArea.js" />
   </ItemGroup>
   <ItemGroup>
@@ -459,7 +458,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
+    <Compile Include="CardGameAreaSpace.cs" />
     <Compile Include="ClientHelp.cs" />
+    <Compile Include="DevAreaInformation.cs" />
     <Compile Include="Gateway.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="PageHandler.cs" />
@@ -472,6 +473,7 @@
     <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />
     <Compile Include="ShuffUI\ShuffWindow.cs" />
+    <Compile Include="WorkingImageElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\WebLibraries\CodeMirrorLibrary\CodeMirrorLibrary.csproj">

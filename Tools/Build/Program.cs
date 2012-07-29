@@ -103,6 +103,19 @@ namespace Build
 
                 File.WriteAllLines(to, lines);
             }
+
+
+            foreach (var d in Directory.GetDirectories(pre + @"ShuffleSharp\ShuffleGames\"))
+            {
+                var to = pre + @"ShuffleSharp\output\Games\" + d.Split('\\').Last();
+
+                if(Directory.Exists(to))
+                    Directory.Delete(to, true);
+
+                Directory.CreateDirectory(to);
+
+                File.WriteAllText(to + @"\app.js", File.ReadAllText(d +  @"\app.js"));
+            }
         }
         public class Application
         {

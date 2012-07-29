@@ -37,7 +37,7 @@ namespace Build
 
             var depends = new Dictionary<string, Application>
                 {
-                    {@"ShuffleSharp\Servers\AdminServer\", new Application(true,"",new List<string>() {
+                    {@"ShuffleSharp\Servers\AdminServer\", new Application(true,"new AdminServer.AdminServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
                             })},

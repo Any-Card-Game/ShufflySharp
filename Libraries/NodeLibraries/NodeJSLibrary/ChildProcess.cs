@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace NodeJSLibrary
@@ -6,5 +7,7 @@ namespace NodeJSLibrary
     [Imported(IsRealType = true)] 
     public class ChildProcess : NodeModule
     {
+        [IntrinsicProperty]
+        public Func<string, Process> Exec { get; set; }
     }
 }

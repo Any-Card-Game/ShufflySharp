@@ -42,6 +42,7 @@
     <Compile Include="Node.cs" />
     <Compile Include="NodeModule.cs" />
     <Compile Include="Process.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

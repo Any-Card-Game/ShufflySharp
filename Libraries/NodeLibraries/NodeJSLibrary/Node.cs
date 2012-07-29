@@ -5,7 +5,7 @@ namespace NodeJSLibrary
 { 
     [IgnoreNamespace]
     [Imported(IsRealType = true)] 
-    [GlobalMethods()]
+
     [IgnoreGenericArguments]
     public static class Global
     {
@@ -24,6 +24,10 @@ namespace NodeJSLibrary
 
         public static void SetTimeout(Action pollGateways, int poll)
         {
-        } 
+        }
+
+        [IntrinsicProperty]
+        [ScriptAlias("process")]
+        public static Process Process { get; set; }
     }
 }

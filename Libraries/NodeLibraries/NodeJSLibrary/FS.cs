@@ -9,8 +9,8 @@ namespace NodeJSLibrary
 
     {
         [ScriptName("readFile")]
-        public void ReadFile(string s, Action<FileSystemError, object> ready)
-        { 
+        public void ReadFile(string s,string encoding, Action<FileSystemError, string> ready)
+        {
 
         }
     }

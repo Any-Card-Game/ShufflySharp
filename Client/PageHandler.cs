@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Html;
 using System.Html.Media.Graphics;
+using System.Runtime.CompilerServices;
 using System.Serialization;
 using CommonLibraries;
+using GameServer;
+using Models;
 using global;
 using jQueryApi;
+using Json = CommonLibraries.Json;
 
 namespace Client
 {
@@ -15,8 +19,8 @@ namespace Client
         private readonly BuildSite buildSite;
         public Gateway gateway;
         private dynamic lastMouseMove;
-        private CardGameArea lastMainArea;
-        private CanvasContext2D gameContext;
+        private GameCardGame lastMainArea;
+        private Tuple<CanvasContext2D, GameCanvasInformation> gameContext;
         private DateTime startTime;
         private int numOfTimes;
         private int timeValue;
@@ -38,16 +42,16 @@ namespace Client
                 }, 2000);
             gateway = new Gateway(gatewayServerAddress);
 
-            gateway.On("Area.Main.Login.Response", (data) =>
+            gateway.On<string>("Area.Main.Login.Response", (data) =>
             {
                 Window.Alert(Json.Stringify(data));
 
             });
-            gateway.On("Area.Lobby.ListCardGames.Response", (data) =>
+            gateway.On<string>("Area.Lobby.ListCardGames.Response", (data) =>
             {
 
             });
-            gateway.On("Area.Lobby.ListRooms.Response", (data) =>
+            gateway.On<string>("Area.Lobby.ListRooms.Response", (data) =>
             {
                 Console.Log(data);
 
@@ -63,18 +67,18 @@ namespace Client
 
             gateway.Login(randomName);
 
-            gateway.On("Area.Debug.GetGameSource.Response", (data) =>
+            gateway.On<GameSourceResponseModel>("Area.Debug.GetGameSource.Response", (data) =>
                 {
                     var endTime = new DateTime();
                     var time = endTime - startTime;
                     numOfTimes++;
                     timeValue += time;
                     buildSite.devArea.Data.lblHowFast.Text("How Many: " + (timeValue / numOfTimes));
-                    buildSite.codeArea.Data.codeEditor.SetValue(data);
-                    buildSite.codeArea.Data.codeEditor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
-                    buildSite.codeArea.Data.codeEditor.Refresh();
+                    buildSite.codeArea.Data.codeEditor.editor.SetValue(data.Content);
+                    buildSite.codeArea.Data.codeEditor.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
+                    buildSite.codeArea.Data.codeEditor.editor.Refresh();
                 });
-            gateway.Emit("Area.Debug2.GetGameSource.Request", new { gameName = "Sevens" });
+            gateway.Emit("Area.Debug2.GetGameSource.Request", new GameSourceRequestModel("Sevens"));
             cardImages = new JsDictionary<string, WorkingImageElement>();
             for (int i = 101; i < 153; i++)
             {
@@ -99,11 +103,11 @@ namespace Client
 
             jQuery.FromElement(gameCanvas).CSS(props);//todo css prop object
 
-            gameContext = (CanvasContext2D)gameCanvas.GetContext("2d");
-            gameContext.me().canvas = gameCanvas;
-            gameContext.me().domCanvas = jQuery.FromElement(gameCanvas);
-            gameContext.me().canvas.width = jQuery.Window.GetWidth() * .5;
-            gameContext.me().canvas.height = jQuery.Window.GetHeight();
+            gameContext = new Tuple<CanvasContext2D, GameCanvasInformation>((CanvasContext2D)gameCanvas.GetContext("2d"), new GameCanvasInformation());
+            gameContext.Item2.canvas = gameCanvas;
+            gameContext.Item2.domCanvas = jQuery.FromElement(gameCanvas);
+            gameContext.Item2.canvas.Width = (int)(jQuery.Window.GetWidth() * .5);
+            gameContext.Item2.canvas.Height = jQuery.Window.GetHeight();
 
             lastMouseMove = false;
             gameCanvas.AddEventListener("DOMMouseScroll", handleScroll, false);
@@ -129,53 +133,54 @@ namespace Client
         public void startGameServer()
         {
 
-            gateway.On("Area.Game.RoomInfo", data =>
+            gateway.On < GameRoom>("Area.Game.RoomInfo", data =>
                 {
-                    gameStuff.RoomID = data.roomID;
+                    gameStuff.RoomID = data.RoomID;
                     buildSite.home.Data.loadRoomInfo(data);
                     buildSite.devArea.Data.loadRoomInfo(data);
 
                 });
-            gateway.On("Area.Game.RoomInfos", data =>
+/*
+            gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
                 {
                     buildSite.home.Data.loadRoomInfos(data);
 
                 });
-            gateway.On("Area.Debug.Log", data =>
+*/
+            gateway.On < GameAnswer>("Area.Debug.Log", data =>
                 {
                     buildSite.home.Data.loadRoomInfos(data);
 
-                    var lines = buildSite.codeArea.Data.console.GetValue().Split('\n');
-                    lines = lines.me().slice(lines.Length - 40, lines.Length);
+                    var lines = buildSite.codeArea.Data.console.editor.GetValue().Split("\n");
+                    lines = (string[])lines.Extract(lines.Length - 40, lines.Length);
 
-                    buildSite.codeArea.Data.console.SetValue(lines.me().join('\n') + "\n" + data.value);
-                    buildSite.codeArea.Data.console.SetCursor(buildSite.codeArea.Data.console.me().lineCount(), 0);
+                    buildSite.codeArea.Data.console.editor.SetValue(lines.Join("\n") + "\n" + data.Value);
+                    buildSite.codeArea.Data.console.editor.SetCursor(buildSite.codeArea.Data.console.editor.LineCount(), 0);
 
                 });
 
 
-            gateway.On("Area.Debug.Break", data =>
+            gateway.On < GameAnswer>("Area.Debug.Break", data =>
                 {
                     buildSite.home.Data.loadRoomInfos(data);
 
 
                     var cm = buildSite.codeArea.Data.codeEditor;
 
-                    cm.ClearMarker(data.lineNumber);
-
-                    cm.SetMarker(data.lineNumber, "<span style=\"color: #059\">●</span> %N%");
-
-
-                    cm.SetCursor(data.lineNumber + 15, 0);
-                    cm.SetCursor(data.lineNumber - 15, 0);
-                    cm.SetCursor(data.lineNumber, 0);
+                    cm.editor.ClearMarker(data.LineNumber);
+                    cm.editor.SetMarker(data.LineNumber, "<span style=\"color: #059\">●</span> %N%");
+                    cm.editor.SetCursor(data.LineNumber + 15, 0);
+                    cm.editor.SetCursor(data.LineNumber - 15, 0);
+                    cm.editor.SetCursor(data.LineNumber, 0);
                 });
 
+/*
             gateway.On("Area.Debug.VariableLookup.Response", data =>
                 {
-                    Window.Alert(Json.Stringify(data)); 
+                    Window.Alert(Json.Stringify(data));
                 });
-            gateway.On("Area.Game.AskQuestion", data =>
+*/
+            gateway.On < GameSendAnswer>("Area.Game.AskQuestion", data =>
             {
                 buildSite.questionArea.Data.load(data);
                 //alert(JSON.stringify(data));
@@ -186,46 +191,46 @@ namespace Client
                     {
 
                         gateway.Emit("Area.Game.AnswerQuestion", new { answer = 1, roomID = gameStuff.RoomID }, buildSite.devArea.Data.gameServer);
-                        buildSite.questionArea.Visible=false;
+                        buildSite.questionArea.Visible = false;
                         startTime = new DateTime();
                     }, 200);
             });
 
-            gateway.On("Area.Game.UpdateState", data =>
+            gateway.On < GameCardGame>("Area.Game.UpdateState", data =>
             {
-                gameContext.ClearRect(0, 0, gameContext.me().canvas.width, gameContext.me().canvas.height);
+                gameContext.Item1.ClearRect(0, 0, gameContext.Item2.canvas.Width, gameContext.Item2.canvas.Height);
                 drawArea(data);
             });
-            gateway.On("Area.Game.Started", data =>
+            gateway.On < GameRoom>("Area.Game.Started", data =>
             {
                 //alert(JSON.stringify(data));
 
             });
-            gateway.On("Area.Game.GameOver", data =>
+            gateway.On<string>("Area.Game.GameOver", data =>
             {
 
             });
-            gateway.On("Area.Debug.GameOver", data =>
+            gateway.On<string>("Area.Debug.GameOver", data =>
             {
                 Window.SetTimeout(() =>
                     {
                         buildSite.devArea.Data.beginGame();
-                    }, 1000); 
+                    }, 1000);
             });
 
 
         }
 
-        public void drawArea(CardGameArea mainArea)
+        public void drawArea(GameCardGame mainArea)
         {
             var gameboard = gameContext;
             lastMainArea = mainArea;
-            var scale = new Point(gameContext.me().canvas.width / mainArea.Size.Width, gameContext.me().canvas.height / mainArea.Size.Height);
-            gameboard.FillStyle = "rgba(0,0,200,0.5)";
+            var scale = new Point(gameContext.Item2.canvas.Width / mainArea.Size.Width, gameContext.Item2.canvas.Height / mainArea.Size.Height);
+            gameboard.Item1.FillStyle = "rgba(0,0,200,0.5)";
             foreach (var space in mainArea.Spaces)
             {
                 var vertical = space.Vertical;
-                gameboard.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
+                gameboard.Item1.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
 
                 var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
 
@@ -235,25 +240,25 @@ namespace Client
                     var xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
                     var yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
                     var cardImage = cardImages[drawCard(card)];
-                    gameboard.Save();
-                    gameboard.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
-                    gameboard.Rotate(space.Rotate * Math.PI / 180);
-                    gameboard.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
+                    gameboard.Item1.Save();
+                    gameboard.Item1.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
+                    gameboard.Item1.Rotate(space.Rotate * Math.PI / 180);
+                    gameboard.Item1.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
                     foreach (var effect in card.Effects)
                     {
 
-                        if (effect.Type=="highlight")
+                        if (effect.Type == "highlight")
                         {
-                            var hEffect = (CardGameEffectHighlight) effect;
-                            gameboard.Save();
-                            gameboard.Translate(hEffect.OffsetX, hEffect.OffsetY);
-                            gameboard.Rotate(hEffect.Rotate * Math.PI / 180);
-                            gameboard.Translate(-hEffect.Radius, -hEffect.Radius);
-                            gameboard.FillStyle = hEffect.Color;
-                            gameboard.StrokeStyle = "black";
-                            gameboard.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
-                            gameboard.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
-                            gameboard.Restore();
+                            var hEffect = effect.castValue<CardGameEffectHighlight>();
+                            gameboard.Item1.Save();
+                            gameboard.Item1.Translate(hEffect.OffsetX, hEffect.OffsetY);
+                            gameboard.Item1.Rotate(hEffect.Rotate * Math.PI / 180);
+                            gameboard.Item1.Translate(-hEffect.Radius, -hEffect.Radius);
+                            gameboard.Item1.FillStyle = hEffect.Color;
+                            gameboard.Item1.StrokeStyle = "black";
+                            gameboard.Item1.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+                            gameboard.Item1.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+                            gameboard.Item1.Restore();
                         }/*
                         switch (effect.Type)
                         {
@@ -272,8 +277,8 @@ namespace Client
                         }*/
                     }
                     //todo gayness
-                    gameboard.DrawImage(cardImage.me(), 0, 0);
-                    gameboard.Restore();
+                    gameboard.Item1.DrawImage(cardImage.me(), 0, 0);
+                    gameboard.Item1.Restore();
                     j++;
                 }
 
@@ -282,8 +287,8 @@ namespace Client
 
             foreach (var ta in mainArea.TextAreas)
             {
-                gameboard.FillStyle = "rgba(200, 0, 200, 0.5)";
-                gameboard.FillText(ta.Text, ta.X*scale.X, ta.Y*scale.Y);
+                gameboard.Item1.FillStyle = "rgba(200, 0, 200, 0.5)";
+                gameboard.Item1.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
             }
 
 
@@ -325,18 +330,27 @@ namespace Client
         }
         public void ResizeCanvas(jQueryEvent jQueryEvent)
         {
-            if (gameContext.me().domCanvas.attr("width") != jQuery.Window.GetWidth())
-                gameContext.me().domCanvas.attr("width", jQuery.Window.GetWidth() * .5);
-            if (gameContext.me().domCanvas.attr("height") != jQuery.Window.GetHeight())
-                gameContext.me().domCanvas.attr("height", jQuery.Window.GetHeight());
+            if (gameContext.Item2.domCanvas.GetAttribute("width") != jQuery.Window.GetWidth().ToString())
+                gameContext.Item2.domCanvas.Attribute("width", (jQuery.Window.GetWidth() * .5).ToString());
+            if (gameContext.Item2.domCanvas.GetAttribute("height") != jQuery.Window.GetHeight().ToString())
+                gameContext.Item2.domCanvas.Attribute("height", jQuery.Window.GetHeight().ToString());
             if (lastMainArea != null)
                 this.drawArea(lastMainArea);
         }
         public void Draw()
         {
-            this.gameContext.me().canvas.width = this.gameContext.me().canvas.width;
+            this.gameContext.Item2.canvas.Width = this.gameContext.Item2.canvas.Width;
             if (this.lastMainArea != null)
                 this.drawArea(this.lastMainArea);
         }
+    }
+
+    public class GameCanvasInformation
+    {
+        [IntrinsicProperty]
+        public CanvasElement canvas { get; set; }
+
+        [IntrinsicProperty]
+        public jQueryObject domCanvas { get; set; }
     }
 }

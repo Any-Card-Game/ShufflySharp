@@ -401,3 +401,16 @@ Current list
 					* highlight
 				* actions
 					card drag
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+**compiler bugs
+	double using CommonShuffleLibrary; causes static invocation???
+

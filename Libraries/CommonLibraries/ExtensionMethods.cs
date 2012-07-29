@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
+using System.Serialization;
+using System.Text; 
 
 namespace CommonLibraries
 {
@@ -18,5 +19,19 @@ namespace CommonLibraries
         {
             return null;
         }
+        
+        [InlineCode("{o}")]
+        [InstanceMethodOnFirstArgument]
+        public static T castValue<T>(this object o)
+        {
+            return default(T);
+        } 
+         
+        public static T CleanUp<T>(  T o)
+        {
+            return Json.Parse<T>(Json.Stringify(o, Help.Sanitize));
+        }
+
+
     }
 }

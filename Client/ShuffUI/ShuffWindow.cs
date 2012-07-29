@@ -69,7 +69,7 @@ namespace Client.ShuffUI
 
             but.Button();
             but.Click(element.Click);
-            but.me().disableSelection();
+            but.DisableSelection();
             but.CSS("display", element.Visible == false ? "none" : "block");
 
             return but;
@@ -88,7 +88,7 @@ namespace Client.ShuffUI
             but.CSS("position", "absolute");
             but.CSS("left", element.X + "px");
             but.CSS("top", element.Y + "px");
-            but.me().disableSelection();
+            but.DisableSelection();
 
 
             but.CSS("display", element.Visible == false ? "none" : "block");
@@ -113,7 +113,7 @@ namespace Client.ShuffUI
             but.CSS("top", element.Y + "px");
             but.CSS("width", element.Width + "px");
             but.CSS("height", element.Height + "px");
-            but.me().disableSelection();
+            but.DisableSelection();
 
             if (element.Label != null)
             {
@@ -124,7 +124,7 @@ namespace Client.ShuffUI
                 lbl.CSS("position", "absolute");
                 lbl.CSS("left", element.X - lbl.GetWidth());
                 lbl.CSS("top", element.Y + 2);
-                lbl.me().disableSelection();
+                lbl.DisableSelection();
             }
 
             but.CSS("display", element.Visible == false ? "none" : "block");
@@ -132,8 +132,7 @@ namespace Client.ShuffUI
             return but;
 
         }
-
-        public CodeMirror AddCodeEditor(ShuffCodeEditor _editor)
+        public CodeMirrorInformation AddCodeEditor(ShuffCodeEditor _editor)
         {
 
             //options = objMerge({ width: '100%', height: '100%' }, options);
@@ -145,13 +144,16 @@ namespace Client.ShuffUI
 
             divs.Append("<textarea id='code' name='code' class='CodeMirror-fullscreen ' style=''></textarea>");
 
-            var codeMirror = (TextAreaElement)Document.GetElementById("code");
-            codeMirror.Value = "";
+            var codeMirror = new CodeMirrorInformation()
+                {
+                    element = (TextAreaElement)Document.GetElementById("code")
+                };
+
+            codeMirror.element.Value = "";
 
             CodeMirrorLine hlLine = null;
-
-            CodeMirror editor=null;
-            editor=CodeMirror.FromTextArea(codeMirror, new CodeMirrorOptions()
+             
+            codeMirror.editor = CodeMirror.FromTextArea(codeMirror.element, new CodeMirrorOptions()
                 {
                     LineNumbers = _editor.LineNumbers,
 
@@ -186,8 +188,8 @@ namespace Client.ShuffUI
 
                     OnCursorActivity = (e) =>
                     {
-                        editor.SetLineClass(hlLine, null);
-                        hlLine = editor.SetLineClass(editor.GetCursor().Line, "activeline");
+                        codeMirror.editor.SetLineClass(hlLine, null);
+                        hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
                     },
                     OnFocus = (e) =>
                     {
@@ -198,12 +200,12 @@ namespace Client.ShuffUI
                     }
                 });
 
-            hlLine = editor.SetLineClass(0, "activeline");
-            var scroller = editor.ScrollerElement;
+            hlLine = codeMirror.editor.SetLineClass(0, "activeline");
+            var scroller = codeMirror.editor.ScrollerElement;
             scroller.Style.Height = divs[0].OffsetHeight + "px";
             scroller.Style.Width = divs[0].OffsetWidth + "px";
-            editor.Refresh();
-            editor.SetOption("theme", "night");
+            codeMirror.editor.Refresh();
+            codeMirror.editor.SetOption("theme", "night");
             outer.Resizable(new ResizableOptions()
                 {
                     Handles = "n, e, s, w, ne, se, sw, nw",
@@ -213,9 +215,8 @@ namespace Client.ShuffUI
                             scroller.Style.Width = divs[0].OffsetWidth + "px";
                         }
                 });
-
-            editor.me().codeElement = codeMirror;
-            return editor;
+             
+            return codeMirror;
         }
 
         public jQueryObject AddListBox(ShuffListBox element)
@@ -231,8 +232,8 @@ namespace Client.ShuffUI
             but.CSS("left", element.X + "px");
             but.CSS("top", element.Y + "px");
 
-            var theme = "getTheme()".me();
-            /*
+
+            /* var theme = "getTheme()".me();
                      var theme = getTheme();
         but.jqxListBox({ source: options.items, width: options.width, height: options.height, theme: theme });
         but.bind('select', function (event) {
@@ -258,12 +259,12 @@ namespace Client.ShuffUI
             but.CSS("overflow", "scroll");
 
 
-            but.me().items = new dynamic[0];
-            but.me().addItem = (Action<dynamic>)((ij) =>
-            {
-                but.Append(shuffPropertyBox.ItemCreation(ij, but.me().items.length));
-                but.me().items.push(ij);
-            });
+            shuffPropertyBox.items = new List<dynamic>();
+            shuffPropertyBox.addItem = (ij) =>
+                {
+                    but.Append((jQueryObject) shuffPropertyBox.ItemCreation(ij, shuffPropertyBox.items.Count));
+                    shuffPropertyBox.items.Add(ij);
+                };
             return but;
 
         }

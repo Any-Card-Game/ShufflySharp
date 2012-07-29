@@ -1,11 +1,14 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Serialization;
 
-namespace CommonShuffleLibraries
-{
+namespace CommonLibraries
+{ 
     public static class Help
-    {
+    { 
+        public static T CleanUp<T>(this T o)
+        {
+            return Json.Parse<T>(Json.Stringify(o, Help.Sanitize));
+        }
         public static object Sanitize(string name, object value)
         {
             if (isFunction(value)) return null;
@@ -24,6 +27,8 @@ namespace CommonShuffleLibraries
     public static class Json
     {
         public static object Parse(string json) { return null; }
+        [IgnoreGenericArguments]
+        public static T Parse<T>(string json) { return default(T); }
         [ScriptName("parse")]
         [IgnoreGenericArguments]
         public static TData ParseData<TData>(string json) { return default(TData); }

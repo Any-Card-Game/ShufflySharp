@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using SocketIONodeLibrary;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     public class User
     {

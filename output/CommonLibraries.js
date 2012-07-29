@@ -3,6 +3,11 @@ Type.registerNamespace('CommonLibraries');
 // CommonLibraries.ExtensionMethods
 CommonLibraries.ExtensionMethods = function() {
 };
+CommonLibraries.ExtensionMethods.cleanUp = function(T) {
+	return function(o) {
+		return JSON.parse(JSON.stringify(o, CommonLibraries.Help.sanitize));
+	};
+};
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.GameAnswer
 CommonLibraries.GameAnswer = function() {
@@ -21,26 +26,30 @@ CommonLibraries.Guid.newGuid = function() {
 	return guid;
 };
 ////////////////////////////////////////////////////////////////////////////////
+// CommonLibraries.Help
+CommonLibraries.Help = function() {
+};
+CommonLibraries.Help.cleanUp = function(T) {
+	return function(o) {
+		return JSON.parse(JSON.stringify(o, CommonLibraries.Help.sanitize));
+	};
+};
+CommonLibraries.Help.sanitize = function(name, value) {
+	if (typeof value == 'function') {
+		return null;
+	}
+	if ((name.indexOf(String.fromCharCode(95))) !== 0 && name.toLowerCase() !== 'socket' && name.toLowerCase() !== 'fiber' && name.toLowerCase() !== 'debuggingsocket') {
+		return value;
+	}
+	return null;
+};
+////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Point
 CommonLibraries.Point = function(x, y) {
-	this.$1$XField = 0;
-	this.$1$YField = 0;
-	this.set_x(x);
-	this.set_y(y);
-};
-CommonLibraries.Point.prototype = {
-	get_x: function() {
-		return this.$1$XField;
-	},
-	set_x: function(value) {
-		this.$1$XField = value;
-	},
-	get_y: function() {
-		return this.$1$YField;
-	},
-	set_y: function(value) {
-		this.$1$YField = value;
-	}
+	this.x = 0;
+	this.y = 0;
+	this.x = x;
+	this.y = y;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Size
@@ -105,5 +114,6 @@ CommonLibraries.TypeOrFunction$1.registerGenericClass('CommonLibraries.TypeOrFun
 CommonLibraries.ExtensionMethods.registerClass('CommonLibraries.ExtensionMethods', Object);
 CommonLibraries.GameAnswer.registerClass('CommonLibraries.GameAnswer', Object);
 CommonLibraries.Guid.registerClass('CommonLibraries.Guid', Object);
+CommonLibraries.Help.registerClass('CommonLibraries.Help', Object);
 CommonLibraries.Point.registerClass('CommonLibraries.Point', Object);
 CommonLibraries.Size.registerClass('CommonLibraries.Size', Object);

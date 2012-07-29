@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{453CCFEB-6D6F-4C10-84C7-E8A897A99AE8}</ProjectGuid>
+    <ProjectGuid>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameServer</RootNamespace>
-    <AssemblyName>GameServer</AssemblyName>
+    <RootNamespace>Models</RootNamespace>
+    <AssemblyName>Models</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
@@ -32,16 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CreateGameRequest.cs" />
-    <Compile Include="DataManager.cs" />
-    <Compile Include="FiberYieldResponse.cs" />
-    <Compile Include="GameAnswerRequest.cs" />
-    <Compile Include="GameData.cs" />
-    <Compile Include="GameQuestionAnswer.cs" />
-    <Compile Include="GameRoom.cs" />
-    <Compile Include="GameSendAnswer.cs" />
-    <Compile Include="GameServer.cs" />
-    <Compile Include="JoinGameRequest.cs" />
+    <Compile Include="GameSourceRequestModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -52,41 +43,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\CommonLibraries\CommonLibraries.csproj">
+    <ProjectReference Include="..\Libraries\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
-      <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
-      <Name>CommonShuffleLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\FibersLibrary\FibersLibrary.csproj">
-      <Project>{1136A53A-3853-4F65-B9ED-176290942582}</Project>
-      <Name>FibersLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\MongoDBLibrary\MongoDBLibrary.csproj">
-      <Project>{2C02E0B6-3542-4CA5-AA18-6435BDFD714E}</Project>
-      <Name>MongoDBLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
+    <ProjectReference Include="..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
       <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
       <Name>NodeJSLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\RedisLibrary\RedisLibrary.csproj">
+    <ProjectReference Include="..\Libraries\NodeLibraries\RedisLibrary\RedisLibrary.csproj">
       <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
       <Name>RedisLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj">
-      <Project>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</Project>
-      <Name>ShuffleGameLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\NodeLibraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
+    <ProjectReference Include="..\Libraries\NodeLibraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIONodeLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Models\Models.csproj">
-      <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
-      <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

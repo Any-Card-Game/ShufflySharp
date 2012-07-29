@@ -23,6 +23,7 @@ namespace Build
                     @"ShuffleSharp\Servers\GatewayServer\",
                     @"ShuffleSharp\Servers\HeadServer\",
                     @"ShuffleSharp\Servers\SiteServer\",
+                    @"ShuffleSharp\Models\",
                     @"ShuffleSharp\Client\",
                 };
             var pre = Directory.GetCurrentDirectory() + @"\..\..\..\..\..\";
@@ -41,28 +42,34 @@ namespace Build
                     {@"ShuffleSharp\Servers\AdminServer\", new Application(true,"new AdminServer.AdminServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
+                                @"./Models.js", 
                             })},
                     {@"ShuffleSharp\Servers\ChatServer\", new Application(true,"new ChatServer.ChatServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
+                                @"./Models.js", 
                             })},
                     {@"ShuffleSharp\Servers\DebugServer\", new Application(true,"new DebugServer.DebugServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
+                                @"./Models.js", 
                             })},
                     {
                         @"ShuffleSharp\Servers\GameServer\",new Application(true,"new GameServer.GameServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
                                 @"./ShuffleGameLibrary.js", 
+                                @"./Models.js", 
                             }) 
                     },
                     {@"ShuffleSharp\Servers\GatewayServer\", new Application(true,"new GatewayServer.GatewayServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
+                                @"./Models.js", 
                             })},
                     {@"ShuffleSharp\Servers\HeadServer\", new Application(true,"new HeadServer.HeadServer();",new List<string>() { 
                                 @"./CommonShuffleLibrary.js", 
+                                @"./Models.js", 
                             })},
                     {@"ShuffleSharp\Servers\SiteServer\", new Application(true,"",new List<string>() {})},
                     {@"ShuffleSharp\Client\", new Application(false,"",new List<string>()

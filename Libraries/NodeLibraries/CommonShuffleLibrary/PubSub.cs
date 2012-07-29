@@ -4,7 +4,7 @@ using CommonLibraries;
 using NodeJSLibrary;
 using RedisLibrary;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     public class PubSub
     {

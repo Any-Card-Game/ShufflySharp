@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     public class Consumer
     {

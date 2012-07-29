@@ -2,33 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
+using CommonShuffleLibrary;
 using NodeJSLibrary;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
-    public class QueueManager
+
+    public   class QueueManager
     {
         public string Name;
-        public JsDictionary<string, Action<User, object>> channels;
+        public dynamic channels;//necessary evil for maintaining sanity
         public List<QueueWatcher> qw;
         public List<QueuePusher> qp;
-        
-        //todo fix T
-        [IgnoreGenericArguments] 
-        public void AddChannel<T>(string channel, Action<User, object> callback)
-        {
-            channels[channel] = callback;
-        }
-
-        private void messageReceived(string name, User user, string eventChannel, object content)
-        {
-            user.Gateway = name;
-
-            if (channels.ContainsKey(eventChannel))
-            {
-                channels[eventChannel].Invoke(user, content);
-            }
-        }
 
         public QueueManager(string name, QueueManagerOptions options)
         {
@@ -54,6 +39,25 @@ namespace CommonShuffleLibraries
             qpCollection = new QueueItemCollection(qp);
         }
 
+         
+        //todo fix T 
+        [IgnoreGenericArguments] 
+        public void AddChannel<T>(string channel, Action<User, T> callback)
+        {
+            channels[channel] = callback;
+        }
+
+        private void messageReceived(string name, User user, string eventChannel, object content)
+        {
+            user.Gateway = name;
+
+            if (channels[eventChannel]!=null)
+            {
+                channels[eventChannel](user, content);
+            }
+        }
+
+
         private QueueItemCollection qwCollection;
         private QueueItemCollection qpCollection;
 
@@ -70,4 +74,6 @@ namespace CommonShuffleLibraries
             pusher.Message(channel, this.Name, user, eventChannel, content);
         }
     }
-}
+
+
+ }

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using CommonShuffleLibraries;
+using CommonShuffleLibrary;
 using NodeJSLibrary;
 
 namespace HeadServer
@@ -32,7 +32,7 @@ namespace HeadServer
                                                                                     }));
 
 
-            fs.ReadFile(__dirname + "/index.html", ready);
+            fs.ReadFile(__dirname + "/index.html","ascii", ready);
 
             pubsub = new PubSub(() => pubsub.Subscribe("PUBSUB.GatewayServers", message =>
                 {
@@ -41,13 +41,9 @@ namespace HeadServer
                 }));
 
             Global.Require<Http>("http").CreateServer(handlerWS).Listen(8844);
-            qManager.AddChannel<string>("Head.GatewayUpdate", (user, data) =>
-                {
-                    indexForSites.Add(indexPageData.Replace("{{gateway}}", data.ToString()));
-                    gateways.Add(data.ToString());
-                });
+ 
 
-            Global.SetInterval(pollGateways, 5000);
+            Global.SetInterval(pollGateways, 1000);
             pollGateways();
         }
 

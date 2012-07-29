@@ -280,10 +280,6 @@ global.GameCardGameOptions.$ctor = function() {
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
-// global.GameCardGameSpace
-global.GameCardGameSpace = function() {
-};
-////////////////////////////////////////////////////////////////////////////////
 // global.GameCardGameTextAreaOptions
 global.GameCardGameTextAreaOptions = function() {
 };
@@ -476,7 +472,6 @@ global.CardGameEffectHighlightOptions.registerClass('global.CardGameEffectHighli
 global.CardGameTableSpaceOptions.registerClass('global.CardGameTableSpaceOptions', Object);
 global.Effects.registerClass('global.Effects', Object);
 global.GameCardGameOptions.registerClass('global.GameCardGameOptions', Object);
-global.GameCardGameSpace.registerClass('global.GameCardGameSpace', Object);
 global.GameCardGameTextAreaOptions.registerClass('global.GameCardGameTextAreaOptions', Object);
 global.Pile.registerClass('global.Pile', Object);
 global.PokerResult.registerClass('global.PokerResult', Object);

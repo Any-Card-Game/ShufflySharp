@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Serialization;
+using CommonShuffleLibrary;
 using NodeJSLibrary;
 using RedisLibrary;
+using Json = CommonLibraries.Json;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     public class QueueWatcher : QueueItem
     {

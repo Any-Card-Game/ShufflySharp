@@ -1,4 +1,4 @@
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     public class QueueManagerOptions
     {

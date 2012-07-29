@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');
+require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 Type.registerNamespace('GatewayServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GatewayServer.GatewayLoginMessage
@@ -29,13 +29,13 @@ GatewayServer.GatewayServer = function() {
 	app.listen(port);
 	io.set('log level', 1);
 	var myName = 'Gateway ' + CommonLibraries.Guid.newGuid();
-	this.$ps = new CommonShuffleLibraries.PubSub(Function.mkdel(this, function() {
+	this.$ps = new CommonShuffleLibrary.PubSub(Function.mkdel(this, function() {
 		this.$ps.subscribe('PUBSUB.GatewayServers.Ping', Function.mkdel(this, function(message) {
-			this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibraries.IPs.get_gatewayIP(), port));
+			this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibrary.IPs.get_gatewayIP(), port));
 		}));
-		this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibraries.IPs.get_gatewayIP(), port));
+		this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibrary.IPs.get_gatewayIP(), port));
 	}));
-	queueManager = new CommonShuffleLibraries.QueueManager(myName, new CommonShuffleLibraries.QueueManagerOptions([new CommonShuffleLibraries.QueueWatcher('GatewayServer', Function.mkdel(this, this.$messageReceived)), new CommonShuffleLibraries.QueueWatcher(myName, Function.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'DebugServer', 'ChatServer', 'HeadServer']));
+	queueManager = new CommonShuffleLibrary.QueueManager(myName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', Function.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(myName, Function.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'DebugServer', 'ChatServer', 'HeadServer']));
 	io.sockets.on('connection', Function.mkdel(this, function(socket) {
 		var user = null;
 		socket.on('Gateway.Message', function(data) {
@@ -65,7 +65,7 @@ GatewayServer.GatewayServer = function() {
 			queueManager.sendMessage(user, Object.coalesce(data.gameServer, channel), data.channel, data.content);
 		});
 		socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
-			user = new CommonShuffleLibraries.User();
+			user = new CommonShuffleLibrary.User();
 			user.socket = socket;
 			user.userName = data1.userName;
 			this.users[data1.userName] = user;

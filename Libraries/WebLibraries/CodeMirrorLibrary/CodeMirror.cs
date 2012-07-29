@@ -38,7 +38,7 @@ namespace CodeMirrorLibrary
         }
 
         [ScriptName("setValue")]
-        public void SetValue(object data)
+        public void SetValue(string data)
         {
 
         }
@@ -77,6 +77,12 @@ namespace CodeMirrorLibrary
         [ScriptName("setOption")]
         public void SetOption(string key, object value)
         {
+        }
+
+        [ScriptName("lineCount")]
+        public int LineCount()
+        {
+            return 0;
         }
     }
 

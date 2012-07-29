@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonShuffleLibrary.js');
+require('./mscorlib.node.debug.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 Type.registerNamespace('HeadServer');
 ////////////////////////////////////////////////////////////////////////////////
 // HeadServer.HeadServer
@@ -13,20 +13,16 @@ HeadServer.HeadServer = function() {
 	this.$oldGateways = new Array();
 	this.$oldIndex = new Array();
 	this.$siteIndex = 0;
-	this.$qManager = new CommonShuffleLibraries.QueueManager('Head1', new CommonShuffleLibraries.QueueManagerOptions([new CommonShuffleLibraries.QueueWatcher('HeadServer', null), new CommonShuffleLibraries.QueueWatcher('Head1', null)], ['GatewayServer']));
-	this.$fs.readFile(this.$__dirname + '/index.html', Function.mkdel(this, this.ready));
-	this.$pubsub = new CommonShuffleLibraries.PubSub(Function.mkdel(this, function() {
+	this.$qManager = new CommonShuffleLibrary.QueueManager('Head1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher('Head1', null)], ['GatewayServer']));
+	this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', Function.mkdel(this, this.ready));
+	this.$pubsub = new CommonShuffleLibrary.PubSub(Function.mkdel(this, function() {
 		this.$pubsub.subscribe('PUBSUB.GatewayServers', Function.mkdel(this, function(message) {
 			this.$indexForSites.add(this.$indexPageData.replaceAll('{{gateway}}', message.toString()));
 			this.$gateways.add(message.toString());
 		}));
 	}));
 	(require('http')).createServer(Function.mkdel(this, this.$handlerWS)).listen(8844);
-	this.$qManager.addChannel('Head.GatewayUpdate', Function.mkdel(this, function(user, data) {
-		this.$indexForSites.add(this.$indexPageData.replaceAll('{{gateway}}', data.toString()));
-		this.$gateways.add(data.toString());
-	}));
-	setInterval(Function.mkdel(this, this.$pollGateways), 5000);
+	setInterval(Function.mkdel(this, this.$pollGateways), 1000);
 	this.$pollGateways();
 };
 HeadServer.HeadServer.prototype = {

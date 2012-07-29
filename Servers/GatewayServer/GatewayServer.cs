@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
-using CommonShuffleLibraries;
+using CommonShuffleLibrary;
 using NodeJSLibrary;
 using SocketIONodeLibrary;
 

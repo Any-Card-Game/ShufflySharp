@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
-using CommonShuffleLibraries;
+using CommonShuffleLibrary;
 
 namespace global
 {
@@ -24,7 +24,7 @@ namespace global
 
         [ScriptName("spaces")]
         [IntrinsicProperty]
-        public List<GameCardGameSpace> Spaces { get; set; }
+        public List<CardGameTableSpace> Spaces { get; set; }
 
         [IntrinsicProperty]
         [ScriptName("textAreas")]
@@ -92,7 +92,7 @@ namespace global
         public GameCardGame(GameCardGameOptions options)
         {
 
-            Spaces = new List<GameCardGameSpace>();
+            Spaces = new List<CardGameTableSpace>();
             TextAreas = new List<GameCardGameTextArea>();
             Answers = new List<CardGameAnswer>();
             Users = new List<CardGameUser>();
@@ -242,8 +242,9 @@ namespace global
         Spade = 2,
         [ScriptName("club")]
         Club = 3
-    }
-    [ScriptName("Effects")]
+    } 
+    [ScriptName("Effects")] 
+
     public class CardGameEffect
     {
         [ScriptName("type")]
@@ -253,9 +254,9 @@ namespace global
         {
             this.Type = "";
         }
-    }
+    } 
     [ScriptName("Effect$Highlight")]
-    public class CardGameEffectHighlight : CardGameEffect
+    public  class CardGameEffectHighlight : CardGameEffect
     {
         [ScriptName("radius")]
         [IntrinsicProperty]
@@ -389,11 +390,7 @@ namespace global
         public string Text { get; set; }
 
     }
-
-    public class GameCardGameSpace
-    {
-    }
-
+     
 
     [ScriptName("TableSpace")]
     public class CardGameTableSpace

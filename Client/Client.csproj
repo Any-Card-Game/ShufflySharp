@@ -87,9 +87,6 @@
     <Content Include="assets\cards\153.gif" />
     <Content Include="assets\cards\154.gif" />
     <Content Include="assets\cards\155.gif" />
-    <Content Include="build.js" />
-    <Content Include="ClientHelp.js" />
-    <Content Include="editorTest.htm" />
     <Content Include="lib\codemirror\codemirror.css" />
     <Content Include="lib\codemirror\codemirror.js" />
     <Content Include="lib\codemirror\mode\javascript\index.html" />
@@ -431,7 +428,6 @@
     <Content Include="lib\WebSocketMain.swf" />
     <Content Include="lib\WebSocketMainInsecure.swf" />
     <Content Include="lib\WorkerConsole.js" />
-    <Content Include="uis\genericArea.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\jqwidgets\styles\styles\images\t-shirts\bigger\" />
@@ -459,12 +455,13 @@
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
     <Compile Include="CardGameAreaSpace.cs" />
-    <Compile Include="ClientHelp.cs" />
     <Compile Include="DevAreaInformation.cs" />
     <Compile Include="Gateway.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
+    <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
+    <Compile Include="ShuffUI\ImportedExtensionMethods.cs" />
     <Compile Include="ShuffUI\ShuffButton.cs" />
     <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
     <Compile Include="ShuffUI\ShuffElement.cs" />
@@ -484,6 +481,10 @@
     <ProjectReference Include="..\Libraries\NodeLibraries\FibersLibrary\FibersLibrary.csproj">
       <Project>{1136A53A-3853-4F65-B9ED-176290942582}</Project>
       <Name>FibersLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\NodeLibraries\MongoDBLibrary\MongoDBLibrary.csproj">
+      <Project>{2C02E0B6-3542-4CA5-AA18-6435BDFD714E}</Project>
+      <Name>MongoDBLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
       <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
@@ -516,6 +517,14 @@
     <ProjectReference Include="..\Libraries\WebLibraries\SocketIOWebLibrary\SocketIOWebLibrary.csproj">
       <Project>{108D8A37-0782-4FFA-9A53-934E07B9B28A}</Project>
       <Name>SocketIOWebLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Servers\GameServer\GameServer.csproj">
+      <Project>{453CCFEB-6D6F-4C10-84C7-E8A897A99AE8}</Project>
+      <Name>GameServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />

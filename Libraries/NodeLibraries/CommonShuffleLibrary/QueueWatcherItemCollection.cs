@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     class QueueItemCollection  
     {

@@ -1,5 +1,5 @@
 
-using CommonShuffleLibraries;
+using CommonShuffleLibrary;
 using global;
 
 namespace GameServer

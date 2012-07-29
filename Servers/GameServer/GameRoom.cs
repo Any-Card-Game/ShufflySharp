@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
-using CommonShuffleLibraries;
+using CommonShuffleLibrary;
 using FibersLibrary;
 using global;
 
@@ -23,5 +23,12 @@ namespace GameServer
         public GameObject Game;
 
         public User DebuggingSender;
+
+        public GameRoom()
+        {
+            Players = new List<User>();
+            RoomID = Guid.NewGuid();
+            Answers = new List<CardGameAnswer>();
+        }
     }
 }

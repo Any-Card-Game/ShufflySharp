@@ -1,8 +1,9 @@
-using System.Serialization;
+using CommonLibraries;
+using CommonShuffleLibrary;
 using NodeJSLibrary;
 using RedisLibrary;
 
-namespace CommonShuffleLibraries
+namespace CommonShuffleLibrary
 {
     public class QueuePusher : QueueItem
     {

@@ -1665,7 +1665,9 @@ Type.cast = function Type$cast(instance, type) {
     else if (Type.isInstanceOfType(instance, type)) {
         return instance;
     }
-    throw 'Cannot cast object to type ' + type.__typeName;
+    
+    throw ('Cannot cast object to type ' + type.__typeName);
+    return instance;
 }
 
 Type.getInstanceType = function Type$getInstanceType(instance) {

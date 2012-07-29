@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Client.ShuffUI;
+using GameServer;
 using jQueryApi;
 
 namespace Client
@@ -33,15 +35,15 @@ namespace Client
         public jQueryObject answerBox { get; set; }
 
         [IntrinsicProperty]
-        public Action<dynamic> load { get; set; }
+        public Action<GameSendAnswer> load { get; set; }
     }
     public class CodeAreaInformation
     {
         [IntrinsicProperty]
-        public CodeMirrorLibrary.CodeMirror codeEditor { get; set; }
+        public CodeMirrorInformation codeEditor { get; set; }
 
         [IntrinsicProperty]
-        public CodeMirrorLibrary.CodeMirror console { get; set; }
+        public CodeMirrorInformation console { get; set; }
 
         [IntrinsicProperty]
         public List<int> breakPoints { get; set; }

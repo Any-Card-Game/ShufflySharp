@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CommonShuffleLibraries;
+using CommonShuffleLibrary;
+using Models;
 using NodeJSLibrary;
 
 namespace DebugServer
@@ -18,16 +19,15 @@ namespace DebugServer
                     new QueueWatcher("DebugServer",null), 
                 }, new[] { "GatewayServer", "Gateway*" }));
 
-            queueManager.AddChannel<dynamic>("Area.Debug2.GetGameSource.Request", (sender, d) =>
+            queueManager.AddChannel<GameSourceRequestModel>("Area.Debug2.GetGameSource.Request", (sender, data) =>
                 {
-                    var data = (dynamic)d;
-                    Action<FileSystemError, object> m = (err, data2) =>
+                    
+                    fs.ReadFile("/usr/local/src/games/" + data.GameName + "/app.js","ascii", (err, data2) =>
                         {
-                            queueManager.SendMessage(sender, sender.Gateway, "Area.Debug.GetGameSource.Response", data2.ToString());
-                        };
-
-                    fs.ReadFile("/usr/local/src/games/" + data.gameName + "/app.js", m);
+                            queueManager.SendMessage(sender, sender.Gateway, "Area.Debug.GetGameSource.Response", new GameSourceResponseModel(data2));
+                        });
                 });
         }
     }
+
 }

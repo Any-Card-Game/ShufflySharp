@@ -5,6 +5,8 @@ using System.Html;
 using Client.ShuffUI;
 using CommonLibraries;
 using CommonWebLibraries;
+using GameServer;
+using Models;
 using jQueryApi;
 
 namespace Client
@@ -54,6 +56,8 @@ namespace Client
                         url + "lib/Stats.js",
                         url + "lib/keyboardjs.js",
                         url + "CommonLibraries.js",
+                        url + "ShuffleGameLibrary.js",
+                        url + "Models.js",
                         //url + "UIManager.js",
                         //url + "UIArea.js",
                         //url + "PageHandler.js",
@@ -147,7 +151,7 @@ namespace Client
                     Text = "Start Game",
                     Click = (e) =>
                         {
-                            pageHandler.gateway.Emit("Area.Game.Start", new { roomID = pageHandler.gameStuff.RoomID }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                            pageHandler.gateway.Emit("Area.Game.Start", new JoinGameRequest(pageHandler.gameStuff.RoomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                         }
 
                 });
@@ -263,7 +267,7 @@ namespace Client
                         {
                             user = new { userName = devArea.Data.txtNumOfPlayers.GetValue() },
                             Name = "main room",
-                            Source = codeArea.Data.codeEditor.GetValue(),
+                            Source = codeArea.Data.codeEditor.editor.GetValue(),
                             BreakPoints = codeArea.Data.breakPoints
                         });
                 });
@@ -308,7 +312,8 @@ namespace Client
                 }
             });
 
-            var propBox = devArea.AddPropertyBox(new ShuffPropertyBox()
+            ShuffPropertyBox pop;
+            var propBox = devArea.AddPropertyBox(pop=new ShuffPropertyBox()
                 {
                     X = 25,
                     Y = 200,
@@ -324,23 +329,23 @@ namespace Client
                             return ik;
                         }
                 });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
-            propBox.me().addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
+            pop.addItem(new { key = "Foos", value = "99" });
 
 
             devArea.Data.varText = devArea.AddTextbox(new ShuffTextBox()
@@ -374,7 +379,7 @@ namespace Client
                 Text = "Push New Source",
                 Click = (evt) =>
                 {
-                    pageHandler.gateway.Emit("Area.Debug.PushNewSource", new { source = codeArea.Data.codeEditor.GetValue(), breakPoints = codeArea.Data.breakPoints },
+                    pageHandler.gateway.Emit("Area.Debug.PushNewSource", new { source = codeArea.Data.codeEditor.editor.GetValue(), breakPoints = codeArea.Data.breakPoints },
                         devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
             });
@@ -388,7 +393,7 @@ namespace Client
                 var count = int.Parse(devArea.Data.txtNumOfPlayers.GetValue());
                 if (!devArea.Data.Created)
                 {
-                    pageHandler.gateway.Emit("Area.Game.DebuggerJoin", new { roomID = room.roomID }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                    pageHandler.gateway.Emit("Area.Game.DebuggerJoin", new JoinGameRequest(room.roomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 
                     for (var i = 0; i < count; i++)
                     {
@@ -400,7 +405,7 @@ namespace Client
                 {
                     if ((++devArea.Data.Joined) == count)
                     {
-                        pageHandler.gateway.Emit("Area.Game.Start", new { roomID = room.roomID }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                        pageHandler.gateway.Emit("Area.Game.Start", new JoinGameRequest(room.roomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                     }
                 }
             });
@@ -468,12 +473,12 @@ namespace Client
         
         questionArea.Data.load = (question) =>{
             questionArea.Visible=true;
-            questionArea.Data.question.Text(question.question);
+            questionArea.Data.question.Text(question.Question);
             questionArea.Data.answerBox.Remove();
 
                                                   var answers = new List<dynamic>();
-            for (var i = 0; i < question.answers.length; i++) {
-                answers.Add(new { label= question.answers[i], value= i });
+            for (var i = 0; i < question.Answers.Length; i++) {
+                answers.Add(new { label = question.Answers[i], value = i });
             }
 
             questionArea.Data.answerBox = questionArea.AddListBox(new ShuffListBox(){
@@ -483,8 +488,9 @@ namespace Client
                 Height= "125",
                 Label= "Answers",
                 Items= answers,
-                Click= (item)=> {
-                    pageHandler. gateway.Emit("Area.Game.AnswerQuestion", new { answer= item.value, roomID= pageHandler.gameStuff.RoomID }, devArea.Data.gameServer);
+                Click= (item)=>
+                    {
+                        pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(item.value, pageHandler.gameStuff.RoomID), devArea.Data.gameServer);
                     questionArea.Visible=false;
 
                 }

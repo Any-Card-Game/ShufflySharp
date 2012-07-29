@@ -3,16 +3,43 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Serialization;
 using CommonLibraries;
-using CommonShuffleLibraries;
+using CommonShuffleLibrary; 
 using FibersLibrary;
-using NodeJSLibrary;
+using Models;
+using NodeJSLibrary; 
 using global;
-using Json = CommonShuffleLibraries.Json;
+using Json = CommonLibraries.Json;
 namespace GameServer
 {
+
+
+    
+    class QueueItemCollection
+    {
+        private readonly IEnumerable<QueueItem> queueItems;
+
+        public QueueItemCollection(IEnumerable<QueueItem> queueItems)
+        {
+            this.queueItems = queueItems;
+        }
+
+        public QueueItem GetByChannel(string channel)
+        {
+            foreach (QueueItem queueWatcher in queueItems)
+            {
+                if (queueWatcher.Channel == channel || channel.IndexOf(queueWatcher.Channel.Replace("*", "")) == 0)
+                {
+                    return queueWatcher;
+                }
+            }
+            return null;
+        }
+    }
+
     public class GameServer
     {
         private QueueManager qManager;
+         
         private bool verbose = false;
         private GameData gameData;
         private List<GameRoom> rooms;
@@ -24,7 +51,7 @@ namespace GameServer
         private DataManager dataManager;
         private FS fs;
         private ChildProcess childProcess;
-        private List<object> queueue = new List<object>();
+        private List<GameAnswerQuestionModel> queueue = new List<GameAnswerQuestionModel>();
         private string gameServerIndex;
         public GameServer()
         {
@@ -39,6 +66,22 @@ namespace GameServer
             //Global.Require("./gameFramework/GameAPI.js");
 
 
+             
+
+
+            Global.Require<NodeModule>("fibers");
+            rooms = new List<GameRoom>();
+
+            gameData = new GameData();
+
+            Global.Process.On("exit", () => Console.Log("exi"));
+
+
+            /*qManager.AddChannel("Area.Game.Create", (arg1, arg2) =>
+                {
+                    GameRoom room;
+                    rooms.Add(room = new GameRoom());
+                });*/
 
             qManager = new QueueManager(gameServerIndex, new QueueManagerOptions(new QueueWatcher[]
                                                                                      {
@@ -51,106 +94,83 @@ namespace GameServer
                                                                                                 "Gateway*"
                                                                                             }));
 
-
-            Global.Require<NodeModule>("fibers");
-            rooms = new List<GameRoom>();
-
-            gameData = new GameData();
-
-            //Global.Process.On("exit", delegate { Console.Log("exi"); });
-
-
-            qManager.AddChannel<int>("Area.Game.Create", delegate
-                                                             {
-                                                                 GameRoom room;
-                                                                 rooms.Add(room = new GameRoom());
-                                                             });
-
             qManager.AddChannel<CreateGameRequest>("Area.Debug.Create",
-                                     delegate(User user, object arg2)
-                                     {
-                                         CreateGameRequest data = (castValue<CreateGameRequest>(arg2));
-                                         data.GameName = "Sevens";
-                                         GameRoom room;
-                                         rooms.Add(room = new GameRoom());
-                                         room.Name = data.Name;
-                                         room.MaxUsers = 6;
-                                         room.Debuggable = true;
-                                         room.GameName = data.GameName;
-                                         room.RoomID = Guid.NewGuid();
-                                         room.Answers = new List<CardGameAnswer>();
-                                         room.Players = new List<User>();
-                                         room.Started = false;
-                                         room.GameServer = gameServerIndex;
-                                         room.Players.Add(user);
-                                         
-                                         GameObject gameObject;
-                                         if (cachedGames.ContainsKey(data.GameName))
-                                         {
-                                             gameObject = cachedGames[data.GameName];
-                                         }
-                                         else
-                                         {
-                                             gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./games/" + data.GameName + "/app.js");
-                                         }
-                                         room.Fiber = CreateFiber(room, gameObject, true);
-                                         room.Unwind = delegate(List<User> players)
-                                         {
-                                             gameData.FinishedGames++;
-                                             Console.Log("--game closed");
+                                (user, data) =>
+                                    {
+                                        data.GameName = "Sevens";
+                                        GameRoom room;
+                                        rooms.Add(room = new GameRoom());
+                                        room.Name = data.Name;
+                                        room.MaxUsers = 6;
+                                        room.Debuggable = true;
+                                        room.GameName = data.GameName;
+                                        
+                                        room.Started = false;
+                                        room.GameServer = gameServerIndex;
+                                        room.Players.Add(user);
 
-                                         };
+                                        GameObject gameObject;
+                                        if (cachedGames.ContainsKey(data.GameName))
+                                        {
+                                            gameObject = cachedGames[data.GameName];
+                                        }
+                                        else
+                                        {
+                                            gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./games/" + data.GameName + "/app.js");
+                                        }
+                                        room.Fiber = CreateFiber(room, gameObject, true);
+                                        room.Unwind = players =>
+                                            {
+                                                gameData.FinishedGames++;
+                                                Console.Log("--game closed");
+                                            };
+                                        EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
+                                    });
+
+
+            qManager.AddChannel <JoinGameRequest>("Area.Game.Join",
+                                 (user, data) =>
+                                     {
+                                         GameRoom room = null;
+                                         foreach (GameRoom gameRoom in rooms)
+                                         {
+                                             if (gameRoom.RoomID == data.RoomID)
+                                             {
+                                                 room = gameRoom;
+                                                 break;
+                                             }
+                                         }
+                                         if (room == null)
+                                             return;
+                                         room.Players.Add(user);
+                                         room.Players.Add(user);
                                          EmitAll(room, "Area.Game.RoomInfo", Json.Parse(Json.Stringify(room, Help.Sanitize)));
                                      });
 
-
-            qManager.AddChannel<JoinGameRequest>("Area.Game.Join",
-                                                   delegate(User user, object arg2)
-                                                   {
-                                                       JoinGameRequest data = (castValue<JoinGameRequest>(arg2));
-                                                       GameRoom room = null;
-                                                       foreach (GameRoom gameRoom in rooms)
-                                                       {
-                                                           if (gameRoom.RoomID == data.RoomID)
-                                                           {
-                                                               room = gameRoom;
-                                                               break;
-                                                           }
-                                                       }
-                                                       if (room == null)
-                                                           return;
-                                                       room.Players.Add(user);
-                                                       room.Players.Add(user);
-                                                       EmitAll(room, "Area.Game.RoomInfo", Json.Parse(Json.Stringify(room, Help.Sanitize)));
-                                                   });
-
-            qManager.AddChannel<object>("Area.Game.GetGames", delegate(User sender, object data)
-            {
-                qManager.SendMessage(sender, sender.Gateway, "Area.Game.RoomInfos", Json.Parse(Json.Stringify(rooms, Help.Sanitize)));
-            });
-
-            qManager.AddChannel<object>("Area.Game.DebuggerJoin", delegate(User sender, object arg2)
-            {
-
-                JoinGameRequest data = (castValue<JoinGameRequest>(arg2));
-                GameRoom room = null;
-                foreach (GameRoom gameRoom in rooms)
+            /*qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>
                 {
-                    if (gameRoom.RoomID == data.RoomID)
+                    qManager.SendMessage(sender, sender.Gateway, "Area.Game.RoomInfos", Json.Parse(Json.Stringify(rooms, Help.Sanitize)));
+                });*/
+
+            qManager.AddChannel <JoinGameRequest>("Area.Game.DebuggerJoin", (sender, data) =>
+                {
+                     GameRoom room = null;
+                    foreach (GameRoom gameRoom in rooms)
                     {
-                        room = gameRoom;
-                        break;
+                        if (gameRoom.RoomID == data.RoomID)
+                        {
+                            room = gameRoom;
+                            break;
+                        }
                     }
-                }
-                if (room == null)
-                    return;
-                room.DebuggingSender = sender;
-                Console.Log("debuggable");
-            });
+                    if (room == null)
+                        return;
+                    room.DebuggingSender = sender;
+                    Console.Log("debuggable");
+                });
 
-            qManager.AddChannel<object>("Area.Game.Start", (sender, arg2) =>
-                {
-                    JoinGameRequest data = castValue<JoinGameRequest>(arg2);
+            qManager.AddChannel < JoinGameRequest>("Area.Game.Start", (sender, data) =>
+                { 
                     GameRoom room = null;
                     foreach (GameRoom gameRoom in rooms)
                     {
@@ -172,16 +192,11 @@ namespace GameServer
                     Console.Log("doign2");
                 });
 
-            qManager.AddChannel<object>("Area.Game.AnswerQuestion", (sender, data) => queueue.Add(data));
+            qManager.AddChannel < GameAnswerQuestionModel>("Area.Game.AnswerQuestion", (sender, data) => queueue.Add(data));
 
             Global.SetInterval(flushQueue, 50);
         }
-        [InlineCode("{o}")]
-        private T castValue<T>(object o)
-        {
-            return default(T);
-        }
-
+    
         private void flushQueue()
         {
 
@@ -193,8 +208,7 @@ namespace GameServer
 
                 object arg2 = queueue[0];
                 queueue.RemoveAt(0);
-
-                GameAnswerRequest data = castValue<GameAnswerRequest>(arg2);
+                GameAnswerRequest data = arg2.castValue<GameAnswerRequest>();
                 GameRoom room = null;
                 foreach (GameRoom gameRoom in rooms)
                 {
@@ -320,9 +334,9 @@ namespace GameServer
             gameAnswer.Answers = answ.Answers;
             gameAnswer.Question = answ.Question;
 
-            qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", Json.Parse((Json.Stringify(gameAnswer, Help.Sanitize))));
+            qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", Help.CleanUp(gameAnswer));
 
-            EmitAll(room, "Area.Game.UpdateState", Json.Parse(Json.Stringify(answ.CardGame, Help.Sanitize)));
+            EmitAll(room, "Area.Game.UpdateState", Help.CleanUp(answ.CardGame));
 
 
             if (verbose)

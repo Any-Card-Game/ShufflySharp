@@ -12,7 +12,7 @@ namespace Client.ShuffUI
 
 
     }
-    public class ShuffTextBox<T>: ShuffElement 
+    public class ShuffTextBox<T> : ShuffTextBox 
     {
         public ShuffTextBox(T data)
         {
@@ -20,14 +20,7 @@ namespace Client.ShuffUI
         }
 
         [IntrinsicProperty]
-        public T Data { get; set; }
-        public string LabelStyle { get; set; }
-
-        public string Label { get; set; }
-        public string Text { get; set; }
-
+        public T Data { get; set; }  
 
     }
-
-
 }

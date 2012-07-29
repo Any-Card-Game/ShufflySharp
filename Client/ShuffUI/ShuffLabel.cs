@@ -9,7 +9,7 @@ namespace Client.ShuffUI
  
     }
 
-    public class ShuffLabel<T> : ShuffElement 
+    public class ShuffLabel<T> : ShuffLabel 
     {
         public ShuffLabel(T data)
         {
@@ -18,8 +18,7 @@ namespace Client.ShuffUI
 
         [IntrinsicProperty]
         public T Data { get; set; }
-
-        public string Text { get; set; }
+         
 
     }
 

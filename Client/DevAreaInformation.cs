@@ -10,6 +10,14 @@ namespace Client
     public class HomeAreaInformation
     {
         [IntrinsicProperty]
+        public Action<dynamic> loadRoomInfos { get; set; }
+        [IntrinsicProperty]
+        public jQueryObject userList { get; set; }
+
+        [IntrinsicProperty]
+        public jQueryObject gameList { get; set; }
+
+        [IntrinsicProperty]
         public jQueryObject txtUserName { get; set; }
         [IntrinsicProperty]
         public jQueryObject btnStartGame { get; set; }
@@ -18,6 +26,12 @@ namespace Client
     }
     public class QuestionAreaInformation
     {
+        [IntrinsicProperty]
+        public jQueryObject question { get; set; }
+        [IntrinsicProperty]
+
+        public jQueryObject answerBox { get; set; }
+
         [IntrinsicProperty]
         public Action<dynamic> load { get; set; }
     }
@@ -52,9 +66,7 @@ namespace Client
         public int Joined { get; set; }
         [IntrinsicProperty]
         public bool Created { get; set; }
-
-        [IntrinsicProperty]
-        public Action<dynamic> loadRoomInfos { get; set; }
+         
          
     }
 }

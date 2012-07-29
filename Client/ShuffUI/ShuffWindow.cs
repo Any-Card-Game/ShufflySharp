@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Html;
 using System.Runtime.CompilerServices;
 using CodeMirrorLibrary;
 using CommonLibraries;
@@ -9,9 +10,9 @@ using jQueryApi.UI.Widgets;
 
 namespace Client.ShuffUI
 {
-    public class ShuffWindow<T> : ShuffElement 
+    public class ShuffWindow<T> : ShuffElement
     {
-        
+
         public T Data { get; set; }
         internal jQueryObject Window { get { return Element; } set { Element = value; } }
         internal jQueryObject Outer
@@ -28,11 +29,11 @@ namespace Client.ShuffUI
         public List<ShuffElement> Elements { get; set; }
 
         [IntrinsicProperty]
-        public string Title { get; set; } 
+        public string Title { get; set; }
 
         [IntrinsicProperty]
         public bool AllowClose { get; set; }
-         
+
 
         [IntrinsicProperty]
         public bool AllowMinimize { get; set; }
@@ -45,8 +46,8 @@ namespace Client.ShuffUI
 
         public ShuffWindow(T data)
         {
-            Data = data;  
-            Elements = new List<ShuffElement>();  
+            Data = data;
+            Elements = new List<ShuffElement>();
         }
 
 
@@ -132,83 +133,92 @@ namespace Client.ShuffUI
 
         }
 
-        public CodeMirror AddCodeEditor(ShuffCodeEditor element)
+        public CodeMirror AddCodeEditor(ShuffCodeEditor _editor)
         {
 
+            //options = objMerge({ width: '100%', height: '100%' }, options);
 
-            Elements.Add(element);
-            /*
-             options = objMerge({ width: '100%', height: '100%' }, options);
-        var divs = $('<div style="width:' + options.width + '; height:' + options.height + ';"> </div>');
-        self.element.append(divs);
+            Elements.Add(_editor);
 
-        divs.append('<textarea id="code" name="code" class="CodeMirror-fullscreen " style=""></textarea>');
+            var divs = jQuery.Select("<div style='width:" + _editor.Width + "; height:" + _editor.Height + "''> </div>");
+            Window.Append(divs);
 
+            divs.Append("<textarea id='code' name='code' class='CodeMirror-fullscreen ' style=''></textarea>");
 
-        var codeMirror = document.getElementById("code");
-        codeMirror.value = '';
-        var editor = CodeMirror.fromTextArea(codeMirror, {
-            lineNumbers: options.lineNumbers,
-            lineWrapping: true,
-            matchBrackets: true,
-            onGutterClick: function (cm, n) {
-                var info = cm.lineInfo(n);
-                if (info.markerText) {
-                    window.shuffUIManager.codeArea.breakPoints.splice(window.shuffUIManager.codeArea.breakPoints.indexOf(n-1), 0);
-                    cm.clearMarker(n);
-                } else {
-                    window.shuffUIManager.codeArea.breakPoints.push(n-1);
-                    cm.setMarker(n, "<span style=\"color: #900\">●</span> %N%");
-                }
-            },
-            extraKeys: {
-                "Ctrl-Space": function (cm) {
-                    CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
-                },
-                "Ctrl-I": function (cm) {
-                    var pos = cm.getCursor();
-                    cm.setValue(window.fjs.format(cm.getValue()));
-                    cm.setCursor(pos);
+            var codeMirror = (TextAreaElement)Document.GetElementById("code");
+            codeMirror.Value = "";
 
-                }
-            },
+            CodeMirrorLine hlLine = null;
 
-            onCursorActivity: function () {
-                editor.setLineClass(hlLine, null);
-                hlLine = editor.setLineClass(editor.getCursor().line, "activeline");
-            },
-            onFocus: function (editor) {
+            CodeMirror editor=null;
+            editor=CodeMirror.FromTextArea(codeMirror, new CodeMirrorOptions()
+                {
+                    LineNumbers = _editor.LineNumbers,
 
-            },
-            onBlur: function (editor) {
-            }
-        });
+                    LineWrapping = true,
+                    MatchBrackets = true,
+                    OnGutterClick = (cm, n) =>
+                    {
+                        /*var info = cm.lineInfo(n);
+                        if (info.markerText)
+                        {
+                            window.shuffUIManager.codeArea.breakPoints.splice(window.shuffUIManager.codeArea.breakPoints.indexOf(n - 1), 0);
+                            cm.clearMarker(n);
+                        }
+                        else
+                        {
+                            window.shuffUIManager.codeArea.breakPoints.push(n - 1);
+                            cm.setMarker(n, "<span style=\"color= #900\">●</span> %N%");
+                        }*/
+                    },
+                    /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()
+                        {
+                        "Ctrl-Space"= function (cm) {
+                            CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
+                        },
+                        "Ctrl-I"= function (cm) {
+                            var pos = cm.getCursor();
+                            cm.setValue(window.fjs.format(cm.getValue()));
+                            cm.setCursor(pos);
 
-        var hlLine = editor.setLineClass(0, "activeline");
+                        }
+                    },*/
 
-        var scroller = editor.getScrollerElement();
-        scroller.style.height = divs[0].offsetHeight + "px";
-        scroller.style.width = divs[0].offsetWidth + "px";
-        editor.refresh();
-        editor.setOption("theme", "night");
-        /*(function (outer, scroller) {
+                    OnCursorActivity = (e) =>
+                    {
+                        editor.SetLineClass(hlLine, null);
+                        hlLine = editor.SetLineClass(editor.GetCursor().Line, "activeline");
+                    },
+                    OnFocus = (e) =>
+                    {
 
-            outer.resizable({
-                handles: "n, e, s, w, ne, se, sw, nw",
-                resize: function () {
-                    scroller.style.height = divs[0].offsetHeight + "px";
-                    scroller.style.width = divs[0].offsetWidth + "px";
+                    },
+                    OnBlur = (e) =>
+                    {
+                    }
+                });
 
-                }
-            });
-        })(self.outer,scroller);* /
+            hlLine = editor.SetLineClass(0, "activeline");
+            var scroller = editor.ScrollerElement;
+            scroller.Style.Height = divs[0].OffsetHeight + "px";
+            scroller.Style.Width = divs[0].OffsetWidth + "px";
+            editor.Refresh();
+            editor.SetOption("theme", "night");
+            outer.Resizable(new ResizableOptions()
+                {
+                    Handles = "n, e, s, w, ne, se, sw, nw",
+                    OnResize = (e,c) =>
+                        {
+                            scroller.Style.Height = divs[0].OffsetHeight + "px";
+                            scroller.Style.Width = divs[0].OffsetWidth + "px";
+                        }
+                });
 
-        editor.codeElement = codeMirror;
-        return editor;*/
-            return null;
+            editor.me().codeElement = codeMirror;
+            return editor;
         }
 
-        public jQueryObject AddListBox(ShuffTextBox element)
+        public jQueryObject AddListBox(ShuffListBox element)
         {
 
             Elements.Add(element);
@@ -216,8 +226,7 @@ namespace Client.ShuffUI
 
             var but = jQuery.Select("<div></div>");
             element.Element = but;
-            Window.Append(but);
-            but.Text(element.Text);
+            Window.Append(but); 
             but.CSS("position", "absolute");
             but.CSS("left", element.X + "px");
             but.CSS("top", element.Y + "px");
@@ -259,5 +268,6 @@ namespace Client.ShuffUI
 
         }
 
-     }
+    }
+
 }

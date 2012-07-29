@@ -78,7 +78,7 @@ namespace Client
             for (int i = 101; i < 153; i++)
             {
                 var img = new WorkingImageElement();
-                var domain = Globals.Window.topLevel + "client/assets";
+                var domain = Globals.Window.topLevel + "assets";
                 var src = domain + "/cards/" + i;
                 string jm;
                 img.Src = jm = src + ".gif";
@@ -137,25 +137,25 @@ namespace Client
                 });
             gateway.On("Area.Game.RoomInfos", data =>
                 {
-                    buildSite.devArea.Data.loadRoomInfos(data);
+                    buildSite.home.Data.loadRoomInfos(data);
 
                 });
             gateway.On("Area.Debug.Log", data =>
                 {
-                    buildSite.devArea.Data.loadRoomInfos(data);
+                    buildSite.home.Data.loadRoomInfos(data);
 
                     var lines = buildSite.codeArea.Data.console.GetValue().Split('\n');
                     lines = lines.me().slice(lines.Length - 40, lines.Length);
 
-                    buildSite.codeArea.me().console.setValue(lines.me().join('\n') + "\n" + data.value);
-                    buildSite.codeArea.me().console.setCursor(buildSite.codeArea.Data.console.me().lineCount(), 0);
+                    buildSite.codeArea.Data.console.SetValue(lines.me().join('\n') + "\n" + data.value);
+                    buildSite.codeArea.Data.console.SetCursor(buildSite.codeArea.Data.console.me().lineCount(), 0);
 
                 });
 
 
             gateway.On("Area.Debug.Break", data =>
                 {
-                    buildSite.devArea.Data.loadRoomInfos(data);
+                    buildSite.home.Data.loadRoomInfos(data);
 
 
                     var cm = buildSite.codeArea.Data.codeEditor;
@@ -172,8 +172,7 @@ namespace Client
 
             gateway.On("Area.Debug.VariableLookup.Response", data =>
                 {
-                    Window.Alert(Json.Stringify(data));
-
+                    Window.Alert(Json.Stringify(data)); 
                 });
             gateway.On("Area.Game.AskQuestion", data =>
             {
@@ -185,7 +184,7 @@ namespace Client
                 Window.SetTimeout(() =>
                     {
 
-                        gateway.Emit("Area.Game.AnswerQuestion", new { Answer = 1, RoomID = gameStuff.RoomID }, buildSite.devArea.Data.gameServer);
+                        gateway.Emit("Area.Game.AnswerQuestion", new { answer = 1, roomID = gameStuff.RoomID }, buildSite.devArea.Data.gameServer);
                         buildSite.questionArea.Visible=false;
                         startTime = new DateTime();
                     }, 200);
@@ -242,6 +241,18 @@ namespace Client
                     foreach (var effect in card.Effects)
                     {
 
+                        if (effect.Type=="highlight")
+                        {
+                            gameboard.Save();
+                            gameboard.Translate(effect.OffsetX, effect.OffsetY);
+                            gameboard.Rotate(effect.Rotate * Math.PI / 180);
+                            gameboard.Translate(-effect.Radius, -effect.Radius);
+                            gameboard.FillStyle = effect.Color;
+                            gameboard.StrokeStyle = "black";
+                            gameboard.FillRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
+                            gameboard.StrokeRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
+                            gameboard.Restore();
+                        }/*
                         switch (effect.Type)
                         {
                             case EffectType.Highlight:
@@ -256,7 +267,7 @@ namespace Client
                                 gameboard.Restore();
 
                                 break;
-                        }
+                        }*/
                     }
                     //todo gayness
                     gameboard.DrawImage(cardImage.me(), 0, 0);
@@ -279,7 +290,7 @@ namespace Client
         public string drawCard(CardGameCard card)
         {
             var src = "";
-            var domain = Globals.Window.topLevel + "client/assets";
+            var domain = Globals.Window.topLevel + "assets";
 
 
             src = domain + "/cards/" + (100 + (card.Value + 1) + (card.Type) * 13);

@@ -9,7 +9,7 @@ namespace Client.ShuffUI
     {
         public Func<dynamic, int, jQueryObject> ItemCreation { get; set; }
     }
-    public class ShuffPropertyBox<T> : ShuffElement 
+    public class ShuffPropertyBox<T> : ShuffPropertyBox 
     {
         public ShuffPropertyBox(T data)
         {
@@ -17,7 +17,6 @@ namespace Client.ShuffUI
         }
 
         [IntrinsicProperty]
-        public T Data { get; set; }
-        public Func<dynamic, int, jQueryObject> ItemCreation { get; set; }
+        public T Data { get; set; } 
     }
 }

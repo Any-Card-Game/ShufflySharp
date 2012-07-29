@@ -9,7 +9,9 @@ using jQueryApi.UI.Widgets;
 namespace Client.ShuffUI
 {
     public class ShuffUIManager
-    {
+    { 
+
+
         private List<dynamic> UIAreas = new List<dynamic>();
 
         public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui) 

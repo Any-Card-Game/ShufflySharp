@@ -469,6 +469,7 @@
     <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
     <Compile Include="ShuffUI\ShuffElement.cs" />
     <Compile Include="ShuffUI\ShuffLabel.cs" />
+    <Compile Include="ShuffUI\ShuffListBox.cs" />
     <Compile Include="ShuffUI\ShuffPropertyBox.cs" />
     <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />

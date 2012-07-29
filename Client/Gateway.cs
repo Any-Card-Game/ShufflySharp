@@ -27,7 +27,7 @@ namespace Client
         protected SocketIOClient GatewaySocket { get; set; }
         public void Emit(string channel, object content, string gameServer = null)
         {
-            GatewaySocket.Emit("Gateway.Message", new { Channel = channel, Content = content, GameServer = gameServer });
+            GatewaySocket.Emit("Gateway.Message", new { channel = channel, content = content, gameServer = gameServer });
 
         }
 
@@ -38,7 +38,7 @@ namespace Client
         }
         public void Login(string userName)
         {
-            GatewaySocket.Emit("Gateway.Login", new { Username = userName });
+            GatewaySocket.Emit("Gateway.Login", new { username = userName });
 
 
         }

@@ -13,16 +13,14 @@ namespace Client.ShuffUI
 
     }
 
-    public class ShuffButton<T> : ShuffElement 
+    public class ShuffButton<T> : ShuffButton 
     {
         public ShuffButton(T data)
         {
             Data=data;
         }
         [IntrinsicProperty]
-        public T Data { get; set; }
-        public string Text { get; set; }
-        public jQueryEventHandler Click { get; set; }
+        public T Data { get; set; } 
     }
 
 }

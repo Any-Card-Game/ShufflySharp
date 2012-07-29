@@ -1,21 +1,28 @@
 
 using System.Html;
-using System.Runtime.CompilerServices; 
+using System.Runtime.CompilerServices;
 namespace CodeMirrorLibrary
 {
-    [IgnoreNamespace] 
+    [IgnoreNamespace]
     [Imported(IsRealType = true)]
-    [ScriptName("CodeMirror")] 
+    [ScriptName("CodeMirror")]
 
-    public class CodeMirror 
+    public class CodeMirror
     {
         public CodeMirror()
         {
 
         }
 
+        public Element ScrollerElement
+        {
+            [ScriptName("getScrollerElement")]
+            get { return null; }
+
+        }
+
         [ScriptName("fromTextArea")]
-        public static CodeMirror FromTextArea(Element element,CodeMirrorOptions options)
+        public static CodeMirror FromTextArea(Element element, CodeMirrorOptions options)
         {
             return null;
 
@@ -33,12 +40,12 @@ namespace CodeMirrorLibrary
         [ScriptName("setValue")]
         public void SetValue(object data)
         {
-            
+
         }
         [ScriptName("clearMarker")]
         public void ClearMarker(int lineNumber)
         {
-            
+
         }
 
         [ScriptName("setCursor")]
@@ -51,5 +58,41 @@ namespace CodeMirrorLibrary
         {
             return null;
         }
+        [ScriptName("getCursor")]
+        public CodeEditorCursor GetCursor()
+        {
+            return null;
+        }
+
+        [ScriptName("setLineClass")]
+        public CodeMirrorLine SetLineClass(CodeMirrorLine line, string style)
+        {
+            return null;
+        }
+        [ScriptName("setLineClass")]
+        public CodeMirrorLine SetLineClass(int lineIndex, string style)
+        {
+            return null;
+        }
+        [ScriptName("setOption")]
+        public void SetOption(string key, object value)
+        {
+        }
+    }
+
+    [IgnoreNamespace]
+    [Imported(IsRealType = true)]
+    public class CodeMirrorLine
+    {
+    }
+
+
+    [IgnoreNamespace]
+    [Imported(IsRealType = true)]
+    public class CodeEditorCursor
+    {
+        [IntrinsicProperty]
+        [ScriptName("line")]
+        public CodeMirrorLine Line { get; set; }
     }
 }

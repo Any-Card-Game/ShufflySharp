@@ -54,7 +54,9 @@ namespace Build
                                 @"./CommonShuffleLibrary.js", 
                             })},
                     {@"ShuffleSharp\Servers\SiteServer\", new Application(true,"",new List<string>() {})},
-                    {@"ShuffleSharp\Client\", new Application(false,"",new List<string>() {})},
+                    {@"ShuffleSharp\Client\", new Application(false,"",new List<string>()
+                        { 
+                        })},
                 };
             foreach (var depend in depends)
             {

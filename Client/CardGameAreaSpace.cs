@@ -54,7 +54,7 @@ namespace Client
     {
         [ScriptName("type")]
         [IntrinsicProperty]
-        public EffectType Type { get; set; }
+        public string Type { get; set; }
         [ScriptName("radius")]
         [IntrinsicProperty]
         public double Radius { get; set; }
@@ -74,11 +74,11 @@ namespace Client
     }
 
     public enum EffectType
-    {
+    { 
         Highlight
     }
-
-    public class CardGameArea
+    [Record]
+    public sealed class CardGameArea
     {
         [ScriptName("size")]
         [IntrinsicProperty]
@@ -108,6 +108,6 @@ namespace Client
 
     public class GameInfo
     {
-        public int RoomID = -1;
+        public string RoomID = "-1";
     }
 }

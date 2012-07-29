@@ -13,7 +13,7 @@ namespace Client.ShuffUI
 
         public int Y { get; set; }
 
-        public string Width { get; set; }
+        public string Width { get; set; }//todo override intrinsic property
 
         public string Height { get; set; }
 

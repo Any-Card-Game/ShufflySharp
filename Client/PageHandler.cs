@@ -19,7 +19,7 @@ namespace Client
         private readonly BuildSite buildSite;
         public Gateway gateway;
         private GameCardGame lastMainArea;
-        private Tuple<CanvasContext2D, GameCanvasInformation> gameContext;
+        private PageGameContext gameContext;
         private DateTime startTime;
         private int numOfTimes;
         private int timeValue;
@@ -41,19 +41,18 @@ namespace Client
                 }, 2000);
             gateway = new Gateway(gatewayServerAddress);
 
-            gateway.On<string>("Area.Main.Login.Response", (data) =>
+            gateway.On<object>("Area.Main.Login.Response", (data) =>
             {
                 Window.Alert(Json.Stringify(data));
 
             });
-            gateway.On<string>("Area.Lobby.ListCardGames.Response", (data) =>
+            gateway.On<object>("Area.Lobby.ListCardGames.Response", (data) =>
             {
 
             });
-            gateway.On<string>("Area.Lobby.ListRooms.Response", (data) =>
+            gateway.On<object>("Area.Lobby.ListRooms.Response", (data) =>
             {
                 Console.Log(data);
-
             });
 
 
@@ -102,11 +101,11 @@ namespace Client
 
             jQuery.FromElement(gameCanvas).CSS(props);
 
-            gameContext = new Tuple<CanvasContext2D, GameCanvasInformation>((CanvasContext2D)gameCanvas.GetContext("2d"), new GameCanvasInformation());
-            gameContext.Item2.canvas = gameCanvas;
-            gameContext.Item2.domCanvas = jQuery.FromElement(gameCanvas);
-            gameContext.Item2.canvas.Width = (int)(jQuery.Window.GetWidth() * .5);
-            gameContext.Item2.canvas.Height = jQuery.Window.GetHeight();
+            gameContext = new PageGameContext((CanvasContext2D)gameCanvas.GetContext("2d"), new GameCanvasInformation());
+            gameContext.CanvasInfo.canvas = gameCanvas;
+            gameContext.CanvasInfo.domCanvas = jQuery.FromElement(gameCanvas);
+            gameContext.CanvasInfo.canvas.Width = (int)(jQuery.Window.GetWidth() * .5);
+            gameContext.CanvasInfo.canvas.Height = jQuery.Window.GetHeight();
 
             gameCanvas.AddEventListener("DOMMouseScroll", handleScroll, false);
             gameCanvas.AddEventListener("mousewheel", handleScroll, false);
@@ -196,7 +195,7 @@ namespace Client
 
             gateway.On<GameCardGame>("Area.Game.UpdateState", data =>
             {
-                gameContext.Item1.ClearRect(0, 0, gameContext.Item2.canvas.Width, gameContext.Item2.canvas.Height);
+                gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
                 drawArea(data);
             });
             gateway.On<GameRoom>("Area.Game.Started", data =>
@@ -223,12 +222,12 @@ namespace Client
         {
             var gameboard = gameContext;
             lastMainArea = mainArea;
-            var scale = new Point(gameContext.Item2.canvas.Width / mainArea.Size.Width, gameContext.Item2.canvas.Height / mainArea.Size.Height);
-            gameboard.Item1.FillStyle = "rgba(0,0,200,0.5)";
+            var scale = new Point(gameContext.CanvasInfo.canvas.Width / mainArea.Size.Width, gameContext.CanvasInfo.canvas.Height / mainArea.Size.Height);
+            gameboard.Context.FillStyle = "rgba(0,0,200,0.5)";
             foreach (var space in mainArea.Spaces)
             {
                 var vertical = space.Vertical;
-                gameboard.Item1.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
+                gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
 
                 var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
 
@@ -238,25 +237,25 @@ namespace Client
                     var xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
                     var yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
                     var cardImage = cardImages[drawCard(card)];
-                    gameboard.Item1.Save();
-                    gameboard.Item1.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
-                    gameboard.Item1.Rotate(space.Rotate * Math.PI / 180);
-                    gameboard.Item1.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
+                    gameboard.Context.Save();
+                    gameboard.Context.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
+                    gameboard.Context.Rotate(space.Rotate * Math.PI / 180);
+                    gameboard.Context.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
                     foreach (var effect in card.Effects)
                     {
 
                         if (effect.Type == "highlight")
                         {
                             var hEffect = effect.castValue<CardGameEffectHighlight>();
-                            gameboard.Item1.Save();
-                            gameboard.Item1.Translate(hEffect.OffsetX, hEffect.OffsetY);
-                            gameboard.Item1.Rotate(hEffect.Rotate * Math.PI / 180);
-                            gameboard.Item1.Translate(-hEffect.Radius, -hEffect.Radius);
-                            gameboard.Item1.FillStyle = hEffect.Color;
-                            gameboard.Item1.StrokeStyle = "black";
-                            gameboard.Item1.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
-                            gameboard.Item1.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
-                            gameboard.Item1.Restore();
+                            gameboard.Context.Save();
+                            gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
+                            gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
+                            gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
+                            gameboard.Context.FillStyle = hEffect.Color;
+                            gameboard.Context.StrokeStyle = "black";
+                            gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+                            gameboard.Context.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+                            gameboard.Context.Restore();
                         }/*
                         switch (effect.Type)
                         {
@@ -275,8 +274,8 @@ namespace Client
                         }*/
                     }
                     //todo gayness
-                    gameboard.Item1.DrawImage(cardImage.me(), 0, 0);
-                    gameboard.Item1.Restore();
+                    gameboard.Context.DrawImage(cardImage.me(), 0, 0);
+                    gameboard.Context.Restore();
                     j++;
                 }
 
@@ -285,8 +284,8 @@ namespace Client
 
             foreach (var ta in mainArea.TextAreas)
             {
-                gameboard.Item1.FillStyle = "rgba(200, 0, 200, 0.5)";
-                gameboard.Item1.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
+                gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
+                gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
             }
 
 
@@ -327,18 +326,30 @@ namespace Client
         }
         public void ResizeCanvas(jQueryEvent jQueryEvent)
         {
-            if (gameContext.Item2.domCanvas.GetAttribute("width") != jQuery.Window.GetWidth().ToString())
-                gameContext.Item2.domCanvas.Attribute("width", (jQuery.Window.GetWidth() * .5).ToString());
-            if (gameContext.Item2.domCanvas.GetAttribute("height") != jQuery.Window.GetHeight().ToString())
-                gameContext.Item2.domCanvas.Attribute("height", jQuery.Window.GetHeight().ToString());
+            if (gameContext.CanvasInfo.domCanvas.GetAttribute("width") != jQuery.Window.GetWidth().ToString())
+                gameContext.CanvasInfo.domCanvas.Attribute("width", (jQuery.Window.GetWidth() * .5).ToString());
+            if (gameContext.CanvasInfo.domCanvas.GetAttribute("height") != jQuery.Window.GetHeight().ToString())
+                gameContext.CanvasInfo.domCanvas.Attribute("height", jQuery.Window.GetHeight().ToString());
             if (lastMainArea != null)
                 this.drawArea(lastMainArea);
         }
         public void Draw()
         {
-            this.gameContext.Item2.canvas.Width = this.gameContext.Item2.canvas.Width;
+            this.gameContext.CanvasInfo.canvas.Width = this.gameContext.CanvasInfo.canvas.Width;
             if (this.lastMainArea != null)
                 this.drawArea(this.lastMainArea);
+        }
+    }
+
+    public class PageGameContext
+    {
+        public CanvasContext2D Context { get; set; }
+        public GameCanvasInformation CanvasInfo { get; set; }
+
+        public PageGameContext(CanvasContext2D context, GameCanvasInformation canvasInfo)
+        {
+            Context = context;
+            CanvasInfo = canvasInfo;
         }
     }
 

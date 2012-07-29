@@ -271,10 +271,10 @@ Client.BuildSite.prototype = {
 		$t24.set_width('250');
 		$t24.set_height('250');
 		$t24.set_itemCreation(function(item, index) {
-			var ik = $('<div style=\'width=100%;height=25px; background-color=' + ((index % 2 === 0) ? 'red' : 'green') + ';\'></div>');
-			var ikc = $('<div style=\'width=50%;height=25px; float=left;\'>' + item.get_label() + '</div>');
+			var ik = $(String.format('<div style=\'width=100%;height=25px; background-color={0};\'></div>', ((index % 2 === 0) ? 'red' : 'green')));
+			var ikc = $(String.format('<div style=\'width=50%;height=25px; float=left;\'>{0}</div>', item.get_label()));
 			ik.append(ikc);
-			var ikd = $('<input type=\'text\' style=\'width=48%;height=25px\' value=\'' + item.get_value() + '\' />');
+			var ikd = $(String.format('<input type=\'text\' style=\'width=48%;height=25px\' value=\'{0}\' />', item.get_value()));
 			ik.append(ikd);
 			return ik;
 		});
@@ -600,6 +600,28 @@ Client.Information.QuestionAreaInformation = function() {
 };
 Type.registerNamespace('Client');
 ////////////////////////////////////////////////////////////////////////////////
+// Client.PageGameContext
+Client.PageGameContext = function(context, canvasInfo) {
+	this.$1$ContextField = null;
+	this.$1$CanvasInfoField = null;
+	this.set_context(context);
+	this.set_canvasInfo(canvasInfo);
+};
+Client.PageGameContext.prototype = {
+	get_context: function() {
+		return this.$1$ContextField;
+	},
+	set_context: function(value) {
+		this.$1$ContextField = value;
+	},
+	get_canvasInfo: function() {
+		return this.$1$CanvasInfoField;
+	},
+	set_canvasInfo: function(value) {
+		this.$1$CanvasInfoField = value;
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
 // Client.PageHandler
 Client.PageHandler = function(gatewayServerAddress, buildSite) {
 	this.$buildSite = null;
@@ -663,11 +685,11 @@ Client.PageHandler = function(gatewayServerAddress, buildSite) {
 	props['left'] = ($(window)).width() * 0.5 + 'px';
 	props['z-index'] = ($(window)).width() * 0.5 + 'px';
 	($(this.$gameCanvas)).css(props);
-	this.$gameContext = ({ item1: this.$gameCanvas.getContext('2d'), item2: new Client.GameCanvasInformation() });
-	this.$gameContext.item2.canvas = this.$gameCanvas;
-	this.$gameContext.item2.domCanvas = ($(this.$gameCanvas));
-	this.$gameContext.item2.canvas.width = ss.Int32.trunc(($(window)).width() * 0.5);
-	this.$gameContext.item2.canvas.height = ($(window)).height();
+	this.$gameContext = new Client.PageGameContext(this.$gameCanvas.getContext('2d'), new Client.GameCanvasInformation());
+	this.$gameContext.get_canvasInfo().canvas = this.$gameCanvas;
+	this.$gameContext.get_canvasInfo().domCanvas = ($(this.$gameCanvas));
+	this.$gameContext.get_canvasInfo().canvas.width = ss.Int32.trunc(($(window)).width() * 0.5);
+	this.$gameContext.get_canvasInfo().canvas.height = ($(window)).height();
 	this.$gameCanvas.addEventListener('DOMMouseScroll', Function.mkdel(this, this.handleScroll), false);
 	this.$gameCanvas.addEventListener('mousewheel', Function.mkdel(this, this.handleScroll), false);
 	this.$gameCanvas.addEventListener('touchmove', Function.mkdel(this, this.canvasMouseMove), true);
@@ -738,7 +760,7 @@ Client.PageHandler.prototype = {
 			}), 200);
 		}));
 		this.gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(data4) {
-			this.$gameContext.item1.clearRect(0, 0, this.$gameContext.item2.canvas.width, this.$gameContext.item2.canvas.height);
+			this.$gameContext.get_context().clearRect(0, 0, this.$gameContext.get_canvasInfo().canvas.width, this.$gameContext.get_canvasInfo().canvas.height);
 			this.drawArea(data4);
 		}));
 		this.gateway.on('Area.Game.Started', function(data5) {
@@ -755,14 +777,14 @@ Client.PageHandler.prototype = {
 	drawArea: function(mainArea) {
 		var gameboard = this.$gameContext;
 		this.$lastMainArea = mainArea;
-		var scale = new CommonLibraries.Point(ss.Int32.div(this.$gameContext.item2.canvas.width, mainArea.size.width), ss.Int32.div(this.$gameContext.item2.canvas.height, mainArea.size.height));
-		gameboard.item1.fillStyle = 'rgba(0,0,200,0.5)';
+		var scale = new CommonLibraries.Point(ss.Int32.div(this.$gameContext.get_canvasInfo().canvas.width, mainArea.size.width), ss.Int32.div(this.$gameContext.get_canvasInfo().canvas.height, mainArea.size.height));
+		gameboard.get_context().fillStyle = 'rgba(0,0,200,0.5)';
 		var $t1 = mainArea.spaces.getEnumerator();
 		try {
 			while ($t1.moveNext()) {
 				var space = $t1.get_current();
 				var vertical = space.vertical;
-				gameboard.item1.fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x, space.height * scale.y);
+				gameboard.get_context().fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x, space.height * scale.y);
 				var spaceScale = new CommonLibraries.Point(space.width / space.pile.cards.length, space.height / space.pile.cards.length);
 				var j = 0;
 				var $t2 = space.pile.cards.getEnumerator();
@@ -772,25 +794,25 @@ Client.PageHandler.prototype = {
 						var xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
 						var yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
 						var cardImage = this.$cardImages[this.drawCard(card)];
-						gameboard.item1.save();
-						gameboard.item1.translate(xx + (vertical ? (space.width * scale.x / 2) : 0), yy + (!vertical ? (space.height * scale.y / 2) : 0));
-						gameboard.item1.rotate(space.rotate * Math.PI / 180);
-						gameboard.item1.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
+						gameboard.get_context().save();
+						gameboard.get_context().translate(xx + (vertical ? (space.width * scale.x / 2) : 0), yy + (!vertical ? (space.height * scale.y / 2) : 0));
+						gameboard.get_context().rotate(space.rotate * Math.PI / 180);
+						gameboard.get_context().translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
 						var $t3 = card.effects.getEnumerator();
 						try {
 							while ($t3.moveNext()) {
 								var effect = $t3.get_current();
 								if (effect.type === 'highlight') {
 									var hEffect = effect;
-									gameboard.item1.save();
-									gameboard.item1.translate(hEffect.offsetX, hEffect.offsetY);
-									gameboard.item1.rotate(hEffect.rotate * Math.PI / 180);
-									gameboard.item1.translate(-hEffect.radius, -hEffect.radius);
-									gameboard.item1.fillStyle = hEffect.color;
-									gameboard.item1.strokeStyle = 'black';
-									gameboard.item1.fillRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
-									gameboard.item1.strokeRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
-									gameboard.item1.restore();
+									gameboard.get_context().save();
+									gameboard.get_context().translate(hEffect.offsetX, hEffect.offsetY);
+									gameboard.get_context().rotate(hEffect.rotate * Math.PI / 180);
+									gameboard.get_context().translate(-hEffect.radius, -hEffect.radius);
+									gameboard.get_context().fillStyle = hEffect.color;
+									gameboard.get_context().strokeStyle = 'black';
+									gameboard.get_context().fillRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
+									gameboard.get_context().strokeRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
+									gameboard.get_context().restore();
 								}
 								//
 								//                        switch (effect.Type)
@@ -830,8 +852,8 @@ Client.PageHandler.prototype = {
 							}
 						}
 						//todo gayness
-						gameboard.item1.drawImage((cardImage), 0, 0);
-						gameboard.item1.restore();
+						gameboard.get_context().drawImage((cardImage), 0, 0);
+						gameboard.get_context().restore();
 						j++;
 					}
 				}
@@ -851,8 +873,8 @@ Client.PageHandler.prototype = {
 		try {
 			while ($t4.moveNext()) {
 				var ta = $t4.get_current();
-				gameboard.item1.fillStyle = 'rgba(200, 0, 200, 0.5)';
-				gameboard.item1.fillText(ta.text, ta.x * scale.x, ta.nayme * scale.y);
+				gameboard.get_context().fillStyle = 'rgba(200, 0, 200, 0.5)';
+				gameboard.get_context().fillText(ta.text, ta.x * scale.x, ta.nayme * scale.y);
 			}
 		}
 		finally {
@@ -881,18 +903,18 @@ Client.PageHandler.prototype = {
 		e.preventDefault();
 	},
 	resizeCanvas: function(jQueryEvent) {
-		if (!ss.referenceEquals(this.$gameContext.item2.domCanvas.attr('width'), ($(window)).width().toString())) {
-			this.$gameContext.item2.domCanvas.attr('width', (($(window)).width() * 0.5).toString());
+		if (!ss.referenceEquals(this.$gameContext.get_canvasInfo().domCanvas.attr('width'), ($(window)).width().toString())) {
+			this.$gameContext.get_canvasInfo().domCanvas.attr('width', (($(window)).width() * 0.5).toString());
 		}
-		if (!ss.referenceEquals(this.$gameContext.item2.domCanvas.attr('height'), ($(window)).height().toString())) {
-			this.$gameContext.item2.domCanvas.attr('height', ($(window)).height().toString());
+		if (!ss.referenceEquals(this.$gameContext.get_canvasInfo().domCanvas.attr('height'), ($(window)).height().toString())) {
+			this.$gameContext.get_canvasInfo().domCanvas.attr('height', ($(window)).height().toString());
 		}
 		if (ss.isValue(this.$lastMainArea)) {
 			this.drawArea(this.$lastMainArea);
 		}
 	},
 	draw: function() {
-		this.$gameContext.item2.canvas.width = this.$gameContext.item2.canvas.width;
+		this.$gameContext.get_canvasInfo().canvas.width = this.$gameContext.get_canvasInfo().canvas.width;
 		if (ss.isValue(this.$lastMainArea)) {
 			this.drawArea(this.$lastMainArea);
 		}
@@ -906,8 +928,8 @@ Client.ScriptLoader.prototype = {
 	$loadScript: function(url, callback) {
 		var head = document.getElementsByTagName('head')[0];
 		var script = document.createElement('script');
-		script.setAttribute('type', 'text/javascript');
-		script.setAttribute('src', url);
+		script.type = 'text/javascript';
+		script.src = url;
 		// +"?" + (Math.floor(Math.random() * 10000)); //caching
 		if (ss.isValue(callback)) {
 			(script).onreadystatechange = function(a) {
@@ -1551,6 +1573,7 @@ Client.Information.CodeAreaInformation.registerClass('Client.Information.CodeAre
 Client.Information.DevAreaInformation.registerClass('Client.Information.DevAreaInformation', Object);
 Client.Information.HomeAreaInformation.registerClass('Client.Information.HomeAreaInformation', Object);
 Client.Information.QuestionAreaInformation.registerClass('Client.Information.QuestionAreaInformation', Object);
+Client.PageGameContext.registerClass('Client.PageGameContext', Object);
 Client.PageHandler.registerClass('Client.PageHandler', Object);
 Client.ScriptLoader.registerClass('Client.ScriptLoader', Object);
 Client.ShuffUI.CodeMirrorInformation.registerClass('Client.ShuffUI.CodeMirrorInformation', Object);

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</ProjectGuid>
+    <ProjectGuid>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ShuffleGameLibrary</RootNamespace>
-    <AssemblyName>ShuffleGameLibrary</AssemblyName>
+    <RootNamespace>CommonShuffleLibrary</RootNamespace>
+    <AssemblyName>CommonShuffleLibrary</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
@@ -32,12 +32,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Card.cs" />
-    <Compile Include="ArrayUtils.cs" />
-    <Compile Include="GameCardGame.cs" />
-    <Compile Include="GameObject.cs" />
-    <Compile Include="GameUtils.cs" />
-    <Compile Include="Shuff.cs" />
+    <Compile Include="Consumer.cs" />
+    <Compile Include="IPs.cs" />
+    <Compile Include="PubSub.cs" />
+    <Compile Include="QueueItem.cs" />
+    <Compile Include="QueueManager.cs" />
+    <Compile Include="QueueManagerOptions.cs" />
+    <Compile Include="QueuePusher.cs" />
+    <Compile Include="QueueWatcher.cs" />
+    <Compile Include="QueueItemCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -48,31 +51,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Models\Models.csproj">
+    <ProjectReference Include="..\..\Models\Models.csproj">
       <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
       <Name>Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\CommonLibraries\CommonLibraries.csproj">
+    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
-      <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
-      <Name>CommonShuffleLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FibersLibrary\FibersLibrary.csproj">
-      <Project>{1136A53A-3853-4F65-B9ED-176290942582}</Project>
-      <Name>FibersLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NodeJSLibrary\NodeJSLibrary.csproj">
+    <ProjectReference Include="..\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
       <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
       <Name>NodeJSLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RedisLibrary\RedisLibrary.csproj">
+    <ProjectReference Include="..\NodeLibraries\RedisLibrary\RedisLibrary.csproj">
       <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
       <Name>RedisLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
+    <ProjectReference Include="..\NodeLibraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIONodeLibrary</Name>
     </ProjectReference>

@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Serialization;
 using CommonLibraries;
-using CommonShuffleLibrary; 
+using CommonShuffleLibrary;
 using FibersLibrary;
 using Models;
-using NodeJSLibrary; 
+using NodeJSLibrary;
 using global;
 using Json = CommonLibraries.Json;
 namespace GameServer
 {
-
-     
-
     public class GameServer
     {
         private QueueManager qManager;
-         
         private bool verbose = false;
         private GameData gameData;
         private List<GameRoom> rooms;
@@ -40,21 +36,10 @@ namespace GameServer
             dataManager = new DataManager();
             gameServerIndex = "GameServer" + Guid.NewGuid();
             cachedGames = new JsDictionary<string, GameObject>();
-            
-            //Global.Require("./gameFramework/GameAPI.js");
-
-
-             
-
-
             Global.Require<NodeModule>("fibers");
             rooms = new List<GameRoom>();
-
             gameData = new GameData();
-
             Global.Process.On("exit", () => Console.Log("exi"));
-
-
             /*qManager.AddChannel("Area.Game.Create", (arg1, arg2) =>
                 {
                     GameRoom room;
@@ -74,56 +59,56 @@ namespace GameServer
 
             qManager.AddChannel<CreateGameRequestModel>("Area.Debug.Create",
                                 (user, data) =>
+                                {
+                                    data.GameName = "Sevens";
+                                    GameRoom room;
+                                    rooms.Add(room = new GameRoom());
+                                    room.Name = data.Name;
+                                    room.MaxUsers = 6;
+                                    room.Debuggable = true;
+                                    room.GameName = data.GameName;
+
+                                    room.Started = false;
+                                    room.GameServer = gameServerIndex;
+                                    room.Players.Add(user);
+
+                                    GameObject gameObject;
+                                    if (cachedGames.ContainsKey(data.GameName))
                                     {
-                                        data.GameName = "Sevens";
-                                        GameRoom room;
-                                        rooms.Add(room = new GameRoom());
-                                        room.Name = data.Name;
-                                        room.MaxUsers = 6;
-                                        room.Debuggable = true;
-                                        room.GameName = data.GameName;
-                                        
-                                        room.Started = false;
-                                        room.GameServer = gameServerIndex;
-                                        room.Players.Add(user);
-
-                                        GameObject gameObject;
-                                        if (cachedGames.ContainsKey(data.GameName))
+                                        gameObject = cachedGames[data.GameName];
+                                    }
+                                    else
+                                    {
+                                        gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./games/" + data.GameName + "/app.js");
+                                    }
+                                    room.Fiber = CreateFiber(room, gameObject, true);
+                                    room.Unwind = players =>
                                         {
-                                            gameObject = cachedGames[data.GameName];
-                                        }
-                                        else
-                                        {
-                                            gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./games/" + data.GameName + "/app.js");
-                                        }
-                                        room.Fiber = CreateFiber(room, gameObject, true);
-                                        room.Unwind = players =>
-                                            {
-                                                gameData.FinishedGames++;
-                                                Console.Log("--game closed");
-                                            };
-                                        EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
-                                    });
+                                            gameData.FinishedGames++;
+                                            Console.Log("--game closed");
+                                        };
+                                    EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
+                                });
 
 
-            qManager.AddChannel <JoinGameRequestModel>("Area.Game.Join",
+            qManager.AddChannel<JoinGameRequestModel>("Area.Game.Join",
                                  (user, data) =>
+                                 {
+                                     GameRoom room = null;
+                                     foreach (GameRoom gameRoom in rooms)
                                      {
-                                         GameRoom room = null;
-                                         foreach (GameRoom gameRoom in rooms)
+                                         if (gameRoom.RoomID == data.RoomID)
                                          {
-                                             if (gameRoom.RoomID == data.RoomID)
-                                             {
-                                                 room = gameRoom;
-                                                 break;
-                                             }
+                                             room = gameRoom;
+                                             break;
                                          }
-                                         if (room == null)
-                                             return;
-                                         room.Players.Add(user);
-                                         room.Players.Add(user);
-                                         EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
-                                     });
+                                     }
+                                     if (room == null)
+                                         return;
+                                     room.Players.Add(user);
+                                     room.Players.Add(user);
+                                     EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
+                                 });
 
             /*qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>
                 {
@@ -132,7 +117,7 @@ namespace GameServer
 
             qManager.AddChannel<DebuggerJoinRequestModel>("Area.Game.DebuggerJoin", (sender, data) =>
                 {
-                     GameRoom room = null;
+                    GameRoom room = null;
                     foreach (GameRoom gameRoom in rooms)
                     {
                         if (gameRoom.RoomID == data.RoomID)
@@ -148,7 +133,7 @@ namespace GameServer
                 });
 
             qManager.AddChannel<StartGameRequestModel>("Area.Game.Start", (sender, data) =>
-                { 
+                {
                     GameRoom room = null;
                     foreach (GameRoom gameRoom in rooms)
                     {
@@ -202,11 +187,11 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
     var answ = room.fiber.run({ variableLookup: data.variableName });
     if (!answ.type == 'variableLookup')
              */
-            qManager.AddChannel < GameAnswerQuestionModel>("Area.Game.AnswerQuestion", (sender, data) => queueue.Add(data));
+            qManager.AddChannel<GameAnswerQuestionModel>("Area.Game.AnswerQuestion", (sender, data) => queueue.Add(data));
 
             Global.SetInterval(flushQueue, 50);
         }
-    
+
         private void flushQueue()
         {
 
@@ -228,7 +213,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                         break;
                     }
                 }
-                if (room == null) 
+                if (room == null)
                     return;
 
 
@@ -393,7 +378,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                                                  Script.Eval("sev= new gameObject();");
 
                                                  sev.CardGame.Emulating = emulating;
-                                                 room.Game = sev; 
+                                                 room.Game = sev;
                                                  sev.CardGame.SetAnswers(room.Answers);
                                                  sev.CardGame.SetPlayers(players);
                                                  gameData.TotalGames++;

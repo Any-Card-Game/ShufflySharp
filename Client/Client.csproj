@@ -454,7 +454,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
-    <Compile Include="CardGameAreaSpace.cs" />
+    <Compile Include="GameInfo.cs" />
     <Compile Include="Information\CodeAreaInformation.cs" />
     <Compile Include="Information\DevAreaInformation.cs" />
     <Compile Include="Gateway.cs" />
@@ -477,7 +477,7 @@
     <Compile Include="WorkingImageElement.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\NodeLibraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
+    <ProjectReference Include="..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
       <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
       <Name>CommonShuffleLibrary</Name>
     </ProjectReference>
@@ -497,7 +497,7 @@
       <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
       <Name>RedisLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj">
+    <ProjectReference Include="..\Libraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj">
       <Project>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</Project>
       <Name>ShuffleGameLibrary</Name>
     </ProjectReference>

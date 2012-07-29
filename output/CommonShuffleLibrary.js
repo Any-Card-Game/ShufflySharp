@@ -1,30 +1,5 @@
 Type.registerNamespace('CommonShuffleLibrary');
 ////////////////////////////////////////////////////////////////////////////////
-// CommonShuffleLibrary.$QueueItemCollection
-CommonShuffleLibrary.$QueueItemCollection = function(queueItems) {
-	this.$queueItems = null;
-	this.$queueItems = queueItems;
-};
-CommonShuffleLibrary.$QueueItemCollection.prototype = {
-	$getByChannel: function(channel) {
-		var $t1 = this.$queueItems.getEnumerator();
-		try {
-			while ($t1.moveNext()) {
-				var queueWatcher = $t1.get_current();
-				if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(queueWatcher.channel.replaceAll('*', '')) === 0) {
-					return queueWatcher;
-				}
-			}
-		}
-		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
-		}
-		return null;
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibrary.Consumer
 CommonShuffleLibrary.Consumer = function(obj) {
 	var tf = this;
@@ -104,6 +79,31 @@ CommonShuffleLibrary.QueueItem = function() {
 	this.channel = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
+// CommonShuffleLibrary.QueueItemCollection
+CommonShuffleLibrary.QueueItemCollection = function(queueItems) {
+	this.$queueItems = null;
+	this.$queueItems = queueItems;
+};
+CommonShuffleLibrary.QueueItemCollection.prototype = {
+	getByChannel: function(channel) {
+		var $t1 = this.$queueItems.getEnumerator();
+		try {
+			while ($t1.moveNext()) {
+				var queueWatcher = $t1.get_current();
+				if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(queueWatcher.channel.replaceAll('*', '')) === 0) {
+					return queueWatcher;
+				}
+			}
+		}
+		finally {
+			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
+				Type.cast($t1, ss.IDisposable).dispose();
+			}
+		}
+		return null;
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibrary.QueueManager
 CommonShuffleLibrary.QueueManager = function(name, options) {
 	this.name = null;
@@ -128,8 +128,8 @@ CommonShuffleLibrary.QueueManager = function(name, options) {
 		var pusher = options.pushers[$t2];
 		this.qp.add(new CommonShuffleLibrary.QueuePusher(pusher));
 	}
-	this.$qwCollection = new CommonShuffleLibrary.$QueueItemCollection(this.qw);
-	this.$qpCollection = new CommonShuffleLibrary.$QueueItemCollection(this.qp);
+	this.$qwCollection = new CommonShuffleLibrary.QueueItemCollection(this.qw);
+	this.$qpCollection = new CommonShuffleLibrary.QueueItemCollection(this.qp);
 };
 CommonShuffleLibrary.QueueManager.prototype = {
 	addChannel: function(channel, callback) {
@@ -145,11 +145,11 @@ CommonShuffleLibrary.QueueManager.prototype = {
 	},
 	sendMessage: function(T) {
 		return function(user, channel, eventChannel, content) {
-			if (ss.isNullOrUndefined(this.$qpCollection.$getByChannel(channel))) {
+			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
 				console.log(channel + ' No Existy');
 				return;
 			}
-			var pusher = Type.cast(this.$qpCollection.$getByChannel(channel), CommonShuffleLibrary.QueuePusher);
+			var pusher = Type.cast(this.$qpCollection.getByChannel(channel), CommonShuffleLibrary.QueuePusher);
 			pusher.message(T).call(pusher, channel, this.name, user, eventChannel, content);
 		};
 	}
@@ -233,11 +233,11 @@ CommonShuffleLibrary.QueueWatcher.prototype = {
 		}));
 	}
 };
-CommonShuffleLibrary.$QueueItemCollection.registerClass('CommonShuffleLibrary.$QueueItemCollection', Object);
 CommonShuffleLibrary.Consumer.registerClass('CommonShuffleLibrary.Consumer', Object);
 CommonShuffleLibrary.IPs.registerClass('CommonShuffleLibrary.IPs', Object);
 CommonShuffleLibrary.PubSub.registerClass('CommonShuffleLibrary.PubSub', Object);
 CommonShuffleLibrary.QueueItem.registerClass('CommonShuffleLibrary.QueueItem', Object);
+CommonShuffleLibrary.QueueItemCollection.registerClass('CommonShuffleLibrary.QueueItemCollection', Object);
 CommonShuffleLibrary.QueueManager.registerClass('CommonShuffleLibrary.QueueManager', Object);
 CommonShuffleLibrary.QueueManagerOptions.registerClass('CommonShuffleLibrary.QueueManagerOptions', Object);
 CommonShuffleLibrary.QueuePusher.registerClass('CommonShuffleLibrary.QueuePusher', CommonShuffleLibrary.QueueItem);

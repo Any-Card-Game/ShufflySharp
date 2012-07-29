@@ -1,7 +1,7 @@
-ShufflyNode
+ShufflyNode#
 ===========
 
-An implementation of the Shuffly Concept using Node.js
+An implementation of the Shuffly Concept using Node.js built in c# compiled with erik-kallen's SaltarelleCompiler
 
 Changed Concepts
 --------
@@ -15,6 +15,8 @@ Dependencies
 * Nodejs v0.8.0+
 * Fibers 
 * socket.io
+* MongoDB
+* Redis
 
 Google Document
 --------------- 

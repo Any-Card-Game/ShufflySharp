@@ -1,31 +1,6 @@
 require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');
 Type.registerNamespace('GameServer');
 ////////////////////////////////////////////////////////////////////////////////
-// GameServer.$QueueItemCollection
-GameServer.$QueueItemCollection = function(queueItems) {
-	this.$queueItems = null;
-	this.$queueItems = queueItems;
-};
-GameServer.$QueueItemCollection.prototype = {
-	$getByChannel: function(channel) {
-		var $t1 = this.$queueItems.getEnumerator();
-		try {
-			while ($t1.moveNext()) {
-				var queueWatcher = $t1.get_current();
-				if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(queueWatcher.channel.replaceAll('*', '')) === 0) {
-					return queueWatcher;
-				}
-			}
-		}
-		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
-		}
-		return null;
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
 // GameServer.DataManager
 GameServer.DataManager = function() {
 	this.gameData = null;
@@ -139,7 +114,6 @@ GameServer.GameServer = function() {
 	this.$dataManager = new GameServer.DataManager();
 	this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
 	this.$cachedGames = ({});
-	//Global.Require("./gameFramework/GameAPI.js");
 	require('fibers');
 	this.$rooms = new Array();
 	this.$gameData = new GameServer.GameData();
@@ -542,7 +516,6 @@ GameServer.GameServer.prototype = {
 		}));
 	}
 };
-GameServer.$QueueItemCollection.registerClass('GameServer.$QueueItemCollection', Object);
 GameServer.DataManager.registerClass('GameServer.DataManager', Object);
 GameServer.DataManagerGameData.registerClass('GameServer.DataManagerGameData', Object);
 GameServer.FiberYieldResponse.registerClass('GameServer.FiberYieldResponse', Object);

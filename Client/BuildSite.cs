@@ -318,10 +318,10 @@ namespace Client
                     Height = "250",
                     ItemCreation = (item, index) =>
                         {
-                            var ik = jQuery.Select("<div style='width=100%;height=25px; background-color=" + (index % 2 == 0 ? "red" : "green") + ";'></div>");
-                            var ikc = jQuery.Select("<div style='width=50%;height=25px; float=left;'>" + item.Label + "</div>");
+                            var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index % 2 == 0 ? "red" : "green")));
+                            var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
                             ik.Append(ikc);
-                            var ikd = jQuery.Select("<input type='text' style='width=48%;height=25px' value='" + item.Value + "' />");
+                            var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
                             ik.Append(ikd);
                             return ik;
                         }
@@ -537,7 +537,7 @@ namespace Client
 
         private void loadCss(string filename)
         {
-            var fileref = Document.CreateElement("link");
+            var fileref =  Document.CreateElement("link");
             fileref.SetAttribute("rel", "stylesheet");
             fileref.SetAttribute("type", "text/css");
             fileref.SetAttribute("href", filename);

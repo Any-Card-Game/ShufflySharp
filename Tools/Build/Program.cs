@@ -14,8 +14,8 @@ namespace Build
             string[] projs = new string[]
                 {
                     @"ShuffleSharp\Libraries\CommonLibraries\",
-                    @"ShuffleSharp\Libraries\NodeLibraries\CommonShuffleLibrary\",
-                    @"ShuffleSharp\Libraries\NodeLibraries\ShuffleGameLibrary\",
+                    @"ShuffleSharp\Libraries\CommonShuffleLibrary\",
+                    @"ShuffleSharp\Libraries\ShuffleGameLibrary\",
                     @"ShuffleSharp\Servers\AdminServer\",
                     @"ShuffleSharp\Servers\ChatServer\",
                     @"ShuffleSharp\Servers\DebugServer\",

@@ -11,9 +11,10 @@ namespace Client
         {
 
             var head = Document.GetElementsByTagName("head")[0];
-            var script = Document.CreateElement("script");
-            script.SetAttribute("type", "text/javascript");
-            script.SetAttribute("src", url);  // +"?" + (Math.floor(Math.random() * 10000)); //caching
+            
+            var script = (ScriptElement)Document.CreateElement("script");
+            script.Type = "text/javascript";
+            script.Src=url; // +"?" + (Math.floor(Math.random() * 10000)); //caching
             if (callback != null)
             {
 

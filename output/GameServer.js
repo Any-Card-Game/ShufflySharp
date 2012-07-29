@@ -142,7 +142,7 @@ GameServer.GameServer = function() {
 			gameObject = this.$cachedGames[data.gameName];
 		}
 		else {
-			gameObject = this.$cachedGames[data.gameName] = (require('./games/' + data.gameName + '/app.js'));
+			gameObject = this.$cachedGames[data.gameName] = (require('./Games/' + data.gameName + '/app.js'));
 		}
 		room.fiber = this.$createFiber(room, gameObject, true);
 		room.unwind = Function.mkdel(this, function(players) {

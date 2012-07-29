@@ -30,7 +30,11 @@ namespace Build
 
             foreach (var proj in projs)
             {
+#if DEBUG
                 var from = pre + proj + @"\bin\debug\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+#else
+                var from = pre + proj + @"\bin\release\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+#endif
                 var to = pre + @"ShuffleSharp\output\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 if(File.Exists(to))File.Delete(to);
                 File.Copy(from, to);
@@ -109,8 +113,7 @@ namespace Build
             {
                 var to = pre + @"ShuffleSharp\output\Games\" + d.Split('\\').Last();
 
-                if(Directory.Exists(to))
-                    Directory.Delete(to, true);
+                if(!Directory.Exists(to)) 
 
                 Directory.CreateDirectory(to);
 

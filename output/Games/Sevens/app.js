@@ -225,7 +225,7 @@ module.exports = Sevens = function () {
                 for (var i = 0; i < sp.length; i++) {
                     //sp[i].rotate += 10;
                     for (var ij = 0; ij < sp[i].pile.cards.length; ij++) {
-                        sp[i].pile.cards[ij].effects = [new Effect.Highlight({
+                        sp[i].pile.cards[ij].effects = [new Effect$Highlight({
                             radius: Math.random()*20, color: 'rgba(114,255,84,0.3)', opacity: .40
                         })];
                     }

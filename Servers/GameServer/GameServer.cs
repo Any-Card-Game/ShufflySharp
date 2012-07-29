@@ -79,7 +79,7 @@ namespace GameServer
                                     }
                                     else
                                     {
-                                        gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./games/" + data.GameName + "/app.js");
+                                        gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./Games/" + data.GameName + "/app.js");
                                     }
                                     room.Fiber = CreateFiber(room, gameObject, true);
                                     room.Unwind = players =>

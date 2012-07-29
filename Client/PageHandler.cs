@@ -219,7 +219,7 @@ namespace Client
         }
 
         public void drawArea(GameCardGame mainArea)
-        {
+        {  
             var gameboard = gameContext;
             lastMainArea = mainArea;
             var scale = new Point(gameContext.CanvasInfo.canvas.Width / mainArea.Size.Width, gameContext.CanvasInfo.canvas.Height / mainArea.Size.Height);
@@ -260,16 +260,7 @@ namespace Client
                         switch (effect.Type)
                         {
                             case EffectType.Highlight:
-                                gameboard.Save();
-                                gameboard.Translate(effect.OffsetX, effect.OffsetY);
-                                gameboard.Rotate(effect.Rotate * Math.PI / 180);
-                                gameboard.Translate(-effect.Radius, -effect.Radius);
-                                gameboard.FillStyle = effect.Color;
-                                gameboard.StrokeStyle = "black";
-                                gameboard.FillRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
-                                gameboard.StrokeRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
-                                gameboard.Restore();
-
+                          
                                 break;
                         }*/
                     }

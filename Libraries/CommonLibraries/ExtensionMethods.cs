@@ -13,5 +13,10 @@ namespace CommonLibraries
         {
             return script;
         }
+        [InlineCode("eval({script})")]
+        public static dynamic eval(this object script)
+        {
+            return null;
+        }
     }
 }

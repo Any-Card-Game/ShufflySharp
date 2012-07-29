@@ -5,6 +5,7 @@ using System.Html;
 using System.Html.Media.Graphics;
 using System.Serialization;
 using CommonLibraries;
+using global;
 using jQueryApi;
 
 namespace Client
@@ -243,14 +244,15 @@ namespace Client
 
                         if (effect.Type=="highlight")
                         {
+                            var hEffect = (CardGameEffectHighlight) effect;
                             gameboard.Save();
-                            gameboard.Translate(effect.OffsetX, effect.OffsetY);
-                            gameboard.Rotate(effect.Rotate * Math.PI / 180);
-                            gameboard.Translate(-effect.Radius, -effect.Radius);
-                            gameboard.FillStyle = effect.Color;
+                            gameboard.Translate(hEffect.OffsetX, hEffect.OffsetY);
+                            gameboard.Rotate(hEffect.Rotate * Math.PI / 180);
+                            gameboard.Translate(-hEffect.Radius, -hEffect.Radius);
+                            gameboard.FillStyle = hEffect.Color;
                             gameboard.StrokeStyle = "black";
-                            gameboard.FillRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
-                            gameboard.StrokeRect(0, 0, cardImage.Width + effect.Radius * 2, cardImage.Height + effect.Radius * 2);
+                            gameboard.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+                            gameboard.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
                             gameboard.Restore();
                         }/*
                         switch (effect.Type)

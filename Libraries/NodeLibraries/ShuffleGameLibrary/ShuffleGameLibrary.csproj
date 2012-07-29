@@ -32,10 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Card.cs" />
     <Compile Include="GameCardGame.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameUtils.cs" />
     <Compile Include="Shuff.cs" />
+    <Compile Include="YieldObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

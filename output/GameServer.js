@@ -129,7 +129,7 @@ GameServer.GameServer = function() {
 	this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
 	this.$cachedGames = ({});
 	require('./common/arrayUtils.js');
-	require('./gameFramework/GameAPI.js');
+	//Global.Require("./gameFramework/GameAPI.js");
 	this.$qManager = new CommonShuffleLibraries.QueueManager(this.$gameServerIndex, new CommonShuffleLibraries.QueueManagerOptions([new CommonShuffleLibraries.QueueWatcher('GameServer', null), new CommonShuffleLibraries.QueueWatcher(this.$gameServerIndex, null)], ['GameServer', 'GatewayServer', 'Gateway*']));
 	require('fibers');
 	this.$rooms = new Array();
@@ -283,7 +283,7 @@ GameServer.GameServer.prototype = {
 			if (ss.isNullOrUndefined(room)) {
 				return;
 			}
-			var dict = new CommonLibraries.GameAnswer();
+			var dict = new global.CardGameAnswer();
 			dict.value = data.answer;
 			room.answers.add(dict);
 			var answ = room.fiber.run(dict);

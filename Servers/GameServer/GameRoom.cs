@@ -14,7 +14,7 @@ namespace GameServer
         public bool Debuggable;
         public int MaxUsers;
         public List<User> Players;
-        public List<GameAnswer> Answers;
+        public List<CardGameAnswer> Answers;
         public string RoomID;
         public string GameServer;
         public bool Started;

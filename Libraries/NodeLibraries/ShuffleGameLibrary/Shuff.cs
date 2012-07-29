@@ -8,25 +8,6 @@ using NodeJSLibrary;
 
 namespace global
 {
-    public class Card
-    {
-        public int Number { get; set; }
-        public int Type { get; set; }
-
-        public Card(int  number, int type)
-        {
-            this.Number = number;
-            this.Type = type;
-        }
-
-        public string Name
-        {
-            [ScriptName("getName")]
-            get { return this.Number + " " + this.Type; }
-        }
-    } 
-
-
     [ScriptName("shuff")]
     public static class Shuff
     {
@@ -94,19 +75,5 @@ namespace global
                 break;
             }
         }
-    }
-
-    [Record]
-    public sealed class YieldObject
-    {
-        [ScriptName("type")]
-        [IntrinsicProperty]
-        public string Type { get; set; }
-        [ScriptName("lineNumber")]
-        [IntrinsicProperty]
-        public int LineNumber { get; set; }
-        [ScriptName("value")]
-        [IntrinsicProperty]
-        public string Value { get; set; }
     }
 }

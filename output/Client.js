@@ -518,57 +518,6 @@ Client.BuildSite.prototype = {
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
-// Client.CardGameArea
-Client.CardGameArea = function() {
-};
-Client.CardGameArea.$ctor = function() {
-	var $this = {};
-	$this.size = null;
-	$this.spaces = null;
-	$this.textAreas = null;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.CardGameAreaSpace
-Client.CardGameAreaSpace = function() {
-	this.vertical = false;
-	this.x = 0;
-	this.y = 0;
-	this.width = 0;
-	this.height = 0;
-	this.pile = null;
-	this.rotate = 0;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.CardGameCard
-Client.CardGameCard = function() {
-	this.value = 0;
-	this.type = 0;
-	this.effects = null;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.CardGameEffect
-Client.CardGameEffect = function() {
-	this.type = null;
-	this.radius = 0;
-	this.color = null;
-	this.rotate = 0;
-	this.offsetX = 0;
-	this.offsetY = 0;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.CardGamePile
-Client.CardGamePile = function() {
-	this.cards = null;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.CardGameTextArea
-Client.CardGameTextArea = function() {
-	this.text = null;
-	this.x = 0;
-	this.y = 0;
-};
-////////////////////////////////////////////////////////////////////////////////
 // Client.ClientHelp
 Client.ClientHelp = function() {
 };
@@ -592,12 +541,6 @@ Client.DevAreaInformation = function() {
 	this.joined = 0;
 	this.created = false;
 };
-////////////////////////////////////////////////////////////////////////////////
-// Client.EffectType
-Client.EffectType = function() {
-};
-Client.EffectType.prototype = {};
-Client.EffectType.registerEnum('Client.EffectType', false);
 ////////////////////////////////////////////////////////////////////////////////
 // Client.GameInfo
 Client.GameInfo = function() {
@@ -814,14 +757,15 @@ Client.PageHandler.prototype = {
 							while ($t3.moveNext()) {
 								var effect = $t3.get_current();
 								if (effect.type === 'highlight') {
+									var hEffect = Type.cast(effect, global.Effect$Highlight);
 									gameboard.save();
-									gameboard.translate(effect.offsetX, effect.offsetY);
-									gameboard.rotate(effect.rotate * Math.PI / 180);
-									gameboard.translate(-effect.radius, -effect.radius);
-									gameboard.fillStyle = effect.color;
+									gameboard.translate(hEffect.offsetX, hEffect.offsetY);
+									gameboard.rotate(hEffect.rotate * Math.PI / 180);
+									gameboard.translate(-hEffect.radius, -hEffect.radius);
+									gameboard.fillStyle = hEffect.color;
 									gameboard.strokeStyle = 'black';
-									gameboard.fillRect(0, 0, cardImage.width + effect.radius * 2, cardImage.height + effect.radius * 2);
-									gameboard.strokeRect(0, 0, cardImage.width + effect.radius * 2, cardImage.height + effect.radius * 2);
+									gameboard.fillRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
+									gameboard.strokeRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
 									gameboard.restore();
 								}
 								//
@@ -1537,12 +1481,6 @@ Type.registerNamespace('');
 Globals = function() {
 };
 Client.BuildSite.registerClass('Client.BuildSite', Object);
-Client.CardGameArea.registerClass('Client.CardGameArea', Object);
-Client.CardGameAreaSpace.registerClass('Client.CardGameAreaSpace', Object);
-Client.CardGameCard.registerClass('Client.CardGameCard', Object);
-Client.CardGameEffect.registerClass('Client.CardGameEffect', Object);
-Client.CardGamePile.registerClass('Client.CardGamePile', Object);
-Client.CardGameTextArea.registerClass('Client.CardGameTextArea', Object);
 Client.ClientHelp.registerClass('Client.ClientHelp', Object);
 Client.CodeAreaInformation.registerClass('Client.CodeAreaInformation', Object);
 Client.DevAreaInformation.registerClass('Client.DevAreaInformation', Object);

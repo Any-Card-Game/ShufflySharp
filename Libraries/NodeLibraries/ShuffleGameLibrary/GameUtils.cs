@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using CommonLibraries;
 
 namespace global
 {
@@ -23,11 +24,12 @@ namespace global
         [ScriptName("clone")]
         public static dynamic Clone(object obj)
         {
-            if (obj == null || obj.GetType() == typeof(object)) return obj;
+            if (obj == null || (!(obj is Array) && (obj.GetType() != typeof(object) && "({}).toString.call(obj) != '[object Function]'".eval()))) return obj;
 
             JsDictionary<string,object> ob = (JsDictionary<string, object>) obj;
-            dynamic temp;
+            dynamic temp=null;
 
+            
             if (obj is Array)
             {
                 temp = new dynamic[0];
@@ -36,7 +38,6 @@ namespace global
             {
                 temp = new object();
             }
-
 
             foreach (var key in ob.Keys)
             {

@@ -37,7 +37,7 @@ namespace GameServer
             cachedGames = new JsDictionary<string, GameObject>();
             
             Global.Require("./common/arrayUtils.js");
-            Global.Require("./gameFramework/GameAPI.js");
+            //Global.Require("./gameFramework/GameAPI.js");
 
 
 
@@ -79,7 +79,7 @@ namespace GameServer
                                          room.Debuggable = true;
                                          room.GameName = data.GameName;
                                          room.RoomID = Guid.NewGuid();
-                                         room.Answers = new List<GameAnswer>();
+                                         room.Answers = new List<CardGameAnswer>();
                                          room.Players = new List<User>();
                                          room.Started = false;
                                          room.GameServer = gameServerIndex;
@@ -207,9 +207,9 @@ namespace GameServer
                 }
                 if (room == null) 
                     return;
-                
 
-                GameAnswer dict = new GameAnswer();
+
+                CardGameAnswer dict = new CardGameAnswer();
                 dict.Value = data.Answer;
                 room.Answers.Add(dict);
                 FiberYieldResponse answ = room.Fiber.Run<FiberYieldResponse>(dict);

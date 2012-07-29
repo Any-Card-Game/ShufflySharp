@@ -801,3 +801,6 @@
 /Servers/DebugServer/bin/Debug/RedisLibrary.dll
 /Servers/DebugServer/bin/Debug/SocketIONodeLibrary.dll
 /Servers/DebugServer/obj/Debug/DebugServer.csprojResolveAssemblyReference.cache
+/Servers/AdminServer/bin/Debug/CommonLibraries.dll
+/Servers/AdminServer/bin/Debug/NodeJSLibrary.dll
+/Servers/AdminServer/obj/Debug/AdminServer.csprojResolveAssemblyReference.cache

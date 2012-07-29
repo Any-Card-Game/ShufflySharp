@@ -7,6 +7,7 @@ using CommonShuffleLibraries;
 using FibersLibrary;
 using NodeJSLibrary;
 using ShufflyGameLibrary;
+using Json = CommonShuffleLibraries.Json;
 
 namespace GameServer
 {
@@ -17,8 +18,7 @@ namespace GameServer
         private GameData gameData;
         private List<GameRoom> rooms;
         private DateTime startTime = new DateTime();
-        private JsDictionary<string, GameObject> cachedGames;
-        private Shuff requiredShuff;
+        private JsDictionary<string, GameObject> cachedGames; 
         private int QUEUEPERTICK = 1;
         private int total__ = 0;
         private int skipped__ = 0;
@@ -37,7 +37,8 @@ namespace GameServer
             gameServerIndex = "GameServer" + Guid.NewGuid();
             cachedGames = new JsDictionary<string, GameObject>();
 
-            requiredShuff = Global.Require<Shuff>("./gameFramework/shuff.js");
+            Global.Require("./common/arrayUtils.js");
+            Global.Require("./gameFramework/GameAPI.js");
 
 
 
@@ -149,37 +150,31 @@ namespace GameServer
                 Console.Log("debuggable");
             });
 
-            qManager.AddChannel<object>("Area.Game.Start", delegate(User sender, object arg2)
-            {
-                JoinGameRequest data = castValue<JoinGameRequest>(arg2);
-                GameRoom room = null;
-                foreach (GameRoom gameRoom in rooms)
+            qManager.AddChannel<object>("Area.Game.Start", (sender, arg2) =>
                 {
-                    if (gameRoom.RoomID == data.RoomID)
+                    JoinGameRequest data = castValue<JoinGameRequest>(arg2);
+                    GameRoom room = null;
+                    foreach (GameRoom gameRoom in rooms)
                     {
-                        room = gameRoom;
-                        break;
+                        if (gameRoom.RoomID == data.RoomID)
+                        {
+                            room = gameRoom;
+                            break;
+                        }
                     }
-                }
-                if (room == null)
-                    return;
-                EmitAll(room, "Area.Game.Started", Json.Parse(Json.Stringify(room, Help.Sanitize)));
-                room.Started = true;
-                Console.Log("started");
+                    if (room == null)
+                        return;
+                    EmitAll(room, "Area.Game.Started", Json.Parse(Json.Stringify(room, Help.Sanitize)));
+                    room.Started = true;
+                    Console.Log("started");
 
-                FiberYieldResponse answer = room.Fiber.Run<FiberYieldResponse>(room.Players);
-                Console.Log("doign");
-                handleYield(room, answer);
-                Console.Log("doign2");
+                    FiberYieldResponse answer = room.Fiber.Run<FiberYieldResponse>(room.Players);
+                    Console.Log("doign");
+                    handleYield(room, answer);
+                    Console.Log("doign2");
+                });
 
-
-            });
-
-            qManager.AddChannel<object>("Area.Game.AnswerQuestion", delegate(User sender, object data)
-            {
-                queueue.Add(data);
-
-            });
+            qManager.AddChannel<object>("Area.Game.AnswerQuestion", (sender, data) => queueue.Add(data));
 
             Global.SetInterval(flushQueue, 50);
         }
@@ -376,9 +371,7 @@ namespace GameServer
                                                  Script.Eval("sev= new gameObject();");
 
                                                  sev.CardGame.Emulating = emulating;
-                                                 room.Game = sev;
-                                                 sev.Shuff = requiredShuff;
-
+                                                 room.Game = sev; 
                                                  sev.CardGame.SetAnswers(room.Answers);
                                                  sev.CardGame.SetPlayers(players);
                                                  gameData.TotalGames++;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic; 
 using System.Runtime.CompilerServices;
 using CommonLibraries;
+using CommonShuffleLibraries;
 
 namespace ShufflyGameLibrary
 {
@@ -10,28 +11,46 @@ namespace ShufflyGameLibrary
     public class GameCardGame
     {
         [ScriptName("emulating")]
-        public bool Emulating;
+        [IntrinsicProperty]
+        public bool Emulating { get; set; }
 
         [ScriptName("answerIndex")]
-        public int AnswerIndex;
+        [IntrinsicProperty]
+        public int AnswerIndex { get; set; }
 
         [ScriptName("spaces")]
-        public List<GameCardGameSpace> Spaces;
+        [IntrinsicProperty]
+        public List<GameCardGameSpace> Spaces { get; set; }
+
+        [IntrinsicProperty]
         [ScriptName("textAreas")]
-        public List<GameCardGameTextArea> TextAreas;
+        public List<GameCardGameTextArea> TextAreas { get; set; }
 
 
         [ScriptName("size")]
-        public Size Size;
+        [IntrinsicProperty]
+        public Size Size { get; set; }
 
+        [ScriptName("answers")]
+        [IntrinsicProperty]
+        public List<CardGameAnswer> Answers { get; set; }
+
+        [ScriptName("setAnswers")]
         public void SetAnswers(List<GameAnswer> answers)
         { 
         } 
         [IgnoreGenericArguments]
-        public void SetPlayers<T>(List<T> players)
+        [ScriptName("setPlayers")]
+        public void SetPlayers(List<User> players)
         {
         }
     }
+    public class CardGameAnswer
+    {
+        [ScriptName("value")]
+        [IntrinsicProperty]
+        public int Value { get; set; }
+    } 
 
     public class GameCardGameTextArea
 

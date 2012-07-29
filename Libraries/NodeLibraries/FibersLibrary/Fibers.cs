@@ -11,6 +11,11 @@ namespace FibersLibrary
 
     public class Fiber<T> : NodeModule
     {
+        [ScriptAlias("yield")]
+        public static T Yield(object obj=null)
+        {
+            return default(T);
+        }
         public Fiber(Func<T, bool> action)
         {
 

@@ -15,6 +15,10 @@ namespace NodeJSLibrary
         {
             return null;
         }
+        [ScriptAlias("require")]
+        public static void Require(string name) 
+        {
+        }
         [ScriptAlias("setInterval")] 
 
         public static void SetInterval(Action pollGateways, int poll)

@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');
+require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');
 Type.registerNamespace('GameServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.CreateGameRequest
@@ -115,7 +115,6 @@ GameServer.GameServer = function() {
 	this.$rooms = null;
 	this.$startTime = new Date();
 	this.$cachedGames = null;
-	this.$requiredShuff = null;
 	this.$QUEUEPERTICK = 1;
 	this.$total__ = 0;
 	this.$skipped__ = 0;
@@ -129,7 +128,8 @@ GameServer.GameServer = function() {
 	this.$dataManager = new GameServer.DataManager();
 	this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
 	this.$cachedGames = ({});
-	this.$requiredShuff = (require('./gameFramework/shuff.js'));
+	require('./common/arrayUtils.js');
+	require('./gameFramework/GameAPI.js');
 	this.$qManager = new CommonShuffleLibraries.QueueManager(this.$gameServerIndex, new CommonShuffleLibraries.QueueManagerOptions([new CommonShuffleLibraries.QueueWatcher('GameServer', null), new CommonShuffleLibraries.QueueWatcher(this.$gameServerIndex, null)], ['GameServer', 'GatewayServer', 'Gateway*']));
 	require('fibers');
 	this.$rooms = new Array();
@@ -415,7 +415,6 @@ GameServer.GameServer.prototype = {
 			eval('sev= new gameObject();');
 			sev.cardGame.emulating = emulating;
 			room.game = sev;
-			sev.shuff = this.$requiredShuff;
 			sev.cardGame.setAnswers(room.answers);
 			sev.cardGame.setPlayers(players);
 			this.$gameData.totalGames++;

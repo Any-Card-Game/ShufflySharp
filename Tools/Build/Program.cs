@@ -15,6 +15,7 @@ namespace Build
                 {
                     @"ShuffleSharp\Libraries\CommonLibraries\",
                     @"ShuffleSharp\Libraries\NodeLibraries\CommonShuffleLibrary\",
+                    @"ShuffleSharp\Libraries\NodeLibraries\ShuffleGameLibrary\",
                     @"ShuffleSharp\Servers\AdminServer\",
                     @"ShuffleSharp\Servers\ChatServer\",
                     @"ShuffleSharp\Servers\DebugServer\",
@@ -53,6 +54,7 @@ namespace Build
                         @"ShuffleSharp\Servers\GameServer\",new Application(true,"new GameServer.GameServer();",new List<string>() {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js", 
+                                @"./ShuffleGameLibrary.js", 
                             }) 
                     },
                     {@"ShuffleSharp\Servers\GatewayServer\", new Application(true,"new GatewayServer.GatewayServer();",new List<string>() {

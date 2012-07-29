@@ -106,7 +106,6 @@ namespace GameServer
                                      if (room == null)
                                          return;
                                      room.Players.Add(user);
-                                     room.Players.Add(user);
                                      EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
                                  });
 
@@ -369,27 +368,28 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
         private Fiber<List<UserModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
         {
-            return new Fiber<List<UserModel>>(delegate(List<UserModel> players)
-                                             {
-                                                 if (players == null || players.Count == 0) return true;
-                                                 room.Players = players;
-                                                 Console.Log("game started");
-                                                 GameObject sev = null;
-                                                 Script.Eval("sev= new gameObject();");
+            return new Fiber<List<UserModel>>(players =>
+                {
+                    if (players == null || players.Count == 0) return true;
+                    room.Players = players;
+                    Console.Log("game started");
+                    GameObject sev = null;
 
-                                                 sev.CardGame.Emulating = emulating;
-                                                 room.Game = sev;
-                                                 sev.CardGame.SetAnswers(room.Answers);
-                                                 sev.CardGame.SetPlayers(players);
-                                                 gameData.TotalGames++;
-                                                 gameData.TotalPlayers += players.Count;
-                                                 sev.CardGame.AnswerIndex = 0;
-                                                 sev.Constructor();
-                                                 sev.RunGame();
+                    Script.Eval("sev= new gameObject();");
 
-                                                 room.Unwind(players);
-                                                 return true;
-                                             });
+                    sev.CardGame.Emulating = emulating;
+                    room.Game = sev;
+                    sev.CardGame.SetAnswers(room.Answers);
+                    sev.CardGame.SetPlayers(players);
+                    gameData.TotalGames++;
+                    gameData.TotalPlayers += players.Count;
+                    sev.CardGame.AnswerIndex = 0;
+                    sev.Constructor();
+                    sev.RunGame();
+
+                    room.Unwind(players);
+                    return true;
+                });
         }
 
 

@@ -20,7 +20,7 @@ Todo List
 * **Finalize site server**
 	* Finalize site api
 		* see flowchart
-	* load balancing
+	* -load balancing-
 	* properly measuring max concurrent load
 	* properly serving chat server information
 * **Finalize main site**
@@ -28,15 +28,15 @@ Todo List
 		* load cost of this
 	* making all calls
 		* see flowchart
-	* seemless loadbalance
-		* can no one miss their friends?
+	* -seemless loadbalance-
+		* -can no one miss their friends?-
 * **Finalize game server**
-	* stress test with web
+	* -stress test with web-
 		* automate
 		* determine concurrent game limit per instance
 	* different servers for development
 		* ratio?
-	* switching loadbalance
+	* -switching loadbalance-
 	* log everything
 	* Finalize game api
 		* see flowchart
@@ -177,6 +177,7 @@ Todo List
 	* Chaining Effects
 * **Build games**
 	* sevens
+	* solitaire
 	* blackjack
 		* dealer
 	* go fish
@@ -196,17 +197,19 @@ Todo List
 * **Learn about ads**
 	* text based
 		* adsense 
+			* updated every 120 seconds
 		* options
 	* video ads
 		* duration
+			* 4 an hour
 		* options
 	* sharing text based codes
 * **Learn about bringing linode servers on quick**
-	* options (remember xss)
-	* proper magic load balancing
+	* -options (remember xss)-
+	* -proper magic load balancing-
 * **Learn about amazon hosting/options**
-	* serving index.html?
-	* serve all js and css
+	* -serving index.html?-
+	* -serve all js and css-
 
 
 

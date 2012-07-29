@@ -38,8 +38,8 @@ Client.BuildSite.prototype = {
 		$t1.title = 'CardGame';
 		$t1.set_x(($('body')).innerWidth() - 500);
 		$t1.set_y(100);
-		$t1.set_width('420');
-		$t1.set_height('450');
+		$t1.set_width(Client.ShuffUI.Number.op_Implicit$2(420));
+		$t1.set_height(Client.ShuffUI.Number.op_Implicit$2(450));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
 		$t1.set_visible(false);
@@ -48,8 +48,8 @@ Client.BuildSite.prototype = {
 		var $t2 = new Client.ShuffUI.ShuffButton();
 		$t2.set_x(280);
 		$t2.set_y(54);
-		$t2.set_width('150');
-		$t2.set_height('25');
+		$t2.set_width(Client.ShuffUI.Number.op_Implicit$2(150));
+		$t2.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t2.set_text('Update Game List');
 		$t2.set_click(Function.mkdel(this, function(e) {
 			pageHandler.gateway.emit('Area.Game.GetGames', this.devArea.get_data().gameServer, null);
@@ -76,8 +76,8 @@ Client.BuildSite.prototype = {
 		var $t4 = new Client.ShuffUI.ShuffButton();
 		$t4.set_x(280);
 		$t4.set_y(164);
-		$t4.set_width('120');
-		$t4.set_height('25');
+		$t4.set_width(Client.ShuffUI.Number.op_Implicit$2(120));
+		$t4.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t4.set_text('Start Game');
 		$t4.set_click(Function.mkdel(this, function(e1) {
 			pageHandler.gateway.emit('Area.Game.Start', Models.StartGameRequestModel.$ctor(pageHandler.gameStuff.roomID), this.devArea.get_data().gameServer);
@@ -94,8 +94,8 @@ Client.BuildSite.prototype = {
 		var $t7 = new Client.ShuffUI.ShuffTextBox();
 		$t7.set_x(130);
 		$t7.set_y(43);
-		$t7.set_width('130');
-		$t7.set_height('20');
+		$t7.set_width(Client.ShuffUI.Number.op_Implicit$2(130));
+		$t7.set_height(Client.ShuffUI.Number.op_Implicit$2(20));
 		$t7.set_text(randomName);
 		$t7.set_label('Username=');
 		$t9.txtUserName = $t8.addTextbox($t7);
@@ -116,8 +116,8 @@ Client.BuildSite.prototype = {
 		var $t10 = new Client.ShuffUI.ShuffListBox();
 		$t10.set_x(30);
 		$t10.set_y(280);
-		$t10.set_width('215');
-		$t10.set_height('125');
+		$t10.set_width(Client.ShuffUI.Number.op_Implicit$2(215));
+		$t10.set_height(Client.ShuffUI.Number.op_Implicit$2(125));
 		$t10.set_label('Users');
 		$t12.userList = $t11.addListBox($t10);
 		this.home.get_data().loadRoomInfo = function(room) {
@@ -208,8 +208,8 @@ Client.BuildSite.prototype = {
 		$t13.title = 'Developer';
 		$t13.set_x(($('body')).innerWidth() - 500);
 		$t13.set_y(100);
-		$t13.set_width('420');
-		$t13.set_height('450');
+		$t13.set_width(Client.ShuffUI.Number.op_Implicit$2(420));
+		$t13.set_height(Client.ShuffUI.Number.op_Implicit$2(450));
 		$t13.allowClose = true;
 		$t13.allowMinimize = true;
 		this.devArea = shuffUIManager.createWindow(Client.Information.DevAreaInformation).call(shuffUIManager, $t13);
@@ -226,8 +226,8 @@ Client.BuildSite.prototype = {
 		var $t16 = new Client.ShuffUI.ShuffButton();
 		$t16.set_x(280);
 		$t16.set_y(54);
-		$t16.set_width('150');
-		$t16.set_height('25');
+		$t16.set_width(Client.ShuffUI.Number.op_Implicit$2(150));
+		$t16.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t16.set_text('Begin Game');
 		$t16.set_click(Function.mkdel(this, function(e2) {
 			this.devArea.get_data().beginGame();
@@ -238,8 +238,8 @@ Client.BuildSite.prototype = {
 		var $t18 = new Client.ShuffUI.ShuffLabel();
 		$t18.set_x(80);
 		$t18.set_y(80);
-		$t18.set_width('250');
-		$t18.set_height('25');
+		$t18.set_width(Client.ShuffUI.Number.op_Implicit$2(250));
+		$t18.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t18.set_text('How Many= ');
 		$t20.lblHowFast = $t19.addLabel($t18);
 		var $t23 = this.devArea.get_data();
@@ -247,8 +247,8 @@ Client.BuildSite.prototype = {
 		var $t21 = new Client.ShuffUI.ShuffLabel();
 		$t21.set_x(80);
 		$t21.set_y(100);
-		$t21.set_width('250');
-		$t21.set_height('25');
+		$t21.set_width(Client.ShuffUI.Number.op_Implicit$2(250));
+		$t21.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t21.set_text('Another: ');
 		$t23.lblAnother = $t22.addLabel($t21);
 		// devArea.AddButton(new ShuffButton()
@@ -268,8 +268,8 @@ Client.BuildSite.prototype = {
 		var $t24 = new Client.ShuffUI.ShuffPropertyBox();
 		$t24.set_x(25);
 		$t24.set_y(200);
-		$t24.set_width('250');
-		$t24.set_height('250');
+		$t24.set_width(Client.ShuffUI.Number.op_Implicit$2(250));
+		$t24.set_height(Client.ShuffUI.Number.op_Implicit$2(250));
 		$t24.set_itemCreation(function(item, index) {
 			var ik = $(String.format('<div style=\'width=100%;height=25px; background-color={0};\'></div>', ((index % 2 === 0) ? 'red' : 'green')));
 			var ikc = $(String.format('<div style=\'width=50%;height=25px; float=left;\'>{0}</div>', item.get_label()));
@@ -301,8 +301,8 @@ Client.BuildSite.prototype = {
 		var $t26 = new Client.ShuffUI.ShuffTextBox();
 		$t26.set_x(150);
 		$t26.set_y(134);
-		$t26.set_width('100');
-		$t26.set_height('25');
+		$t26.set_width(Client.ShuffUI.Number.op_Implicit$2(100));
+		$t26.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t26.set_label('Var Lookup');
 		$t28.varText = $t27.addTextbox($t26);
 		//  devArea.AddButton(new ShuffButton()
@@ -357,8 +357,8 @@ Client.BuildSite.prototype = {
 		var $t32 = new Client.ShuffUI.ShuffTextBox();
 		$t32.set_x(130);
 		$t32.set_y(43);
-		$t32.set_width('130');
-		$t32.set_height('20');
+		$t32.set_width(Client.ShuffUI.Number.op_Implicit$2(130));
+		$t32.set_height(Client.ShuffUI.Number.op_Implicit$2(20));
 		$t32.set_text('6');
 		$t32.set_label('Number of players=');
 		$t32.set_labelStyle('font-size=13px');
@@ -368,8 +368,8 @@ Client.BuildSite.prototype = {
 		$t35.set_x(0);
 		$t35.set_y(0);
 		$t35.static = true;
-		$t35.set_width(ss.Int32.trunc(($(window)).width() * 0.5).toString());
-		$t35.set_height(ss.Int32.trunc(($(window)).height() * 0.9).toString());
+		$t35.set_width(Client.ShuffUI.Number.op_Implicit$2(($(window)).width() * 0.5));
+		$t35.set_height(Client.ShuffUI.Number.op_Implicit$2(($(window)).height() * 0.9));
 		$t35.allowClose = true;
 		$t35.allowMinimize = true;
 		$t35.set_visible(true);
@@ -378,21 +378,21 @@ Client.BuildSite.prototype = {
 		var $t38 = this.codeArea.get_data();
 		var $t37 = this.codeArea;
 		var $t36 = new Client.ShuffUI.ShuffCodeEditor();
-		$t36.set_height('20%');
+		$t36.set_height(Client.ShuffUI.Number.op_Implicit$3('20%'));
 		$t36.set_lineNumbers(false);
 		$t38.console = $t37.addCodeEditor($t36);
 		var $t41 = this.codeArea.get_data();
 		var $t40 = this.codeArea;
 		var $t39 = new Client.ShuffUI.ShuffCodeEditor();
-		$t39.set_height('80%');
+		$t39.set_height(Client.ShuffUI.Number.op_Implicit$3('80%'));
 		$t39.set_lineNumbers(true);
 		$t41.codeEditor = $t40.addCodeEditor($t39);
 		var $t42 = new (Type.makeGenericType(Client.ShuffUI.ShuffWindow$1, [Client.Information.QuestionAreaInformation]))(new Client.Information.QuestionAreaInformation());
 		$t42.title = 'Question';
 		$t42.set_x(600);
 		$t42.set_y(100);
-		$t42.set_width('300');
-		$t42.set_height('275');
+		$t42.set_width(Client.ShuffUI.Number.op_Implicit$2(300));
+		$t42.set_height(Client.ShuffUI.Number.op_Implicit$2(275));
 		$t42.allowClose = true;
 		$t42.allowMinimize = true;
 		$t42.set_visible(false);
@@ -402,8 +402,8 @@ Client.BuildSite.prototype = {
 		var $t43 = new Client.ShuffUI.ShuffLabel();
 		$t43.set_x(20);
 		$t43.set_y(5);
-		$t43.set_width('150');
-		$t43.set_height('25');
+		$t43.set_width(Client.ShuffUI.Number.op_Implicit$2(150));
+		$t43.set_height(Client.ShuffUI.Number.op_Implicit$2(25));
 		$t43.set_text('');
 		$t45.question = $t44.addLabel($t43);
 		this.questionArea.get_data().load = Function.mkdel(this, function(question) {
@@ -419,8 +419,8 @@ Client.BuildSite.prototype = {
 			var $t46 = new Client.ShuffUI.ShuffListBox();
 			$t46.set_x(30);
 			$t46.set_y(65);
-			$t46.set_width('215');
-			$t46.set_height('125');
+			$t46.set_width(Client.ShuffUI.Number.op_Implicit$2(215));
+			$t46.set_height(Client.ShuffUI.Number.op_Implicit$2(125));
 			$t46.set_label('Answers');
 			$t46.set_items(answers);
 			$t46.set_click(Function.mkdel(this, function(item1) {
@@ -434,8 +434,8 @@ Client.BuildSite.prototype = {
 		var $t49 = new Client.ShuffUI.ShuffListBox();
 		$t49.set_x(30);
 		$t49.set_y(65);
-		$t49.set_width('215');
-		$t49.set_height('125');
+		$t49.set_width(Client.ShuffUI.Number.op_Implicit$2(215));
+		$t49.set_height(Client.ShuffUI.Number.op_Implicit$2(125));
 		$t49.set_label('Answers');
 		$t49.set_click(Function.mkdel(this, function(item2) {
 			pageHandler.gateway.emit('Area.Game.AnswerQuestion', Models.GameAnswerQuestionModel.$ctor1(pageHandler.gameStuff.roomID, item2.get_value()), this.devArea.get_data().gameServer);
@@ -726,7 +726,7 @@ Client.PageHandler.prototype = {
 		this.gateway.on('Area.Debug.Log', Function.mkdel(this, function(data1) {
 			this.$buildSite.home.get_data().loadRoomInfos(data1);
 			var lines = this.$buildSite.codeArea.get_data().console.editor.getValue().split('\n');
-			lines = Type.cast(lines.extract(lines.length - 40, lines.length), Array);
+			lines = Type.cast(lines.extract(lines.length - 40, 40), Array);
 			this.$buildSite.codeArea.get_data().console.editor.setValue(lines.join('\n') + '\n' + data1.value);
 			this.$buildSite.codeArea.get_data().console.editor.setCursor(this.$buildSite.codeArea.get_data().console.editor.lineCount(), 0);
 		}));
@@ -983,6 +983,29 @@ Client.ShuffUI.CodeMirrorInformation = function() {
 Client.ShuffUI.CodeMirrorInformationData = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
+// Client.ShuffUI.Number
+Client.ShuffUI.Number = function(s) {
+	this.$value = null;
+	this.$value = s.toString();
+};
+Client.ShuffUI.Number.$ctor1 = function(s) {
+	this.$value = null;
+	this.$value = s;
+};
+Client.ShuffUI.Number.$ctor1.prototype = Client.ShuffUI.Number.prototype;
+Client.ShuffUI.Number.op_Implicit = function(d) {
+	return parseFloat(d.$value);
+};
+Client.ShuffUI.Number.op_Implicit$3 = function(d) {
+	return new Client.ShuffUI.Number.$ctor1(d);
+};
+Client.ShuffUI.Number.op_Implicit$2 = function(d) {
+	return new Client.ShuffUI.Number(d);
+};
+Client.ShuffUI.Number.op_Implicit$1 = function(d) {
+	return d.$value;
+};
+////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffButton
 Client.ShuffUI.ShuffButton = function() {
 	this.$2$TextField = null;
@@ -1024,8 +1047,8 @@ Client.ShuffUI.ShuffButton$1.registerGenericClass('Client.ShuffUI.ShuffButton$1'
 Client.ShuffUI.ShuffCodeEditor = function() {
 	this.$2$LineNumbersField = false;
 	Client.ShuffUI.ShuffElement.call(this);
-	this.set_width('100%');
-	this.set_height('100%');
+	this.set_width(Client.ShuffUI.Number.op_Implicit$3('100%'));
+	this.set_height(Client.ShuffUI.Number.op_Implicit$3('100%'));
 };
 Client.ShuffUI.ShuffCodeEditor.prototype = {
 	get_lineNumbers: function() {
@@ -1291,9 +1314,9 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 			outer.css('padding', '2em 0.8em 0.8em 1.3em');
 			outer.css('left', ui.get_x() + 'px');
 			outer.css('top', ui.get_y() + 'px');
-			outer.css('width', ui.get_width() + 'px');
-			outer.css('height', ui.get_height() + 'px');
-			outer.css('di', ui.get_height() + 'px');
+			outer.css('width', Client.ShuffUI.Number.op_Implicit$1(ui.get_width()) + 'px');
+			outer.css('height', Client.ShuffUI.Number.op_Implicit$1(ui.get_height()) + 'px');
+			outer.css('di', Client.ShuffUI.Number.op_Implicit$1(ui.get_height()) + 'px');
 			outer.css('display', ((ui.get_visible() === false) ? 'none' : 'block'));
 			var top = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  \'></div>');
 			outer.append(top);
@@ -1399,8 +1422,8 @@ Client.ShuffUI.ShuffWindow$1 = function(T) {
 			but.css('position', 'absolute');
 			but.css('left', element.get_x() + 'px');
 			but.css('top', element.get_y() + 'px');
-			but.css('width', element.get_width() + 'px');
-			but.css('height', element.get_height() + 'px');
+			but.css('width', Client.ShuffUI.Number.op_Implicit$1(element.get_width()) + 'px');
+			but.css('height', Client.ShuffUI.Number.op_Implicit$1(element.get_height()) + 'px');
 			but.button();
 			but.click(element.get_click());
 			but.disableSelection();
@@ -1429,8 +1452,8 @@ Client.ShuffUI.ShuffWindow$1 = function(T) {
 			but.css('position', 'absolute');
 			but.css('left', element.get_x() + 'px');
 			but.css('top', element.get_y() + 'px');
-			but.css('width', element.get_width() + 'px');
-			but.css('height', element.get_height() + 'px');
+			but.css('width', Client.ShuffUI.Number.op_Implicit$1(element.get_width()) + 'px');
+			but.css('height', Client.ShuffUI.Number.op_Implicit$1(element.get_height()) + 'px');
 			but.disableSelection();
 			if (ss.isValue(element.get_label())) {
 				var lbl = $('<span style=\'' + element.get_labelStyle() + '\'></span>');
@@ -1447,7 +1470,7 @@ Client.ShuffUI.ShuffWindow$1 = function(T) {
 		addCodeEditor: function(_editor) {
 			//options = objMerge({ width: '100%', height: '100%' }, options);
 			this.elements.add(_editor);
-			var divs = $('<div style=\'width:' + _editor.get_width() + '; height:' + _editor.get_height() + '\'\'> </div>');
+			var divs = $('<div style=\'width:' + Client.ShuffUI.Number.op_Implicit$1(_editor.get_width()) + '; height:' + Client.ShuffUI.Number.op_Implicit$1(_editor.get_height()) + '\'\'> </div>');
 			this.get_$window().append(divs);
 			divs.append('<textarea id=\'code\' name=\'code\' class=\'CodeMirror-fullscreen \' style=\'\'></textarea>');
 			var $t1 = new Client.ShuffUI.CodeMirrorInformation();
@@ -1519,8 +1542,8 @@ Client.ShuffUI.ShuffWindow$1 = function(T) {
 			but.css('position', 'absolute');
 			but.css('left', shuffPropertyBox.get_x());
 			but.css('top', shuffPropertyBox.get_y());
-			but.css('width', shuffPropertyBox.get_width());
-			but.css('height', shuffPropertyBox.get_height());
+			but.css('width', Client.ShuffUI.Number.op_Implicit$1(shuffPropertyBox.get_width()));
+			but.css('height', Client.ShuffUI.Number.op_Implicit$1(shuffPropertyBox.get_height()));
 			but.css('overflow', 'scroll');
 			shuffPropertyBox.items = new Array();
 			shuffPropertyBox.addItem = function(ij) {
@@ -1578,6 +1601,7 @@ Client.PageHandler.registerClass('Client.PageHandler', Object);
 Client.ScriptLoader.registerClass('Client.ScriptLoader', Object);
 Client.ShuffUI.CodeMirrorInformation.registerClass('Client.ShuffUI.CodeMirrorInformation', Object);
 Client.ShuffUI.CodeMirrorInformationData.registerClass('Client.ShuffUI.CodeMirrorInformationData', Object);
+Client.ShuffUI.Number.registerClass('Client.ShuffUI.Number', Object);
 Client.ShuffUI.ShuffElement.registerClass('Client.ShuffUI.ShuffElement', Object);
 Client.ShuffUI.ShuffLabel.registerClass('Client.ShuffUI.ShuffLabel', Client.ShuffUI.ShuffElement);
 Client.ShuffUI.ShuffListBox.registerClass('Client.ShuffUI.ShuffListBox', Client.ShuffUI.ShuffElement);

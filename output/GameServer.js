@@ -172,7 +172,6 @@ GameServer.GameServer = function() {
 			return;
 		}
 		room1.players.add(user1);
-		room1.players.add(user1);
 		this.$emitAll(room1, 'Area.Game.RoomInfo', CommonLibraries.Help.cleanUp(GameServer.GameRoom).call(null, room1));
 	}));
 	//qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>

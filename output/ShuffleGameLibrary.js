@@ -84,31 +84,6 @@ global.ArrayUtils.any = function(ts, does) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Card
-global.Card = function(number, type) {
-	this.$1$NumberField = 0;
-	this.$1$TypeField = 0;
-	this.set_number(number);
-	this.set_type(type);
-};
-global.Card.prototype = {
-	get_number: function() {
-		return this.$1$NumberField;
-	},
-	set_number: function(value) {
-		this.$1$NumberField = value;
-	},
-	get_type: function() {
-		return this.$1$TypeField;
-	},
-	set_type: function(value) {
-		this.$1$TypeField = value;
-	},
-	getName: function() {
-		return this.get_number() + ' ' + this.get_type();
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// global.Card
 global.Card = function(value, type) {
 	this.value = 0;
 	this.type = 0;
@@ -503,7 +478,6 @@ global.User = function(name) {
 };
 global._.registerClass('global._', Object);
 global.ArrayUtils.registerClass('global.ArrayUtils', Object);
-global.Card.registerClass('global.Card', Object);
 global.Card.registerClass('global.Card', Object);
 global.CardGame.registerClass('global.CardGame', Object);
 global.CardGameAnswer.registerClass('global.CardGameAnswer', Object);

@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using jQueryApi;
 
 namespace Client.ShuffUI
@@ -13,9 +14,9 @@ namespace Client.ShuffUI
 
         public int Y { get; set; }
 
-        public string Width { get; set; }//todo override intrinsic property
+        public Number Width { get; set; }//todo override intrinsic property
 
-        public string Height { get; set; }
+        public Number Height { get; set; }
 
         public jQueryObject Element { get; set; }
 
@@ -31,6 +32,39 @@ namespace Client.ShuffUI
                 visible = value;
             }
         } 
+        
 
+    }
+
+    public class Number
+    {
+        private string Value;
+
+        private Number(string s)
+        {
+            Value = s;
+        }
+
+        private Number(double s)
+        {
+            Value = s.ToString();
+        }
+
+        public static implicit operator double(Number d)
+        {
+            return double.Parse(d.Value);
+        }
+        public static implicit operator Number(string d)
+        {
+            return new Number(d);
+        }
+        public static implicit operator Number(double d)
+        {
+            return new Number(d);
+        }
+        public static implicit operator string(Number d)
+        {
+            return d.Value;
+        }
     }
 }

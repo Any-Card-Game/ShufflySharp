@@ -7,7 +7,7 @@ Thoughts
 			* ssh to start and stop servers
 			* maybe get rid of rusty old serveradmin
 		* upload to one location, have it send to the apporpriate servers 
-		* complicated dockable window system
+		* complicated vs-like dockable window system
 		* game config items
 			* players can drop
 			* join in the middle
@@ -66,3 +66,4 @@ Thoughts
 		* Main window
 			* scrollable with locks 
 
+			 

@@ -97,19 +97,19 @@ namespace Client
                             Title = "CardGame",
                             X = jQuery.Select("body").GetInnerWidth() - 500,
                             Y = 100,
-                            Width = "420",
-                            Height = "450",
+                            Width = 420,
+                            Height = 450,
                             AllowClose = true,
                             AllowMinimize = true,
                             Visible = false
-                        });
+                        }); 
 
             home.AddButton(new ShuffButton()
             {
                 X = 280,
                 Y = 54,
-                Width = "150",
-                Height = "25",
+                Width = 150,
+                Height = 25,
                 Text = "Update Game List",
                 Click = (e) =>
                 {
@@ -138,8 +138,8 @@ namespace Client
                 {
                     X = 280,
                     Y = 164,
-                    Width = "120",
-                    Height = "25",
+                    Width = 120,
+                    Height = 25,
                     Text = "Start Game",
                     Click = (e) =>
                         {
@@ -161,8 +161,8 @@ namespace Client
             {
                 X = 130,
                 Y = 43,
-                Width = "130",
-                Height = "20",
+                Width = 130,
+                Height = 20,
                 Text = randomName,
                 Label = "Username="
             });
@@ -183,8 +183,8 @@ namespace Client
             {
                 X = 30,
                 Y = 280,
-                Width = "215",
-                Height = "125",
+                Width = 215,
+                Height = 25*5,
                 Label = "Users"
             });
 
@@ -247,8 +247,8 @@ namespace Client
                    Title = "Developer",
                    X = jQuery.Select("body").GetInnerWidth() - 500,
                    Y = 100,
-                   Width = "420",
-                   Height = "450",
+                   Width = 420,
+                   Height = 450,
                    AllowClose = true,
                    AllowMinimize = true
                });
@@ -273,8 +273,8 @@ namespace Client
             {
                 X = 280,
                 Y = 54,
-                Width = "150",
-                Height = "25",
+                Width = 150,
+                Height = 25,
                 Text = "Begin Game",
                 Click = (e) => devArea.Data.beginGame()
             });
@@ -283,16 +283,16 @@ namespace Client
             {
                 X = 280 - 200,
                 Y = 80,
-                Width = "250",
-                Height = "25",
+                Width = 250,
+                Height = 25,
                 Text = "How Many= "
             });
             devArea.Data.lblAnother = devArea.AddLabel(new ShuffLabel()
             {
                 X = 280 - 200,
                 Y = 100,
-                Width = "250",
-                Height = "25",
+                Width = 250,
+                Height = 25,
                 Text = "Another: "
             });
 
@@ -314,8 +314,8 @@ namespace Client
                 {
                     X = 25,
                     Y = 200,
-                    Width = "250",
-                    Height = "250",
+                    Width = 250,
+                    Height = 250,
                     ItemCreation = (item, index) =>
                         {
                             var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index % 2 == 0 ? "red" : "green")));
@@ -349,8 +349,8 @@ namespace Client
             {
                 X = 150,
                 Y = 134,
-                Width = "100",
-                Height = "25",
+                Width = 100,
+                Height = 25,
                 Label = "Var Lookup"
             });
             /*  devArea.AddButton(new ShuffButton()
@@ -412,8 +412,8 @@ namespace Client
             {
                 X = 130,
                 Y = 43,
-                Width = "130",
-                Height = "20",
+                Width = 130,
+                Height = 20,
                 Text = "6",
                 Label = "Number of players=",
                 LabelStyle = "font-size=13px"
@@ -425,8 +425,8 @@ namespace Client
                 X = 0,
                 Y = 0,
                 Static = true,
-                Width = ((int)(jQuery.Window.GetWidth() * .50)).ToString(),
-                Height = ((int)(jQuery.Window.GetHeight() * .90)).ToString(),
+                Width = jQuery.Window.GetWidth() * .50,
+                Height = jQuery.Window.GetHeight() * .90,
                 AllowClose = true,
                 AllowMinimize = true,
                 Visible = true
@@ -446,8 +446,8 @@ namespace Client
                 Title = "Question",
                 X = 600,
                 Y = 100,
-                Width = "300",
-                Height = "275",
+                Width = 300,
+                Height = 275,
                 AllowClose = true,
                 AllowMinimize = true,
                 Visible = false
@@ -463,8 +463,8 @@ namespace Client
             {
                 X = 20,
                 Y = 5,
-                Width = "150",
-                Height = "25",
+                Width = 150,
+                Height = 25,
                 Text = "",
 
             });
@@ -486,8 +486,8 @@ namespace Client
                 {
                     X = 30,
                     Y = 65,
-                    Width = "215",
-                    Height = "125",
+                    Width = 215,
+                    Height = 25*5,
                     Label = "Answers",
                     Items = answers,
                     Click = (item) =>
@@ -504,8 +504,8 @@ namespace Client
             {
                 X = 30,
                 Y = 65,
-                Width = "215",
-                Height = "125",
+                Width = 215,
+                Height = 25 * 5,
                 Label = "Answers",
                 Click = (item) =>
                 {

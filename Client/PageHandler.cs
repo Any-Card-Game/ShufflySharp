@@ -149,7 +149,7 @@ namespace Client
                     buildSite.home.Data.loadRoomInfos(data);
 
                     var lines = buildSite.codeArea.Data.console.editor.GetValue().Split("\n");
-                    lines = (string[])lines.Extract(lines.Length - 40, lines.Length);
+                    lines = (string[]) lines.Extract(lines.Length - 40, 40);
 
                     buildSite.codeArea.Data.console.editor.SetValue(lines.Join("\n") + "\n" + data.Value);
                     buildSite.codeArea.Data.console.editor.SetCursor(buildSite.codeArea.Data.console.editor.LineCount(), 0);

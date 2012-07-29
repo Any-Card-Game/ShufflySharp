@@ -32,7 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Card.cs" />
     <Compile Include="ArrayUtils.cs" />
     <Compile Include="GameCardGame.cs" />
     <Compile Include="GameObject.cs" />

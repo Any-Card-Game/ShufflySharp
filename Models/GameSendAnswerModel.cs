@@ -7,6 +7,7 @@ namespace Models
     {
         [IntrinsicProperty]
         public string Question { get; set; }
+
         [IntrinsicProperty]
         public string[] Answers { get; set; }
     }

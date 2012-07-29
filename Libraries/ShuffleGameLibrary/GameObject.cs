@@ -1,21 +1,19 @@
 using System.Runtime.CompilerServices;
-using NodeJSLibrary; 
+using NodeJSLibrary;
 
 namespace global
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
-
     public class GameObject : NodeModule
     {
-
-        [ScriptName("cardGame")]
-        public GameCardGame CardGame;
+        [ScriptName("cardGame")] public GameCardGame CardGame;
 
         [ScriptName("constructor")]
         public void Constructor()
         {
         }
+
         [ScriptName("runGame")]
         public void RunGame()
         {

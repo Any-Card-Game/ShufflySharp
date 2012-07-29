@@ -1,13 +1,12 @@
 using System.Runtime.CompilerServices;
-using CommonLibraries;
 using CommonsLibraries;
 
 namespace SocketIOWebLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)] 
-    [ScriptName("io")] 
-    public class SocketIOClient:EventEmitter
+    [Imported(IsRealType = true)]
+    [ScriptName("io")]
+    public class SocketIOClient : EventEmitter
     {
         [ScriptName("connect")]
         public static SocketIOClient Connect(string server)
@@ -15,5 +14,4 @@ namespace SocketIOWebLibrary
             return null;
         }
     }
-
 }

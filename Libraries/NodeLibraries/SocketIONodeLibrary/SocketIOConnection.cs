@@ -1,13 +1,11 @@
 using System.Runtime.CompilerServices;
-using CommonsLibraries; 
+using CommonsLibraries;
 
 namespace SocketIONodeLibrary
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
-
-    public class SocketIOConnection:EventEmitter
+    public class SocketIOConnection : EventEmitter
     {
-       
     }
 }

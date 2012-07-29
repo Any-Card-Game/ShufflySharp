@@ -2,71 +2,69 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
-using CommonShuffleLibrary;
 
 namespace global
 {
-
     [ScriptName("ArrayUtils")]
-    public   class ArrayUtils
+    public class ArrayUtils
     {
-         public ArrayUtils()
+        public ArrayUtils()
         {
             "Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};".eval();
             "Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};".eval();
             "Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};".eval();
-            "Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};".eval(); 
+            "Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};".eval();
         }
-         [IgnoreGenericArguments]
-         public static bool ForEach<T>(T[] ts, Func<T, int, bool> does)
-         {
-             for (int i = 0; i < ts.Length; i++)
-             {
-                 bool df = does(ts[i], i);
-                 if (df)
-                 {
-                     return df;
-                 }
 
-             }
-             return false;
-         }
-         [IgnoreGenericArguments]
-         public static T[] SortCards<T>(T[] ts)
-         {
-             return ts;
-         }
-         [IgnoreGenericArguments]
-         public static T[] Where<T>(T[] ts, Func<T, int, bool> does)
-         {
-             List<T> jf = new List<T>();
+        [IgnoreGenericArguments]
+        public static bool ForEach<T>(T[] ts, Func<T, int, bool> does)
+        {
+            for (var i = 0; i < ts.Length; i++)
+            {
+                var df = does(ts[i], i);
+                if (df)
+                {
+                    return df;
+                }
+            }
+            return false;
+        }
 
-             for (int i = 0; i < ts.Length; i++)
-             {
-                 if (does(ts[i], i))
-                 {
-                     jf.Add(ts[i]);
-                 }
+        [IgnoreGenericArguments]
+        public static T[] SortCards<T>(T[] ts)
+        {
+            return ts;
+        }
 
-             }
-             return (T[])jf;
+        [IgnoreGenericArguments]
+        public static T[] Where<T>(T[] ts, Func<T, int, bool> does)
+        {
+            var jf = new List<T>();
 
-         }
-         [IgnoreGenericArguments]
-         public static bool Any<T>(T[] ts, Func<T, int, bool> does)
-         {
-             List<T> jf = new List<T>();
+            for (var i = 0; i < ts.Length; i++)
+            {
+                if (does(ts[i], i))
+                {
+                    jf.Add(ts[i]);
+                }
+            }
+            return (T[]) jf;
+        }
 
-             for (int i = 0; i < ts.Length; i++)
-             {
-                 if (does(ts[i], i))
-                 {
-                     return true;
-                 }
+        [IgnoreGenericArguments]
+        public static bool Any<T>(T[] ts, Func<T, int, bool> does)
+        {
+            var jf = new List<T>();
 
-             }
-             return false;
-         }
+            for (var i = 0; i < ts.Length; i++)
+            {
+                if (does(ts[i], i))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         /*
  
@@ -99,5 +97,4 @@ ar.sortCards = Array.prototype.sortCards = (function () {
 });
 */
     }
-
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using CommonLibraries;
 
 namespace global
@@ -12,27 +11,27 @@ namespace global
         [ScriptName("numbers")]
         public static int[] Numbers(int start, int finish)
         {
-            int[] items = new int[finish - start];
+            var items = new int[finish - start];
 
-            for (int i = 0; i < finish - start; i++)
+            for (var i = 0; i < finish - start; i++)
             {
                 items[i] = start + i;
             }
             return items;
-
         }
+
         [ScriptName("clone")]
-        public static dynamic Clone(object obj)//::dynamic okay
+        public static dynamic Clone(object obj) //::dynamic okay
         {
-            if (obj == null || (!(obj is Array) && (obj.GetType() != typeof(object) && "({}).toString.call(obj) != '[object Function]'".eval()))) return obj;
+            if (obj == null || (!(obj is Array) && (obj.GetType() != typeof (object) && "({}).toString.call(obj) != '[object Function]'".eval()))) return obj;
 
-            JsDictionary<string,object> ob = (JsDictionary<string, object>) obj;
-            dynamic temp = null;//::dynamic okay
+            var ob = (JsDictionary<string, object>) obj;
+            dynamic temp = null; //::dynamic okay
 
-            
+
             if (obj is Array)
             {
-                temp = new dynamic[0];//::dynamic okay
+                temp = new dynamic[0]; //::dynamic okay
             }
             else
             {
@@ -46,16 +45,17 @@ namespace global
 
             return temp;
         }
+
         [ScriptName("floor")]
         public static int Floor(double j)
         {
-            return (int)j;
+            return (int) j;
         }
+
         [ScriptName("random")]
         public static double Random()
         {
             return Math.Random();
         }
-         
     }
 }

@@ -13,6 +13,7 @@ namespace Models
 
         [IntrinsicProperty]
         public string RoomID { get; set; }
+
         [IntrinsicProperty]
         public UserModel User { get; set; }
     }

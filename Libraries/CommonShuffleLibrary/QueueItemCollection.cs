@@ -2,7 +2,7 @@
 
 namespace CommonShuffleLibrary
 {
-    public class QueueItemCollection  
+    public class QueueItemCollection
     {
         private readonly IEnumerable<QueueItem> queueItems;
 
@@ -13,9 +13,9 @@ namespace CommonShuffleLibrary
 
         public QueueItem GetByChannel(string channel)
         {
-            foreach (QueueItem queueWatcher in queueItems)
+            foreach (var queueWatcher in queueItems)
             {
-                if(queueWatcher.Channel==channel || channel.IndexOf(queueWatcher.Channel.Replace("*",""))==0)
+                if (queueWatcher.Channel == channel || channel.IndexOf(queueWatcher.Channel.Replace("*", "")) == 0)
                 {
                     return queueWatcher;
                 }
@@ -23,4 +23,4 @@ namespace CommonShuffleLibrary
             return null;
         }
     }
-} 
+}

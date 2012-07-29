@@ -1,4 +1,3 @@
- 
 using System;
 using System.Runtime.CompilerServices;
 using CommonsLibraries;
@@ -10,8 +9,7 @@ namespace RedisLibrary
     [IgnoreNamespace]
     public class Redis : NodeModule
     {
-        [ScriptName("debug_mode")]
-        public bool DebugMode;
+        [ScriptName("debug_mode")] public bool DebugMode;
 
         public RedisClient CreateClient(int port, string ip)
         {
@@ -22,13 +20,11 @@ namespace RedisLibrary
     public class RedisClient : EventEmitter
     {
         [ScriptName("publish")]
-
         public void Publish(string channel, object content)
         {
-
         }
-        [ScriptName("subscribe")]
 
+        [ScriptName("subscribe")]
         public void Subscribe(string channel)
         {
         }
@@ -41,7 +37,6 @@ namespace RedisLibrary
         [ScriptName("blpop")]
         public void BLPop(object[] objects, Action<string, object> action)
         {
-
         }
     }
 }

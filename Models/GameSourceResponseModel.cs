@@ -4,12 +4,12 @@ namespace Models
 {
     public class GameSourceResponseModel
     {
-        [IntrinsicProperty]
-        public string Content { get; set; }
-
         public GameSourceResponseModel(string content)
         {
             Content = content;
         }
+
+        [IntrinsicProperty]
+        public string Content { get; set; }
     }
 }

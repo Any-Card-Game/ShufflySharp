@@ -1,32 +1,25 @@
-
 using System.Html;
 using System.Runtime.CompilerServices;
+
 namespace CodeMirrorLibrary
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     [ScriptName("CodeMirror")]
-
     public class CodeMirror
     {
-        public CodeMirror()
-        {
-
-        }
-
         public Element ScrollerElement
         {
             [ScriptName("getScrollerElement")]
             get { return null; }
-
         }
 
         [ScriptName("fromTextArea")]
         public static CodeMirror FromTextArea(Element element, CodeMirrorOptions options)
         {
             return null;
-
         }
+
         [ScriptName("refresh")]
         public void Refresh()
         {
@@ -40,12 +33,11 @@ namespace CodeMirrorLibrary
         [ScriptName("setValue")]
         public void SetValue(string data)
         {
-
         }
+
         [ScriptName("clearMarker")]
         public void ClearMarker(int lineNumber)
         {
-
         }
 
         [ScriptName("setCursor")]
@@ -58,6 +50,7 @@ namespace CodeMirrorLibrary
         {
             return null;
         }
+
         [ScriptName("getCursor")]
         public CodeEditorCursor GetCursor()
         {
@@ -69,11 +62,13 @@ namespace CodeMirrorLibrary
         {
             return null;
         }
+
         [ScriptName("setLineClass")]
         public CodeMirrorLine SetLineClass(int lineIndex, string style)
         {
             return null;
         }
+
         [ScriptName("setOption")]
         public void SetOption(string key, object value)
         {

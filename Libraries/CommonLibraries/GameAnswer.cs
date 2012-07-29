@@ -4,9 +4,7 @@ namespace CommonLibraries
 {
     public class GameAnswer
     {
-        [ScriptName("value")]
-        public int Value;
-        [ScriptName("lineNumber")]
-        public int LineNumber;
+        [ScriptName("lineNumber")] public int LineNumber;
+        [ScriptName("value")] public int Value;
     }
 }

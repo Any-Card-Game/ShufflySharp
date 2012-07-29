@@ -1,22 +1,17 @@
- 
-
-using System; 
+using System;
 using System.Runtime.CompilerServices;
 using NodeJSLibrary;
 
 namespace MongoDBLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)] 
+    [Imported(IsRealType = true)]
     [ScriptName("mongo")]
     public class Mongo : NodeModule
     {
-        [ScriptName("Db")]
-        public MongoDB DB;
-        [ScriptName("Connection")]
-        public MongoConnection Connection;
-        [ScriptName("Server")]
-        public MongoServer Server;
+        [ScriptName("Connection")] public MongoConnection Connection;
+        [ScriptName("Db")] public MongoDB DB;
+        [ScriptName("Server")] public MongoServer Server;
     }
 
 
@@ -43,10 +38,11 @@ namespace MongoDBLibrary
         }
 
         [ScriptName("collection")]
-        public void Collection(string testInsert, Action<string,MongoCollection> test)
+        public void Collection(string testInsert, Action<string, MongoCollection> test)
         {
         }
     }
+
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class MongoCollection

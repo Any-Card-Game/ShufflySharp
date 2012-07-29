@@ -6,6 +6,7 @@ namespace Models
     {
         [IntrinsicProperty]
         public int Answer { get; set; }
+
         [IntrinsicProperty]
         public string RoomID { get; set; }
     }

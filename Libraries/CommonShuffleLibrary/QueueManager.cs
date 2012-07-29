@@ -1,20 +1,19 @@
-using System; 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
-using CommonShuffleLibrary;
 using Models;
-using NodeJSLibrary;
 
 namespace CommonShuffleLibrary
 {
-
-    public   class QueueManager
+    public class QueueManager
     {
         public string Name;
-        public dynamic channels;//necessary evil for maintaining sanity//::dynamic okay
-        public List<QueueWatcher> qw;
+        public dynamic channels; //necessary evil for maintaining sanity//::dynamic okay
         public List<QueuePusher> qp;
+        private QueueItemCollection qpCollection;
+        public List<QueueWatcher> qw;
+        private QueueItemCollection qwCollection;
 
         public QueueManager(string name, QueueManagerOptions options)
         {
@@ -22,7 +21,7 @@ namespace CommonShuffleLibrary
             channels = new object();
             qw = new List<QueueWatcher>();
             qp = new List<QueuePusher>();
-            foreach (QueueWatcher queueWatcher in options.Watchers)
+            foreach (var queueWatcher in options.Watchers)
             {
                 if (queueWatcher.Callback == null)
                 {
@@ -31,7 +30,7 @@ namespace CommonShuffleLibrary
                 qw.Add(queueWatcher);
             }
             qw.AddRange(options.Watchers);
-            foreach (string pusher in options.Pushers)
+            foreach (var pusher in options.Pushers)
             {
                 qp.Add(new QueuePusher(pusher));
             }
@@ -40,9 +39,9 @@ namespace CommonShuffleLibrary
             qpCollection = new QueueItemCollection(qp);
         }
 
-         
+
         //todo fix T 
-        [IgnoreGenericArguments] 
+        [IgnoreGenericArguments]
         public void AddChannel<T>(string channel, Action<UserModel, T> callback)
         {
             channels[channel] = callback;
@@ -52,29 +51,24 @@ namespace CommonShuffleLibrary
         {
             user.Gateway = name;
 
-            if (channels[eventChannel]!=null)
+            if (channels[eventChannel] != null)
             {
                 channels[eventChannel](user, content);
             }
         }
 
 
-        private QueueItemCollection qwCollection;
-        private QueueItemCollection qpCollection;
-
         public void SendMessage<T>(UserModel user, string channel, string eventChannel, T content)
         {
-            if (this.qpCollection.GetByChannel(channel) == null)
+            if (qpCollection.GetByChannel(channel) == null)
             {
                 Console.Log(channel + " No Existy");
                 return;
             }
 
-            var pusher = ((QueuePusher) this.qpCollection.GetByChannel(channel));
+            var pusher = ((QueuePusher) qpCollection.GetByChannel(channel));
 
-            pusher.Message(channel, this.Name, user, eventChannel, content);
+            pusher.Message(channel, Name, user, eventChannel, content);
         }
     }
-
-
- }
+}

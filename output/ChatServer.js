@@ -1,8 +1,8 @@
 require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
-Type.registerNamespace('DebugServer');
+Type.registerNamespace('ChatServer');
 ////////////////////////////////////////////////////////////////////////////////
-// DebugServer.$Code
-DebugServer.$Code = function() {
+// ChatServer.ChatServer
+ChatServer.ChatServer = function() {
 };
-DebugServer.$Code.registerClass('DebugServer.$Code', Object);
+ChatServer.ChatServer.registerClass('ChatServer.ChatServer', Object);
 new ChatServer.ChatServer();

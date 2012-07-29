@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Build
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-
-            string[] projs = new string[]
+            var projs = new[]
                 {
                     @"ShuffleSharp\Libraries\CommonLibraries\",
                     @"ShuffleSharp\Libraries\CommonShuffleLibrary\",
@@ -31,59 +29,76 @@ namespace Build
             foreach (var proj in projs)
             {
 #if DEBUG
-                var from = pre + proj + @"\bin\debug\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                var from = pre + proj + @"\bin\debug\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #else
-                var from = pre + proj + @"\bin\release\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                var from = pre + proj + @"\bin\release\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #endif
-                var to = pre + @"ShuffleSharp\output\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
-                if(File.Exists(to))File.Delete(to);
+                var to = pre + @"ShuffleSharp\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                if (File.Exists(to)) File.Delete(to);
                 File.Copy(from, to);
-
             }
 
             var depends = new Dictionary<string, Application>
                 {
-                    {@"ShuffleSharp\Servers\AdminServer\", new Application(true,"new AdminServer.AdminServer();",new List<string>() {
-                                @"./CommonLibraries.js",
-                                @"./CommonShuffleLibrary.js", 
-                                @"./Models.js", 
-                            })},
-                    {@"ShuffleSharp\Servers\ChatServer\", new Application(true,"new ChatServer.ChatServer();",new List<string>() {
-                                @"./CommonLibraries.js",
-                                @"./CommonShuffleLibrary.js", 
-                                @"./Models.js", 
-                            })},
-                    {@"ShuffleSharp\Servers\DebugServer\", new Application(true,"new DebugServer.DebugServer();",new List<string>() {
-                                @"./CommonLibraries.js",
-                                @"./CommonShuffleLibrary.js", 
-                                @"./Models.js", 
-                            })},
                     {
-                        @"ShuffleSharp\Servers\GameServer\",new Application(true,"new GameServer.GameServer();",new List<string>() {
+                        @"ShuffleSharp\Servers\AdminServer\", new Application(true, "new AdminServer.AdminServer();", new List<string>
+                            {
                                 @"./CommonLibraries.js",
-                                @"./CommonShuffleLibrary.js", 
-                                @"./ShuffleGameLibrary.js", 
-                                @"./Models.js", 
-                            }) 
+                                @"./CommonShuffleLibrary.js",
+                                @"./Models.js",
+                            })
                     },
-                    {@"ShuffleSharp\Servers\GatewayServer\", new Application(true,"new GatewayServer.GatewayServer();",new List<string>() {
+                    {
+                        @"ShuffleSharp\Servers\ChatServer\", new Application(true, "new ChatServer.ChatServer();", new List<string>
+                            {
                                 @"./CommonLibraries.js",
-                                @"./CommonShuffleLibrary.js", 
-                                @"./Models.js", 
-                            })},
-                    {@"ShuffleSharp\Servers\HeadServer\", new Application(true,"new HeadServer.HeadServer();",new List<string>() { 
-                                @"./CommonShuffleLibrary.js", 
-                                @"./Models.js", 
-                            })},
-                    {@"ShuffleSharp\Servers\SiteServer\", new Application(true,"",new List<string>() {})},
-                    {@"ShuffleSharp\Client\", new Application(false,"",new List<string>()
-                        { 
-                        })},
+                                @"./CommonShuffleLibrary.js",
+                                @"./Models.js",
+                            })
+                    },
+                    {
+                        @"ShuffleSharp\Servers\DebugServer\", new Application(true, "new DebugServer.DebugServer();", new List<string>
+                            {
+                                @"./CommonLibraries.js",
+                                @"./CommonShuffleLibrary.js",
+                                @"./Models.js",
+                            })
+                    },
+                    {
+                        @"ShuffleSharp\Servers\GameServer\", new Application(true, "new GameServer.GameServer();", new List<string>
+                            {
+                                @"./CommonLibraries.js",
+                                @"./CommonShuffleLibrary.js",
+                                @"./ShuffleGameLibrary.js",
+                                @"./Models.js",
+                            })
+                    },
+                    {
+                        @"ShuffleSharp\Servers\GatewayServer\", new Application(true, "new GatewayServer.GatewayServer();", new List<string>
+                            {
+                                @"./CommonLibraries.js",
+                                @"./CommonShuffleLibrary.js",
+                                @"./Models.js",
+                            })
+                    },
+                    {
+                        @"ShuffleSharp\Servers\HeadServer\", new Application(true, "new HeadServer.HeadServer();", new List<string>
+                            {
+                                @"./CommonShuffleLibrary.js",
+                                @"./Models.js",
+                            })
+                    },
+                    {@"ShuffleSharp\Servers\SiteServer\", new Application(true, "", new List<string> {})},
+                    {
+                        @"ShuffleSharp\Client\", new Application(false, "", new List<string>
+                            {
+                            })
+                    },
                 };
             foreach (var depend in depends)
             {
-                var to = pre + @"ShuffleSharp\output\" + depend.Key.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
-                string output="";
+                var to = pre + @"ShuffleSharp\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                var output = "";
 
                 if (depend.Value.Node)
                 {
@@ -96,10 +111,10 @@ namespace Build
 
                 foreach (var depe in depend.Value.IncludesAfter)
                 {
-                    output+=string.Format("require('{0}');", depe);
+                    output += string.Format("require('{0}');", depe);
                 }
 
-                List<string> lines = new List<string>();
+                var lines = new List<string>();
                 lines.Add(output);
                 lines.AddRange(File.ReadAllLines(to));
 
@@ -113,16 +128,19 @@ namespace Build
             {
                 var to = pre + @"ShuffleSharp\output\Games\" + d.Split('\\').Last();
 
-                if(!Directory.Exists(to)) 
+                if (!Directory.Exists(to))
 
-                Directory.CreateDirectory(to);
+                    Directory.CreateDirectory(to);
 
-                File.WriteAllText(to + @"\app.js", File.ReadAllText(d +  @"\app.js"));
+                File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
             }
         }
+
+        #region Nested type: Application
+
         public class Application
         {
-            public Application(bool node, string prepend,List<string> includesAfter)
+            public Application(bool node, string prepend, List<string> includesAfter)
             {
                 After = prepend;
                 Node = node;
@@ -132,7 +150,8 @@ namespace Build
             public string After { get; set; }
             public bool Node { get; set; }
             public List<string> IncludesAfter { get; set; }
-
         }
+
+        #endregion
     }
 }

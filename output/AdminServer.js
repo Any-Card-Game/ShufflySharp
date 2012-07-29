@@ -3,20 +3,20 @@ Type.registerNamespace('AdminServer');
 ////////////////////////////////////////////////////////////////////////////////
 // AdminServer.AdminServer
 AdminServer.AdminServer = function() {
+	this.$__dirname = null;
 	this.$debug = false;
-	this.$sites = null;
-	this.$games = null;
 	this.$debugs = null;
+	this.$exec = null;
+	this.$games = null;
 	this.$gateways = null;
 	this.$head = null;
+	this.$indexPageData = 0;
 	this.$nodeInspector = null;
-	this.$__dirname = null;
 	this.$nonDebuggable = null;
 	this.$numOfGameServers = 1;
 	this.$numOfGateways = 1;
-	this.$indexPageData = 0;
+	this.$sites = null;
 	this.$util = null;
-	this.$exec = null;
 	var fs = require('fs');
 	console.log('Shuffly Admin V0.41');
 	this.$util = (require('util'));

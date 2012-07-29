@@ -108,9 +108,9 @@ Models.JoinGameRequestModel.$ctor = function(roomId, user) {
 ////////////////////////////////////////////////////////////////////////////////
 // Models.SocketClientMessageModel
 Models.SocketClientMessageModel = function(user, channel, content) {
-	this.user = null;
 	this.channel = null;
 	this.content = null;
+	this.user = null;
 	this.user = user;
 	this.channel = channel;
 	this.content = content;

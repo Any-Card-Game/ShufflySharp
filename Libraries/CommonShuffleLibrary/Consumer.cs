@@ -8,10 +8,11 @@ namespace CommonShuffleLibrary
          {
              
          }*/
+
         public Consumer(JsDictionary obj)
         {
-            JsDictionary tf = ((JsDictionary)(object)this);
-            foreach (string v in obj.Keys)
+            var tf = ((JsDictionary) (object) this);
+            foreach (var v in obj.Keys)
             {
                 tf[v] = obj[v];
             }

@@ -46,7 +46,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code.cs" />
+    <Compile Include="ChatServer.cs" />
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

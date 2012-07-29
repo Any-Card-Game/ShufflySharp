@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
-using CommonShuffleLibrary;
 using FibersLibrary;
 using Models;
 using global;
@@ -10,20 +9,19 @@ namespace GameServer
 {
     public class GameRoom
     {
-        public string Name;
-        public string GameName;
-        public bool Debuggable;
-        public int MaxUsers;
-        public List<UserModel> Players;
         public List<CardGameAnswer> Answers;
-        public string RoomID;
-        public string GameServer;
-        public bool Started;
-        public Fiber<List<UserModel>> Fiber;
-        public Action<List<UserModel>> Unwind;
-        public GameObject Game;
-
+        public bool Debuggable;
         public UserModel DebuggingSender;
+        public Fiber<List<UserModel>> Fiber;
+        public GameObject Game;
+        public string GameName;
+        public string GameServer;
+        public int MaxUsers;
+        public string Name;
+        public List<UserModel> Players;
+        public string RoomID;
+        public bool Started;
+        public Action<List<UserModel>> Unwind;
 
         public GameRoom()
         {

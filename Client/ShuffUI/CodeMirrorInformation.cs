@@ -4,7 +4,7 @@ using CodeMirrorLibrary;
 
 namespace Client.ShuffUI
 {
-    public class CodeMirrorInformation 
+    public class CodeMirrorInformation
     {
         public CodeMirrorInformation codeElement;
 
@@ -17,6 +17,7 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public CodeMirrorInformationData Data { get; set; }
     }
+
     public class CodeMirrorInformationData
     {
     }

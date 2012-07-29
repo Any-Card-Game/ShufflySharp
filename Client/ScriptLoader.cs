@@ -1,6 +1,5 @@
 using System;
 using System.Html;
-using System.Runtime.CompilerServices;
 using CommonLibraries;
 
 namespace Client
@@ -9,23 +8,15 @@ namespace Client
     {
         private void loadScript(string url, Action callback)
         {
-
             var head = Document.GetElementsByTagName("head")[0];
-            
-            var script = (ScriptElement)Document.CreateElement("script");
+
+            var script = (ScriptElement) Document.CreateElement("script");
             script.Type = "text/javascript";
-            script.Src=url; // +"?" + (Math.floor(Math.random() * 10000)); //caching
+            script.Src = url; // +"?" + (Math.floor(Math.random() * 10000)); //caching
             if (callback != null)
             {
-
-               script.me().onreadystatechange = (Action<object>) (a =>
-                    {
-
-                        if (script.me().readyState == "loaded") callback();
-
-                    });
-               script.me().onload = (Action<object>)(a => callback());
-
+                script.me().onreadystatechange = (Action<object>) (a => { if (script.me().readyState == "loaded") callback(); });
+                script.me().onload = (Action<object>) (a => callback());
             }
             head.AppendChild(script);
         }
@@ -33,7 +24,7 @@ namespace Client
         public void Load(string[] items, Action done)
         {
             var counter = 0;
-            for (int i = 0; i < items.Length; i++)
+            for (var i = 0; i < items.Length; i++)
             {
                 loadScript(items[i], () =>
                     {
@@ -45,13 +36,13 @@ namespace Client
                     });
             }
         }
+
         public void LoadSync(string[] items, Action done)
         {
             var counter = 0;
             Action nextOne = null;
             nextOne = () =>
                 {
-
                     counter++;
                     if (counter >= items.Length)
                     {
@@ -63,7 +54,6 @@ namespace Client
                     }
                 };
             loadScript(items[0], nextOne);
-
         }
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-using GameServer;
 using Models;
 using jQueryApi;
 
@@ -10,8 +9,8 @@ namespace Client.Information
     {
         [IntrinsicProperty]
         public jQueryObject question { get; set; }
-        [IntrinsicProperty]
 
+        [IntrinsicProperty]
         public jQueryObject answerBox { get; set; }
 
         [IntrinsicProperty]

@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Serialization;
 using CommonLibraries;
 using CommonShuffleLibrary;
 using FibersLibrary;
 using Models;
 using NodeJSLibrary;
 using global;
-using Json = CommonLibraries.Json;
+
 namespace GameServer
 {
     public class GameServer
     {
-        private QueueManager qManager;
-        private bool verbose = false;
-        private GameData gameData;
-        private List<GameRoom> rooms;
-        private DateTime startTime = new DateTime();
-        private JsDictionary<string, GameObject> cachedGames;
         private int QUEUEPERTICK = 1;
-        private int total__ = 0;
-        private int skipped__ = 0;
+        private JsDictionary<string, GameObject> cachedGames;
+        private ChildProcess childProcess;
         private DataManager dataManager;
         private FS fs;
-        private ChildProcess childProcess;
-        private List<GameAnswerQuestionModel> queueue = new List<GameAnswerQuestionModel>();
+        private GameData gameData;
         private string gameServerIndex;
+        private QueueManager qManager;
+        private List<GameAnswerQuestionModel> queueue = new List<GameAnswerQuestionModel>();
+        private List<GameRoom> rooms;
+        private int skipped__;
+        private DateTime startTime = new DateTime();
+        private int total__;
+        private bool verbose = false;
+
         public GameServer()
         {
             new ArrayUtils();
@@ -46,68 +45,68 @@ namespace GameServer
                     rooms.Add(room = new GameRoom());
                 });*/
 
-            qManager = new QueueManager(gameServerIndex, new QueueManagerOptions(new QueueWatcher[]
-                                                                                     {
-                                                                                         new QueueWatcher("GameServer", null),
-                                                                                         new QueueWatcher(gameServerIndex, null),
-                                                                                     }, new string[]
-                                                                                            {
-                                                                                                "GameServer",
-                                                                                                "GatewayServer",
-                                                                                                "Gateway*"
-                                                                                            }));
+            qManager = new QueueManager(gameServerIndex, new QueueManagerOptions(new[]
+                {
+                    new QueueWatcher("GameServer", null),
+                    new QueueWatcher(gameServerIndex, null),
+                }, new[]
+                    {
+                        "GameServer",
+                        "GatewayServer",
+                        "Gateway*"
+                    }));
 
             qManager.AddChannel<CreateGameRequestModel>("Area.Debug.Create",
-                                (user, data) =>
-                                {
-                                    data.GameName = "Sevens";
-                                    GameRoom room;
-                                    rooms.Add(room = new GameRoom());
-                                    room.Name = data.Name;
-                                    room.MaxUsers = 6;
-                                    room.Debuggable = true;
-                                    room.GameName = data.GameName;
+                                                        (user, data) =>
+                                                            {
+                                                                data.GameName = "Sevens";
+                                                                GameRoom room;
+                                                                rooms.Add(room = new GameRoom());
+                                                                room.Name = data.Name;
+                                                                room.MaxUsers = 6;
+                                                                room.Debuggable = true;
+                                                                room.GameName = data.GameName;
 
-                                    room.Started = false;
-                                    room.GameServer = gameServerIndex;
-                                    room.Players.Add(user);
+                                                                room.Started = false;
+                                                                room.GameServer = gameServerIndex;
+                                                                room.Players.Add(user);
 
-                                    GameObject gameObject;
-                                    if (cachedGames.ContainsKey(data.GameName))
-                                    {
-                                        gameObject = cachedGames[data.GameName];
-                                    }
-                                    else
-                                    {
-                                        gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./Games/" + data.GameName + "/app.js");
-                                    }
-                                    room.Fiber = CreateFiber(room, gameObject, true);
-                                    room.Unwind = players =>
-                                        {
-                                            gameData.FinishedGames++;
-                                            Console.Log("--game closed");
-                                        };
-                                    EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
-                                });
+                                                                GameObject gameObject;
+                                                                if (cachedGames.ContainsKey(data.GameName))
+                                                                {
+                                                                    gameObject = cachedGames[data.GameName];
+                                                                }
+                                                                else
+                                                                {
+                                                                    gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./Games/" + data.GameName + "/app.js");
+                                                                }
+                                                                room.Fiber = CreateFiber(room, gameObject, true);
+                                                                room.Unwind = players =>
+                                                                    {
+                                                                        gameData.FinishedGames++;
+                                                                        Console.Log("--game closed");
+                                                                    };
+                                                                EmitAll(room, "Area.Game.RoomInfo", room.CleanUp());
+                                                            });
 
 
             qManager.AddChannel<JoinGameRequestModel>("Area.Game.Join",
-                                 (user, data) =>
-                                 {
-                                     GameRoom room = null;
-                                     foreach (GameRoom gameRoom in rooms)
-                                     {
-                                         if (gameRoom.RoomID == data.RoomID)
-                                         {
-                                             room = gameRoom;
-                                             break;
-                                         }
-                                     }
-                                     if (room == null)
-                                         return;
-                                     room.Players.Add(user);
-                                     EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
-                                 });
+                                                      (user, data) =>
+                                                          {
+                                                              GameRoom room = null;
+                                                              foreach (var gameRoom in rooms)
+                                                              {
+                                                                  if (gameRoom.RoomID == data.RoomID)
+                                                                  {
+                                                                      room = gameRoom;
+                                                                      break;
+                                                                  }
+                                                              }
+                                                              if (room == null)
+                                                                  return;
+                                                              room.Players.Add(user);
+                                                              EmitAll(room, "Area.Game.RoomInfo", room.CleanUp());
+                                                          });
 
             /*qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>
                 {
@@ -117,7 +116,7 @@ namespace GameServer
             qManager.AddChannel<DebuggerJoinRequestModel>("Area.Game.DebuggerJoin", (sender, data) =>
                 {
                     GameRoom room = null;
-                    foreach (GameRoom gameRoom in rooms)
+                    foreach (var gameRoom in rooms)
                     {
                         if (gameRoom.RoomID == data.RoomID)
                         {
@@ -134,7 +133,7 @@ namespace GameServer
             qManager.AddChannel<StartGameRequestModel>("Area.Game.Start", (sender, data) =>
                 {
                     GameRoom room = null;
-                    foreach (GameRoom gameRoom in rooms)
+                    foreach (var gameRoom in rooms)
                     {
                         if (gameRoom.RoomID == data.RoomID)
                         {
@@ -148,7 +147,7 @@ namespace GameServer
                     room.Started = true;
                     Console.Log("started");
 
-                    FiberYieldResponse answer = room.Fiber.Run<FiberYieldResponse>(room.Players);
+                    var answer = room.Fiber.Run<FiberYieldResponse>(room.Players);
                     Console.Log("doign");
                     handleYield(room, answer);
                     Console.Log("doign2");
@@ -193,8 +192,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
         private void flushQueue()
         {
-
-            int ind = 0;
+            var ind = 0;
             for (ind = 0; ind < QUEUEPERTICK; ind++)
             {
                 if (queueue.Count == 0)
@@ -202,9 +200,9 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
                 var arg2 = queueue[0];
                 queueue.RemoveAt(0);
-                GameAnswerRequestModel data = arg2.castValue<GameAnswerRequestModel>();
+                var data = arg2.castValue<GameAnswerRequestModel>();
                 GameRoom room = null;
-                foreach (GameRoom gameRoom in rooms)
+                foreach (var gameRoom in rooms)
                 {
                     if (gameRoom.RoomID == data.RoomID)
                     {
@@ -216,10 +214,10 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                     return;
 
 
-                CardGameAnswer dict = new CardGameAnswer();
+                var dict = new CardGameAnswer();
                 dict.Value = data.Answer;
                 room.Answers.Add(dict);
-                FiberYieldResponse answ = room.Fiber.Run<FiberYieldResponse>(dict);
+                var answ = room.Fiber.Run<FiberYieldResponse>(dict);
 
 
                 if (answ == null)
@@ -236,7 +234,6 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
             }
 
 
-
             if (ind == 0)
             {
                 skipped__++;
@@ -244,20 +241,18 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
             else
             {
                 total__ += ind;
-                if ((total__ + skipped__) % 20 == 0)
+                if ((total__ + skipped__)%20 == 0)
                     Console.Log(gameServerIndex.Substring(0, 19) + "=  tot: __" + (total__ + skipped__) + "__ + shift: " + ind + " + T: " + total__ + " + skip: " + skipped__ + " + QSize: " + queueue.Count + " + T Rooms: " +
-                                       rooms.Count);
+                                rooms.Count);
             }
-
         }
 
         private void handleYield(GameRoom room, FiberYieldResponse answer)
         {
-
             switch (answer.Type)
             {
                 case "askQuestion":
-                    GameQuestionAnswerModel answ = answer.question;
+                    var answ = answer.question;
 
                     if (answ == null)
                     {
@@ -269,11 +264,10 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                     askQuestion(answ, room);
                     //console.log(gameData.toString());
 
-                    DateTime dt = new DateTime();
-                    int then = dt.GetMilliseconds();
+                    var dt = new DateTime();
+                    var then = dt.GetMilliseconds();
                     //Console.Log(then - now + " Milliseconds");
-                    Console.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds");
-
+                    Console.Log(gameData.TotalQuestionsAnswered/((dt.GetTime() - startTime.GetTime())/1000) + " Answers per seconds");
 
 
                     break;
@@ -287,14 +281,14 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                     break;
                 case "log":
 
-                    FiberYieldResponse answ2 = room.Fiber.Run<FiberYieldResponse>();
+                    var answ2 = room.Fiber.Run<FiberYieldResponse>();
                     handleYield(room, answ2);
 
 
                     if (!room.Game.CardGame.Emulating && room.Debuggable)
                     {
                         //console.log(gameData.toString());
-                        GameAnswer ganswer = new GameAnswer();
+                        var ganswer = new GameAnswer();
                         ganswer.Value = answer.Contents;
 
                         qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Log", ganswer);
@@ -303,51 +297,48 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                 case "break":
                     if (!room.Debuggable)
                     {
-                        FiberYieldResponse answ3 = room.Fiber.Run<FiberYieldResponse>();
+                        var answ3 = room.Fiber.Run<FiberYieldResponse>();
                         handleYield(room, answ3);
                         return;
                     }
                     if (!room.Game.CardGame.Emulating)
                     {
-                        GameAnswer ganswer = new GameAnswer();
+                        var ganswer = new GameAnswer();
                         ganswer.LineNumber = answer.LineNumber + 2;
                         qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Break", ganswer);
                     }
                     break;
-
             }
-
         }
 
 
         private void askQuestion(GameQuestionAnswerModel answ, GameRoom room)
         {
-            UserModel user = getPlayerByUsername(room, answ.User.UserName);
+            var user = getPlayerByUsername(room, answ.User.UserName);
 
-            GameSendAnswerModel gameAnswer = new GameSendAnswerModel();
+            var gameAnswer = new GameSendAnswerModel();
             gameAnswer.Answers = answ.Answers;
             gameAnswer.Question = answ.Question;
 
-            qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", Help.CleanUp(gameAnswer));
+            qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", gameAnswer.CleanUp());
 
-            EmitAll(room, "Area.Game.UpdateState", Help.CleanUp(answ.CardGame));
+            EmitAll(room, "Area.Game.UpdateState", answ.CardGame.CleanUp());
 
 
             if (verbose)
             {
                 Console.Log(answ.User.UserName + ": " + answ.Question + "   ");
-                int ind = 0;
-                foreach (string answer in answ.Answers)
+                var ind = 0;
+                foreach (var answer in answ.Answers)
                 {
                     Console.Log("     " + ind++ + ": " + answer);
                 }
             }
-
         }
 
         private UserModel getPlayerByUsername(GameRoom room, string userName)
         {
-            foreach (UserModel player in room.Players)
+            foreach (var player in room.Players)
             {
                 if (player.UserName == userName)
                 {
@@ -360,7 +351,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
         private void EmitAll(GameRoom room, string message, object val)
         {
-            foreach (UserModel player in room.Players)
+            foreach (var player in room.Players)
             {
                 qManager.SendMessage(player, player.Gateway, message, val);
             }
@@ -391,7 +382,5 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                     return true;
                 });
         }
-
-
     }
 }

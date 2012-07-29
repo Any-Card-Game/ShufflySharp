@@ -3,8 +3,8 @@ Type.registerNamespace('GatewayServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GatewayServer.GatewayServer
 GatewayServer.GatewayServer = function() {
-	this.users = ({});
 	this.$ps = null;
+	this.users = ({});
 	var http = require('http');
 	var app = http.createServer(function(req, res) {
 		res.end();

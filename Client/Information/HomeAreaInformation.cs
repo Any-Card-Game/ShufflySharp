@@ -10,6 +10,7 @@ namespace Client.Information
     {
         [IntrinsicProperty]
         public Action<GameAnswer> loadRoomInfos { get; set; }
+
         [IntrinsicProperty]
         public jQueryObject userList { get; set; }
 
@@ -18,8 +19,10 @@ namespace Client.Information
 
         [IntrinsicProperty]
         public jQueryObject txtUserName { get; set; }
+
         [IntrinsicProperty]
         public jQueryObject btnStartGame { get; set; }
+
         [IntrinsicProperty]
         public Action<GameRoom> loadRoomInfo { get; set; }
     }

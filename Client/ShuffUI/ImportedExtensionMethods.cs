@@ -11,8 +11,6 @@ namespace Client.ShuffUI
         [InstanceMethodOnFirstArgument]
         public static void DisableSelection(this jQueryObject obj)
         {
-
         }
-
     }
 }

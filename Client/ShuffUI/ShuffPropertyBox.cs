@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Html;
 using System.Runtime.CompilerServices;
 using jQueryApi;
 
@@ -8,13 +7,17 @@ namespace Client.ShuffUI
 {
     public class ShuffPropertyBox : ShuffElement
     {
-        public Action<ShuffListItem> addItem;
+        [IntrinsicProperty]
+        public Action<ShuffListItem> addItem { get; set; }
 
         [IntrinsicProperty]
         public List<ShuffListItem> items { get; set; }
+
+        [IntrinsicProperty]
         public Func<ShuffListItem, int, jQueryObject> ItemCreation { get; set; }
     }
-    public class ShuffPropertyBox<T> : ShuffPropertyBox 
+
+    public class ShuffPropertyBox<T> : ShuffPropertyBox
     {
         public ShuffPropertyBox(T data)
         {
@@ -22,6 +25,6 @@ namespace Client.ShuffUI
         }
 
         [IntrinsicProperty]
-        public T Data { get; set; } 
+        public T Data { get; set; }
     }
 }

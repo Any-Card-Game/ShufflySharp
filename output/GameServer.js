@@ -3,10 +3,10 @@ Type.registerNamespace('GameServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.DataManager
 GameServer.DataManager = function() {
-	this.gameData = null;
-	this.client = null;
-	this.$server = null;
 	this.$connection = null;
+	this.gameData = null;
+	this.$server = null;
+	this.client = null;
 	this.gameData = new GameServer.DataManagerGameData(this);
 	var mongo = require('mongodb');
 	var Db = mongo.Db;
@@ -36,18 +36,18 @@ GameServer.DataManagerGameData.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.FiberYieldResponse
 GameServer.FiberYieldResponse = function() {
-	this.type = null;
-	this.question = null;
 	this.contents = 0;
 	this.lineNumber = 0;
+	this.type = null;
+	this.question = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameData
 GameServer.GameData = function() {
-	this.totalGames = 0;
-	this.totalQuestionsAnswered = 0;
-	this.totalPlayers = 0;
 	this.finishedGames = 0;
+	this.totalGames = 0;
+	this.totalPlayers = 0;
+	this.totalQuestionsAnswered = 0;
 };
 GameServer.GameData.prototype = {
 	toString: function() {
@@ -60,33 +60,33 @@ GameServer.GameData.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameInfoObject
 GameServer.GameInfoObject = function() {
-	this.gameName = null;
 	this.answer = 0;
+	this.gameName = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameQuestionAnswerModel
 GameServer.GameQuestionAnswerModel = function() {
-	this.user = null;
-	this.question = null;
 	this.answers = null;
 	this.cardGame = null;
+	this.question = null;
+	this.user = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameRoom
 GameServer.GameRoom = function() {
-	this.name = null;
-	this.gameName = null;
-	this.debuggable = false;
-	this.maxUsers = 0;
-	this.players = null;
 	this.answers = null;
-	this.roomID = null;
-	this.gameServer = null;
-	this.started = false;
-	this.fiber = null;
-	this.unwind = null;
-	this.game = null;
+	this.debuggable = false;
 	this.debuggingSender = null;
+	this.fiber = null;
+	this.game = null;
+	this.gameName = null;
+	this.gameServer = null;
+	this.maxUsers = 0;
+	this.name = null;
+	this.players = null;
+	this.roomID = null;
+	this.started = false;
+	this.unwind = null;
 	this.players = new Array();
 	this.roomID = CommonLibraries.Guid.newGuid();
 	this.answers = new Array();
@@ -94,20 +94,20 @@ GameServer.GameRoom = function() {
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameServer
 GameServer.GameServer = function() {
-	this.$qManager = null;
-	this.$verbose = false;
-	this.$gameData = null;
-	this.$rooms = null;
-	this.$startTime = new Date();
-	this.$cachedGames = null;
 	this.$QUEUEPERTICK = 1;
-	this.$total__ = 0;
-	this.$skipped__ = 0;
+	this.$cachedGames = null;
+	this.$childProcess = null;
 	this.$dataManager = null;
 	this.$fs = null;
-	this.$childProcess = null;
-	this.$queueue = new Array();
+	this.$gameData = null;
 	this.$gameServerIndex = null;
+	this.$qManager = null;
+	this.$queueue = new Array();
+	this.$rooms = null;
+	this.$skipped__ = 0;
+	this.$startTime = new Date();
+	this.$total__ = 0;
+	this.$verbose = false;
 	new global.ArrayUtils();
 	this.$fs = (require('fs'));
 	this.$childProcess = (require('child_process'));

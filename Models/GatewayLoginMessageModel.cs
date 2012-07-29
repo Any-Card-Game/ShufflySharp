@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 namespace Models
 {
     [Record]
-
     public sealed class GatewayLoginMessageModel
     {
         [IntrinsicProperty]

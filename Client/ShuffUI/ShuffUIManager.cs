@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
-using CommonLibraries;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
 using jQueryApi.UI.Widgets;
@@ -10,14 +9,13 @@ namespace Client.ShuffUI
 {
     public class ShuffUIManager
     {
-
         private List<UIAreaInformation> UIAreas = new List<UIAreaInformation>();
 
-        public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui) 
+        public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui)
         {
             var windowID = ui.Title;
             var outer = jQuery.Select("<div class='window-outer' style='background-color: #87B6D9;'></div>");
-            
+
             jQuery.Select("body").Append(outer);
             ui.outer = outer;
 
@@ -52,83 +50,74 @@ namespace Client.ShuffUI
             outer.Append(inner);
             ui.Window = jQuery.Select("#window" + windowID);
 
-            this.UIAreas.Add(new UIAreaInformation(outer, inner));
-            
+            UIAreas.Add(new UIAreaInformation(outer, inner));
 
-            x.Click((evt) =>
-            {
-                outer.CSS("display", "none");
-            });
+
+            x.Click((evt) => { outer.CSS("display", "none"); });
             var toggleSize = false;
             max.Click((evt) =>
-            {
-                toggleSize = !toggleSize;
-                if (toggleSize)
                 {
-                    outer.CSS("width", "100%");
-                    outer.CSS("height", "100%");
-                    outer.CSS("left", "0px");
-                    outer.CSS("top", "0px");
-                }
-                else
-                {
-                    outer.CSS("width", "100%");
-                    outer.CSS("height", "100%");
-                }
-            });
+                    toggleSize = !toggleSize;
+                    if (toggleSize)
+                    {
+                        outer.CSS("width", "100%");
+                        outer.CSS("height", "100%");
+                        outer.CSS("left", "0px");
+                        outer.CSS("top", "0px");
+                    }
+                    else
+                    {
+                        outer.CSS("width", "100%");
+                        outer.CSS("height", "100%");
+                    }
+                });
             jQuery.Select(".window-minimize").Click((evt) => { Window.Alert("3"); });
 
 
             outer.MouseDown((evt) =>
-            {
-                for (var i = 0; i < UIAreas.Count; i++)
                 {
-                    UIAreas[i].Element.CSS("z-index", 1800);
-                }
-                outer.CSS("z-index", 1900);
-            }); 
+                    for (var i = 0; i < UIAreas.Count; i++)
+                    {
+                        UIAreas[i].Element.CSS("z-index", 1800);
+                    }
+                    outer.CSS("z-index", 1900);
+                });
 
             jQuery.Select(".window-header-button").Button();
 
             if (!ui.Static)
             {
-                outer.Draggable(new DraggableOptions()
+                outer.Draggable(new DraggableOptions
                     {
-
                         Cancel = ".window-inner, .CodeMirror, .CodeMirror-fullscreen, .CodeMirror-wrap, .CodeMirror-focused",
                         Containment = "window",
                         //TODO                Animate= true,
-                        OnStart = (evt, o) =>
-                        {
-
-                        }
+                        OnStart = (evt, o) => { }
                     }
                     );
-                outer.Resizable(new ResizableOptions()
-                {
-                    Handles = "n, e, s, w, ne, se, sw, nw",
-                    OnResize = (evt, o) =>
-                        {
-
-                        }
-                });
+                outer.Resizable(new ResizableOptions
+                    {
+                        Handles = "n, e, s, w, ne, se, sw, nw",
+                        OnResize = (evt, o) => { }
+                    });
             }
 
             return ui;
         }
     }
 
-    public class UIAreaInformation 
+    public class UIAreaInformation
     {
-        [ScriptName("element")]
-        public jQueryObject Element { get; set; }
-        [ScriptName("inner")]
-        public jQueryObject Inner { get; set; }
-
         public UIAreaInformation(jQueryObject element, jQueryObject inner)
-        { 
+        {
             Element = element;
             Inner = inner;
         }
+
+        [ScriptName("element")]
+        public jQueryObject Element { get; set; }
+
+        [ScriptName("inner")]
+        public jQueryObject Inner { get; set; }
     }
 }

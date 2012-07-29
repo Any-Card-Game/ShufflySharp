@@ -4,9 +4,7 @@ namespace CommonLibraries
 {
     public class Size
     {
-        [ScriptName("width")]
-        public int Width;
-        [ScriptName("height")]
-        public int Height;
+        [ScriptName("height")] public int Height;
+        [ScriptName("width")] public int Width;
     }
 }

@@ -3,16 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace CommonWebLibraries
 {
-    [IgnoreNamespace] 
+    [IgnoreNamespace]
     [Imported(IsRealType = true)]
-    [ScriptName("xStats")] 
-    public class XStats  
+    [ScriptName("xStats")]
+    public class XStats
     {
-        public XStats()
-        {
-
-        }
-        
         [IntrinsicProperty]
         public Element Element { get; set; }
     }

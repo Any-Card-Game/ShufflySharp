@@ -11,15 +11,14 @@ namespace Models
             Answer = answer;
         }
 
+        public GameAnswerQuestionModel()
+        {
+        }
+
         [IntrinsicProperty]
         public int Answer { get; set; }
 
         [IntrinsicProperty]
         public string RoomID { get; set; }
-
-        public GameAnswerQuestionModel()
-        {
-        }
-
     }
 }

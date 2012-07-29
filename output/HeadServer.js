@@ -3,15 +3,15 @@ Type.registerNamespace('HeadServer');
 ////////////////////////////////////////////////////////////////////////////////
 // HeadServer.HeadServer
 HeadServer.HeadServer = function() {
-	this.$fs = (require('fs'));
 	this.$__dirname = '/usr/local/src/new';
-	this.$indexPageData = null;
-	this.$qManager = null;
-	this.$pubsub = null;
-	this.$indexForSites = new Array();
+	this.$fs = (require('fs'));
 	this.$gateways = new Array();
+	this.$indexForSites = new Array();
+	this.$indexPageData = null;
 	this.$oldGateways = new Array();
 	this.$oldIndex = new Array();
+	this.$pubsub = null;
+	this.$qManager = null;
 	this.$siteIndex = 0;
 	this.$qManager = new CommonShuffleLibrary.QueueManager('Head1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher('Head1', null)], ['GatewayServer']));
 	this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', Function.mkdel(this, this.ready));

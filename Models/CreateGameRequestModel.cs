@@ -7,6 +7,7 @@ namespace Models
     {
         [IntrinsicProperty]
         public string Name { get; set; }
+
         [IntrinsicProperty]
         public string GameName { get; set; }
     }

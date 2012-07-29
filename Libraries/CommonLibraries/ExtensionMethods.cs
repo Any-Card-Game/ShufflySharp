@@ -1,37 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Serialization;
-using System.Text; 
+﻿using System.Runtime.CompilerServices;
 
 namespace CommonLibraries
 {
     public static class ExtensionMethods
     {
-
         [InlineCode("{script}")]
-        public static dynamic me(this object script)//::dynamic okay
+        public static dynamic me(this object script) //::dynamic okay
         {
             return script;
         }
+
         [InlineCode("eval({script})")]
-        public static dynamic eval(this object script)//::dynamic okay
+        public static dynamic eval(this object script) //::dynamic okay
         {
             return null;
         }
-        
+
         [InlineCode("{o}")]
         [InstanceMethodOnFirstArgument]
         public static T castValue<T>(this object o)
         {
             return default(T);
-        } 
-         
-        public static T CleanUp<T>(  T o)
+        }
+
+        public static T CleanUp<T>(T o)
         {
             return Json.Parse<T>(Json.Stringify(o, Help.Sanitize));
         }
-
-
     }
 }

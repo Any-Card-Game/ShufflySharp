@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
 using CodeMirrorLibrary;
-using CommonLibraries;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
 using jQueryApi.UI.Widgets;
@@ -12,16 +10,30 @@ namespace Client.ShuffUI
 {
     public class ShuffWindow<T> : ShuffElement
     {
+        public jQueryObject outer;
 
+        public ShuffWindow(T data)
+        {
+            Data = data;
+            Elements = new List<ShuffElement>();
+        }
+
+        [IntrinsicProperty]
         public T Data { get; set; }
-        internal jQueryObject Window { get { return Element; } set { Element = value; } }
+
+        internal jQueryObject Window
+        {
+            get { return Element; }
+            set { Element = value; }
+        }
+
         internal jQueryObject Outer
         {
             get { return outer; }
             set
             {
                 outer = value;
-                outer.Resizable(new ResizableOptions() { Handles = "n, e, s, w, ne, se, sw, nw" });
+                outer.Resizable(new ResizableOptions {Handles = "n, e, s, w, ne, se, sw, nw"});
             }
         }
 
@@ -38,22 +50,13 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public bool AllowMinimize { get; set; }
 
-        public jQueryObject outer;
-
 
         [IntrinsicProperty]
         public bool Static { get; set; }
 
-        public ShuffWindow(T data)
-        {
-            Data = data;
-            Elements = new List<ShuffElement>();
-        }
-
 
         public jQueryObject AddButton(ShuffButton element)
         {
-
             Elements.Add(element);
 
 
@@ -73,11 +76,10 @@ namespace Client.ShuffUI
             but.CSS("display", element.Visible == false ? "none" : "block");
 
             return but;
-
         }
+
         public jQueryObject AddLabel(ShuffLabel element)
         {
-
             Elements.Add(element);
 
 
@@ -94,13 +96,11 @@ namespace Client.ShuffUI
             but.CSS("display", element.Visible == false ? "none" : "block");
 
             return but;
-
         }
 
 
         public jQueryObject AddTextbox(ShuffTextBox element)
         {
-
             Elements.Add(element);
 
 
@@ -130,11 +130,10 @@ namespace Client.ShuffUI
             but.CSS("display", element.Visible == false ? "none" : "block");
 
             return but;
-
         }
+
         public CodeMirrorInformation AddCodeEditor(ShuffCodeEditor _editor)
         {
-
             //options = objMerge({ width: '100%', height: '100%' }, options);
 
             Elements.Add(_editor);
@@ -144,35 +143,34 @@ namespace Client.ShuffUI
 
             divs.Append("<textarea id='code' name='code' class='CodeMirror-fullscreen ' style=''></textarea>");
 
-            var codeMirror = new CodeMirrorInformation()
+            var codeMirror = new CodeMirrorInformation
                 {
-                    element = (TextAreaElement)Document.GetElementById("code")
+                    element = (TextAreaElement) Document.GetElementById("code")
                 };
 
             codeMirror.element.Value = "";
 
             CodeMirrorLine hlLine = null;
-             
-            codeMirror.editor = CodeMirror.FromTextArea(codeMirror.element, new CodeMirrorOptions()
+
+            codeMirror.editor = CodeMirror.FromTextArea(codeMirror.element, new CodeMirrorOptions
                 {
                     LineNumbers = _editor.LineNumbers,
-
                     LineWrapping = true,
                     MatchBrackets = true,
-                    OnGutterClick = (cm, n,e) =>
-                    {
-                        var info = cm.LineInfo(n);
-                        if (info.MarkerText)
+                    OnGutterClick = (cm, n, e) =>
                         {
-                            BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
-                            cm.ClearMarker(n);
-                        }
-                        else
-                        {
-                            BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
-                            cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
-                        }
-                    },
+                            var info = cm.LineInfo(n);
+                            if (info.MarkerText)
+                            {
+                                BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
+                                cm.ClearMarker(n);
+                            }
+                            else
+                            {
+                                BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
+                                cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
+                            }
+                        },
                     /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()//::dynamic okay
                         {
                         "Ctrl-Space"= function (cm) {
@@ -187,46 +185,40 @@ namespace Client.ShuffUI
                     },*/
 
                     OnCursorActivity = (e) =>
-                    {
-                        codeMirror.editor.SetLineClass(hlLine, null);
-                        hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
-                    },
-                    OnFocus = (e) =>
-                    {
-
-                    },
-                    OnBlur = (e) =>
-                    {
-                    }
-                }); 
+                        {
+                            codeMirror.editor.SetLineClass(hlLine, null);
+                            hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
+                        },
+                    OnFocus = (e) => { },
+                    OnBlur = (e) => { }
+                });
             hlLine = codeMirror.editor.SetLineClass(0, "activeline");
             var scroller = codeMirror.editor.ScrollerElement;
             scroller.Style.Height = divs[0].OffsetHeight + "px";
             scroller.Style.Width = divs[0].OffsetWidth + "px";
             codeMirror.editor.Refresh();
             codeMirror.editor.SetOption("theme", "night");
-            outer.Resizable(new ResizableOptions()
+            outer.Resizable(new ResizableOptions
                 {
                     Handles = "n, e, s, w, ne, se, sw, nw",
-                    OnResize = (e,c) =>
+                    OnResize = (e, c) =>
                         {
                             scroller.Style.Height = divs[0].OffsetHeight + "px";
                             scroller.Style.Width = divs[0].OffsetWidth + "px";
                         }
                 });
-             
+
             return codeMirror;
         }
 
         public jQueryObject AddListBox(ShuffListBox element)
         {
-
             Elements.Add(element);
 
 
             var but = jQuery.Select("<div></div>");
             element.Element = but;
-            Window.Append(but); 
+            Window.Append(but);
             but.CSS("position", "absolute");
             but.CSS("left", element.X + "px");
             but.CSS("top", element.Y + "px");
@@ -247,7 +239,6 @@ namespace Client.ShuffUI
 
         public jQueryObject AddPropertyBox(ShuffPropertyBox shuffPropertyBox)
         {
-
             var but = jQuery.Select("<div></div>");
             Window.Append(but);
             but.CSS("position", "absolute");
@@ -265,9 +256,6 @@ namespace Client.ShuffUI
                     shuffPropertyBox.items.Add(ij);
                 };
             return but;
-
         }
-
     }
-
 }

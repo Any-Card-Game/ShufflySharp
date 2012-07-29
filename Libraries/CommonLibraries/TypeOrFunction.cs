@@ -8,7 +8,8 @@ namespace CommonLibraries
         {
             TypeValue = type;
         }
-        public TypeOrFunction(Func<T> _get,Action<T> _set )
+
+        public TypeOrFunction(Func<T> _get, Action<T> _set)
         {
             FuncGet = _get;
             FuncSet = _set;
@@ -20,11 +21,11 @@ namespace CommonLibraries
 
         public T GetValue()
         {
-            if(TypeValue==null && (FuncGet==null && FuncSet==null))
+            if (TypeValue == null && (FuncGet == null && FuncSet == null))
             {
                 return default(T);
             }
-            if (TypeValue == null && FuncGet!=null)
+            if (TypeValue == null && FuncGet != null)
             {
                 return FuncGet();
             }

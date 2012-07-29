@@ -2,7 +2,7 @@ namespace GameServer
 {
     public class DataManagerGameData
     {
-        private   DataManager manager;
+        private DataManager manager;
 
         public DataManagerGameData(DataManager manager)
         {
@@ -13,17 +13,17 @@ namespace GameServer
         {
             manager.client.Collection("gameInfo", (err, collection) =>
                 {
-                    GameInfoObject gmo = new GameInfoObject();
+                    var gmo = new GameInfoObject();
                     gmo.GameName = gameName;
                     gmo.Answer = answerIndex;
                     collection.Insert(gmo);
                 });
         }
     }
-    public class GameInfoObject//todo:DATABASEMODEL
-    {
-        public string GameName;
-        public int Answer;
-    }
 
+    public class GameInfoObject //todo:DATABASEMODEL
+    {
+        public int Answer;
+        public string GameName;
+    }
 }

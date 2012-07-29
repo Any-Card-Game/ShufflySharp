@@ -18,7 +18,6 @@ namespace Client
     {
         private readonly BuildSite buildSite;
         public Gateway gateway;
-        private dynamic lastMouseMove;
         private GameCardGame lastMainArea;
         private Tuple<CanvasContext2D, GameCanvasInformation> gameContext;
         private DateTime startTime;
@@ -101,7 +100,7 @@ namespace Client
             props["left"] = (jQuery.Window.GetWidth() * .5) + "px";
             props["z-index"] = (jQuery.Window.GetWidth() * .5) + "px";
 
-            jQuery.FromElement(gameCanvas).CSS(props);//todo css prop object
+            jQuery.FromElement(gameCanvas).CSS(props);
 
             gameContext = new Tuple<CanvasContext2D, GameCanvasInformation>((CanvasContext2D)gameCanvas.GetContext("2d"), new GameCanvasInformation());
             gameContext.Item2.canvas = gameCanvas;
@@ -109,7 +108,6 @@ namespace Client
             gameContext.Item2.canvas.Width = (int)(jQuery.Window.GetWidth() * .5);
             gameContext.Item2.canvas.Height = jQuery.Window.GetHeight();
 
-            lastMouseMove = false;
             gameCanvas.AddEventListener("DOMMouseScroll", handleScroll, false);
             gameCanvas.AddEventListener("mousewheel", handleScroll, false);
 
@@ -133,21 +131,21 @@ namespace Client
         public void startGameServer()
         {
 
-            gateway.On < GameRoom>("Area.Game.RoomInfo", data =>
+            gateway.On<GameRoom>("Area.Game.RoomInfo", data =>
                 {
                     gameStuff.RoomID = data.RoomID;
                     buildSite.home.Data.loadRoomInfo(data);
                     buildSite.devArea.Data.loadRoomInfo(data);
 
                 });
-/*
-            gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
-                {
-                    buildSite.home.Data.loadRoomInfos(data);
+            /*
+                        gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
+                            {
+                                buildSite.home.Data.loadRoomInfos(data);
 
-                });
-*/
-            gateway.On < GameAnswer>("Area.Debug.Log", data =>
+                            });
+            */
+            gateway.On<GameAnswer>("Area.Debug.Log", data =>
                 {
                     buildSite.home.Data.loadRoomInfos(data);
 
@@ -160,7 +158,7 @@ namespace Client
                 });
 
 
-            gateway.On < GameAnswer>("Area.Debug.Break", data =>
+            gateway.On<GameAnswer>("Area.Debug.Break", data =>
                 {
                     buildSite.home.Data.loadRoomInfos(data);
 
@@ -174,13 +172,13 @@ namespace Client
                     cm.editor.SetCursor(data.LineNumber, 0);
                 });
 
-/*
-            gateway.On("Area.Debug.VariableLookup.Response", data =>
-                {
-                    Window.Alert(Json.Stringify(data));
-                });
-*/
-            gateway.On < GameSendAnswer>("Area.Game.AskQuestion", data =>
+            /*
+                        gateway.On("Area.Debug.VariableLookup.Response", data =>
+                            {
+                                Window.Alert(Json.Stringify(data));
+                            });
+            */
+            gateway.On<GameSendAnswerModel>("Area.Game.AskQuestion", data =>
             {
                 buildSite.questionArea.Data.load(data);
                 //alert(JSON.stringify(data));
@@ -190,18 +188,18 @@ namespace Client
                 Window.SetTimeout(() =>
                     {
 
-                        gateway.Emit("Area.Game.AnswerQuestion", new { answer = 1, roomID = gameStuff.RoomID }, buildSite.devArea.Data.gameServer);
+                        gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(gameStuff.RoomID, 1), buildSite.devArea.Data.gameServer);
                         buildSite.questionArea.Visible = false;
                         startTime = new DateTime();
                     }, 200);
             });
 
-            gateway.On < GameCardGame>("Area.Game.UpdateState", data =>
+            gateway.On<GameCardGame>("Area.Game.UpdateState", data =>
             {
                 gameContext.Item1.ClearRect(0, 0, gameContext.Item2.canvas.Width, gameContext.Item2.canvas.Height);
                 drawArea(data);
             });
-            gateway.On < GameRoom>("Area.Game.Started", data =>
+            gateway.On<GameRoom>("Area.Game.Started", data =>
             {
                 //alert(JSON.stringify(data));
 
@@ -315,7 +313,6 @@ namespace Client
             e.PreventDefault();
 
             Document.Body.Style.Cursor = "default";
-            this.lastMouseMove = e;
 
         }
         public void CanvasMouseUp(ElementEvent e)

@@ -21,8 +21,8 @@ namespace DebugServer
 
             queueManager.AddChannel<GameSourceRequestModel>("Area.Debug2.GetGameSource.Request", (sender, data) =>
                 {
-                    
-                    fs.ReadFile("/usr/local/src/games/" + data.GameName + "/app.js","ascii", (err, data2) =>
+
+                    fs.ReadFile("/usr/local/src/games/" + data.GameName + "/app.js", "ascii", (err, data2) =>
                         {
                             queueManager.SendMessage(sender, sender.Gateway, "Area.Debug.GetGameSource.Response", new GameSourceResponseModel(data2));
                         });

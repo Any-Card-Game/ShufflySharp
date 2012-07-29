@@ -3,13 +3,10 @@ using System.Runtime.CompilerServices;
 namespace Models
 {
     [Record]
-    public sealed class GameSourceRequestModel
+    public sealed class CreateGameRequestModel
     {
-        public GameSourceRequestModel(string name)
-        {
-            GameName = name;
-        }
-
+        [IntrinsicProperty]
+        public string Name { get; set; }
         [IntrinsicProperty]
         public string GameName { get; set; }
     }

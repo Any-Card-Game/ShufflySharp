@@ -32,16 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CreateGameRequest.cs" />
     <Compile Include="DataManager.cs" />
+    <Compile Include="DataManagerGameData.cs" />
     <Compile Include="FiberYieldResponse.cs" />
-    <Compile Include="GameAnswerRequest.cs" />
     <Compile Include="GameData.cs" />
-    <Compile Include="GameQuestionAnswer.cs" />
+    <Compile Include="GameQuestionAnswerModel.cs" />
     <Compile Include="GameRoom.cs" />
-    <Compile Include="GameSendAnswer.cs" />
     <Compile Include="GameServer.cs" />
-    <Compile Include="JoinGameRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

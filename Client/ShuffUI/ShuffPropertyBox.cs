@@ -8,11 +8,11 @@ namespace Client.ShuffUI
 {
     public class ShuffPropertyBox : ShuffElement
     {
-        public Action<dynamic> addItem;
+        public Action<ShuffListItem> addItem;
 
         [IntrinsicProperty]
-        public List<dynamic> items { get; set; }
-        public Func<dynamic, int, jQueryObject> ItemCreation { get; set; }
+        public List<ShuffListItem> items { get; set; }
+        public Func<ShuffListItem, int, jQueryObject> ItemCreation { get; set; }
     }
     public class ShuffPropertyBox<T> : ShuffPropertyBox 
     {

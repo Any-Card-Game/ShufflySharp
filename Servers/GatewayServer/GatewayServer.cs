@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using Models;
 using NodeJSLibrary;
 using SocketIONodeLibrary;
 
@@ -10,7 +11,7 @@ namespace GatewayServer
     public class GatewayServer
     {
 
-        public JsDictionary<string, User> users = new JsDictionary<string, User>();
+        public JsDictionary<string, UserModel> users = new JsDictionary<string, UserModel>();
         PubSub ps;
         public GatewayServer()
         {
@@ -30,7 +31,7 @@ namespace GatewayServer
 
             ps = new PubSub(()=>
             {
-                ps.Subscribe("PUBSUB.GatewayServers.Ping", message => ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port)));
+                ps.Subscribe<string>("PUBSUB.GatewayServers.Ping", message => ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port)));
                 ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port));
 
 
@@ -52,8 +53,8 @@ namespace GatewayServer
                                                                         }));
             io.Sockets.On("connection", (SocketIOConnection socket) =>
                 {
-                    User user = null;
-                    socket.On("Gateway.Message", (GatewayMessage data) =>
+                    UserModel user = null;
+                    socket.On("Gateway.Message", (GatewayMessageModel data) =>
                         {
                             string channel = "Bad";
                             switch (data.Channel.Split('.')[1])
@@ -77,9 +78,9 @@ namespace GatewayServer
                             queueManager.SendMessage(user, data.GameServer ?? channel, data.Channel, data.Content);
                         });
 
-                    socket.On("Gateway.Login", (GatewayLoginMessage data) =>
+                    socket.On("Gateway.Login", (GatewayLoginMessageModel data) =>
                         {
-                            user = new User();
+                            user = new UserModel();
                             user.Socket = socket;
                             user.UserName = data.UserName;
                             users[data.UserName] = user;
@@ -92,72 +93,14 @@ namespace GatewayServer
 
 
 
-        private void messageReceived(string gateway, User user, string eventChannel, object content)
+        private void messageReceived(string gateway, UserModel user, string eventChannel, object content)
         {
             if (users.ContainsKey(user.UserName))
             {
-                User u = users[user.UserName];
-                u.Socket.Emit("Client.Message", new SocketClientMessage(user, eventChannel, content));
+                UserModel u = users[user.UserName];
+                u.Socket.Emit("Client.Message", new SocketClientMessageModel(user, eventChannel, content));
             }
         }
 
-    }
-
-
-    /*
-     
-var redis = require("redis")
-redis.DebugMode = false;
-
-
-var pubsub = function (ready) {
-    var self = this;
-    var subclient = redis.createClient(6379, Common.RedisIP);
-    var pubclient = redis.createClient(6379, Common.RedisIP);
-    self.subbed = {};
-
-    subclient.on("subscribe", function (channel, count) {
-        //console.log('subscribed: ' + channel + " " + count);
-    });
-    subclient.on("unsubscribe", function (channel, count) {
-        //console.log('unsubscribed: ' + channel + " " + count);
-
-    });
-
-    subclient.on("message", function (channel, message) {
-
-
-        if (self.subbed[channel]) {
-            self.subbed[channel].callback(message);
-        }
-    });
-    var pready, sready;
-    subclient.on("ready", function () {
-        sready = true;
-        if (sready && pready) {
-            ready();
-        }
-    });
-
-    pubclient.on("ready", function () {
-        pready = true;
-        if (sready && pready) {
-            ready();
-        }
-    });
-
-
-    self.publish = function (channel, Content) {
-        pubclient.publish(channel, Content);
-    }
-    self.subscribe = function (channel, callback) {
-        subclient.subscribe(channel);
-        self.subbed[channel] = { callback: callback };
-    }
-
-    return self;
-};
-
-module.exports = pubsub;
-     */
+    } 
 }

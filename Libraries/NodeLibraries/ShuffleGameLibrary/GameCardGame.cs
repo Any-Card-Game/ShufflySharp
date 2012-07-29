@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using Models;
 
 namespace global
 {
@@ -62,7 +63,7 @@ namespace global
         }
         [IgnoreGenericArguments]
         [ScriptName("setPlayers")]
-        public void SetPlayers(List<User> players)
+        public void SetPlayers(List<UserModel> players)
         {
 
             Users = new List<CardGameUser>();
@@ -440,7 +441,7 @@ namespace global
 
         public CardGameTableSpace(CardGameTableSpaceOptions options)
         {
-            this.Vertical = !options.Vertical ? true : options.Vertical;
+            this.Vertical = !options.Vertical ? false : options.Vertical;
             this.X = options.X == 0 ? 0 : options.X;
             this.Y = options.Y == 0 ? 0 : options.Y;
             this.Width = options.Width == 0 ? 0 : options.Width;

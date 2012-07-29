@@ -159,21 +159,21 @@ namespace Client.ShuffUI
 
                     LineWrapping = true,
                     MatchBrackets = true,
-                    OnGutterClick = (cm, n) =>
+                    OnGutterClick = (cm, n,e) =>
                     {
-                        /*var info = cm.lineInfo(n);
-                        if (info.markerText)
+                        var info = cm.LineInfo(n);
+                        if (info.MarkerText)
                         {
-                            window.shuffUIManager.codeArea.breakPoints.splice(window.shuffUIManager.codeArea.breakPoints.indexOf(n - 1), 0);
-                            cm.clearMarker(n);
+                            BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
+                            cm.ClearMarker(n);
                         }
                         else
                         {
-                            window.shuffUIManager.codeArea.breakPoints.push(n - 1);
-                            cm.setMarker(n, "<span style=\"color= #900\">●</span> %N%");
-                        }*/
+                            BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
+                            cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
+                        }
                     },
-                    /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()
+                    /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()//::dynamic okay
                         {
                         "Ctrl-Space"= function (cm) {
                             CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
@@ -198,8 +198,7 @@ namespace Client.ShuffUI
                     OnBlur = (e) =>
                     {
                     }
-                });
-
+                }); 
             hlLine = codeMirror.editor.SetLineClass(0, "activeline");
             var scroller = codeMirror.editor.ScrollerElement;
             scroller.Style.Height = divs[0].OffsetHeight + "px";
@@ -259,10 +258,10 @@ namespace Client.ShuffUI
             but.CSS("overflow", "scroll");
 
 
-            shuffPropertyBox.items = new List<dynamic>();
+            shuffPropertyBox.items = new List<ShuffListItem>();
             shuffPropertyBox.addItem = (ij) =>
                 {
-                    but.Append((jQueryObject) shuffPropertyBox.ItemCreation(ij, shuffPropertyBox.items.Count));
+                    but.Append(shuffPropertyBox.ItemCreation(ij, shuffPropertyBox.items.Count));
                     shuffPropertyBox.items.Add(ij);
                 };
             return but;

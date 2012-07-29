@@ -32,10 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GatewayLoginMessage.cs" />
-    <Compile Include="GatewayMessage.cs" />
     <Compile Include="GatewayServer.cs" />
-    <Compile Include="SocketClientMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -65,6 +62,10 @@
     <ProjectReference Include="..\..\Libraries\NodeLibraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIONodeLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Models\Models.csproj">
+      <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
+      <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

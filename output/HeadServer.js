@@ -17,8 +17,8 @@ HeadServer.HeadServer = function() {
 	this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', Function.mkdel(this, this.ready));
 	this.$pubsub = new CommonShuffleLibrary.PubSub(Function.mkdel(this, function() {
 		this.$pubsub.subscribe('PUBSUB.GatewayServers', Function.mkdel(this, function(message) {
-			this.$indexForSites.add(this.$indexPageData.replaceAll('{{gateway}}', message.toString()));
-			this.$gateways.add(message.toString());
+			this.$indexForSites.add(this.$indexPageData.replaceAll('{{gateway}}', message));
+			this.$gateways.add(message);
 		}));
 	}));
 	(require('http')).createServer(Function.mkdel(this, this.$handlerWS)).listen(8844);

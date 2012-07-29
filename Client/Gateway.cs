@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CommonsLibraries;
+using GatewayServer;
 using Models;
 using SocketIOWebLibrary;
 
@@ -10,16 +11,16 @@ namespace Client
 {
     public class Gateway
     {
-        private dynamic channels;
+        private dynamic channels;//::dynamic okay
 
         public Gateway(string gatewayServer)
         {
-            channels = new JsDictionary<string, Action<dynamic>>();
+            channels = new object();
             var someChannels = channels;
             GatewaySocket = SocketIOClient.Connect(gatewayServer);
-            GatewaySocket.On<dynamic>("Client.Message", data =>
+            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data =>
                 {
-                    someChannels[data.channel](data.content);
+                    someChannels[data.Channel](data.Content);
                 });
 
 
@@ -42,7 +43,7 @@ namespace Client
         }
         public void Login(string userName)
         {
-            GatewaySocket.Emit("Gateway.Login", new { username = userName });
+            GatewaySocket.Emit("Gateway.Login", new UserModel(){UserName=userName});
 
 
         }

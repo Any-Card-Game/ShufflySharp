@@ -85,7 +85,7 @@ namespace AdminServer
                     head = runProcess("node", new string[] { __dirname + "HeadServer.js" }, 4000);
                     Console.Log("Head Server Started");
 
-                   // sites.Add(runProcess("node", new string[] { __dirname + "siteServer/siteApp.js" }, 4100));
+                    // sites.Add(runProcess("node", new string[] { __dirname + "siteServer/siteApp.js" }, 4100));
                     Console.Log(sites.Count + " Site Servers Started");
                     for (int j = 0; j < numOfGateways; j++)
                     {
@@ -139,9 +139,9 @@ namespace AdminServer
             if (nonDebuggable.IndexOf(process) == -1 && debug)
             {
                 var jf = " --debug=";
-                if (name == "gatewayApp")
+                if (name.IndexOf("Gatewa-") > -1)
                 {
-                    jf = " --debug-brk";
+                    jf = " --debug-brk=";
                 }
                 args[0] = jf + debugPort + " " + args[0];
             }

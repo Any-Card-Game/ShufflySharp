@@ -22,17 +22,17 @@ namespace global
 
         }
         [ScriptName("clone")]
-        public static dynamic Clone(object obj)
+        public static dynamic Clone(object obj)//::dynamic okay
         {
             if (obj == null || (!(obj is Array) && (obj.GetType() != typeof(object) && "({}).toString.call(obj) != '[object Function]'".eval()))) return obj;
 
             JsDictionary<string,object> ob = (JsDictionary<string, object>) obj;
-            dynamic temp=null;
+            dynamic temp = null;//::dynamic okay
 
             
             if (obj is Array)
             {
-                temp = new dynamic[0];
+                temp = new dynamic[0];//::dynamic okay
             }
             else
             {

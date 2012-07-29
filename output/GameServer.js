@@ -26,12 +26,6 @@ GameServer.$QueueItemCollection.prototype = {
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
-// GameServer.CreateGameRequest
-GameServer.CreateGameRequest = function() {
-	this.name = null;
-	this.gameName = null;
-};
-////////////////////////////////////////////////////////////////////////////////
 // GameServer.DataManager
 GameServer.DataManager = function() {
 	this.gameData = null;
@@ -73,12 +67,6 @@ GameServer.FiberYieldResponse = function() {
 	this.lineNumber = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
-// GameServer.GameAnswerRequest
-GameServer.GameAnswerRequest = function() {
-	this.answer = 0;
-	this.roomID = null;
-};
-////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameData
 GameServer.GameData = function() {
 	this.totalGames = 0;
@@ -101,8 +89,8 @@ GameServer.GameInfoObject = function() {
 	this.answer = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
-// GameServer.GameQuestionAnswer
-GameServer.GameQuestionAnswer = function() {
+// GameServer.GameQuestionAnswerModel
+GameServer.GameQuestionAnswerModel = function() {
 	this.user = null;
 	this.question = null;
 	this.answers = null;
@@ -127,12 +115,6 @@ GameServer.GameRoom = function() {
 	this.players = new Array();
 	this.roomID = CommonLibraries.Guid.newGuid();
 	this.answers = new Array();
-};
-////////////////////////////////////////////////////////////////////////////////
-// GameServer.GameSendAnswer
-GameServer.GameSendAnswer = function() {
-	this.question = null;
-	this.answers = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameServer
@@ -217,7 +199,7 @@ GameServer.GameServer = function() {
 		}
 		room1.players.add(user1);
 		room1.players.add(user1);
-		this.$emitAll(room1, 'Area.Game.RoomInfo', JSON.parse(JSON.stringify(room1, CommonLibraries.Help.sanitize)));
+		this.$emitAll(room1, 'Area.Game.RoomInfo', CommonLibraries.Help.cleanUp(GameServer.GameRoom).call(null, room1));
 	}));
 	//qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>
 	//{
@@ -274,6 +256,114 @@ GameServer.GameServer = function() {
 		this.$handleYield(room3, answer);
 		console.log('doign2');
 	}));
+	//
+	//             
+	//
+	//qManager.addChannel('Area.Game.GetRooms', function (sender, data) {
+	//
+	//             
+	//
+	//socket.emit('Area.Game.GetRoomsResponse', JSON.parse(JSON.stringify(rooms, sanitize)));
+	//
+	//             
+	//
+	//});
+	//
+	//             
+	//
+	//
+	//
+	//             
+	//
+	//qManager.addChannel('Area.Debug.Continue', function (sender, data) {
+	//
+	//             
+	//
+	//var room = socket.room;
+	//
+	//             
+	//
+	//var answ = room.fiber.run(null);
+	//
+	//             
+	//
+	//handleYield(room, answ);
+	//
+	//             
+	//
+	//});
+	//
+	//             
+	//
+	//
+	//
+	//             
+	//
+	//
+	//
+	//             
+	//
+	//qManager.addChannel('Area.Debug.PushNewSource', function (sender, data) {
+	//
+	//             
+	//
+	//var room = socket.room;
+	//
+	//             
+	//
+	//
+	//
+	//             
+	//
+	//var module = {};
+	//
+	//             
+	//
+	//eval(applyBreakpoints(data.source, data.breakPoints));
+	//
+	//             
+	//
+	//var sevens = module.exports;
+	//
+	//             
+	//
+	//
+	//
+	//             
+	//
+	//room.fiber = createFiber(room, sevens, true);
+	//
+	//             
+	//
+	//var answ = room.fiber.run(room.players);
+	//
+	//             
+	//
+	//handleYield(room, answ);
+	//
+	//             
+	//
+	//
+	//
+	//             
+	//
+	//});
+	//
+	//             
+	//
+	//qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data) {
+	//
+	//             
+	//
+	//var room = socket.room;
+	//
+	//             
+	//
+	//var answ = room.fiber.run({ variableLookup: data.variableName });
+	//
+	//             
+	//
+	//if (!answ.type == 'variableLookup')
 	this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(sender2, data4) {
 		this.$queueue.add(data4);
 	}));
@@ -352,7 +442,7 @@ GameServer.GameServer.prototype = {
 			case 'gameOver': {
 				this.$emitAll(room, 'Area.Game.GameOver', '');
 				if (ss.isValue(room.debuggingSender)) {
-					this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', new Object());
+					this.$qManager.sendMessage(Object).call(this.$qManager, room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', new Object());
 				}
 				break;
 			}
@@ -363,7 +453,7 @@ GameServer.GameServer.prototype = {
 					//console.log(gameData.toString());
 					var ganswer = new CommonLibraries.GameAnswer();
 					ganswer.value = answer.contents;
-					this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Log', ganswer);
+					this.$qManager.sendMessage(CommonLibraries.GameAnswer).call(this.$qManager, room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Log', ganswer);
 				}
 				break;
 			}
@@ -376,7 +466,7 @@ GameServer.GameServer.prototype = {
 				if (!room.game.cardGame.emulating) {
 					var ganswer1 = new CommonLibraries.GameAnswer();
 					ganswer1.lineNumber = answer.lineNumber + 2;
-					this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Break', ganswer1);
+					this.$qManager.sendMessage(CommonLibraries.GameAnswer).call(this.$qManager, room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Break', ganswer1);
 				}
 				break;
 			}
@@ -384,10 +474,10 @@ GameServer.GameServer.prototype = {
 	},
 	$askQuestion: function(answ, room) {
 		var user = this.$getPlayerByUsername(room, answ.user.userName);
-		var gameAnswer = new GameServer.GameSendAnswer();
+		var gameAnswer = Models.GameSendAnswerModel.$ctor();
 		gameAnswer.answers = answ.answers;
 		gameAnswer.question = answ.question;
-		this.$qManager.sendMessage(user, user.gateway, 'Area.Game.AskQuestion', CommonLibraries.Help.cleanUp(GameServer.GameSendAnswer).call(null, gameAnswer));
+		this.$qManager.sendMessage(Models.GameSendAnswerModel).call(this.$qManager, user, user.gateway, 'Area.Game.AskQuestion', CommonLibraries.Help.cleanUp(Models.GameSendAnswerModel).call(null, gameAnswer));
 		this.$emitAll(room, 'Area.Game.UpdateState', CommonLibraries.Help.cleanUp(global.CardGame).call(null, answ.cardGame));
 		if (this.$verbose) {
 			console.log(answ.user.userName + ': ' + answ.question + '   ');
@@ -420,7 +510,7 @@ GameServer.GameServer.prototype = {
 		try {
 			while ($t1.moveNext()) {
 				var player = $t1.get_current();
-				this.$qManager.sendMessage(player, player.gateway, message, val);
+				this.$qManager.sendMessage(Object).call(this.$qManager, player, player.gateway, message, val);
 			}
 		}
 		finally {
@@ -453,15 +543,12 @@ GameServer.GameServer.prototype = {
 	}
 };
 GameServer.$QueueItemCollection.registerClass('GameServer.$QueueItemCollection', Object);
-GameServer.CreateGameRequest.registerClass('GameServer.CreateGameRequest', Object);
 GameServer.DataManager.registerClass('GameServer.DataManager', Object);
 GameServer.DataManagerGameData.registerClass('GameServer.DataManagerGameData', Object);
 GameServer.FiberYieldResponse.registerClass('GameServer.FiberYieldResponse', Object);
-GameServer.GameAnswerRequest.registerClass('GameServer.GameAnswerRequest', Object);
 GameServer.GameData.registerClass('GameServer.GameData', Object);
 GameServer.GameInfoObject.registerClass('GameServer.GameInfoObject', Object);
-GameServer.GameQuestionAnswer.registerClass('GameServer.GameQuestionAnswer', Object);
+GameServer.GameQuestionAnswerModel.registerClass('GameServer.GameQuestionAnswerModel', Object);
 GameServer.GameRoom.registerClass('GameServer.GameRoom', Object);
-GameServer.GameSendAnswer.registerClass('GameServer.GameSendAnswer', Object);
 GameServer.GameServer.registerClass('GameServer.GameServer', Object);
 new GameServer.GameServer();

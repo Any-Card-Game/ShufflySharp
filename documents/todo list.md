@@ -413,4 +413,5 @@ Current list
 					
 **compiler bugs
 	double using CommonShuffleLibrary; causes static invocation???
+	ignoregenericarguments on a class still generates default T
 

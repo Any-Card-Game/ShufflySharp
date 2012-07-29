@@ -38,7 +38,6 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="GameUtils.cs" />
     <Compile Include="Shuff.cs" />
-    <Compile Include="YieldObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -49,6 +48,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Models\Models.csproj">
+      <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>

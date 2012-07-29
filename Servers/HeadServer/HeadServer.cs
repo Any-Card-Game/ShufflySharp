@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CommonLibraries;
 using CommonShuffleLibrary;
 using NodeJSLibrary;
 
@@ -34,10 +35,10 @@ namespace HeadServer
 
             fs.ReadFile(__dirname + "/index.html","ascii", ready);
 
-            pubsub = new PubSub(() => pubsub.Subscribe("PUBSUB.GatewayServers", message =>
+            pubsub = new PubSub(() => pubsub.Subscribe<string>("PUBSUB.GatewayServers", message =>
                 {
-                    indexForSites.Add(indexPageData.Replace("{{gateway}}", message.ToString()));
-                    gateways.Add(message.ToString());
+                    indexForSites.Add(indexPageData.Replace("{{gateway}}", message));
+                    gateways.Add(message);
                 }));
 
             Global.Require<Http>("http").CreateServer(handlerWS).Listen(8844);

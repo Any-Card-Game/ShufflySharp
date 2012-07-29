@@ -1,5 +1,7 @@
+using System.Runtime.CompilerServices;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using Models;
 using NodeJSLibrary;
 using RedisLibrary;
 
@@ -17,25 +19,25 @@ namespace CommonShuffleLibrary
 
         }
 
-        public void Message(string channel, string name, User user, string eventChannel, object content)
+        public void Message<T>(string channel, string name, UserModel user, string eventChannel, T content)
         {
-            var message = new QueueMessage(name, user, eventChannel, content);
+            var message = new QueueMessage<T>(name, user, eventChannel, content);
             var value = Json.Stringify(message, Help.Sanitize);
             client1.RPush(channel, value); //todo:maybe sanitize
         }
 
-    }
+    } 
 
-    public class QueueMessage 
+    public class QueueMessage <T>
     { 
 
         public string Name;
-        public User User;
+        public UserModel User;
         public string EventChannel;
-        public object Content;
+        public T Content;
  
 
-        public QueueMessage(string name, User user, string eventChannel, object content)
+        public QueueMessage(string name, UserModel user, string eventChannel, T content)
         {
             this.Name = name;
             this.User = user;

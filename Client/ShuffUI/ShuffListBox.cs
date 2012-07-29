@@ -8,10 +8,23 @@ namespace Client.ShuffUI
     {
         public string Label { get; set; }
 
-        public Action<dynamic> Click { get; set; }
+        public Action<ShuffListItem> Click { get; set; }
 
-        public List<dynamic> Items { get; set; }
+        public List<ShuffListItem> Items { get; set; }
     }
+
+    public class ShuffListItem
+    {
+        public string Label { get; set; }
+        public int Value { get; set; }
+
+        public ShuffListItem(string label, int value)
+        {
+            Label = label;
+            Value = value;
+        }
+    }
+
     public class ShuffListBox<T> : ShuffListBox
     {
         public ShuffListBox(T data)

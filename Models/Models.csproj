@@ -32,7 +32,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CreateGameRequestModel.cs" />
+    <Compile Include="DebuggerJoinRequestModel.cs" />
+    <Compile Include="GameAnswerQuestionModel.cs" />
+    <Compile Include="GameAnswerRequestModel.cs" />
+    <Compile Include="GameSendAnswerModel.cs" />
     <Compile Include="GameSourceRequestModel.cs" />
+    <Compile Include="GameSourceResponseModel.cs" />
+    <Compile Include="GatewayLoginMessageModel.cs" />
+    <Compile Include="GatewayMessageModel.cs" />
+    <Compile Include="JoinGameRequestModel.cs" />
+    <Compile Include="SocketClientMessageModel.cs" />
+    <Compile Include="StartGameRequestModel.cs" />
+    <Compile Include="UserModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

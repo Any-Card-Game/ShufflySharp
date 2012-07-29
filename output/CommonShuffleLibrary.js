@@ -54,11 +54,13 @@ CommonShuffleLibrary.IPs.get_redisIP = function() {
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibrary.PubSub
 CommonShuffleLibrary.PubSub = function(ready) {
-	this.$subbed = ({});
+	this.$subbed = null;
 	this.$sready = false;
 	this.$pready = false;
 	this.$subClient = null;
 	this.$pubClient = null;
+	this.$subbed = new Object();
+	var someSubbed = this.$subbed;
 	var redis = require('redis');
 	redis.debug_mode = false;
 	this.$subClient = redis.createClient(6379, CommonShuffleLibrary.IPs.get_redisIP());
@@ -69,11 +71,11 @@ CommonShuffleLibrary.PubSub = function(ready) {
 	this.$subClient.on('unsubscribe', function(channel1, count1) {
 		console.log('unsubscribed: ' + channel1 + ' ' + count1);
 	});
-	this.$subClient.on('message', Function.mkdel(this, function(channel2, message) {
-		if (Object.keyExists(this.$subbed, channel2)) {
-			this.$subbed[channel2](message);
+	this.$subClient.on('message', function(channel2, message) {
+		if (ss.Nullable.unbox(Type.cast(ss.isValue(someSubbed[channel2]), Boolean))) {
+			someSubbed[channel2](message);
 		}
-	}));
+	});
 	this.$subClient.on('ready', Function.mkdel(this, function() {
 		this.$sready = true;
 		if (this.$sready && this.$pready) {
@@ -111,13 +113,13 @@ CommonShuffleLibrary.QueueManager = function(name, options) {
 	this.$qwCollection = null;
 	this.$qpCollection = null;
 	this.name = name;
-	this.channels = ({});
+	this.channels = new Object();
 	this.qw = new Array();
 	this.qp = new Array();
 	for (var $t1 = 0; $t1 < options.watchers.length; $t1++) {
 		var queueWatcher = options.watchers[$t1];
 		if (ss.isNullOrUndefined(queueWatcher.get_callback())) {
-			queueWatcher.set_callback(Function.mkdel(this, this.$messageReceived));
+			queueWatcher.set_callback(Function.mkdel(this, this.$messageReceived(Object)));
 		}
 		this.qw.add(queueWatcher);
 	}
@@ -133,19 +135,23 @@ CommonShuffleLibrary.QueueManager.prototype = {
 	addChannel: function(channel, callback) {
 		this.channels[channel] = callback;
 	},
-	$messageReceived: function(name, user, eventChannel, content) {
-		user.gateway = name;
-		if (ss.Nullable.unbox(Type.cast(ss.isValue(this.channels[eventChannel]), Boolean))) {
-			this.channels[eventChannel](user, content);
-		}
+	$messageReceived: function(T) {
+		return function(name, user, eventChannel, content) {
+			user.gateway = name;
+			if (ss.Nullable.unbox(Type.cast(ss.isValue(this.channels[eventChannel]), Boolean))) {
+				this.channels[eventChannel](user, content);
+			}
+		};
 	},
-	sendMessage: function(user, channel, eventChannel, content) {
-		if (ss.isNullOrUndefined(this.$qpCollection.$getByChannel(channel))) {
-			console.log(channel + ' No Existy');
-			return;
-		}
-		var pusher = Type.cast(this.$qpCollection.$getByChannel(channel), CommonShuffleLibrary.QueuePusher);
-		pusher.message(channel, this.name, user, eventChannel, content);
+	sendMessage: function(T) {
+		return function(user, channel, eventChannel, content) {
+			if (ss.isNullOrUndefined(this.$qpCollection.$getByChannel(channel))) {
+				console.log(channel + ' No Existy');
+				return;
+			}
+			var pusher = Type.cast(this.$qpCollection.$getByChannel(channel), CommonShuffleLibrary.QueuePusher);
+			pusher.message(T).call(pusher, channel, this.name, user, eventChannel, content);
+		};
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,17 +163,26 @@ CommonShuffleLibrary.QueueManagerOptions = function(watchers, pushers) {
 	this.watchers = watchers;
 };
 ////////////////////////////////////////////////////////////////////////////////
-// CommonShuffleLibrary.QueueMessage
-CommonShuffleLibrary.QueueMessage = function(name, user, eventChannel, content) {
-	this.name = null;
-	this.user = null;
-	this.eventChannel = null;
-	this.content = null;
-	this.name = name;
-	this.user = user;
-	this.eventChannel = eventChannel;
-	this.content = content;
+// CommonShuffleLibrary.QueueMessage$1
+CommonShuffleLibrary.QueueMessage$1 = function(T) {
+	var $type = function(name, user, eventChannel, content) {
+		this.name = null;
+		this.user = null;
+		this.eventChannel = null;
+		this.content = T.getDefaultValue();
+		this.name = name;
+		this.user = user;
+		this.eventChannel = eventChannel;
+		this.content = content;
+	};
+	$type.registerGenericClassInstance($type, CommonShuffleLibrary.QueueMessage$1, [T], function() {
+		return Object;
+	}, function() {
+		return [];
+	});
+	return $type;
 };
+CommonShuffleLibrary.QueueMessage$1.registerGenericClass('CommonShuffleLibrary.QueueMessage$1', 1);
 ////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibrary.QueuePusher
 CommonShuffleLibrary.QueuePusher = function(pusher) {
@@ -178,11 +193,13 @@ CommonShuffleLibrary.QueuePusher = function(pusher) {
 	this.$client1 = redis.createClient(6379, CommonShuffleLibrary.IPs.get_redisIP());
 };
 CommonShuffleLibrary.QueuePusher.prototype = {
-	message: function(channel, name, user, eventChannel, content) {
-		var message = new CommonShuffleLibrary.QueueMessage(name, user, eventChannel, content);
-		var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
-		this.$client1.rpush(channel, value);
-		//todo:maybe sanitize
+	message: function(T) {
+		return function(channel, name, user, eventChannel, content) {
+			var message = new (Type.makeGenericType(CommonShuffleLibrary.QueueMessage$1, [T]))(name, user, eventChannel, content);
+			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
+			this.$client1.rpush(channel, value);
+			//todo:maybe sanitize
+		};
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -216,13 +233,6 @@ CommonShuffleLibrary.QueueWatcher.prototype = {
 		}));
 	}
 };
-////////////////////////////////////////////////////////////////////////////////
-// CommonShuffleLibrary.User
-CommonShuffleLibrary.User = function() {
-	this.socket = null;
-	this.gateway = null;
-	this.userName = null;
-};
 CommonShuffleLibrary.$QueueItemCollection.registerClass('CommonShuffleLibrary.$QueueItemCollection', Object);
 CommonShuffleLibrary.Consumer.registerClass('CommonShuffleLibrary.Consumer', Object);
 CommonShuffleLibrary.IPs.registerClass('CommonShuffleLibrary.IPs', Object);
@@ -230,7 +240,5 @@ CommonShuffleLibrary.PubSub.registerClass('CommonShuffleLibrary.PubSub', Object)
 CommonShuffleLibrary.QueueItem.registerClass('CommonShuffleLibrary.QueueItem', Object);
 CommonShuffleLibrary.QueueManager.registerClass('CommonShuffleLibrary.QueueManager', Object);
 CommonShuffleLibrary.QueueManagerOptions.registerClass('CommonShuffleLibrary.QueueManagerOptions', Object);
-CommonShuffleLibrary.QueueMessage.registerClass('CommonShuffleLibrary.QueueMessage', Object);
 CommonShuffleLibrary.QueuePusher.registerClass('CommonShuffleLibrary.QueuePusher', CommonShuffleLibrary.QueueItem);
 CommonShuffleLibrary.QueueWatcher.registerClass('CommonShuffleLibrary.QueueWatcher', CommonShuffleLibrary.QueueItem);
-CommonShuffleLibrary.User.registerClass('CommonShuffleLibrary.User', Object);

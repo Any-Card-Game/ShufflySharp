@@ -94,7 +94,7 @@ namespace GameServer
                                                                                                 "Gateway*"
                                                                                             }));
 
-            qManager.AddChannel<CreateGameRequest>("Area.Debug.Create",
+            qManager.AddChannel<CreateGameRequestModel>("Area.Debug.Create",
                                 (user, data) =>
                                     {
                                         data.GameName = "Sevens";
@@ -128,7 +128,7 @@ namespace GameServer
                                     });
 
 
-            qManager.AddChannel <JoinGameRequest>("Area.Game.Join",
+            qManager.AddChannel <JoinGameRequestModel>("Area.Game.Join",
                                  (user, data) =>
                                      {
                                          GameRoom room = null;
@@ -144,7 +144,7 @@ namespace GameServer
                                              return;
                                          room.Players.Add(user);
                                          room.Players.Add(user);
-                                         EmitAll(room, "Area.Game.RoomInfo", Json.Parse(Json.Stringify(room, Help.Sanitize)));
+                                         EmitAll(room, "Area.Game.RoomInfo", Help.CleanUp(room));
                                      });
 
             /*qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>
@@ -152,7 +152,7 @@ namespace GameServer
                     qManager.SendMessage(sender, sender.Gateway, "Area.Game.RoomInfos", Json.Parse(Json.Stringify(rooms, Help.Sanitize)));
                 });*/
 
-            qManager.AddChannel <JoinGameRequest>("Area.Game.DebuggerJoin", (sender, data) =>
+            qManager.AddChannel<DebuggerJoinRequestModel>("Area.Game.DebuggerJoin", (sender, data) =>
                 {
                      GameRoom room = null;
                     foreach (GameRoom gameRoom in rooms)
@@ -169,7 +169,7 @@ namespace GameServer
                     Console.Log("debuggable");
                 });
 
-            qManager.AddChannel < JoinGameRequest>("Area.Game.Start", (sender, data) =>
+            qManager.AddChannel<StartGameRequestModel>("Area.Game.Start", (sender, data) =>
                 { 
                     GameRoom room = null;
                     foreach (GameRoom gameRoom in rooms)
@@ -192,6 +192,38 @@ namespace GameServer
                     Console.Log("doign2");
                 });
 
+
+            /*
+             
+
+qManager.addChannel('Area.Game.GetRooms', function (sender, data) {
+    socket.emit('Area.Game.GetRoomsResponse', JSON.parse(JSON.stringify(rooms, sanitize)));
+});
+
+qManager.addChannel('Area.Debug.Continue', function (sender, data) {
+    var room = socket.room;
+    var answ = room.fiber.run(null);
+    handleYield(room, answ);
+});
+
+
+qManager.addChannel('Area.Debug.PushNewSource', function (sender, data) {
+    var room = socket.room;
+
+    var module = {};
+    eval(applyBreakpoints(data.source, data.breakPoints));
+    var sevens = module.exports;
+
+    room.fiber = createFiber(room, sevens, true);
+    var answ = room.fiber.run(room.players);
+    handleYield(room, answ);
+
+});
+qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data) {
+    var room = socket.room;
+    var answ = room.fiber.run({ variableLookup: data.variableName });
+    if (!answ.type == 'variableLookup')
+             */
             qManager.AddChannel < GameAnswerQuestionModel>("Area.Game.AnswerQuestion", (sender, data) => queueue.Add(data));
 
             Global.SetInterval(flushQueue, 50);
@@ -206,9 +238,9 @@ namespace GameServer
                 if (queueue.Count == 0)
                     break;
 
-                object arg2 = queueue[0];
+                var arg2 = queueue[0];
                 queueue.RemoveAt(0);
-                GameAnswerRequest data = arg2.castValue<GameAnswerRequest>();
+                GameAnswerRequestModel data = arg2.castValue<GameAnswerRequestModel>();
                 GameRoom room = null;
                 foreach (GameRoom gameRoom in rooms)
                 {
@@ -231,7 +263,7 @@ namespace GameServer
                 if (answ == null)
                 {
                     EmitAll(room, "Area.Game.GameOver", "a");
-                    room.Fiber.Run<object>();
+                    room.Fiber.Run<FiberYieldResponse>();
                     rooms.Remove(room);
                     room.Unwind(room.Players);
                     continue;
@@ -263,12 +295,12 @@ namespace GameServer
             switch (answer.Type)
             {
                 case "askQuestion":
-                    GameQuestionAnswer answ = answer.question;
+                    GameQuestionAnswerModel answ = answer.question;
 
                     if (answ == null)
                     {
                         EmitAll(room, "Area.Game.GameOver", "");
-                        room.Fiber.Run<object>();
+                        room.Fiber.Run<FiberYieldResponse>();
                         //     profiler.takeSnapshot('game over ' + room.roomID);
                         return;
                     }
@@ -326,11 +358,11 @@ namespace GameServer
         }
 
 
-        private void askQuestion(GameQuestionAnswer answ, GameRoom room)
+        private void askQuestion(GameQuestionAnswerModel answ, GameRoom room)
         {
-            User user = getPlayerByUsername(room, answ.User.UserName);
+            UserModel user = getPlayerByUsername(room, answ.User.UserName);
 
-            GameSendAnswer gameAnswer = new GameSendAnswer();
+            GameSendAnswerModel gameAnswer = new GameSendAnswerModel();
             gameAnswer.Answers = answ.Answers;
             gameAnswer.Question = answ.Question;
 
@@ -351,9 +383,9 @@ namespace GameServer
 
         }
 
-        private User getPlayerByUsername(GameRoom room, string userName)
+        private UserModel getPlayerByUsername(GameRoom room, string userName)
         {
-            foreach (User player in room.Players)
+            foreach (UserModel player in room.Players)
             {
                 if (player.UserName == userName)
                 {
@@ -366,15 +398,15 @@ namespace GameServer
 
         private void EmitAll(GameRoom room, string message, object val)
         {
-            foreach (User player in room.Players)
+            foreach (UserModel player in room.Players)
             {
                 qManager.SendMessage(player, player.Gateway, message, val);
             }
         }
 
-        private Fiber<List<User>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
+        private Fiber<List<UserModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
         {
-            return new Fiber<List<User>>(delegate(List<User> players)
+            return new Fiber<List<UserModel>>(delegate(List<UserModel> players)
                                              {
                                                  if (players == null || players.Count == 0) return true;
                                                  room.Players = players;

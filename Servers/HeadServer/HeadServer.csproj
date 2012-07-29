@@ -66,6 +66,10 @@
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIONodeLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Models\Models.csproj">
+      <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

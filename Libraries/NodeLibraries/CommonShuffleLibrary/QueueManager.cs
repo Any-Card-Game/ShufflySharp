@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using Models;
 using NodeJSLibrary;
 
 namespace CommonShuffleLibrary
@@ -11,14 +12,14 @@ namespace CommonShuffleLibrary
     public   class QueueManager
     {
         public string Name;
-        public dynamic channels;//necessary evil for maintaining sanity
+        public dynamic channels;//necessary evil for maintaining sanity//::dynamic okay
         public List<QueueWatcher> qw;
         public List<QueuePusher> qp;
 
         public QueueManager(string name, QueueManagerOptions options)
         {
             Name = name;
-            channels = new JsDictionary<string, Action<User, object>>();
+            channels = new object();
             qw = new List<QueueWatcher>();
             qp = new List<QueuePusher>();
             foreach (QueueWatcher queueWatcher in options.Watchers)
@@ -42,12 +43,12 @@ namespace CommonShuffleLibrary
          
         //todo fix T 
         [IgnoreGenericArguments] 
-        public void AddChannel<T>(string channel, Action<User, T> callback)
+        public void AddChannel<T>(string channel, Action<UserModel, T> callback)
         {
             channels[channel] = callback;
         }
 
-        private void messageReceived(string name, User user, string eventChannel, object content)
+        private void messageReceived<T>(string name, UserModel user, string eventChannel, T content)
         {
             user.Gateway = name;
 
@@ -61,7 +62,7 @@ namespace CommonShuffleLibrary
         private QueueItemCollection qwCollection;
         private QueueItemCollection qpCollection;
 
-        public void SendMessage(User user, string channel, string eventChannel, object content)
+        public void SendMessage<T>(UserModel user, string channel, string eventChannel, T content)
         {
             if (this.qpCollection.GetByChannel(channel) == null)
             {

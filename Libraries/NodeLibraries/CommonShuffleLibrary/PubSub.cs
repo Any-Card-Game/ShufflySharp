@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using CommonLibraries;
 using NodeJSLibrary;
 using RedisLibrary;
@@ -8,13 +9,16 @@ namespace CommonShuffleLibrary
 {
     public class PubSub
     {
-        private JsDictionary<string, Action<object>> subbed = new JsDictionary<string, Action<object>>();
+        private dynamic subbed;
         private bool sready;
         private bool pready;
         private RedisClient subClient;
         private RedisClient pubClient;
         public PubSub(Action ready)
         {
+            subbed = new object();
+            var someSubbed = subbed;
+
             Redis redis = Global.Require<Redis>("redis");
             redis.DebugMode = false;
             subClient = redis.CreateClient(6379, IPs.RedisIP);
@@ -24,9 +28,9 @@ namespace CommonShuffleLibrary
 
             subClient.On("message", (string channel, object message) =>
                 {
-                    if (subbed.ContainsKey(channel))
+                    if (someSubbed[channel]!=null)
                     {
-                        subbed[channel].Invoke(message);
+                        someSubbed[channel](message);
                     }
                 });
             subClient.On("ready", () =>
@@ -52,8 +56,8 @@ namespace CommonShuffleLibrary
         {
             pubClient.Publish(channel, content);
         }
-
-        public void Subscribe(string channel, Action<object> callback)
+        [IgnoreGenericArguments]
+        public void Subscribe<T>(string channel, Action<T> callback)
         {
             subClient.Subscribe(channel);
             subbed[channel] = callback;

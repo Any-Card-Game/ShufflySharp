@@ -101,8 +101,8 @@ AdminServer.AdminServer.prototype = {
 		}
 		if (this.$nonDebuggable.indexOf(process) === -1 && this.$debug) {
 			var jf = ' --debug=';
-			if (name === 'gatewayApp') {
-				jf = ' --debug-brk';
+			if (name.indexOf('Gatewa-') > -1) {
+				jf = ' --debug-brk=';
 			}
 			args[0] = jf + debugPort + ' ' + args[0];
 		}

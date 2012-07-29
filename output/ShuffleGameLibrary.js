@@ -16,8 +16,10 @@ global._.clone = function(obj) {
 	}
 	var ob = Type.cast(obj, Object);
 	var temp = null;
+	//::dynamic okay
 	if (Type.isInstanceOfType(obj, Array)) {
 		temp = [];
+		//::dynamic okay
 	}
 	else {
 		temp = new Object();
@@ -208,6 +210,18 @@ global.CardGameEffectHighlightOptions.$ctor = function() {
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.CardGameQuestion
+global.CardGameQuestion = function(user, question, answers, cardGame) {
+	this.user = null;
+	this.question = null;
+	this.answers = null;
+	this.cardGame = null;
+	this.user = user;
+	this.question = question;
+	this.answers = answers;
+	this.cardGame = cardGame;
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.CardGameTableSpaceOptions
 global.CardGameTableSpaceOptions = function() {
 };
@@ -269,6 +283,49 @@ global.EffectType = function() {
 };
 global.EffectType.prototype = {};
 global.EffectType.registerEnum('global.EffectType', false);
+////////////////////////////////////////////////////////////////////////////////
+// global.FiberYieldResponse
+global.FiberYieldResponse = function(type) {
+	this.variableLookup = null;
+	this.type = null;
+	this.contents = null;
+	this.question = null;
+	this.lineNumber = 0;
+	this.value = null;
+	this.type = type;
+};
+global.FiberYieldResponse.$ctor2 = function(type, question) {
+	this.variableLookup = null;
+	this.type = null;
+	this.contents = null;
+	this.question = null;
+	this.lineNumber = 0;
+	this.value = null;
+	this.type = type;
+	this.question = question;
+};
+global.FiberYieldResponse.$ctor1 = function(type, contents) {
+	this.variableLookup = null;
+	this.type = null;
+	this.contents = null;
+	this.question = null;
+	this.lineNumber = 0;
+	this.value = null;
+	this.type = type;
+	this.contents = contents;
+};
+global.FiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
+	this.variableLookup = null;
+	this.type = null;
+	this.contents = null;
+	this.question = null;
+	this.lineNumber = 0;
+	this.value = null;
+	this.type = type;
+	this.lineNumber = lineNumber;
+	this.value = value;
+};
+global.FiberYieldResponse.$ctor2.prototype = global.FiberYieldResponse.$ctor1.prototype = global.FiberYieldResponse.$ctor3.prototype = global.FiberYieldResponse.prototype;
 ////////////////////////////////////////////////////////////////////////////////
 // global.GameCardGameOptions
 global.GameCardGameOptions = function() {
@@ -355,36 +412,30 @@ global.shuff.askQuestion = function(user, question, answers, cardGame) {
 		return (cardGame.answers[cardGame.answerIndex++]).value;
 		//todo .value
 	}
-	var m = { user: user, question: question, answers: answers, cardGame: cardGame };
-	var answer = yield({ type: 'askQuestion', question: m });
+	var m = new global.CardGameQuestion(user, question, answers, cardGame);
+	var answer = yield(new global.FiberYieldResponse.$ctor2('askQuestion', m));
 	cardGame.answerIndex++;
 	return (ss.isNullOrUndefined(answer) ? 0 : answer.value);
 };
 global.shuff.declareWinner = function(user) {
-	yield({ type: 'gameOver' });
+	yield(new global.FiberYieldResponse('gameOver'));
 };
 global.shuff.log = function(msg) {
-	yield({ type: 'log', contents: msg });
+	yield(new global.FiberYieldResponse.$ctor1('log', msg));
 };
 global.shuff.break_ = function(lineNumber, cardGame, varLookup) {
 	if (cardGame.emulating) {
 		return;
 	}
-	var $t1 = global.YieldObject.$ctor();
-	$t1.type = 'break';
-	$t1.lineNumber = lineNumber - 1;
-	$t1.value = '';
-	var yieldObject = $t1;
+	var yieldObject = new global.FiberYieldResponse.$ctor3('break', lineNumber - 1, '');
 	while (true) {
 		var answ = yield(yieldObject);
-		if (ss.Nullable.unbox(Type.cast(ss.isNullOrUndefined(answ), Boolean))) {
+		if (ss.isNullOrUndefined(answ)) {
 			//continue
 			return;
 		}
-		if (ss.Nullable.unbox(Type.cast(answ.variableLookup, Boolean))) {
-			yieldObject.type = 'variableLookup';
-			yieldObject.value = varLookup(Type.cast(answ.variableLookup, String));
-			yieldObject.lineNumber = 0;
+		if (ss.isValue(answ.variableLookup)) {
+			yieldObject = new global.FiberYieldResponse.$ctor3('variableLookup', 0, varLookup(answ.variableLookup));
 			continue;
 		}
 		break;
@@ -407,7 +458,7 @@ global.TableSpace = function(options) {
 	this.sortPrder = 0;
 	this.numerOfCardsHorizontal = 0;
 	this.numerOfCardsVertical = 0;
-	this.vertical = (!options.vertical ? true : options.vertical);
+	this.vertical = (!options.vertical ? false : options.vertical);
 	this.x = ((options.x === 0) ? 0 : options.x);
 	this.y = ((options.y === 0) ? 0 : options.y);
 	this.width = ((options.width === 0) ? 0 : options.width);
@@ -450,17 +501,6 @@ global.User = function(name) {
 	this.userName = name;
 	this.cards = new global.Pile(name);
 };
-////////////////////////////////////////////////////////////////////////////////
-// global.YieldObject
-global.YieldObject = function() {
-};
-global.YieldObject.$ctor = function() {
-	var $this = {};
-	$this.type = null;
-	$this.lineNumber = 0;
-	$this.value = null;
-	return $this;
-};
 global._.registerClass('global._', Object);
 global.ArrayUtils.registerClass('global.ArrayUtils', Object);
 global.Card.registerClass('global.Card', Object);
@@ -469,8 +509,10 @@ global.CardGame.registerClass('global.CardGame', Object);
 global.CardGameAnswer.registerClass('global.CardGameAnswer', Object);
 global.CardGameArea.registerClass('global.CardGameArea', Object);
 global.CardGameEffectHighlightOptions.registerClass('global.CardGameEffectHighlightOptions', Object);
+global.CardGameQuestion.registerClass('global.CardGameQuestion', Object);
 global.CardGameTableSpaceOptions.registerClass('global.CardGameTableSpaceOptions', Object);
 global.Effects.registerClass('global.Effects', Object);
+global.FiberYieldResponse.registerClass('global.FiberYieldResponse', Object);
 global.GameCardGameOptions.registerClass('global.GameCardGameOptions', Object);
 global.GameCardGameTextAreaOptions.registerClass('global.GameCardGameTextAreaOptions', Object);
 global.Pile.registerClass('global.Pile', Object);
@@ -481,5 +523,4 @@ global.TableSpace.registerClass('global.TableSpace', Object);
 global.TableTextArea.registerClass('global.TableTextArea', Object);
 global.TableTextArea.registerClass('global.TableTextArea', Object);
 global.User.registerClass('global.User', Object);
-global.YieldObject.registerClass('global.YieldObject', Object);
 global.Effect$Highlight.registerClass('global.Effect$Highlight', global.Effects);

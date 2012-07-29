@@ -2,19 +2,20 @@ using System;
 using System.Collections;
 using System.Serialization;
 using CommonShuffleLibrary;
+using Models;
 using NodeJSLibrary;
 using RedisLibrary;
 using Json = CommonLibraries.Json;
 
 namespace CommonShuffleLibrary
 {
-    public class QueueWatcher : QueueItem
+    public class QueueWatcher : QueueItem//todo generisize
     {
         private RedisClient client1;
-        public Action<string, User, string, object> Callback { get; set; }
+        public Action<string, UserModel, string, object> Callback { get; set; }
 
 
-        public QueueWatcher(string queue, Action<string, User, string, object> callback)
+        public QueueWatcher(string queue, Action<string, UserModel, string, object> callback)
         {
             Channel = queue;
             Callback = callback;
@@ -33,7 +34,7 @@ namespace CommonShuffleLibrary
                     string[] data = (string[]) dtj;
                     if (dtj != null)
                     {
-                        QueueMessage dt = Json.ParseData<QueueMessage>(data[1]);
+                        QueueMessage<object> dt = Json.ParseData<QueueMessage<object>>(data[1]);
                         Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);
                     }
                     Cycle(channel);

@@ -9,10 +9,9 @@ using jQueryApi.UI.Widgets;
 namespace Client.ShuffUI
 {
     public class ShuffUIManager
-    { 
+    {
 
-
-        private List<dynamic> UIAreas = new List<dynamic>();
+        private List<UIAreaInformation> UIAreas = new List<UIAreaInformation>();
 
         public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui) 
         {
@@ -53,7 +52,7 @@ namespace Client.ShuffUI
             outer.Append(inner);
             ui.Window = jQuery.Select("#window" + windowID);
 
-            this.UIAreas.Add(new { Element = outer, Inner = inner });
+            this.UIAreas.Add(new UIAreaInformation(outer, inner));
             
 
             x.Click((evt) =>
@@ -84,7 +83,7 @@ namespace Client.ShuffUI
             {
                 for (var i = 0; i < UIAreas.Count; i++)
                 {
-                    UIAreas[i].Element.css("z-index", 1800);
+                    UIAreas[i].Element.CSS("z-index", 1800);
                 }
                 outer.CSS("z-index", 1900);
             }); 
@@ -116,6 +115,20 @@ namespace Client.ShuffUI
             }
 
             return ui;
+        }
+    }
+
+    public class UIAreaInformation 
+    {
+        [ScriptName("element")]
+        public jQueryObject Element { get; set; }
+        [ScriptName("inner")]
+        public jQueryObject Inner { get; set; }
+
+        public UIAreaInformation(jQueryObject element, jQueryObject inner)
+        { 
+            Element = element;
+            Inner = inner;
         }
     }
 }

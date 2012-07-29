@@ -17,13 +17,13 @@ namespace Client
             if (callback != null)
             {
 
-               script.me().onreadystatechange = (Action<Object>) (a =>
+               script.me().onreadystatechange = (Action<object>) (a =>
                     {
-                        dynamic b = script;
-                        if (b.readyState == "loaded") callback();
+
+                        if (script.me().readyState == "loaded") callback();
 
                     });
-               script.me().onload = (Action<Object>)(a => callback());
+               script.me().onload = (Action<object>)(a => callback());
 
             }
             head.AppendChild(script);

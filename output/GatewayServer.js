@@ -1,19 +1,6 @@
 require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 Type.registerNamespace('GatewayServer');
 ////////////////////////////////////////////////////////////////////////////////
-// GatewayServer.GatewayLoginMessage
-GatewayServer.GatewayLoginMessage = function() {
-	this.userName = null;
-	this.password = null;
-};
-////////////////////////////////////////////////////////////////////////////////
-// GatewayServer.GatewayMessage
-GatewayServer.GatewayMessage = function() {
-	this.channel = null;
-	this.content = null;
-	this.gameServer = null;
-};
-////////////////////////////////////////////////////////////////////////////////
 // GatewayServer.GatewayServer
 GatewayServer.GatewayServer = function() {
 	this.users = ({});
@@ -62,10 +49,10 @@ GatewayServer.GatewayServer = function() {
 					break;
 				}
 			}
-			queueManager.sendMessage(user, Object.coalesce(data.gameServer, channel), data.channel, data.content);
+			queueManager.sendMessage(Object).call(queueManager, user, Object.coalesce(data.gameServer, channel), data.channel, data.content);
 		});
 		socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
-			user = new CommonShuffleLibrary.User();
+			user = new Models.UserModel();
 			user.socket = socket;
 			user.userName = data1.userName;
 			this.users[data1.userName] = user;
@@ -79,22 +66,9 @@ GatewayServer.GatewayServer.prototype = {
 	$messageReceived: function(gateway, user, eventChannel, content) {
 		if (Object.keyExists(this.users, user.userName)) {
 			var u = this.users[user.userName];
-			u.socket.emit('Client.Message', new GatewayServer.SocketClientMessage(user, eventChannel, content));
+			u.socket.emit('Client.Message', new Models.SocketClientMessageModel(user, eventChannel, content));
 		}
 	}
 };
-////////////////////////////////////////////////////////////////////////////////
-// GatewayServer.SocketClientMessage
-GatewayServer.SocketClientMessage = function(user, channel, content) {
-	this.user = null;
-	this.channel = null;
-	this.content = null;
-	this.user = user;
-	this.channel = channel;
-	this.content = content;
-};
-GatewayServer.GatewayLoginMessage.registerClass('GatewayServer.GatewayLoginMessage', Object);
-GatewayServer.GatewayMessage.registerClass('GatewayServer.GatewayMessage', Object);
 GatewayServer.GatewayServer.registerClass('GatewayServer.GatewayServer', Object);
-GatewayServer.SocketClientMessage.registerClass('GatewayServer.SocketClientMessage', Object);
 new GatewayServer.GatewayServer();

@@ -1,4 +1,5 @@
 using System;
+using System.Html;
 using System.Runtime.CompilerServices;
 
 namespace CodeMirrorLibrary
@@ -6,7 +7,6 @@ namespace CodeMirrorLibrary
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     [Record]
-    //todo do this right -dynamic
     public sealed class CodeMirrorOptions
     {
         [ScriptName("lineNumbers")]
@@ -20,15 +20,15 @@ namespace CodeMirrorLibrary
         public bool MatchBrackets { get; set; }
         [ScriptName("onGutterClick")]
         [IntrinsicProperty]
-        public Action<dynamic,int> OnGutterClick { get; set; }
+        public Action<CodeMirror, int, ElementEvent> OnGutterClick { get; set; }
         [ScriptName("onCursorActivity")]
         [IntrinsicProperty]
-        public Action<dynamic> OnCursorActivity { get; set; }
+        public Action<ElementEvent> OnCursorActivity { get; set; }
         [ScriptName("onFocus")]
         [IntrinsicProperty]
-        public Action<dynamic> OnFocus { get; set; }
+        public Action<ElementEvent> OnFocus { get; set; }
         [ScriptName("onBlur")]
         [IntrinsicProperty]
-        public Action<dynamic> OnBlur { get; set; }
+        public Action<ElementEvent> OnBlur { get; set; }
     }
 }

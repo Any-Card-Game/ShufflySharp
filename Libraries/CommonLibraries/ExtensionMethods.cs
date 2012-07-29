@@ -10,12 +10,12 @@ namespace CommonLibraries
     {
 
         [InlineCode("{script}")]
-        public static dynamic me(this object script)
+        public static dynamic me(this object script)//::dynamic okay
         {
             return script;
         }
         [InlineCode("eval({script})")]
-        public static dynamic eval(this object script)
+        public static dynamic eval(this object script)//::dynamic okay
         {
             return null;
         }

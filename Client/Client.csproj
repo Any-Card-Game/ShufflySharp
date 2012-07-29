@@ -455,9 +455,12 @@
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
     <Compile Include="CardGameAreaSpace.cs" />
-    <Compile Include="DevAreaInformation.cs" />
+    <Compile Include="Information\CodeAreaInformation.cs" />
+    <Compile Include="Information\DevAreaInformation.cs" />
     <Compile Include="Gateway.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="Information\HomeAreaInformation.cs" />
+    <Compile Include="Information\QuestionAreaInformation.cs" />
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
     <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
@@ -525,6 +528,10 @@
     <ProjectReference Include="..\Servers\GameServer\GameServer.csproj">
       <Project>{453CCFEB-6D6F-4C10-84C7-E8A897A99AE8}</Project>
       <Name>GameServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Servers\GatewayServer\GatewayServer.csproj">
+      <Project>{DF31877E-A85A-4FE1-AB8D-5025011F4EAA}</Project>
+      <Name>GatewayServer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.91\tools\Saltarelle.Compiler.targets" />

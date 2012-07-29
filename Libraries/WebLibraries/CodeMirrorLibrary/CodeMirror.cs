@@ -84,12 +84,21 @@ namespace CodeMirrorLibrary
         {
             return 0;
         }
+
+        [ScriptName("lineInfo")]
+        public CodeMirrorLine LineInfo(int lineIndex)
+        {
+            return null;
+        }
     }
 
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class CodeMirrorLine
     {
+        [IntrinsicProperty]
+        [ScriptName("markerText")]
+        public bool MarkerText { get; set; }
     }
 
 

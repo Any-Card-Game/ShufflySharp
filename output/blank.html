@@ -16,7 +16,7 @@
        
 div.tabs {
 	width: 100%;
-	margin: 0 0 20px 0;
+	margin: 0 0 0px 0;
 }
 
 ul.tabs {
@@ -60,6 +60,14 @@ ul.tabs a.active {
 	border-top: 0;
 	padding: 20px 8px 0 8px;
 }
+.spsp{
+	display:inline-block;
+	text-align:center;
+	width:28px;height:26px;
+	border:solid 2px black;
+	background-color:red;
+	color:white;
+}
 
 
     </style>
@@ -98,7 +106,7 @@ ul.tabs a.active {
 
                 var ifr = document.createElement('iframe');
                 ifr.setAttribute('width', '100%');
-                ifr.setAttribute('height', '80%');
+                ifr.setAttribute('height', '90%');
                 ifr.setAttribute('src', url);
                 ndiv.appendChild(ifr);
 
@@ -109,6 +117,7 @@ ul.tabs a.active {
                 ndiv2.appendChild(na);
 
                 na = document.createElement('span');
+                na.setAttribute('class', 'spsp');
                 na.innerText = "X";
                 na.onclick = function (e) {
                     document.getElementById('tabs').removeChild(ndiv);

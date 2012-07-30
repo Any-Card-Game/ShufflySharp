@@ -335,7 +335,7 @@ module.exports = Sevens = function () {
                             break;
                     }
 
-                    if (u.cards.cards.length == 0) {
+                    if (u.cards.cards.length == 0) {         
                         
                           for (var i = 0; i < sp.length; i++) {
 
@@ -347,7 +347,7 @@ module.exports = Sevens = function () {
                                   }));
                                   break;
                               }
-b                          }
+                          }
                         shuff.declareWinner(u);
 
                         return true;

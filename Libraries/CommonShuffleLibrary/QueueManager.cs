@@ -39,8 +39,6 @@ namespace CommonShuffleLibrary
             qpCollection = new QueueItemCollection(qp);
         }
 
-
-        //todo fix T 
         [IgnoreGenericArguments]
         public void AddChannel<T>(string channel, Action<UserModel, T> callback)
         {

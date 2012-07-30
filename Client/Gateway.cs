@@ -9,16 +9,17 @@ namespace Client
     {
         private dynamic channels; //::dynamic okay
 
+        [IntrinsicProperty]
+        protected SocketIOClient GatewaySocket { get; set; }
+
         public Gateway(string gatewayServer)
         {
             channels = new object();
             var someChannels = channels;
             GatewaySocket = SocketIOClient.Connect(gatewayServer);
-            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => { someChannels[data.Channel](data.Content); });
+            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => someChannels[data.Channel](data.Content));
         }
 
-        [IntrinsicProperty]
-        protected SocketIOClient GatewaySocket { get; set; }
 
         [IgnoreGenericArguments]
         public void Emit<T>(string channel, T content, string gameServer = null)

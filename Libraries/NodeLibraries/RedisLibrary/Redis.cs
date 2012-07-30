@@ -35,7 +35,7 @@ namespace RedisLibrary
         }
 
         [ScriptName("blpop")]
-        public void BLPop(object[] objects, Action<string, object> action)
+        public void BLPop(object[] objectsAndTimeout, Action<string, object> action)
         {
         }
     }

@@ -7,6 +7,7 @@ AdminServer.AdminServer = function() {
 	this.$debug = false;
 	this.$fs = (require('fs'));
 	this.$debugs = null;
+	this.$chats = null;
 	this.$exec = null;
 	this.$games = null;
 	this.$sites = null;
@@ -15,11 +16,13 @@ AdminServer.AdminServer = function() {
 	this.$indexPageData = 0;
 	this.$nodeInspector = null;
 	this.$nonDebuggable = null;
-	this.$numOfGameServers = 6;
-	this.$numOfGateways = 6;
+	this.$numOfChatServers = 1;
+	this.$numOfGameServers = 1;
+	this.$numOfSiteServers = 1;
+	this.$numOfGateways = 1;
 	this.$util = null;
 	var fs = require('fs');
-	console.log('Shuffly Admin V0.41');
+	console.log('Shuffly Admin V0.44');
 	this.$util = (require('util'));
 	this.$exec = (require('child_process')).exec;
 	this.$__dirname = '/usr/local/src/new/';
@@ -46,29 +49,31 @@ AdminServer.AdminServer.prototype = {
 	$handler: function(request, response) {
 		this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', Function.mkdel(this, function(err, content) {
 			var fieldSets = '';
-			fieldSets += this.$buildFieldset(this.$sites);
-			fieldSets += this.$buildFieldset(this.$gateways);
-			fieldSets += this.$buildFieldset(this.$games);
-			fieldSets += this.$buildFieldset(this.$debugs);
-			fieldSets += this.$buildFieldset(([ this.$head ]));
-			var iframe = '<iframe width=\'100%\' height=\'100%\' src=\'http://50.116.22.241\' id=\'mainContent\'> </iframe>';
-			var rest = String.format('<div style=\'height:100%;width:100%;\'><table width=\'100%\' height=\'100%\'><tr height=\'100%\'><td width=\'15%\'>{0}</td><td>{1}</td><tr></table></div>', fieldSets, iframe);
+			fieldSets += String.format('<span>Main Site: {0}</span>', '<a href=\'#}\' onclick=\'goHere("http://50.116.22.241");\'>Launch</a>');
+			fieldSets += this.$buildFieldset(this.$sites, 'Site Servers');
+			fieldSets += this.$buildFieldset(this.$gateways, 'Gateway Servers');
+			fieldSets += this.$buildFieldset(this.$games, 'Game Servers');
+			fieldSets += this.$buildFieldset(this.$debugs, 'Debug Servers');
+			fieldSets += this.$buildFieldset(this.$chats, 'Chat Servers');
 			var dict = {};
 			dict['Content-Type'] = 'text/html';
 			response.writeHead(200, dict);
-			response.end(content.replaceAll('{0}', rest));
+			response.end(content.replaceAll('{0}', fieldSets));
 		}));
 	},
-	$buildFieldset: function(items) {
+	$buildFieldset: function(items, name) {
 		var str = '<fieldset>';
-		str += '<ul>';
+		str += '<ul style=\'list-style-type:none;\'>';
+		str += String.format('<li >{0}</li>', name);
+		str += String.format('<li ></li>');
 		var $t1 = items.getEnumerator();
 		try {
 			while ($t1.moveNext()) {
 				var process = $t1.get_current();
 				str += '<li>';
-				str += String.format('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? String.format('<a href=\'http://50.116.22.241:8080/debug?port={0}\' target=\'_new\'>Debug</a>', process.debugPort) : 'Debug'));
+				str += String.format('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? String.format('<a href=\'#}\' onclick=\'goHere("http://50.116.22.241:8080/debug?port={0}");\'>Debug</a>', process.debugPort + '&foo=' + (parseInt((Math.random() * 5000000).toString()))) : 'Debug'));
 				str += '</li>';
+				//document.frames["test"].location.reload();
 			}
 		}
 		finally {
@@ -96,19 +101,27 @@ AdminServer.AdminServer.prototype = {
 			case 's': {
 				this.$sites = new Array();
 				this.$games = new Array();
+				this.$chats = new Array();
 				this.$debugs = new Array();
 				this.$gateways = new Array();
 				this.$head = new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'HeadServer.js'], 4000, null), 'Head Server', 0, 4000);
 				console.log('Head Server Started');
+				for (var j = 0; j < this.$numOfSiteServers; j++) {
+					this.$sites.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'SiteServer.js'], 4100 + j, null), 'Site Server', j, 4100 + j));
+				}
 				console.log(this.$sites.length + ' Site Servers Started');
-				for (var j = 0; j < this.$numOfGateways; j++) {
-					this.$gateways.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GatewayServer.js'], 4400 + j, null), 'Gateway Server', j, 4400 + j));
+				for (var j1 = 0; j1 < this.$numOfGateways; j1++) {
+					this.$gateways.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GatewayServer.js'], 4400 + j1, null), 'Gateway Server', j1, 4400 + j1));
 				}
 				console.log(this.$gateways.length + ' Gateway Servers Started');
-				for (var j1 = 0; j1 < this.$numOfGameServers; j1++) {
-					this.$games.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GameServer.js'], 4200 + j1, null), 'Game Server', j1, 4200 + j1));
+				for (var j2 = 0; j2 < this.$numOfGameServers; j2++) {
+					this.$games.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GameServer.js'], 4200 + j2, null), 'Game Server', j2, 4200 + j2));
 				}
 				console.log(this.$games.length + ' Game Servers Started');
+				for (var j3 = 0; j3 < this.$numOfChatServers; j3++) {
+					this.$chats.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ChatServer.js'], 4500 + j3, null), 'Chat Server', j3, 4500 + j3));
+				}
+				console.log(this.$chats.length + ' Chat Servers Started');
 				this.$debugs.add(new AdminServer.ProcessInformation(this.$runProcess('node', [this.$__dirname + 'DebugServer.js'], 4300, null), 'Debug Server', 0, 4300));
 				console.log(this.$debugs.length + ' Debug Servers Started');
 				break;

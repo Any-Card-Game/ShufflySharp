@@ -88,7 +88,7 @@ module.exports = Sevens = function () {
             text: 'Spades'
         }));
     };
-    self.createUser = function (userIndex, text) {
+    self.createUser = function (user,userIndex, text) {
         var sp;
         var tta;
         //console.log("Create User " + userIndex);
@@ -104,7 +104,7 @@ module.exports = Sevens = function () {
                     name: 'User' + userIndex,
                     width: 3,
                     height: 0,
-                    bend: true
+                    bend: true,
                 }));
                 self.cardGame.textAreas.push(tta = new TableTextArea({
                     name: 'Text' + userIndex,
@@ -132,6 +132,7 @@ module.exports = Sevens = function () {
                 self.cardGame.textAreas.push(tta = new TableTextArea({ name: 'Text' + userIndex, text: text }));
                 break;
         }
+        sp.user = user;
         var space = sp;
         switch (userIndex) {
             case 0:
@@ -175,7 +176,7 @@ module.exports = Sevens = function () {
         });
 
         self.cardGame.users.foreach(function (u, ind) {
-            var sp = self.createUser(ind, u.userName);
+            var sp = self.createUser(u,ind, u.userName);
             sp.pile = u.cards;
         });
 
@@ -224,10 +225,50 @@ module.exports = Sevens = function () {
                 var sp = self.cardGame.spaces;
                 for (var i = 0; i < sp.length; i++) {
                     //sp[i].rotate += 10;
+
+                    sp[i].effects = [];
+                    if(sp[i].user==u) {
+                        sp[i].effects.push(new Effect$Highlight({
+                            radius: 70,
+                            color: 'rgba(112,255,84,0.7)',
+                            opacity: .7
+                        }));   
+                    }
+                    if(!sp[i].user) {
+                        var op = sp[i].pile.cards.length/13;
+                        
+                        sp[i].effects.push(new Effect$Highlight({
+                            radius: 25+sp[i].pile.cards.length*2,
+                            color: 'rgba(112,'+parseInt(op*255)+',84,'+op+')',
+                            opacity: op
+                        }));   
+                    }
+                    
                     for (var ij = 0; ij < sp[i].pile.cards.length; ij++) {
-                        sp[i].pile.cards[ij].effects = [new Effect$Highlight({
-                            radius: Math.random()*20, color: 'rgba(114,255,84,0.3)', opacity: .40
-                        })];
+                        var card = sp[i].pile.cards[ij];
+                        card.effects = [];
+
+
+                        for (var j = 0; j < usable.length; j++) {
+                            var m = usable[j];
+                            if (m.value == card.value && m.type == card.type) {
+                                card.effects.push(new Effect$Highlight({
+                                    radius: 14,
+                                    color: 'rgba(255,11,84,0.3)',
+                                    opacity: .30
+                                }));
+                                break; ;
+                            }
+                        }
+                        if(card.effects.length==10) {
+                            card.effects.push(new Effect$Highlight({
+                                radius: Math.random() * 6,
+                                color: 'rgba(114,255,84,0.2)',
+                                opacity: .20
+                            }));
+
+                        }
+
                     }
                 }
 

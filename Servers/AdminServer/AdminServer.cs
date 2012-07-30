@@ -14,6 +14,7 @@ namespace AdminServer
 
 
         private List<ProcessInformation> debugs;
+        private List<ProcessInformation> chats;
         private Func<string, Process> exec;
         private List<ProcessInformation> games;
         private List<ProcessInformation> sites;
@@ -25,15 +26,17 @@ namespace AdminServer
         private Process nodeInspector;
         private string[] nonDebuggable;
 
-        private int numOfGameServers = 6;
-        private int numOfGateways = 6;
+        private int numOfChatServers= 1;
+        private int numOfGameServers = 1;
+        private int numOfSiteServers = 1;
+        private int numOfGateways =1;
 
         private Util util;
 
         public AdminServer()
         {
             var fs = Global.Require<FS>("fs");
-            Console.Log("Shuffly Admin V0.41");
+            Console.Log("Shuffly Admin V0.44");
 
             util = Global.Require<Util>("util");
             exec = Global.Require<ChildProcess>("child_process").Exec;
@@ -66,40 +69,45 @@ namespace AdminServer
         private void handler(HttpRequest request, HttpResponse response)
         {
 
-            fs.ReadFile(__dirname + "/blank.html", "ascii", (err,content)=>
+            fs.ReadFile(__dirname + "/blank.html", "ascii", (err, content) =>
                 {
 
                     var fieldSets = "";
-                    fieldSets += buildFieldset(sites);
-                    fieldSets += buildFieldset(gateways);
-                    fieldSets += buildFieldset(games);
-                    fieldSets += buildFieldset(debugs);
-                    fieldSets += buildFieldset(new List<ProcessInformation>(head));
+                    fieldSets += string.Format("<span>Main Site: {0}</span>", "<a href='#}' onclick='goHere(\"http://50.116.22.241\");'>Launch</a>");
 
-
-                    string iframe = "<iframe width='100%' height='100%' src='http://50.116.22.241' id='mainContent'> </iframe>";
-                    var rest = string.Format("<div style='height:100%;width:100%;'><table width='100%' height='100%'><tr height='100%'><td width='15%'>{0}</td><td>{1}</td><tr></table></div>", fieldSets, iframe);
+                    fieldSets += buildFieldset(sites,"Site Servers");
+                    fieldSets += buildFieldset(gateways, "Gateway Servers");
+                    fieldSets += buildFieldset(games, "Game Servers");
+                    fieldSets += buildFieldset(debugs, "Debug Servers");
+                    fieldSets += buildFieldset(chats, "Chat Servers"); 
 
 
                     var dict = new JsDictionary();
                     dict["Content-Type"] = "text/html";
                     response.WriteHead(200, dict);
-                    response.End(content.Replace("{0}", rest));
-                }); 
+                    response.End(content.Replace("{0}", fieldSets));
+                });
 
         }
 
-        private string buildFieldset(List<ProcessInformation> items)
+        private string buildFieldset(List<ProcessInformation> items,string name)
         {
             string str = "<fieldset>";
-            str += "<ul>";
+            str += "<ul style='list-style-type:none;'>";
+
+            str += string.Format("<li >{0}</li>", name);
+            str += string.Format("<li ></li>");
+
             foreach (var process in items)
             {
                 str += "<li>";
-                str += string.Format("<span>{0} ({1}): {2}</span>", process.Name, process.Index+1,
-                                     debug ? string.Format("<a href='http://50.116.22.241:8080/debug?port={0}' target='_new'>Debug</a>", process.DebugPort) : "Debug");
+                str += string.Format("<span>{0} ({1}): {2}</span>", process.Name, process.Index + 1,
+                    debug ? string.Format("<a href='#}' onclick='goHere(\"http://50.116.22.241:8080/debug?port={0}\");'>Debug</a>", process.DebugPort + "&foo=" + int.Parse((Math.Random() * 5000000).ToString())) : "Debug");
                 str += "</li>";
 
+
+
+                //document.frames["test"].location.reload();
             }
             str += "</ul>";
 
@@ -127,26 +135,39 @@ namespace AdminServer
 
                     sites = new List<ProcessInformation>();
                     games = new List<ProcessInformation>();
+                    chats = new List<ProcessInformation>();
                     debugs = new List<ProcessInformation>();
                     gateways = new List<ProcessInformation>();
-                    head = new ProcessInformation(runProcess("node", new[] { __dirname + "HeadServer.js" }, 4000),"Head Server",0,4000);
+                    head = new ProcessInformation(runProcess("node", new[] { __dirname + "HeadServer.js" }, 4000), "Head Server", 0, 4000);
                     Console.Log("Head Server Started");
+                    for (var j = 0; j < numOfSiteServers; j++)
+                    {
+                        sites.Add(new ProcessInformation(runProcess("node", new string[] { __dirname + "SiteServer.js" }, 4100 + j), "Site Server", j, 4100 + j));
+                    }
 
-                    // sites.Add(runProcess("node", new string[] { __dirname + "siteServer/siteApp.js" }, 4100));
                     Console.Log(sites.Count + " Site Servers Started");
                     for (var j = 0; j < numOfGateways; j++)
                     {
-                        gateways.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "GatewayServer.js" }, 4400 + j),"Gateway Server",j,4400+j));
+                        gateways.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "GatewayServer.js" }, 4400 + j), "Gateway Server", j, 4400 + j));
                     }
                     Console.Log(gateways.Count + " Gateway Servers Started");
 
                     for (var j = 0; j < numOfGameServers; j++)
                     {
-                        games.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "GameServer.js" }, 4200 + j),"Game Server",j, 4200+j));
+                        games.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "GameServer.js" }, 4200 + j), "Game Server", j, 4200 + j));
                     }
                     Console.Log(games.Count + " Game Servers Started");
 
-                    debugs.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "DebugServer.js" }, 4300),"Debug Server",0,4300));
+
+                    for (var j = 0; j < numOfChatServers; j++)
+                    {
+                        chats.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "ChatServer.js" }, 4500 + j), "Chat Server", j, 4500 + j));
+                    }
+                    Console.Log(chats.Count + " Chat Servers Started");
+
+
+
+                    debugs.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "DebugServer.js" }, 4300), "Debug Server", 0, 4300));
                     Console.Log(debugs.Count + " Debug Servers Started");
 
 

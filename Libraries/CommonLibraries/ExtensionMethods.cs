@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace CommonLibraries
 {
@@ -8,6 +9,10 @@ namespace CommonLibraries
         public static dynamic me(this object script) //::dynamic okay
         {
             return script;
+        }
+        [InlineCode("debugger;")]
+        public static void debugger() 
+        {
         }
 
         [InlineCode("eval({script})")]
@@ -22,7 +27,7 @@ namespace CommonLibraries
         {
             return default(T);
         }
-
+        
         public static T CleanUp<T>(T o)
         {
             return Json.Parse<T>(Json.Stringify(o, Help.Sanitize));

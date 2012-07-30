@@ -61,8 +61,77 @@ global.ArrayUtils.forEach = function(ts, does) {
 	}
 	return false;
 };
+global.ArrayUtils.select = function(T, T2) {
+	return function(ts, does) {
+		var ts2 = new Array(ts.length);
+		for (var i = 0; i < ts.length; i++) {
+			ts2[i] = does(ts[i]);
+		}
+		return ts2;
+	};
+};
 global.ArrayUtils.sortCards = function(ts) {
-	return ts;
+	debugger;;
+	var ijc = global.ArrayUtils.groupBy(global.Card, ss.Int32).call(null, ts, function(a) {
+		return a.type;
+	});
+	var ij = global.ArrayUtils.select(Type.makeGenericType(global.ArrayUtils$GroupByKey$2, [global.Card, ss.Int32]), Array).call(null, ijc, function(a1) {
+		a1.items.sort(function(b, c) {
+			return b.value - c.value;
+		});
+		return a1.items;
+	});
+	var items = new Array(ts.length);
+	var jf = 0;
+	for (var $t1 = 0; $t1 < ij.length; $t1++) {
+		var cardGameCard = ij[$t1];
+		var $t2 = cardGameCard.getEnumerator();
+		try {
+			while ($t2.moveNext()) {
+				var gameCard = $t2.get_current();
+				items[jf++] = gameCard;
+			}
+		}
+		finally {
+			if (Type.isInstanceOfType($t2, ss.IDisposable)) {
+				Type.cast($t2, ss.IDisposable).dispose();
+			}
+		}
+	}
+	for (var i = 0; i < items.length; i++) {
+		ts[i] = items[i];
+	}
+	return items;
+};
+global.ArrayUtils.groupBy = function(T, T2) {
+	return function(ts, does) {
+		var items = new Array();
+		for (var $t1 = 0; $t1 < ts.length; $t1++) {
+			var t = ts[$t1];
+			var t2 = does(t);
+			var good = false;
+			var $t2 = items.getEnumerator();
+			try {
+				while ($t2.moveNext()) {
+					var item = $t2.get_current();
+					if (ss.Nullable.unbox(Type.cast(ss.referenceEquals(item.key, t2), Boolean))) {
+						item.items.add(t);
+						good = true;
+						break;
+					}
+				}
+			}
+			finally {
+				if (Type.isInstanceOfType($t2, ss.IDisposable)) {
+					Type.cast($t2, ss.IDisposable).dispose();
+				}
+			}
+			if (!good) {
+				items.add(new (Type.makeGenericType(global.ArrayUtils$GroupByKey$2, [T, T2]))(t2, ([ t ])));
+			}
+		}
+		return Type.cast((items), Array);
+	};
 };
 global.ArrayUtils.where = function(ts, does) {
 	var jf = new Array();
@@ -82,6 +151,23 @@ global.ArrayUtils.any = function(ts, does) {
 	}
 	return false;
 };
+////////////////////////////////////////////////////////////////////////////////
+// global.ArrayUtils$GroupByKey$2
+global.ArrayUtils$GroupByKey$2 = function(T, T2) {
+	var $type = function(key, items) {
+		this.key = T2.getDefaultValue();
+		this.items = null;
+		this.key = key;
+		this.items = items;
+	};
+	$type.registerGenericClassInstance($type, global.ArrayUtils$GroupByKey$2, [T, T2], function() {
+		return Object;
+	}, function() {
+		return [];
+	});
+	return $type;
+};
+global.ArrayUtils$GroupByKey$2.registerGenericClass('global.ArrayUtils$GroupByKey$2', 2);
 ////////////////////////////////////////////////////////////////////////////////
 // global.Card
 global.Card = function(value, type) {
@@ -433,6 +519,7 @@ global.TableSpace = function(options) {
 	this.sortPrder = 0;
 	this.numerOfCardsHorizontal = 0;
 	this.numerOfCardsVertical = 0;
+	this.effects = null;
 	this.vertical = (!options.vertical ? false : options.vertical);
 	this.x = ((options.x === 0) ? 0 : options.x);
 	this.y = ((options.y === 0) ? 0 : options.y);
@@ -447,6 +534,14 @@ global.TableSpace = function(options) {
 	this.sortPrder = options.sortPrder;
 	this.numerOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 	this.numerOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
+	this.effects = new Array();
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.TableTextArea
+global.TableTextArea = function() {
+	this.text = null;
+	this.x = 0;
+	this.y = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.TableTextArea
@@ -459,13 +554,6 @@ global.TableTextArea = function(options) {
 	this.x = ((options.x === 0) ? 0 : options.x);
 	this.nayme = ((options.nayme === 0) ? 0 : options.nayme);
 	this.text = (ss.isNullOrUndefined(options.text) ? 'Text' : options.text);
-};
-////////////////////////////////////////////////////////////////////////////////
-// global.TableTextArea
-global.TableTextArea = function() {
-	this.text = null;
-	this.x = 0;
-	this.y = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.User

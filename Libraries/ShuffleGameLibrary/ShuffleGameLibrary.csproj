@@ -33,9 +33,30 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ArrayUtils.cs" />
-    <Compile Include="GameCardGame.cs" />
+    <Compile Include="CardGame\CardGameAnswer.cs" />
+    <Compile Include="CardGame\CardGameArea.cs" />
+    <Compile Include="CardGame\CardGameCard.cs" />
+    <Compile Include="CardGame\CardGameCardState.cs" />
+    <Compile Include="CardGame\CardGameCardType.cs" />
+    <Compile Include="CardGame\CardGameEffect.cs" />
+    <Compile Include="CardGame\CardGameEffectHighlight.cs" />
+    <Compile Include="CardGame\CardGameEffectHighlightOptions.cs" />
+    <Compile Include="CardGame\CardGameOrder.cs" />
+    <Compile Include="CardGame\CardGamePile.cs" />
+    <Compile Include="CardGame\CardGamePokerResult.cs" />
+    <Compile Include="CardGame\CardGamePokerWinType.cs" />
+    <Compile Include="CardGame\CardGameTableSpace.cs" />
+    <Compile Include="CardGame\CardGameTableSpaceOptions.cs" />
+    <Compile Include="CardGame\CardGameTextArea.cs" />
+    <Compile Include="CardGame\CardGameUser.cs" />
+    <Compile Include="CardGame\EffectType.cs" />
+    <Compile Include="CardGame\GameCardGame.cs" />
+    <Compile Include="CardGame\GameCardGameOptions.cs" />
+    <Compile Include="CardGame\GameCardGameTextArea.cs" />
+    <Compile Include="CardGame\GameCardGameTextAreaOptions.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameUtils.cs" />
+    <Compile Include="Rectangle.cs" />
     <Compile Include="Shuff.cs" />
   </ItemGroup>
   <ItemGroup>

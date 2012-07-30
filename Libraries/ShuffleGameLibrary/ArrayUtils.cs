@@ -28,12 +28,81 @@ namespace global
                 }
             }
             return false;
+        } 
+        public static T2[] Select<T,T2>(T[] ts, Func<T, T2> does)
+        {
+            T2[] ts2 = new T2[ts.Length];
+            for (var i = 0; i < ts.Length; i++)
+            {
+                ts2[i] = does(ts[i]);
+            }
+            return ts2;
+        }
+         
+        public static CardGameCard[] SortCards(CardGameCard[] ts)
+        {
+            ExtensionMethods.debugger();
+            var ijc = GroupBy(ts, a => a.Type);
+            var ij = Select(ijc, a =>
+                {
+                    a.Items.Sort((b, c) => b.Value - c.Value);
+                    return a.Items;
+                });
+
+            CardGameCard[] items = new CardGameCard[ts.Length];
+            int jf = 0;
+            foreach (var cardGameCard in ij)
+            {
+                foreach (var gameCard in cardGameCard)
+                {
+                    items[jf++] = (gameCard);
+                }
+            }
+            for (int i = 0; i < items.Length; i++)
+            {
+                ts[i] = items[i];
+            }
+            return items;
         }
 
-        [IgnoreGenericArguments]
-        public static T[] SortCards<T>(T[] ts)
+        public class GroupByKey<T,T2>
         {
-            return ts;
+            public GroupByKey(T2 key, List<T> items)
+            {
+                Key = key;
+                Items = items;
+            }
+
+            [IntrinsicProperty]
+            public T2 Key { get; set; }
+            [IntrinsicProperty]
+            public List<T> Items { get; set; }
+        }
+
+        public static GroupByKey<T, T2>[] GroupBy<T, T2>(T[] ts, Func<T, T2> does)
+        {
+            List<GroupByKey<T, T2>> items = new List<GroupByKey<T, T2>>();
+
+            foreach (var t in ts)
+            {
+                var t2 = does(t);
+                bool good = false;
+                foreach (var item in items)
+                {
+                    if ((dynamic)item.Key == (dynamic)t2)
+                    {
+                        item.Items.Add(t);
+                        good = true;
+                        break;
+                    }
+                }
+                if(!good)
+                {
+                    items.Add(new GroupByKey<T, T2>(t2, new List<T>(t)));
+                    
+                }
+            }
+            return items.me(); 
         }
 
         [IgnoreGenericArguments]
@@ -48,7 +117,7 @@ namespace global
                     jf.Add(ts[i]);
                 }
             }
-            return (T[]) jf;
+            return (T[])jf;
         }
 
         [IgnoreGenericArguments]

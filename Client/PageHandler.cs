@@ -196,6 +196,42 @@ namespace Client
             foreach (var space in mainArea.Spaces)
             {
                 var vertical = space.Vertical;
+
+
+
+
+                foreach (var effect in space.Effects)
+                {
+                    if (effect.Type == "highlight")
+                    {
+                        var hEffect = effect.castValue<CardGameEffectHighlight>();
+                        gameboard.Context.Save();
+                        gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
+                        gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
+                        gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
+                        gameboard.Context.FillStyle = hEffect.Color;
+                        gameboard.Context.StrokeStyle = "black";
+                        gameboard.Context.LineWidth = 5;
+
+                        gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
+                        gameboard.Context.StrokeRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
+                        gameboard.Context.Restore();
+                    } /*
+                        switch (effect.Type)
+                        {
+                            case EffectType.Highlight:
+                          
+                                break;
+                        }*/
+                }
+
+
+
+
+
+
+
+                
                 gameboard.Context.FillRect(space.X*scale.X, space.Y*scale.Y, space.Width*scale.X, space.Height*scale.Y);
 
                 var spaceScale = new Point(space.Width/space.Pile.Cards.Count, space.Height/space.Pile.Cards.Count);
@@ -219,6 +255,7 @@ namespace Client
                             gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
                             gameboard.Context.Rotate(hEffect.Rotate*Math.PI/180);
                             gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
+                            gameboard.Context.LineWidth = 5;
                             gameboard.Context.FillStyle = hEffect.Color;
                             gameboard.Context.StrokeStyle = "black";
                             gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius*2, cardImage.Height + hEffect.Radius*2);

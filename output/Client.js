@@ -766,13 +766,49 @@ Client.PageHandler.prototype = {
 			while ($t1.moveNext()) {
 				var space = $t1.get_current();
 				var vertical = space.vertical;
+				var $t2 = space.effects.getEnumerator();
+				try {
+					while ($t2.moveNext()) {
+						var effect = $t2.get_current();
+						if (effect.type === 'highlight') {
+							var hEffect = effect;
+							gameboard.context.save();
+							gameboard.context.translate(hEffect.offsetX, hEffect.offsetY);
+							gameboard.context.rotate(hEffect.rotate * Math.PI / 180);
+							gameboard.context.translate(-hEffect.radius, -hEffect.radius);
+							gameboard.context.fillStyle = hEffect.color;
+							gameboard.context.strokeStyle = 'black';
+							gameboard.context.lineWidth = 5;
+							gameboard.context.fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x + hEffect.radius * 2, space.height * scale.y + hEffect.radius * 2);
+							gameboard.context.strokeRect(space.x * scale.x, space.y * scale.y, space.width * scale.x + hEffect.radius * 2, space.height * scale.y + hEffect.radius * 2);
+							gameboard.context.restore();
+						}
+						//
+						//                        switch (effect.Type)
+						//
+						//                        {
+						//
+						//                        case EffectType.Highlight:
+						//
+						//                        
+						//
+						//                        break;
+						//
+						//                        }
+					}
+				}
+				finally {
+					if (Type.isInstanceOfType($t2, ss.IDisposable)) {
+						Type.cast($t2, ss.IDisposable).dispose();
+					}
+				}
 				gameboard.context.fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x, space.height * scale.y);
 				var spaceScale = new CommonLibraries.Point(space.width / space.pile.cards.length, space.height / space.pile.cards.length);
 				var j = 0;
-				var $t2 = space.pile.cards.getEnumerator();
+				var $t3 = space.pile.cards.getEnumerator();
 				try {
-					while ($t2.moveNext()) {
-						var card = $t2.get_current();
+					while ($t3.moveNext()) {
+						var card = $t3.get_current();
 						var xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
 						var yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
 						var cardImage = this.$cardImages[this.drawCard(card)];
@@ -780,20 +816,21 @@ Client.PageHandler.prototype = {
 						gameboard.context.translate(xx + (vertical ? (space.width * scale.x / 2) : 0), yy + (!vertical ? (space.height * scale.y / 2) : 0));
 						gameboard.context.rotate(space.rotate * Math.PI / 180);
 						gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
-						var $t3 = card.effects.getEnumerator();
+						var $t4 = card.effects.getEnumerator();
 						try {
-							while ($t3.moveNext()) {
-								var effect = $t3.get_current();
-								if (effect.type === 'highlight') {
-									var hEffect = effect;
+							while ($t4.moveNext()) {
+								var effect1 = $t4.get_current();
+								if (effect1.type === 'highlight') {
+									var hEffect1 = effect1;
 									gameboard.context.save();
-									gameboard.context.translate(hEffect.offsetX, hEffect.offsetY);
-									gameboard.context.rotate(hEffect.rotate * Math.PI / 180);
-									gameboard.context.translate(-hEffect.radius, -hEffect.radius);
-									gameboard.context.fillStyle = hEffect.color;
+									gameboard.context.translate(hEffect1.offsetX, hEffect1.offsetY);
+									gameboard.context.rotate(hEffect1.rotate * Math.PI / 180);
+									gameboard.context.translate(-hEffect1.radius, -hEffect1.radius);
+									gameboard.context.lineWidth = 5;
+									gameboard.context.fillStyle = hEffect1.color;
 									gameboard.context.strokeStyle = 'black';
-									gameboard.context.fillRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
-									gameboard.context.strokeRect(0, 0, cardImage.width + hEffect.radius * 2, cardImage.height + hEffect.radius * 2);
+									gameboard.context.fillRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
+									gameboard.context.strokeRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
 									gameboard.context.restore();
 								}
 								//
@@ -811,8 +848,8 @@ Client.PageHandler.prototype = {
 							}
 						}
 						finally {
-							if (Type.isInstanceOfType($t3, ss.IDisposable)) {
-								Type.cast($t3, ss.IDisposable).dispose();
+							if (Type.isInstanceOfType($t4, ss.IDisposable)) {
+								Type.cast($t4, ss.IDisposable).dispose();
 							}
 						}
 						//todo gayness
@@ -822,8 +859,8 @@ Client.PageHandler.prototype = {
 					}
 				}
 				finally {
-					if (Type.isInstanceOfType($t2, ss.IDisposable)) {
-						Type.cast($t2, ss.IDisposable).dispose();
+					if (Type.isInstanceOfType($t3, ss.IDisposable)) {
+						Type.cast($t3, ss.IDisposable).dispose();
 					}
 				}
 			}
@@ -833,17 +870,17 @@ Client.PageHandler.prototype = {
 				Type.cast($t1, ss.IDisposable).dispose();
 			}
 		}
-		var $t4 = mainArea.textAreas.getEnumerator();
+		var $t5 = mainArea.textAreas.getEnumerator();
 		try {
-			while ($t4.moveNext()) {
-				var ta = $t4.get_current();
+			while ($t5.moveNext()) {
+				var ta = $t5.get_current();
 				gameboard.context.fillStyle = 'rgba(200, 0, 200, 0.5)';
 				gameboard.context.fillText(ta.text, ta.x * scale.x, ta.nayme * scale.y);
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t4, ss.IDisposable)) {
-				Type.cast($t4, ss.IDisposable).dispose();
+			if (Type.isInstanceOfType($t5, ss.IDisposable)) {
+				Type.cast($t5, ss.IDisposable).dispose();
 			}
 		}
 	},

@@ -930,3 +930,13 @@
 /Servers/HeadServer/obj/Release/HeadServer.csprojResolveAssemblyReference.cache
 /ShuffleInformation/obj/x86/Release/DesignTimeResolveAssemblyReferencesInput.cache
 /_ReSharper.ShufflySharp/Pdb/38fedfd080291c7f546de854fd1558f83708b0d5
+/Servers/SiteServer/obj/Debug/SiteServer.csprojResolveAssemblyReference.cache
+/_ReSharper.ShufflySharp/PersistentCaches/000032.sst
+/_ReSharper.ShufflySharp/PersistentCaches/000033.log
+/_ReSharper.ShufflySharp/PersistentCaches/MANIFEST-000031
+/Servers/ChatServer/bin/Debug/CommonLibraries.dll
+/Servers/ChatServer/bin/Debug/CommonShuffleLibrary.dll
+/Servers/ChatServer/bin/Debug/Models.dll
+/Servers/ChatServer/bin/Debug/NodeJSLibrary.dll
+/Servers/ChatServer/bin/Debug/RedisLibrary.dll
+/Servers/ChatServer/bin/Debug/SocketIONodeLibrary.dll

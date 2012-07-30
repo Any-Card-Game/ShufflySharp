@@ -85,7 +85,7 @@ namespace Client.ShuffUI
 
             jQuery.Select(".window-header-button").Button();
 
-            if (!ui.Static)
+            if (!ui.StaticPositioning)
             {
                 outer.Draggable(new DraggableOptions
                     {

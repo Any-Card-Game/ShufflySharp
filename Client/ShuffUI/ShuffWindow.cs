@@ -52,7 +52,8 @@ namespace Client.ShuffUI
 
 
         [IntrinsicProperty]
-        public bool Static { get; set; }
+        [PreserveName]
+        public bool StaticPositioning { get; set; }
 
 
         public jQueryObject AddButton(ShuffButton element)

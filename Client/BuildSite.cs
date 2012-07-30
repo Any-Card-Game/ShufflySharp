@@ -52,24 +52,19 @@ namespace Client
                         url + "lib/jqwidgets/jqxlistbox.js"
                     }, () => scriptLoader.Load(new[]
                         {
-                            //url + "ClientHelp.js",
-                            //url + "common/Help.js",
                             url + "lib/codemirror/mode/javascript/javascript.js",
                             url + "lib/WorkerConsole.js",
-                            //url + "Gateway.js",
                             url + "lib/FunctionWorker.js",
                             url + "lib/Stats.js",
                             url + "lib/keyboardjs.js",
-                            url + "CommonLibraries.js",
-                            url + "ShuffleGameLibrary.js",
-                            url + "Models.js",
-                            //url + "UIManager.js",
-                            //url + "UIArea.js",
-                            //url + "PageHandler.js",
-                            //url + "uis/genericArea.js",
-                            //url + "ShuffUIManager.js",
                             url + "lib/Dialog.js",
-                        }, ready)));
+                        }, () => scriptLoader.Load(new[]
+                            {
+                                url + "CommonLibraries.js",
+                                url + "ShuffleGameLibrary.js",
+                                url + "Models.js",
+                                //url + "uis/genericArea.js", 
+                            }, ready))));
         }
 
         [IntrinsicProperty]
@@ -111,7 +106,9 @@ namespace Client
                     Width = 150,
                     Height = 25,
                     Text = "Update Game List",
-                    Click = (e) => { pageHandler.gateway.Emit("Area.Game.GetGames", devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+                    Click = (e) =>
+                    {
+                        pageHandler.gateway.Emit("Area.Game.GetGames", devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
                     }
                 });
 
@@ -138,16 +135,18 @@ namespace Client
                     Width = 120,
                     Height = 25,
                     Text = "Start Game",
-                    Click = (e) => { pageHandler.gateway.Emit("Area.Game.Start", new StartGameRequestModel(pageHandler.gameStuff.RoomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                    Click = (e) =>
+                    {
+                        pageHandler.gateway.Emit("Area.Game.Start", new StartGameRequestModel(pageHandler.gameStuff.RoomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                     }
                 });
 
 
             var randomName = "";
-            var ra = Math.Random()*10;
+            var ra = Math.Random() * 10;
             for (var i = 0; i < ra; i++)
             {
-                randomName += String.FromCharCode((char) (65 + (Math.Random()*26)));
+                randomName += String.FromCharCode((char)(65 + (Math.Random() * 26)));
             }
 
 
@@ -178,7 +177,7 @@ namespace Client
                     X = 30,
                     Y = 280,
                     Width = 215,
-                    Height = 25*5,
+                    Height = 25 * 5,
                     Label = "Users"
                 });
 
@@ -253,7 +252,7 @@ namespace Client
                     pageHandler.startGameServer();
                     pageHandler.gateway.Emit("Area.Debug.Create", new
                         {
-                            user = new UserModel {UserName = devArea.Data.txtNumOfPlayers.GetValue()},
+                            user = new UserModel { UserName = devArea.Data.txtNumOfPlayers.GetValue() },
                             Name = "main room",
                             Source = codeArea.Data.codeEditor.editor.GetValue(),
                             BreakPoints = codeArea.Data.breakPoints
@@ -309,7 +308,7 @@ namespace Client
                     Height = 250,
                     ItemCreation = (item, index) =>
                         {
-                            var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index%2 == 0 ? "red" : "green")));
+                            var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index % 2 == 0 ? "red" : "green")));
                             var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
                             ik.Append(ikc);
                             var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
@@ -385,7 +384,7 @@ namespace Client
 
                         for (var i = 0; i < count; i++)
                         {
-                            pageHandler.gateway.Emit("Area.Game.Join", new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + (i + 1)}), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                            pageHandler.gateway.Emit("Area.Game.Join", new JoinGameRequestModel(room.RoomID, new UserModel { UserName = "player " + (i + 1) }), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                         }
                         devArea.Data.Created = true;
                     }
@@ -415,9 +414,9 @@ namespace Client
                     Title = "Code",
                     X = 0,
                     Y = 0,
-                    Static = true,
-                    Width = jQuery.Window.GetWidth()*.50,
-                    Height = jQuery.Window.GetHeight()*.90,
+                    StaticPositioning = true,
+                    Width = jQuery.Window.GetWidth() * .50,
+                    Height = jQuery.Window.GetHeight() * .90,
                     AllowClose = true,
                     AllowMinimize = true,
                     Visible = true
@@ -425,9 +424,9 @@ namespace Client
 
 
             codeArea.Data.breakPoints = new List<int>();
-            codeArea.Data.console = codeArea.AddCodeEditor(new ShuffCodeEditor {Height = "20%", LineNumbers = false});
+            codeArea.Data.console = codeArea.AddCodeEditor(new ShuffCodeEditor { Height = "20%", LineNumbers = false });
 
-            codeArea.Data.codeEditor = codeArea.AddCodeEditor(new ShuffCodeEditor {Height = "80%", LineNumbers = true});
+            codeArea.Data.codeEditor = codeArea.AddCodeEditor(new ShuffCodeEditor { Height = "80%", LineNumbers = true });
 
 
             questionArea = shuffUIManager.CreateWindow(new ShuffWindow<QuestionAreaInformation>(new QuestionAreaInformation())
@@ -470,7 +469,7 @@ namespace Client
                             X = 30,
                             Y = 65,
                             Width = 215,
-                            Height = 25*5,
+                            Height = 25 * 5,
                             Label = "Answers",
                             Items = answers,
                             Click = (item) =>
@@ -486,7 +485,7 @@ namespace Client
                     X = 30,
                     Y = 65,
                     Width = 215,
-                    Height = 25*5,
+                    Height = 25 * 5,
                     Label = "Answers",
                     Click = (item) =>
                         {

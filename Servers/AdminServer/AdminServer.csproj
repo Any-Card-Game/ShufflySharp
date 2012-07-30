@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminServer.cs" />
+    <Compile Include="ProcessInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\CommonLibraries\CommonLibraries.csproj">

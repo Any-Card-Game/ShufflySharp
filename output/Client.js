@@ -21,7 +21,9 @@ Client.BuildSite = function(gatewayServerAddress) {
 	this.$loadCss(url + 'lib/jqwidgets/styles/jqx.base.css');
 	this.$scriptLoader.loadSync([url + 'lib/jquery-1.7.2.min.js', url + 'lib/jquery-ui-1.8.20.custom.min.js', url + 'lib/jqwidgets/scripts/gettheme.js', url + 'lib/jqwidgets/jqxcore.js'], Function.mkdel(this, function() {
 		this.$scriptLoader.load([url + 'lib/jqwidgets/jqxbuttons.js', url + 'lib/jqwidgets/jqxscrollbar.js', url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/codemirror.js', url + 'lib/jqwidgets/jqxlistbox.js'], Function.mkdel(this, function() {
-			this.$scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'CommonLibraries.js', url + 'ShuffleGameLibrary.js', url + 'Models.js', url + 'lib/Dialog.js'], Function.mkdel(this, this.$ready));
+			this.$scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'lib/Dialog.js'], Function.mkdel(this, function() {
+				this.$scriptLoader.load([url + 'CommonLibraries.js', url + 'ShuffleGameLibrary.js', url + 'Models.js'], Function.mkdel(this, this.$ready));
+			}));
 		}));
 	}));
 };
@@ -367,7 +369,7 @@ Client.BuildSite.prototype = {
 		$t35.title = 'Code';
 		$t35.x = 0;
 		$t35.y = 0;
-		$t35.static = true;
+		$t35.staticPositioning = true;
 		$t35.width = Client.ShuffUI.Number.op_Implicit$2(($(window)).width() * 0.5);
 		$t35.height = Client.ShuffUI.Number.op_Implicit$2(($(window)).height() * 0.9);
 		$t35.allowClose = true;
@@ -1201,7 +1203,7 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 				outer.css('z-index', 1900);
 			}));
 			($('.window-header-button')).button();
-			if (!ui.static) {
+			if (!ui.staticPositioning) {
 				outer.draggable({
 					cancel: '.window-inner, .CodeMirror, .CodeMirror-fullscreen, .CodeMirror-wrap, .CodeMirror-focused',
 					containment: ('window'),
@@ -1228,7 +1230,7 @@ Client.ShuffUI.ShuffWindow$1 = function(T) {
 		this.title = null;
 		this.allowClose = false;
 		this.allowMinimize = false;
-		this.static = false;
+		this.staticPositioning = false;
 		Client.ShuffUI.ShuffElement.call(this);
 		this.data = data;
 		this.elements = new Array();

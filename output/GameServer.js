@@ -413,6 +413,7 @@ GameServer.GameServer.prototype = {
 				break;
 			}
 			case 'gameOver': {
+				this.$emitAll(room, 'Area.Game.UpdateState', CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame));
 				this.$emitAll(room, 'Area.Game.GameOver', '');
 				if (ss.isValue(room.debuggingSender)) {
 					this.$qManager.sendMessage(Object).call(this.$qManager, room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', new Object());

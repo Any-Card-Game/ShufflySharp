@@ -8,10 +8,19 @@ namespace global
         public CardGameEffect()
         {
             Type = "";
+            DrawTime = DrawTime.Pre;
         }
 
         [ScriptName("type")]
         [IntrinsicProperty]
         public string Type { get; set; }
+
+        [ScriptName("post")]
+        [IntrinsicProperty]
+        public DrawTime DrawTime { get; set; }
+    }
+    public enum DrawTime
+    {
+        Pre,During,Post
     }
 }

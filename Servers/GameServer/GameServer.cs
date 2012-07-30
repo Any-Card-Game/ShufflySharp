@@ -272,6 +272,8 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
                     break;
                 case "gameOver":
+                    EmitAll(room, "Area.Game.UpdateState", room.Game.CardGame.CleanUp());
+
                     EmitAll(room, "Area.Game.GameOver", "");
 
                     if (room.DebuggingSender != null)

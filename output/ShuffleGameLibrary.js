@@ -258,6 +258,15 @@ global.CardGameArea.$ctor = function() {
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.CardGameEffectBendOptions
+global.CardGameEffectBendOptions = function() {
+};
+global.CardGameEffectBendOptions.$ctor = function() {
+	var $this = {};
+	$this.degrees = 0;
+	return $this;
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.CardGameEffectHighlightOptions
 global.CardGameEffectHighlightOptions = function() {
 };
@@ -268,6 +277,15 @@ global.CardGameEffectHighlightOptions.$ctor = function() {
 	$this.rotate = 0;
 	$this.offsetX = 0;
 	$this.offsetY = 0;
+	return $this;
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.CardGameEffectRotateOptions
+global.CardGameEffectRotateOptions = function() {
+};
+global.CardGameEffectRotateOptions.$ctor = function() {
+	var $this = {};
+	$this.degrees = 0;
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -302,6 +320,7 @@ global.CardGameTableSpaceOptions.$ctor = function() {
 	$this.sortPrder = 0;
 	$this.numerOfCardsHorizontal = 0;
 	$this.numerOfCardsVertical = 0;
+	$this.resizeType = null;
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -317,6 +336,21 @@ global.CardType = function() {
 global.CardType.prototype = {};
 global.CardType.registerEnum('global.CardType', false);
 ////////////////////////////////////////////////////////////////////////////////
+// global.DrawTime
+global.DrawTime = function() {
+};
+global.DrawTime.prototype = {};
+global.DrawTime.registerEnum('global.DrawTime', false);
+////////////////////////////////////////////////////////////////////////////////
+// global.Effect$Bend
+global.Effect$Bend = function(options) {
+	this.degrees = 0;
+	global.Effects.call(this);
+	this.type = 'bend';
+	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
+	this.post = 1;
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Highlight
 global.Effect$Highlight = function(options) {
 	this.radius = 0;
@@ -331,12 +365,24 @@ global.Effect$Highlight = function(options) {
 	this.rotate = ((options.rotate === 0) ? 0 : options.rotate);
 	this.offsetX = ((options.offsetX === 0) ? 0 : options.offsetX);
 	this.offsetY = ((options.offsetY === 0) ? 0 : options.offsetY);
+	this.post = 0;
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.Effect$Rotate
+global.Effect$Rotate = function(options) {
+	this.degrees = 0;
+	global.Effects.call(this);
+	this.type = 'rotate';
+	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
+	this.post = 1;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effects
 global.Effects = function() {
 	this.type = null;
+	this.post = 0;
 	this.type = '';
+	this.post = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.EffectType
@@ -520,6 +566,7 @@ global.TableSpace = function(options) {
 	this.numerOfCardsHorizontal = 0;
 	this.numerOfCardsVertical = 0;
 	this.effects = null;
+	this.resizeType = null;
 	this.vertical = (!options.vertical ? false : options.vertical);
 	this.x = ((options.x === 0) ? 0 : options.x);
 	this.y = ((options.y === 0) ? 0 : options.y);
@@ -535,24 +582,18 @@ global.TableSpace = function(options) {
 	this.numerOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 	this.numerOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
 	this.effects = new Array();
-};
-////////////////////////////////////////////////////////////////////////////////
-// global.TableTextArea
-global.TableTextArea = function() {
-	this.text = null;
-	this.x = 0;
-	this.y = 0;
+	this.resizeType = (ss.isNullOrUndefined(options.resizeType) ? 'grow' : options.resizeType);
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.TableTextArea
 global.TableTextArea = function(options) {
 	this.name = null;
 	this.x = 0;
-	this.nayme = 0;
+	this.y = 0;
 	this.text = null;
 	this.name = (ss.isNullOrUndefined(options.name) ? 'Text Area' : options.name);
 	this.x = ((options.x === 0) ? 0 : options.x);
-	this.nayme = ((options.nayme === 0) ? 0 : options.nayme);
+	this.y = ((options.nayme === 0) ? 0 : options.nayme);
 	this.text = (ss.isNullOrUndefined(options.text) ? 'Text' : options.text);
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -570,7 +611,9 @@ global.Card.registerClass('global.Card', Object);
 global.CardGame.registerClass('global.CardGame', Object);
 global.CardGameAnswer.registerClass('global.CardGameAnswer', Object);
 global.CardGameArea.registerClass('global.CardGameArea', Object);
+global.CardGameEffectBendOptions.registerClass('global.CardGameEffectBendOptions', Object);
 global.CardGameEffectHighlightOptions.registerClass('global.CardGameEffectHighlightOptions', Object);
+global.CardGameEffectRotateOptions.registerClass('global.CardGameEffectRotateOptions', Object);
 global.CardGameQuestion.registerClass('global.CardGameQuestion', Object);
 global.CardGameTableSpaceOptions.registerClass('global.CardGameTableSpaceOptions', Object);
 global.Effects.registerClass('global.Effects', Object);
@@ -583,6 +626,7 @@ global.Rectangle.registerClass('global.Rectangle', Object);
 global.shuff.registerClass('global.shuff', Object);
 global.TableSpace.registerClass('global.TableSpace', Object);
 global.TableTextArea.registerClass('global.TableTextArea', Object);
-global.TableTextArea.registerClass('global.TableTextArea', Object);
 global.User.registerClass('global.User', Object);
+global.Effect$Bend.registerClass('global.Effect$Bend', global.Effects);
 global.Effect$Highlight.registerClass('global.Effect$Highlight', global.Effects);
+global.Effect$Rotate.registerClass('global.Effect$Rotate', global.Effects);

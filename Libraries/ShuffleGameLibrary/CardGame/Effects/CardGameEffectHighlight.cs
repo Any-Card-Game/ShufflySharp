@@ -13,6 +13,7 @@ namespace global
             Rotate = options.Rotate == 0 ? 0 : options.Rotate;
             OffsetX = options.OffsetX == 0 ? 0 : options.OffsetX;
             OffsetY = options.OffsetY == 0 ? 0 : options.OffsetY;
+            DrawTime = DrawTime.Pre;
         }
 
         [ScriptName("radius")]

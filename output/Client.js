@@ -809,8 +809,22 @@ Client.PageHandler.prototype = {
 				try {
 					while ($t3.moveNext()) {
 						var card = $t3.get_current();
-						var xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
-						var yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
+						var xx = 0;
+						var yy = 0;
+						if (space.resizeType === 'grow') {
+							xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
+							yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
+						}
+						else if (space.resizeType === 'static') {
+							if (vertical) {
+								xx = space.x * scale.x;
+								yy = space.y * scale.y + card.value * scale.y / 2;
+							}
+							else {
+								xx = space.x * scale.x + card.value * scale.x / 2;
+								yy = space.y * scale.y;
+							}
+						}
 						var cardImage = this.$cardImages[this.drawCard(card)];
 						gameboard.context.save();
 						gameboard.context.translate(xx + (vertical ? (space.width * scale.x / 2) : 0), yy + (!vertical ? (space.height * scale.y / 2) : 0));
@@ -833,18 +847,6 @@ Client.PageHandler.prototype = {
 									gameboard.context.strokeRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
 									gameboard.context.restore();
 								}
-								//
-								//                        switch (effect.Type)
-								//
-								//                        {
-								//
-								//                        case EffectType.Highlight:
-								//
-								//                        
-								//
-								//                        break;
-								//
-								//                        }
 							}
 						}
 						finally {
@@ -852,8 +854,91 @@ Client.PageHandler.prototype = {
 								Type.cast($t4, ss.IDisposable).dispose();
 							}
 						}
-						//todo gayness
+						var $t5 = card.effects.getEnumerator();
+						try {
+							while ($t5.moveNext()) {
+								var effect2 = $t5.get_current();
+								switch (effect2.post) {
+									case 1: {
+										if (effect2.type === 'rotate') {
+											var hEffect2 = effect2;
+											gameboard.context.save();
+											gameboard.context.translate(ss.Int32.div(cardImage.width, 2), ss.Int32.div(cardImage.height, 2));
+											gameboard.context.rotate(hEffect2.degrees * Math.PI / 180);
+											gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
+										}
+										break;
+									}
+								}
+							}
+						}
+						finally {
+							if (Type.isInstanceOfType($t5, ss.IDisposable)) {
+								Type.cast($t5, ss.IDisposable).dispose();
+							}
+						}
+						var $t6 = space.effects.getEnumerator();
+						try {
+							while ($t6.moveNext()) {
+								var effect3 = $t6.get_current();
+								switch (effect3.post) {
+									case 1: {
+										if (effect3.type === 'bend') {
+											var hEffect3 = effect3;
+											gameboard.context.save();
+											gameboard.context.translate(ss.Int32.div(cardImage.width, 2), ss.Int32.div(cardImage.height, 2));
+											gameboard.context.rotate((-hEffect3.degrees / 2 + hEffect3.degrees / space.pile.cards.length * j) * Math.PI / 180);
+											gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
+										}
+										break;
+									}
+								}
+							}
+						}
+						finally {
+							if (Type.isInstanceOfType($t6, ss.IDisposable)) {
+								Type.cast($t6, ss.IDisposable).dispose();
+							}
+						}
 						gameboard.context.drawImage((cardImage), 0, 0);
+						var $t7 = card.effects.getEnumerator();
+						try {
+							while ($t7.moveNext()) {
+								var effect4 = $t7.get_current();
+								switch (effect4.post) {
+									case 1: {
+										if (effect4.type === 'rotate') {
+											gameboard.context.restore();
+										}
+										break;
+									}
+								}
+							}
+						}
+						finally {
+							if (Type.isInstanceOfType($t7, ss.IDisposable)) {
+								Type.cast($t7, ss.IDisposable).dispose();
+							}
+						}
+						var $t8 = space.effects.getEnumerator();
+						try {
+							while ($t8.moveNext()) {
+								var effect5 = $t8.get_current();
+								switch (effect5.post) {
+									case 1: {
+										if (effect5.type === 'bend') {
+											gameboard.context.restore();
+										}
+										break;
+									}
+								}
+							}
+						}
+						finally {
+							if (Type.isInstanceOfType($t8, ss.IDisposable)) {
+								Type.cast($t8, ss.IDisposable).dispose();
+							}
+						}
 						gameboard.context.restore();
 						j++;
 					}
@@ -870,17 +955,17 @@ Client.PageHandler.prototype = {
 				Type.cast($t1, ss.IDisposable).dispose();
 			}
 		}
-		var $t5 = mainArea.textAreas.getEnumerator();
+		var $t9 = mainArea.textAreas.getEnumerator();
 		try {
-			while ($t5.moveNext()) {
-				var ta = $t5.get_current();
+			while ($t9.moveNext()) {
+				var ta = $t9.get_current();
 				gameboard.context.fillStyle = 'rgba(200, 0, 200, 0.5)';
-				gameboard.context.fillText(ta.text, ta.x * scale.x, ta.nayme * scale.y);
+				gameboard.context.fillText(ta.text, ta.x * scale.x, ta.y * scale.y);
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t5, ss.IDisposable)) {
-				Type.cast($t5, ss.IDisposable).dispose();
+			if (Type.isInstanceOfType($t9, ss.IDisposable)) {
+				Type.cast($t9, ss.IDisposable).dispose();
 			}
 		}
 	},

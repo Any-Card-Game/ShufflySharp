@@ -41,10 +41,10 @@ namespace Client
 
 
             var randomName = "";
-            var ra = Math.Random()*10;
+            var ra = Math.Random() * 10;
             for (var i = 0; i < ra; i++)
             {
-                randomName += String.FromCharCode((char) (65 + (Math.Random()*26)));
+                randomName += String.FromCharCode((char)(65 + (Math.Random() * 26)));
             }
 
             gateway.Login(randomName);
@@ -55,7 +55,7 @@ namespace Client
                     var time = endTime - startTime;
                     numOfTimes++;
                     timeValue += time;
-                    buildSite.devArea.Data.lblHowFast.Text("How Many: " + (timeValue/numOfTimes));
+                    buildSite.devArea.Data.lblHowFast.Text("How Many: " + (timeValue / numOfTimes));
                     buildSite.codeArea.Data.codeEditor.editor.SetValue(data.Content);
                     buildSite.codeArea.Data.codeEditor.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
                     buildSite.codeArea.Data.codeEditor.editor.Refresh();
@@ -73,22 +73,22 @@ namespace Client
             }
             lastMainArea = null;
 
-            jQuery.Select("body").Append(gameCanvas = (CanvasElement) Document.CreateElement("canvas"));
+            jQuery.Select("body").Append(gameCanvas = (CanvasElement)Document.CreateElement("canvas"));
 
 
             var props = new JsDictionary();
             props["margin"] = "0px";
             props["position"] = "absolute";
             props["top"] = "0px";
-            props["left"] = (jQuery.Window.GetWidth()*.5) + "px";
-            props["z-index"] = (jQuery.Window.GetWidth()*.5) + "px";
+            props["left"] = (jQuery.Window.GetWidth() * .5) + "px";
+            props["z-index"] = (jQuery.Window.GetWidth() * .5) + "px";
 
             jQuery.FromElement(gameCanvas).CSS(props);
 
-            gameContext = new PageGameContext((CanvasContext2D) gameCanvas.GetContext("2d"), new GameCanvasInformation());
+            gameContext = new PageGameContext((CanvasContext2D)gameCanvas.GetContext("2d"), new GameCanvasInformation());
             gameContext.CanvasInfo.canvas = gameCanvas;
             gameContext.CanvasInfo.domCanvas = jQuery.FromElement(gameCanvas);
-            gameContext.CanvasInfo.canvas.Width = (int) (jQuery.Window.GetWidth()*.5);
+            gameContext.CanvasInfo.canvas.Width = (int)(jQuery.Window.GetWidth() * .5);
             gameContext.CanvasInfo.canvas.Height = jQuery.Window.GetHeight();
 
             gameCanvas.AddEventListener("DOMMouseScroll", handleScroll, false);
@@ -109,7 +109,7 @@ namespace Client
 
             jQuery.Window.Resize(ResizeCanvas);
             ResizeCanvas(null);
-            Window.SetInterval(Draw, 1000/60);
+            Window.SetInterval(Draw, 1000 / 60);
         }
 
         public void startGameServer()
@@ -132,7 +132,7 @@ namespace Client
                     buildSite.home.Data.loadRoomInfos(data);
 
                     var lines = buildSite.codeArea.Data.console.editor.GetValue().Split("\n");
-                    lines = (string[]) lines.Extract(lines.Length - 40, 40);
+                    lines = (string[])lines.Extract(lines.Length - 40, 40);
 
                     buildSite.codeArea.Data.console.editor.SetValue(lines.Join("\n") + "\n" + data.Value);
                     buildSite.codeArea.Data.console.editor.SetCursor(buildSite.codeArea.Data.console.editor.LineCount(), 0);
@@ -191,7 +191,7 @@ namespace Client
         {
             var gameboard = gameContext;
             lastMainArea = mainArea;
-            var scale = new Point(gameContext.CanvasInfo.canvas.Width/mainArea.Size.Width, gameContext.CanvasInfo.canvas.Height/mainArea.Size.Height);
+            var scale = new Point(gameContext.CanvasInfo.canvas.Width / mainArea.Size.Width, gameContext.CanvasInfo.canvas.Height / mainArea.Size.Height);
             gameboard.Context.FillStyle = "rgba(0,0,200,0.5)";
             foreach (var space in mainArea.Spaces)
             {
@@ -216,7 +216,9 @@ namespace Client
                         gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
                         gameboard.Context.StrokeRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
                         gameboard.Context.Restore();
-                    } /*
+                    }
+
+                    /*
                         switch (effect.Type)
                         {
                             case EffectType.Highlight:
@@ -231,47 +233,130 @@ namespace Client
 
 
 
-                
-                gameboard.Context.FillRect(space.X*scale.X, space.Y*scale.Y, space.Width*scale.X, space.Height*scale.Y);
 
-                var spaceScale = new Point(space.Width/space.Pile.Cards.Count, space.Height/space.Pile.Cards.Count);
+                gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
+
+                var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
 
                 var j = 0;
                 foreach (var card in space.Pile.Cards)
                 {
-                    var xx = Math.Floor((space.X*scale.X) + (!vertical ? (j*spaceScale.X*scale.X) : 0));
-                    var yy = Math.Floor((space.Y*scale.Y) + (vertical ? (j*spaceScale.Y*scale.Y) : 0));
+                    var xx = 0.0;
+                    var yy = 0.0;
+                    if (space.ResizeType == "grow")
+                    {
+                        xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
+                        yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
+                    }
+                    else if (space.ResizeType == "static")
+                    {
+                        if (vertical)
+                        {
+                            xx = space.X * scale.X;
+                            yy = space.Y * scale.Y + card.Value * scale.Y / 2;
+                        }
+                        else
+                        {
+                            xx = space.X * scale.X + card.Value * scale.X / 2;
+                            yy = space.Y * scale.Y;
+                        }
+                    }
                     var cardImage = cardImages[drawCard(card)];
                     gameboard.Context.Save();
-                    gameboard.Context.Translate(xx + (vertical ? space.Width*scale.X/2 : 0), yy + (!vertical ? space.Height*scale.Y/2 : 0));
-                    gameboard.Context.Rotate(space.Rotate*Math.PI/180);
-                    gameboard.Context.Translate((-cardImage.Width/2), (-cardImage.Height/2));
+                    gameboard.Context.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
+                    gameboard.Context.Rotate(space.Rotate * Math.PI / 180);
+                    gameboard.Context.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
                     foreach (var effect in card.Effects)
                     {
+
                         if (effect.Type == "highlight")
                         {
                             var hEffect = effect.castValue<CardGameEffectHighlight>();
                             gameboard.Context.Save();
                             gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
-                            gameboard.Context.Rotate(hEffect.Rotate*Math.PI/180);
+                            gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
                             gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
                             gameboard.Context.LineWidth = 5;
                             gameboard.Context.FillStyle = hEffect.Color;
                             gameboard.Context.StrokeStyle = "black";
-                            gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius*2, cardImage.Height + hEffect.Radius*2);
-                            gameboard.Context.StrokeRect(0, 0, cardImage.Width + hEffect.Radius*2, cardImage.Height + hEffect.Radius*2);
+                            gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+                            gameboard.Context.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
                             gameboard.Context.Restore();
-                        } /*
-                        switch (effect.Type)
-                        {
-                            case EffectType.Highlight:
-                          
-                                break;
-                        }*/
+                        }
+
                     }
-                    //todo gayness
+
+                    foreach (var effect in card.Effects)
+                    {
+                        switch (effect.DrawTime)
+                        {
+                            case DrawTime.During:
+                                if (effect.Type == "rotate")
+                                {
+                                    var hEffect = effect.castValue<CardGameEffectRotate>();
+                                    gameboard.Context.Save();
+                                    gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
+                                    gameboard.Context.Rotate(hEffect.Degrees * Math.PI / 180);
+                                    gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
+
+                                }
+
+
+
+                                break;
+                        }
+                    }
+
+                    foreach (var effect in space.Effects)
+                    {
+                        switch (effect.DrawTime)
+                        {
+                            case DrawTime.During:
+                                if (effect.Type == "bend")
+                                {
+
+                                    var hEffect = effect.castValue<CardGameEffectBend>();
+                                    gameboard.Context.Save();
+                                    gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
+                                    gameboard.Context.Rotate((-hEffect.Degrees / 2 + hEffect.Degrees / space.Pile.Cards.Count * j) * Math.PI / 180);
+                                    gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
+
+                                }
+                                break;
+                        }
+                    }
+
                     gameboard.Context.DrawImage(cardImage.me(), 0, 0);
+                    foreach (var effect in card.Effects)
+                    {
+                        switch (effect.DrawTime)
+                        {
+                            case DrawTime.During:
+                                if (effect.Type == "rotate")
+                                {
+                                    gameboard.Context.Restore();
+                                }
+                             
+                                break;
+                        }
+                    }
+                    foreach (var effect in space.Effects)
+                    {
+                        switch (effect.DrawTime)
+                        {
+                            case DrawTime.During:
+                               if (effect.Type == "bend")
+                                {
+                                    gameboard.Context.Restore();
+                                }
+                                break;
+                        }
+                    }
+
                     gameboard.Context.Restore();
+
+
+
                     j++;
                 }
             }
@@ -280,7 +365,7 @@ namespace Client
             foreach (var ta in mainArea.TextAreas)
             {
                 gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
-                gameboard.Context.FillText(ta.Text, ta.X*scale.X, ta.Y*scale.Y);
+                gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
             }
         }
 
@@ -288,7 +373,7 @@ namespace Client
         {
             var src = "";
             var domain = Globals.Window.topLevel + "assets";
-            src = domain + "/cards/" + (100 + (card.Value + 1) + (card.Type)*13);
+            src = domain + "/cards/" + (100 + (card.Value + 1) + (card.Type) * 13);
             return src + ".gif";
         }
 
@@ -316,7 +401,7 @@ namespace Client
         public void ResizeCanvas(jQueryEvent jQueryEvent)
         {
             if (gameContext.CanvasInfo.domCanvas.GetAttribute("width") != jQuery.Window.GetWidth().ToString())
-                gameContext.CanvasInfo.domCanvas.Attribute("width", (jQuery.Window.GetWidth()*.5).ToString());
+                gameContext.CanvasInfo.domCanvas.Attribute("width", (jQuery.Window.GetWidth() * .5).ToString());
             if (gameContext.CanvasInfo.domCanvas.GetAttribute("height") != jQuery.Window.GetHeight().ToString())
                 gameContext.CanvasInfo.domCanvas.Attribute("height", jQuery.Window.GetHeight().ToString());
             if (lastMainArea != null)

@@ -21,7 +21,8 @@ module.exports = Sevens = function () {
             height: 6,
             pile: self.clubs,
             numberOfCardsHorizontal: 1,
-            numberOfCardsVertical: -1
+            numberOfCardsVertical: -1,
+            resizeType:'static'
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
@@ -34,7 +35,8 @@ module.exports = Sevens = function () {
             height: 6,
             pile: self.hearts,
             numberOfCardsHorizontal: 1,
-            numberOfCardsVertical: -1
+            numberOfCardsVertical: -1,
+            resizeType:'static'
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
@@ -47,7 +49,8 @@ module.exports = Sevens = function () {
             height: 6,
             pile: self.diamonds,
             numberOfCardsHorizontal: 1,
-            numberOfCardsVertical: -1
+            numberOfCardsVertical: -1,
+            resizeType:'static'
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
@@ -60,7 +63,8 @@ module.exports = Sevens = function () {
             height: 6,
             pile: self.spades,
             numberOfCardsHorizontal: 1,
-            numberOfCardsVertical: -1
+            numberOfCardsVertical: -1,
+            resizeType:'static'
         }));
 
         self.cardGame.textAreas.push(new TableTextArea({
@@ -117,7 +121,7 @@ module.exports = Sevens = function () {
                 if (userIndex == 2) {
                     rotate = -90;
                 } else {
-                    rotate = 90;
+                    rotate = -90;
                 }
                 self.cardGame.spaces.push(sp = new TableSpace({
                     vertical: true,
@@ -133,6 +137,8 @@ module.exports = Sevens = function () {
                 break;
         }
         sp.user = user;
+        sp.effects.push(new Effect$Bend({ degrees: 35 }));
+        
         var space = sp;
         switch (userIndex) {
             case 0:
@@ -176,6 +182,8 @@ module.exports = Sevens = function () {
         });
 
         self.cardGame.users.foreach(function (u, ind) {
+                shuff.log('::'+u.userName);
+            
             var sp = self.createUser(u,ind, u.userName);
             sp.pile = u.cards;
         });
@@ -226,36 +234,59 @@ module.exports = Sevens = function () {
                 for (var i = 0; i < sp.length; i++) {
                     //sp[i].rotate += 10;
 
-                    sp[i].effects = [];
+                        sp[i].effects = [];
+                    
+
                     if(sp[i].user==u) {
-                        sp[i].effects.push(new Effect$Highlight({
-                            radius: 70,
-                            color: 'rgba(112,255,84,0.7)',
-                            opacity: .7
-                        }));   
+                        if(usable.length==0) {
+                            sp[i].effects.push(new Effect$Highlight({
+                                radius: 70,
+                                color: 'rgba(255,0,84,0.7)',
+                                opacity: .7
+                            }));
+                        }else {
+                            sp[i].effects.push(new Effect$Highlight({
+                                radius: 70,
+                                color: 'rgba(112,255,84,0.7)',
+                                opacity: .7
+                            }));
+                        }
                     }
                     if(!sp[i].user) {
                         var op = sp[i].pile.cards.length/13;
-                        
+                            
+                        var red = "112";
+                        if(sp[i].pile.cards.length==13) {
+                            red = "255";
+                        }
+
                         sp[i].effects.push(new Effect$Highlight({
                             radius: 25+sp[i].pile.cards.length*2,
-                            color: 'rgba(112,'+parseInt(op*255)+',84,'+op+')',
+                            color: 'rgba('+red+',12,'+parseInt(op*255)+','+op+')',
                             opacity: op
                         }));   
+                    }else {
+                            sp[i].effects.push(new Effect$Bend({ degrees: 35 }));
+
                     }
                     
                     for (var ij = 0; ij < sp[i].pile.cards.length; ij++) {
                         var card = sp[i].pile.cards[ij];
                         card.effects = [];
 
+                        if(card.value==6 && !sp[i].user) {
+                              card.effects.push(new Effect$Rotate({
+                                    degrees: 90,
+                                }));
+                        }
 
                         for (var j = 0; j < usable.length; j++) {
                             var m = usable[j];
                             if (m.value == card.value && m.type == card.type) {
                                 card.effects.push(new Effect$Highlight({
                                     radius: 14,
-                                    color: 'rgba(255,11,84,0.3)',
-                                    opacity: .30
+                                    color: 'rgba(255,11,84,0.55)',
+                                    opacity: .55
                                 }));
                                 break; ;
                             }

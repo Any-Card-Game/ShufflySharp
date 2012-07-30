@@ -17,6 +17,6 @@ namespace global
 
         [ScriptName("textAreas")]
         [IntrinsicProperty]
-        public List<CardGameTextArea> TextAreas { get; set; }
+        public List<GameCardGameTextArea> TextAreas { get; set; }
     }
 }

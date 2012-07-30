@@ -21,7 +21,7 @@ namespace global
         [IntrinsicProperty]
         public int X { get; set; }
 
-        [ScriptName("nayme")]
+        [ScriptName("y")]
         [IntrinsicProperty]
         public int Y { get; set; }
 

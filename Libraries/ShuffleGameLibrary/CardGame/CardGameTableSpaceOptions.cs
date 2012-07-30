@@ -60,5 +60,10 @@ namespace global
         [ScriptName("numerOfCardsVertical")]
         [IntrinsicProperty]
         public int NumerOfCardsVertical { get; set; }
+
+
+        [ScriptName("resizeType")]
+        [IntrinsicProperty]
+        public string ResizeType { get; set; }//todo toenum
     }
 }

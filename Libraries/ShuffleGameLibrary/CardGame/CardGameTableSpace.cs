@@ -23,6 +23,7 @@ namespace global
             NumerOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
             NumerOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
             Effects = new List<CardGameEffect>();
+            ResizeType = options.ResizeType == null ? "grow" : options.ResizeType;
         }
 
         [ScriptName("vertical")]
@@ -84,5 +85,9 @@ namespace global
         [ScriptName("effects")]
         [IntrinsicProperty]
         public List<CardGameEffect> Effects { get; set; }
+
+        [ScriptName("resizeType")]
+        [IntrinsicProperty]
+        public string ResizeType { get; set; }//todo toenum
     }
 }

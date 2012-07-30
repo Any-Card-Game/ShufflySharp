@@ -236,7 +236,7 @@ namespace Client
             devArea = shuffUIManager.CreateWindow(new ShuffWindow<DevAreaInformation>(new DevAreaInformation())
                 {
                     Title = "Developer",
-                    X = jQuery.Select("body").GetInnerWidth() - 500,
+                    X = 500,//jQuery.Select("body").GetInnerWidth() -
                     Y = 100,
                     Width = 420,
                     Height = 450,
@@ -493,6 +493,8 @@ namespace Client
                             questionArea.Visible = false;
                         }
                 });
+
+            shuffUIManager.Focus(devArea.Information);
 
 
             /*

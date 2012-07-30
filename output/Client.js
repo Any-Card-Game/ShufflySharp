@@ -208,7 +208,7 @@ Client.BuildSite.prototype = {
 		};
 		var $t13 = new (Type.makeGenericType(Client.ShuffUI.ShuffWindow$1, [Client.Information.DevAreaInformation]))(new Client.Information.DevAreaInformation());
 		$t13.title = 'Developer';
-		$t13.x = ($('body')).innerWidth() - 500;
+		$t13.x = 500;
 		$t13.y = 100;
 		$t13.width = Client.ShuffUI.Number.op_Implicit$2(420);
 		$t13.height = Client.ShuffUI.Number.op_Implicit$2(450);
@@ -444,6 +444,7 @@ Client.BuildSite.prototype = {
 			this.questionArea.set_visible(false);
 		});
 		$t51.answerBox = $t50.addListBox($t49);
+		shuffUIManager.focus(this.devArea.information);
 		//
 		//
 		//
@@ -1297,7 +1298,9 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 			var inner = $('<div class=\'window-inner\' id=\'window' + windowID + '\' style=\'background-color: #FDFEFE;width:100%; height:100%; \'> </div> ');
 			outer.append(inner);
 			ui.set_$window(($('#window' + windowID)));
-			this.$uiAreas.add(new Client.ShuffUI.UIAreaInformation(outer, inner));
+			var info;
+			this.$uiAreas.add(info = new Client.ShuffUI.UIAreaInformation(outer, inner));
+			ui.information = info;
 			x.click(function(evt) {
 				outer.css('display', 'none');
 			});
@@ -1319,10 +1322,7 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 				window.alert('3');
 			});
 			outer.mousedown(Function.mkdel(this, function(evt3) {
-				for (var i = 0; i < this.$uiAreas.length; i++) {
-					(this.$uiAreas[i]).get_element().css('z-index', 1800);
-				}
-				outer.css('z-index', 1900);
+				this.focus(info);
 			}));
 			($('.window-header-button')).button();
 			if (!ui.staticPositioning) {
@@ -1340,6 +1340,12 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 			}
 			return ui;
 		};
+	},
+	focus: function(info) {
+		for (var i = 0; i < this.$uiAreas.length; i++) {
+			(this.$uiAreas[i]).get_element().css('z-index', 1800);
+		}
+		info.get_element().css('z-index', 1900);
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -1353,6 +1359,7 @@ Client.ShuffUI.ShuffWindow$1 = function(T) {
 		this.allowClose = false;
 		this.allowMinimize = false;
 		this.staticPositioning = false;
+		this.information = null;
 		Client.ShuffUI.ShuffElement.call(this);
 		this.data = data;
 		this.elements = new Array();

@@ -50,8 +50,9 @@ namespace Client.ShuffUI
             outer.Append(inner);
             ui.Window = jQuery.Select("#window" + windowID);
 
-            UIAreas.Add(new UIAreaInformation(outer, inner));
-
+            UIAreaInformation info;
+            UIAreas.Add(info=new UIAreaInformation(outer, inner));
+            ui.Information = info;
 
             x.Click((evt) => { outer.CSS("display", "none"); });
             var toggleSize = false;
@@ -76,11 +77,7 @@ namespace Client.ShuffUI
 
             outer.MouseDown((evt) =>
                 {
-                    for (var i = 0; i < UIAreas.Count; i++)
-                    {
-                        UIAreas[i].Element.CSS("z-index", 1800);
-                    }
-                    outer.CSS("z-index", 1900);
+                    Focus(info);
                 });
 
             jQuery.Select(".window-header-button").Button();
@@ -103,6 +100,15 @@ namespace Client.ShuffUI
             }
 
             return ui;
+        }
+
+        public void Focus(UIAreaInformation info)
+        {
+            for (var i = 0; i < UIAreas.Count; i++)
+            {
+                UIAreas[i].Element.CSS("z-index", 1800);
+            }
+            info.Element.CSS("z-index", 1900);
         }
     }
 

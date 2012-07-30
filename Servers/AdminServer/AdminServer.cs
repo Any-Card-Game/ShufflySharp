@@ -73,7 +73,7 @@ namespace AdminServer
                 {
 
                     var fieldSets = "";
-                    fieldSets += string.Format("<span>Main Site: {0}</span>", "<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://50.116.22.241\");'>Launch</a>");
+                    fieldSets += string.Format("<span>Main Site: {0}</span>", "<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://50.116.22.241\",\"MainSite\");'>Launch</a>");
 
                     fieldSets += buildFieldset(sites,"Site Servers");
                     fieldSets += buildFieldset(gateways, "Gateway Servers");
@@ -102,7 +102,11 @@ namespace AdminServer
             {
                 str += "<li>";
                 str += string.Format("<span>{0} ({1}): {2}</span>", process.Name, process.Index + 1,
-                    debug ? string.Format("<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://50.116.22.241:8080/debug?port={0}\");'>Debug</a>", process.DebugPort + "&foo=" + int.Parse((Math.Random() * 5000000).ToString())) : "Debug");
+                                     debug
+                                         ? string.Format(
+                                             "<a href='#" + (int.Parse((Math.Random()*20000).ToString())) + "' onclick='goHere(\"http://50.116.22.241:8080/debug?port={0}\",\"" + name + "(" + (process.Index + 1) + ")" +
+                                             "\");'>Debug</a>", process.DebugPort + "&foo=" + int.Parse((Math.Random()*5000000).ToString()))
+                                         : "Debug");
                 str += "</li>";
 
 

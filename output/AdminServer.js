@@ -49,7 +49,7 @@ AdminServer.AdminServer.prototype = {
 	$handler: function(request, response) {
 		this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', Function.mkdel(this, function(err, content) {
 			var fieldSets = '';
-			fieldSets += String.format('<span>Main Site: {0}</span>', '<a href=\'#' + (parseInt((Math.random() * 20000).toString())) + '\' onclick=\'goHere("http://50.116.22.241");\'>Launch</a>');
+			fieldSets += String.format('<span>Main Site: {0}</span>', '<a href=\'#' + (parseInt((Math.random() * 20000).toString())) + '\' onclick=\'goHere("http://50.116.22.241","MainSite");\'>Launch</a>');
 			fieldSets += this.$buildFieldset(this.$sites, 'Site Servers');
 			fieldSets += this.$buildFieldset(this.$gateways, 'Gateway Servers');
 			fieldSets += this.$buildFieldset(this.$games, 'Game Servers');
@@ -71,7 +71,7 @@ AdminServer.AdminServer.prototype = {
 			while ($t1.moveNext()) {
 				var process = $t1.get_current();
 				str += '<li>';
-				str += String.format('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? String.format('<a href=\'#' + (parseInt((Math.random() * 20000).toString())) + '\' onclick=\'goHere("http://50.116.22.241:8080/debug?port={0}");\'>Debug</a>', process.debugPort + '&foo=' + (parseInt((Math.random() * 5000000).toString()))) : 'Debug'));
+				str += String.format('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? String.format('<a href=\'#' + (parseInt((Math.random() * 20000).toString())) + '\' onclick=\'goHere("http://50.116.22.241:8080/debug?port={0}","' + name + '(' + (process.index + 1) + ')' + '");\'>Debug</a>', process.debugPort + '&foo=' + (parseInt((Math.random() * 5000000).toString()))) : 'Debug'));
 				str += '</li>';
 				//document.frames["test"].location.reload();
 			}

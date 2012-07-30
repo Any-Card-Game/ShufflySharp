@@ -305,8 +305,7 @@ module.exports = Sevens = function () {
 
 
 
-                shuff.log('asking question');
-
+                shuff.log('asking question'); 
                 var de = shuff.askQuestion(u, 'Which card would you like to play?', answers, self.cardGame);
                 shuff.log('asked question: ' + de);
 
@@ -337,6 +336,18 @@ module.exports = Sevens = function () {
                     }
 
                     if (u.cards.cards.length == 0) {
+                        
+                          for (var i = 0; i < sp.length; i++) {
+
+                              if (sp[i].user == u) {
+                                  sp[i].effects.push(new Effect$Highlight({
+                                      radius: 100,
+                                      color: 'rgba(255,255,255,0.7)',
+                                      opacity: .7
+                                  }));
+                                  break;
+                              }
+b                          }
                         shuff.declareWinner(u);
 
                         return true;

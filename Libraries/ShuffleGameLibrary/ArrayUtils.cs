@@ -14,7 +14,7 @@ namespace global
             "Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};".eval();
             "Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};".eval();
             "Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};".eval();
-        }
+         }
 
         [IgnoreGenericArguments]
         public static bool ForEach<T>(T[] ts, Func<T, int, bool> does)
@@ -28,8 +28,8 @@ namespace global
                 }
             }
             return false;
-        } 
-        public static T2[] Select<T,T2>(T[] ts, Func<T, T2> does)
+        }
+        public static T2[] Select<T, T2>(T[] ts, Func<T, T2> does)
         {
             T2[] ts2 = new T2[ts.Length];
             for (var i = 0; i < ts.Length; i++)
@@ -37,8 +37,8 @@ namespace global
                 ts2[i] = does(ts[i]);
             }
             return ts2;
-        }
-         
+        } 
+
         public static CardGameCard[] SortCards(CardGameCard[] ts)
         {
             ExtensionMethods.debugger();
@@ -58,11 +58,16 @@ namespace global
                     items[jf++] = (gameCard);
                 }
             }
+            setArrayData(ts, items);
+            return ts;
+        }
+
+        private static void setArrayData<T>(T[] ts, T[] items)
+        {
             for (int i = 0; i < items.Length; i++)
             {
                 ts[i] = items[i];
             }
-            return items;
         }
 
         public class GroupByKey<T,T2>

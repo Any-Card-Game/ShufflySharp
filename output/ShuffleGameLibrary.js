@@ -98,10 +98,15 @@ global.ArrayUtils.sortCards = function(ts) {
 			}
 		}
 	}
-	for (var i = 0; i < items.length; i++) {
-		ts[i] = items[i];
-	}
-	return items;
+	global.ArrayUtils.$setArrayData(global.Card).call(null, ts, items);
+	return ts;
+};
+global.ArrayUtils.$setArrayData = function(T) {
+	return function(ts, items) {
+		for (var i = 0; i < items.length; i++) {
+			ts[i] = items[i];
+		}
+	};
 };
 global.ArrayUtils.groupBy = function(T, T2) {
 	return function(ts, does) {

@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Shuffly Admin</title>
-
     <style type="text/css">
         body, html
         {
@@ -12,64 +11,78 @@
         {
             background-color: cadetblue;
         }
-       
-       
-div.tabs {
-	width: 100%;
-	margin: 0 0 0px 0;
-}
-
-ul.tabs {
-	list-style-type: none;
-	width: 100%;
-	float: left;
-	background: url(pixel.gif) bottom left repeat-x;
-}
-
-ul.tabs li {
-	margin: 0 2px 0 0;
-	float: left;
-}
-
-ul.tabs a {
-	float: left;
-	display: block;
-	padding: 4px 8px;
-	border: 1px solid #ccc;
-	border-bottom: 0;
-	color: #666;
-	background: #eee;
-	text-decoration: none;
-	font-weight: bold;
-}
-
-ul.tabs a:hover {
-	background: #fff;
-}
-
-ul.tabs a.active {
-	background: #fff;
-	padding-bottom: 5px;
-	cursor: default;
-	color: #00f;
-}
-
-.tabs-container {
-	clear: left;
-	border: 1px solid #ccc;
-	border-top: 0;
-	padding: 20px 8px 0 8px;
-}
-.spsp{
-	display:inline-block;
-	text-align:center;
-	width:28px;height:26px;
-	border:solid 2px black;
-	background-color:red;
-	color:white;
-}
-
-
+        
+        
+        div.tabs
+        {
+            width: 100%;
+            margin: 0 0 0px 0;
+            padding: 0px;
+        }
+        
+        ul.tabs
+        {
+            list-style-type: none;
+            width: 100%;
+            float: left;
+            background: url(pixel.gif) bottom left repeat-x;
+            padding: 0px;
+            -webkit-padding-start: 0;
+            -webkit-margin-before: 0;
+            -webkit-margin-after: 0;
+        }
+        
+        ul.tabs li
+        {
+            margin: 0 2px 0 0;
+            float: left;
+        }
+        
+        ul.tabs a
+        {
+            float: left;
+            display: block;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-bottom: 0;
+            color: #666;
+            background: #eee;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        ul.tabs a:hover
+        {
+            background: #fff;
+        }
+        
+        ul.tabs a.active
+        {
+            background: #fff;
+            padding-bottom: 5px;
+            cursor: default;
+            color: #00f;
+        }
+        
+        .tabs-container
+        {
+            clear: left;
+            border: 1px solid #ccc;
+            border-top: 0;
+            padding: 20px 8px 0 8px;
+        }
+        .spsp
+        {
+            float: left;
+            display: block;
+            padding: 4px 8px;
+            border: 1px solid #ccc;
+            border-bottom: 0;
+            color: white;
+            background: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
     </style>
     <script type="text/javascript">
         /*Yetii - Yet (E)Another Tab Interface Implementation,version 1.7,http://www.kminek.pl/lab/yetii/,Copyright (c) Grzegorz Wojcik,Code licensed under the BSD License: http://www.kminek.pl/bsdlicense.txt*/
@@ -86,58 +99,75 @@ ul.tabs a.active {
                 </td>
                 <td>
                     <div class="tabs" id="tabs">
-                        <ul id="tabs-nav"  class="tabs">
+                        <ul id="tabs-nav" class="tabs">
                         </ul>
                     </div>
                 </td>
             </tr>
         </table>
     </div>
+    <script type="text/javascript">
+        var counter = 0;
+        function goHere(url, name) {
 
-        <script type="text/javascript">
-            var counter = 0;
-            function goHere(url, name) {
-
-
-                var ndiv = document.createElement('div');
-                ndiv.setAttribute('class', 'tab');
-                ndiv.setAttribute('id', 'tab' + (counter++));
-                document.getElementById('tabs').appendChild(ndiv);
+            if (document.getElementById('tab' + name)) {
+                var d = document.getElementById('tab' + name);
+                while (d.hasChildNodes()) {
+                    d.removeChild(d.lastChild);
+                }
 
                 var ifr = document.createElement('iframe');
                 ifr.setAttribute('width', '100%');
                 ifr.setAttribute('height', '90%');
                 ifr.setAttribute('src', url);
-                ndiv.appendChild(ifr);
-
-                var ndiv2 = document.createElement('li');
-                var na = document.createElement('a');
-                na.setAttribute('href', '#tab' + (counter - 1));
-                na.innerText = name;
-                ndiv2.appendChild(na);
-
-                na = document.createElement('span');
-                na.setAttribute('class', 'spsp');
-                na.innerText = "X";
-                na.onclick = function (e) {
-                    document.getElementById('tabs').removeChild(ndiv);
-                    document.getElementById('tabs-nav').removeChild(ndiv2);
-
-                    return false;
-                };
-                ndiv2.appendChild(na);
-                
-                document.getElementById('tabs-nav').appendChild(ndiv2);
+                d.appendChild(ifr);
 
                 var tabber1 = new Yetii({
-                    id: 'tabs'
+                    id: 'tabs', active: d.ind
                 });
+                return;
             }
 
-            goHere('http://50.116.22.241','MainSite');
+            var ndiv = document.createElement('div');
+            ndiv.setAttribute('class', 'tab');
+            ndiv.ind = counter++;
+            ndiv.setAttribute('id', 'tab' + name);
+            document.getElementById('tabs').appendChild(ndiv);
+
+            var ifr = document.createElement('iframe');
+            ifr.setAttribute('width', '100%');
+            ifr.setAttribute('height', '90%');
+            ifr.setAttribute('src', url);
+            ndiv.appendChild(ifr);
+
+            var ndiv2 = document.createElement('li');
+            var na = document.createElement('a');
+            na.setAttribute('id', 'tabItem' + name);
+            na.setAttribute('href', '#tab' + (counter - 1));
+            na.innerText = name;
+            ndiv2.appendChild(na);
+
+            na = document.createElement('span');
+            na.setAttribute('class', 'spsp');
+            na.innerText = "X";
+            na.onclick = function (e) {
+                document.getElementById('tabs').removeChild(ndiv);
+                document.getElementById('tabs-nav').removeChild(ndiv2);
+
+                return false;
+            };
+            ndiv2.appendChild(na);
+
+            document.getElementById('tabs-nav').appendChild(ndiv2);
+
+            var tabber1 = new Yetii({
+                id: 'tabs'
+            });
+        }
+
+        goHere('http://50.116.22.241', 'MainSite');
 
     </script>
-
-      
 </body>
 </html>
+working

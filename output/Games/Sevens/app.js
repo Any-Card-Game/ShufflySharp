@@ -96,6 +96,7 @@ module.exports = Sevens = function () {
         var sp;
         var tta;
         //console.log("Create User " + userIndex);
+        user.userIndex = userIndex;
         switch (userIndex) {
             case 0:
             case 1:
@@ -137,7 +138,7 @@ module.exports = Sevens = function () {
                 break;
         }
         sp.user = user;
-        sp.effects.push(new Effect$Bend({ degrees: 35 }));
+        sp.effects.push(new Effect$Bend({ degrees:  userIndex > 2 ? -10 : 10 }));
         
         var space = sp;
         switch (userIndex) {
@@ -258,7 +259,7 @@ module.exports = Sevens = function () {
                         var red = "112";
                         if(sp[i].pile.cards.length==13) {
                             red = "255";
-                        }
+                        } 
 
                         sp[i].effects.push(new Effect$Highlight({
                             radius: 25+sp[i].pile.cards.length*2,
@@ -266,7 +267,7 @@ module.exports = Sevens = function () {
                             opacity: op
                         }));   
                     }else {
-                            sp[i].effects.push(new Effect$Bend({ degrees: 35 }));
+                        sp[i].effects.push(new Effect$Bend({ degrees: sp[i].user.userIndex > 2 ? -10 : 10 }));
 
                     }
                     
@@ -316,22 +317,22 @@ module.exports = Sevens = function () {
                         case 3:
                             u.cards.cards.remove(rm);
                             self.spades.cards.push(rm);
-                            self.spades.cards.sortCards();
+                            self.spades.cards.sortCards().reverse();
                             break;
                         case 1:
                             u.cards.cards.remove(rm);
                             self.clubs.cards.push(rm);
-                            self.clubs.cards.sortCards();
+                            self.clubs.cards.sortCards().reverse();
                             break;
                         case 2:
                             u.cards.cards.remove(rm);
                             self.hearts.cards.push(rm);
-                            self.hearts.cards.sortCards();
+                            self.hearts.cards.sortCards().reverse();
                             break;
                         case 0:
                             u.cards.cards.remove(rm);
                             self.diamonds.cards.push(rm);
-                            self.diamonds.cards.sortCards();
+                            self.diamonds.cards.sortCards().reverse();
                             break;
                     }
 

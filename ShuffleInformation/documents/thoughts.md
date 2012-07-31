@@ -1,7 +1,7 @@
 ﻿
 Thoughts
 ------------
- 
+		* control+z and esc all the time
 		* asp.net admin app
 			* deploy all or some
 			* ssh to start and stop servers

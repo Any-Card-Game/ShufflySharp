@@ -841,9 +841,9 @@ Client.PageHandler.prototype = {
 									gameboard.context.translate(hEffect1.offsetX, hEffect1.offsetY);
 									gameboard.context.rotate(hEffect1.rotate * Math.PI / 180);
 									gameboard.context.translate(-hEffect1.radius, -hEffect1.radius);
-									gameboard.context.lineWidth = 5;
+									gameboard.context.lineWidth = 2;
 									gameboard.context.fillStyle = hEffect1.color;
-									gameboard.context.strokeStyle = 'black';
+									gameboard.context.strokeStyle = '#454545';
 									gameboard.context.fillRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
 									gameboard.context.strokeRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
 									gameboard.context.restore();
@@ -888,8 +888,9 @@ Client.PageHandler.prototype = {
 											var hEffect3 = effect3;
 											gameboard.context.save();
 											gameboard.context.translate(ss.Int32.div(cardImage.width, 2), ss.Int32.div(cardImage.height, 2));
-											gameboard.context.rotate((-hEffect3.degrees / 2 + hEffect3.degrees / space.pile.cards.length * j) * Math.PI / 180);
+											gameboard.context.rotate((-hEffect3.degrees / 2 + hEffect3.degrees / (space.pile.cards.length - 1) * j) * Math.PI / 180);
 											gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
+											//gameboard.Context.Translate(0, -(j - (space.Pile.Cards.Count - 1) / 2) * 5);
 										}
 										break;
 									}
@@ -901,7 +902,7 @@ Client.PageHandler.prototype = {
 								Type.cast($t6, ss.IDisposable).dispose();
 							}
 						}
-						gameboard.context.drawImage((cardImage), 0, 0);
+						gameboard.context.drawImage(cardImage, 0, 0);
 						var $t7 = card.effects.getEnumerator();
 						try {
 							while ($t7.moveNext()) {

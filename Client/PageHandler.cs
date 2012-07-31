@@ -15,7 +15,7 @@ namespace Client
     public class PageHandler
     {
         private readonly BuildSite buildSite;
-        private JsDictionary<string, WorkingImageElement> cardImages;
+        private JsDictionary<string, ImageElement> cardImages;
         private DateTime endTime;
         private CanvasElement gameCanvas;
         private PageGameContext gameContext;
@@ -61,10 +61,10 @@ namespace Client
                     buildSite.codeArea.Data.codeEditor.editor.Refresh();
                 });
             gateway.Emit("Area.Debug2.GetGameSource.Request", new GameSourceRequestModel("Sevens"));
-            cardImages = new JsDictionary<string, WorkingImageElement>();
+            cardImages = new JsDictionary<string, ImageElement>();
             for (var i = 101; i < 153; i++)
             {
-                var img = new WorkingImageElement();
+                var img = new ImageElement();
                 var domain = Globals.Window.topLevel + "assets";
                 var src = domain + "/cards/" + i;
                 string jm;
@@ -276,9 +276,9 @@ namespace Client
                             gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
                             gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
                             gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
-                            gameboard.Context.LineWidth = 5;
+                            gameboard.Context.LineWidth = 2;
                             gameboard.Context.FillStyle = hEffect.Color;
-                            gameboard.Context.StrokeStyle = "black";
+                            gameboard.Context.StrokeStyle = "#454545";
                             gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
                             gameboard.Context.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
                             gameboard.Context.Restore();
@@ -317,16 +317,19 @@ namespace Client
 
                                     var hEffect = effect.castValue<CardGameEffectBend>();
                                     gameboard.Context.Save();
+
                                     gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
-                                    gameboard.Context.Rotate((-hEffect.Degrees / 2 + hEffect.Degrees / space.Pile.Cards.Count * j) * Math.PI / 180);
+                                    gameboard.Context.Rotate((-hEffect.Degrees / 2 + hEffect.Degrees / (space.Pile.Cards.Count - 1) * j) * Math.PI / 180);
                                     gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
+
+                                    //gameboard.Context.Translate(0, -(j - (space.Pile.Cards.Count - 1) / 2) * 5);
 
                                 }
                                 break;
                         }
                     }
 
-                    gameboard.Context.DrawImage(cardImage.me(), 0, 0);
+                    gameboard.Context.DrawImage(cardImage, 0, 0);
                     foreach (var effect in card.Effects)
                     {
                         switch (effect.DrawTime)
@@ -336,7 +339,7 @@ namespace Client
                                 {
                                     gameboard.Context.Restore();
                                 }
-                             
+
                                 break;
                         }
                     }
@@ -345,7 +348,7 @@ namespace Client
                         switch (effect.DrawTime)
                         {
                             case DrawTime.During:
-                               if (effect.Type == "bend")
+                                if (effect.Type == "bend")
                                 {
                                     gameboard.Context.Restore();
                                 }

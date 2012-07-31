@@ -474,7 +474,6 @@
     <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />
     <Compile Include="ShuffUI\ShuffWindow.cs" />
-    <Compile Include="WorkingImageElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">

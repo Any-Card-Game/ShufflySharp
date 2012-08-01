@@ -6,13 +6,13 @@ namespace Client
 {
     public class ScriptLoader
     {
-        private void loadScript(string url, Action callback)
+        private void loadScript(string url, bool cache, Action callback)
         {
             var head = Document.GetElementsByTagName("head")[0];
 
             var script = (ScriptElement) Document.CreateElement("script");
             script.Type = "text/javascript";
-            script.Src = url; // +"?" + (Math.floor(Math.random() * 10000)); //caching
+            script.Src = url+(cache?"?" + (Math.Floor(Math.Random() * 10000)):""); //caching
             if (callback != null)
             {
                 script.me().onreadystatechange = (Action<object>) (a => { if (script.me().readyState == "loaded") callback(); });
@@ -21,12 +21,12 @@ namespace Client
             head.AppendChild(script);
         }
 
-        public void Load(string[] items, Action done)
+        public void Load(string[] items,bool cache, Action done)
         {
             var counter = 0;
             for (var i = 0; i < items.Length; i++)
             {
-                loadScript(items[i], () =>
+                loadScript(items[i], cache, () =>
                     {
                         counter++;
                         if (counter >= items.Length)
@@ -50,10 +50,10 @@ namespace Client
                     }
                     else
                     {
-                        loadScript(items[counter], nextOne);
+                        loadScript(items[counter], false, nextOne);
                     }
                 };
-            loadScript(items[0], nextOne);
+            loadScript(items[0],false, nextOne);
         }
     }
 }

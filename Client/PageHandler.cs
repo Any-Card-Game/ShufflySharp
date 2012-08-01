@@ -16,12 +16,9 @@ namespace Client
     {
         private readonly BuildSite buildSite;
         private JsDictionary<string, ImageElement> cardImages;
-        private DateTime endTime;
-        private CanvasElement gameCanvas;
-        private PageGameContext gameContext;
+        private DateTime endTime; 
         public GameInfo gameStuff;
         public Gateway gateway;
-        private GameCardGame lastMainArea;
         private int numOfTimes;
         private DateTime startTime;
         private int timeValue;
@@ -70,11 +67,8 @@ namespace Client
                 string jm;
                 img.Src = jm = src + ".gif";
                 cardImages[jm] = img;
-            }
-            lastMainArea = null;
-
-            jQuery.Select("body").Append(gameCanvas = (CanvasElement)Document.CreateElement("canvas"));
-
+            } 
+          
             Element dvGame;
             jQuery.Select("body").Append(dvGame = Document.CreateElement("div"));
             dvGame.ID = "dvGame";
@@ -85,41 +79,12 @@ namespace Client
             dvGame.Style.Bottom = "0";
 
 
-
-            var props = new JsDictionary();
-            props["margin"] = "0px";
-            props["position"] = "absolute";
-            props["top"] = "0px";
-            props["left"] = (jQuery.Window.GetWidth() * .5) + "px";
-            props["z-index"] = (jQuery.Window.GetWidth() * .5) + "px";
-
-            jQuery.FromElement(gameCanvas).CSS(props);
-
-            gameContext = new PageGameContext((CanvasContext2D)gameCanvas.GetContext("2d"), new GameCanvasInformation());
-            gameContext.CanvasInfo.canvas = gameCanvas;
-            gameContext.CanvasInfo.domCanvas = jQuery.FromElement(gameCanvas);
-            gameContext.CanvasInfo.canvas.Width = (int)(jQuery.Window.GetWidth() * .5);
-            gameContext.CanvasInfo.canvas.Height = jQuery.Window.GetHeight();
-
-            gameCanvas.AddEventListener("DOMMouseScroll", handleScroll, false);
-            gameCanvas.AddEventListener("mousewheel", handleScroll, false);
-
-            gameCanvas.AddEventListener("touchmove", CanvasMouseMove, true);
-            gameCanvas.AddEventListener("touchstart", CanvasOnClick, true);
-            gameCanvas.AddEventListener("touchend", CanvasMouseUp, true);
-
-            gameCanvas.AddEventListener("mousedown", CanvasMouseMove, true);
-            gameCanvas.AddEventListener("mouseup", CanvasOnClick, true);
-            gameCanvas.AddEventListener("mousemove", CanvasMouseUp, true);
-            gameCanvas.AddEventListener("contextmenu", e =>
+            Document.Body.AddEventListener("contextmenu", e =>
                 {
                     e.PreventDefault();
                     //todo: Sspecial right click menu;
                 }, false);
-
-            jQuery.Window.Resize(ResizeCanvas);
-            ResizeCanvas(null);
-            Window.SetInterval(Draw, 1000 / 60);
+             
         }
 
         public void startGameServer()
@@ -186,7 +151,17 @@ namespace Client
 
             gateway.On<GameCardGame>("Area.Game.UpdateState", data =>
                 {
-                    gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+                  //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+
+                    foreach (var space in data.Spaces)
+                    {
+                        space.Appearance=fixAppearance(space.Appearance);
+                        foreach (var card in space.Pile.Cards)
+                        {
+                            card.Appearance=fixAppearance(card.Appearance);
+                        }
+                    }
+
                     drawArea(data);
                 });
             gateway.On<GameRoom>("Area.Game.Started", data =>
@@ -197,206 +172,25 @@ namespace Client
             gateway.On<string>("Area.Debug.GameOver", data => { Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 1000); });
         }
 
-        public void drawArea(GameCardGame mainArea)
+        private CardGameAppearance fixAppearance(CardGameAppearance appearance)
         {
-            var gameboard = gameContext;
-            lastMainArea = mainArea;
-            var scale = new Point(gameContext.CanvasInfo.canvas.Width / mainArea.Size.Width, gameContext.CanvasInfo.canvas.Height / mainArea.Size.Height);
+            return CardGameAppearance.FromJson(appearance);
+        }
 
+        public void drawArea(GameCardGame mainArea)
+        { 
+          
             newDrawArea(mainArea);
 
-
-            return;
-
-
-            /*
-                        gameboard.Context.FillStyle = "rgba(0,0,200,0.5)";
-                        foreach (var space in mainArea.Spaces)
-                        {
-                            var vertical = space.Vertical;
-
-
-
-
-                            foreach (var effect in space.Effects)
-                            {
-                                switch (effect.Type)
-                                {
-                                    case EffectType.Highlight:
-                                        var hEffect = effect.castValue<CardGameAppearanceEffectHighlight>();
-                                        gameboard.Context.Save();
-                                        gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
-                                        gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
-                                        gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
-                                        gameboard.Context.FillStyle = hEffect.Color;
-                                        gameboard.Context.StrokeStyle = "black";
-                                        gameboard.Context.LineWidth = 5;
-
-                                        gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
-                                        gameboard.Context.StrokeRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
-                                        gameboard.Context.Restore();
-
-                                        break;
-                                    case EffectType.Rotate:
-                                        break;
-                                    case EffectType.Bend:
-                                        break;
-                                    case EffectType.StyleProperty:
-                                        break;
-                                    case EffectType.Animated:
-                                        break;
-                                }
-
-                            }
-
-
-
-                            gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
-
-                            var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
-
-                            var j = 0;
-                            foreach (var card in space.Pile.Cards)
-                            {
-                                var xx = 0.0;
-                                var yy = 0.0;
-
-                                switch (space.ResizeType)
-                                {
-                                    case TableSpaceResizeType.Grow:
-                                        xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
-                                        yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
-
-                                        break;
-                                    case TableSpaceResizeType.Static:
-                                        if (vertical)
-                                        {
-                                            xx = space.X * scale.X;
-                                            yy = space.Y * scale.Y + card.Value * scale.Y / 2;
-                                        }
-                                        else
-                                        {
-                                            xx = space.X * scale.X + card.Value * scale.X / 2;
-                                            yy = space.Y * scale.Y;
-                                        }
-
-                                        break;
-                                }
-
-
-                                var cardImage = cardImages[drawCard(card)];
-                                gameboard.Context.Save();
-                                gameboard.Context.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
-                                gameboard.Context.Rotate(space.Rotate * Math.PI / 180);
-                                gameboard.Context.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
-                                /*
-
-
-                                                    foreach (var effect in card.Effects)
-                                                    {
-
-                                                        if (effect.Type == "highlight")
-                                                        {
-                                                            var hEffect = effect.castValue<CardGameAppearanceEffectHighlight>();
-                                                            gameboard.Context.Save();
-                                                            gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
-                                                            gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
-                                                            gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
-                                                            gameboard.Context.LineWidth = 2;
-                                                            gameboard.Context.FillStyle = hEffect.Color;
-                                                            gameboard.Context.StrokeStyle = "#454545";
-                                                            gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
-                                                            gameboard.Context.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
-                                                            gameboard.Context.Restore();
-                                                        }
-
-                                                    }
-
-                                                    foreach (var effect in card.Effects)
-                                                    {
-                                                        switch (effect.DrawTime)
-                                                        {
-                                                            case DrawTime.During:
-                                                                if (effect.Type == "rotate")
-                                                                {
-                                                                    var hEffect = effect.castValue<CardGameAppearanceEffectRotate>();
-                                                                    gameboard.Context.Save();
-                                                                    gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
-                                                                    gameboard.Context.Rotate(hEffect.Degrees * Math.PI / 180);
-                                                                    gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
-
-                                                                }
-
-
-
-                                                                break;
-                                                        }
-                                                    }
-
-                                                    foreach (var effect in space.Effects)
-                                                    {
-                                                        switch (effect.DrawTime)
-                                                        {
-                                                            case DrawTime.During:
-                                                                if (effect.Type == "bend")
-                                                                {
-
-                                                                    var hEffect = effect.castValue<CardGameAppearanceEffectBend>();
-                                                                    gameboard.Context.Save();
-
-                                                                    gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
-                                                                    gameboard.Context.Rotate((-hEffect.Degrees / 2 + hEffect.Degrees / (space.Pile.Cards.Count - 1) * j) * Math.PI / 180);
-                                                                    gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
-
-                                                                    //gameboard.Context.Translate(0, -(j - (space.Pile.Cards.Count - 1) / 2) * 5);
-
-                                                                }
-                                                                break;
-                                                        }
-                                                    }
-
-                                                    gameboard.Context.DrawImage(cardImage, 0, 0);
-                                                    foreach (var effect in card.Effects)
-                                                    {
-                                                        switch (effect.DrawTime)
-                                                        {
-                                                            case DrawTime.During:
-                                                                if (effect.Type == "rotate")
-                                                                {
-                                                                    gameboard.Context.Restore();
-                                                                }
-
-                                                                break;
-                                                        }
-                                                    }
-                                                    foreach (var effect in space.Effects)
-                                                    {
-                                                        switch (effect.DrawTime)
-                                                        {
-                                                            case DrawTime.During:
-                                                                if (effect.Type == "bend")
-                                                                {
-                                                                    gameboard.Context.Restore();
-                                                                }
-                                                                break;
-                                                        }
-                                                    }
-
-                                                    gameboard.Context.Restore();
-
-
-
-                                                    j++;#1#
-                            }
-                        }
-            */
 
 
             foreach (var ta in mainArea.TextAreas)
             {
-                gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
-                gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
-            }
+              //  gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
+              //  gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
+            } 
+
+ 
         }
 
         private Element findSpace(CardGameTableSpace space)
@@ -405,7 +199,7 @@ namespace Client
             string id = "dv_space_" + space.Name;
             if (Document.GetElementById(id) != null)
             {
-                doc=Document.GetElementById(id);
+                doc = Document.GetElementById(id);
             }
             else
             {
@@ -413,7 +207,7 @@ namespace Client
                 sp.ID = id;
                 jQuery.Select("#dvGame").Append(sp);
 
-                doc= sp;
+                doc = sp;
             }
 
             doc.Style.me()["transform"] = "none";
@@ -423,7 +217,7 @@ namespace Client
         {
             string id = "dv_card_" + card.Type + "_" + card.Value;
             var space = findSpace(wantedSpace);
-            
+
             Tuple<Element, ImageElement> doc;
             if (Document.GetElementById(id) != null)
             {
@@ -432,9 +226,11 @@ namespace Client
                 {
                     m.ParentNode.RemoveChild(m);
                     space.AppendChild(m);
+
                 }
-;
-                doc= new Tuple<Element, ImageElement>(m,(ImageElement) m.ChildNodes[0]);
+                m.Style.CssText = "";
+                m.ChildNodes[0].Style.CssText = "";
+                doc = new Tuple<Element, ImageElement>(m, (ImageElement)m.ChildNodes[0]);
             }
             else
             {
@@ -444,13 +240,9 @@ namespace Client
 
                 var cardImage = cloneImage(cardImages[drawCard(card)]);
                 sp.AppendChild(cardImage);
-                doc=new Tuple<Element, ImageElement>(sp, cardImage);
+                doc = new Tuple<Element, ImageElement>(sp, cardImage);
             }
 
-            doc.Item1.Style.me().transform = "";
-            doc.Item1.Style.me().webkitTransform = "";
-            doc.Item2.Style.me().transform = "";
-            doc.Item2.Style.me().webkitTransform = "";
 
             return doc;
 
@@ -464,17 +256,35 @@ namespace Client
 
             foreach (var space in mainArea.Spaces)
             {
+                findSpace(space).Style.CssText = "";
+                foreach (var card in space.Pile.Cards)
+                {
+                    var m = findCard(space, card);
+                    m.Item1.Style.CssText = "";
+                    m.Item2.Style.CssText = "";
+                }
+            }
+
+            foreach (var space in mainArea.Spaces)
+            {
                 var vertical = space.Vertical;
 
                 var spaceDiv = findSpace(space);
                 // var spaceDivJ = jQuery.FromElement(spaceDiv);
 
-
-
-
-                foreach (var effect in space.Effects)
+                spaceDiv.Style.Position= "absolute";
+                spaceDiv.Style.Left = (space.X * scale.X).px();
+                spaceDiv.Style.Top = (space.Y * scale.Y) .px();
+                spaceDiv.Style.Width = (space.Width* scale.X) .px();
+                spaceDiv.Style.Height = (space.Height * scale.Y) .px();
+                 
+                //ExtensionMethods.debugger();
+                foreach (var effect in space.Appearance.Effects)
                 {
+                    effect.Build(spaceDiv);
+
                 }
+
 
 
 
@@ -492,54 +302,62 @@ namespace Client
                     {
                         case "static":
                             if (vertical)
-                            {
-                                xx = space.X * scale.X;
-                                yy = space.Y * scale.Y + card.Value * scale.Y / 2;
+                            { 
+                                yy =  card.Value * scale.Y / 2;
                             }
                             else
                             {
-                                xx = space.X * scale.X + card.Value * scale.X / 2;
-                                yy = space.Y * scale.Y;
+                                xx = card.Value * scale.X / 2;
                             }
 
                             break;
 
                         case "grow":
-                            xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
-                            yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
+                            xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
+                            yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
                             break;
                         default:
-                            xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
-                            yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
+                            xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
+                            yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
 
                             break;
                     }
 
 
 
-                    var cardDiv = findCard(space,card);
+                    var cardDiv = findCard(space, card);
                     var cardDivJ = jQuery.FromElement(cardDiv.Item1);
+                    cardDiv.Item1.Style.me()["transform"] = 0.0.transformRadius();
 
-                    cardDiv.Item2.Style.Position = "absolute";
-                    cardDiv.Item2.Style.Left = (xx + (vertical ? space.Width * scale.X / 2 : 0)) + "px";
-                    cardDiv.Item2.Style.Top = (yy + (!vertical ? space.Height * scale.Y / 2 : 0)) + "px";
-                    cardDiv.Item2.Style.me()["transform"] = string.Format("rotate({0}deg)", space.Rotate);
-
-
-
-                    styleAppearanceFromSpace(cardDiv.Item2,j, space);
-                    styleAppearance(cardDiv.Item2, card.Appearance);
+                    cardDiv.Item1.Style.Position = "absolute";
+                    cardDiv.Item1.Style.Left = (xx + (vertical ? space.Width * scale.X / 2 : 0)).px();
+                    cardDiv.Item1.Style.Top = (yy + (!vertical ? space.Height * scale.Y / 2 : 0)).px();
+                    cardDiv.Item1.Style.me()["transform"] = space.Appearance.InnerStyle.Rotate.transformRadius();
 
 
-                    FixBrowserPrefixes(cardDiv.Item2);
+
+                    styleAppearanceFromSpace(cardDiv, j, space);
+                    styleAppearance(cardDiv, card.Appearance);
+
+                    
+                    FixBrowserPrefixes(cardDiv.Item1);
 
 
-//                    spaceDiv.AppendChild(cardDiv);
+                    //                    spaceDiv.AppendChild(cardDiv);
 
                     j++;
 
                     //effects
                 }
+
+
+                foreach (var effect in space.Appearance.Effects)
+                {
+                    effect.TearDown(spaceDiv);
+                }
+
+
+
             }
             /*
 
@@ -552,32 +370,32 @@ namespace Client
 
         }
 
-        private void styleAppearanceFromSpace(Element element,int cardIndex,CardGameTableSpace space)
+        private void styleAppearanceFromSpace(Tuple<Element, ImageElement> element, int cardIndex, CardGameTableSpace space)
         {
             CardGameAppearance appearance = space.Appearance;
             foreach (var cardGameAppearanceEffect in appearance.Effects)
             {
+
+             //   cardGameAppearanceEffect.Build(element.Item1);
+
                 switch (cardGameAppearanceEffect.Type)
                 {
+
                     case EffectType.Bend:
 
-                        var hEffect = cardGameAppearanceEffect.castValue<CardGameAppearanceEffectBend>(); 
-
-                                                 
-
+                        var bEffect = cardGameAppearanceEffect.castValue<CardGameAppearanceEffectBend>();
 
                         //rotate
-                        string trans = element.Style.me()["transform"];
+                        string trans = element.Item1.Style.me()["transform"];
 
                         if (trans.StartsWith("rotate("))
                         {
-                            element.Style.me()["transform"] = string.Format("rotate({0}deg)", (-hEffect.Degrees / 2 + hEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + int.Parse(trans.Replace("rotate(", "").Replace("deg)", "")));//todo regex??
+                            element.Item1.Style.me()["transform"] = (-bEffect.Degrees / 2 + bEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + trans.nopx().transformRadius();
                         }
                         else
                         {
-                            element.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate);
+                            element.Item1.Style.me()["transform"] = appearance.InnerStyle.Rotate.transformRadius();
                         }
-
 
 
                         break;
@@ -585,54 +403,51 @@ namespace Client
                 }
             }
 
-          
 
-            element.Style.BackgroundColor = appearance.InnerStyle.BackColor;
+
+            element.Item2.Style.BackgroundColor = appearance.InnerStyle.BackColor;
         }
 
 
-        private void styleAppearance(Element element, CardGameAppearance appearance)
+        private void styleAppearance(Tuple<Element, ImageElement> element, CardGameAppearance appearance)
         {
 
+
+            foreach (var cardGameAppearanceEffect in appearance.Effects)
+            {
+                cardGameAppearanceEffect.Build(element.Item1);
+                cardGameAppearanceEffect.TearDown(element.Item1);
+            }
+
+
             //rotate
-            string trans = element.Style.me()["transform"];
+            string trans = element.Item1.Style.me()["transform"];
 
             if (trans.StartsWith("rotate("))
             {
-                element.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate + int.Parse(trans.Replace("rotate(", "").Replace("deg)", "")));//todo regex??
+                element.Item1.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate + int.Parse(trans.Replace("rotate(", "").Replace("deg)", "")));//todo regex??
             }
             else
             {
-                element.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate);
+                element.Item1.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate);
             }
 
-            element.Style.BackgroundColor = appearance.InnerStyle.BackColor;
+            element.Item2.Style.BackgroundColor = appearance.InnerStyle.BackColor;
         }
 
-        public void FixBrowserPrefixes(ImageElement cardImage)
+        public void FixBrowserPrefixes(Element cardImage)
         {
             dynamic style = cardImage.Style;
 
+            dynamic f;
 
-            var f = (style["transform"] && (cardImage.Style.me()["-webkit-transform"] = cardImage.Style.me()["transform"]));
+            f = (style["transform"] && (cardImage.Style.me()["-webkit-transform"] = cardImage.Style.me()["transform"]));
             f = (style["box-shadow"] && (cardImage.Style.me()["-moz-box-shadow"] = cardImage.Style.me()["box-shadow"]));
             f = (style["box-shadow"] && (cardImage.Style.me()["-webkit-box-shadow"] = cardImage.Style.me()["box-shadow"]));
             f = (style["box-radius"] && (cardImage.Style.me()["-moz-box-radius"] = cardImage.Style.me()["box-radius"]));
             f = (style["box-radius"] && (cardImage.Style.me()["-webkit-box-radius"] = cardImage.Style.me()["box-radius"]));
-            /*
-                        b = style["box-shadow"];
-                        if (b)
-                        {
-                            cardImage.Style.me()["-moz-box-shadow"] = cardImage.Style.me()["box-shadow"];
-                            cardImage.Style.me()["-webkit-box-shadow"] = cardImage.Style.me()["box-shadow"];
-                        }
-                        b = style["box-radius"];
-                        if (b)
-                        {
-                            cardImage.Style.me()["-moz-box-radius"] = cardImage.Style.me()["box-radius"];
-                            cardImage.Style.me()["-webkit-box-radius"] = cardImage.Style.me()["box-radius"];
-                        }
-            */
+
+             
         }
 
         private ImageElement cloneImage(ImageElement cardImage)
@@ -673,22 +488,17 @@ namespace Client
             e.PreventDefault();
         }
 
-        public void ResizeCanvas(jQueryEvent jQueryEvent)
+        /*public void ResizeCanvas(jQueryEvent jQueryEvent)
         {
-            if (gameContext.CanvasInfo.domCanvas.GetAttribute("width") != jQuery.Window.GetWidth().ToString())
-                gameContext.CanvasInfo.domCanvas.Attribute("width", (jQuery.Window.GetWidth() * .5).ToString());
-            if (gameContext.CanvasInfo.domCanvas.GetAttribute("height") != jQuery.Window.GetHeight().ToString())
-                gameContext.CanvasInfo.domCanvas.Attribute("height", jQuery.Window.GetHeight().ToString());
             if (lastMainArea != null)
                 drawArea(lastMainArea);
         }
 
         public void Draw()
         {
-            gameContext.CanvasInfo.canvas.Width = gameContext.CanvasInfo.canvas.Width;
             if (lastMainArea != null)
                 drawArea(lastMainArea);
-        }
+        }*/
     }
 
     public class PageGameContext

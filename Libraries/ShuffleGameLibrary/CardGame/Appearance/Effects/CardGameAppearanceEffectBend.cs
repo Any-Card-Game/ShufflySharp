@@ -5,7 +5,7 @@ namespace global
     [ScriptName("Effect$Bend")]
     public class CardGameAppearanceEffectBend: CardGameAppearanceEffect
     {
-        public CardGameAppearanceEffectBend(CardGameEffectRotateOptions options):base(EffectType.Bend)
+        public CardGameAppearanceEffectBend(CardGameEffectBendOptions options):base(EffectType.Bend)
         {
             Degrees = options.Degrees == 0 ? 0 : options.Degrees;
             DrawTime = CardGameAppearanceEffectDrawTime.During;

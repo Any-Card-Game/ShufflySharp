@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Html;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 
 namespace global
 {
@@ -9,7 +11,7 @@ namespace global
         public CardGameAppearanceEffect(EffectType type)
         {
             Type = type;
-            DrawTime = CardGameAppearanceEffectDrawTime.Pre; 
+            DrawTime = CardGameAppearanceEffectDrawTime.Pre;
         }
 
         [ScriptName("type")]
@@ -27,15 +29,66 @@ namespace global
         [ScriptName("chainEffect")]
         public CardGameAppearanceEffect ChainEffect(CardGameAppearanceEffect ef)
         {
-            ChainedEffect=(ef);
+            ChainedEffect = (ef);
             return ef;
-        } 
-        
+        }
+
+        public virtual void Build(Element em)
+        {
+            ///Window.Alert("bad1");
+        }
+        public virtual void TearDown(Element em)
+        {
+            ///Window.Alert("bad2");
+        }
+
+        public static CardGameAppearanceEffect FromJson(CardGameAppearanceEffect effect)
+        {
+            CardGameAppearanceEffect ef;
+            switch (effect.Type)
+            {
+                case EffectType.Highlight:
+                    ef = new CardGameAppearanceEffectHighlight(new CardGameEffectHighlightOptions()
+                        {
+                            Color = effect.me().color,
+                            OffsetX = effect.me().offsetX ?? 0,
+                            OffsetY = effect.me().offsetY ?? 0,
+                            Radius = effect.me().radius??0,
+                            Rotate = effect.me().rotate??0,
+                        });
+                    break;
+                case EffectType.Rotate:
+                    ef = new CardGameAppearanceEffectRotate(new CardGameEffectRotateOptions()
+                    {
+                        Degrees = effect.me().degrees??0,
+                    });
+                    break;
+                case EffectType.Bend:
+                    ef = new CardGameAppearanceEffectBend(new CardGameEffectBendOptions()
+                    {
+                        Degrees = effect.me().degrees??0,
+                    });
+                    break;
+                case EffectType.StyleProperty:
+                    ef = null;
+                    break;
+                case EffectType.Animated:
+                    ef = null;
+                    break;
+                default:
+                    ef = null;
+                    break;
+            }
+            if (ef.ChainedEffect!=null)
+            ef.ChainedEffect = FromJson(effect.ChainedEffect);
+
+            return ef;
+        }
     }
     [NamedValues]
     public enum CardGameAppearanceEffectDrawTime
     {
-        Pre,During,Post
+        Pre, During, Post
     }
     [ScriptName("Effect$StyleProperty")]
     public class CardGameAppearanceEffectStyleProperty : CardGameAppearanceEffect

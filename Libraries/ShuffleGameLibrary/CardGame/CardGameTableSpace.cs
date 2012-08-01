@@ -15,7 +15,7 @@ namespace global
             Width = options.Width == 0 ? 0 : options.Width;
             Height = options.Height == 0 ? 0 : options.Height;
             Pile = options.Pile;
-            Rotate = options.Rotate == 0 ? 0 : options.Rotate;
+            //Rotate = options.Rotate == 0 ? 0 : options.Rotate;
             Visible = !options.Visible ? true : options.Visible;
             StackCards = !options.StackCards ? false : options.StackCards;
             DrawCardsBent = !options.DrawCardsBent ? true : options.DrawCardsBent;
@@ -23,9 +23,8 @@ namespace global
             SortOrder = options.SortOrder;
             NumerOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
             NumerOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
-            Effects = new List<CardGameAppearanceEffect>();
             ResizeType = options.ResizeType;
-            Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
+            //Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
             Appearance=new CardGameAppearance();
         }
 
@@ -53,9 +52,9 @@ namespace global
         [IntrinsicProperty]
         public CardGamePile Pile { get; set; }
 
-        [ScriptName("rotate")]
+/*        [ScriptName("rotate")]
         [IntrinsicProperty]
-        public double Rotate { get; set; }
+        public double Rotate { get; set; }*/
 
         [ScriptName("appearance")]
         [IntrinsicProperty]
@@ -88,10 +87,7 @@ namespace global
         [ScriptName("numerOfCardsVertical")]
         [IntrinsicProperty]
         public int NumerOfCardsVertical { get; set; }
-
-        [ScriptName("effects")]
-        [IntrinsicProperty]
-        public List<CardGameAppearanceEffect> Effects { get; set; }
+         
 
         [ScriptName("resizeType")]
         [IntrinsicProperty]

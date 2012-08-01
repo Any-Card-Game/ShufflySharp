@@ -54,6 +54,7 @@
     <Compile Include="CardGame\GameCardGameOptions.cs" />
     <Compile Include="CardGame\GameCardGameTextArea.cs" />
     <Compile Include="CardGame\GameCardGameTextAreaOptions.cs" />
+    <Compile Include="DomUtils.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GameUtils.cs" />
     <Compile Include="Rectangle.cs" />
@@ -65,6 +66,10 @@
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.0.0.0.118\tools\Assemblies\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="Script.Web, Version=0.0.0.58, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Saltarelle.Web.0.0.0.58\lib\Script.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

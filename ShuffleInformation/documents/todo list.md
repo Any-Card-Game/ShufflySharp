@@ -415,7 +415,10 @@ Current list
 					
 					
 **compiler bugs
+	record attribute should assure nno constructor
+	take advanatage of truthy falsy, conditionals of dynamic type that dont evaluate to a bool
 	double using CommonShuffleLibrary; causes static invocation???
 	ignoregenericarguments on a class still generates default T on property
 	window doesnt have topLevel
-
+	changing a scriptname doesnt seeeeeem to recompile the library
+	css3 element style

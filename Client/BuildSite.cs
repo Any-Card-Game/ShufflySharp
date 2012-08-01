@@ -50,7 +50,7 @@ namespace Client
                         url + "lib/socket.io.js",
                         url + "lib/codemirror/codemirror.js",
                         url + "lib/jqwidgets/jqxlistbox.js"
-                    }, () => scriptLoader.Load(new[]
+                    }, false, () => scriptLoader.Load(new[]
                         {
                             url + "lib/codemirror/mode/javascript/javascript.js",
                             url + "lib/WorkerConsole.js",
@@ -58,13 +58,13 @@ namespace Client
                             url + "lib/Stats.js",
                             url + "lib/keyboardjs.js",
                             url + "lib/Dialog.js",
-                        }, () => scriptLoader.Load(new[]
+                        },false, () => scriptLoader.Load(new[]
                             {
                                 url + "CommonLibraries.js",
                                 url + "ShuffleGameLibrary.js",
                                 url + "Models.js",
                                 //url + "uis/genericArea.js", 
-                            }, ready))));
+                            },true, ready))));
         }
 
         [IntrinsicProperty]

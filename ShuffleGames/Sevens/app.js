@@ -133,7 +133,7 @@ module.exports = Sevens = function () {
                     height: 3,
                     bend: true
                 }));
-                //sp.appearance.innerStyle.rotate = rotate;
+                sp.appearance.innerStyle.rotate = rotate;
                 
                 self.cardGame.textAreas.push(tta = new TableTextArea({ name: 'Text' + userIndex, text: text }));
                 break;
@@ -236,18 +236,18 @@ module.exports = Sevens = function () {
                 for (var i = 0; i < sp.length; i++) {
                     //sp[i].rotate += 10;
 
-                        sp[i].effects = [];
+                        sp[i].appearance.effects = [];
                     
 
                     if(sp[i].user==u) {
                         if(usable.length==0) {
-                            sp[i].effects.push(new Effect$Highlight({
+                            sp[i].appearance.effects.push(new Effect$Highlight({
                                 radius: 70,
                                 color: 'rgba(255,0,84,0.7)',
                                 opacity: .7
                             }));
                         }else {
-                            sp[i].effects.push(new Effect$Highlight({
+                            sp[i].appearance.effects.push(new Effect$Highlight({
                                 radius: 70,
                                 color: 'rgba(112,255,84,0.7)',
                                 opacity: .7
@@ -262,7 +262,7 @@ module.exports = Sevens = function () {
                             red = "255";
                         } 
 
-                        sp[i].effects.push(new Effect$Highlight({
+                        sp[i].appearance.effects.push(new Effect$Highlight({
                             radius: 25+sp[i].pile.cards.length*2,
                             color: 'rgba('+red+',12,'+parseInt(op*255)+','+op+')',
                             opacity: op
@@ -274,7 +274,7 @@ module.exports = Sevens = function () {
                     
                     for (var ij = 0; ij < sp[i].pile.cards.length; ij++) {
                         var card = sp[i].pile.cards[ij];
-                        card.effects = [];
+                        card.appearance.effects = [];
 
                         if(card.value==6 && !sp[i].user) {
                             card.appearance.innerStyle.rotate = 90;
@@ -283,7 +283,7 @@ module.exports = Sevens = function () {
                         for (var j = 0; j < usable.length; j++) {
                             var m = usable[j];
                             if (m.value == card.value && m.type == card.type) {
-                                card.effects.push(new Effect$Highlight({
+                                card.appearance.effects.push(new Effect$Highlight({
                                     radius: 14,
                                     color: 'rgba(255,11,84,0.55)',
                                     opacity: .55
@@ -291,8 +291,8 @@ module.exports = Sevens = function () {
                                 break; ;
                             }
                         }
-                        if(card.effects.length==10) {
-                            card.effects.push(new Effect$Highlight({
+                        if(card.appearance.effects.length==10) {
+                            card.appearance.effects.push(new Effect$Highlight({
                                 radius: Math.random() * 6,
                                 color: 'rgba(114,255,84,0.2)',
                                 opacity: .20
@@ -340,7 +340,7 @@ module.exports = Sevens = function () {
                           for (var i = 0; i < sp.length; i++) {
 
                               if (sp[i].user == u) {
-                                  sp[i].effects.push(new Effect$Highlight({
+                                  sp[i].appearance.effects.push(new Effect$Highlight({
                                       radius: 100,
                                       color: 'rgba(255,255,255,0.7)',
                                       opacity: .7

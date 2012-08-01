@@ -95,6 +95,27 @@ global.Appearance = function() {
 	global.AppearanceStyle.call(this);
 	this.effects = new Array();
 };
+global.Appearance.fromJson = function(json) {
+	var ap = new global.Appearance();
+	ap.innerStyle = global.AppearanceStyleItem.fromJson(json.innerStyle);
+	ap.outerStyle = global.AppearanceStyleItem.fromJson(json.outerStyle);
+	ap.effects = new Array();
+	if (ss.isValue(json.effects)) {
+		var $t1 = json.effects.getEnumerator();
+		try {
+			while ($t1.moveNext()) {
+				var effect = $t1.get_current();
+				ap.effects.add(global.Effect.fromJson(effect));
+			}
+		}
+		finally {
+			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
+				Type.cast($t1, ss.IDisposable).dispose();
+			}
+		}
+	}
+	return ap;
+};
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStyle
 global.AppearanceStyle = function() {
@@ -117,6 +138,15 @@ global.AppearanceStyleBorder = function() {
 	this.right = new global.AppearanceStyleBorderArea();
 	this.all = new global.AppearanceStyleBorderArea();
 };
+global.AppearanceStyleBorder.fromJson = function(st) {
+	var sp = new global.AppearanceStyleBorder();
+	sp.all = st.all;
+	sp.bottom = st.bottom;
+	sp.left = st.left;
+	sp.right = st.right;
+	sp.top = st.top;
+	return sp;
+};
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStyleBorderArea
 global.AppearanceStyleBorderArea = function() {
@@ -134,18 +164,29 @@ global.AppearanceStyleBorderArea = function() {
 global.AppearanceStyleItem = function() {
 	this.backColor = null;
 	this.rotate = 0;
-	this.backColor = null;
+	this.border = null;
 	this.padding = null;
 	this.margin = null;
 	this.zindex = 0;
 	this.cursor = 0;
 	this.backColor = null;
 	this.zindex = 0;
-	this.backColor = new global.AppearanceStyleBorder();
+	this.border = new global.AppearanceStyleBorder();
 	this.padding = new global.AppearanceStylePadding();
 	this.margin = new global.AppearanceStyleMargin();
 	this.cursor = 0;
 	this.rotate = 0;
+};
+global.AppearanceStyleItem.fromJson = function(st) {
+	var si = new global.AppearanceStyleItem();
+	si.backColor = st.backColor;
+	si.border = global.AppearanceStyleBorder.fromJson(st.border);
+	si.cursor = st.cursor;
+	si.margin = global.AppearanceStyleMargin.fromJson(st.margin);
+	si.padding = global.AppearanceStylePadding.fromJson(st.padding);
+	si.rotate = st.rotate;
+	si.zindex = st.zindex;
+	return si;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStyleMargin
@@ -161,6 +202,15 @@ global.AppearanceStyleMargin = function() {
 	this.right = 0;
 	this.all = 0;
 };
+global.AppearanceStyleMargin.fromJson = function(st) {
+	var sp = new global.AppearanceStyleMargin();
+	sp.all = st.all;
+	sp.bottom = st.bottom;
+	sp.left = st.left;
+	sp.right = st.right;
+	sp.top = st.top;
+	return sp;
+};
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStylePadding
 global.AppearanceStylePadding = function() {
@@ -174,6 +224,15 @@ global.AppearanceStylePadding = function() {
 	this.left = 0;
 	this.right = 0;
 	this.all = 0;
+};
+global.AppearanceStylePadding.fromJson = function(st) {
+	var sp = new global.AppearanceStylePadding();
+	sp.all = st.all;
+	sp.bottom = st.bottom;
+	sp.left = st.left;
+	sp.right = st.right;
+	sp.top = st.top;
+	return sp;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.ArrayUtils
@@ -202,7 +261,7 @@ global.ArrayUtils.select = function(T, T2) {
 	};
 };
 global.ArrayUtils.sortCards = function(ts) {
-	debugger;;
+	debugger;
 	var ijc = global.ArrayUtils.groupBy(global.Card, ss.Int32).call(null, ts, function(a) {
 		return a.type;
 	});
@@ -493,6 +552,23 @@ global.CardType = function() {
 global.CardType.prototype = {};
 global.CardType.registerEnum('global.CardType', false);
 ////////////////////////////////////////////////////////////////////////////////
+// global.domUtils
+global.domUtils = function() {
+};
+global.domUtils.nopx = function(ar) {
+	return parseFloat(ar.replaceAll('px', ''));
+};
+global.domUtils.px = function(ar) {
+	return ar + 'px';
+};
+global.domUtils.transformRadius = function(ar) {
+	return String.format('rotate({0}deg)', ar);
+};
+global.domUtils.noTransformRadius = function(ar) {
+	return parseFloat(ar.replaceAll('rotate(', '').replaceAll('deg)', ''));
+	//todo regex??
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.Effect
 global.Effect = function(type) {
 	this.type = 0;
@@ -505,7 +581,54 @@ global.Effect.prototype = {
 	chainEffect: function(ef) {
 		this.childrenEffects = ef;
 		return ef;
+	},
+	build: function(em) {
+	},
+	tearDown: function(em) {
 	}
+};
+global.Effect.fromJson = function(effect) {
+	var ef;
+	switch (effect.type) {
+		case 0: {
+			var $t1 = global.CardGameEffectHighlightOptions.$ctor();
+			$t1.color = Type.cast((effect).color, String);
+			$t1.offsetX = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).offsetX, 0), Number));
+			$t1.offsetY = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).offsetY, 0), Number));
+			$t1.radius = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).radius, 0), Number));
+			$t1.rotate = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).rotate, 0), Number));
+			ef = new global.Effect$Highlight($t1);
+			break;
+		}
+		case 1: {
+			var $t2 = global.CardGameEffectRotateOptions.$ctor();
+			$t2.degrees = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).degrees, 0), Number));
+			ef = new global.Effect$Rotate($t2);
+			break;
+		}
+		case 2: {
+			var $t3 = global.CardGameEffectBendOptions.$ctor();
+			$t3.degrees = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).degrees, 0), Number));
+			ef = new global.Effect$Bend($t3);
+			break;
+		}
+		case 3: {
+			ef = null;
+			break;
+		}
+		case 4: {
+			ef = null;
+			break;
+		}
+		default: {
+			ef = null;
+			break;
+		}
+	}
+	if (ss.isValue(ef.childrenEffects)) {
+		ef.childrenEffects = global.Effect.fromJson(effect.childrenEffects);
+	}
+	return ef;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Bend
@@ -530,6 +653,23 @@ global.Effect$Highlight = function(options) {
 	this.offsetX = ((options.offsetX === 0) ? 0 : options.offsetX);
 	this.offsetY = ((options.offsetY === 0) ? 0 : options.offsetY);
 	this.post = 'pre';
+};
+global.Effect$Highlight.prototype = {
+	build: function(em) {
+		em.style.padding = String.format('{0} {0} {0} {0}', global.domUtils.px(this.radius));
+		em.style.backgroundColor = this.color;
+	},
+	tearDown: function(em) {
+		var paddingRadius = this.radius / 2;
+		em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - paddingRadius);
+		em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - paddingRadius);
+		for (var i = 0; i < em.childNodes.length; i++) {
+			if ((em.childNodes[i]).tagName === 'DIV') {
+				(em.childNodes[i]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.left) + paddingRadius);
+				(em.childNodes[i]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.top) + paddingRadius);
+			}
+		}
+	}
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Rotate
@@ -718,7 +858,6 @@ global.TableSpace = function(options) {
 	this.width = 0;
 	this.height = 0;
 	this.pile = null;
-	this.rotate = 0;
 	this.appearance = null;
 	this.visible = false;
 	this.stackCards = false;
@@ -727,7 +866,6 @@ global.TableSpace = function(options) {
 	this.sortPrder = 0;
 	this.numerOfCardsHorizontal = 0;
 	this.numerOfCardsVertical = 0;
-	this.effects = null;
 	this.resizeType = null;
 	this.vertical = (!options.vertical ? false : options.vertical);
 	this.x = ((options.x === 0) ? 0 : options.x);
@@ -735,7 +873,7 @@ global.TableSpace = function(options) {
 	this.width = ((options.width === 0) ? 0 : options.width);
 	this.height = ((options.height === 0) ? 0 : options.height);
 	this.pile = options.pile;
-	this.rotate = ((options.rotate === 0) ? 0 : options.rotate);
+	//Rotate = options.Rotate == 0 ? 0 : options.Rotate;
 	this.visible = (!options.visible ? true : options.visible);
 	this.stackCards = (!options.stackCards ? false : options.stackCards);
 	this.drawCardsBent = (!options.drawCardsBent ? true : options.drawCardsBent);
@@ -743,9 +881,8 @@ global.TableSpace = function(options) {
 	this.sortPrder = options.sortPrder;
 	this.numerOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 	this.numerOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
-	this.effects = new Array();
 	this.resizeType = options.resizeType;
-	this.rotate = ss.Nullable.unbox(Type.cast((eval('options.rotate? options.rotate : 0')), Number));
+	//Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
 	this.appearance = new global.Appearance();
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -786,6 +923,7 @@ global.CardGameEffectHighlightOptions.registerClass('global.CardGameEffectHighli
 global.CardGameEffectRotateOptions.registerClass('global.CardGameEffectRotateOptions', Object);
 global.CardGameQuestion.registerClass('global.CardGameQuestion', Object);
 global.CardGameTableSpaceOptions.registerClass('global.CardGameTableSpaceOptions', Object);
+global.domUtils.registerClass('global.domUtils', Object);
 global.Effect.registerClass('global.Effect', Object);
 global.Effect$Bend.registerClass('global.Effect$Bend', global.Effect);
 global.Effect$Highlight.registerClass('global.Effect$Highlight', global.Effect);

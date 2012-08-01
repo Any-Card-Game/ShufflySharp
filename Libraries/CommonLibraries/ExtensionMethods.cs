@@ -10,7 +10,7 @@ namespace CommonLibraries
         {
             return script;
         }
-        [InlineCode("debugger;")]
+        [InlineCode("debugger")]
         public static void debugger() 
         {
         }
@@ -25,6 +25,7 @@ namespace CommonLibraries
         {
             return null;
         }
+
 
         [InlineCode("{o}")]
         [InstanceMethodOnFirstArgument]

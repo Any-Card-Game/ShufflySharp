@@ -15,6 +15,21 @@ namespace global
         [ScriptName("effects")]
         [IntrinsicProperty]
         public List<CardGameAppearanceEffect> Effects { get; set; }
+
+        public static CardGameAppearance FromJson(CardGameAppearance json)
+        {
+            CardGameAppearance ap = new CardGameAppearance();
+            ap.InnerStyle = CardGameAppearanceStyleItem.FromJson(json.InnerStyle);
+            ap.OuterStyle = CardGameAppearanceStyleItem.FromJson(json.OuterStyle);
+            ap.Effects = new List<CardGameAppearanceEffect>();
+            if (json.Effects!=null)
+            foreach (var effect in json.Effects)
+            {
+                ap.Effects.Add(CardGameAppearanceEffect.FromJson(effect));
+            }
+
+            return ap;
+        }
     }
     [ScriptName("AppearanceStyle")]
     public class CardGameAppearanceStyle
@@ -55,7 +70,7 @@ namespace global
         [IntrinsicProperty]
         public double Rotate { get; set; }
 
-        [ScriptName("backColor")]
+        [ScriptName("border")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorder Border { get; set; }
 
@@ -69,12 +84,26 @@ namespace global
 
         [ScriptName("zindex")]
         [IntrinsicProperty]
-        public int ZIndex { get; set; }
+        public int ZIndex  { get; set; }
 
         [ScriptName("cursor")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleCursor Cursor { get; set; }
 
+        public static CardGameAppearanceStyleItem FromJson(CardGameAppearanceStyleItem st)
+        {
+            CardGameAppearanceStyleItem si = new CardGameAppearanceStyleItem();
+            si.BackColor = st.BackColor;
+            si.Border = CardGameAppearanceStyleBorder.FromJson(st.Border);
+            si.Cursor = st.Cursor;
+            si.Margin = CardGameAppearanceStyleMargin.FromJson(st.Margin);
+            si.Padding = CardGameAppearanceStylePadding.FromJson(st.Padding);
+            si.Rotate = st.Rotate;
+            si.ZIndex = st.ZIndex;
+
+            return si;
+
+        }
     }
     [NamedValues]
 
@@ -110,6 +139,18 @@ namespace global
         [ScriptName("all")]
         [IntrinsicProperty]
         public double All { get; set; }
+
+        public static CardGameAppearanceStyleMargin FromJson(CardGameAppearanceStyleMargin st)
+        {
+            CardGameAppearanceStyleMargin sp = new CardGameAppearanceStyleMargin();
+            sp.All = st.All;
+            sp.Bottom = st.Bottom;
+            sp.Left = st.Left;
+            sp.Right = st.Right;
+            sp.Top = st.Top;
+            return sp;
+        }
+
     }
 
     [ScriptName("AppearanceStylePadding")]
@@ -139,6 +180,17 @@ namespace global
         [ScriptName("all")]
         [IntrinsicProperty]
         public double All { get; set; }
+
+        public static CardGameAppearanceStylePadding FromJson(CardGameAppearanceStylePadding st)
+        {
+            CardGameAppearanceStylePadding sp = new CardGameAppearanceStylePadding();
+            sp.All = st.All;
+            sp.Bottom = st.Bottom;
+            sp.Left = st.Left;
+            sp.Right = st.Right;
+            sp.Top = st.Top;
+            return sp;
+        }
     }
 
 
@@ -170,6 +222,19 @@ namespace global
         [ScriptName("all")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderArea All { get; set; }
+
+        public static CardGameAppearanceStyleBorder FromJson(CardGameAppearanceStyleBorder st)
+        {
+
+            CardGameAppearanceStyleBorder sp = new CardGameAppearanceStyleBorder();
+            sp.All = st.All;
+            sp.Bottom = st.Bottom;
+            sp.Left = st.Left;
+            sp.Right = st.Right;
+            sp.Top = st.Top;
+            return sp;
+        }
+
     }
     [ScriptName("AppearanceStyleBorderArea")]
     public class CardGameAppearanceStyleBorderArea

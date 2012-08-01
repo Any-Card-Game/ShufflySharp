@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace global
@@ -10,6 +9,7 @@ namespace global
         {
             Value = value;
             Type = type;
+            Appearance=new CardGameAppearance();
         }
 
         [ScriptName("value")]
@@ -24,8 +24,9 @@ namespace global
         [IntrinsicProperty]
         public CardGameCardState State { get; set; }
 
-        [ScriptName("effects")]
+        [ScriptName("appearance")]
         [IntrinsicProperty]
-        public List<CardGameEffect> Effects { get; set; }
+        public CardGameAppearance Appearance { get; set; }
+
     }
 }

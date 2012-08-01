@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace global
 {
+    [NamedValues]
     [ScriptName("CardType")]
     public enum CardGameCardType
     {

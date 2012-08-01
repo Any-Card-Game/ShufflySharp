@@ -20,6 +20,11 @@ namespace CommonLibraries
         {
             return null;
         }
+        [InlineCode("for(var item in {ar}) ")]
+        public static dynamic ForInItem(this object ar) //::dynamic okay
+        {
+            return null;
+        }
 
         [InlineCode("{o}")]
         [InstanceMethodOnFirstArgument]

@@ -661,6 +661,14 @@ Client.PageHandler = function(gatewayServerAddress, buildSite) {
 	}
 	this.$lastMainArea = null;
 	($('body')).append(this.$gameCanvas = document.createElement('canvas'));
+	var dvGame;
+	($('body')).append(dvGame = document.createElement('div'));
+	dvGame.id = 'dvGame';
+	dvGame.style.left = '50%';
+	dvGame.style.position = 'absolute';
+	dvGame.style.top = '0';
+	dvGame.style.right = '0';
+	dvGame.style.bottom = '0';
 	var props = {};
 	props['margin'] = '0px';
 	props['position'] = 'absolute';
@@ -761,41 +769,436 @@ Client.PageHandler.prototype = {
 		var gameboard = this.$gameContext;
 		this.$lastMainArea = mainArea;
 		var scale = new CommonLibraries.Point(ss.Int32.div(this.$gameContext.canvasInfo.canvas.width, mainArea.size.width), ss.Int32.div(this.$gameContext.canvasInfo.canvas.height, mainArea.size.height));
-		gameboard.context.fillStyle = 'rgba(0,0,200,0.5)';
+		this.$newDrawArea(mainArea);
+		return;
+		//
+		//                        gameboard.Context.FillStyle = "rgba(0,0,200,0.5)";
+		//
+		//                        foreach (var space in mainArea.Spaces)
+		//
+		//                        {
+		//
+		//                        var vertical = space.Vertical;
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        foreach (var effect in space.Effects)
+		//
+		//                        {
+		//
+		//                        switch (effect.Type)
+		//
+		//                        {
+		//
+		//                        case EffectType.Highlight:
+		//
+		//                        var hEffect = effect.castValue<CardGameAppearanceEffectHighlight>();
+		//
+		//                        gameboard.Context.Save();
+		//
+		//                        gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
+		//
+		//                        gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
+		//
+		//                        gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
+		//
+		//                        gameboard.Context.FillStyle = hEffect.Color;
+		//
+		//                        gameboard.Context.StrokeStyle = "black";
+		//
+		//                        gameboard.Context.LineWidth = 5;
+		//
+		//                        
+		//
+		//                        gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
+		//
+		//                        gameboard.Context.StrokeRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X + hEffect.Radius * 2, space.Height * scale.Y + hEffect.Radius * 2);
+		//
+		//                        gameboard.Context.Restore();
+		//
+		//                        
+		//
+		//                        break;
+		//
+		//                        case EffectType.Rotate:
+		//
+		//                        break;
+		//
+		//                        case EffectType.Bend:
+		//
+		//                        break;
+		//
+		//                        case EffectType.StyleProperty:
+		//
+		//                        break;
+		//
+		//                        case EffectType.Animated:
+		//
+		//                        break;
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
+		//
+		//                        
+		//
+		//                        var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
+		//
+		//                        
+		//
+		//                        var j = 0;
+		//
+		//                        foreach (var card in space.Pile.Cards)
+		//
+		//                        {
+		//
+		//                        var xx = 0.0;
+		//
+		//                        var yy = 0.0;
+		//
+		//                        
+		//
+		//                        switch (space.ResizeType)
+		//
+		//                        {
+		//
+		//                        case TableSpaceResizeType.Grow:
+		//
+		//                        xx = Math.Floor((space.X * scale.X) + (!vertical ? (j * spaceScale.X * scale.X) : 0));
+		//
+		//                        yy = Math.Floor((space.Y * scale.Y) + (vertical ? (j * spaceScale.Y * scale.Y) : 0));
+		//
+		//                        
+		//
+		//                        break;
+		//
+		//                        case TableSpaceResizeType.Static:
+		//
+		//                        if (vertical)
+		//
+		//                        {
+		//
+		//                        xx = space.X * scale.X;
+		//
+		//                        yy = space.Y * scale.Y + card.Value * scale.Y / 2;
+		//
+		//                        }
+		//
+		//                        else
+		//
+		//                        {
+		//
+		//                        xx = space.X * scale.X + card.Value * scale.X / 2;
+		//
+		//                        yy = space.Y * scale.Y;
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        break;
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        var cardImage = cardImages[drawCard(card)];
+		//
+		//                        gameboard.Context.Save();
+		//
+		//                        gameboard.Context.Translate(xx + (vertical ? space.Width * scale.X / 2 : 0), yy + (!vertical ? space.Height * scale.Y / 2 : 0));
+		//
+		//                        gameboard.Context.Rotate(space.Rotate * Math.PI / 180);
+		//
+		//                        gameboard.Context.Translate((-cardImage.Width / 2), (-cardImage.Height / 2));
+		//
+		//                        /*
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        foreach (var effect in card.Effects)
+		//
+		//                        {
+		//
+		//                        
+		//
+		//                        if (effect.Type == "highlight")
+		//
+		//                        {
+		//
+		//                        var hEffect = effect.castValue<CardGameAppearanceEffectHighlight>();
+		//
+		//                        gameboard.Context.Save();
+		//
+		//                        gameboard.Context.Translate(hEffect.OffsetX, hEffect.OffsetY);
+		//
+		//                        gameboard.Context.Rotate(hEffect.Rotate * Math.PI / 180);
+		//
+		//                        gameboard.Context.Translate(-hEffect.Radius, -hEffect.Radius);
+		//
+		//                        gameboard.Context.LineWidth = 2;
+		//
+		//                        gameboard.Context.FillStyle = hEffect.Color;
+		//
+		//                        gameboard.Context.StrokeStyle = "#454545";
+		//
+		//                        gameboard.Context.FillRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+		//
+		//                        gameboard.Context.StrokeRect(0, 0, cardImage.Width + hEffect.Radius * 2, cardImage.Height + hEffect.Radius * 2);
+		//
+		//                        gameboard.Context.Restore();
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        foreach (var effect in card.Effects)
+		//
+		//                        {
+		//
+		//                        switch (effect.DrawTime)
+		//
+		//                        {
+		//
+		//                        case DrawTime.During:
+		//
+		//                        if (effect.Type == "rotate")
+		//
+		//                        {
+		//
+		//                        var hEffect = effect.castValue<CardGameAppearanceEffectRotate>();
+		//
+		//                        gameboard.Context.Save();
+		//
+		//                        gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
+		//
+		//                        gameboard.Context.Rotate(hEffect.Degrees * Math.PI / 180);
+		//
+		//                        gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
+		//
+		//                        
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        break;
+		//
+		//                        }
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        foreach (var effect in space.Effects)
+		//
+		//                        {
+		//
+		//                        switch (effect.DrawTime)
+		//
+		//                        {
+		//
+		//                        case DrawTime.During:
+		//
+		//                        if (effect.Type == "bend")
+		//
+		//                        {
+		//
+		//                        
+		//
+		//                        var hEffect = effect.castValue<CardGameAppearanceEffectBend>();
+		//
+		//                        gameboard.Context.Save();
+		//
+		//                        
+		//
+		//                        gameboard.Context.Translate(cardImage.Width / 2, cardImage.Height / 2);
+		//
+		//                        gameboard.Context.Rotate((-hEffect.Degrees / 2 + hEffect.Degrees / (space.Pile.Cards.Count - 1) * j) * Math.PI / 180);
+		//
+		//                        gameboard.Context.Translate(-cardImage.Width / 2, -cardImage.Height / 2);
+		//
+		//                        
+		//
+		//                        //gameboard.Context.Translate(0, -(j - (space.Pile.Cards.Count - 1) / 2) * 5);
+		//
+		//                        
+		//
+		//                        }
+		//
+		//                        break;
+		//
+		//                        }
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        gameboard.Context.DrawImage(cardImage, 0, 0);
+		//
+		//                        foreach (var effect in card.Effects)
+		//
+		//                        {
+		//
+		//                        switch (effect.DrawTime)
+		//
+		//                        {
+		//
+		//                        case DrawTime.During:
+		//
+		//                        if (effect.Type == "rotate")
+		//
+		//                        {
+		//
+		//                        gameboard.Context.Restore();
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        break;
+		//
+		//                        }
+		//
+		//                        }
+		//
+		//                        foreach (var effect in space.Effects)
+		//
+		//                        {
+		//
+		//                        switch (effect.DrawTime)
+		//
+		//                        {
+		//
+		//                        case DrawTime.During:
+		//
+		//                        if (effect.Type == "bend")
+		//
+		//                        {
+		//
+		//                        gameboard.Context.Restore();
+		//
+		//                        }
+		//
+		//                        break;
+		//
+		//                        }
+		//
+		//                        }
+		//
+		//                        
+		//
+		//                        gameboard.Context.Restore();
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        
+		//
+		//                        j++;#1#
+		//
+		//                        }
+		//
+		//                        }
+		var $t1 = mainArea.textAreas.getEnumerator();
+		try {
+			while ($t1.moveNext()) {
+				var ta = $t1.get_current();
+				gameboard.context.fillStyle = 'rgba(200, 0, 200, 0.5)';
+				gameboard.context.fillText(ta.text, ta.x * scale.x, ta.y * scale.y);
+			}
+		}
+		finally {
+			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
+				Type.cast($t1, ss.IDisposable).dispose();
+			}
+		}
+	},
+	$findSpace: function(space) {
+		var doc;
+		var id = 'dv_space_' + space.name;
+		if (ss.isValue(document.getElementById(id))) {
+			doc = document.getElementById(id);
+		}
+		else {
+			var sp = document.createElement('div');
+			sp.id = id;
+			($('#dvGame')).append(sp);
+			doc = sp;
+		}
+		(doc.style)['transform'] = 'none';
+		return doc;
+	},
+	$findCard: function(wantedSpace, card) {
+		var id = 'dv_card_' + card.type + '_' + card.value;
+		var space = this.$findSpace(wantedSpace);
+		var doc;
+		if (ss.isValue(document.getElementById(id))) {
+			var m = document.getElementById(id);
+			if (!ss.referenceEquals(m.parentNode, space)) {
+				m.parentNode.removeChild(m);
+				space.appendChild(m);
+			}
+			;
+			doc = ({ item1: m, item2: m.childNodes[0] });
+		}
+		else {
+			var sp = document.createElement('div');
+			sp.id = id;
+			($(space)).append(sp);
+			var cardImage = this.$cloneImage(this.$cardImages[this.drawCard(card)]);
+			sp.appendChild(cardImage);
+			doc = ({ item1: sp, item2: cardImage });
+		}
+		(doc.item1.style).transform = '';
+		(doc.item1.style).webkitTransform = '';
+		(doc.item2.style).transform = '';
+		(doc.item2.style).webkitTransform = '';
+		return doc;
+	},
+	$newDrawArea: function(mainArea) {
+		//jQuery.Select("#dvGame").Children().Remove();
+		var scale = new CommonLibraries.Point(ss.Int32.div(($('#dvGame')).width(), mainArea.size.width), ss.Int32.div(($(document)).height() - 100, mainArea.size.height));
 		var $t1 = mainArea.spaces.getEnumerator();
 		try {
 			while ($t1.moveNext()) {
 				var space = $t1.get_current();
 				var vertical = space.vertical;
+				var spaceDiv = this.$findSpace(space);
+				// var spaceDivJ = jQuery.FromElement(spaceDiv);
 				var $t2 = space.effects.getEnumerator();
 				try {
 					while ($t2.moveNext()) {
 						var effect = $t2.get_current();
-						if (effect.type === 'highlight') {
-							var hEffect = effect;
-							gameboard.context.save();
-							gameboard.context.translate(hEffect.offsetX, hEffect.offsetY);
-							gameboard.context.rotate(hEffect.rotate * Math.PI / 180);
-							gameboard.context.translate(-hEffect.radius, -hEffect.radius);
-							gameboard.context.fillStyle = hEffect.color;
-							gameboard.context.strokeStyle = 'black';
-							gameboard.context.lineWidth = 5;
-							gameboard.context.fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x + hEffect.radius * 2, space.height * scale.y + hEffect.radius * 2);
-							gameboard.context.strokeRect(space.x * scale.x, space.y * scale.y, space.width * scale.x + hEffect.radius * 2, space.height * scale.y + hEffect.radius * 2);
-							gameboard.context.restore();
-						}
-						//
-						//                        switch (effect.Type)
-						//
-						//                        {
-						//
-						//                        case EffectType.Highlight:
-						//
-						//                        
-						//
-						//                        break;
-						//
-						//                        }
 					}
 				}
 				finally {
@@ -803,7 +1206,7 @@ Client.PageHandler.prototype = {
 						Type.cast($t2, ss.IDisposable).dispose();
 					}
 				}
-				gameboard.context.fillRect(space.x * scale.x, space.y * scale.y, space.width * scale.x, space.height * scale.y);
+				//   gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
 				var spaceScale = new CommonLibraries.Point(space.width / space.pile.cards.length, space.height / space.pile.cards.length);
 				var j = 0;
 				var $t3 = space.pile.cards.getEnumerator();
@@ -812,137 +1215,41 @@ Client.PageHandler.prototype = {
 						var card = $t3.get_current();
 						var xx = 0;
 						var yy = 0;
-						if (space.resizeType === 'grow') {
-							xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
-							yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
-						}
-						else if (space.resizeType === 'static') {
-							if (vertical) {
-								xx = space.x * scale.x;
-								yy = space.y * scale.y + card.value * scale.y / 2;
-							}
-							else {
-								xx = space.x * scale.x + card.value * scale.x / 2;
-								yy = space.y * scale.y;
-							}
-						}
-						var cardImage = this.$cardImages[this.drawCard(card)];
-						gameboard.context.save();
-						gameboard.context.translate(xx + (vertical ? (space.width * scale.x / 2) : 0), yy + (!vertical ? (space.height * scale.y / 2) : 0));
-						gameboard.context.rotate(space.rotate * Math.PI / 180);
-						gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
-						var $t4 = card.effects.getEnumerator();
-						try {
-							while ($t4.moveNext()) {
-								var effect1 = $t4.get_current();
-								if (effect1.type === 'highlight') {
-									var hEffect1 = effect1;
-									gameboard.context.save();
-									gameboard.context.translate(hEffect1.offsetX, hEffect1.offsetY);
-									gameboard.context.rotate(hEffect1.rotate * Math.PI / 180);
-									gameboard.context.translate(-hEffect1.radius, -hEffect1.radius);
-									gameboard.context.lineWidth = 2;
-									gameboard.context.fillStyle = hEffect1.color;
-									gameboard.context.strokeStyle = '#454545';
-									gameboard.context.fillRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
-									gameboard.context.strokeRect(0, 0, cardImage.width + hEffect1.radius * 2, cardImage.height + hEffect1.radius * 2);
-									gameboard.context.restore();
+						switch (space.resizeType) {
+							case 'static': {
+								if (vertical) {
+									xx = space.x * scale.x;
+									yy = space.y * scale.y + card.value * scale.y / 2;
 								}
-							}
-						}
-						finally {
-							if (Type.isInstanceOfType($t4, ss.IDisposable)) {
-								Type.cast($t4, ss.IDisposable).dispose();
-							}
-						}
-						var $t5 = card.effects.getEnumerator();
-						try {
-							while ($t5.moveNext()) {
-								var effect2 = $t5.get_current();
-								switch (effect2.post) {
-									case 1: {
-										if (effect2.type === 'rotate') {
-											var hEffect2 = effect2;
-											gameboard.context.save();
-											gameboard.context.translate(ss.Int32.div(cardImage.width, 2), ss.Int32.div(cardImage.height, 2));
-											gameboard.context.rotate(hEffect2.degrees * Math.PI / 180);
-											gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
-										}
-										break;
-									}
+								else {
+									xx = space.x * scale.x + card.value * scale.x / 2;
+									yy = space.y * scale.y;
 								}
+								break;
+							}
+							case 'grow': {
+								xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
+								yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
+								break;
+							}
+							default: {
+								xx = Math.floor(space.x * scale.x + (!vertical ? (j * spaceScale.x * scale.x) : 0));
+								yy = Math.floor(space.y * scale.y + (vertical ? (j * spaceScale.y * scale.y) : 0));
+								break;
 							}
 						}
-						finally {
-							if (Type.isInstanceOfType($t5, ss.IDisposable)) {
-								Type.cast($t5, ss.IDisposable).dispose();
-							}
-						}
-						var $t6 = space.effects.getEnumerator();
-						try {
-							while ($t6.moveNext()) {
-								var effect3 = $t6.get_current();
-								switch (effect3.post) {
-									case 1: {
-										if (effect3.type === 'bend') {
-											var hEffect3 = effect3;
-											gameboard.context.save();
-											gameboard.context.translate(ss.Int32.div(cardImage.width, 2), ss.Int32.div(cardImage.height, 2));
-											gameboard.context.rotate((-hEffect3.degrees / 2 + hEffect3.degrees / (space.pile.cards.length - 1) * j) * Math.PI / 180);
-											gameboard.context.translate(ss.Int32.div(-cardImage.width, 2), ss.Int32.div(-cardImage.height, 2));
-											//gameboard.Context.Translate(0, -(j - (space.Pile.Cards.Count - 1) / 2) * 5);
-										}
-										break;
-									}
-								}
-							}
-						}
-						finally {
-							if (Type.isInstanceOfType($t6, ss.IDisposable)) {
-								Type.cast($t6, ss.IDisposable).dispose();
-							}
-						}
-						gameboard.context.drawImage(cardImage, 0, 0);
-						var $t7 = card.effects.getEnumerator();
-						try {
-							while ($t7.moveNext()) {
-								var effect4 = $t7.get_current();
-								switch (effect4.post) {
-									case 1: {
-										if (effect4.type === 'rotate') {
-											gameboard.context.restore();
-										}
-										break;
-									}
-								}
-							}
-						}
-						finally {
-							if (Type.isInstanceOfType($t7, ss.IDisposable)) {
-								Type.cast($t7, ss.IDisposable).dispose();
-							}
-						}
-						var $t8 = space.effects.getEnumerator();
-						try {
-							while ($t8.moveNext()) {
-								var effect5 = $t8.get_current();
-								switch (effect5.post) {
-									case 1: {
-										if (effect5.type === 'bend') {
-											gameboard.context.restore();
-										}
-										break;
-									}
-								}
-							}
-						}
-						finally {
-							if (Type.isInstanceOfType($t8, ss.IDisposable)) {
-								Type.cast($t8, ss.IDisposable).dispose();
-							}
-						}
-						gameboard.context.restore();
+						var cardDiv = this.$findCard(space, card);
+						var cardDivJ = $(cardDiv.item1);
+						cardDiv.item2.style.position = 'absolute';
+						cardDiv.item2.style.left = xx + (vertical ? (space.width * scale.x / 2) : 0) + 'px';
+						cardDiv.item2.style.top = yy + (!vertical ? (space.height * scale.y / 2) : 0) + 'px';
+						(cardDiv.item2.style)['transform'] = String.format('rotate({0}deg)', space.rotate);
+						this.$styleAppearanceFromSpace(cardDiv.item2, j, space);
+						this.$styleAppearance(cardDiv.item2, card.appearance);
+						this.fixBrowserPrefixes(cardDiv.item2);
+						//                    spaceDiv.AppendChild(cardDiv);
 						j++;
+						//effects
 					}
 				}
 				finally {
@@ -957,19 +1264,99 @@ Client.PageHandler.prototype = {
 				Type.cast($t1, ss.IDisposable).dispose();
 			}
 		}
-		var $t9 = mainArea.textAreas.getEnumerator();
+		//
+		//
+		//            foreach (var ta in mainArea.TextAreas)
+		//
+		//
+		//            {
+		//
+		//
+		//            gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
+		//
+		//
+		//            gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
+		//
+		//
+		//            }
+	},
+	$styleAppearanceFromSpace: function(element, cardIndex, space) {
+		var appearance = space.appearance;
+		var $t1 = appearance.effects.getEnumerator();
 		try {
-			while ($t9.moveNext()) {
-				var ta = $t9.get_current();
-				gameboard.context.fillStyle = 'rgba(200, 0, 200, 0.5)';
-				gameboard.context.fillText(ta.text, ta.x * scale.x, ta.y * scale.y);
+			while ($t1.moveNext()) {
+				var cardGameAppearanceEffect = $t1.get_current();
+				switch (cardGameAppearanceEffect.type) {
+					case 2: {
+						var hEffect = cardGameAppearanceEffect;
+						var trans = Type.cast((element.style)['transform'], String);
+						if (trans.startsWith('rotate(')) {
+							(element.style)['transform'] = String.format('rotate({0}deg)', -hEffect.degrees / 2 + hEffect.degrees / (space.pile.cards.length - 1) * cardIndex + (parseInt(trans.replaceAll('rotate(', '').replaceAll('deg)', ''))));
+							//todo regex??
+						}
+						else {
+							(element.style)['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate);
+						}
+						break;
+					}
+				}
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t9, ss.IDisposable)) {
-				Type.cast($t9, ss.IDisposable).dispose();
+			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
+				Type.cast($t1, ss.IDisposable).dispose();
 			}
 		}
+		element.style.backgroundColor = appearance.innerStyle.backColor;
+	},
+	$styleAppearance: function(element, appearance) {
+		//rotate
+		var trans = Type.cast((element.style)['transform'], String);
+		if (trans.startsWith('rotate(')) {
+			(element.style)['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate + (parseInt(trans.replaceAll('rotate(', '').replaceAll('deg)', ''))));
+			//todo regex??
+		}
+		else {
+			(element.style)['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate);
+		}
+		element.style.backgroundColor = appearance.innerStyle.backColor;
+	},
+	fixBrowserPrefixes: function(cardImage) {
+		var style = cardImage.style;
+		var f = style['transform'] && ((cardImage.style)['-webkit-transform'] = (cardImage.style)['transform']);
+		f = style['box-shadow'] && ((cardImage.style)['-moz-box-shadow'] = (cardImage.style)['box-shadow']);
+		f = style['box-shadow'] && ((cardImage.style)['-webkit-box-shadow'] = (cardImage.style)['box-shadow']);
+		f = style['box-radius'] && ((cardImage.style)['-moz-box-radius'] = (cardImage.style)['box-radius']);
+		f = style['box-radius'] && ((cardImage.style)['-webkit-box-radius'] = (cardImage.style)['box-radius']);
+		//
+		//                        b = style["box-shadow"];
+		//
+		//                        if (b)
+		//
+		//                        {
+		//
+		//                        cardImage.Style.me()["-moz-box-shadow"] = cardImage.Style.me()["box-shadow"];
+		//
+		//                        cardImage.Style.me()["-webkit-box-shadow"] = cardImage.Style.me()["box-shadow"];
+		//
+		//                        }
+		//
+		//                        b = style["box-radius"];
+		//
+		//                        if (b)
+		//
+		//                        {
+		//
+		//                        cardImage.Style.me()["-moz-box-radius"] = cardImage.Style.me()["box-radius"];
+		//
+		//                        cardImage.Style.me()["-webkit-box-radius"] = cardImage.Style.me()["box-radius"];
+		//
+		//                        }
+	},
+	$cloneImage: function(cardImage) {
+		var img = new Image();
+		img.src = cardImage.src;
+		return img;
 	},
 	drawCard: function(card) {
 		var src = '';

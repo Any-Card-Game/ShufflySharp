@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 
 namespace global
 {
@@ -22,8 +23,98 @@ namespace global
             SortOrder = options.SortOrder;
             NumerOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
             NumerOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
-            Effects = new List<CardGameEffect>();
-            ResizeType = options.ResizeType == null ? "grow" : options.ResizeType;
+            Effects = new List<CardGameAppearanceEffect>();
+            ResizeType = options.ResizeType;
+            Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
+            Appearance=new CardGameAppearance();
+        }
+
+        [ScriptName("vertical")]
+        [IntrinsicProperty]
+        public bool Vertical { get; set; }
+
+        [ScriptName("x")]
+        [IntrinsicProperty]
+        public double X { get; set; }
+
+        [ScriptName("y")]
+        [IntrinsicProperty]
+        public double Y { get; set; }
+
+        [ScriptName("width")]
+        [IntrinsicProperty]
+        public double Width { get; set; }
+
+        [ScriptName("height")]
+        [IntrinsicProperty]
+        public double Height { get; set; }
+
+        [ScriptName("pile")]
+        [IntrinsicProperty]
+        public CardGamePile Pile { get; set; }
+
+        [ScriptName("rotate")]
+        [IntrinsicProperty]
+        public double Rotate { get; set; }
+
+        [ScriptName("appearance")]
+        [IntrinsicProperty]
+        public CardGameAppearance Appearance { get; set; }
+
+        [ScriptName("visible")]
+        [IntrinsicProperty]
+        public bool Visible { get; set; }
+
+        [ScriptName("stackCards")]
+        [IntrinsicProperty]
+        public bool StackCards { get; set; }
+
+        [ScriptName("drawCardsBent")]
+        [IntrinsicProperty]
+        public bool DrawCardsBent { get; set; }
+
+        [ScriptName("name")]
+        [IntrinsicProperty]
+        public string Name { get; set; }
+
+        [ScriptName("sortPrder")]
+        [IntrinsicProperty]
+        public CardGameOrder SortOrder { get; set; }
+
+        [ScriptName("numerOfCardsHorizontal")]
+        [IntrinsicProperty]
+        public int NumerOfCardsHorizontal { get; set; }
+
+        [ScriptName("numerOfCardsVertical")]
+        [IntrinsicProperty]
+        public int NumerOfCardsVertical { get; set; }
+
+        [ScriptName("effects")]
+        [IntrinsicProperty]
+        public List<CardGameAppearanceEffect> Effects { get; set; }
+
+        [ScriptName("resizeType")]
+        [IntrinsicProperty]
+        public string ResizeType { get; set; }
+    }
+
+    [Imported]
+    [NamedValues][NonScriptable]
+    public enum TableSpaceResizeType
+    {
+        [ScriptName("grow")]
+        Grow,
+        [ScriptName("static")]
+        Static
+    }
+
+    [Record]
+    public sealed class CardGameTableSpaceOptions
+    {
+        public CardGameTableSpaceOptions()
+        {
+            ResizeType = "grow";
+            Rotate = 0;
         }
 
         [ScriptName("vertical")]
@@ -82,12 +173,10 @@ namespace global
         [IntrinsicProperty]
         public int NumerOfCardsVertical { get; set; }
 
-        [ScriptName("effects")]
-        [IntrinsicProperty]
-        public List<CardGameEffect> Effects { get; set; }
 
         [ScriptName("resizeType")]
         [IntrinsicProperty]
-        public string ResizeType { get; set; }//todo toenum
+        public string ResizeType { get; set; }
     }
+
 }

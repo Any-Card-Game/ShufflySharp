@@ -38,6 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="documents\acg.xls" />
+    <None Include="documents\nutudu.md" />
     <None Include="documents\diagrams\acg.vsd" />
     <None Include="documents\diagrams\server layout.vsd" />
     <None Include="documents\flow.md" />

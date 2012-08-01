@@ -45,6 +45,137 @@ global._.random = function() {
 	return Math.random();
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.AnimatedEffect
+global.AnimatedEffect = function(animationEffectType) {
+	this.type = 0;
+	this.duration = 0;
+	this.ease = 0;
+	global.Effect.call(this, 4);
+	this.type = animationEffectType;
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AnimatedEffect$Between
+global.AnimatedEffect$Between = function() {
+	this.$3$FromField = null;
+	this.$3$ToField = null;
+	global.AnimatedEffect.call(this, 0);
+	this.set_from(new global.Effect$StyleProperty());
+	this.set_to(new global.Effect$StyleProperty());
+};
+global.AnimatedEffect$Between.prototype = {
+	get_from: function() {
+		return this.$3$FromField;
+	},
+	set_from: function(value) {
+		this.$3$FromField = value;
+	},
+	get_to: function() {
+		return this.$3$ToField;
+	},
+	set_to: function(value) {
+		this.$3$ToField = value;
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AnimatedEffectEase
+global.AnimatedEffectEase = function() {
+};
+global.AnimatedEffectEase.prototype = {};
+global.AnimatedEffectEase.registerEnum('global.AnimatedEffectEase', false);
+////////////////////////////////////////////////////////////////////////////////
+// global.AnimatedEffectType
+global.AnimatedEffectType = function() {
+};
+global.AnimatedEffectType.prototype = {};
+global.AnimatedEffectType.registerEnum('global.AnimatedEffectType', false);
+////////////////////////////////////////////////////////////////////////////////
+// global.Appearance
+global.Appearance = function() {
+	this.effects = null;
+	global.AppearanceStyle.call(this);
+	this.effects = new Array();
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AppearanceStyle
+global.AppearanceStyle = function() {
+	this.outerStyle = null;
+	this.innerStyle = null;
+	this.outerStyle = new global.AppearanceStyleItem();
+	this.innerStyle = new global.AppearanceStyleItem();
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AppearanceStyleBorder
+global.AppearanceStyleBorder = function() {
+	this.top = null;
+	this.bottom = null;
+	this.left = null;
+	this.right = null;
+	this.all = null;
+	this.top = new global.AppearanceStyleBorderArea();
+	this.bottom = new global.AppearanceStyleBorderArea();
+	this.left = new global.AppearanceStyleBorderArea();
+	this.right = new global.AppearanceStyleBorderArea();
+	this.all = new global.AppearanceStyleBorderArea();
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AppearanceStyleBorderArea
+global.AppearanceStyleBorderArea = function() {
+	this.color = null;
+	this.radius = null;
+	this.width = null;
+	this.style = 0;
+	this.color = '#FFF';
+	this.radius = '0px';
+	this.width = '0px';
+	this.style = 'none';
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AppearanceStyleItem
+global.AppearanceStyleItem = function() {
+	this.backColor = null;
+	this.rotate = 0;
+	this.backColor = null;
+	this.padding = null;
+	this.margin = null;
+	this.zindex = 0;
+	this.cursor = 0;
+	this.backColor = null;
+	this.zindex = 0;
+	this.backColor = new global.AppearanceStyleBorder();
+	this.padding = new global.AppearanceStylePadding();
+	this.margin = new global.AppearanceStyleMargin();
+	this.cursor = 0;
+	this.rotate = 0;
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AppearanceStyleMargin
+global.AppearanceStyleMargin = function() {
+	this.top = 0;
+	this.bottom = 0;
+	this.left = 0;
+	this.right = 0;
+	this.all = 0;
+	this.top = 0;
+	this.bottom = 0;
+	this.left = 0;
+	this.right = 0;
+	this.all = 0;
+};
+////////////////////////////////////////////////////////////////////////////////
+// global.AppearanceStylePadding
+global.AppearanceStylePadding = function() {
+	this.top = 0;
+	this.bottom = 0;
+	this.left = 0;
+	this.right = 0;
+	this.all = 0;
+	this.top = 0;
+	this.bottom = 0;
+	this.left = 0;
+	this.right = 0;
+	this.all = 0;
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.ArrayUtils
 global.ArrayUtils = function() {
 	eval('Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};');
@@ -179,9 +310,10 @@ global.Card = function(value, type) {
 	this.value = 0;
 	this.type = 0;
 	this.state = 0;
-	this.effects = null;
+	this.appearance = null;
 	this.value = value;
 	this.type = type;
+	this.appearance = new global.Appearance();
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGame
@@ -251,6 +383,24 @@ global.CardGame.prototype = {
 global.CardGameAnswer = function() {
 	this.value = 0;
 };
+////////////////////////////////////////////////////////////////////////////////
+// global.CardGameAppearanceEffectDrawTime
+global.CardGameAppearanceEffectDrawTime = function() {
+};
+global.CardGameAppearanceEffectDrawTime.prototype = {};
+global.CardGameAppearanceEffectDrawTime.registerEnum('global.CardGameAppearanceEffectDrawTime', false);
+////////////////////////////////////////////////////////////////////////////////
+// global.CardGameAppearanceStyleBorderStyle
+global.CardGameAppearanceStyleBorderStyle = function() {
+};
+global.CardGameAppearanceStyleBorderStyle.prototype = {};
+global.CardGameAppearanceStyleBorderStyle.registerEnum('global.CardGameAppearanceStyleBorderStyle', false);
+////////////////////////////////////////////////////////////////////////////////
+// global.CardGameAppearanceStyleCursor
+global.CardGameAppearanceStyleCursor = function() {
+};
+global.CardGameAppearanceStyleCursor.prototype = {};
+global.CardGameAppearanceStyleCursor.registerEnum('global.CardGameAppearanceStyleCursor', false);
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameArea
 global.CardGameArea = function() {
@@ -326,6 +476,8 @@ global.CardGameTableSpaceOptions.$ctor = function() {
 	$this.numerOfCardsHorizontal = 0;
 	$this.numerOfCardsVertical = 0;
 	$this.resizeType = null;
+	$this.resizeType = 'grow';
+	$this.rotate = 0;
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -341,19 +493,27 @@ global.CardType = function() {
 global.CardType.prototype = {};
 global.CardType.registerEnum('global.CardType', false);
 ////////////////////////////////////////////////////////////////////////////////
-// global.DrawTime
-global.DrawTime = function() {
+// global.Effect
+global.Effect = function(type) {
+	this.type = 0;
+	this.post = 0;
+	this.childrenEffects = null;
+	this.type = type;
+	this.post = 'pre';
 };
-global.DrawTime.prototype = {};
-global.DrawTime.registerEnum('global.DrawTime', false);
+global.Effect.prototype = {
+	chainEffect: function(ef) {
+		this.childrenEffects = ef;
+		return ef;
+	}
+};
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Bend
 global.Effect$Bend = function(options) {
 	this.degrees = 0;
-	global.Effects.call(this);
-	this.type = 'bend';
+	global.Effect.call(this, 2);
 	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
-	this.post = 1;
+	this.post = 'during';
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Highlight
@@ -363,31 +523,27 @@ global.Effect$Highlight = function(options) {
 	this.rotate = 0;
 	this.offsetX = 0;
 	this.offsetY = 0;
-	global.Effects.call(this);
-	this.type = 'highlight';
+	global.Effect.call(this, 0);
 	this.radius = ((options.radius === 0) ? 0 : options.radius);
 	this.color = (ss.isNullOrUndefined(options.color) ? 'yellow' : options.color);
 	this.rotate = ((options.rotate === 0) ? 0 : options.rotate);
 	this.offsetX = ((options.offsetX === 0) ? 0 : options.offsetX);
 	this.offsetY = ((options.offsetY === 0) ? 0 : options.offsetY);
-	this.post = 0;
+	this.post = 'pre';
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Rotate
 global.Effect$Rotate = function(options) {
 	this.degrees = 0;
-	global.Effects.call(this);
-	this.type = 'rotate';
+	global.Effect.call(this, 1);
 	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
-	this.post = 1;
+	this.post = 'during';
 };
 ////////////////////////////////////////////////////////////////////////////////
-// global.Effects
-global.Effects = function() {
-	this.type = null;
-	this.post = 0;
-	this.type = '';
-	this.post = 0;
+// global.Effect$StyleProperty
+global.Effect$StyleProperty = function() {
+	this.style = null;
+	global.Effect.call(this, 3);
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.EffectType
@@ -563,6 +719,7 @@ global.TableSpace = function(options) {
 	this.height = 0;
 	this.pile = null;
 	this.rotate = 0;
+	this.appearance = null;
 	this.visible = false;
 	this.stackCards = false;
 	this.drawCardsBent = false;
@@ -587,7 +744,9 @@ global.TableSpace = function(options) {
 	this.numerOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 	this.numerOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
 	this.effects = new Array();
-	this.resizeType = (ss.isNullOrUndefined(options.resizeType) ? 'grow' : options.resizeType);
+	this.resizeType = options.resizeType;
+	this.rotate = ss.Nullable.unbox(Type.cast((eval('options.rotate? options.rotate : 0')), Number));
+	this.appearance = new global.Appearance();
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.TableTextArea
@@ -611,6 +770,12 @@ global.User = function(name) {
 	this.cards = new global.Pile(name);
 };
 global._.registerClass('global._', Object);
+global.AppearanceStyle.registerClass('global.AppearanceStyle', Object);
+global.AppearanceStyleBorder.registerClass('global.AppearanceStyleBorder', Object);
+global.AppearanceStyleBorderArea.registerClass('global.AppearanceStyleBorderArea', Object);
+global.AppearanceStyleItem.registerClass('global.AppearanceStyleItem', Object);
+global.AppearanceStyleMargin.registerClass('global.AppearanceStyleMargin', Object);
+global.AppearanceStylePadding.registerClass('global.AppearanceStylePadding', Object);
 global.ArrayUtils.registerClass('global.ArrayUtils', Object);
 global.Card.registerClass('global.Card', Object);
 global.CardGame.registerClass('global.CardGame', Object);
@@ -621,7 +786,11 @@ global.CardGameEffectHighlightOptions.registerClass('global.CardGameEffectHighli
 global.CardGameEffectRotateOptions.registerClass('global.CardGameEffectRotateOptions', Object);
 global.CardGameQuestion.registerClass('global.CardGameQuestion', Object);
 global.CardGameTableSpaceOptions.registerClass('global.CardGameTableSpaceOptions', Object);
-global.Effects.registerClass('global.Effects', Object);
+global.Effect.registerClass('global.Effect', Object);
+global.Effect$Bend.registerClass('global.Effect$Bend', global.Effect);
+global.Effect$Highlight.registerClass('global.Effect$Highlight', global.Effect);
+global.Effect$Rotate.registerClass('global.Effect$Rotate', global.Effect);
+global.Effect$StyleProperty.registerClass('global.Effect$StyleProperty', global.Effect);
 global.FiberYieldResponse.registerClass('global.FiberYieldResponse', Object);
 global.GameCardGameOptions.registerClass('global.GameCardGameOptions', Object);
 global.GameCardGameTextAreaOptions.registerClass('global.GameCardGameTextAreaOptions', Object);
@@ -632,6 +801,6 @@ global.shuff.registerClass('global.shuff', Object);
 global.TableSpace.registerClass('global.TableSpace', Object);
 global.TableTextArea.registerClass('global.TableTextArea', Object);
 global.User.registerClass('global.User', Object);
-global.Effect$Bend.registerClass('global.Effect$Bend', global.Effects);
-global.Effect$Highlight.registerClass('global.Effect$Highlight', global.Effects);
-global.Effect$Rotate.registerClass('global.Effect$Rotate', global.Effects);
+global.AnimatedEffect.registerClass('global.AnimatedEffect', global.Effect);
+global.AnimatedEffect$Between.registerClass('global.AnimatedEffect$Between', global.AnimatedEffect);
+global.Appearance.registerClass('global.Appearance', global.AppearanceStyle);

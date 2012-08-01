@@ -127,11 +127,13 @@ namespace Build
             foreach (var d in Directory.GetDirectories(pre + @"ShuffleSharp\ShuffleGames\"))
             {
                 var to = pre + @"ShuffleSharp\output\Games\" + d.Split('\\').Last();
-
                 if (!Directory.Exists(to))
 
                     Directory.CreateDirectory(to);
-
+                if (d.EndsWith("bin") || d.EndsWith("obj"))
+                {
+                    continue;
+                }
                 File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
             }
         }

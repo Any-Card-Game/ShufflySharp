@@ -129,16 +129,17 @@ module.exports = Sevens = function () {
                     visible: true,
                     stack: false,
                     name: 'User' + userIndex,
-                    width: 0,
-                    rotate: rotate,
+                    width: 0, 
                     height: 3,
                     bend: true
                 }));
+                //sp.appearance.innerStyle.rotate = rotate;
+                
                 self.cardGame.textAreas.push(tta = new TableTextArea({ name: 'Text' + userIndex, text: text }));
                 break;
         }
         sp.user = user;
-        sp.effects.push(new Effect$Bend({ degrees:  userIndex > 2 ? -10 : 10 }));
+        sp.appearance.effects.push(new Effect$Bend({ degrees:  userIndex > 2 ? -10 : 10 }));
         
         var space = sp;
         switch (userIndex) {
@@ -156,11 +157,11 @@ module.exports = Sevens = function () {
                 break;
             case 3:
                 space.x = 8;
-                space.y = 11;
+                space.y = 10;
                 break;
             case 4:
                 space.x = 4;
-                space.y = 11;
+                space.y = 10;
                 break;
             case 5:
                 space.x = 3;
@@ -267,7 +268,7 @@ module.exports = Sevens = function () {
                             opacity: op
                         }));   
                     }else {
-                        sp[i].effects.push(new Effect$Bend({ degrees: sp[i].user.userIndex > 2 ? -10 : 10 }));
+                        sp[i].appearance.effects.push(new Effect$Bend({ degrees: sp[i].user.userIndex > 2 ? -10 : 10 }));
 
                     }
                     
@@ -276,9 +277,7 @@ module.exports = Sevens = function () {
                         card.effects = [];
 
                         if(card.value==6 && !sp[i].user) {
-                              card.effects.push(new Effect$Rotate({
-                                    degrees: 90,
-                                }));
+                            card.appearance.innerStyle.rotate = 90;
                         }
 
                         for (var j = 0; j < usable.length; j++) {

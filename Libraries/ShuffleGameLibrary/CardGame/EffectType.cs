@@ -1,7 +1,14 @@
+using System.Runtime.CompilerServices;
+
 namespace global
 {
+    //[NamedValues]
     public enum EffectType
     {
-        Highlight
+        Highlight,
+        Rotate,
+        Bend,
+        StyleProperty,
+        Animated
     }
 }

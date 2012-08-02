@@ -1,5 +1,6 @@
 using System;
 using System.Html;
+using CommonLibraries;
 using System.Runtime.CompilerServices;
 
 namespace global
@@ -52,10 +53,14 @@ namespace global
             {
                 em.Style.Padding = string.Format("{0} {0} {0} {0}", (Radius).px());
                 em.Style.BackgroundColor = Color;
+                em.Style.BackgroundColor = Color;
                 em.Style.Border = "solid 2px black";
 
                 /// Window.Alert("good1");
             }
+            em.Style.me()["border-radius"] = 15.0.px();
+            em.Style.me()["box-shadow"] = "4px 4px 2px #333";
+
 
         }
         public override void TearDown(Element em, bool space)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Html;
+using CommonLibraries;
 using System.Runtime.CompilerServices;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
@@ -19,6 +20,18 @@ namespace Client.ShuffUI
             jQuery.Select("body").Append(outer);
             ui.outer = outer;
 
+            dynamic f;
+            var tp = outer[0].Style;
+
+            tp.me()["box-shadow"] = "4px 4px 2px #333";
+
+
+
+            f = (tp.me()["box-shadow"] && (tp.me()["-moz-box-shadow"] = tp.me()["box-shadow"]));
+            f = (tp.me()["box-shadow"] && (tp.me()["-webkit-box-shadow"] = tp.me()["box-shadow"]));
+
+
+
             outer.CSS("position", "absolute");
             outer.CSS("padding", "2em 0.8em 0.8em 1.3em");
             outer.CSS("left", ui.X + "px");
@@ -30,6 +43,8 @@ namespace Client.ShuffUI
 
             var top = jQuery.Select("<div style='width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  '></div>");
             outer.Append(top);
+
+
 
 
             var title = jQuery.Select("<div class='rounded' style='margin:auto; background-color:white; width:40%; text-align:center;opacity:0.4;'>" + ui.Title + "</div>");

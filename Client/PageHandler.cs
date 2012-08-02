@@ -355,8 +355,11 @@ namespace Client
                     styleAppearanceFromSpace(cardDiv, j, space);
                     styleAppearance(cardDiv, card.Appearance);
 
-                    
+                    cardDiv.Item2.Style.me()["box-shadow"] = "3px 3px 2px #2c2c2c";
+
                     FixBrowserPrefixes(cardDiv.Item1);
+                    FixBrowserPrefixes(cardDiv.Item2);
+
 
 
                     //                    spaceDiv.AppendChild(cardDiv);
@@ -452,7 +455,7 @@ namespace Client
             element.Item2.Style.BackgroundColor = appearance.InnerStyle.BackColor;
         }
 
-        public void FixBrowserPrefixes(Element cardImage)
+        public void FixBrowserPrefixes(Element cardImage)//todo static method
         {
             dynamic style = cardImage.Style;
 
@@ -461,8 +464,8 @@ namespace Client
             f = (style["transform"] && (cardImage.Style.me()["-webkit-transform"] = cardImage.Style.me()["transform"]));
             f = (style["box-shadow"] && (cardImage.Style.me()["-moz-box-shadow"] = cardImage.Style.me()["box-shadow"]));
             f = (style["box-shadow"] && (cardImage.Style.me()["-webkit-box-shadow"] = cardImage.Style.me()["box-shadow"]));
-            f = (style["box-radius"] && (cardImage.Style.me()["-moz-box-radius"] = cardImage.Style.me()["box-radius"]));
-            f = (style["box-radius"] && (cardImage.Style.me()["-webkit-box-radius"] = cardImage.Style.me()["box-radius"]));
+            f = (style["border-radius"] && (cardImage.Style.me()["-moz-border-radius"] = cardImage.Style.me()["border-radius"]));
+            f = (style["border-radius"] && (cardImage.Style.me()["-webkit-border-radius"] = cardImage.Style.me()["border-radius"]));
 
              
         }

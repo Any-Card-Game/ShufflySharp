@@ -446,13 +446,22 @@ GameServer.GameServer.prototype = {
 			}
 		}
 	},
+	range: function(start, length) {
+		var mf = new Array(length);
+		for (var i = start; i < length; i++) {
+			mf[i - start] = i;
+		}
+		return mf;
+	},
 	$askQuestion: function(answ, room) {
 		var user = this.$getPlayerByUsername(room, answ.user.userName);
 		var gameAnswer = Models.GameSendAnswerModel.$ctor();
 		gameAnswer.answers = answ.answers;
 		gameAnswer.question = answ.question;
 		this.$qManager.sendMessage(Models.GameSendAnswerModel).call(this.$qManager, user, user.gateway, 'Area.Game.AskQuestion', CommonLibraries.Help.cleanUp(Models.GameSendAnswerModel).call(null, gameAnswer));
-		this.$emitAll(room, 'Area.Game.UpdateState', CommonLibraries.Help.cleanUp(global.CardGame).call(null, answ.cardGame));
+		var mjf = CommonLibraries.Help.cleanUp(global.CardGame).call(null, answ.cardGame);
+		//Console.Log(Json.Stringify(mjf).Length);
+		this.$emitAll(room, 'Area.Game.UpdateState', mjf);
 		if (this.$verbose) {
 			console.log(answ.user.userName + ': ' + answ.question + '   ');
 			var ind = 0;

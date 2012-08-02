@@ -665,8 +665,11 @@ global.Effect$Highlight.prototype = {
 		else {
 			em.style.padding = String.format('{0} {0} {0} {0}', global.domUtils.px(this.radius));
 			em.style.backgroundColor = this.color;
+			em.style.backgroundColor = this.color;
 			em.style.border = 'solid 2px black';
 		}
+		(em.style)['border-radius'] = global.domUtils.px(15);
+		(em.style)['box-shadow'] = '4px 4px 2px #333';
 	},
 	tearDown: function(em, space) {
 		if (space) {

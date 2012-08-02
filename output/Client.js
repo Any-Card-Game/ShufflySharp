@@ -924,7 +924,9 @@ Client.PageHandler.prototype = {
 						(cardDiv.item1.style)['transform'] = global.domUtils.transformRadius(space1.appearance.innerStyle.rotate);
 						this.$styleAppearanceFromSpace(cardDiv, j, space1);
 						this.$styleAppearance(cardDiv, card1.appearance);
+						(cardDiv.item2.style)['box-shadow'] = '3px 3px 2px #2c2c2c';
 						this.fixBrowserPrefixes(cardDiv.item1);
+						this.fixBrowserPrefixes(cardDiv.item2);
 						//                    spaceDiv.AppendChild(cardDiv);
 						j++;
 						//effects
@@ -1031,8 +1033,8 @@ Client.PageHandler.prototype = {
 		f = style['transform'] && ((cardImage.style)['-webkit-transform'] = (cardImage.style)['transform']);
 		f = style['box-shadow'] && ((cardImage.style)['-moz-box-shadow'] = (cardImage.style)['box-shadow']);
 		f = style['box-shadow'] && ((cardImage.style)['-webkit-box-shadow'] = (cardImage.style)['box-shadow']);
-		f = style['box-radius'] && ((cardImage.style)['-moz-box-radius'] = (cardImage.style)['box-radius']);
-		f = style['box-radius'] && ((cardImage.style)['-webkit-box-radius'] = (cardImage.style)['box-radius']);
+		f = style['border-radius'] && ((cardImage.style)['-moz-border-radius'] = (cardImage.style)['border-radius']);
+		f = style['border-radius'] && ((cardImage.style)['-webkit-border-radius'] = (cardImage.style)['border-radius']);
 	},
 	$cloneImage: function(cardImage) {
 		var img = new Image();
@@ -1327,6 +1329,11 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 			var outer = $('<div class=\'window-outer\' style=\'background-color: #87B6D9;\'></div>');
 			($('body')).append(outer);
 			ui.outer = outer;
+			var f;
+			var tp = (outer[0]).style;
+			(tp)['box-shadow'] = '4px 4px 2px #333';
+			f = (tp)['box-shadow'] && ((tp)['-moz-box-shadow'] = (tp)['box-shadow']);
+			f = (tp)['box-shadow'] && ((tp)['-webkit-box-shadow'] = (tp)['box-shadow']);
 			outer.css('position', 'absolute');
 			outer.css('padding', '2em 0.8em 0.8em 1.3em');
 			outer.css('left', ui.x + 'px');

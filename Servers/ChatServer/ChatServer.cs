@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonShuffleLibrary;
 using Models;
@@ -72,7 +73,7 @@ namespace ChatServer
         }
     }
 
-    [Record]
+    [Serializable]
     public sealed class ChatCreateRoomModel
     {
         public ChatCreateRoomModel(string channel)
@@ -83,8 +84,8 @@ namespace ChatServer
         [IntrinsicProperty]
         public string Channel { get; set; }
     }
+        [Serializable]
 
-    [Record]
     public sealed class ChatJoinRoomModel
     {
        
@@ -96,7 +97,7 @@ namespace ChatServer
         [IntrinsicProperty]
         public string Channel { get; set; }
     }
-    [Record]
+    [Serializable]
     public sealed class ChatMessageRoomModel
     { 
 
@@ -114,8 +115,8 @@ namespace ChatServer
         [IntrinsicProperty]
         public string Content { get; set; }
     }
+        [Serializable]
 
-    [Record]
     public sealed class SendMessageToRoomModel
     {
     }

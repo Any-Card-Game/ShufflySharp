@@ -1380,6 +1380,7 @@ __Namespace.prototype = {
 }
 
 Type.registerNamespace = function Type$registerNamespace(name) {
+if(!name)return;
     if (!window.__namespaces) {
         window.__namespaces = {};
     }

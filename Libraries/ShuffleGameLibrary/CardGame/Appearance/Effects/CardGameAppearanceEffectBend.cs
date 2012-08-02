@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace global
@@ -18,7 +19,7 @@ namespace global
         public double Degrees { get; set; }
 
     }
-    [Record]
+    [Serializable]
     public sealed class CardGameEffectBendOptions
     {
         [ScriptName("degrees")]

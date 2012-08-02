@@ -38,9 +38,15 @@ GameServer.DataManagerGameData.prototype = {
 GameServer.FiberYieldResponse = function() {
 	this.contents = 0;
 	this.lineNumber = 0;
-	this.type = null;
+	this.type = 0;
 	this.question = null;
 };
+////////////////////////////////////////////////////////////////////////////////
+// GameServer.FiberYieldResponseType
+GameServer.FiberYieldResponseType = function() {
+};
+GameServer.FiberYieldResponseType.prototype = {};
+GameServer.FiberYieldResponseType.registerEnum('GameServer.FiberYieldResponseType', false);
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameData
 GameServer.GameData = function() {

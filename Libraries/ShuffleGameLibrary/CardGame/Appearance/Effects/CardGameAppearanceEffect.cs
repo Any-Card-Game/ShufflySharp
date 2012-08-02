@@ -33,11 +33,11 @@ namespace global
             return ef;
         }
 
-        public virtual void Build(Element em)
+        public virtual void Build(Element em,bool space)
         {
             ///Window.Alert("bad1");
         }
-        public virtual void TearDown(Element em)
+        public virtual void TearDown(Element em, bool space)
         {
             ///Window.Alert("bad2");
         }

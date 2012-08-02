@@ -1,8 +1,9 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace global
 {
-    [Record]
+    [Serializable]
     public sealed class GameCardGameOptions
     {
         [IntrinsicProperty]

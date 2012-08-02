@@ -1,3 +1,4 @@
+using System;
 using System.Html;
 using System.Runtime.CompilerServices;
 
@@ -38,29 +39,64 @@ namespace global
         [IntrinsicProperty]
         public double OffsetY { get; set; }
 
-        public override void Build(Element em)
+        public override void Build(Element em,bool space)
         {
-            em.Style.Padding = string.Format("{0} {0} {0} {0}", (Radius).px());
-            em.Style.BackgroundColor = Color;
-            /// Window.Alert("good1");
+            if (space)
+            {
+                em.Style.Padding = string.Format("{0} {0} {0} {0}", (Radius).px());
+                em.Style.BackgroundColor = Color;
+                em.Style.Border = "solid 2px black";
+                /// Window.Alert("good1");
+            }
+            else
+            {
+                em.Style.Padding = string.Format("{0} {0} {0} {0}", (Radius).px());
+                em.Style.BackgroundColor = Color;
+                em.Style.Border = "solid 2px black";
 
+                /// Window.Alert("good1");
+            }
 
         }
-        public override void TearDown(Element em)
+        public override void TearDown(Element em, bool space)
         {
-            ///     Window.Alert("good2");
-
-            double paddingRadius = Radius / 2;
-            em.Style.Left = (em.Style.Left.nopx() - paddingRadius).px();
-            em.Style.Top = (em.Style.Top.nopx() - paddingRadius).px();
-
-            for (int i = 0; i < em.ChildNodes.Length; i++)
+            if (space)
             {
-                if (em.ChildNodes[i].TagName == "DIV")
-                {
-                    em.ChildNodes[i].Style.Left = (em.ChildNodes[i].Style.Left.nopx() + paddingRadius).px();
-                    em.ChildNodes[i].Style.Top = (em.ChildNodes[i].Style.Top.nopx() + paddingRadius).px();
 
+                ///     Window.Alert("good2");
+
+                double paddingRadiusL = em.Style.PaddingLeft.nopx();
+                double paddingRadiusT = em.Style.PaddingTop.nopx();
+                em.Style.Left = (em.Style.Left.nopx()- em.Style.PaddingLeft.nopx()).px();
+                em.Style.Top = (em.Style.Top.nopx() -em.Style.PaddingTop.nopx()).px();
+                for (int i = 0; i < em.ChildNodes.Length; i++)
+                {
+                    if (em.ChildNodes[i].TagName == "DIV")
+                    {
+                        em.ChildNodes[i].Style.Left = (em.ChildNodes[i].Style.Left.nopx() + paddingRadiusL).px();
+                        em.ChildNodes[i].Style.Top = (em.ChildNodes[i].Style.Top.nopx() + paddingRadiusT).px();
+
+                    }
+                }
+            }
+            else
+            {
+
+                ///     Window.Alert("good2");
+
+                double paddingRadiusL = em.Style.PaddingLeft.nopx();
+                double paddingRadiusT = em.Style.PaddingTop.nopx();
+                em.Style.Left = (em.Style.Left.nopx() - em.Style.PaddingLeft.nopx()).px();
+                em.Style.Top = (em.Style.Top.nopx() - em.Style.PaddingTop.nopx()).px();
+
+                for (int i = 0; i < em.ChildNodes.Length; i++)
+                {
+                    if (em.ChildNodes[i].TagName == "DIV")
+                    {
+                        em.ChildNodes[i].Style.Left = (em.ChildNodes[i].Style.Left.nopx() + paddingRadiusL).px();
+                        em.ChildNodes[i].Style.Top = (em.ChildNodes[i].Style.Top.nopx() + paddingRadiusT).px();
+
+                    }
                 }
             }
         }
@@ -68,7 +104,7 @@ namespace global
     }
 
 
-    [Record]
+    [Serializable]
     public sealed class CardGameEffectHighlightOptions
     {
         [ScriptName("radius")]

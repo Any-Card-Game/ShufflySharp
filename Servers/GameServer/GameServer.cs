@@ -251,7 +251,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
         {
             switch (answer.Type)
             {
-                case "askQuestion":
+                case FiberYieldResponseType.AskQuestion:
                     var answ = answer.question;
 
                     if (answ == null)
@@ -271,7 +271,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
 
                     break;
-                case "gameOver":
+                case FiberYieldResponseType.GameOver:
                     EmitAll(room, "Area.Game.UpdateState", room.Game.CardGame.CleanUp());
 
                     EmitAll(room, "Area.Game.GameOver", "");
@@ -281,7 +281,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                         qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.GameOver", new object());
                     }
                     break;
-                case "log":
+                case FiberYieldResponseType.Log:
 
                     var answ2 = room.Fiber.Run<FiberYieldResponse>();
                     handleYield(room, answ2);
@@ -296,7 +296,7 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
                         qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Log", ganswer);
                     }
                     break;
-                case "break":
+                case FiberYieldResponseType.Break:
                     if (!room.Debuggable)
                     {
                         var answ3 = room.Fiber.Run<FiberYieldResponse>();

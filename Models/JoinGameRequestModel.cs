@@ -1,8 +1,9 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Models
 {
-    [Record]
+    [Serializable]
     public sealed class JoinGameRequestModel
     {
         public JoinGameRequestModel(string roomId, UserModel user)

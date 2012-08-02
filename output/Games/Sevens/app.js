@@ -16,7 +16,7 @@ module.exports = Sevens = function () {
             stack: false,
             name: 'Clubs',
             x: 5,
-            y: 3,
+            y: 4,
             width: 0,
             height: 6,
             pile: self.clubs,
@@ -30,7 +30,7 @@ module.exports = Sevens = function () {
             stack: false,
             name: 'Hearts',
             x: 7,
-            y: 3,
+            y: 4,
             width: 0,
             height: 6,
             pile: self.hearts,
@@ -44,7 +44,7 @@ module.exports = Sevens = function () {
             stack: false,
             name: 'Diamonds',
             x: 9,
-            y: 3,
+            y: 4,
             width: 0,
             height: 6,
             pile: self.diamonds,
@@ -58,7 +58,7 @@ module.exports = Sevens = function () {
             stack: false,
             name: 'Spades',
             x: 11,
-            y: 3,
+            y: 4,
             width: 0,
             height: 6,
             pile: self.spades,
@@ -145,27 +145,27 @@ module.exports = Sevens = function () {
         switch (userIndex) {
             case 0:
                 space.x = 4;
-                space.y = 1;
+                space.y = 2;
                 break;
             case 1:
                 space.x = 8;
-                space.y = 1;
+                space.y = 2;
                 break;
             case 2:
                 space.x = 13;
-                space.y = 4;
+                space.y = 5;
                 break;
             case 3:
                 space.x = 8;
-                space.y = 10;
+                space.y = 12;
                 break;
             case 4:
                 space.x = 4;
-                space.y = 10;
+                space.y = 12;
                 break;
             case 5:
                 space.x = 3;
-                space.y = 4;
+                space.y = 5;
                 break;
         }
         var textArea = tta;

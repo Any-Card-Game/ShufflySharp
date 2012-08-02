@@ -2,7 +2,7 @@
     this.scriptName = scriptName;
     this.threadedFunction = function (func, onfinished, callback) {
         var worker = new Worker(this.scriptName);
-        worker.addEventListener('message', function (e) {
+        (worker.addEventListener || worker.attachEvent).addEventListener('message', function (e) {
             var f=e.data;
 //            eval("f=" + JSON.parse(e.data));
 
@@ -23,7 +23,8 @@
     return this;
 };
 
-self.addEventListener('message', function (e) {
+
+(self.addEventListener || self.attachEvent)('message', function (e) {
     var f;
     eval("f=" + e.data);
     var aj; 

@@ -77,14 +77,26 @@ namespace Client
             dvGame.Style.Top = "0";
             dvGame.Style.Right = "0";
             dvGame.Style.Bottom = "0";
-
-
-            Document.Body.AddEventListener("contextmenu", e =>
-                {
-                    e.PreventDefault();
-                    //todo: Sspecial right click menu;
-                }, false);
              
+       
+                Document.Body.AddEventListener("contextmenu", e =>
+                    {
+                        e.PreventDefault();
+                        //todo: Sspecial right click menu;
+                    }, false);
+
+    //ie8
+         /*   {
+                dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
+
+                var m = (Action<string, ElementEventHandler>)d2;
+                m("contextmenu", () =>
+                    {
+                        
+                    }); 
+            }*/
+            
+
         }
 
         public void startGameServer()
@@ -281,7 +293,7 @@ namespace Client
                 //ExtensionMethods.debugger();
                 foreach (var effect in space.Appearance.Effects)
                 {
-                    effect.Build(spaceDiv);
+                    effect.Build(spaceDiv,true);
 
                 }
 
@@ -300,7 +312,7 @@ namespace Client
 
                     switch (space.ResizeType)
                     {
-                        case "static":
+                        case TableSpaceResizeType.Static:
                             if (vertical)
                             { 
                                 yy =  card.Value * scale.Y / 2;
@@ -312,7 +324,7 @@ namespace Client
 
                             break;
 
-                        case "grow":
+                        case TableSpaceResizeType.Grow:
                             xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
                             yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
                             break;
@@ -325,7 +337,11 @@ namespace Client
 
 
 
+
                     var cardDiv = findCard(space, card);
+                    xx -= cardDiv.Item2.Width/2;
+                    yy -= cardDiv.Item2.Height/2;
+                    
                     var cardDivJ = jQuery.FromElement(cardDiv.Item1);
                     cardDiv.Item1.Style.me()["transform"] = 0.0.transformRadius();
 
@@ -353,7 +369,7 @@ namespace Client
 
                 foreach (var effect in space.Appearance.Effects)
                 {
-                    effect.TearDown(spaceDiv);
+                    effect.TearDown(spaceDiv,true);
                 }
 
 
@@ -415,8 +431,9 @@ namespace Client
 
             foreach (var cardGameAppearanceEffect in appearance.Effects)
             {
-                cardGameAppearanceEffect.Build(element.Item1);
-                cardGameAppearanceEffect.TearDown(element.Item1);
+                cardGameAppearanceEffect.Build(element.Item1,false);
+                //new object().debugger();
+                cardGameAppearanceEffect.TearDown(element.Item1, false);
             }
 
 

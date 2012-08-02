@@ -1,4 +1,8 @@
-﻿//-----------------------------------------------------------------------
+﻿
+
+
+
+//-----------------------------------------------------------------------
 // Part of the LINQ to JavaScript (JSLINQ) v2.10 Project - http://jslinq.codeplex.com
 // Copyright (C) 2009 Chris Pietschmann (http://pietschsoft.com). All rights reserved.
 // This project is licensed under the Microsoft Reciprocal License (Ms-RL)

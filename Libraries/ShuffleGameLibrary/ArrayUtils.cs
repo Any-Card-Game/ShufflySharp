@@ -41,7 +41,6 @@ namespace global
 
         public static CardGameCard[] SortCards(CardGameCard[] ts)
         {
-            ExtensionMethods.debugger();
             var ijc = GroupBy(ts, a => a.Type);
             var ij = Select(ijc, a =>
                 {
@@ -94,19 +93,20 @@ namespace global
                 bool good = false;
                 foreach (var item in items)
                 {
-                    if ((dynamic)item.Key == (dynamic)t2)
+                    bool f3 = ExtensionMethods.eval("item.key==t2");//throws wild notimplementedexcpetion if item.key and t2 are cast to dynamic
+                    if (f3)
                     {
                         item.Items.Add(t);
                         good = true;
                         break;
                     }
                 }
-                if(!good)
+                if (!good)
                 {
                     items.Add(new GroupByKey<T, T2>(t2, new List<T>(t)));
-                    
+
                 }
-            }
+            } 
             return items.me(); 
         }
 

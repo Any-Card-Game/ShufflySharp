@@ -1374,7 +1374,8 @@ __Namespace.prototype = {
 }
 
 Type.registerNamespace = function Type$registerNamespace(name) {
-    if (!global.__namespaces) {
+    if(!name)return;
+ if (!global.__namespaces) {
         global.__namespaces = {};
     }
     if (!global.__rootNamespaces) {

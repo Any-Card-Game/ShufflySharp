@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 
 namespace global
 {
-    [Record]
+    [Serializable]
     public sealed class CardGameArea
     {
         [ScriptName("size")]

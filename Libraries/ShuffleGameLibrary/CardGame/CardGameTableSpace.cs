@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
@@ -91,11 +92,10 @@ namespace global
 
         [ScriptName("resizeType")]
         [IntrinsicProperty]
-        public string ResizeType { get; set; }
+        public TableSpaceResizeType ResizeType { get; set; }
     }
+         [NamedValues]
 
-    [Imported]
-    [NamedValues][NonScriptable]
     public enum TableSpaceResizeType
     {
         [ScriptName("grow")]
@@ -104,12 +104,12 @@ namespace global
         Static
     }
 
-    [Record]
+    [Serializable]
     public sealed class CardGameTableSpaceOptions
     {
         public CardGameTableSpaceOptions()
         {
-            ResizeType = "grow";
+            ResizeType = TableSpaceResizeType.Grow;
             Rotate = 0;
         }
 
@@ -172,7 +172,7 @@ namespace global
 
         [ScriptName("resizeType")]
         [IntrinsicProperty]
-        public string ResizeType { get; set; }
+        public TableSpaceResizeType ResizeType { get; set; }
     }
 
 }

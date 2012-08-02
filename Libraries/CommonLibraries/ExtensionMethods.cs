@@ -11,7 +11,7 @@ namespace CommonLibraries
             return script;
         }
         [InlineCode("debugger")]
-        public static void debugger() 
+        public static void debugger(this object script) 
         {
         }
 

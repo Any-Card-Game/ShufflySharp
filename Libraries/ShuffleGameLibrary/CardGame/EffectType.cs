@@ -2,7 +2,8 @@ using System.Runtime.CompilerServices;
 
 namespace global
 {
-    //[NamedValues]
+     [NamedValues]
+
     public enum EffectType
     {
         Highlight,

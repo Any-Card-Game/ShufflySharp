@@ -6,7 +6,7 @@ namespace CodeMirrorLibrary
 {
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
-    [Record]
+    [Serializable]
     public sealed class CodeMirrorOptions
     {
         [ScriptName("lineNumbers")]

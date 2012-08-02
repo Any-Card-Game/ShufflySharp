@@ -545,7 +545,7 @@ Client.Gateway = function(gatewayServer) {
 };
 Client.Gateway.prototype = {
 	emit: function(channel, content, gameServer) {
-		this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content, gameServer));
+		this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, Type.cast(content, Object), gameServer));
 	},
 	on: function(channel, callback) {
 		this.$channels[channel] = callback;
@@ -668,6 +668,16 @@ Client.PageHandler = function(gatewayServerAddress, buildSite) {
 		e.preventDefault();
 		//todo: Sspecial right click menu;
 	}, false);
+	//ie8
+	//   {
+	//   dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
+	//   
+	//   var m = (Action<string, ElementEventHandler>)d2;
+	//   m("contextmenu", () =>
+	//   {
+	//   
+	//   });
+	//   }
 };
 Client.PageHandler.prototype = {
 	startGameServer: function() {
@@ -865,7 +875,7 @@ Client.PageHandler.prototype = {
 				try {
 					while ($t4.moveNext()) {
 						var effect = $t4.get_current();
-						effect.build(spaceDiv);
+						effect.build(spaceDiv, true);
 					}
 				}
 				finally {
@@ -883,7 +893,7 @@ Client.PageHandler.prototype = {
 						var xx = 0;
 						var yy = 0;
 						switch (space1.resizeType) {
-							case 'static': {
+							case 1: {
 								if (vertical) {
 									yy = card1.value * scale.y / 2;
 								}
@@ -892,7 +902,7 @@ Client.PageHandler.prototype = {
 								}
 								break;
 							}
-							case 'grow': {
+							case 0: {
 								xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
 								yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
 								break;
@@ -904,6 +914,8 @@ Client.PageHandler.prototype = {
 							}
 						}
 						var cardDiv = this.$findCard(space1, card1);
+						xx -= ss.Int32.div(cardDiv.item2.width, 2);
+						yy -= ss.Int32.div(cardDiv.item2.height, 2);
 						var cardDivJ = $(cardDiv.item1);
 						(cardDiv.item1.style)['transform'] = global.domUtils.transformRadius(0);
 						cardDiv.item1.style.position = 'absolute';
@@ -927,7 +939,7 @@ Client.PageHandler.prototype = {
 				try {
 					while ($t6.moveNext()) {
 						var effect1 = $t6.get_current();
-						effect1.tearDown(spaceDiv);
+						effect1.tearDown(spaceDiv, true);
 					}
 				}
 				finally {
@@ -992,8 +1004,9 @@ Client.PageHandler.prototype = {
 		try {
 			while ($t1.moveNext()) {
 				var cardGameAppearanceEffect = $t1.get_current();
-				cardGameAppearanceEffect.build(element.item1);
-				cardGameAppearanceEffect.tearDown(element.item1);
+				cardGameAppearanceEffect.build(element.item1, false);
+				//new object().debugger();
+				cardGameAppearanceEffect.tearDown(element.item1, false);
 			}
 		}
 		finally {
@@ -1059,7 +1072,7 @@ Client.ScriptLoader.prototype = {
 		//caching
 		if (ss.isValue(callback)) {
 			(script).onreadystatechange = function(a) {
-				if (ss.Nullable.unbox(Type.cast((script).readyState === 'loaded', Boolean))) {
+				if (ss.Nullable.unbox(Type.cast((script).readyState === 'loaded' || (script).readyState === 'complete', Boolean))) {
 					callback();
 				}
 			};

@@ -50,7 +50,7 @@ global.AnimatedEffect = function(animationEffectType) {
 	this.type = 0;
 	this.duration = 0;
 	this.ease = 0;
-	global.Effect.call(this, 'animated');
+	global.Effect.call(this, 4);
 	this.type = animationEffectType;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +157,7 @@ global.AppearanceStyleBorderArea = function() {
 	this.color = '#FFF';
 	this.radius = '0px';
 	this.width = '0px';
-	this.style = 'none';
+	this.style = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStyleItem
@@ -536,7 +536,7 @@ global.CardGameTableSpaceOptions.$ctor = function() {
 	$this.numerOfCardsHorizontal = 0;
 	$this.numerOfCardsVertical = 0;
 	$this.resizeType = 0;
-	$this.resizeType = 'grow';
+	$this.resizeType = 0;
 	$this.rotate = 0;
 	return $this;
 };
@@ -576,7 +576,7 @@ global.Effect = function(type) {
 	this.post = 0;
 	this.childrenEffects = null;
 	this.type = type;
-	this.post = 'pre';
+	this.post = 0;
 };
 global.Effect.prototype = {
 	chainEffect: function(ef) {
@@ -591,7 +591,7 @@ global.Effect.prototype = {
 global.Effect.fromJson = function(effect) {
 	var ef;
 	switch (effect.type) {
-		case 'highlight': {
+		case 0: {
 			var $t1 = global.CardGameEffectHighlightOptions.$ctor();
 			$t1.color = Type.cast((effect).color, String);
 			$t1.offsetX = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).offsetX, 0), Number));
@@ -601,23 +601,23 @@ global.Effect.fromJson = function(effect) {
 			ef = new global.Effect$Highlight($t1);
 			break;
 		}
-		case 'rotate': {
+		case 1: {
 			var $t2 = global.CardGameEffectRotateOptions.$ctor();
 			$t2.degrees = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).degrees, 0), Number));
 			ef = new global.Effect$Rotate($t2);
 			break;
 		}
-		case 'bend': {
+		case 2: {
 			var $t3 = global.CardGameEffectBendOptions.$ctor();
 			$t3.degrees = ss.Nullable.unbox(Type.cast(Object.coalesce((effect).degrees, 0), Number));
 			ef = new global.Effect$Bend($t3);
 			break;
 		}
-		case 'styleProperty': {
+		case 3: {
 			ef = null;
 			break;
 		}
-		case 'animated': {
+		case 4: {
 			ef = null;
 			break;
 		}
@@ -635,9 +635,9 @@ global.Effect.fromJson = function(effect) {
 // global.Effect$Bend
 global.Effect$Bend = function(options) {
 	this.degrees = 0;
-	global.Effect.call(this, 'bend');
+	global.Effect.call(this, 2);
 	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
-	this.post = 'during';
+	this.post = 1;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$Highlight
@@ -647,13 +647,13 @@ global.Effect$Highlight = function(options) {
 	this.rotate = 0;
 	this.offsetX = 0;
 	this.offsetY = 0;
-	global.Effect.call(this, 'highlight');
+	global.Effect.call(this, 0);
 	this.radius = ((options.radius === 0) ? 0 : options.radius);
 	this.color = (ss.isNullOrUndefined(options.color) ? 'yellow' : options.color);
 	this.rotate = ((options.rotate === 0) ? 0 : options.rotate);
 	this.offsetX = ((options.offsetX === 0) ? 0 : options.offsetX);
 	this.offsetY = ((options.offsetY === 0) ? 0 : options.offsetY);
-	this.post = 'pre';
+	this.post = 0;
 };
 global.Effect$Highlight.prototype = {
 	build: function(em, space) {
@@ -699,15 +699,15 @@ global.Effect$Highlight.prototype = {
 // global.Effect$Rotate
 global.Effect$Rotate = function(options) {
 	this.degrees = 0;
-	global.Effect.call(this, 'rotate');
+	global.Effect.call(this, 1);
 	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
-	this.post = 'during';
+	this.post = 1;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$StyleProperty
 global.Effect$StyleProperty = function() {
 	this.style = null;
-	global.Effect.call(this, 'styleProperty');
+	global.Effect.call(this, 3);
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.EffectType
@@ -719,7 +719,7 @@ global.EffectType.registerEnum('global.EffectType', false);
 // global.FiberYieldResponse
 global.FiberYieldResponse = function(type) {
 	this.variableLookup = null;
-	this.type = null;
+	this.type = 0;
 	this.contents = null;
 	this.question = null;
 	this.lineNumber = 0;
@@ -728,7 +728,7 @@ global.FiberYieldResponse = function(type) {
 };
 global.FiberYieldResponse.$ctor2 = function(type, question) {
 	this.variableLookup = null;
-	this.type = null;
+	this.type = 0;
 	this.contents = null;
 	this.question = null;
 	this.lineNumber = 0;
@@ -738,7 +738,7 @@ global.FiberYieldResponse.$ctor2 = function(type, question) {
 };
 global.FiberYieldResponse.$ctor1 = function(type, contents) {
 	this.variableLookup = null;
-	this.type = null;
+	this.type = 0;
 	this.contents = null;
 	this.question = null;
 	this.lineNumber = 0;
@@ -748,7 +748,7 @@ global.FiberYieldResponse.$ctor1 = function(type, contents) {
 };
 global.FiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
 	this.variableLookup = null;
-	this.type = null;
+	this.type = 0;
 	this.contents = null;
 	this.question = null;
 	this.lineNumber = 0;
@@ -758,6 +758,12 @@ global.FiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
 	this.value = value;
 };
 global.FiberYieldResponse.$ctor2.prototype = global.FiberYieldResponse.$ctor1.prototype = global.FiberYieldResponse.$ctor3.prototype = global.FiberYieldResponse.prototype;
+////////////////////////////////////////////////////////////////////////////////
+// global.FiberYieldResponseType
+global.FiberYieldResponseType = function() {
+};
+global.FiberYieldResponseType.prototype = {};
+global.FiberYieldResponseType.registerEnum('global.FiberYieldResponseType', false);
 ////////////////////////////////////////////////////////////////////////////////
 // global.GameCardGameOptions
 global.GameCardGameOptions = function() {
@@ -845,21 +851,21 @@ global.shuff.askQuestion = function(user, question, answers, cardGame) {
 		//todo .value
 	}
 	var m = new global.CardGameQuestion(user, question, answers, cardGame);
-	var answer = yield(new global.FiberYieldResponse.$ctor2('askQuestion', m));
+	var answer = yield(new global.FiberYieldResponse.$ctor2(0, m));
 	cardGame.answerIndex++;
 	return (ss.isNullOrUndefined(answer) ? 0 : answer.value);
 };
 global.shuff.declareWinner = function(user) {
-	yield(new global.FiberYieldResponse('gameOver'));
+	yield(new global.FiberYieldResponse(2));
 };
 global.shuff.log = function(msg) {
-	yield(new global.FiberYieldResponse.$ctor1('log', msg));
+	yield(new global.FiberYieldResponse.$ctor1(1, msg));
 };
 global.shuff.break_ = function(lineNumber, cardGame, varLookup) {
 	if (cardGame.emulating) {
 		return;
 	}
-	var yieldObject = new global.FiberYieldResponse.$ctor3('break', lineNumber - 1, '');
+	var yieldObject = new global.FiberYieldResponse.$ctor3(3, lineNumber - 1, '');
 	while (true) {
 		var answ = yield(yieldObject);
 		if (ss.isNullOrUndefined(answ)) {
@@ -867,7 +873,7 @@ global.shuff.break_ = function(lineNumber, cardGame, varLookup) {
 			return;
 		}
 		if (ss.isValue(answ.variableLookup)) {
-			yieldObject = new global.FiberYieldResponse.$ctor3('variableLookup', 0, varLookup(answ.variableLookup));
+			yieldObject = new global.FiberYieldResponse.$ctor3(4, 0, varLookup(answ.variableLookup));
 			continue;
 		}
 		break;

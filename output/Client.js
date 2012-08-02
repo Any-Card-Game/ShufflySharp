@@ -545,7 +545,7 @@ Client.Gateway = function(gatewayServer) {
 };
 Client.Gateway.prototype = {
 	emit: function(channel, content, gameServer) {
-		this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, Type.cast(content, Object), gameServer));
+		this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content, gameServer));
 	},
 	on: function(channel, callback) {
 		this.$channels[channel] = callback;
@@ -982,7 +982,7 @@ Client.PageHandler.prototype = {
 						var bEffect = cardGameAppearanceEffect;
 						var trans = Type.cast((element.item1.style)['transform'], String);
 						if (trans.startsWith('rotate(')) {
-							(element.item1.style)['transform'] = -bEffect.degrees / 2 + bEffect.degrees / (space.pile.cards.length - 1) * cardIndex + global.domUtils.transformRadius(global.domUtils.nopx(trans));
+							(element.item1.style)['transform'] = global.domUtils.transformRadius(-bEffect.degrees / 2 + bEffect.degrees / (space.pile.cards.length - 1) * cardIndex + global.domUtils.noTransformRadius(trans));
 						}
 						else {
 							(element.item1.style)['transform'] = global.domUtils.transformRadius(appearance.innerStyle.rotate);

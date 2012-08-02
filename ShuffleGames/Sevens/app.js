@@ -22,7 +22,7 @@ module.exports = Sevens = function () {
             pile: self.clubs,
             numberOfCardsHorizontal: 1,
             numberOfCardsVertical: -1,
-            resizeType:'static'
+            resizeType:1//todo:::'static'
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
@@ -36,7 +36,7 @@ module.exports = Sevens = function () {
             pile: self.hearts,
             numberOfCardsHorizontal: 1,
             numberOfCardsVertical: -1,
-            resizeType:'static'
+            resizeType:1//todo:::'static'
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
@@ -50,7 +50,7 @@ module.exports = Sevens = function () {
             pile: self.diamonds,
             numberOfCardsHorizontal: 1,
             numberOfCardsVertical: -1,
-            resizeType:'static'
+            resizeType:1//todo:::'static'
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
@@ -64,7 +64,7 @@ module.exports = Sevens = function () {
             pile: self.spades,
             numberOfCardsHorizontal: 1,
             numberOfCardsVertical: -1,
-            resizeType:'static'
+            resizeType:1//todo:::'static'
         }));
 
         self.cardGame.textAreas.push(new TableTextArea({

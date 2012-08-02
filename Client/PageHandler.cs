@@ -406,7 +406,7 @@ namespace Client
 
                         if (trans.StartsWith("rotate("))
                         {
-                            element.Item1.Style.me()["transform"] = (-bEffect.Degrees / 2 + bEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + trans.nopx().transformRadius();
+                            element.Item1.Style.me()["transform"] = ((-bEffect.Degrees / 2 + bEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + trans.noTransformRadius()).transformRadius();
                         }
                         else
                         {

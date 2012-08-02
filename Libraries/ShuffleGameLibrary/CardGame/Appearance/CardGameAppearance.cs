@@ -105,7 +105,7 @@ namespace global
 
         }
     }
-    [NamedValues]
+    //[NamedValues]todo:::
 
     public enum CardGameAppearanceStyleCursor
     {
@@ -261,7 +261,7 @@ namespace global
         public CardGameAppearanceStyleBorderStyle Style { get; set; }
 
     }
-    [NamedValues]
+    //[NamedValues]todo:::
 
     public enum CardGameAppearanceStyleBorderStyle
     {

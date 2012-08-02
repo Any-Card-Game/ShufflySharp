@@ -5,7 +5,7 @@ CommonLibraries.ExtensionMethods = function() {
 };
 CommonLibraries.ExtensionMethods.cleanUp = function(T) {
 	return function(o) {
-		return JSON.parse(JSON.stringify(Type.cast(o, Object), CommonLibraries.Help.sanitize));
+		return JSON.parse(JSON.stringify(o, CommonLibraries.Help.sanitize));
 	};
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ CommonLibraries.Help = function() {
 };
 CommonLibraries.Help.cleanUp = function(T) {
 	return function(o) {
-		return JSON.parse(JSON.stringify(Type.cast(o, Object), CommonLibraries.Help.sanitize));
+		return JSON.parse(JSON.stringify(o, CommonLibraries.Help.sanitize));
 	};
 };
 CommonLibraries.Help.sanitize = function(name, value) {

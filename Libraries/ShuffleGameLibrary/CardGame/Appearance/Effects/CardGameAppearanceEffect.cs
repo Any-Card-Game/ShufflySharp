@@ -85,7 +85,18 @@ namespace global
             return ef;
         }
     }
-    [NamedValues]
+    //[NamedValues]todo:::
+
+    public enum EffectType
+    {
+        Highlight,
+        Rotate,
+        Bend,
+        StyleProperty,
+        Animated
+    }
+
+    //[NamedValues]todo:::
     public enum CardGameAppearanceEffectDrawTime
     {
         Pre, During, Post
@@ -126,7 +137,7 @@ namespace global
     }
 
     [ScriptName("AnimatedEffectEase")]
-    [NamedValues]
+    //[NamedValues]todo:::
     public enum CardGameAppearanceAnimatedEffectEase
     {
         Linear,

@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 
 namespace global
 {
-    [NamedValues]
+    //[NamedValues]todo:::
     [ScriptName("Order")]
     public enum CardGameOrder
     {

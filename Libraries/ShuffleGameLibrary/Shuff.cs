@@ -19,7 +19,7 @@ namespace global
             }
             var m = new CardGameQuestion(user, question, answers, cardGame);
 
-            var answer = Fiber<CardGameAnswer>.Yield(new FiberYieldResponse("askQuestion", m));
+            var answer = Fiber<CardGameAnswer>.Yield(new FiberYieldResponse(FiberYieldResponseType.AskQuestion, m));
             cardGame.AnswerIndex++;
             return answer == null ? 0 : answer.Value;
         }
@@ -27,13 +27,13 @@ namespace global
         [ScriptName("declareWinner")]
         public static void DeclareWinner(UserModel user)
         {
-            Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse("gameOver"));
+            Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.GameOver));
         }
 
         [ScriptName("log")]
         public static void Log(string msg)
         {
-            Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse("log", msg));
+            Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.Log, msg));
         }
 
         [ScriptName("break_")]
@@ -44,7 +44,7 @@ namespace global
                 return;
             }
 
-            var yieldObject = new FiberYieldResponse("break", lineNumber - 1, "");
+            var yieldObject = new FiberYieldResponse(FiberYieldResponseType.Break, lineNumber - 1, "");
             while (true)
             {
                 var answ = Fiber<FiberYieldResponse>.Yield(yieldObject);
@@ -56,7 +56,7 @@ namespace global
                 }
                 if (answ.VariableLookup != null)
                 {
-                    yieldObject = new FiberYieldResponse("variableLookup", 0, varLookup(answ.VariableLookup));
+                    yieldObject = new FiberYieldResponse(FiberYieldResponseType.VariableLookup, 0, varLookup(answ.VariableLookup));
                     continue;
                 }
                 break;
@@ -66,24 +66,24 @@ namespace global
 
     public class FiberYieldResponse
     {
-        public FiberYieldResponse(string type, CardGameQuestion question) //answerQuestion
+        public FiberYieldResponse(FiberYieldResponseType type, CardGameQuestion question) //answerQuestion
         {
             Type = type;
             Question = question;
         }
 
-        public FiberYieldResponse(string type, string contents) //log
+        public FiberYieldResponse(FiberYieldResponseType type, string contents) //log
         {
             Type = type;
             Contents = contents;
         }
 
-        public FiberYieldResponse(string type) //gameOver
+        public FiberYieldResponse(FiberYieldResponseType type) //gameOver
         {
             Type = type;
         }
 
-        public FiberYieldResponse(string type, int lineNumber, string value) //break,variableLookup
+        public FiberYieldResponse(FiberYieldResponseType type, int lineNumber, string value) //break,variableLookup
         {
             Type = type;
             LineNumber = lineNumber;
@@ -96,7 +96,7 @@ namespace global
 
         [ScriptName("type")]
         [IntrinsicProperty]
-        public string Type { get; set; }
+        public FiberYieldResponseType Type { get; set; }
 
         [ScriptName("contents")]
         [IntrinsicProperty]
@@ -113,6 +113,15 @@ namespace global
         [ScriptName("value")]
         [IntrinsicProperty]
         public string Value { get; set; }
+    }
+    //[NamedValues]todo:::
+    public enum FiberYieldResponseType
+    {
+        AskQuestion,
+        Log,
+        GameOver,
+        Break,
+        VariableLookup
     }
 
     public class CardGameQuestion

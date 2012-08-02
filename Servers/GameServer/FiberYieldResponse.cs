@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using global;
 
 namespace GameServer
 {
@@ -9,12 +10,5 @@ namespace GameServer
         public FiberYieldResponseType Type;
         public GameQuestionAnswerModel question;
     }
-    [NamedValues]
-    public enum FiberYieldResponseType
-    {
-        AskQuestion,
-        Log,
-        GameOver,
-        Break
-    }
+
 }

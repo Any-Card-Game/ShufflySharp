@@ -94,7 +94,7 @@ namespace global
         [IntrinsicProperty]
         public TableSpaceResizeType ResizeType { get; set; }
     }
-         [NamedValues]
+         //[NamedValues]todo:::
 
     public enum TableSpaceResizeType
     {

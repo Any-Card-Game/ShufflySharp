@@ -42,12 +42,6 @@ GameServer.FiberYieldResponse = function() {
 	this.question = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
-// GameServer.FiberYieldResponseType
-GameServer.FiberYieldResponseType = function() {
-};
-GameServer.FiberYieldResponseType.prototype = {};
-GameServer.FiberYieldResponseType.registerEnum('GameServer.FiberYieldResponseType', false);
-////////////////////////////////////////////////////////////////////////////////
 // GameServer.GameData
 GameServer.GameData = function() {
 	this.finishedGames = 0;
@@ -404,7 +398,7 @@ GameServer.GameServer.prototype = {
 	},
 	$handleYield: function(room, answer) {
 		switch (answer.type) {
-			case 'askQuestion': {
+			case 0: {
 				var answ = answer.question;
 				if (ss.isNullOrUndefined(answ)) {
 					this.$emitAll(room, 'Area.Game.GameOver', '');
@@ -418,7 +412,7 @@ GameServer.GameServer.prototype = {
 				console.log(ss.Int32.div(this.$gameData.totalQuestionsAnswered, ss.Int32.div(dt.getTime() - this.$startTime.getTime(), 1000)) + ' Answers per seconds');
 				break;
 			}
-			case 'gameOver': {
+			case 2: {
 				this.$emitAll(room, 'Area.Game.UpdateState', CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame));
 				this.$emitAll(room, 'Area.Game.GameOver', '');
 				if (ss.isValue(room.debuggingSender)) {
@@ -426,7 +420,7 @@ GameServer.GameServer.prototype = {
 				}
 				break;
 			}
-			case 'log': {
+			case 1: {
 				var answ2 = room.fiber.run();
 				this.$handleYield(room, answ2);
 				if (!room.game.cardGame.emulating && room.debuggable) {
@@ -437,7 +431,7 @@ GameServer.GameServer.prototype = {
 				}
 				break;
 			}
-			case 'break': {
+			case 3: {
 				if (!room.debuggable) {
 					var answ3 = room.fiber.run();
 					this.$handleYield(room, answ3);

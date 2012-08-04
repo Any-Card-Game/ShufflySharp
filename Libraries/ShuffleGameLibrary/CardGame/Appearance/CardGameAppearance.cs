@@ -34,10 +34,15 @@ namespace global
     [ScriptName("AppearanceStyle")]
     public class CardGameAppearanceStyle
     {
+        public CardGameAppearanceStyle(CardGameAppearanceStyleItem outersStyle, CardGameAppearanceStyleItem innerStyle)
+        {
+            OuterStyle = outersStyle;
+            InnerStyle = innerStyle;
+        }
         public CardGameAppearanceStyle()
         {
-            OuterStyle = new CardGameAppearanceStyleItem();
-            InnerStyle = new CardGameAppearanceStyleItem();
+            OuterStyle = new CardGameAppearanceStyleItem(new {});
+            InnerStyle = new CardGameAppearanceStyleItem(new {});
         }
 
         [ScriptName("outerStyle")]
@@ -51,14 +56,15 @@ namespace global
     [ScriptName("AppearanceStyleItem")]
     public class CardGameAppearanceStyleItem
     {
-        public CardGameAppearanceStyleItem()
+        public CardGameAppearanceStyleItem(dynamic options)
         {
-            BackColor = null;
-            ZIndex = 0;
-            Border = new CardGameAppearanceStyleBorder();
-            Padding = new CardGameAppearanceStylePadding();
-            Margin = new CardGameAppearanceStyleMargin();
-            Cursor = new CardGameAppearanceStyleCursor();
+            if (options == null) options = new {};
+            BackColor = options.backColor ?? null;
+            ZIndex = options.zIndex ??0;
+            Border = options.border ?? new CardGameAppearanceStyleBorder();
+            Padding = options.padding ?? new CardGameAppearanceStylePadding();
+            Margin =options.margin ?? new CardGameAppearanceStyleMargin() ;
+            Cursor =options.cursor ?? new CardGameAppearanceStyleCursor();
             Rotate = 0;
         }
 
@@ -92,7 +98,7 @@ namespace global
 
         public static CardGameAppearanceStyleItem FromJson(CardGameAppearanceStyleItem st)
         {
-            CardGameAppearanceStyleItem si = new CardGameAppearanceStyleItem();
+            CardGameAppearanceStyleItem si = new CardGameAppearanceStyleItem(new {});
             si.BackColor = st.BackColor;
             si.Border = CardGameAppearanceStyleBorder.FromJson(st.Border);
             si.Cursor = st.Cursor;

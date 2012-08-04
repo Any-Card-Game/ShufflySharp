@@ -16,10 +16,10 @@ AdminServer.AdminServer = function() {
 	this.$indexPageData = 0;
 	this.$nodeInspector = null;
 	this.$nonDebuggable = null;
-	this.$numOfChatServers = 2;
-	this.$numOfGameServers = 3;
-	this.$numOfSiteServers = 2;
-	this.$numOfGateways = 4;
+	this.$numOfChatServers = 1;
+	this.$numOfGameServers = 1;
+	this.$numOfSiteServers = 1;
+	this.$numOfGateways = 1;
 	this.$util = null;
 	var fs = require('fs');
 	console.log('Shuffly Admin V0.44');

@@ -106,6 +106,7 @@
     <Content Include="lib\codemirror\util\searchcursor.js" />
     <Content Include="lib\codemirror\util\simple-hint.css" />
     <Content Include="lib\codemirror\util\simple-hint.js" />
+    <Content Include="lib\RawDeflate.js" />
     <Content Include="lib\Dialog.js" />
     <Content Include="lib\FunctionWorker.js" />
     <Content Include="lib\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />

@@ -8,7 +8,8 @@ namespace Build
     internal class Program
     {
         private static void Main(string[] args)
-        {
+        { 
+
             var projs = new[]
                 {
                     @"ShuffleSharp\Libraries\CommonLibraries\",
@@ -38,6 +39,7 @@ namespace Build
                 File.Copy(from, to);
             }
 
+            //client happens in buildsite.cs
             var depends = new Dictionary<string, Application>
                 {
                     {
@@ -71,6 +73,7 @@ namespace Build
                                 @"./CommonShuffleLibrary.js",
                                 @"./ShuffleGameLibrary.js",
                                 @"./Models.js",
+                                @"./RawDeflate.js",
                             })
                     },
                     {
@@ -156,4 +159,9 @@ namespace Build
 
         #endregion
     }
+
+
+
+
+
 }

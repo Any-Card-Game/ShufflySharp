@@ -8,6 +8,7 @@ namespace Client
     {
         private void loadScript(string url, bool cache, Action callback)
         {
+            //cache = false;
             var head = Document.GetElementsByTagName("head")[0];
 
             var script = (ScriptElement) Document.CreateElement("script");

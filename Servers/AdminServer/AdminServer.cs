@@ -26,10 +26,10 @@ namespace AdminServer
         private Process nodeInspector;
         private string[] nonDebuggable;
 
-        private int numOfChatServers= 2;
-        private int numOfGameServers = 3;
-        private int numOfSiteServers = 2;
-        private int numOfGateways =4;
+        private int numOfChatServers= 1;
+        private int numOfGameServers = 1;
+        private int numOfSiteServers = 1;
+        private int numOfGateways =1;
 
         private Util util;
 

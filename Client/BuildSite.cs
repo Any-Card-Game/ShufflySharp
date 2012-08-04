@@ -4,6 +4,7 @@ using System.Html;
 using System.Runtime.CompilerServices;
 using Client.Information;
 using Client.ShuffUI;
+using CommonLibraries;
 using CommonWebLibraries;
 using Models;
 using jQueryApi;
@@ -58,14 +59,19 @@ namespace Client
                             url + "lib/Stats.js",
                             url + "lib/keyboardjs.js",
                             url + "lib/Dialog.js",
-                        },false, () => scriptLoader.Load(new[]
+                        }, false, () => scriptLoader.Load(new[]
                             {
                                 url + "CommonLibraries.js",
                                 url + "ShuffleGameLibrary.js",
                                 url + "Models.js",
+
                                 //url + "uis/genericArea.js", 
-                            },true, ready))));
+                            }, true, () => scriptLoader.Load(new[]
+                            {
+                                   url + "lib/RawDeflate.js",
+                            }, true, ready)))));
         }
+
 
         [IntrinsicProperty]
         public static BuildSite Instance { get; set; }
@@ -78,6 +84,19 @@ namespace Client
 
             var stats = new XStats();
             Document.Body.AppendChild(stats.Element);
+            Window.SetTimeout(() =>
+                {
+                    ExtensionMethods.debugger(null);
+
+                    jQuery.Select(".xstats").CSS("right", "0px");
+                    jQuery.Select(".xstats").CSS("position", "absolute");
+
+                    jQuery.Select(".xstats").CSS("z-index", "9998!important");
+                    jQuery.Select(".xstats").Children().CSS("z-index", "9998!important");
+
+
+                }, 1000);
+
 
 
             var pageHandler = new PageHandler(gatewayServerAddress, this);

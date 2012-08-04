@@ -22,7 +22,9 @@ Client.BuildSite = function(gatewayServerAddress) {
 	this.$scriptLoader.loadSync([url + 'lib/jquery-1.7.2.min.js', url + 'lib/jquery-ui-1.8.20.custom.min.js', url + 'lib/jqwidgets/scripts/gettheme.js', url + 'lib/jqwidgets/jqxcore.js'], Function.mkdel(this, function() {
 		this.$scriptLoader.load([url + 'lib/jqwidgets/jqxbuttons.js', url + 'lib/jqwidgets/jqxscrollbar.js', url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/codemirror.js', url + 'lib/jqwidgets/jqxlistbox.js'], false, Function.mkdel(this, function() {
 			this.$scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'lib/Dialog.js'], false, Function.mkdel(this, function() {
-				this.$scriptLoader.load([url + 'CommonLibraries.js', url + 'ShuffleGameLibrary.js', url + 'Models.js'], true, Function.mkdel(this, this.$ready));
+				this.$scriptLoader.load([url + 'CommonLibraries.js', url + 'ShuffleGameLibrary.js', url + 'Models.js'], true, Function.mkdel(this, function() {
+					this.$scriptLoader.load([url + 'lib/RawDeflate.js'], true, Function.mkdel(this, this.$ready));
+				}));
 			}));
 		}));
 	}));
@@ -33,6 +35,13 @@ Client.BuildSite.prototype = {
 		elem.parentNode.removeChild(elem);
 		var stats = new xStats();
 		document.body.appendChild(stats.element);
+		window.setTimeout(function() {
+			debugger;
+			($('.xstats')).css('right', '0px');
+			($('.xstats')).css('position', 'absolute');
+			($('.xstats')).css('z-index', '9998!important');
+			($('.xstats')).children().css('z-index', '9998!important');
+		}, 1000);
 		var pageHandler = new Client.PageHandler(this.$gatewayServerAddress, this);
 		var shuffUIManager = new Client.ShuffUI.ShuffUIManager();
 		this.$shuffUIManager = shuffUIManager;
@@ -615,6 +624,9 @@ Client.PageHandler = function(gatewayServerAddress, buildSite) {
 	this.$numOfTimes = 0;
 	this.$startTime = null;
 	this.$timeValue = 0;
+	this.$spaces = ({});
+	this.$cards = ({});
+	this.$resetStyles = ['border-radius', '-moz-border-radius', '-webkit-border-radius', 'box-shadow', '-moz-box-shadow', 'transform', '-webkit-transform', 'padding', 'background-color', 'border'];
 	this.$buildSite = buildSite;
 	this.gameStuff = new Client.GameInfo();
 	this.$startTime = Date.get_now();
@@ -732,7 +744,8 @@ Client.PageHandler.prototype = {
 				this.$startTime = new Date();
 			}), 200);
 		}));
-		this.gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(data4) {
+		this.gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(data21) {
+			var data4 = JSON.parse((new Compressor()).DecompressText(data21));
 			//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 			var $t1 = data4.spaces.getEnumerator();
 			try {
@@ -791,171 +804,144 @@ Client.PageHandler.prototype = {
 		}
 	},
 	$findSpace: function(space) {
-		var doc;
 		var id = 'dv_space_' + space.name;
-		if (ss.isValue(document.getElementById(id))) {
-			doc = document.getElementById(id);
+		if (ss.isValue(this.$spaces[id])) {
+			return this.$spaces[id];
 		}
 		else {
 			var sp = document.createElement('div');
 			sp.id = id;
+			sp.style.position = 'absolute';
 			($('#dvGame')).append(sp);
-			doc = sp;
+			return this.$spaces[id] = new global.SpaceDrawing(sp);
 		}
-		(doc.style)['transform'] = 'none';
-		return doc;
 	},
 	$findCard: function(wantedSpace, card) {
 		var id = 'dv_card_' + card.type + '_' + card.value;
 		var space = this.$findSpace(wantedSpace);
 		var doc;
-		if (ss.isValue(document.getElementById(id))) {
+		if (ss.isValue(this.$cards[id])) {
 			var m = document.getElementById(id);
-			if (!ss.referenceEquals(m.parentNode, space)) {
+			if (!ss.referenceEquals(m.parentNode, space.outerElement)) {
 				m.parentNode.removeChild(m);
-				space.appendChild(m);
+				space.outerElement.appendChild(m);
 			}
-			m.style.cssText = '';
-			(m.childNodes[0]).style.cssText = '';
-			doc = ({ item1: m, item2: m.childNodes[0] });
+			doc = this.$cards[id];
 		}
 		else {
 			var sp = document.createElement('div');
 			sp.id = id;
-			($(space)).append(sp);
+			($(space.outerElement)).append(sp);
 			var cardImage = this.$cloneImage(this.$cardImages[this.drawCard(card)]);
 			sp.appendChild(cardImage);
-			doc = ({ item1: sp, item2: cardImage });
+			sp.style.position = 'absolute';
+			doc = this.$cards[id] = new global.CardDrawing(sp, cardImage);
 		}
 		return doc;
 	},
 	$newDrawArea: function(mainArea) {
 		//jQuery.Select("#dvGame").Children().Remove();
 		var scale = new CommonLibraries.Point(ss.Int32.div(($('#dvGame')).width(), mainArea.size.width), ss.Int32.div(($(document)).height() - 100, mainArea.size.height));
-		var $t1 = mainArea.spaces.getEnumerator();
-		try {
-			while ($t1.moveNext()) {
-				var space = $t1.get_current();
-				this.$findSpace(space).style.cssText = '';
-				var $t2 = space.pile.cards.getEnumerator();
-				try {
-					while ($t2.moveNext()) {
-						var card = $t2.get_current();
-						var m = this.$findCard(space, card);
-						m.item1.style.cssText = '';
-						m.item2.style.cssText = '';
-					}
-				}
-				finally {
-					if (Type.isInstanceOfType($t2, ss.IDisposable)) {
-						Type.cast($t2, ss.IDisposable).dispose();
-					}
+		//ExtensionMethods.debugger(null);
+		var l;
+		var sl = mainArea.spaces.length;
+		for (var spaceIndex = 0; spaceIndex < sl; spaceIndex++) {
+			var space = mainArea.spaces[spaceIndex];
+			var jf = this.$findSpace(space).outerElement;
+			for (var i = 0; i < this.$resetStyles.length; i++) {
+				jf.style[this.$resetStyles[i]] = null;
+			}
+			l = space.pile.cards.length;
+			for (var index = 0; index < l; index++) {
+				var card = space.pile.cards[index];
+				var m = this.$findCard(space, card);
+				for (var i1 = 0; i1 < this.$resetStyles.length; i1++) {
+					m.outerElement.style[this.$resetStyles[i1]] = null;
+					m.image.style[this.$resetStyles[i1]] = null;
 				}
 			}
 		}
-		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
+		l = mainArea.spaces.length;
+		for (var index1 = 0; index1 < l; index1++) {
+			var space1 = mainArea.spaces[index1];
+			var vertical = space1.vertical;
+			var spaceDiv = this.$findSpace(space1);
+			// var spaceDivJ = jQuery.FromElement(spaceDiv);
+			spaceDiv.outerElement.style.left = global.domUtils.px(space1.x * scale.x);
+			spaceDiv.outerElement.style.top = global.domUtils.px(space1.y * scale.y);
+			spaceDiv.outerElement.style.width = global.domUtils.px(space1.width * scale.x);
+			spaceDiv.outerElement.style.height = global.domUtils.px(space1.height * scale.y);
+			//ExtensionMethods.debugger();
+			var cl = space1.appearance.effects.length;
+			for (var i2 = 0; i2 < cl; i2++) {
+				var effect = space1.appearance.effects[i2];
+				effect.build$1(spaceDiv);
 			}
-		}
-		var $t3 = mainArea.spaces.getEnumerator();
-		try {
-			while ($t3.moveNext()) {
-				var space1 = $t3.get_current();
-				var vertical = space1.vertical;
-				var spaceDiv = this.$findSpace(space1);
-				// var spaceDivJ = jQuery.FromElement(spaceDiv);
-				spaceDiv.style.position = 'absolute';
-				spaceDiv.style.left = global.domUtils.px(space1.x * scale.x);
-				spaceDiv.style.top = global.domUtils.px(space1.y * scale.y);
-				spaceDiv.style.width = global.domUtils.px(space1.width * scale.x);
-				spaceDiv.style.height = global.domUtils.px(space1.height * scale.y);
-				//ExtensionMethods.debugger();
-				var $t4 = space1.appearance.effects.getEnumerator();
-				try {
-					while ($t4.moveNext()) {
-						var effect = $t4.get_current();
-						effect.build(spaceDiv, true);
-					}
-				}
-				finally {
-					if (Type.isInstanceOfType($t4, ss.IDisposable)) {
-						Type.cast($t4, ss.IDisposable).dispose();
-					}
-				}
-				//   gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
-				var spaceScale = new CommonLibraries.Point(space1.width / space1.pile.cards.length, space1.height / space1.pile.cards.length);
-				var j = 0;
-				var $t5 = space1.pile.cards.getEnumerator();
-				try {
-					while ($t5.moveNext()) {
-						var card1 = $t5.get_current();
-						var xx = 0;
-						var yy = 0;
-						switch (space1.resizeType) {
-							case 1: {
-								if (vertical) {
-									yy = card1.value * scale.y / 2;
-								}
-								else {
-									xx = card1.value * scale.x / 2;
-								}
-								break;
-							}
-							case 0: {
-								xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
-								yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
-								break;
-							}
-							default: {
-								xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
-								yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
-								break;
-							}
+			//   gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
+			var spaceScale = new CommonLibraries.Point(space1.width / space1.pile.cards.length, space1.height / space1.pile.cards.length);
+			var j = 0;
+			var lc = space1.pile.cards.length;
+			for (var i3 = 0; i3 < lc; i3++) {
+				var card1 = space1.pile.cards[i3];
+				var xx = 0;
+				var yy = 0;
+				switch (space1.resizeType) {
+					case 1: {
+						if (vertical) {
+							yy = card1.value * scale.y / 2;
 						}
-						var cardDiv = this.$findCard(space1, card1);
-						xx -= ss.Int32.div(cardDiv.item2.width, 2);
-						yy -= ss.Int32.div(cardDiv.item2.height, 2);
-						var cardDivJ = $(cardDiv.item1);
-						(cardDiv.item1.style)['transform'] = global.domUtils.transformRadius(0);
-						cardDiv.item1.style.position = 'absolute';
-						cardDiv.item1.style.left = global.domUtils.px(xx + (vertical ? (space1.width * scale.x / 2) : 0));
-						cardDiv.item1.style.top = global.domUtils.px(yy + (!vertical ? (space1.height * scale.y / 2) : 0));
-						(cardDiv.item1.style)['transform'] = global.domUtils.transformRadius(space1.appearance.innerStyle.rotate);
-						this.$styleAppearanceFromSpace(cardDiv, j, space1);
-						this.$styleAppearance(cardDiv, card1.appearance);
-						(cardDiv.item2.style)['box-shadow'] = '3px 3px 2px #2c2c2c';
-						this.fixBrowserPrefixes(cardDiv.item1);
-						this.fixBrowserPrefixes(cardDiv.item2);
-						//                    spaceDiv.AppendChild(cardDiv);
-						j++;
-						//effects
+						else {
+							xx = card1.value * scale.x / 2;
+						}
+						break;
+					}
+					case 0: {
+						xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
+						yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
+						break;
+					}
+					default: {
+						xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
+						yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
+						break;
 					}
 				}
-				finally {
-					if (Type.isInstanceOfType($t5, ss.IDisposable)) {
-						Type.cast($t5, ss.IDisposable).dispose();
-					}
-				}
-				var $t6 = space1.appearance.effects.getEnumerator();
-				try {
-					while ($t6.moveNext()) {
-						var effect1 = $t6.get_current();
-						effect1.tearDown(spaceDiv, true);
-					}
-				}
-				finally {
-					if (Type.isInstanceOfType($t6, ss.IDisposable)) {
-						Type.cast($t6, ss.IDisposable).dispose();
-					}
-				}
+				var cardDiv = this.$findCard(space1, card1);
+				xx -= ss.Int32.div(cardDiv.image.width, 2);
+				yy -= ss.Int32.div(cardDiv.image.height, 2);
+				//cardDiv.OuterElement.Style["transform"] = 0.0.transformRadius();
+				cardDiv.outerElement.style.left = global.domUtils.px(xx + (vertical ? (space1.width * scale.x / 2) : 0));
+				cardDiv.outerElement.style.top = global.domUtils.px(yy + (!vertical ? (space1.height * scale.y / 2) : 0));
+				cardDiv.outerElement.style['transform'] = global.domUtils.transformRadius(space1.appearance.innerStyle.rotate);
+				this.$styleAppearanceFromSpace(cardDiv, j, space1);
+				this.$styleAppearance(cardDiv, card1.appearance);
+				cardDiv.image.style['border-radius'] = '5px';
+				cardDiv.image.style['box-shadow'] = '3px 3px 2px #2c2c2c';
+				this.fixBrowserPrefixes(cardDiv.outerElement.style);
+				this.fixBrowserPrefixes(cardDiv.image.style);
+				//                    spaceDiv.AppendChild(cardDiv);
+				j++;
+				//effects
+			}
+			var el = space1.appearance.effects.length;
+			for (var i4 = 0; i4 < el; i4++) {
+				var effect1 = space1.appearance.effects[i4];
+				effect1.tearDown$1(spaceDiv);
 			}
 		}
-		finally {
-			if (Type.isInstanceOfType($t3, ss.IDisposable)) {
-				Type.cast($t3, ss.IDisposable).dispose();
-			}
-		}
+		//   foreach (var space in mainArea.Spaces)
+		//   {
+		//   setStyle(findSpace(space).OuterElement.Style, findSpace(space).OuterElement.Style);
+		//   foreach (var card in space.Pile.Cards)
+		//   {
+		//   var m = findCard(space, card);
+		//   setStyle(findSpace(space).OuterElement.Style, findSpace(space).OuterElementStyle);
+		//   
+		//   m.ImageStyle = new MyStyle();
+		//   m.OuterElementStyle = new MyStyle();
+		//   
+		//   }
+		//   }
 		//
 		//
 		//            foreach (var ta in mainArea.TextAreas)
@@ -982,12 +968,12 @@ Client.PageHandler.prototype = {
 				switch (cardGameAppearanceEffect.type) {
 					case 2: {
 						var bEffect = cardGameAppearanceEffect;
-						var trans = Type.cast((element.item1.style)['transform'], String);
+						var trans = element.outerElement.style['transform'];
 						if (trans.startsWith('rotate(')) {
-							(element.item1.style)['transform'] = global.domUtils.transformRadius(-bEffect.degrees / 2 + bEffect.degrees / (space.pile.cards.length - 1) * cardIndex + global.domUtils.noTransformRadius(trans));
+							element.outerElement.style['transform'] = global.domUtils.transformRadius(-bEffect.degrees / 2 + bEffect.degrees / (space.pile.cards.length - 1) * cardIndex + global.domUtils.noTransformRadius(trans));
 						}
 						else {
-							(element.item1.style)['transform'] = global.domUtils.transformRadius(appearance.innerStyle.rotate);
+							element.outerElement.style['transform'] = global.domUtils.transformRadius(appearance.innerStyle.rotate);
 						}
 						break;
 					}
@@ -999,16 +985,16 @@ Client.PageHandler.prototype = {
 				Type.cast($t1, ss.IDisposable).dispose();
 			}
 		}
-		element.item2.style.backgroundColor = appearance.innerStyle.backColor;
+		element.image.style.backgroundColor = appearance.innerStyle.backColor;
 	},
 	$styleAppearance: function(element, appearance) {
 		var $t1 = appearance.effects.getEnumerator();
 		try {
 			while ($t1.moveNext()) {
 				var cardGameAppearanceEffect = $t1.get_current();
-				cardGameAppearanceEffect.build(element.item1, false);
+				cardGameAppearanceEffect.build(element);
 				//new object().debugger();
-				cardGameAppearanceEffect.tearDown(element.item1, false);
+				cardGameAppearanceEffect.tearDown(element);
 			}
 		}
 		finally {
@@ -1017,24 +1003,28 @@ Client.PageHandler.prototype = {
 			}
 		}
 		//rotate
-		var trans = Type.cast((element.item1.style)['transform'], String);
+		var trans = element.outerElement.style['transform'];
 		if (trans.startsWith('rotate(')) {
-			(element.item1.style)['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate + (parseInt(trans.replaceAll('rotate(', '').replaceAll('deg)', ''))));
+			element.outerElement.style['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate + (parseInt(trans.replaceAll('rotate(', '').replaceAll('deg)', ''))));
 			//todo regex??
 		}
 		else {
-			(element.item1.style)['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate);
+			element.outerElement.style['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate);
 		}
-		element.item2.style.backgroundColor = appearance.innerStyle.backColor;
+		element.image.style.backgroundColor = appearance.innerStyle.backColor;
 	},
 	fixBrowserPrefixes: function(cardImage) {
-		var style = cardImage.style;
-		var f;
-		f = style['transform'] && ((cardImage.style)['-webkit-transform'] = (cardImage.style)['transform']);
-		f = style['box-shadow'] && ((cardImage.style)['-moz-box-shadow'] = (cardImage.style)['box-shadow']);
-		f = style['box-shadow'] && ((cardImage.style)['-webkit-box-shadow'] = (cardImage.style)['box-shadow']);
-		f = style['border-radius'] && ((cardImage.style)['-moz-border-radius'] = (cardImage.style)['border-radius']);
-		f = style['border-radius'] && ((cardImage.style)['-webkit-border-radius'] = (cardImage.style)['border-radius']);
+		if (ss.isValue(cardImage['transform'])) {
+			cardImage['-webkit-transform'] = cardImage['transform'];
+		}
+		if (ss.isValue(cardImage['box-shadow'])) {
+			cardImage['-moz-box-shadow'] = cardImage['box-shadow'];
+			cardImage['-webkit-box-shadow'] = cardImage['box-shadow'];
+		}
+		if (ss.isValue(cardImage['border-radius'])) {
+			cardImage['-moz-border-radius'] = cardImage['box-shadow'];
+			cardImage['-webkit-border-radius'] = cardImage['box-shadow'];
+		}
 	},
 	$cloneImage: function(cardImage) {
 		var img = new Image();
@@ -1067,6 +1057,7 @@ Client.ScriptLoader = function() {
 };
 Client.ScriptLoader.prototype = {
 	$loadScript: function(url, cache, callback) {
+		//cache = false;
 		var head = document.getElementsByTagName('head')[0];
 		var script = document.createElement('script');
 		script.type = 'text/javascript';
@@ -1331,9 +1322,11 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 			ui.outer = outer;
 			var f;
 			var tp = (outer[0]).style;
-			(tp)['box-shadow'] = '4px 4px 2px #333';
-			f = (tp)['box-shadow'] && ((tp)['-moz-box-shadow'] = (tp)['box-shadow']);
-			f = (tp)['box-shadow'] && ((tp)['-webkit-box-shadow'] = (tp)['box-shadow']);
+			tp['box-shadow'] = '4px 4px 2px #333';
+			if (ss.isValue(tp['box-shadow'])) {
+				tp['-moz-box-shadow'] = tp['box-shadow'];
+				tp['-webkit-box-shadow'] = tp['box-shadow'];
+			}
 			outer.css('position', 'absolute');
 			outer.css('padding', '2em 0.8em 0.8em 1.3em');
 			outer.css('left', ui.x + 'px');

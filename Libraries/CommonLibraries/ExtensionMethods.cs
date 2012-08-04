@@ -20,7 +20,7 @@ namespace CommonLibraries
         {
             return null;
         }
-        [InlineCode("for(var item in {ar}) ")]
+        [InlineCode("for(var item in {ar}){{ ")]
         public static dynamic ForInItem(this object ar) //::dynamic okay
         {
             return null;
@@ -37,6 +37,11 @@ namespace CommonLibraries
         public static T CleanUp<T>(T o)
         {
             return Json.Parse<T>(Json.Stringify(o, Help.Sanitize));
+        }
+
+[InlineCode("}}")]
+        public static void CloseForIn()
+        {
         }
     }
 }

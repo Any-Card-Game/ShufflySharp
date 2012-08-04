@@ -5,6 +5,7 @@ using System.Html;
 using System.Html.Media.Graphics;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
+using CommonWebLibraries;
 using GameServer;
 using Models;
 using global;
@@ -16,7 +17,7 @@ namespace Client
     {
         private readonly BuildSite buildSite;
         private JsDictionary<string, ImageElement> cardImages;
-        private DateTime endTime; 
+        private DateTime endTime;
         public GameInfo gameStuff;
         public Gateway gateway;
         private int numOfTimes;
@@ -67,8 +68,8 @@ namespace Client
                 string jm;
                 img.Src = jm = src + ".gif";
                 cardImages[jm] = img;
-            } 
-          
+            }
+
             Element dvGame;
             jQuery.Select("body").Append(dvGame = Document.CreateElement("div"));
             dvGame.ID = "dvGame";
@@ -77,25 +78,25 @@ namespace Client
             dvGame.Style.Top = "0";
             dvGame.Style.Right = "0";
             dvGame.Style.Bottom = "0";
-             
-       
-                Document.Body.AddEventListener("contextmenu", e =>
-                    {
-                        e.PreventDefault();
-                        //todo: Sspecial right click menu;
-                    }, false);
 
-    //ie8
-         /*   {
-                dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
 
-                var m = (Action<string, ElementEventHandler>)d2;
-                m("contextmenu", () =>
-                    {
+            Document.Body.AddEventListener("contextmenu", e =>
+                {
+                    e.PreventDefault();
+                    //todo: Sspecial right click menu;
+                }, false);
+
+            //ie8
+            /*   {
+                   dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
+
+                   var m = (Action<string, ElementEventHandler>)d2;
+                   m("contextmenu", () =>
+                       {
                         
-                    }); 
-            }*/
-            
+                       }); 
+               }*/
+
 
         }
 
@@ -161,16 +162,18 @@ namespace Client
                         }, 200);
                 });
 
-            gateway.On<GameCardGame>("Area.Game.UpdateState", data =>
+            gateway.On<string>("Area.Game.UpdateState", data2 =>
                 {
-                  //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+
+                    var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(data2));
+                    //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 
                     foreach (var space in data.Spaces)
                     {
-                        space.Appearance=fixAppearance(space.Appearance);
+                        space.Appearance = fixAppearance(space.Appearance);
                         foreach (var card in space.Pile.Cards)
                         {
-                            card.Appearance=fixAppearance(card.Appearance);
+                            card.Appearance = fixAppearance(card.Appearance);
                         }
                     }
 
@@ -190,123 +193,157 @@ namespace Client
         }
 
         public void drawArea(GameCardGame mainArea)
-        { 
-          
+        {
+
             newDrawArea(mainArea);
 
 
 
             foreach (var ta in mainArea.TextAreas)
             {
-              //  gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
-              //  gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
-            } 
+                //  gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
+                //  gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
+            }
 
- 
+
         }
 
-        private Element findSpace(CardGameTableSpace space)
+
+        JsDictionary<string, SpaceDrawing> spaces = new JsDictionary<string, SpaceDrawing>();
+        JsDictionary<string, CardDrawing> cards = new JsDictionary<string, CardDrawing>();
+        private SpaceDrawing findSpace(CardGameTableSpace space)
         {
-            Element doc;
             string id = "dv_space_" + space.Name;
-            if (Document.GetElementById(id) != null)
+            if (spaces[id]!=null)
             {
-                doc = Document.GetElementById(id);
+                return spaces[id];
             }
             else
             {
                 var sp = Document.CreateElement("div");
                 sp.ID = id;
+                sp.Style.Position = "absolute";
                 jQuery.Select("#dvGame").Append(sp);
+                return spaces[id] = new SpaceDrawing(sp);
 
-                doc = sp;
             }
-
-            doc.Style.me()["transform"] = "none";
-            return doc;
         }
-        private Tuple<Element, ImageElement> findCard(CardGameTableSpace wantedSpace, CardGameCard card)//todo fix for show face down cards lol typevalue
+        private CardDrawing findCard(CardGameTableSpace wantedSpace, CardGameCard card)//todo fix for show face down cards lol typevalue
         {
             string id = "dv_card_" + card.Type + "_" + card.Value;
             var space = findSpace(wantedSpace);
 
-            Tuple<Element, ImageElement> doc;
-            if (Document.GetElementById(id) != null)
+            CardDrawing doc;
+            if (cards[id]!=null)
             {
                 var m = Document.GetElementById(id);
-                if (m.ParentNode != (space))
+                if (m.ParentNode != (space.OuterElement))
                 {
                     m.ParentNode.RemoveChild(m);
-                    space.AppendChild(m);
+                    space.OuterElement.AppendChild(m);
 
                 }
-                m.Style.CssText = "";
-                m.ChildNodes[0].Style.CssText = "";
-                doc = new Tuple<Element, ImageElement>(m, (ImageElement)m.ChildNodes[0]);
+
+                doc = cards[id];
             }
             else
             {
                 var sp = Document.CreateElement("div");
                 sp.ID = id;
-                jQuery.FromElement(space).Append(sp);
+                jQuery.FromElement(space.OuterElement).Append(sp);
 
                 var cardImage = cloneImage(cardImages[drawCard(card)]);
                 sp.AppendChild(cardImage);
-                doc = new Tuple<Element, ImageElement>(sp, cardImage);
+                sp.Style.Position = "absolute";
+
+                 doc = cards[id]=new CardDrawing(sp, cardImage);
             }
 
 
             return doc;
 
+ 
         }
+
+        string[] resetStyles=new string[]
+            {
+               "border-radius", 
+               "-moz-border-radius", 
+               "-webkit-border-radius",
+               "box-shadow", 
+               "-moz-box-shadow", 
+               "transform", 
+               "-webkit-transform", 
+               "padding", 
+               "background-color", 
+               "border", 
+            };
 
         private void newDrawArea(GameCardGame mainArea)
         {
             //jQuery.Select("#dvGame").Children().Remove();
 
             var scale = new Point(jQuery.Select("#dvGame").GetWidth() / mainArea.Size.Width, (jQuery.Document.GetHeight() - 100) / mainArea.Size.Height);
-
-            foreach (var space in mainArea.Spaces)
+            //ExtensionMethods.debugger(null);
+            int l;
+            var sl = mainArea.Spaces.Count;
+            for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++)
             {
-                findSpace(space).Style.CssText = "";
-                foreach (var card in space.Pile.Cards)
+                var space = mainArea.Spaces[spaceIndex];
+                var jf = findSpace(space).OuterElement;
+
+
+                for (int i = 0; i < resetStyles.Length; i++)
                 {
+                    jf.Style[resetStyles[i]] = null;
+                }
+
+                l = space.Pile.Cards.Count;
+                for (int index = 0; index < l; index++)
+                {
+                    var card = space.Pile.Cards[index];
                     var m = findCard(space, card);
-                    m.Item1.Style.CssText = "";
-                    m.Item2.Style.CssText = "";
+
+                    for (int i = 0; i < resetStyles.Length; i++)
+                    {
+                        m.OuterElement.Style[resetStyles[i]] = null;
+                        m.Image.Style[resetStyles[i]] = null;
+                    }
                 }
             }
-
-            foreach (var space in mainArea.Spaces)
+            l = mainArea.Spaces.Count;
+            for (int index = 0; index < l; index++)
             {
+                var space = mainArea.Spaces[index];
                 var vertical = space.Vertical;
 
                 var spaceDiv = findSpace(space);
                 // var spaceDivJ = jQuery.FromElement(spaceDiv);
 
-                spaceDiv.Style.Position= "absolute";
-                spaceDiv.Style.Left = (space.X * scale.X).px();
-                spaceDiv.Style.Top = (space.Y * scale.Y) .px();
-                spaceDiv.Style.Width = (space.Width* scale.X) .px();
-                spaceDiv.Style.Height = (space.Height * scale.Y) .px();
                  
+                spaceDiv.OuterElement.Style.Left = (space.X*scale.X).px();
+                spaceDiv.OuterElement.Style.Top = (space.Y*scale.Y).px();
+                spaceDiv.OuterElement.Style.Width = (space.Width*scale.X).px();
+                spaceDiv.OuterElement.Style.Height = (space.Height*scale.Y).px();
+
                 //ExtensionMethods.debugger();
-                foreach (var effect in space.Appearance.Effects)
+                var cl = space.Appearance.Effects.Count;
+                for (int i = 0; i < cl; i++)
                 {
-                    effect.Build(spaceDiv,true);
-
+                    var effect = space.Appearance.Effects[i];
+                    effect.Build(spaceDiv);
                 }
-
-
 
 
                 //   gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
 
-                var spaceScale = new Point(space.Width / space.Pile.Cards.Count, space.Height / space.Pile.Cards.Count);
+                var spaceScale = new Point(space.Width/space.Pile.Cards.Count, space.Height/space.Pile.Cards.Count);
 
                 var j = 0;
-                foreach (var card in space.Pile.Cards)
+                var lc = space.Pile.Cards.Count;
+                for (int i = 0; i < lc; i++)
                 {
+                    var card = space.Pile.Cards[i];
                     var xx = 0.0;
                     var yy = 0.0;
 
@@ -314,52 +351,46 @@ namespace Client
                     {
                         case TableSpaceResizeType.Static:
                             if (vertical)
-                            { 
-                                yy =  card.Value * scale.Y / 2;
+                            {
+                                yy = card.Value*scale.Y/2;
                             }
                             else
                             {
-                                xx = card.Value * scale.X / 2;
+                                xx = card.Value*scale.X/2;
                             }
 
                             break;
 
                         case TableSpaceResizeType.Grow:
-                            xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
-                            yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
+                            xx = (!vertical ? (j*spaceScale.X*scale.X) : 0);
+                            yy = (vertical ? (j*spaceScale.Y*scale.Y) : 0);
                             break;
                         default:
-                            xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
-                            yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
+                            xx = (!vertical ? (j*spaceScale.X*scale.X) : 0);
+                            yy = (vertical ? (j*spaceScale.Y*scale.Y) : 0);
 
                             break;
                     }
 
 
-
-
                     var cardDiv = findCard(space, card);
-                    xx -= cardDiv.Item2.Width/2;
-                    yy -= cardDiv.Item2.Height/2;
-                    
-                    var cardDivJ = jQuery.FromElement(cardDiv.Item1);
-                    cardDiv.Item1.Style.me()["transform"] = 0.0.transformRadius();
+                    xx -= cardDiv.Image.Width/2;
+                    yy -= cardDiv.Image.Height/2;
 
-                    cardDiv.Item1.Style.Position = "absolute";
-                    cardDiv.Item1.Style.Left = (xx + (vertical ? space.Width * scale.X / 2 : 0)).px();
-                    cardDiv.Item1.Style.Top = (yy + (!vertical ? space.Height * scale.Y / 2 : 0)).px();
-                    cardDiv.Item1.Style.me()["transform"] = space.Appearance.InnerStyle.Rotate.transformRadius();
-
+                    //cardDiv.OuterElement.Style["transform"] = 0.0.transformRadius();
+                    cardDiv.OuterElement.Style.Left = (xx + (vertical ? space.Width*scale.X/2 : 0)).px();
+                    cardDiv.OuterElement.Style.Top = (yy + (!vertical ? space.Height*scale.Y/2 : 0)).px();
+                    cardDiv.OuterElement.Style["transform"] = space.Appearance.InnerStyle.Rotate.transformRadius();
 
 
                     styleAppearanceFromSpace(cardDiv, j, space);
                     styleAppearance(cardDiv, card.Appearance);
 
-                    cardDiv.Item2.Style.me()["box-shadow"] = "3px 3px 2px #2c2c2c";
+                    cardDiv.Image.Style["border-radius"] = "5px";
+                    cardDiv.Image.Style["box-shadow"] = "3px 3px 2px #2c2c2c";
 
-                    FixBrowserPrefixes(cardDiv.Item1);
-                    FixBrowserPrefixes(cardDiv.Item2);
-
+                    FixBrowserPrefixes(cardDiv.OuterElement.Style);
+                    FixBrowserPrefixes(cardDiv.Image.Style);
 
 
                     //                    spaceDiv.AppendChild(cardDiv);
@@ -369,15 +400,31 @@ namespace Client
                     //effects
                 }
 
-
-                foreach (var effect in space.Appearance.Effects)
+                var el = space.Appearance.Effects.Count;
+                for (int i = 0; i < el; i++)
                 {
-                    effect.TearDown(spaceDiv,true);
+                    var effect = space.Appearance.Effects[i];
+                    effect.TearDown(spaceDiv);
                 }
-
-
-
             }
+
+
+            /*   foreach (var space in mainArea.Spaces)
+            {
+                setStyle(findSpace(space).OuterElement.Style, findSpace(space).OuterElement.Style);
+                foreach (var card in space.Pile.Cards)
+                {
+                    var m = findCard(space, card);
+                    setStyle(findSpace(space).OuterElement.Style, findSpace(space).OuterElementStyle);
+
+                    m.ImageStyle = new MyStyle();
+                    m.OuterElementStyle = new MyStyle();
+
+                }
+            }*/
+
+
+
             /*
 
             foreach (var ta in mainArea.TextAreas)
@@ -389,13 +436,29 @@ namespace Client
 
         }
 
-        private void styleAppearanceFromSpace(Tuple<Element, ImageElement> element, int cardIndex, CardGameTableSpace space)
+      /*  private void setStyle(Style style, MyStyle myStyle)
+        {
+            string item="";
+            ExtensionMethods.ForInItem(style);
+            {
+                if(myStyle[item]!=null)
+                {
+                    style[item] = myStyle[item];
+                }else
+                {
+                    style[item] = null;
+                }
+            }
+            ExtensionMethods.CloseForIn();
+        }*/
+
+        private void styleAppearanceFromSpace(CardDrawing element, int cardIndex, CardGameTableSpace space)
         {
             CardGameAppearance appearance = space.Appearance;
             foreach (var cardGameAppearanceEffect in appearance.Effects)
             {
 
-             //   cardGameAppearanceEffect.Build(element.Item1);
+                //   cardGameAppearanceEffect.Build(element.Item1);
 
                 switch (cardGameAppearanceEffect.Type)
                 {
@@ -405,15 +468,15 @@ namespace Client
                         var bEffect = cardGameAppearanceEffect.castValue<CardGameAppearanceEffectBend>();
 
                         //rotate
-                        string trans = element.Item1.Style.me()["transform"];
+                        string trans = element.OuterElement.Style["transform"];
 
                         if (trans.StartsWith("rotate("))
                         {
-                            element.Item1.Style.me()["transform"] = ((-bEffect.Degrees / 2 + bEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + trans.noTransformRadius()).transformRadius();
+                            element.OuterElement.Style["transform"] = (((-bEffect.Degrees / 2 + bEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + trans.noTransformRadius())).transformRadius();
                         }
                         else
                         {
-                            element.Item1.Style.me()["transform"] = appearance.InnerStyle.Rotate.transformRadius();
+                            element.OuterElement.Style["transform"] = appearance.InnerStyle.Rotate.transformRadius();
                         }
 
 
@@ -424,50 +487,56 @@ namespace Client
 
 
 
-            element.Item2.Style.BackgroundColor = appearance.InnerStyle.BackColor;
+            element.Image.Style.BackgroundColor = appearance.InnerStyle.BackColor;
         }
 
 
-        private void styleAppearance(Tuple<Element, ImageElement> element, CardGameAppearance appearance)
+        private void styleAppearance(CardDrawing element, CardGameAppearance appearance)
         {
 
 
             foreach (var cardGameAppearanceEffect in appearance.Effects)
             {
-                cardGameAppearanceEffect.Build(element.Item1,false);
+                cardGameAppearanceEffect.Build(element);
                 //new object().debugger();
-                cardGameAppearanceEffect.TearDown(element.Item1, false);
+                cardGameAppearanceEffect.TearDown(element);
             }
 
-
             //rotate
-            string trans = element.Item1.Style.me()["transform"];
+            string trans = element.OuterElement.Style["transform"];
 
             if (trans.StartsWith("rotate("))
             {
-                element.Item1.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate + int.Parse(trans.Replace("rotate(", "").Replace("deg)", "")));//todo regex??
+                element.OuterElement.Style["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate + int.Parse(trans.Replace("rotate(", "").Replace("deg)", "")));//todo regex??
             }
             else
             {
-                element.Item1.Style.me()["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate);
+                element.OuterElement.Style["transform"] = string.Format("rotate({0}deg)", appearance.InnerStyle.Rotate);
             }
 
-            element.Item2.Style.BackgroundColor = appearance.InnerStyle.BackColor;
+            element.Image.Style.BackgroundColor = appearance.InnerStyle.BackColor;
         }
 
-        public void FixBrowserPrefixes(Element cardImage)//todo static method
+        public void FixBrowserPrefixes(Style cardImage)//todo static method
         {
-            dynamic style = cardImage.Style;
-
-            dynamic f;
-
-            f = (style["transform"] && (cardImage.Style.me()["-webkit-transform"] = cardImage.Style.me()["transform"]));
-            f = (style["box-shadow"] && (cardImage.Style.me()["-moz-box-shadow"] = cardImage.Style.me()["box-shadow"]));
-            f = (style["box-shadow"] && (cardImage.Style.me()["-webkit-box-shadow"] = cardImage.Style.me()["box-shadow"]));
-            f = (style["border-radius"] && (cardImage.Style.me()["-moz-border-radius"] = cardImage.Style.me()["border-radius"]));
-            f = (style["border-radius"] && (cardImage.Style.me()["-webkit-border-radius"] = cardImage.Style.me()["border-radius"]));
-
              
+
+            if (cardImage["transform"] != null)
+            {
+                cardImage["-webkit-transform"] = cardImage["transform"];
+            }
+            if (cardImage["box-shadow"] != null)
+            {
+                cardImage["-moz-box-shadow"] = cardImage["box-shadow"];
+                cardImage["-webkit-box-shadow"] = cardImage["box-shadow"];
+            }
+            if (cardImage["border-radius"] != null)
+            {
+                cardImage["-moz-border-radius"] = cardImage["box-shadow"];
+                cardImage["-webkit-border-radius"] = cardImage["box-shadow"];
+            }
+
+
         }
 
         private ImageElement cloneImage(ImageElement cardImage)

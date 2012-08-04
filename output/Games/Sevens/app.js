@@ -9,7 +9,6 @@ module.exports = Sevens = function () {
     self.cardGame = new CardGame({ numberOfCards: 52 });
 
     self.constructor = function () {
-
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
             vertical: true,
@@ -139,7 +138,7 @@ module.exports = Sevens = function () {
                 break;
         }
         sp.user = user;
-        sp.appearance.effects.push(new Effect$Bend({ degrees:  userIndex > 2 ? -10 : 10 }));
+        sp.appearance.effects.push(new Effect$Bend({ degrees:  userIndex > 2 ? -15 : 15 }));
         
         var space = sp;
         switch (userIndex) {
@@ -148,7 +147,7 @@ module.exports = Sevens = function () {
                 space.y = 2;
                 break;
             case 1:
-                space.x = 8;
+                space.x = 9;
                 space.y = 2;
                 break;
             case 2:
@@ -156,7 +155,7 @@ module.exports = Sevens = function () {
                 space.y = 5;
                 break;
             case 3:
-                space.x = 8;
+                space.x = 9;
                 space.y = 12;
                 break;
             case 4:
@@ -231,7 +230,7 @@ module.exports = Sevens = function () {
                     answers.push(CardNames[card.value] + ' Of ' + CardTypes[card.type]);
                 });
 
-
+                debugger;
                 var sp = self.cardGame.spaces;
                 for (var i = 0; i < sp.length; i++) {
                     //sp[i].rotate += 10;
@@ -242,19 +241,30 @@ module.exports = Sevens = function () {
                     if(sp[i].user==u) {
                         if(usable.length==0) {
                             sp[i].appearance.effects.push(new Effect$Highlight({
-                                radius: 70,
+                                radius: 55,
                                 color: 'rgba(255,0,84,0.7)',
-                                opacity: .7
+                                opacity: .5
                             }));
                         }else {
+                            
                             sp[i].appearance.effects.push(new Effect$Highlight({
-                                radius: 70,
+                                radius: 55,
                                 color: 'rgba(112,255,84,0.7)',
-                                opacity: .7
+                                opacity: .5
                             }));
                         }
+                    } else if(sp[i].user) {
+                                                 sp[i].appearance.effects.push(new Effect$Highlight({
+                             radius: 55,
+                             color: 'rgba(119,25,84,0.2)',
+                             opacity: .2
+                         }));
+
                     }
+                    
+                    
                     if(!sp[i].user) {
+                        
                         var op = sp[i].pile.cards.length/13;
                             
                         var red = "112";
@@ -268,15 +278,53 @@ module.exports = Sevens = function () {
                             opacity: op
                         }));   
                     }else {
-                        sp[i].appearance.effects.push(new Effect$Bend({ degrees: sp[i].user.userIndex > 2 ? -10 : 10 }));
+                         sp[i].appearance.effects.push(new Effect$Bend({ degrees: sp[i].user.userIndex > 2 ? -15 : 15 }));
+                     }
 
-                    }
-                    
                     for (var ij = 0; ij < sp[i].pile.cards.length; ij++) {
                         var card = sp[i].pile.cards[ij];
                         card.appearance.effects = [];
+                        /*
+
+                        card.appearance.addEffect(new AnimatedEffect$Between(
+                            {
+                                from: { outer: { border: { all: "solid 2px black" }, padding: { all: "32px" }, } },
+                                to: { outer: { border: { all: "solid 10px black" }, padding: { all: "12px" }, } }
+                            }, 1000, "linear"
+                        )).chainEffect(new AnimatedEffect$Between(
+                            {
+                                from: { outer: { rotate: 45, } },
+                                to: { outer: { rotate: 97 } }
+                            }, 1000, "linear"
+                        )).chainEffect(new AnimatedEffect$Between(
+                            {
+                                from: { outer: { backColor: "#FFF", padding: { all: "52px" }, } },
+                                to: { outer: { backColor: "#DD1", padding: { all: "12px" }, } }
+                            }, 1000, "linear"
+                        )).chainEffect(new Effect$Highlight({
+                                radius: 19,
+                                color: 'rgba(1,1,1,0.22)',
+                                opacity: .55
+                            }
+                        )).chainEffect(new Effect$StyleProperty({ outer: { backColor: "#11F" } })).chainEffect(new AnimatedEffect$Between(
+                            {
+                                from: { outer: { rotate: 45, } },
+                                to: { outer: { rotate:97 } }
+                            }, 1000, "linear"
+                        ));
+
+                        card.addAction(new Action$CardDraggable({ droppableSpaces: [sp[i]], droppableLocations: [{ x: 0, y: 0, width: 1, height: 1 }] }));
+                            
+                            
+                            
 
                         if(card.value==6 && !sp[i].user) {
+                        card.appearance.effects.push(new Effect$StyleProperty({outer:{border:{all:"solid 2px black"},padding:{all:"2px"},}}));
+                             
+                        }*/
+                        
+                         if(card.value==6 && !sp[i].user) {
+                  
                             card.appearance.innerStyle.rotate = 90;
                         }
 
@@ -284,21 +332,15 @@ module.exports = Sevens = function () {
                             var m = usable[j];
                             if (m.value == card.value && m.type == card.type) {
                                 card.appearance.effects.push(new Effect$Highlight({
-                                    radius: 14,
-                                    color: 'rgba(255,11,84,0.55)',
+                                    radius: 5,
+                                    color: 'rgba(35,170,255,0.55)',
                                     opacity: .55
                                 }));
-                                break; ;
+                                break; 
                             }
                         }
-                        if(card.appearance.effects.length==10) {
-                            card.appearance.effects.push(new Effect$Highlight({
-                                radius: Math.random() * 6,
-                                color: 'rgba(114,255,84,0.2)',
-                                opacity: .20
-                            }));
+  
 
-                        }
 
                     }
                 }
@@ -381,5 +423,6 @@ module.exports = Sevens = function () {
         return arbs;
     };
 
+        console.log('thiaas(')
     return self;
 };

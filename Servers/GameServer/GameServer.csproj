@@ -85,6 +85,10 @@
       <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
       <Name>SocketIONodeLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\WebLibraries\CommonWebLibraries\CommonWebLibraries.csproj">
+      <Project>{6DA30112-FDBD-4E48-9F52-7268FCE19D25}</Project>
+      <Name>CommonWebLibraries</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Models\Models.csproj">
       <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
       <Name>Models</Name>

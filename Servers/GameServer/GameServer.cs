@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using CommonWebLibraries;
 using FibersLibrary;
 using Models;
 using NodeJSLibrary;
@@ -273,7 +274,8 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
 
                     break;
                 case FiberYieldResponseType.GameOver:
-                    EmitAll(room, "Area.Game.UpdateState", room.Game.CardGame.CleanUp());
+
+                    EmitAll(room, "Area.Game.UpdateState", new Compressor().CompressText(Json.Stringify(room.Game.CardGame.CleanUp())));
 
                     EmitAll(room, "Area.Game.GameOver", "");
 
@@ -336,9 +338,9 @@ qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data)
             qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", gameAnswer.CleanUp());
 
             var mjf = answ.CardGame.CleanUp();
-
+            var mfc = new Compressor().CompressText(Json.Stringify(mjf));
             //Console.Log(Json.Stringify(mjf).Length);
-            EmitAll(room, "Area.Game.UpdateState", mjf);
+            EmitAll(room, "Area.Game.UpdateState", mfc);
 
 
             if (verbose)

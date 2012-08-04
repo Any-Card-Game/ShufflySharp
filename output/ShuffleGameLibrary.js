@@ -46,35 +46,25 @@ global._.random = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.AnimatedEffect
-global.AnimatedEffect = function(animationEffectType) {
+global.AnimatedEffect = function(animationEffectType, duration, ease) {
 	this.type = 0;
 	this.duration = 0;
+	this.pauseAfter = 0;
+	this.pauseBefore = 0;
 	this.ease = 0;
 	global.Effect.call(this, 4);
+	this.ease = ease;
 	this.type = animationEffectType;
+	this.duration = duration;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.AnimatedEffect$Between
-global.AnimatedEffect$Between = function() {
-	this.$3$FromField = null;
-	this.$3$ToField = null;
-	global.AnimatedEffect.call(this, 0);
-	this.set_from(new global.Effect$StyleProperty());
-	this.set_to(new global.Effect$StyleProperty());
-};
-global.AnimatedEffect$Between.prototype = {
-	get_from: function() {
-		return this.$3$FromField;
-	},
-	set_from: function(value) {
-		this.$3$FromField = value;
-	},
-	get_to: function() {
-		return this.$3$ToField;
-	},
-	set_to: function(value) {
-		this.$3$ToField = value;
-	}
+global.AnimatedEffect$Between = function(duration, ease) {
+	this.from = null;
+	this.to = null;
+	global.AnimatedEffect.call(this, 0, duration, ease);
+	this.from = new global.Effect$StyleProperty(new global.AppearanceStyle());
+	this.to = new global.Effect$StyleProperty(new global.AppearanceStyle());
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.AnimatedEffectEase
@@ -121,9 +111,16 @@ global.Appearance.fromJson = function(json) {
 global.AppearanceStyle = function() {
 	this.outerStyle = null;
 	this.innerStyle = null;
-	this.outerStyle = new global.AppearanceStyleItem();
-	this.innerStyle = new global.AppearanceStyleItem();
+	this.outerStyle = new global.AppearanceStyleItem({});
+	this.innerStyle = new global.AppearanceStyleItem({});
 };
+global.AppearanceStyle.$ctor1 = function(outersStyle, innerStyle) {
+	this.outerStyle = null;
+	this.innerStyle = null;
+	this.outerStyle = outersStyle;
+	this.innerStyle = innerStyle;
+};
+global.AppearanceStyle.$ctor1.prototype = global.AppearanceStyle.prototype;
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStyleBorder
 global.AppearanceStyleBorder = function() {
@@ -161,7 +158,7 @@ global.AppearanceStyleBorderArea = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.AppearanceStyleItem
-global.AppearanceStyleItem = function() {
+global.AppearanceStyleItem = function(options) {
 	this.backColor = null;
 	this.rotate = 0;
 	this.border = null;
@@ -169,16 +166,19 @@ global.AppearanceStyleItem = function() {
 	this.margin = null;
 	this.zindex = 0;
 	this.cursor = 0;
-	this.backColor = null;
-	this.zindex = 0;
-	this.border = new global.AppearanceStyleBorder();
-	this.padding = new global.AppearanceStylePadding();
-	this.margin = new global.AppearanceStyleMargin();
-	this.cursor = 0;
+	if (ss.Nullable.unbox(Type.cast(ss.isNullOrUndefined(options), Boolean))) {
+		options = {};
+	}
+	this.backColor = Type.cast(Object.coalesce(options.backColor, null), String);
+	this.zindex = ss.Nullable.unbox(Type.cast(Object.coalesce(options.zIndex, 0), ss.Int32));
+	this.border = Type.cast(Object.coalesce(options.border, new global.AppearanceStyleBorder()), global.AppearanceStyleBorder);
+	this.padding = Type.cast(Object.coalesce(options.padding, new global.AppearanceStylePadding()), global.AppearanceStylePadding);
+	this.margin = Type.cast(Object.coalesce(options.margin, new global.AppearanceStyleMargin()), global.AppearanceStyleMargin);
+	this.cursor = Type.cast(Object.coalesce(options.cursor, 0), ss.Int32);
 	this.rotate = 0;
 };
 global.AppearanceStyleItem.fromJson = function(st) {
-	var si = new global.AppearanceStyleItem();
+	var si = new global.AppearanceStyleItem({});
 	si.backColor = st.backColor;
 	si.border = global.AppearanceStyleBorder.fromJson(st.border);
 	si.cursor = st.cursor;
@@ -376,6 +376,14 @@ global.Card = function(value, type) {
 	this.appearance = new global.Appearance();
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.CardDrawing
+global.CardDrawing = function(item1, item2) {
+	this.outerElement = null;
+	this.image = null;
+	this.outerElement = item1;
+	this.image = item2;
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.CardGame
 global.CardGame = function(options) {
 	this.emulating = false;
@@ -557,6 +565,9 @@ global.CardType.registerEnum('global.CardType', false);
 global.domUtils = function() {
 };
 global.domUtils.nopx = function(ar) {
+	if (ss.isNullOrUndefined(ar)) {
+		return 0;
+	}
 	return parseFloat(ar.replaceAll('px', ''));
 };
 global.domUtils.px = function(ar) {
@@ -583,9 +594,13 @@ global.Effect.prototype = {
 		this.childrenEffects = ef;
 		return ef;
 	},
-	build: function(em, space) {
+	build: function(m) {
 	},
-	tearDown: function(em, space) {
+	tearDown: function(m) {
+	},
+	build$1: function(m) {
+	},
+	tearDown$1: function(em) {
 	}
 };
 global.Effect.fromJson = function(effect) {
@@ -614,7 +629,9 @@ global.Effect.fromJson = function(effect) {
 			break;
 		}
 		case 3: {
-			ef = null;
+			ef = new global.Effect$StyleProperty(new global.AppearanceStyle());
+			var jm = ef;
+			eval('jm.style=effect.style');
 			break;
 		}
 		case 4: {
@@ -656,44 +673,46 @@ global.Effect$Highlight = function(options) {
 	this.post = 0;
 };
 global.Effect$Highlight.prototype = {
-	build: function(em, space) {
-		if (space) {
-			em.style.padding = String.format('{0} {0} {0} {0}', global.domUtils.px(this.radius));
-			em.style.backgroundColor = this.color;
-			em.style.border = 'solid 2px black';
-		}
-		else {
-			em.style.padding = String.format('{0} {0} {0} {0}', global.domUtils.px(this.radius));
-			em.style.backgroundColor = this.color;
-			em.style.backgroundColor = this.color;
-			em.style.border = 'solid 2px black';
-		}
-		(em.style)['border-radius'] = global.domUtils.px(15);
-		(em.style)['box-shadow'] = '4px 4px 2px #333';
+	build: function(e) {
+		var em = e.outerElement;
+		em.style.padding = String.format('{0} {0} {0} {0}', global.domUtils.px(this.radius));
+		em.style.backgroundColor = this.color;
+		em.style.backgroundColor = this.color;
+		em.style.border = 'solid 2px black';
+		em.style['border-radius'] = global.domUtils.px(15);
+		em.style['box-shadow'] = '4px 4px 2px #333';
 	},
-	tearDown: function(em, space) {
-		if (space) {
-			var paddingRadiusL = global.domUtils.nopx(em.style.paddingLeft);
-			var paddingRadiusT = global.domUtils.nopx(em.style.paddingTop);
-			em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - global.domUtils.nopx(em.style.paddingLeft));
-			em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - global.domUtils.nopx(em.style.paddingTop));
-			for (var i = 0; i < em.childNodes.length; i++) {
-				if ((em.childNodes[i]).tagName === 'DIV') {
-					(em.childNodes[i]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.left) + paddingRadiusL);
-					(em.childNodes[i]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.top) + paddingRadiusT);
-				}
+	build$1: function(e) {
+		var em = e.outerElement;
+		em.style.padding = String.format('{0} {0} {0} {0}', global.domUtils.px(this.radius));
+		em.style.backgroundColor = this.color;
+		em.style.border = 'solid 2px black';
+		em.style['border-radius'] = global.domUtils.px(15);
+		em.style['box-shadow'] = '4px 4px 2px #333';
+	},
+	tearDown: function(e) {
+		var em = e.outerElement;
+		var paddingRadiusL = global.domUtils.nopx(em.style.paddingLeft);
+		var paddingRadiusT = global.domUtils.nopx(em.style.paddingTop);
+		em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - global.domUtils.nopx(em.style.paddingLeft));
+		em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - global.domUtils.nopx(em.style.paddingTop));
+		for (var i = 0; i < em.childNodes.length; i++) {
+			if ((em.childNodes[i]).tagName === 'DIV') {
+				(em.childNodes[i]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.left) + paddingRadiusL);
+				(em.childNodes[i]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.top) + paddingRadiusT);
 			}
 		}
-		else {
-			var paddingRadiusL1 = global.domUtils.nopx(em.style.paddingLeft);
-			var paddingRadiusT1 = global.domUtils.nopx(em.style.paddingTop);
-			em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - global.domUtils.nopx(em.style.paddingLeft));
-			em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - global.domUtils.nopx(em.style.paddingTop));
-			for (var i1 = 0; i1 < em.childNodes.length; i1++) {
-				if ((em.childNodes[i1]).tagName === 'DIV') {
-					(em.childNodes[i1]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i1]).style.left) + paddingRadiusL1);
-					(em.childNodes[i1]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i1]).style.top) + paddingRadiusT1);
-				}
+	},
+	tearDown$1: function(e) {
+		var em = e.outerElement;
+		var paddingRadiusL = global.domUtils.nopx(em.style.paddingLeft);
+		var paddingRadiusT = global.domUtils.nopx(em.style.paddingTop);
+		em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - global.domUtils.nopx(em.style.paddingLeft));
+		em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - global.domUtils.nopx(em.style.paddingTop));
+		for (var i = 0; i < em.childNodes.length; i++) {
+			if ((em.childNodes[i]).tagName === 'DIV') {
+				(em.childNodes[i]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.left) + paddingRadiusL);
+				(em.childNodes[i]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.top) + paddingRadiusT);
 			}
 		}
 	}
@@ -708,9 +727,52 @@ global.Effect$Rotate = function(options) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.Effect$StyleProperty
-global.Effect$StyleProperty = function() {
+global.Effect$StyleProperty = function(style) {
 	this.style = null;
 	global.Effect.call(this, 3);
+	this.style = style;
+};
+global.Effect$StyleProperty.prototype = {
+	build: function(m) {
+		if (ss.isNullOrUndefined(this.style)) {
+			return;
+		}
+		m.outerElement.style.backgroundColor = this.style.outerStyle.backColor;
+		if (ss.isValue(this.style.outerStyle.border)) {
+			if (ss.isValue(this.style.outerStyle.border.left)) {
+				m.outerElement.style.borderLeftColor = this.style.outerStyle.border.left.color;
+				m.outerElement.style.borderLeftStyle = this.style.outerStyle.border.left.style.toString();
+				m.outerElement.style.borderLeftWidth = this.style.outerStyle.border.left.width;
+			}
+			if (ss.isValue(this.style.outerStyle.border.top)) {
+				m.outerElement.style.borderTopColor = this.style.outerStyle.border.top.color;
+				m.outerElement.style.borderTopStyle = this.style.outerStyle.border.top.style.toString();
+				m.outerElement.style.borderTopWidth = this.style.outerStyle.border.top.width;
+			}
+			if (ss.isValue(this.style.outerStyle.border.right)) {
+				m.outerElement.style.borderRightColor = this.style.outerStyle.border.right.color;
+				m.outerElement.style.borderRightStyle = this.style.outerStyle.border.right.style.toString();
+				m.outerElement.style.borderRightWidth = this.style.outerStyle.border.right.width;
+			}
+			if (ss.isValue(this.style.outerStyle.border.bottom)) {
+				m.outerElement.style.borderBottomColor = this.style.outerStyle.border.bottom.color;
+				m.outerElement.style.borderBottomStyle = this.style.outerStyle.border.bottom.style.toString();
+				m.outerElement.style.borderBottomWidth = this.style.outerStyle.border.bottom.width;
+			}
+		}
+	},
+	tearDown: function(m) {
+		global.Effect.prototype.tearDown.call(this, m);
+	},
+	build$1: function(m) {
+		if (ss.isNullOrUndefined(this.style)) {
+			return;
+		}
+		m.outerElement.style.backgroundColor = this.style.outerStyle.backColor;
+	},
+	tearDown$1: function(em) {
+		global.Effect.prototype.tearDown$1.call(this, em);
+	}
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.EffectType
@@ -883,6 +945,14 @@ global.shuff.break_ = function(lineNumber, cardGame, varLookup) {
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
+// global.SpaceDrawing
+global.SpaceDrawing = function(item1) {
+	this.outerElement = null;
+	this.childNodes = null;
+	this.outerElement = item1;
+	this.childNodes = new Array();
+};
+////////////////////////////////////////////////////////////////////////////////
 // global.TableSpace
 global.TableSpace = function(options) {
 	this.vertical = false;
@@ -954,6 +1024,7 @@ global.AppearanceStyleMargin.registerClass('global.AppearanceStyleMargin', Objec
 global.AppearanceStylePadding.registerClass('global.AppearanceStylePadding', Object);
 global.ArrayUtils.registerClass('global.ArrayUtils', Object);
 global.Card.registerClass('global.Card', Object);
+global.CardDrawing.registerClass('global.CardDrawing', Object);
 global.CardGame.registerClass('global.CardGame', Object);
 global.CardGameAnswer.registerClass('global.CardGameAnswer', Object);
 global.CardGameArea.registerClass('global.CardGameArea', Object);
@@ -975,6 +1046,7 @@ global.Pile.registerClass('global.Pile', Object);
 global.PokerResult.registerClass('global.PokerResult', Object);
 global.Rectangle.registerClass('global.Rectangle', Object);
 global.shuff.registerClass('global.shuff', Object);
+global.SpaceDrawing.registerClass('global.SpaceDrawing', Object);
 global.TableSpace.registerClass('global.TableSpace', Object);
 global.TableTextArea.registerClass('global.TableTextArea', Object);
 global.User.registerClass('global.User', Object);

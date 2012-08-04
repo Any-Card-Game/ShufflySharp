@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace CommonLibraries
@@ -16,4 +17,6 @@ namespace CommonLibraries
         [IntrinsicProperty]
         public double Y { get; set; }
     }
+
+
 }

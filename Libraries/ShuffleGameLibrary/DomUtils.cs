@@ -10,6 +10,8 @@ namespace global
     {
         public static double nopx(this string ar) 
         {
+            if (ar == null)
+                return 0;
             return double.Parse(ar.Replace("px", ""));
         }
         public static string px(this double ar) 

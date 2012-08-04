@@ -90,9 +90,7 @@ namespace global
         public void SetAnswers(List<CardGameAnswer> answers)
         {
             Answers = answers;
-        }
-
-        [IgnoreGenericArguments]
+        } 
         [ScriptName("setPlayers")]
         public void SetPlayers(List<UserModel> players)
         {

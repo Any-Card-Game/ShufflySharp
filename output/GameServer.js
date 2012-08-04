@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');
+require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 Type.registerNamespace('GameServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.DataManager
@@ -413,7 +413,7 @@ GameServer.GameServer.prototype = {
 				break;
 			}
 			case 2: {
-				this.$emitAll(room, 'Area.Game.UpdateState', CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame));
+				this.$emitAll(room, 'Area.Game.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
 				this.$emitAll(room, 'Area.Game.GameOver', '');
 				if (ss.isValue(room.debuggingSender)) {
 					this.$qManager.sendMessage(Object).call(this.$qManager, room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', new Object());
@@ -460,8 +460,9 @@ GameServer.GameServer.prototype = {
 		gameAnswer.question = answ.question;
 		this.$qManager.sendMessage(Models.GameSendAnswerModel).call(this.$qManager, user, user.gateway, 'Area.Game.AskQuestion', CommonLibraries.Help.cleanUp(Models.GameSendAnswerModel).call(null, gameAnswer));
 		var mjf = CommonLibraries.Help.cleanUp(global.CardGame).call(null, answ.cardGame);
+		var mfc = (new Compressor()).CompressText(JSON.stringify(mjf));
 		//Console.Log(Json.Stringify(mjf).Length);
-		this.$emitAll(room, 'Area.Game.UpdateState', mjf);
+		this.$emitAll(room, 'Area.Game.UpdateState', mfc);
 		if (this.$verbose) {
 			console.log(answ.user.userName + ': ' + answ.question + '   ');
 			var ind = 0;

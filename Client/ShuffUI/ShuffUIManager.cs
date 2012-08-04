@@ -23,12 +23,15 @@ namespace Client.ShuffUI
             dynamic f;
             var tp = outer[0].Style;
 
-            tp.me()["box-shadow"] = "4px 4px 2px #333";
+            tp["box-shadow"] = "4px 4px 2px #333";
 
 
-
-            f = (tp.me()["box-shadow"] && (tp.me()["-moz-box-shadow"] = tp.me()["box-shadow"]));
-            f = (tp.me()["box-shadow"] && (tp.me()["-webkit-box-shadow"] = tp.me()["box-shadow"]));
+            if (tp["box-shadow"]!=null)
+            {
+                tp["-moz-box-shadow"] = tp["box-shadow"];
+                tp["-webkit-box-shadow"] = tp["box-shadow"];
+            }
+             
 
 
 

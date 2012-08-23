@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Models
 {
     [Serializable]
-    public sealed class DebuggerJoinRequestModel
+    public  class DebuggerJoinRequestModel
     {
         public DebuggerJoinRequestModel(string roomId)
         {

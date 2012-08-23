@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace global
 {
     [Serializable]
-    public sealed class GameCardGameOptions
+    public  class GameCardGameOptions
     {
         [IntrinsicProperty]
         [ScriptName("numberOfCards")]

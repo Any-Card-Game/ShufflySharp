@@ -8,11 +8,11 @@ using jQueryApi.UI.Widgets;
 
 namespace Client.ShuffUI
 {
-    public class ShuffWindow<T> : ShuffElement
+    public class ShuffWindowOLD<T> : ShuffElement
     {
         public jQueryObject outer;
 
-        public ShuffWindow(T data)
+        public ShuffWindowOLD(T data)
         {
             Data = data;
             Elements = new List<ShuffElement>();
@@ -58,6 +58,7 @@ namespace Client.ShuffUI
         public UIAreaInformation Information { get; set; }
 
 
+/*
         public jQueryObject AddButton(ShuffButton element)
         {
             Elements.Add(element);
@@ -80,7 +81,9 @@ namespace Client.ShuffUI
 
             return but;
         }
+*/
 
+/*
         public jQueryObject AddLabel(ShuffLabel element)
         {
             Elements.Add(element);
@@ -100,8 +103,10 @@ namespace Client.ShuffUI
 
             return but;
         }
+*/
 
 
+/*
         public jQueryObject AddTextbox(ShuffTextBox element)
         {
             Elements.Add(element);
@@ -134,6 +139,8 @@ namespace Client.ShuffUI
 
             return but;
         }
+*/
+/*
 
         public CodeMirrorInformation AddCodeEditor(ShuffCodeEditor _editor)
         {
@@ -185,7 +192,7 @@ namespace Client.ShuffUI
                             cm.setCursor(pos);
 
                         }
-                    },*/
+                    },#1#
 
                     OnCursorActivity = (e) =>
                         {
@@ -213,7 +220,8 @@ namespace Client.ShuffUI
 
             return codeMirror;
         }
-
+*/
+/*
         public jQueryObject AddListBox(ShuffListBox element)
         {
             Elements.Add(element);
@@ -236,7 +244,7 @@ namespace Client.ShuffUI
                 options.click(item);
         });
         return but;
-             */
+             #1#
             return but;
         }
 
@@ -260,6 +268,6 @@ namespace Client.ShuffUI
                 };
             return but;
         }
-
+        */
      }
 }

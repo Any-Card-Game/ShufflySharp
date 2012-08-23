@@ -7,10 +7,10 @@ namespace global
     {
         public GameCardGameTextArea(GameCardGameTextAreaOptions options)
         {
-            Name = options.Name == null ? "Text Area" : options.Name;
+            Name = options.Name ?? "Text Area";
             X = options.X == 0 ? 0 : options.X;
             Y = options.Y == 0 ? 0 : options.Y;
-            Text = options.Text == null ? "Text" : options.Text;
+            Text = options.Text ?? "Text";
         }
 
         [ScriptName("name")]

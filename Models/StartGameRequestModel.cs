@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Models
 {
     [Serializable]
-    public sealed class StartGameRequestModel
+    public  class StartGameRequestModel
     {
         public StartGameRequestModel(string roomId)
         {

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Models
 {
     [Serializable]
-    public sealed class GatewayLoginMessageModel
+    public  class GatewayLoginMessageModel
     {
         [IntrinsicProperty]
         public string UserName { get; set; }

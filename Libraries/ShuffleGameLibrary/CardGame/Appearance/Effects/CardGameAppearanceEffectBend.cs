@@ -20,7 +20,7 @@ namespace global
 
     }
     [Serializable]
-    public sealed class CardGameEffectBendOptions
+    public  class CardGameEffectBendOptions
     {
         [ScriptName("degrees")]
         [IntrinsicProperty]

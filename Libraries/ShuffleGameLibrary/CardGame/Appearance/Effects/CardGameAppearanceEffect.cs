@@ -53,6 +53,7 @@ namespace global
 
         public static CardGameAppearanceEffect FromJson(CardGameAppearanceEffect effect)
         {
+            
             CardGameAppearanceEffect ef;
             switch (effect.Type)
             {
@@ -81,7 +82,7 @@ namespace global
                 case EffectType.StyleProperty:
                     ef = new CardGameAppearanceEffectStyleProperty(new CardGameAppearanceStyle());
                     var jm = ef;
-                    ExtensionMethods.eval("jm.style=effect.style"); 
+                    "jm.style=effect.style".eval(); 
                     break;
                 case EffectType.Animated:
                     ef = null;

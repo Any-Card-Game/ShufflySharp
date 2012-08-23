@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Models
 {
     [Serializable]
-    public sealed class GatewayMessageModel
+    public  class GatewayMessageModel
     {
         public GatewayMessageModel(string channel, object content, string gameServer)
         {

@@ -1,4 +1,4 @@
-﻿
+
 module.exports = Sevens = function () {
     var self = this;
     self.spades = new Pile('spades');

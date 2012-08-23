@@ -120,7 +120,7 @@ namespace global
 
 
     [Serializable]
-    public sealed class CardGameEffectHighlightOptions
+    public  class CardGameEffectHighlightOptions
     {
         [ScriptName("radius")]
         [IntrinsicProperty]

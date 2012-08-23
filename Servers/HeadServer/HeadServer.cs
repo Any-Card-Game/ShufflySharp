@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CommonLibraries;
 using CommonShuffleLibrary;
 using NodeJSLibrary;
 
@@ -20,6 +21,9 @@ namespace HeadServer
 
         public HeadServer()
         {
+             
+
+
             qManager = new QueueManager("Head1", new QueueManagerOptions(new[]
                 {
                     new QueueWatcher("HeadServer", null),

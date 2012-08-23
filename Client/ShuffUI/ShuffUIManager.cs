@@ -20,18 +20,17 @@ namespace Client.ShuffUI
             jQuery.Select("body").Append(outer);
             ui.outer = outer;
 
-            dynamic f;
-            var tp = outer[0].Style;
+            Style tp = outer[0].Style;
 
             tp["box-shadow"] = "4px 4px 2px #333";
 
 
-            if (tp["box-shadow"]!=null)
+            if (tp["box-shadow"] != null)
             {
                 tp["-moz-box-shadow"] = tp["box-shadow"];
                 tp["-webkit-box-shadow"] = tp["box-shadow"];
             }
-             
+
 
 
 
@@ -69,7 +68,7 @@ namespace Client.ShuffUI
             ui.Window = jQuery.Select("#window" + windowID);
 
             UIAreaInformation info;
-            UIAreas.Add(info=new UIAreaInformation(outer, inner));
+            UIAreas.Add(info = new UIAreaInformation(outer, inner));
             ui.Information = info;
 
             x.Click((evt) => { outer.CSS("display", "none"); });

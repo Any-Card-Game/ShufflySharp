@@ -466,6 +466,7 @@
     <Compile Include="ScriptLoader.cs" />
     <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
     <Compile Include="ShuffUI\ImportedExtensionMethods.cs" />
+    <Compile Include="ShuffUI\Number.cs" />
     <Compile Include="ShuffUI\ShuffButton.cs" />
     <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
     <Compile Include="ShuffUI\ShuffElement.cs" />
@@ -475,6 +476,7 @@
     <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />
     <Compile Include="ShuffUI\ShuffWindow.cs" />
+    <Compile Include="ShuffUI\ShuffWindow2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">

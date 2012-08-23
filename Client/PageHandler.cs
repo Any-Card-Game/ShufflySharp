@@ -53,7 +53,7 @@ namespace Client
                     var time = endTime - startTime;
                     numOfTimes++;
                     timeValue += time;
-                    buildSite.devArea.Data.lblHowFast.Text("How Many: " + (timeValue / numOfTimes));
+                    buildSite.devArea.Data.lblHowFast.Text=("How Many: " + (timeValue / numOfTimes));
                     buildSite.codeArea.Data.codeEditor.editor.SetValue(data.Content);
                     buildSite.codeArea.Data.codeEditor.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
                     buildSite.codeArea.Data.codeEditor.editor.Refresh();
@@ -153,7 +153,7 @@ namespace Client
                     //alert(JSON.stringify(data));
                     endTime = new DateTime();
                     var time = endTime - startTime;
-                    buildSite.devArea.Data.lblHowFast.Text("how long: " + time);
+                    buildSite.devArea.Data.lblHowFast.Text=("how long: " + time);
                     Window.SetTimeout(() =>
                         {
                             gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(gameStuff.RoomID, 1), buildSite.devArea.Data.gameServer);

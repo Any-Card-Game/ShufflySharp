@@ -3,13 +3,13 @@ using jQueryApi;
 
 namespace Client.ShuffUI
 {
-    public class ShuffElement
+    public class ShuffElementOLD
     {
-        private bool visible;
+        private bool myVisible;
 
-        public ShuffElement()
+        public ShuffElementOLD()
         {
-            visible = true;
+            myVisible = true;
         }
 
         [IntrinsicProperty]
@@ -31,48 +31,13 @@ namespace Client.ShuffUI
 
         public bool Visible
         {
-            get { return visible; }
+            get { return myVisible; }
             set
             {
                 if (Element != null)
-                    Element.CSS("display", visible ? "block" : "none");
-                visible = value;
+                    Element.CSS("display", myVisible ? "block" : "none");
+                myVisible = value;
             }
-        }
-    }
-
-    public class Number
-    {
-        private string Value;
-
-        private Number(string s)
-        {
-            Value = s;
-        }
-
-        private Number(double s)
-        {
-            Value = s.ToString();
-        }
-
-        public static implicit operator double(Number d)
-        {
-            return double.Parse(d.Value);
-        }
-
-        public static implicit operator Number(string d)
-        {
-            return new Number(d);
-        }
-
-        public static implicit operator Number(double d)
-        {
-            return new Number(d);
-        }
-
-        public static implicit operator string(Number d)
-        {
-            return d.Value;
         }
     }
 }

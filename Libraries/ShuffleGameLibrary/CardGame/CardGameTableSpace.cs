@@ -105,7 +105,7 @@ namespace global
     }
 
     [Serializable]
-    public sealed class CardGameTableSpaceOptions
+    public  class CardGameTableSpaceOptions
     {
         public CardGameTableSpaceOptions()
         {

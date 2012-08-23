@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Client.ShuffUI;
 using GameServer;
 using jQueryApi;
 
@@ -8,19 +9,19 @@ namespace Client.Information
     public class DevAreaInformation
     {
         [IntrinsicProperty]
-        public jQueryObject txtNumOfPlayers { get; set; }
+        public ShuffTextbox txtNumOfPlayers { get; set; }
 
         [IntrinsicProperty]
         public Action<GameRoom> loadRoomInfo { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject varText { get; set; }
+        public ShuffTextbox varText { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject lblAnother { get; set; }
+        public ShuffLabel lblAnother { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject lblHowFast { get; set; }
+        public ShuffLabel lblHowFast { get; set; }
 
         [IntrinsicProperty]
         public string gameServer { get; set; }

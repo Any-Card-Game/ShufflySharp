@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using Client.ShuffUI;
 using CommonLibraries;
 using GameServer;
 using jQueryApi;
@@ -12,16 +13,16 @@ namespace Client.Information
         public Action<GameAnswer> loadRoomInfos { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject userList { get; set; }
+        public ShuffPropertyBox userList { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject gameList { get; set; }
+        public ShuffPropertyBox gameList { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject txtUserName { get; set; }
+        public ShuffTextbox txtUserName { get; set; }
 
         [IntrinsicProperty]
-        public jQueryObject btnStartGame { get; set; }
+        public ShuffButton btnStartGame { get; set; }
 
         [IntrinsicProperty]
         public Action<GameRoom> loadRoomInfo { get; set; }

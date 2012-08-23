@@ -6,7 +6,7 @@ using CommonLibraries;
 namespace global
 {
     [Serializable]
-    public sealed class CardGameArea
+    public  class CardGameArea
     {
         [ScriptName("size")]
         [IntrinsicProperty]

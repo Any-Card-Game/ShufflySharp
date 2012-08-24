@@ -19,7 +19,7 @@ namespace Client.ShuffUI
 
             jQuery.Select("body").Append(outer);
             ui.outer = outer;
-
+            
             Style tp = outer[0].Style;
 
             tp["box-shadow"] = "4px 4px 2px #333";
@@ -115,7 +115,7 @@ namespace Client.ShuffUI
                         OnResize = (evt, o) => { }
                     });
             }
-
+            //inner.Append(ui.Element);
             return ui;
         }
 

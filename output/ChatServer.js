@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 Type.registerNamespace('ChatServer');
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatCreateRoomModel
@@ -42,7 +42,7 @@ ChatServer.ChatServer = function() {
 	var queueManager = new CommonShuffleLibrary.QueueManager('Chat1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('ChatServer', null)], ['GatewayServer', 'Gateway*']));
 	queueManager.addChannel('Area.Chat.SendMessageToRoom', Function.mkdel(this, function(sender, data) {
 		this.$client.rpush('ChatServer.ChatRoom.' + data.channel, data.user.userName + ': ' + data.content);
-		var $t1 = (this.$registeredChannels['ChatServer.ChatRoom.' + data.channel]).getEnumerator();
+		var $t1 = this.$registeredChannels['ChatServer.ChatRoom.' + data.channel].getEnumerator();
 		try {
 			while ($t1.moveNext()) {
 				var item = $t1.get_current();
@@ -50,14 +50,12 @@ ChatServer.ChatServer = function() {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 	}));
 	queueManager.addChannel('Area.Chat.JoinRoom', Function.mkdel(this, function(sender1, data1) {
 		if (Object.keyExists(this.$registeredChannels, data1.channel)) {
-			(this.$registeredChannels[data1.channel]).add(sender1);
+			this.$registeredChannels[data1.channel].add(sender1);
 		}
 	}));
 	queueManager.addChannel('Area.Chat.CreateRoom', Function.mkdel(this, function(sender2, data2) {

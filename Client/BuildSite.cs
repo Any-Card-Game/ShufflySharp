@@ -87,8 +87,7 @@ namespace Client
             Document.Body.AppendChild(stats.Element);
             Window.SetTimeout(() =>
                 {
-                    ExtensionMethods.debugger(null);
-
+                    
                     jQuery.Select(".xstats").CSS("right", "0px");
                     jQuery.Select(".xstats").CSS("position", "absolute");
 
@@ -279,7 +278,7 @@ namespace Client
                         {
                             user = new UserModel { UserName = devArea.Data.txtNumOfPlayers.Text },
                             Name = "main room",
-                            Source = codeArea.Data.codeEditor.editor.GetValue(),
+                            Source = codeArea.Data.codeEditor.Information.editor.GetValue(),
                             BreakPoints = codeArea.Data.breakPoints
                         });
                 });
@@ -450,9 +449,9 @@ namespace Client
 
 
             codeArea.Data.breakPoints = new List<int>();
-//            codeArea.Data.console = codeArea.AddCodeEditor(new ShuffCodeEditor { Height = "20%", LineNumbers = false });
+            codeArea.Data.console = codeArea.AddElement(new ShuffCodeEditor(new ShuffCodeEditorOptions() { Height = "20%", LineNumbers = false }));
 
-  //          codeArea.Data.codeEditor = codeArea.AddCodeEditor(new ShuffCodeEditor { Height = "80%", LineNumbers = true });
+            codeArea.Data.codeEditor = codeArea.AddElement(new ShuffCodeEditor(new ShuffCodeEditorOptions() { Height = "80%", LineNumbers = true }));
 
 
             questionArea = shuffUIManager.CreateWindow(new ShuffWindow<QuestionAreaInformation>(new QuestionAreaInformation())
@@ -490,38 +489,35 @@ namespace Client
                         answers.Add(new ShuffListItem(question.Answers[i], i));
                     }
 
-                    /*questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(new Shuff)
-                        {
-                            X = 30,
-                            Y = 65,
-                            Width = 215,
-                            Height = 25 * 5,
-                            Label = "Answers",
-                            Items = answers,
-                            Click = (item) =>
-                                {
-                                    pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, item.Value), devArea.Data.gameServer);
-                                    questionArea.Visible = false;
-                                }
-                        })*/;
+                    questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(new ShuffListBoxOptions()
+                          {
+                              X = 30,
+                              Y = 65,
+                              Width = 215,
+                              Height = 25 * 5,
+                              Label = "Answers",
+                              Items = answers,
+                              OnClick = (e) =>
+                                  {
+                                      pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
+                                      questionArea.Visible = false;
+                                  }
+                          }));
                 };
 
-/*
-            questionArea.Data.answerBox = questionArea.AddListBox(new ShuffListBox
-                {
-                    X = 30,
-                    Y = 65,
-                    Width = 215,
-                    Height = 25 * 5,
-                    Label = "Answers",
-                    Click = (item) =>
-                        {
-                            pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, item.Value), devArea.Data.gameServer);
-                            questionArea.Visible = false;
-                        }
-                });
-*/
-
+            questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(new ShuffListBoxOptions()
+                                      {
+                                          X = 30,
+                                          Y = 65,
+                                          Width = 215,
+                                          Height = 25 * 5,
+                                          Label = "Answers",
+                                          OnClick = (e) =>
+                                              {
+                                                  pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
+                                                  questionArea.Visible = false;
+                                              }
+                                      }));
             shuffUIManager.Focus(devArea.Information);
 
 

@@ -11,9 +11,7 @@ CommonShuffleLibrary.Consumer = function(obj) {
 		}
 	}
 	finally {
-		if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-			Type.cast($t1, ss.IDisposable).dispose();
-		}
+		$t1.dispose();
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +45,7 @@ CommonShuffleLibrary.PubSub = function(ready) {
 		console.log('unsubscribed: ' + channel1 + ' ' + count1);
 	});
 	this.$subClient.on('message', function(channel2, message) {
-		if (ss.Nullable.unbox(Type.cast(ss.isValue(someSubbed[channel2]), Boolean))) {
+		if (!!ss.isValue(someSubbed[channel2])) {
 			someSubbed[channel2](message);
 		}
 	});
@@ -96,9 +94,7 @@ CommonShuffleLibrary.QueueItemCollection.prototype = {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 		return null;
 	}
@@ -138,7 +134,7 @@ CommonShuffleLibrary.QueueManager.prototype = {
 	$messageReceived: function(T) {
 		return function(name, user, eventChannel, content) {
 			user.gateway = name;
-			if (ss.Nullable.unbox(Type.cast(ss.isValue(this.channels[eventChannel]), Boolean))) {
+			if (!!ss.isValue(this.channels[eventChannel])) {
 				this.channels[eventChannel](user, content);
 			}
 		};

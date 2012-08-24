@@ -12,7 +12,7 @@ namespace Client.Information
         public ShuffLabel question { get; set; }
 
         [IntrinsicProperty]
-        public ShuffLabel answerBox { get; set; }
+        public ShuffListBox answerBox { get; set; }
 
         [IntrinsicProperty]
         public Action<GameSendAnswerModel> load { get; set; }

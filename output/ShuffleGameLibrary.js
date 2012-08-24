@@ -11,7 +11,7 @@ global._.numbers = function(start, finish) {
 	return items;
 };
 global._.clone = function(obj) {
-	if (ss.Nullable.unbox(Type.cast(ss.isNullOrUndefined(obj) || !Type.isInstanceOfType(obj, Array) && (!ss.referenceEquals((Type.getInstanceType(obj)), Object) && (eval('({}).toString.call(obj) != \'[object Function]\''))), Boolean))) {
+	if (!!(ss.isNullOrUndefined(obj) || !Type.isInstanceOfType(obj, Array) && (!ss.referenceEquals((Type.getInstanceType(obj)), Object) && (eval('({}).toString.call(obj) != \'[object Function]\''))))) {
 		return obj;
 	}
 	var ob = Type.cast(obj, Object);
@@ -32,9 +32,7 @@ global._.clone = function(obj) {
 		}
 	}
 	finally {
-		if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-			Type.cast($t1, ss.IDisposable).dispose();
-		}
+		$t1.dispose();
 	}
 	return temp;
 };
@@ -99,9 +97,7 @@ global.Appearance.fromJson = function(json) {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 	}
 	return ap;
@@ -166,7 +162,7 @@ global.AppearanceStyleItem = function(options) {
 	this.margin = null;
 	this.zindex = 0;
 	this.cursor = 0;
-	if (ss.Nullable.unbox(Type.cast(ss.isNullOrUndefined(options), Boolean))) {
+	if (!!ss.isNullOrUndefined(options)) {
 		options = {};
 	}
 	this.backColor = Type.cast(Object.coalesce(options.backColor, null), String);
@@ -282,9 +278,7 @@ global.ArrayUtils.sortCards = function(ts) {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t2, ss.IDisposable)) {
-				Type.cast($t2, ss.IDisposable).dispose();
-			}
+			$t2.dispose();
 		}
 	}
 	global.ArrayUtils.$setArrayData(global.Card).call(null, ts, items);
@@ -308,7 +302,7 @@ global.ArrayUtils.groupBy = function(T, T2) {
 			try {
 				while ($t2.moveNext()) {
 					var item = $t2.get_current();
-					var f3 = ss.Nullable.unbox(Type.cast((eval('item.key==t2')), Boolean));
+					var f3 = !!(eval('item.key==t2'));
 					//throws wild notimplementedexcpetion if item.key and t2 are cast to dynamic
 					if (f3) {
 						item.items.add(t);
@@ -318,9 +312,7 @@ global.ArrayUtils.groupBy = function(T, T2) {
 				}
 			}
 			finally {
-				if (Type.isInstanceOfType($t2, ss.IDisposable)) {
-					Type.cast($t2, ss.IDisposable).dispose();
-				}
+				$t2.dispose();
 			}
 			if (!good) {
 				items.add(new (Type.makeGenericType(global.ArrayUtils$GroupByKey$2, [T, T2]))(t2, ([ t ])));
@@ -440,7 +432,7 @@ global.CardGame.prototype = {
 			players.removeRange(6, players.length - 6);
 		}
 		for (var j = 0; j < players.length; j++) {
-			this.users.add(new global.User((players[j]).userName));
+			this.users.add(new global.User(players[j].userName));
 		}
 	},
 	dealCards: function(numberOfCards, state) {
@@ -697,9 +689,9 @@ global.Effect$Highlight.prototype = {
 		em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - global.domUtils.nopx(em.style.paddingLeft));
 		em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - global.domUtils.nopx(em.style.paddingTop));
 		for (var i = 0; i < em.childNodes.length; i++) {
-			if ((em.childNodes[i]).tagName === 'DIV') {
-				(em.childNodes[i]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.left) + paddingRadiusL);
-				(em.childNodes[i]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.top) + paddingRadiusT);
+			if (em.childNodes[i].tagName === 'DIV') {
+				em.childNodes[i].style.left = global.domUtils.px(global.domUtils.nopx(em.childNodes[i].style.left) + paddingRadiusL);
+				em.childNodes[i].style.top = global.domUtils.px(global.domUtils.nopx(em.childNodes[i].style.top) + paddingRadiusT);
 			}
 		}
 	},
@@ -710,9 +702,9 @@ global.Effect$Highlight.prototype = {
 		em.style.left = global.domUtils.px(global.domUtils.nopx(em.style.left) - global.domUtils.nopx(em.style.paddingLeft));
 		em.style.top = global.domUtils.px(global.domUtils.nopx(em.style.top) - global.domUtils.nopx(em.style.paddingTop));
 		for (var i = 0; i < em.childNodes.length; i++) {
-			if ((em.childNodes[i]).tagName === 'DIV') {
-				(em.childNodes[i]).style.left = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.left) + paddingRadiusL);
-				(em.childNodes[i]).style.top = global.domUtils.px(global.domUtils.nopx((em.childNodes[i]).style.top) + paddingRadiusT);
+			if (em.childNodes[i].tagName === 'DIV') {
+				em.childNodes[i].style.left = global.domUtils.px(global.domUtils.nopx(em.childNodes[i].style.left) + paddingRadiusL);
+				em.childNodes[i].style.top = global.domUtils.px(global.domUtils.nopx(em.childNodes[i].style.top) + paddingRadiusT);
 			}
 		}
 	}
@@ -912,7 +904,7 @@ global.shuff.askQuestion = function(user, question, answers, cardGame) {
 	cardGame.emulating = false;
 	if (cardGame.answers.length - 1 > cardGame.answerIndex) {
 		cardGame.emulating = true;
-		return (cardGame.answers[cardGame.answerIndex++]).value;
+		return cardGame.answers[cardGame.answerIndex++].value;
 		//todo .value
 	}
 	var m = new global.CardGameQuestion(user, question, answers, cardGame);
@@ -1001,10 +993,10 @@ global.TableTextArea = function(options) {
 	this.x = 0;
 	this.y = 0;
 	this.text = null;
-	this.name = (ss.isNullOrUndefined(options.name) ? 'Text Area' : options.name);
+	this.name = Object.coalesce(options.name, 'Text Area');
 	this.x = ((options.x === 0) ? 0 : options.x);
 	this.y = ((options.nayme === 0) ? 0 : options.nayme);
-	this.text = (ss.isNullOrUndefined(options.text) ? 'Text' : options.text);
+	this.text = Object.coalesce(options.text, 'Text');
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.User

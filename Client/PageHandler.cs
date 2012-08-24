@@ -54,9 +54,10 @@ namespace Client
                     numOfTimes++;
                     timeValue += time;
                     buildSite.devArea.Data.lblHowFast.Text=("How Many: " + (timeValue / numOfTimes));
-                    buildSite.codeArea.Data.codeEditor.editor.SetValue(data.Content);
-                    buildSite.codeArea.Data.codeEditor.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
-                    buildSite.codeArea.Data.codeEditor.editor.Refresh();
+
+                    buildSite.codeArea.Data.codeEditor.Information.editor.SetValue(data.Content);
+                    buildSite.codeArea.Data.codeEditor.Information.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
+                    buildSite.codeArea.Data.codeEditor.Information.editor.Refresh();
                 });
             gateway.Emit("Area.Debug2.GetGameSource.Request", new GameSourceRequestModel("Sevens"));
             cardImages = new JsDictionary<string, ImageElement>();
@@ -119,11 +120,11 @@ namespace Client
                 {
                     buildSite.home.Data.loadRoomInfos(data);
 
-                    var lines = buildSite.codeArea.Data.console.editor.GetValue().Split("\n");
+                    var lines = buildSite.codeArea.Data.console.Information.editor.GetValue().Split("\n");
                     lines = (string[])lines.Extract(lines.Length - 40, 40);
 
-                    buildSite.codeArea.Data.console.editor.SetValue(lines.Join("\n") + "\n" + data.Value);
-                    buildSite.codeArea.Data.console.editor.SetCursor(buildSite.codeArea.Data.console.editor.LineCount(), 0);
+                    buildSite.codeArea.Data.console.Information.editor.SetValue(lines.Join("\n") + "\n" + data.Value);
+                    buildSite.codeArea.Data.console.Information.editor.SetCursor(buildSite.codeArea.Data.console.Information.editor.LineCount(), 0);
                 });
 
 
@@ -134,11 +135,11 @@ namespace Client
 
                     var cm = buildSite.codeArea.Data.codeEditor;
 
-                    cm.editor.ClearMarker(data.LineNumber);
-                    cm.editor.SetMarker(data.LineNumber, "<span style=\"color: #059\">●</span> %N%");
-                    cm.editor.SetCursor(data.LineNumber + 15, 0);
-                    cm.editor.SetCursor(data.LineNumber - 15, 0);
-                    cm.editor.SetCursor(data.LineNumber, 0);
+                    cm.Information.editor.ClearMarker(data.LineNumber);
+                    cm.Information.editor.SetMarker(data.LineNumber, "<span style=\"color: #059\">●</span> %N%");
+                    cm.Information.editor.SetCursor(data.LineNumber + 15, 0);
+                    cm.Information.editor.SetCursor(data.LineNumber - 15, 0);
+                    cm.Information.editor.SetCursor(data.LineNumber, 0);
                 });
 
             /*

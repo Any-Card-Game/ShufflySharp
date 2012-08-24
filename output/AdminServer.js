@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 Type.registerNamespace('AdminServer');
 ////////////////////////////////////////////////////////////////////////////////
 // AdminServer.AdminServer
@@ -77,9 +77,7 @@ AdminServer.AdminServer.prototype = {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 		str += '</ul>';
 		str += '</fieldset>';
@@ -149,7 +147,7 @@ AdminServer.AdminServer.prototype = {
 		var al;
 		var name = '';
 		if (args.length > 0) {
-			name = ((al = (args[0]).split('/'))[al.length - 1]).split('.')[0];
+			name = (al = args[0].split('/'))[al.length - 1].split('.')[0];
 		}
 		if (this.$nonDebuggable.indexOf(process) === -1 && this.$debug) {
 			var jf = ' --debug=';

@@ -7,10 +7,10 @@ namespace Client.Information
     public class CodeAreaInformation
     {
         [IntrinsicProperty]
-        public CodeMirrorInformation codeEditor { get; set; }
+        public ShuffCodeEditor codeEditor { get; set; }
 
         [IntrinsicProperty]
-        public CodeMirrorInformation console { get; set; }
+        public ShuffCodeEditor console { get; set; }
 
         [IntrinsicProperty]
         public List<int> breakPoints { get; set; }

@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');
+require('./mscorlib.debug.js');
 Type.registerNamespace('SiteServer');
 ////////////////////////////////////////////////////////////////////////////////
 // SiteServer.SiteServer

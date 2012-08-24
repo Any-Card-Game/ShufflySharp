@@ -8,22 +8,23 @@ namespace Build
     internal class Program
     {
         private static void Main(string[] args)
-        { 
+        {
+            string shufSharp = "ShufflySharp";
 
             var projs = new[]
                 {
-                    @"ShuffleSharp\Libraries\CommonLibraries\",
-                    @"ShuffleSharp\Libraries\CommonShuffleLibrary\",
-                    @"ShuffleSharp\Libraries\ShuffleGameLibrary\",
-                    @"ShuffleSharp\Servers\AdminServer\",
-                    @"ShuffleSharp\Servers\ChatServer\",
-                    @"ShuffleSharp\Servers\DebugServer\",
-                    @"ShuffleSharp\Servers\GameServer\",
-                    @"ShuffleSharp\Servers\GatewayServer\",
-                    @"ShuffleSharp\Servers\HeadServer\",
-                    @"ShuffleSharp\Servers\SiteServer\",
-                    @"ShuffleSharp\Models\",
-                    @"ShuffleSharp\Client\",
+                    shufSharp+@"\Libraries\CommonLibraries\",
+                    shufSharp+@"\Libraries\CommonShuffleLibrary\",
+                    shufSharp+@"\Libraries\ShuffleGameLibrary\",
+                    shufSharp+@"\Servers\AdminServer\",
+                    shufSharp+@"\Servers\ChatServer\",
+                    shufSharp+@"\Servers\DebugServer\",
+                    shufSharp+@"\Servers\GameServer\",
+                    shufSharp+@"\Servers\GatewayServer\",
+                    shufSharp+@"\Servers\HeadServer\",
+                    shufSharp+@"\Servers\SiteServer\",
+                    shufSharp+@"\Models\",
+                    shufSharp+@"\Client\",
                 };
             var pre = Directory.GetCurrentDirectory() + @"\..\..\..\..\..\";
 
@@ -34,7 +35,7 @@ namespace Build
 #else
                 var from = pre + proj + @"\bin\release\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #endif
-                var to = pre + @"ShuffleSharp\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                var to = pre + shufSharp+@"\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 if (File.Exists(to)) File.Delete(to);
                 File.Copy(from, to);
             }
@@ -43,7 +44,7 @@ namespace Build
             var depends = new Dictionary<string, Application>
                 {
                     {
-                        @"ShuffleSharp\Servers\AdminServer\", new Application(true, "new AdminServer.AdminServer();", new List<string>
+                        shufSharp+@"\Servers\AdminServer\", new Application(true, "new AdminServer.AdminServer();", new List<string>
                             {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js",
@@ -51,7 +52,7 @@ namespace Build
                             })
                     },
                     {
-                        @"ShuffleSharp\Servers\ChatServer\", new Application(true, "new ChatServer.ChatServer();", new List<string>
+                        shufSharp+@"\Servers\ChatServer\", new Application(true, "new ChatServer.ChatServer();", new List<string>
                             {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js",
@@ -59,7 +60,7 @@ namespace Build
                             })
                     },
                     {
-                        @"ShuffleSharp\Servers\DebugServer\", new Application(true, "new DebugServer.DebugServer();", new List<string>
+                        shufSharp+@"\Servers\DebugServer\", new Application(true, "new DebugServer.DebugServer();", new List<string>
                             {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js",
@@ -67,7 +68,7 @@ namespace Build
                             })
                     },
                     {
-                        @"ShuffleSharp\Servers\GameServer\", new Application(true, "new GameServer.GameServer();", new List<string>
+                        shufSharp+@"\Servers\GameServer\", new Application(true, "new GameServer.GameServer();", new List<string>
                             {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js",
@@ -77,7 +78,7 @@ namespace Build
                             })
                     },
                     {
-                        @"ShuffleSharp\Servers\GatewayServer\", new Application(true, "new GatewayServer.GatewayServer();", new List<string>
+                        shufSharp+@"\Servers\GatewayServer\", new Application(true, "new GatewayServer.GatewayServer();", new List<string>
                             {
                                 @"./CommonLibraries.js",
                                 @"./CommonShuffleLibrary.js",
@@ -85,27 +86,27 @@ namespace Build
                             })
                     },
                     {
-                        @"ShuffleSharp\Servers\HeadServer\", new Application(true, "new HeadServer.HeadServer();", new List<string>
+                        shufSharp+@"\Servers\HeadServer\", new Application(true, "new HeadServer.HeadServer();", new List<string>
                             {
                                 @"./CommonShuffleLibrary.js",
                                 @"./Models.js",
                             })
                     },
-                    {@"ShuffleSharp\Servers\SiteServer\", new Application(true, "", new List<string> {})},
+                    {shufSharp+@"\Servers\SiteServer\", new Application(true, "", new List<string> {})},
                     {
-                        @"ShuffleSharp\Client\", new Application(false, "", new List<string>
+                        shufSharp+@"\Client\", new Application(false, "", new List<string>
                             {
                             })
                     },
                 };
             foreach (var depend in depends)
             {
-                var to = pre + @"ShuffleSharp\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                var to = pre + shufSharp+@"\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 var output = "";
 
                 if (depend.Value.Node)
                 {
-                    output += "require('./mscorlib.node.debug.js');";
+                    output += "require('./mscorlib.debug.js');";
                 }
                 else
                 {
@@ -127,9 +128,9 @@ namespace Build
             }
 
 
-            foreach (var d in Directory.GetDirectories(pre + @"ShuffleSharp\ShuffleGames\"))
+            foreach (var d in Directory.GetDirectories(pre + shufSharp+@"\ShuffleGames\"))
             {
-                var to = pre + @"ShuffleSharp\output\Games\" + d.Split('\\').Last();
+                var to = pre + shufSharp+@"\output\Games\" + d.Split('\\').Last();
                 if (!Directory.Exists(to))
 
                     Directory.CreateDirectory(to);

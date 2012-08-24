@@ -435,22 +435,22 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
-      <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.0.0.0.118\tools\Assemblies\mscorlib.dll</HintPath>
+      <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.1.2.1\tools\Assemblies\mscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="Script.jQuery, Version=0.0.0.45, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Saltarelle.jQuery.0.0.0.45\lib\Script.jQuery.dll</HintPath>
+    <Reference Include="Script.jQuery">
+      <HintPath>..\packages\Saltarelle.jQuery.1.2.1\lib\Script.jQuery.dll</HintPath>
     </Reference>
     <Reference Include="Script.jQuery.UI">
-      <HintPath>..\packages\Saltarelle.jQuery.UI.0.0.0.9\lib\Script.jQuery.UI.dll</HintPath>
+      <HintPath>..\packages\Saltarelle.jQuery.UI.1.2.1.1\lib\Script.jQuery.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Script.Web, Version=0.0.0.58, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Saltarelle.Web.0.0.0.58\lib\Script.Web.dll</HintPath>
+    <Reference Include="Script.Web">
+      <HintPath>..\packages\Saltarelle.Web.1.2.1\lib\Script.Web.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -467,11 +467,7 @@
     <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
     <Compile Include="ShuffUI\ImportedExtensionMethods.cs" />
     <Compile Include="ShuffUI\Number.cs" />
-    <Compile Include="ShuffUI\ShuffButton.cs" />
-    <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
     <Compile Include="ShuffUI\ShuffElement.cs" />
-    <Compile Include="ShuffUI\ShuffLabel.cs" />
-    <Compile Include="ShuffUI\ShuffListBox.cs" />
     <Compile Include="ShuffUI\ShuffPropertyBox.cs" />
     <Compile Include="ShuffUI\ShuffTextBox.cs" />
     <Compile Include="ShuffUI\ShuffUIManager.cs" />
@@ -536,7 +532,7 @@
       <Name>GatewayServer</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.0.0.0.97\tools\Saltarelle.Compiler.targets" />
+  <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.1.2.1.1\tools\Saltarelle.Compiler.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

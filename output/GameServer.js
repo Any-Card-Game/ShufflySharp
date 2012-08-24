@@ -1,4 +1,4 @@
-require('./mscorlib.node.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 Type.registerNamespace('GameServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.DataManager
@@ -164,9 +164,7 @@ GameServer.GameServer = function() {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 		if (ss.isNullOrUndefined(room1)) {
 			return;
@@ -191,9 +189,7 @@ GameServer.GameServer = function() {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t2, ss.IDisposable)) {
-				Type.cast($t2, ss.IDisposable).dispose();
-			}
+			$t2.dispose();
 		}
 		if (ss.isNullOrUndefined(room2)) {
 			return;
@@ -214,9 +210,7 @@ GameServer.GameServer = function() {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t3, ss.IDisposable)) {
-				Type.cast($t3, ss.IDisposable).dispose();
-			}
+			$t3.dispose();
 		}
 		if (ss.isNullOrUndefined(room3)) {
 			return;
@@ -364,9 +358,7 @@ GameServer.GameServer.prototype = {
 				}
 			}
 			finally {
-				if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-					Type.cast($t1, ss.IDisposable).dispose();
-				}
+				$t1.dispose();
 			}
 			if (ss.isNullOrUndefined(room)) {
 				return;
@@ -483,9 +475,7 @@ GameServer.GameServer.prototype = {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 		return null;
 	},
@@ -498,9 +488,7 @@ GameServer.GameServer.prototype = {
 			}
 		}
 		finally {
-			if (Type.isInstanceOfType($t1, ss.IDisposable)) {
-				Type.cast($t1, ss.IDisposable).dispose();
-			}
+			$t1.dispose();
 		}
 	},
 	$createFiber: function(room, gameObject, emulating) {

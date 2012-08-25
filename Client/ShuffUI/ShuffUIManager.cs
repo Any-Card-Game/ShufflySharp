@@ -38,9 +38,8 @@ namespace Client.ShuffUI
             outer.CSS("padding", "2em 0.8em 0.8em 1.3em");
             outer.CSS("left", ui.X + "px");
             outer.CSS("top", ui.Y + "px");
-            outer.CSS("width", ui.Width + "px");
-            outer.CSS("height", ui.Height + "px");
-            outer.CSS("di", ui.Height + "px");
+            outer.CSS("width", ui.Width );
+            outer.CSS("height", ui.Height );
             outer.CSS("display", ui.Visible == false ? "none" : "block");
 
             var top = jQuery.Select("<div style='width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  '></div>");
@@ -115,6 +114,9 @@ namespace Client.ShuffUI
                         OnResize = (evt, o) => { }
                     });
             }
+            ExtensionMethods.debugger("");
+             
+
             //inner.Append(ui.Element);
             return ui;
         }

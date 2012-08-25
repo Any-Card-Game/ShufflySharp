@@ -1153,7 +1153,7 @@ Client.ShuffUI.Number.op_Implicit$2 = function(d) {
 	return new Client.ShuffUI.Number(d);
 };
 Client.ShuffUI.Number.op_Implicit$1 = function(d) {
-	return d.$value;
+	return ((d.$value.indexOf('%') < 0) ? (d.$value + 'px') : d.$value);
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ParentChangedEvent
@@ -1245,6 +1245,7 @@ Client.ShuffUI.ShuffButtonOptions.$ctor = function() {
 Client.ShuffUI.ShuffCodeEditor = function() {
 	this.$2$TextChangedField = null;
 	this.information = null;
+	this.$codeMirror = null;
 	this.text = null;
 	this.lineNumbers = false;
 	Client.ShuffUI.ShuffElement.call(this);
@@ -1262,69 +1263,72 @@ Client.ShuffUI.ShuffCodeEditor.prototype = {
 		this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
 			this.element.text(e.text);
 		})));
-		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e1) {
+		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(ev) {
 			debugger;
-			e1.parent.element.append(this.element);
+			if (ss.isValue(ev.parent)) {
+				ev.parent.element.append(this.element);
+				var hlLine = null;
+				this.$codeMirror.editor = CodeMirror.fromTextArea(this.$codeMirror.element, {
+					lineNumbers: this.lineNumbers,
+					lineWrapping: true,
+					matchBrackets: true,
+					onGutterClick: function(cm, n, e1) {
+						var info = cm.lineInfo(n);
+						if (info.markerText) {
+							Client.BuildSite.instance.codeArea.data.breakPoints.extract(Client.BuildSite.instance.codeArea.data.breakPoints.indexOf(n - 1), 0);
+							cm.clearMarker(n);
+						}
+						else {
+							Client.BuildSite.instance.codeArea.data.breakPoints.add(n - 1);
+							cm.setMarker(n, '<span style="color= #900">●</span> %N%');
+						}
+					},
+					onCursorActivity: Function.mkdel(this, function(e2) {
+						this.$codeMirror.editor.setLineClass(hlLine, null);
+						hlLine = this.$codeMirror.editor.setLineClass(this.$codeMirror.editor.getCursor().line, 'activeline');
+					}),
+					onFocus: function(e3) {
+					},
+					onBlur: function(e4) {
+					}
+				});
+				hlLine = this.$codeMirror.editor.setLineClass(0, 'activeline');
+				var scroller = this.$codeMirror.editor.getScrollerElement();
+				scroller.style.height = this.element[0].offsetHeight + 'px';
+				scroller.style.width = this.element[0].offsetWidth + 'px';
+				this.$codeMirror.editor.refresh();
+				this.$codeMirror.editor.setOption('theme', 'night');
+				this.information = this.$codeMirror;
+			}
+			else {
+			}
 		}));
 	}
 };
 Client.ShuffUI.ShuffCodeEditor.$ctor1 = function(options) {
 	this.$2$TextChangedField = null;
 	this.information = null;
+	this.$codeMirror = null;
 	this.text = null;
 	this.lineNumbers = false;
 	Client.ShuffUI.ShuffElement.call(this);
 	this.$bindEvents();
 	var fmw = options.width;
 	var fmh = options.height;
-	if (!!fmw) {
+	if (!!!fmw) {
 		options.width = Client.ShuffUI.Number.op_Implicit$3('100%');
 	}
-	if (!!fmh) {
+	if (!!!fmh) {
 		options.height = Client.ShuffUI.Number.op_Implicit$3('100%');
 	}
-	var _editor = this;
-	var divs = $('<div style=\'width:' + Client.ShuffUI.Number.op_Implicit$1(_editor.get_width()) + '; height:' + Client.ShuffUI.Number.op_Implicit$1(_editor.get_height()) + '\'> </div>');
+	var divs = $('<div style=\'width:' + Client.ShuffUI.Number.op_Implicit$1(options.width) + '; height:' + Client.ShuffUI.Number.op_Implicit$1(options.height) + '\'> </div>');
 	var fm = $('<textarea id=\'code\' name=\'code\' class=\'CodeMirror-fullscreen \' style=\'\'></textarea>');
 	divs.append(fm);
 	this.element = divs;
 	var $t1 = new Client.ShuffUI.CodeMirrorInformation();
 	$t1.element = fm.get(0);
-	var codeMirror = $t1;
-	codeMirror.element.value = '';
-	var hlLine = null;
-	codeMirror.editor = CodeMirror.fromTextArea(codeMirror.element, {
-		lineNumbers: _editor.lineNumbers,
-		lineWrapping: true,
-		matchBrackets: true,
-		onGutterClick: function(cm, n, e) {
-			var info = cm.lineInfo(n);
-			if (info.markerText) {
-				Client.BuildSite.instance.codeArea.data.breakPoints.extract(Client.BuildSite.instance.codeArea.data.breakPoints.indexOf(n - 1), 0);
-				cm.clearMarker(n);
-			}
-			else {
-				Client.BuildSite.instance.codeArea.data.breakPoints.add(n - 1);
-				cm.setMarker(n, '<span style="color= #900">●</span> %N%');
-			}
-		},
-		onCursorActivity: function(e1) {
-			codeMirror.editor.setLineClass(hlLine, null);
-			hlLine = codeMirror.editor.setLineClass(codeMirror.editor.getCursor().line, 'activeline');
-		},
-		onFocus: function(e2) {
-		},
-		onBlur: function(e3) {
-		}
-	});
-	hlLine = codeMirror.editor.setLineClass(0, 'activeline');
-	var scroller = codeMirror.editor.getScrollerElement();
-	scroller.style.height = divs[0].offsetHeight + 'px';
-	scroller.style.width = divs[0].offsetWidth + 'px';
-	codeMirror.editor.refresh();
-	codeMirror.editor.setOption('theme', 'night');
-	this.information = codeMirror;
-	this.text = options.text;
+	this.$codeMirror = $t1;
+	this.$codeMirror.element.value = this.text = options.text;
 	this.lineNumbers = options.lineNumbers;
 	this.set_x(options.x);
 	this.set_y(options.y);
@@ -1373,7 +1377,6 @@ Client.ShuffUI.ShuffElement = function() {
 	this.visibleChanged = null;
 	this.$1$ParentField = null;
 	this.element = null;
-	this.$myVisible = true;
 	this.$myWidth = Client.ShuffUI.Number.op_Implicit$2(0);
 	this.$myHeight = Client.ShuffUI.Number.op_Implicit$2(0);
 	this.$bindEvents();
@@ -1421,26 +1424,23 @@ Client.ShuffUI.ShuffElement.prototype = {
 		this.visibleChanged(Client.ShuffUI.VisibleChangedEvent.$ctor(this.$myVisible));
 	},
 	$bindEvents: function() {
-		this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e) {
-			this.element.css('display', (e.visible ? 'block' : 'none'));
-		}));
-		this.sizeChanged = Function.combine(this.sizeChanged, Function.mkdel(this, function(e1) {
-			if (!!e1.width) {
-				this.element.css('width', Client.ShuffUI.Number.op_Implicit$1(e1.width) + 'px');
+		this.sizeChanged = Function.combine(this.sizeChanged, Function.mkdel(this, function(e) {
+			if (!!e.width) {
+				this.element.css('width', Client.ShuffUI.Number.op_Implicit$1(e.width) + 'px');
 			}
-			if (!!e1.height) {
-				this.element.css('height', Client.ShuffUI.Number.op_Implicit$1(e1.height) + 'px');
+			if (!!e.height) {
+				this.element.css('height', Client.ShuffUI.Number.op_Implicit$1(e.height) + 'px');
 			}
 		}));
-		this.positionChanged = Function.combine(this.positionChanged, Function.mkdel(this, function(e2) {
-			this.element.css('left', e2.x + 'px');
-			this.element.css('top', e2.y + 'px');
+		this.positionChanged = Function.combine(this.positionChanged, Function.mkdel(this, function(e1) {
+			this.element.css('left', e1.x + 'px');
+			this.element.css('top', e1.y + 'px');
 		}));
-		this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e3) {
-			this.element.css('display', (e3.visible ? 'block' : 'none'));
+		this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e2) {
+			this.element.css('display', (e2.visible ? 'block' : 'none'));
 		}));
-		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e4) {
-			this.set_parent(e4.parent);
+		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e3) {
+			this.set_parent(e3.parent);
 			if (ss.isNullOrUndefined(this.get_parent())) {
 				this.element.remove();
 			}
@@ -1608,7 +1608,7 @@ Client.ShuffUI.ShuffOptions = function() {
 };
 Client.ShuffUI.ShuffOptions.$ctor = function() {
 	var $this = {};
-	$this.visible = false;
+	$this.visible = true;
 	$this.x = 0;
 	$this.y = 0;
 	$this.width = null;
@@ -1632,6 +1632,7 @@ Client.ShuffUI.ShuffPanel = function() {
 Client.ShuffUI.ShuffPanel.prototype = {
 	addElement: function(T) {
 		return function(element) {
+			this.element.append(element.element);
 			this.elements.add(element);
 			element.parentChanged(Client.ShuffUI.ParentChangedEvent.$ctor(this));
 			return element;
@@ -1639,6 +1640,7 @@ Client.ShuffUI.ShuffPanel.prototype = {
 	},
 	removeElement: function(T) {
 		return function(element) {
+			element.element.remove();
 			this.elements.remove(element);
 			element.parentChanged(Client.ShuffUI.ParentChangedEvent.$ctor(null));
 			return element;
@@ -1811,9 +1813,8 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 			outer.css('padding', '2em 0.8em 0.8em 1.3em');
 			outer.css('left', ui.get_x() + 'px');
 			outer.css('top', ui.get_y() + 'px');
-			outer.css('width', Client.ShuffUI.Number.op_Implicit$1(ui.get_width()) + 'px');
-			outer.css('height', Client.ShuffUI.Number.op_Implicit$1(ui.get_height()) + 'px');
-			outer.css('di', Client.ShuffUI.Number.op_Implicit$1(ui.get_height()) + 'px');
+			outer.css('width', Client.ShuffUI.Number.op_Implicit$1(ui.get_width()));
+			outer.css('height', Client.ShuffUI.Number.op_Implicit$1(ui.get_height()));
 			outer.css('display', ((ui.get_visible() === false) ? 'none' : 'block'));
 			var top = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  \'></div>');
 			outer.append(top);
@@ -1870,6 +1871,7 @@ Client.ShuffUI.ShuffUIManager.prototype = {
 					}
 				});
 			}
+			debugger;
 			//inner.Append(ui.Element);
 			return ui;
 		};

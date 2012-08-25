@@ -80,19 +80,21 @@ namespace Client.ShuffUI
         public List<ShuffElement> Elements { get; set; }
         public T AddElement<T>(T element) where T : ShuffElement
         {
+
+            Element.Append(element.Element);
+
             Elements.Add(element);
             element.ParentChanged(new ParentChangedEvent(this));
             return element;
         }
         public T RemoveElement<T>(T element) where T : ShuffElement
         {
+            element.Element.Remove();
+
             Elements.Remove(element);
             element.ParentChanged(new ParentChangedEvent(null));
-
-
             return element;
         }
-
     }
 
     public delegate void ShuffUIEvent<T>(T t);
@@ -111,7 +113,7 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public int Y { get; set; }
     }
-    
+
     [Serializable]
     public class ItemClickedEvent
     {
@@ -208,7 +210,6 @@ namespace Client.ShuffUI
 
         public ShuffElement()
         {
-            myVisible = true;
             myWidth = 0;
             myHeight = 0;
             BindEvents();
@@ -271,11 +272,11 @@ namespace Client.ShuffUI
         }
         internal void BindEvents()
         {
-            VisibleChanged += (e) => Element.CSS("display", e.Visible ? "block" : "none");
+
             SizeChanged += (e) =>
                                {
                                    if (((dynamic)e.Width))
-                                   Element.CSS("width", e.Width + "px");
+                                       Element.CSS("width", e.Width + "px");
                                    if (((dynamic)e.Height))
                                        Element.CSS("height", e.Height + "px");
                                };
@@ -286,17 +287,18 @@ namespace Client.ShuffUI
                 Element.CSS("left", e.X + "px");
                 Element.CSS("top", e.Y + "px");
             };
+
             VisibleChanged += (e) => Element.CSS("display", e.Visible ? "block" : "none");
 
             ParentChanged += ((e) =>
                                   {
                                       Parent = e.Parent;
 
-                                      if (this.Parent == null)
-                                          this.Element.Remove();
+                                      if (Parent == null)
+                                          Element.Remove();
                                       else
                                       {
-                                          this.Parent.Element.Append(this.Element);
+                                          Parent.Element.Append(this.Element);
                                       }
 
                                   });
@@ -311,7 +313,8 @@ namespace Client.ShuffUI
     [Serializable]
     public class ShuffOptions
     {
-        public bool Visible { get; set; }
+        public bool Visible = true;
+
         public int X { get; set; }
         public int Y { get; set; }
         public Number Width { get; set; }
@@ -606,7 +609,7 @@ namespace Client.ShuffUI
     public class ShuffCodeEditorOptions : ShuffOptions
     {
         public string Text { get; set; }
-         
+
 
         public bool LineNumbers { get; set; }
     }
@@ -615,6 +618,7 @@ namespace Client.ShuffUI
     {
         public ShuffUIEvent<TextChangedEvent> TextChanged { get; set; }
         public CodeMirrorInformation Information;
+        private CodeMirrorInformation codeMirror;
 
         [IntrinsicProperty]
         public string Text { get; set; }
@@ -624,100 +628,115 @@ namespace Client.ShuffUI
 
             dynamic fmw = options.Width;
             dynamic fmh = options.Height;
-            if (fmw)
+            if (!fmw)
             {
                 options.Width = "100%";
             }
-            if (fmh)
+            if (!fmh)
             {
                 options.Height = "100%";
             }
-            var _editor = this;
 
+  
 
-
-            var divs = jQuery.Select("<div style='width:" + _editor.Width + "; height:" + _editor.Height + "'> </div>");
+            var divs = jQuery.Select("<div style='width:" + options.Width + "; height:" + options.Height + "'> </div>");
 
             var fm = jQuery.FromHtml("<textarea id='code' name='code' class='CodeMirror-fullscreen ' style=''></textarea>");
             divs.Append(fm);
             Element = divs;
-            var codeMirror = new CodeMirrorInformation
-                {
-                    element = (TextAreaElement)fm.GetElement(0)
-                };
 
-            codeMirror.element.Value = "";
+            codeMirror = new CodeMirrorInformation
+              {
+                  element = (TextAreaElement)fm.GetElement(0)
+              };
 
-            CodeMirrorLine hlLine = null;
+            codeMirror.element.Value = Text = options.Text;
 
-            codeMirror.editor = CodeMirror.FromTextArea(codeMirror.element, new CodeMirrorOptions
-                {
-                    LineNumbers = _editor.LineNumbers,
-                    LineWrapping = true,
-                    MatchBrackets = true,
-                    OnGutterClick = (cm, n, e) =>
-                        {
-                            var info = cm.LineInfo(n);
-                            if (info.MarkerText)
-                            {
-                                BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
-                                cm.ClearMarker(n);
-                            }
-                            else
-                            {
-                                BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
-                                cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
-                            }
-                        },
-                    /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()//::dynamic okay
-                        {
-                        "Ctrl-Space"= function (cm) {
-                            CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
-                        },
-                        "Ctrl-I"= function (cm) {
-                            var pos = cm.getCursor();
-                            cm.setValue(window.fjs.format(cm.getValue()));
-                            cm.setCursor(pos);
-
-                        }
-                    },*/
-
-                    OnCursorActivity = (e) =>
-                        {
-                            codeMirror.editor.SetLineClass(hlLine, null);
-                            hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
-                        },
-                    OnFocus = (e) => { },
-                    OnBlur = (e) => { }
-                });
-            hlLine = codeMirror.editor.SetLineClass(0, "activeline");
-            var scroller = codeMirror.editor.ScrollerElement;
-            scroller.Style.Height = divs[0].OffsetHeight + "px";
-            scroller.Style.Width = divs[0].OffsetWidth + "px";
-            codeMirror.editor.Refresh();
-            codeMirror.editor.SetOption("theme", "night");
-
-
-            this.Information = codeMirror;
-
-
-            Text = options.Text;
             LineNumbers = options.LineNumbers;
             X = options.X;
             Y = options.Y;
             Width = options.Width;
             Height = options.Height;
             Visible = options.Visible;
+
+
+
         }
 
         public override void BindCustomEvents()
         {
             TextChanged += (e) => Element.Text(e.Text);
-            ParentChanged+=(e)=>
+            ParentChanged += (ev) =>
                                {
                                    ExtensionMethods.debugger("");
+                                   if (ev.Parent != null)
+                                   {
+                                       ev.Parent.Element.Append(Element);
+                                       CodeMirrorLine hlLine = null;
 
-                                   e.Parent.Element.Append(Element);
+                                       codeMirror.editor = CodeMirror.FromTextArea(codeMirror.element, new CodeMirrorOptions
+                                       {
+                                           LineNumbers = LineNumbers,
+                                           LineWrapping = true,
+                                           MatchBrackets = true,
+                                           OnGutterClick = (cm, n, e) =>
+                                           {
+                                               var info = cm.LineInfo(n);
+                                               if (info.MarkerText)
+                                               {
+                                                   BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
+                                                   cm.ClearMarker(n);
+                                               }
+                                               else
+                                               {
+                                                   BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
+                                                   cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
+                                               }
+                                           },
+                                           /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()//::dynamic okay
+                                               {
+                                               "Ctrl-Space"= function (cm) {
+                                                   CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
+                                               },
+                                               "Ctrl-I"= function (cm) {
+                                                   var pos = cm.getCursor();
+                                                   cm.setValue(window.fjs.format(cm.getValue()));
+                                                   cm.setCursor(pos);
+
+                                               }
+                                           },*/
+
+                                           OnCursorActivity = (e) =>
+                                           {
+                                               codeMirror.editor.SetLineClass(hlLine, null);
+                                               hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
+                                           },
+                                           OnFocus = (e) => { },
+                                           OnBlur = (e) => { }
+                                       });
+
+                                       hlLine = codeMirror.editor.SetLineClass(0, "activeline");
+                                       var scroller = codeMirror.editor.ScrollerElement;
+                                       scroller.Style.Height = Element[0].OffsetHeight + "px";
+                                       scroller.Style.Width = Element[0].OffsetWidth + "px";
+                                       codeMirror.editor.Refresh();
+                                       codeMirror.editor.SetOption("theme", "night");
+
+
+                                       this.Information = codeMirror;
+
+                                   }
+                                   else
+                                   { 
+
+                                   }
+
+
+
+
+
+
+
                                };
         }
 
@@ -765,22 +784,22 @@ namespace Client.ShuffUI
 
         [IntrinsicProperty]
         public List<ShuffListItem> Items { get; set; }
-         
+
 
         public ShuffListBox(ShuffListBoxOptions options)
         {
             BindEvents();
 
             var but = jQuery.Select("<div></div>");
-            this.Element = but;  
-            
+            this.Element = but;
+
             X = options.X;
             Y = options.Y;
             Width = options.Width;
             Height = options.Height;
             Visible = options.Visible;
 
-            
+
 
 
 
@@ -794,14 +813,14 @@ namespace Client.ShuffUI
                 options.click(item);
         });
         return but;
-             */ 
-            
+             */
+
         }
 
         public override void BindCustomEvents()
         {
         }
-         
+
     }
 
     public class ShuffListItem

@@ -20,9 +20,7 @@ namespace Client.ShuffUI
 
         [IntrinsicProperty]
         public Number Width { get; set; }
-
-        //todo override intrinsic property
-
+         
         [IntrinsicProperty]
         public Number Height { get; set; }
 

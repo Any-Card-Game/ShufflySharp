@@ -31,7 +31,7 @@ namespace Client.ShuffUI
 
         public static implicit operator string(Number d)
         {
-            return d.Value;
+            return d.Value.IndexOf("%") < 0 ? d.Value + "px" : d.Value;
         }
     }
 }

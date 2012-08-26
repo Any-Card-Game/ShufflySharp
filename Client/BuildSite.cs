@@ -323,41 +323,40 @@ namespace Client
                  }
              });*/
 
-          /*  ShuffPropertyBox pop;
-            var propBox = devArea.AddPropertyBox(pop = new ShuffPropertyBox
+            ShuffListBox pop;
+            var propBox = devArea.AddElement(pop = new ShuffListBox(new ShuffListBoxOptions()
+            {
+                X = 25,
+                Y = 200,
+                Width = 250,
+                Height = 250,
+                ItemCreation = (item, index) =>
                 {
-                    X = 25,
-                    Y = 200,
-                    Width = 250,
-                    Height = 250,
-                    ItemCreation = (item, index) =>
-                        {
-                            var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index % 2 == 0 ? "red" : "green")));
-                            var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
-                            ik.Append(ikc);
-                            var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
-                            ik.Append(ikd);
-                            return ik;
-                        }
-                });
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-            pop.addItem(new ShuffListItem("foos", 99));
-*/
+                    var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index % 2 == 0 ? "red" : "green")));
+                    var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
+                    ik.Append(ikc);
+                    var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
+                    ik.Append(ikd);
+                    return ik;
+                }
+            }));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
+            pop.AddItem(new ShuffListItem("foos", 99));
             
 
             devArea.Data.varText = devArea.AddElement(new ShuffTextbox(new ShuffTextboxOptions() 
@@ -447,12 +446,13 @@ namespace Client
                     Visible = true
                 });
 
+            ExtensionMethods.debugger("");
 
             codeArea.Data.breakPoints = new List<int>();
-            codeArea.Data.console = codeArea.AddElement(new ShuffCodeEditor(new ShuffCodeEditorOptions() { Height = "20%", LineNumbers = false }));
 
             codeArea.Data.codeEditor = codeArea.AddElement(new ShuffCodeEditor(new ShuffCodeEditorOptions() { Height = "80%", LineNumbers = true }));
 
+            codeArea.Data.console = codeArea.AddElement(new ShuffCodeEditor(new ShuffCodeEditorOptions() { Height = "20%", LineNumbers = false }));
 
             questionArea = shuffUIManager.CreateWindow(new ShuffWindow<QuestionAreaInformation>(new QuestionAreaInformation())
                 {
@@ -463,7 +463,7 @@ namespace Client
                     Height = 275,
                     AllowClose = true,
                     AllowMinimize = true,
-                    Visible = false
+                    Visible = true
                 });
 
 
@@ -497,11 +497,11 @@ namespace Client
                               Height = 25 * 5,
                               Label = "Answers",
                               Items = answers,
-                              OnClick = (e) =>
+                              /*OnClick = (e) =>
                                   {
                                       pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
                                       questionArea.Visible = false;
-                                  }
+                                  }*/
                           }));
                 };
 
@@ -512,11 +512,11 @@ namespace Client
                                           Width = 215,
                                           Height = 25 * 5,
                                           Label = "Answers",
-                                          OnClick = (e) =>
+                                          /*OnClick = (e) =>
                                               {
                                                   pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
                                                   questionArea.Visible = false;
-                                              }
+                                              }*/
                                       }));
             shuffUIManager.Focus(devArea.Information);
 

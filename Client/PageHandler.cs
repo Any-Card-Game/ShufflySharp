@@ -83,7 +83,7 @@ namespace Client
 
             Document.Body.AddEventListener("contextmenu", e =>
                 {
-                    e.PreventDefault();
+                    //e.PreventDefault();
                     //todo: Sspecial right click menu;
                 }, false);
 

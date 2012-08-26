@@ -114,8 +114,8 @@ namespace Client.ShuffUI
                         OnResize = (evt, o) => { }
                     });
             }
-            ExtensionMethods.debugger("");
-             
+
+            ui.Element = inner;
 
             //inner.Append(ui.Element);
             return ui;

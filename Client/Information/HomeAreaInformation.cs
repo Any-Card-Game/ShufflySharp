@@ -13,10 +13,10 @@ namespace Client.Information
         public Action<GameAnswer> loadRoomInfos { get; set; }
 
         [IntrinsicProperty]
-        public ShuffPropertyBox userList { get; set; }
+        public ShuffListBox userList { get; set; }
 
         [IntrinsicProperty]
-        public ShuffPropertyBox gameList { get; set; }
+        public ShuffListBox gameList { get; set; }
 
         [IntrinsicProperty]
         public ShuffTextbox txtUserName { get; set; }

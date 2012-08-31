@@ -1172,7 +1172,6 @@ Client.ShuffUI.PositionChangedEvent.$ctor = function(x, y) {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffButton
 Client.ShuffUI.ShuffButton = function(options) {
-	this.$2$TextChangedField = null;
 	this.text = null;
 	Client.ShuffUI.ShuffElement.call(this);
 	var but = $('<div></div>');
@@ -1191,16 +1190,7 @@ Client.ShuffUI.ShuffButton = function(options) {
 	but.disableSelection();
 };
 Client.ShuffUI.ShuffButton.prototype = {
-	get_textChanged: function() {
-		return this.$2$TextChangedField;
-	},
-	set_textChanged: function(value) {
-		this.$2$TextChangedField = value;
-	},
 	bindCustomEvents: function() {
-		this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
-			this.element.text(e.text);
-		})));
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////

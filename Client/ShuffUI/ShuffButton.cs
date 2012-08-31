@@ -17,7 +17,7 @@ namespace Client.ShuffUI
 
     public class ShuffButton : ShuffElement
     {
-        public ShuffUIEvent<TextChangedEvent> TextChanged { get; set; }
+
 
         public ShuffButton(ShuffButtonOptions options)
         {
@@ -41,7 +41,7 @@ namespace Client.ShuffUI
 
         public override void BindCustomEvents()
         {
-            TextChanged += (e) => Element.Text(e.Text);
+
         }
 
         [IntrinsicProperty]

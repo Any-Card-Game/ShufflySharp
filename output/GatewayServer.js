@@ -5,6 +5,7 @@ Type.registerNamespace('GatewayServer');
 GatewayServer.GatewayServer = function() {
 	this.$ps = null;
 	this.users = ({});
+	debugger;
 	var http = require('http');
 	var app = http.createServer(function(req, res) {
 		res.end();

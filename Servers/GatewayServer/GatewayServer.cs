@@ -15,6 +15,7 @@ namespace GatewayServer
 
         public GatewayServer()
         {
+            ExtensionMethods.debugger("");
             var http = Global.Require<Http>("http");
             var app = http.CreateServer((req, res) => res.End());
 

@@ -34,4 +34,48 @@ namespace GameServer
             return null;
         }
     }
-}
+}/*
+
+
+using System;
+using System.Runtime.CompilerServices;
+using MongoDBLibrary;
+using NodeJSLibrary;
+
+namespace GameServer
+{
+    public class DataManager
+    {
+        private MongoConnection Connection;
+        public DataManagerGameData GameData;
+        private MongoServer Server;
+        public MongoDB client;
+
+
+        public DataManager()
+        {
+            GameData = new DataManagerGameData(this);
+            var mongo = Global.Require<MongoData>("mongodb");
+
+            var Db = mongo.DB;
+            Connection = mongo.Connection;
+            var server = Server = mongo.Server;
+
+            client = new Db('test', new server('50.116.28.16', 27017, {}));
+            client.Open((arg1, arg2) =>
+                {
+                    //client.Collection("test_insert", "test");
+                });
+        }
+
+        
+    }
+
+    public class MongoData:NodeModule
+    {
+        [IntrinsicProperty]
+        public Func<string, MongoServer, Mongo> DB { get; set; }
+        public MongoConnection Connection { get; set; }
+        public MongoServer Server { get; set; }
+    }
+}*/

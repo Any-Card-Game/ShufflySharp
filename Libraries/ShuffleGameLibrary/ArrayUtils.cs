@@ -122,7 +122,7 @@ namespace global
                     jf.Add(ts[i]);
                 }
             }
-            return (T[])jf;
+            return Script.Reinterpret<T[]>(jf);
         }
 
         [IgnoreGenericArguments]

@@ -37,6 +37,8 @@ namespace AdminServer
         {
             var fs = Global.Require<FS>("fs");
             Console.Log("Shuffly Admin V0.44");
+            var http = new Http();
+
 
             util = Global.Require<Util>("util");
             exec = Global.Require<ChildProcess>("child_process").Exec;

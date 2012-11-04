@@ -7,6 +7,12 @@ namespace NodeJSLibrary
     [Imported(IsRealType = true)]
     public class Http : NodeModule
     {
+         
+        public Http()
+        {
+            
+        }
+
         [ScriptName("createServer")]
         public HttpServer CreateServer(Action<HttpRequest, HttpResponse> callback)
         {

@@ -23,6 +23,7 @@ AdminServer.AdminServer = function() {
 	this.$util = null;
 	var fs = require('fs');
 	console.log('Shuffly Admin V0.44');
+	var http = new Http();
 	this.$util = (require('util'));
 	this.$exec = (require('child_process')).exec;
 	this.$__dirname = '/usr/local/src/new/';

@@ -422,3 +422,6 @@ Current list
 	window doesnt have topLevel
 	changing a scriptname doesnt seeeeeem to recompile the library
 	css3 element style
+
+ *canvas todataurl
+http://jsperf.com/saltarelle-foreach-test

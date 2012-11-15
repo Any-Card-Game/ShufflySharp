@@ -11,6 +11,7 @@ namespace GatewayServer
     {
         private PubSub ps;
         public JsDictionary<string, UserModel> users = new JsDictionary<string, UserModel>();
+
         public GatewayServer()
         {
             ExtensionMethods.debugger("");
@@ -45,40 +46,51 @@ namespace GatewayServer
                                                                                   "ChatServer",
                                                                                   "HeadServer"
                                                                           }));
-            io.Sockets.On("connection", (SocketIOConnection socket) => {
-                                            UserModel user = null;
-                                            socket.On("Gateway.Message", (GatewayMessageModel data) => {
-                                                                             var channel = "Bad";
-                                                                             switch (data.Channel.Split('.')[1]) {
-                                                                                 case "Game":
-                                                                                     channel = "GameServer";
-                                                                                     break;
-                                                                                 case "Site":
-                                                                                     channel = "SiteServer";
-                                                                                     break;
-                                                                                 case "Debug":
-                                                                                     channel = "GameServer";
-                                                                                     break;
-                                                                                 case "Debug2":
-                                                                                     channel = "DebugServer";
-                                                                                     break;
-                                                                                 case "Chat":
-                                                                                     channel = "ChatServer";
-                                                                                     break;
-                                                                             }
-                                                                             queueManager.SendMessage(user, data.GameServer ?? channel, data.Channel,
-                                                                                                      data.Content);
-                                                                         });
-
-                                            socket.On("Gateway.Login", (GatewayLoginMessageModel data) => {
-                                                                           user = new UserModel();
-                                                                           user.Socket = socket;
-                                                                           user.UserName = data.UserName;
-                                                                           users[data.UserName] = user;
-                                                                       });
-                                            socket.On("disconnect", (string data) => users.Remove(user.UserName));
+            io.Sockets.On("connection",
+                          (SocketIOConnection socket) => {
+                              UserModel user = null;
+                              socket.On("Gateway.Message",
+                                        (GatewayMessageModel data) => {
+                                            var channel = "Bad";
+                                            switch (data.Channel.Split('.')[1]) {
+                                                case "Game":
+                                                    channel = "GameServer";
+                                                    break;
+                                                case "Site":
+                                                    channel = "SiteServer";
+                                                    break;
+                                                case "Debug":
+                                                    channel = "GameServer";
+                                                    break;
+                                                case "Debug2":
+                                                    channel = "DebugServer";
+                                                    break;
+                                                case "Chat":
+                                                    channel = "ChatServer";
+                                                    break;
+                                            }
+                                            queueManager.SendMessage(user,
+                                                                     data.GameServer ?? channel,
+                                                                     data.Channel,
+                                                                     data.Content);
                                         });
+
+                              socket.On("Gateway.Login",
+                                        (GatewayLoginMessageModel data) => {
+                                            user = new UserModel();
+                                            user.Socket = socket;
+                                            user.UserName = data.UserName;
+                                            users[data.UserName] = user;
+                                        });
+                              socket.On("disconnect", (string data) => users.Remove(user.UserName));
+                          });
         }
+
+        public static void Main()
+        {
+            new GatewayServer();
+        }
+
         private void messageReceived(string gateway, UserModel user, string eventChannel, object content)
         {
             if (users.ContainsKey(user.UserName)) {

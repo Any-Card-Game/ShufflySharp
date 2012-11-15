@@ -1,13 +1,59 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using CommonLibraries;
-
 namespace global
 {
     [ScriptName("TableSpace")]
     public class CardGameTableSpace
     {
+        [ScriptName("vertical")]
+        [IntrinsicProperty]
+        public bool Vertical { get; set; }
+        [ScriptName("x")]
+        [IntrinsicProperty]
+        public double X { get; set; }
+        [ScriptName("y")]
+        [IntrinsicProperty]
+        public double Y { get; set; }
+        [ScriptName("width")]
+        [IntrinsicProperty]
+        public double Width { get; set; }
+        [ScriptName("height")]
+        [IntrinsicProperty]
+        public double Height { get; set; }
+        [ScriptName("pile")]
+        [IntrinsicProperty]
+        public CardGamePile Pile { get; set; }
+/*        [ScriptName("rotate")]
+        [IntrinsicProperty]
+        public double Rotate { get; set; }*/
+        [ScriptName("appearance")]
+        [IntrinsicProperty]
+        public CardGameAppearance Appearance { get; set; }
+        [ScriptName("visible")]
+        [IntrinsicProperty]
+        public bool Visible { get; set; }
+        [ScriptName("stackCards")]
+        [IntrinsicProperty]
+        public bool StackCards { get; set; }
+        [ScriptName("drawCardsBent")]
+        [IntrinsicProperty]
+        public bool DrawCardsBent { get; set; }
+        [ScriptName("name")]
+        [IntrinsicProperty]
+        public string Name { get; set; }
+        [ScriptName("sortPrder")]
+        [IntrinsicProperty]
+        public CardGameOrder SortOrder { get; set; }
+        [ScriptName("numerOfCardsHorizontal")]
+        [IntrinsicProperty]
+        public int NumerOfCardsHorizontal { get; set; }
+        [ScriptName("numerOfCardsVertical")]
+        [IntrinsicProperty]
+        public int NumerOfCardsVertical { get; set; }
+        [ScriptName("resizeType")]
+        [IntrinsicProperty]
+        public TableSpaceResizeType ResizeType { get; set; }
+
         public CardGameTableSpace(CardGameTableSpaceOptions options)
         {
             Vertical = !options.Vertical ? false : options.Vertical;
@@ -26,153 +72,68 @@ namespace global
             NumerOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
             ResizeType = options.ResizeType;
             //Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
-            Appearance=new CardGameAppearance();
+            Appearance = new CardGameAppearance();
         }
-
+    }
+    //[NamedValues]todo:::
+    public enum TableSpaceResizeType
+    {
+        [ScriptName("grow")] Grow,
+        [ScriptName("static")] Static
+    }
+    [Serializable]
+    public class CardGameTableSpaceOptions
+    {
         [ScriptName("vertical")]
         [IntrinsicProperty]
         public bool Vertical { get; set; }
-
         [ScriptName("x")]
         [IntrinsicProperty]
         public double X { get; set; }
-
         [ScriptName("y")]
         [IntrinsicProperty]
         public double Y { get; set; }
-
         [ScriptName("width")]
         [IntrinsicProperty]
         public double Width { get; set; }
-
         [ScriptName("height")]
         [IntrinsicProperty]
         public double Height { get; set; }
-
         [ScriptName("pile")]
         [IntrinsicProperty]
         public CardGamePile Pile { get; set; }
-
-/*        [ScriptName("rotate")]
+        [ScriptName("rotate")]
         [IntrinsicProperty]
-        public double Rotate { get; set; }*/
-
-        [ScriptName("appearance")]
-        [IntrinsicProperty]
-        public CardGameAppearance Appearance { get; set; }
-
+        public double Rotate { get; set; }
         [ScriptName("visible")]
         [IntrinsicProperty]
         public bool Visible { get; set; }
-
         [ScriptName("stackCards")]
         [IntrinsicProperty]
         public bool StackCards { get; set; }
-
         [ScriptName("drawCardsBent")]
         [IntrinsicProperty]
         public bool DrawCardsBent { get; set; }
-
         [ScriptName("name")]
         [IntrinsicProperty]
         public string Name { get; set; }
-
         [ScriptName("sortPrder")]
         [IntrinsicProperty]
         public CardGameOrder SortOrder { get; set; }
-
         [ScriptName("numerOfCardsHorizontal")]
         [IntrinsicProperty]
         public int NumerOfCardsHorizontal { get; set; }
-
         [ScriptName("numerOfCardsVertical")]
         [IntrinsicProperty]
         public int NumerOfCardsVertical { get; set; }
-         
-
         [ScriptName("resizeType")]
         [IntrinsicProperty]
         public TableSpaceResizeType ResizeType { get; set; }
-    }
-         //[NamedValues]todo:::
 
-    public enum TableSpaceResizeType
-    {
-        [ScriptName("grow")]
-        Grow,
-        [ScriptName("static")]
-        Static
-    }
-
-    [Serializable]
-    public  class CardGameTableSpaceOptions
-    {
         public CardGameTableSpaceOptions()
         {
             ResizeType = TableSpaceResizeType.Grow;
             Rotate = 0;
         }
-
-        [ScriptName("vertical")]
-        [IntrinsicProperty]
-        public bool Vertical { get; set; }
-
-        [ScriptName("x")]
-        [IntrinsicProperty]
-        public double X { get; set; }
-
-        [ScriptName("y")]
-        [IntrinsicProperty]
-        public double Y { get; set; }
-
-        [ScriptName("width")]
-        [IntrinsicProperty]
-        public double Width { get; set; }
-
-        [ScriptName("height")]
-        [IntrinsicProperty]
-        public double Height { get; set; }
-
-        [ScriptName("pile")]
-        [IntrinsicProperty]
-        public CardGamePile Pile { get; set; }
-
-        [ScriptName("rotate")]
-        [IntrinsicProperty]
-        public double Rotate { get; set; }
-
-        [ScriptName("visible")]
-        [IntrinsicProperty]
-        public bool Visible { get; set; }
-
-        [ScriptName("stackCards")]
-        [IntrinsicProperty]
-        public bool StackCards { get; set; }
-
-        [ScriptName("drawCardsBent")]
-        [IntrinsicProperty]
-        public bool DrawCardsBent { get; set; }
-
-        [ScriptName("name")]
-        [IntrinsicProperty]
-        public string Name { get; set; }
-
-        [ScriptName("sortPrder")]
-        [IntrinsicProperty]
-        public CardGameOrder SortOrder { get; set; }
-
-        [ScriptName("numerOfCardsHorizontal")]
-        [IntrinsicProperty]
-        public int NumerOfCardsHorizontal { get; set; }
-
-        [ScriptName("numerOfCardsVertical")]
-        [IntrinsicProperty]
-        public int NumerOfCardsVertical { get; set; }
-
-
-        [ScriptName("resizeType")]
-        [IntrinsicProperty]
-        public TableSpaceResizeType ResizeType { get; set; }
     }
-
 }

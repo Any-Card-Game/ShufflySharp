@@ -1,6 +1,5 @@
 using Models;
 using global;
-
 namespace GameServer
 {
     public class GameQuestionAnswerModel

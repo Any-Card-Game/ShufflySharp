@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 ////////////////////////////////////////////////////////////////////////////////
 // GatewayServer.GatewayServer
 var $GatewayServer_GatewayServer = function() {
@@ -70,5 +70,8 @@ $GatewayServer_GatewayServer.prototype = {
 		}
 	}
 };
+$GatewayServer_GatewayServer.main = function() {
+	new $GatewayServer_GatewayServer();
+};
 Type.registerClass(global, 'GatewayServer.GatewayServer', $GatewayServer_GatewayServer, Object);
-new GatewayServer.GatewayServer();
+$GatewayServer_GatewayServer.main();

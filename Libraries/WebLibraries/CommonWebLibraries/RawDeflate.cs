@@ -1,6 +1,4 @@
-using System.Html;
 using System.Runtime.CompilerServices;
-
 namespace CommonWebLibraries
 {
     [IgnoreNamespace]
@@ -13,11 +11,11 @@ namespace CommonWebLibraries
         {
             return null;
         }
+
         [ScriptName("DecompressText")]
         public string DecompressText(string txt)
         {
             return null;
         }
-        
     }
 }

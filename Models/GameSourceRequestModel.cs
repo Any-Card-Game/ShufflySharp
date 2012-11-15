@@ -1,17 +1,16 @@
 using System;
 using System.Runtime.CompilerServices;
-
 namespace Models
 {
     [Serializable]
-    public  class GameSourceRequestModel
+    public class GameSourceRequestModel
     {
+        [IntrinsicProperty]
+        public string GameName { get; set; }
+
         public GameSourceRequestModel(string name)
         {
             GameName = name;
         }
-
-        [IntrinsicProperty]
-        public string GameName { get; set; }
     }
 }

@@ -1,12 +1,7 @@
 ﻿require('../common/Help.js');
 
 
-
-var app = require('http').createServer(handler)
-  , io = require('socket.io').listen(app)
-  , fs = require('fs')
-  , s = require('./sHelp.js')
-  , models = require('../models/Card.js');
+var app = require('http').createServer(handler), io = require('socket.io').listen(app), fs = require('fs'), s = require('./sHelp.js'), models = require('../models/Card.js');
 
 app.listen(82);
 
@@ -31,10 +26,10 @@ cardGames[0].addRoom('mamama', 3);
 
 var players = [];
 
-io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function(socket) {
     var me;
     players.push(me = new Player());
-    socket.on('Area.Main.Login.Request', function (data) {
+    socket.on('Area.Main.Login.Request', function(data) {
         var verified = false;
         data.user = data.user.toLowerCase();
         if (data.user == "dested" || data.user == "kenny") {
@@ -48,22 +43,23 @@ io.sockets.on('connection', function (socket) {
         socket.emit('Area.Main.Login.Response', { access: verified });
     });
 
-    socket.on('Area.Lobby.ListCardGames.Request', function (data) {
+    socket.on('Area.Lobby.ListCardGames.Request', function(data) {
         socket.emit('Area.Lobby.ListCardGames.Response', cardGames.arrayExceptPrivate());
     });
-    socket.on('Area.Lobby.ListRooms.Request', function (data) {sec
-        var cardGame = cardGames.where(function (J) { return J.name == data.name; });
+    socket.on('Area.Lobby.ListRooms.Request', function(data) {
+        sec
+        var cardGame = cardGames.where(function(J) { return J.name == data.name; });
         socket.emit('Area.Lobby.ListRooms.Response', cardGame.rooms.arrayExceptPrivate());
     });
-    
 
-    socket.on('Area.Room.SendChat', function (data) {
+
+    socket.on('Area.Room.SendChat', function(data) {
         console.log(data);
     });
-    socket.on('Area.Room.StartGame', function (data) {
+    socket.on('Area.Room.StartGame', function(data) {
         console.log(data);
     });
-    socket.on('Area.Room.PlacePiece', function (data) {
+    socket.on('Area.Room.PlacePiece', function(data) {
         console.log(data);
     });
 });

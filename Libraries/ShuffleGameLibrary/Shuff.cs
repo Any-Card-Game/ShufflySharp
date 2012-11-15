@@ -2,7 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using FibersLibrary;
 using Models;
-
 namespace global
 {
     [ScriptName("shuff")]
@@ -12,8 +11,7 @@ namespace global
         public static int AskQuestion(UserModel user, string question, string[] answers, GameCardGame cardGame)
         {
             cardGame.Emulating = false;
-            if (cardGame.Answers.Count - 1 > cardGame.AnswerIndex)
-            {
+            if (cardGame.Answers.Count - 1 > cardGame.AnswerIndex) {
                 cardGame.Emulating = true;
                 return cardGame.Answers[cardGame.AnswerIndex++].Value; //todo .value
             }
@@ -40,22 +38,17 @@ namespace global
         public static void Break(int lineNumber, GameCardGame cardGame, Func<string, string> varLookup)
         {
             if (cardGame.Emulating)
-            {
                 return;
-            }
 
             var yieldObject = new FiberYieldResponse(FiberYieldResponseType.Break, lineNumber - 1, "");
-            while (true)
-            {
+            while (true) {
                 var answ = Fiber<FiberYieldResponse>.Yield(yieldObject);
 
-                if (answ == null)
-                {
+                if (answ == null) {
                     //continue
                     return;
                 }
-                if (answ.VariableLookup != null)
-                {
+                if (answ.VariableLookup != null) {
                     yieldObject = new FiberYieldResponse(FiberYieldResponseType.VariableLookup, 0, varLookup(answ.VariableLookup));
                     continue;
                 }
@@ -63,9 +56,27 @@ namespace global
             }
         }
     }
-
     public class FiberYieldResponse
     {
+        [ScriptName("variableLookup")]
+        [IntrinsicProperty]
+        public string VariableLookup { get; set; }
+        [ScriptName("type")]
+        [IntrinsicProperty]
+        public FiberYieldResponseType Type { get; set; }
+        [ScriptName("contents")]
+        [IntrinsicProperty]
+        public string Contents { get; set; }
+        [ScriptName("question")]
+        [IntrinsicProperty]
+        public CardGameQuestion Question { get; set; }
+        [ScriptName("lineNumber")]
+        [IntrinsicProperty]
+        public int LineNumber { get; set; }
+        [ScriptName("value")]
+        [IntrinsicProperty]
+        public string Value { get; set; }
+
         public FiberYieldResponse(FiberYieldResponseType type, CardGameQuestion question) //answerQuestion
         {
             Type = type;
@@ -89,30 +100,6 @@ namespace global
             LineNumber = lineNumber;
             Value = value;
         }
-
-        [ScriptName("variableLookup")]
-        [IntrinsicProperty]
-        public string VariableLookup { get; set; }
-
-        [ScriptName("type")]
-        [IntrinsicProperty]
-        public FiberYieldResponseType Type { get; set; }
-
-        [ScriptName("contents")]
-        [IntrinsicProperty]
-        public string Contents { get; set; }
-
-        [ScriptName("question")]
-        [IntrinsicProperty]
-        public CardGameQuestion Question { get; set; }
-
-        [ScriptName("lineNumber")]
-        [IntrinsicProperty]
-        public int LineNumber { get; set; }
-
-        [ScriptName("value")]
-        [IntrinsicProperty]
-        public string Value { get; set; }
     }
     //[NamedValues]todo:::
     public enum FiberYieldResponseType
@@ -123,9 +110,21 @@ namespace global
         Break,
         VariableLookup
     }
-
     public class CardGameQuestion
     {
+        [ScriptName("user")]
+        [IntrinsicProperty]
+        public UserModel User { get; set; }
+        [ScriptName("question")]
+        [IntrinsicProperty]
+        public string Question { get; set; }
+        [ScriptName("answers")]
+        [IntrinsicProperty]
+        public string[] Answers { get; set; }
+        [ScriptName("cardGame")]
+        [IntrinsicProperty]
+        public GameCardGame CardGame { get; set; }
+
         public CardGameQuestion(UserModel user, string question, string[] answers, GameCardGame cardGame)
         {
             User = user;
@@ -133,21 +132,5 @@ namespace global
             Answers = answers;
             CardGame = cardGame;
         }
-
-        [ScriptName("user")]
-        [IntrinsicProperty]
-        public UserModel User { get; set; }
-
-        [ScriptName("question")]
-        [IntrinsicProperty]
-        public string Question { get; set; }
-
-        [ScriptName("answers")]
-        [IntrinsicProperty]
-        public string[] Answers { get; set; }
-
-        [ScriptName("cardGame")]
-        [IntrinsicProperty]
-        public GameCardGame CardGame { get; set; }
     }
 }

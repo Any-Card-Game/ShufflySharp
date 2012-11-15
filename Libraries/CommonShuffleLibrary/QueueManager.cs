@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using Models;
-
 namespace CommonShuffleLibrary
 {
     public class QueueManager
@@ -21,17 +20,13 @@ namespace CommonShuffleLibrary
             channels = new object();
             qw = new List<QueueWatcher>();
             qp = new List<QueuePusher>();
-            foreach (var queueWatcher in options.Watchers)
-            {
+            foreach (var queueWatcher in options.Watchers) {
                 if (queueWatcher.Callback == null)
-                {
                     queueWatcher.Callback = messageReceived;
-                }
                 qw.Add(queueWatcher);
             }
             qw.AddRange(options.Watchers);
-            foreach (var pusher in options.Pushers)
-            {
+            foreach (var pusher in options.Pushers) {
                 qp.Add(new QueuePusher(pusher));
             }
 
@@ -50,21 +45,17 @@ namespace CommonShuffleLibrary
             user.Gateway = name;
 
             if (channels[eventChannel] != null)
-            {
                 channels[eventChannel](user, content);
-            }
         }
-
 
         public void SendMessage<T>(UserModel user, string channel, string eventChannel, T content)
         {
-            if (qpCollection.GetByChannel(channel) == null)
-            {
+            if (qpCollection.GetByChannel(channel) == null) {
                 Console.Log(channel + " No Existy");
                 return;
             }
 
-            var pusher = ((QueuePusher) qpCollection.GetByChannel(channel));
+            var pusher = ( (QueuePusher) qpCollection.GetByChannel(channel) );
 
             pusher.Message(channel, Name, user, eventChannel, content);
         }

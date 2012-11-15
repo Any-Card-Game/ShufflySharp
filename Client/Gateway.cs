@@ -2,13 +2,11 @@
 using System.Runtime.CompilerServices;
 using Models;
 using SocketIOWebLibrary;
-
 namespace Client
 {
     public class Gateway
     {
         private dynamic channels; //::dynamic okay
-
         [IntrinsicProperty]
         protected SocketIOClient GatewaySocket { get; set; }
 
@@ -19,7 +17,6 @@ namespace Client
             GatewaySocket = SocketIOClient.Connect(gatewayServer);
             GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => someChannels[data.Channel](data.Content));
         }
-
 
         [IgnoreGenericArguments]
         public void Emit<T>(string channel, T content, string gameServer = null)

@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 ////////////////////////////////////////////////////////////////////////////////
 // HeadServer.HeadServer
 var $HeadServer_HeadServer = function() {
@@ -63,5 +63,8 @@ $HeadServer_HeadServer.prototype = {
 		require('http').createServer(Function.mkdel(this, this.$handler)).listen(80);
 	}
 };
+$HeadServer_HeadServer.main = function() {
+	new $HeadServer_HeadServer();
+};
 Type.registerClass(global, 'HeadServer.HeadServer', $HeadServer_HeadServer, Object);
-new HeadServer.HeadServer();
+$HeadServer_HeadServer.main();

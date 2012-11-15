@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-
 namespace CommonLibraries
 {
     [IgnoreNamespace]
@@ -8,13 +7,9 @@ namespace CommonLibraries
     public static class Console
     {
         [ScriptName("log")]
-        public static void Log(object val)
-        {
-        }
+        public static void Log(object val) {}
 
         [ScriptName("log")]
-        public static void Log()
-        {
-        }
+        public static void Log() {}
     }
 }

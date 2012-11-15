@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using jQueryApi;
-
 namespace Client.ShuffUI
 {
     public class ShuffPanel : ShuffElement
     {
+        [IntrinsicProperty]
+        public List<ShuffElement> Elements { get; set; }
+
         public ShuffPanel()
         {
             Elements = new List<ShuffElement>();
@@ -19,17 +21,15 @@ namespace Client.ShuffUI
             Visible = true;
         }
 
-        [IntrinsicProperty]
-        public List<ShuffElement> Elements { get; set; }
         public T AddElement<T>(T element) where T : ShuffElement
         {
-
             Element.Append(element.Element);
 
             Elements.Add(element);
             element.ParentChanged(new ParentChangedEvent(this));
             return element;
         }
+
         public T RemoveElement<T>(T element) where T : ShuffElement
         {
             element.Element.Remove();

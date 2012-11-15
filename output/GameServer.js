@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.DataManager
 var $GameServer_DataManager = function() {
@@ -477,6 +477,9 @@ $GameServer_GameServer.prototype = {
 		}));
 	}
 };
+$GameServer_GameServer.main = function() {
+	new $GameServer_GameServer();
+};
 Type.registerClass(global, 'GameServer.DataManager', $GameServer_DataManager, Object);
 Type.registerClass(global, 'GameServer.DataManagerGameData', $GameServer_DataManagerGameData, Object);
 Type.registerClass(global, 'GameServer.FiberYieldResponse', $GameServer_FiberYieldResponse, Object);
@@ -485,4 +488,4 @@ Type.registerClass(global, 'GameServer.GameInfoObject', $GameServer_GameInfoObje
 Type.registerClass(global, 'GameServer.GameQuestionAnswerModel', $GameServer_GameQuestionAnswerModel, Object);
 Type.registerClass(global, 'GameServer.GameRoom', $GameServer_GameRoom, Object);
 Type.registerClass(global, 'GameServer.GameServer', $GameServer_GameServer, Object);
-new GameServer.GameServer();
+$GameServer_GameServer.main();

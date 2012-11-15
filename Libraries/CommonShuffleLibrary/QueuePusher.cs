@@ -2,7 +2,6 @@ using CommonLibraries;
 using Models;
 using NodeJSLibrary;
 using RedisLibrary;
-
 namespace CommonShuffleLibrary
 {
     public class QueuePusher : QueueItem
@@ -23,14 +22,12 @@ namespace CommonShuffleLibrary
             client1.RPush(channel, value); //todo:maybe sanitize
         }
     }
-
     public class QueueMessage<T>
     {
         public T Content;
         public string EventChannel;
         public string Name;
         public UserModel User;
-
 
         public QueueMessage(string name, UserModel user, string eventChannel, T content)
         {

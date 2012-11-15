@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using CommonsLibraries;
-
 namespace SocketIOWebLibrary
 {
     [IgnoreNamespace]

@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 ////////////////////////////////////////////////////////////////////////////////
 // DebugServer.DebugServer
 var $DebugServer_DebugServer = function() {
@@ -10,5 +10,8 @@ var $DebugServer_DebugServer = function() {
 		});
 	});
 };
+$DebugServer_DebugServer.main = function() {
+	new $DebugServer_DebugServer();
+};
 Type.registerClass(global, 'DebugServer.DebugServer', $DebugServer_DebugServer, Object);
-new DebugServer.DebugServer();
+$DebugServer_DebugServer.main();

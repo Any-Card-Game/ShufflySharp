@@ -1,5 +1,4 @@
 using System.Collections;
-
 namespace CommonShuffleLibrary
 {
     public class Consumer
@@ -11,9 +10,8 @@ namespace CommonShuffleLibrary
 
         public Consumer(JsDictionary obj)
         {
-            var tf = ((JsDictionary) (object) this);
-            foreach (var v in obj.Keys)
-            {
+            var tf = ( (JsDictionary) (object) this );
+            foreach (var v in obj.Keys) {
                 tf[v] = obj[v];
             }
         }

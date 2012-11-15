@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using NodeJSLibrary;
-
 namespace global
 {
     [IgnoreNamespace]
@@ -10,13 +9,9 @@ namespace global
         [ScriptName("cardGame")] public GameCardGame CardGame;
 
         [ScriptName("constructor")]
-        public void Constructor()
-        {
-        }
+        public void Constructor() {}
 
         [ScriptName("runGame")]
-        public void RunGame()
-        {
-        }
+        public void RunGame() {}
     }
 }

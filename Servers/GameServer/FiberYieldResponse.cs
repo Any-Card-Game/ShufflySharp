@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using global;
-
 namespace GameServer
 {
     public class FiberYieldResponse
@@ -10,5 +8,4 @@ namespace GameServer
         public FiberYieldResponseType Type;
         public GameQuestionAnswerModel question;
     }
-
 }

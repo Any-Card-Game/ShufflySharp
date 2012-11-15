@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Serialization;
-
 namespace CommonLibraries
 {
     public static class Help
@@ -23,7 +22,6 @@ namespace CommonLibraries
             return false;
         }
     }
-
     [Imported(IsRealType = true)]
     [IgnoreNamespace]
     [ScriptName("JSON")]
@@ -37,14 +35,14 @@ namespace CommonLibraries
         [IgnoreGenericArguments]
         public static T Parse<T>(string json)
         {
-            return default(T);
+            return default( T );
         }
 
         [ScriptName("parse")]
         [IgnoreGenericArguments]
         public static TData ParseData<TData>(string json)
         {
-            return default(TData);
+            return default( TData );
         }
 
         public static object Parse(string json, JsonParseCallback parseCallback)
@@ -56,7 +54,7 @@ namespace CommonLibraries
         [IgnoreGenericArguments]
         public static TData ParseData<TData>(string json, JsonParseCallback parseCallback)
         {
-            return default(TData);
+            return default( TData );
         }
 
         public static string Stringify(object o)

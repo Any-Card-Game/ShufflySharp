@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-
 namespace global
 {
     //[NamedValues]todo:::

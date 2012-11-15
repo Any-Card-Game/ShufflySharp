@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using jQueryApi;
-
 namespace Client.ShuffUI
 {
     [Imported]
@@ -9,8 +8,6 @@ namespace Client.ShuffUI
     {
         [ScriptName("disableSelection")]
         [InstanceMethodOnFirstArgument]
-        public static void DisableSelection(this jQueryObject obj)
-        {
-        }
+        public static void DisableSelection(this jQueryObject obj) {}
     }
 }

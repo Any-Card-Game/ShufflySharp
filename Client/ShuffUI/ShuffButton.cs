@@ -2,26 +2,21 @@ using System;
 using System.Runtime.CompilerServices;
 using jQueryApi;
 using jQueryApi.UI.Widgets;
-
 namespace Client.ShuffUI
 {
-
-
     [Serializable]
     public class ShuffButtonOptions : ShuffOptions
     {
         public string Text { get; set; }
         public ShuffUIEvent<ButtonClickedEvent> OnClick { get; set; }
-
     }
-
     public class ShuffButton : ShuffElement
     {
-
+        [IntrinsicProperty]
+        public string Text { get; set; }
 
         public ShuffButton(ShuffButtonOptions options)
         {
-
             var but = jQuery.Select("<div></div>");
             Element = but;
             but.CSS("position", "absolute");
@@ -39,24 +34,17 @@ namespace Client.ShuffUI
             but.DisableSelection();
         }
 
-        public override void BindCustomEvents()
-        {
-
-        }
-
-        [IntrinsicProperty]
-        public string Text { get; set; }
+        public override void BindCustomEvents() {}
     }
-
     public class ShuffButton<T> : ShuffButton
     {
+        [IntrinsicProperty]
+        public T Data { get; set; }
+
         public ShuffButton(ShuffButtonOptions options, T data)
-            : base(options)
+                : base(options)
         {
             Data = data;
         }
-
-        [IntrinsicProperty]
-        public T Data { get; set; }
     }
 }

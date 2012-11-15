@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using NodeJSLibrary;
-
 namespace MongoDBLibrary
 {
     [IgnoreNamespace]
@@ -13,43 +12,27 @@ namespace MongoDBLibrary
         [ScriptName("Db")] public MongoDB DB;
         [ScriptName("Server")] public MongoServer Server;
     }
-
-
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
-    public class MongoServer
-    {
-    }
-
-
+    public class MongoServer {}
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
-    public class MongoConnection
-    {
-    }
-
+    public class MongoConnection {}
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class MongoDB : NodeModule
     {
         [ScriptName("open")]
-        public void Open(Action<object, object> action)
-        {
-        }
+        public void Open(Action<object, object> action) {}
 
         [ScriptName("collection")]
-        public void Collection(string testInsert, Action<string, MongoCollection> test)
-        {
-        }
+        public void Collection(string testInsert, Action<string, MongoCollection> test) {}
     }
-
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class MongoCollection
     {
         [ScriptName("insert")]
-        public void Insert(object gmo)
-        {
-        }
+        public void Insert(object gmo) {}
     }
 }

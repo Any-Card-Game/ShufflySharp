@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 ////////////////////////////////////////////////////////////////////////////////
 // AdminServer.AdminServer
 var $AdminServer_AdminServer = function() {
@@ -22,7 +22,6 @@ var $AdminServer_AdminServer = function() {
 	this.$util = null;
 	var fs = require('fs');
 	console.log('Shuffly Admin V0.44');
-	var http = new Http();
 	this.$util = require('util');
 	this.$exec = require('child_process').exec;
 	this.$__dirname = '/usr/local/src/new/';
@@ -166,6 +165,9 @@ $AdminServer_AdminServer.prototype = {
 		return dummy;
 	}
 };
+$AdminServer_AdminServer.main = function() {
+	new $AdminServer_AdminServer();
+};
 ////////////////////////////////////////////////////////////////////////////////
 // AdminServer.ProcessInformation
 var $AdminServer_ProcessInformation = function(process, name, index, debugPort) {
@@ -180,4 +182,4 @@ var $AdminServer_ProcessInformation = function(process, name, index, debugPort) 
 };
 Type.registerClass(global, 'AdminServer.AdminServer', $AdminServer_AdminServer, Object);
 Type.registerClass(global, 'AdminServer.ProcessInformation', $AdminServer_ProcessInformation, Object);
-new AdminServer.AdminServer();
+$AdminServer_AdminServer.main();

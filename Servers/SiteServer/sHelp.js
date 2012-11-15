@@ -1,4 +1,4 @@
-﻿Array.prototype.except = function (except) {
+﻿Array.prototype.except = function(except) {
     var md = {};
     for (var ik in this) {
         if (except.indexOf(except) == -1)
@@ -6,7 +6,7 @@
     }
     return md;
 };
-Array.prototype.arrayExcept = function (except) {
+Array.prototype.arrayExcept = function(except) {
     var al = [];
     for (var i = 0; i < this.length; i++) {
         var md = {};
@@ -19,7 +19,7 @@ Array.prototype.arrayExcept = function (except) {
     return al;
 };
 
-Array.prototype.exceptPrivate = function (except) {
+Array.prototype.exceptPrivate = function(except) {
     var md = {};
     for (var ik in this) {
         if (ik[0] == '_')
@@ -27,7 +27,7 @@ Array.prototype.exceptPrivate = function (except) {
     }
     return md;
 };
-Array.prototype.arrayExceptPrivate = function (except) {
+Array.prototype.arrayExceptPrivate = function(except) {
     var al = [];
     for (var i = 0; i < this.length; i++) {
         var md = {};
@@ -39,4 +39,3 @@ Array.prototype.arrayExceptPrivate = function (except) {
     }
     return al;
 };
-

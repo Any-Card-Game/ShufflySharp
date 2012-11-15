@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.CompilerServices;
-
 namespace NodeJSLibrary
 {
     [IgnoreNamespace]
@@ -20,18 +19,12 @@ namespace NodeJSLibrary
         }
 
         [ScriptAlias("require")]
-        public static void Require(string name)
-        {
-        }
+        public static void Require(string name) {}
 
         [ScriptAlias("setInterval")]
-        public static void SetInterval(Action pollGateways, int poll)
-        {
-        }
+        public static void SetInterval(Action pollGateways, int poll) {}
 
         [ScriptAlias("setTimeout")]
-        public static void SetTimeout(Action pollGateways, int poll)
-        {
-        }
+        public static void SetTimeout(Action pollGateways, int poll) {}
     }
 }

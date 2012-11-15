@@ -2,7 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using CommonsLibraries;
 using NodeJSLibrary;
-
 namespace RedisLibrary
 {
     [Imported(IsRealType = true)]
@@ -16,27 +15,18 @@ namespace RedisLibrary
             return null;
         }
     }
-
     public class RedisClient : EventEmitter
     {
         [ScriptName("publish")]
-        public void Publish(string channel, object content)
-        {
-        }
+        public void Publish(string channel, object content) {}
 
         [ScriptName("subscribe")]
-        public void Subscribe(string channel)
-        {
-        }
+        public void Subscribe(string channel) {}
 
         [ScriptName("rpush")]
-        public void RPush(string channel, object value)
-        {
-        }
+        public void RPush(string channel, object value) {}
 
         [ScriptName("blpop")]
-        public void BLPop(object[] objectsAndTimeout, Action<string, object> action)
-        {
-        }
+        public void BLPop(object[] objectsAndTimeout, Action<string, object> action) {}
     }
 }

@@ -1,6 +1,5 @@
 using System.Html;
 using System.Runtime.CompilerServices;
-
 namespace CodeMirrorLibrary
 {
     [IgnoreNamespace]
@@ -10,8 +9,7 @@ namespace CodeMirrorLibrary
     {
         public Element ScrollerElement
         {
-            [ScriptName("getScrollerElement")]
-            get { return null; }
+            [ScriptName("getScrollerElement")] get { return null; }
         }
 
         [ScriptName("fromTextArea")]
@@ -21,29 +19,19 @@ namespace CodeMirrorLibrary
         }
 
         [ScriptName("refresh")]
-        public void Refresh()
-        {
-        }
+        public void Refresh() {}
 
         [ScriptName("setMarker")]
-        public void SetMarker(int lineIndex, string style)
-        {
-        }
+        public void SetMarker(int lineIndex, string style) {}
 
         [ScriptName("setValue")]
-        public void SetValue(string data)
-        {
-        }
+        public void SetValue(string data) {}
 
         [ScriptName("clearMarker")]
-        public void ClearMarker(int lineNumber)
-        {
-        }
+        public void ClearMarker(int lineNumber) {}
 
         [ScriptName("setCursor")]
-        public void SetCursor(int lineNumber, int colNumber)
-        {
-        }
+        public void SetCursor(int lineNumber, int colNumber) {}
 
         [ScriptName("getValue")]
         public string GetValue()
@@ -70,9 +58,7 @@ namespace CodeMirrorLibrary
         }
 
         [ScriptName("setOption")]
-        public void SetOption(string key, object value)
-        {
-        }
+        public void SetOption(string key, object value) {}
 
         [ScriptName("lineCount")]
         public int LineCount()
@@ -86,7 +72,6 @@ namespace CodeMirrorLibrary
             return null;
         }
     }
-
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class CodeMirrorLine
@@ -95,8 +80,6 @@ namespace CodeMirrorLibrary
         [ScriptName("markerText")]
         public bool MarkerText { get; set; }
     }
-
-
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class CodeEditorCursor

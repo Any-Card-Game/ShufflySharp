@@ -1,4 +1,4 @@
-require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatCreateRoomModel
 var $ChatServer_ChatCreateRoomModel = function() {
@@ -71,6 +71,9 @@ $ChatServer_ChatServer.prototype = {
 		return chan;
 	}
 };
+$ChatServer_ChatServer.main = function() {
+	new $ChatServer_ChatServer();
+};
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.SendMessageToRoomModel
 var $ChatServer_SendMessageToRoomModel = function() {
@@ -87,4 +90,4 @@ Type.registerClass(global, 'ChatServer.ChatJoinRoomModel', $ChatServer_ChatJoinR
 Type.registerClass(global, 'ChatServer.ChatMessageRoomModel', $ChatServer_ChatMessageRoomModel, Object);
 Type.registerClass(global, 'ChatServer.ChatServer', $ChatServer_ChatServer, Object);
 Type.registerClass(global, 'ChatServer.SendMessageToRoomModel', $ChatServer_SendMessageToRoomModel, Object);
-new ChatServer.ChatServer();
+$ChatServer_ChatServer.main();

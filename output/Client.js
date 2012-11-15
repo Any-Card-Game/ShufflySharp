@@ -17,11 +17,11 @@ var $Client_BuildSite = function(gatewayServerAddress) {
 	this.$gatewayServerAddress = gatewayServerAddress;
 	var url = 'http://50.116.22.241:8881/';
 	window.topLevel = url;
-	this.$loadCss(url + 'lib/jquery-ui-1.8.20.custom.css');
-	this.$loadCss(url + 'lib/codemirror/codemirror.css');
-	this.$loadCss(url + 'lib/site.css');
-	this.$loadCss(url + 'lib/codemirror/theme/night.css');
-	this.$loadCss(url + 'lib/jqwidgets/styles/jqx.base.css');
+	$Client_ScriptLoader.loadCss(url + 'lib/jquery-ui-1.8.20.custom.css');
+	$Client_ScriptLoader.loadCss(url + 'lib/codemirror/codemirror.css');
+	$Client_ScriptLoader.loadCss(url + 'lib/site.css');
+	$Client_ScriptLoader.loadCss(url + 'lib/codemirror/theme/night.css');
+	$Client_ScriptLoader.loadCss(url + 'lib/jqwidgets/styles/jqx.base.css');
 	this.$scriptLoader.loadSync([url + 'lib/jquery-1.7.2.min.js', url + 'lib/jquery-ui-1.8.20.custom.min.js', url + 'lib/jqwidgets/scripts/gettheme.js', url + 'lib/jqwidgets/jqxcore.js'], Function.mkdel(this, function() {
 		this.$scriptLoader.load([url + 'lib/jqwidgets/jqxbuttons.js', url + 'lib/jqwidgets/jqxscrollbar.js', url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/codemirror.js', url + 'lib/jqwidgets/jqxlistbox.js'], false, Function.mkdel(this, function() {
 			this.$scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'lib/Dialog.js'], false, Function.mkdel(this, function() {
@@ -258,7 +258,7 @@ $Client_BuildSite.prototype = {
 		$t15.y = 80;
 		$t15.width = $Client_ShuffUI_Number.op_Implicit$2(250);
 		$t15.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t15.text = 'How Many= ';
+		$t15.text = 'Time Taken: ';
 		$t17.lblHowFast = $t16.addElement($Client_ShuffUI_ShuffLabel).call($t16, new $Client_ShuffUI_ShuffLabel($t15));
 		var $t20 = this.devArea.data;
 		var $t19 = this.devArea;
@@ -521,13 +521,6 @@ $Client_BuildSite.prototype = {
 		//
 		//
 		//        });
-	},
-	$loadCss: function(filename) {
-		var fileref = document.createElement('link');
-		fileref.setAttribute('rel', 'stylesheet');
-		fileref.setAttribute('type', 'text/css');
-		fileref.setAttribute('href', filename);
-		document.getElementsByTagName('head')[0].appendChild(fileref);
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -615,7 +608,7 @@ var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
 		var time = endTime - this.$startTime;
 		this.$numOfTimes++;
 		this.$timeValue += time;
-		buildSite.devArea.data.lblHowFast.set_text('How Many: ' + ss.Int32.div(this.$timeValue, this.$numOfTimes));
+		buildSite.devArea.data.lblHowFast.set_text('Time Taken: ' + ss.Int32.div(this.$timeValue, this.$numOfTimes));
 		buildSite.codeArea.data.codeEditor.information.editor.setValue(data3.content);
 		buildSite.codeArea.data.codeEditor.information.editor.setMarker(0, '<span style="color: #900">&nbsp;&nbsp;</span> %N%');
 		buildSite.codeArea.data.codeEditor.information.editor.refresh();
@@ -640,7 +633,7 @@ var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
 	dvGame.style.bottom = '0';
 	document.body.addEventListener('contextmenu', function(e) {
 		//e.PreventDefault();
-		//todo: Sspecial right click menu;
+		//todo: Special right click menu;
 	}, false);
 	//ie8
 	//   {
@@ -1022,6 +1015,13 @@ $Client_ScriptLoader.prototype = {
 		});
 		this.$loadScript(items[0], false, nextOne);
 	}
+};
+$Client_ScriptLoader.loadCss = function(filename) {
+	var fileref = document.createElement('link');
+	fileref.setAttribute('rel', 'stylesheet');
+	fileref.setAttribute('type', 'text/css');
+	fileref.setAttribute('href', filename);
+	document.getElementsByTagName('head')[0].appendChild(fileref);
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Client.Information.CodeAreaInformation
@@ -1932,4 +1932,3 @@ Type.registerClass(global, 'Client.ShuffUI.ShuffCodeEditorOptions', $Client_Shuf
 Type.registerClass(global, 'Client.ShuffUI.ShuffLabelOptions', $Client_ShuffUI_ShuffLabelOptions);
 Type.registerClass(global, 'Client.ShuffUI.ShuffListBoxOptions', $Client_ShuffUI_ShuffListBoxOptions);
 $Client_BuildSite.instance = null;
-

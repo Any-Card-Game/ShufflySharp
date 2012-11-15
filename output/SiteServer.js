@@ -1,8 +1,7 @@
 require('./mscorlib.debug.js');
-Type.registerNamespace('SiteServer');
 ////////////////////////////////////////////////////////////////////////////////
 // SiteServer.SiteServer
-SiteServer.SiteServer = function() {
+var $SiteServer_SiteServer = function() {
 };
-SiteServer.SiteServer.registerClass('SiteServer.SiteServer', Object);
+Type.registerClass(global, 'SiteServer.SiteServer', $SiteServer_SiteServer, Object);
 

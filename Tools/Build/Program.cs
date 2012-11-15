@@ -1,8 +1,13 @@
-﻿using System;
+﻿#define FTP
+
+
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
-
+using Limilabs.FTP.Client;
+using Renci.SshNet;
 namespace Build
 {
     internal class Program
@@ -99,6 +104,56 @@ namespace Build
                             })
                     },
                 };
+
+
+
+
+#if FTP
+            string loc = ConfigurationSettings.AppSettings["web-ftpdir"];
+            Console.WriteLine("connecting ftp");
+         /*   Ftp webftp = new Ftp();
+            webftp.Connect(ConfigurationSettings.AppSettings["web-ftpurl"]);
+            webftp.Login(ConfigurationSettings.AppSettings["web-ftpusername"], ConfigurationSettings.AppSettings["web-ftppassword"]);
+
+            Console.WriteLine("connected");
+
+            webftp.Progress += (e, c) =>
+            {
+                var left = Console.CursorLeft;
+                var top = Console.CursorTop;
+
+                Console.SetCursorPosition(65, 5);
+                Console.Write("|");
+
+                for (int i = 0; i < c.Percentage / 10; i++)
+                {
+                    Console.Write("=");
+                }
+                for (int i = (int)(c.Percentage / 10); i < 10; i++)
+                {
+                    Console.Write("-");
+                }
+                Console.Write("|");
+
+                Console.Write(c.Percentage + "  %  ");
+                Console.WriteLine();
+                Console.SetCursorPosition(left, top);
+            };
+*/
+            string serverloc = ConfigurationSettings.AppSettings["server-ftpdir"];
+            string serverloc2 = ConfigurationSettings.AppSettings["server-web-ftpdir"];
+            Console.WriteLine("connecting server ftp");
+            SftpClient client = new SftpClient(ConfigurationSettings.AppSettings["server-ftpurl"], ConfigurationSettings.AppSettings["server-ftpusername"], ConfigurationSettings.AppSettings["server-ftppassword"]);
+            client.Connect();
+
+            Console.WriteLine("server connected");
+
+#endif
+
+
+
+
+
             foreach (var depend in depends)
             {
                 var to = pre + shufSharp+@"\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
@@ -125,6 +180,37 @@ namespace Build
                 lines.Add(depend.Value.After);
 
                 File.WriteAllLines(to, lines);
+
+
+#if FTP
+                var name = to.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
+
+                long length = new FileInfo(to).Length;
+         /*       if (!webftp.FileExists(loc + name) || webftp.GetFileSize(loc + name) != length)
+                {
+                    Console.WriteLine("ftp start " + length.ToString("N0"));
+                    webftp.Upload(loc + name, to);
+                    Console.WriteLine("ftp complete " + to);
+                }
+*/
+                if (!client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length)
+                {
+                    Console.WriteLine("server ftp start " + length.ToString("N0"));
+                    var fileStream = new FileInfo(to).OpenRead();
+                    client.UploadFile(fileStream, serverloc + name, true);
+                    fileStream.Close();
+                    Console.WriteLine("server ftp complete " + to);
+                }
+                if (!client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length)
+                {
+                    Console.WriteLine("server ftp start " + length.ToString("N0"));
+                    var fileStream = new FileInfo(to).OpenRead();
+                    client.UploadFile(fileStream, serverloc2 + name, true);
+                    fileStream.Close();
+                    Console.WriteLine("server ftp complete " + to);
+                }
+#endif
+
             }
 
 
@@ -139,6 +225,27 @@ namespace Build
                     continue;
                 }
                 File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
+
+
+/*
+#if FTP
+                Console.WriteLine("ftp start " + text.Length.ToString("N0"));
+                webftp.Upload(loc + "Games/" + depend + "/" + depend + "." + ext + ".js", fm);
+                Console.WriteLine("ftp complete " + fm);
+
+                Console.WriteLine("server ftp start " + text.Length.ToString("N0"));
+
+                var fileStream = new FileInfo(fm).OpenRead();
+                client.UploadFile(fileStream, serverloc + "Games/" + depend + "/" + depend + "." + ext + ".js", true);
+                fileStream.Close();
+                fileStream = new FileInfo(fm).OpenRead();
+                client.UploadFile(fileStream, serverloc2 + "Games/" + depend + "/" + depend + "." + ext + ".js", true);
+                fileStream.Close();
+
+                Console.WriteLine("server ftp complete " + fm);
+#endif
+*/
+
             }
         }
 

@@ -1,15 +1,14 @@
 require('./mscorlib.debug.js');require('./CommonShuffleLibrary.js');require('./Models.js');
-Type.registerNamespace('HeadServer');
 ////////////////////////////////////////////////////////////////////////////////
 // HeadServer.HeadServer
-HeadServer.HeadServer = function() {
+var $HeadServer_HeadServer = function() {
 	this.$__dirname = '/usr/local/src/new';
-	this.$fs = (require('fs'));
-	this.$gateways = new Array();
-	this.$indexForSites = new Array();
+	this.$fs = require('fs');
+	this.$gateways = [];
+	this.$indexForSites = [];
 	this.$indexPageData = null;
-	this.$oldGateways = new Array();
-	this.$oldIndex = new Array();
+	this.$oldGateways = [];
+	this.$oldIndex = [];
 	this.$pubsub = null;
 	this.$qManager = null;
 	this.$siteIndex = 0;
@@ -21,11 +20,11 @@ HeadServer.HeadServer = function() {
 			this.$gateways.add(message);
 		}));
 	}));
-	(require('http')).createServer(Function.mkdel(this, this.$handlerWS)).listen(8844);
+	require('http').createServer(Function.mkdel(this, this.$handlerWS)).listen(8844);
 	setInterval(Function.mkdel(this, this.$pollGateways), 1000);
 	this.$pollGateways();
 };
-HeadServer.HeadServer.prototype = {
+$HeadServer_HeadServer.prototype = {
 	$pollGateways: function() {
 		this.$pubsub.publish('PUBSUB.GatewayServers.Ping', '');
 		if (this.$indexForSites.length > 0) {
@@ -34,8 +33,8 @@ HeadServer.HeadServer.prototype = {
 		if (this.$gateways.length > 0) {
 			this.$oldGateways = this.$gateways;
 		}
-		this.$indexForSites = new Array();
-		this.$gateways = new Array();
+		this.$indexForSites = [];
+		this.$gateways = [];
 		this.$siteIndex = 0;
 	},
 	$handlerWS: function(request, response) {
@@ -61,8 +60,8 @@ HeadServer.HeadServer.prototype = {
 	},
 	ready: function(error, content) {
 		this.$indexPageData = content.toString();
-		(require('http')).createServer(Function.mkdel(this, this.$handler)).listen(80);
+		require('http').createServer(Function.mkdel(this, this.$handler)).listen(80);
 	}
 };
-HeadServer.HeadServer.registerClass('HeadServer.HeadServer', Object);
+Type.registerClass(global, 'HeadServer.HeadServer', $HeadServer_HeadServer, Object);
 new HeadServer.HeadServer();

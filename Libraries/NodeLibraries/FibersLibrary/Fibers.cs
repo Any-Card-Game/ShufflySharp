@@ -14,7 +14,6 @@ namespace FibersLibrary
         {
         }
 
-        [ScriptAlias("yield")]
         public static T Yield(object obj = null)
         {
             return default(T);

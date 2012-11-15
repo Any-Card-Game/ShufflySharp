@@ -1,8 +1,7 @@
 require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
-Type.registerNamespace('DebugServer');
 ////////////////////////////////////////////////////////////////////////////////
 // DebugServer.DebugServer
-DebugServer.DebugServer = function() {
+var $DebugServer_DebugServer = function() {
 	var fs = require('fs');
 	var queueManager = new CommonShuffleLibrary.QueueManager('Debug1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('DebugServer', null)], ['GatewayServer', 'Gateway*']));
 	queueManager.addChannel('Area.Debug2.GetGameSource.Request', function(sender, data) {
@@ -11,5 +10,5 @@ DebugServer.DebugServer = function() {
 		});
 	});
 };
-DebugServer.DebugServer.registerClass('DebugServer.DebugServer', Object);
+Type.registerClass(global, 'DebugServer.DebugServer', $DebugServer_DebugServer, Object);
 new DebugServer.DebugServer();

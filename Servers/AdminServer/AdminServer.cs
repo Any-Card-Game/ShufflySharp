@@ -20,7 +20,7 @@ namespace AdminServer
         private List<ProcessInformation> sites;
         private List<ProcessInformation> gateways;
         private ProcessInformation head;
-
+ 
 
         private int indexPageData = 0;
         private Process nodeInspector;

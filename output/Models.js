@@ -1,9 +1,11 @@
-Type.registerNamespace('Models');
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // Models.CreateGameRequestModel
-Models.CreateGameRequestModel = function() {
+var $Models_CreateGameRequestModel = function() {
 };
-Models.CreateGameRequestModel.$ctor = function() {
+$Models_CreateGameRequestModel.createInstance = function() {
+	return $Models_CreateGameRequestModel.$ctor();
+};
+$Models_CreateGameRequestModel.$ctor = function() {
 	var $this = {};
 	$this.name = null;
 	$this.gameName = null;
@@ -11,9 +13,9 @@ Models.CreateGameRequestModel.$ctor = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.DebuggerJoinRequestModel
-Models.DebuggerJoinRequestModel = function() {
+var $Models_DebuggerJoinRequestModel = function() {
 };
-Models.DebuggerJoinRequestModel.$ctor = function(roomId) {
+$Models_DebuggerJoinRequestModel.$ctor = function(roomId) {
 	var $this = {};
 	$this.roomID = null;
 	$this.roomID = roomId;
@@ -21,9 +23,12 @@ Models.DebuggerJoinRequestModel.$ctor = function(roomId) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GameAnswerQuestionModel
-Models.GameAnswerQuestionModel = function() {
+var $Models_GameAnswerQuestionModel = function() {
 };
-Models.GameAnswerQuestionModel.$ctor1 = function(roomId, answer) {
+$Models_GameAnswerQuestionModel.createInstance = function() {
+	return $Models_GameAnswerQuestionModel.$ctor();
+};
+$Models_GameAnswerQuestionModel.$ctor1 = function(roomId, answer) {
 	var $this = {};
 	$this.answer = 0;
 	$this.roomID = null;
@@ -31,7 +36,7 @@ Models.GameAnswerQuestionModel.$ctor1 = function(roomId, answer) {
 	$this.answer = answer;
 	return $this;
 };
-Models.GameAnswerQuestionModel.$ctor = function() {
+$Models_GameAnswerQuestionModel.$ctor = function() {
 	var $this = {};
 	$this.answer = 0;
 	$this.roomID = null;
@@ -39,15 +44,18 @@ Models.GameAnswerQuestionModel.$ctor = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GameAnswerRequestModel
-Models.GameAnswerRequestModel = function() {
+var $Models_GameAnswerRequestModel = function() {
 	this.answer = 0;
 	this.roomID = null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GameSendAnswerModel
-Models.GameSendAnswerModel = function() {
+var $Models_GameSendAnswerModel = function() {
 };
-Models.GameSendAnswerModel.$ctor = function() {
+$Models_GameSendAnswerModel.createInstance = function() {
+	return $Models_GameSendAnswerModel.$ctor();
+};
+$Models_GameSendAnswerModel.$ctor = function() {
 	var $this = {};
 	$this.question = null;
 	$this.answers = null;
@@ -55,9 +63,9 @@ Models.GameSendAnswerModel.$ctor = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GameSourceRequestModel
-Models.GameSourceRequestModel = function() {
+var $Models_GameSourceRequestModel = function() {
 };
-Models.GameSourceRequestModel.$ctor = function(name) {
+$Models_GameSourceRequestModel.$ctor = function(name) {
 	var $this = {};
 	$this.gameName = null;
 	$this.gameName = name;
@@ -65,15 +73,18 @@ Models.GameSourceRequestModel.$ctor = function(name) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GameSourceResponseModel
-Models.GameSourceResponseModel = function(content) {
+var $Models_GameSourceResponseModel = function(content) {
 	this.content = null;
 	this.content = content;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GatewayLoginMessageModel
-Models.GatewayLoginMessageModel = function() {
+var $Models_GatewayLoginMessageModel = function() {
 };
-Models.GatewayLoginMessageModel.$ctor = function() {
+$Models_GatewayLoginMessageModel.createInstance = function() {
+	return $Models_GatewayLoginMessageModel.$ctor();
+};
+$Models_GatewayLoginMessageModel.$ctor = function() {
 	var $this = {};
 	$this.userName = null;
 	$this.password = null;
@@ -81,9 +92,9 @@ Models.GatewayLoginMessageModel.$ctor = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.GatewayMessageModel
-Models.GatewayMessageModel = function() {
+var $Models_GatewayMessageModel = function() {
 };
-Models.GatewayMessageModel.$ctor = function(channel, content, gameServer) {
+$Models_GatewayMessageModel.$ctor = function(channel, content, gameServer) {
 	var $this = {};
 	$this.channel = null;
 	$this.content = null;
@@ -95,9 +106,9 @@ Models.GatewayMessageModel.$ctor = function(channel, content, gameServer) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.JoinGameRequestModel
-Models.JoinGameRequestModel = function() {
+var $Models_JoinGameRequestModel = function() {
 };
-Models.JoinGameRequestModel.$ctor = function(roomId, user) {
+$Models_JoinGameRequestModel.$ctor = function(roomId, user) {
 	var $this = {};
 	$this.roomID = null;
 	$this.user = null;
@@ -107,7 +118,7 @@ Models.JoinGameRequestModel.$ctor = function(roomId, user) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.SocketClientMessageModel
-Models.SocketClientMessageModel = function(user, channel, content) {
+var $Models_SocketClientMessageModel = function(user, channel, content) {
 	this.channel = null;
 	this.content = null;
 	this.user = null;
@@ -117,9 +128,9 @@ Models.SocketClientMessageModel = function(user, channel, content) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.StartGameRequestModel
-Models.StartGameRequestModel = function() {
+var $Models_StartGameRequestModel = function() {
 };
-Models.StartGameRequestModel.$ctor = function(roomId) {
+$Models_StartGameRequestModel.$ctor = function(roomId) {
 	var $this = {};
 	$this.roomID = null;
 	$this.roomID = roomId;
@@ -127,21 +138,21 @@ Models.StartGameRequestModel.$ctor = function(roomId) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Models.UserModel
-Models.UserModel = function() {
+var $Models_UserModel = function() {
 	this.gateway = null;
 	this.userName = null;
 	this.socket = null;
 };
-Models.CreateGameRequestModel.registerClass('Models.CreateGameRequestModel', Object);
-Models.DebuggerJoinRequestModel.registerClass('Models.DebuggerJoinRequestModel', Object);
-Models.GameAnswerQuestionModel.registerClass('Models.GameAnswerQuestionModel', Object);
-Models.GameAnswerRequestModel.registerClass('Models.GameAnswerRequestModel', Object);
-Models.GameSendAnswerModel.registerClass('Models.GameSendAnswerModel', Object);
-Models.GameSourceRequestModel.registerClass('Models.GameSourceRequestModel', Object);
-Models.GameSourceResponseModel.registerClass('Models.GameSourceResponseModel', Object);
-Models.GatewayLoginMessageModel.registerClass('Models.GatewayLoginMessageModel', Object);
-Models.GatewayMessageModel.registerClass('Models.GatewayMessageModel', Object);
-Models.JoinGameRequestModel.registerClass('Models.JoinGameRequestModel', Object);
-Models.SocketClientMessageModel.registerClass('Models.SocketClientMessageModel', Object);
-Models.StartGameRequestModel.registerClass('Models.StartGameRequestModel', Object);
-Models.UserModel.registerClass('Models.UserModel', Object);
+Type.registerClass(global, 'Models.CreateGameRequestModel', $Models_CreateGameRequestModel, Object);
+Type.registerClass(global, 'Models.DebuggerJoinRequestModel', $Models_DebuggerJoinRequestModel, Object);
+Type.registerClass(global, 'Models.GameAnswerQuestionModel', $Models_GameAnswerQuestionModel, Object);
+Type.registerClass(global, 'Models.GameAnswerRequestModel', $Models_GameAnswerRequestModel, Object);
+Type.registerClass(global, 'Models.GameSendAnswerModel', $Models_GameSendAnswerModel, Object);
+Type.registerClass(global, 'Models.GameSourceRequestModel', $Models_GameSourceRequestModel, Object);
+Type.registerClass(global, 'Models.GameSourceResponseModel', $Models_GameSourceResponseModel, Object);
+Type.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel, Object);
+Type.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel, Object);
+Type.registerClass(global, 'Models.JoinGameRequestModel', $Models_JoinGameRequestModel, Object);
+Type.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel, Object);
+Type.registerClass(global, 'Models.StartGameRequestModel', $Models_StartGameRequestModel, Object);
+Type.registerClass(global, 'Models.UserModel', $Models_UserModel, Object);

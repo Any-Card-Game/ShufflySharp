@@ -1,10 +1,9 @@
 require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
-Type.registerNamespace('ChatServer');
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatCreateRoomModel
-ChatServer.ChatCreateRoomModel = function() {
+var $ChatServer_ChatCreateRoomModel = function() {
 };
-ChatServer.ChatCreateRoomModel.$ctor = function(channel) {
+$ChatServer_ChatCreateRoomModel.$ctor = function(channel) {
 	var $this = {};
 	$this.channel = null;
 	$this.channel = channel;
@@ -12,9 +11,9 @@ ChatServer.ChatCreateRoomModel.$ctor = function(channel) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatJoinRoomModel
-ChatServer.ChatJoinRoomModel = function() {
+var $ChatServer_ChatJoinRoomModel = function() {
 };
-ChatServer.ChatJoinRoomModel.$ctor = function(channel) {
+$ChatServer_ChatJoinRoomModel.$ctor = function(channel) {
 	var $this = {};
 	$this.channel = null;
 	$this.channel = channel;
@@ -22,9 +21,9 @@ ChatServer.ChatJoinRoomModel.$ctor = function(channel) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatMessageRoomModel
-ChatServer.ChatMessageRoomModel = function() {
+var $ChatServer_ChatMessageRoomModel = function() {
 };
-ChatServer.ChatMessageRoomModel.$ctor = function(channel, user, content) {
+$ChatServer_ChatMessageRoomModel.$ctor = function(channel, user, content) {
 	var $this = {};
 	$this.channel = null;
 	$this.user = null;
@@ -36,21 +35,16 @@ ChatServer.ChatMessageRoomModel.$ctor = function(channel, user, content) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatServer
-ChatServer.ChatServer = function() {
-	this.$registeredChannels = ({});
+var $ChatServer_ChatServer = function() {
+	this.$registeredChannels = {};
 	this.$client = null;
 	var queueManager = new CommonShuffleLibrary.QueueManager('Chat1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('ChatServer', null)], ['GatewayServer', 'Gateway*']));
 	queueManager.addChannel('Area.Chat.SendMessageToRoom', Function.mkdel(this, function(sender, data) {
 		this.$client.rpush('ChatServer.ChatRoom.' + data.channel, data.user.userName + ': ' + data.content);
-		var $t1 = this.$registeredChannels['ChatServer.ChatRoom.' + data.channel].getEnumerator();
-		try {
-			while ($t1.moveNext()) {
-				var item = $t1.get_current();
-				queueManager.sendMessage(ChatServer.ChatMessageRoomModel).call(queueManager, item, item.gateway, 'Area.Chat.MessageReceived', data);
-			}
-		}
-		finally {
-			$t1.dispose();
+		var $t1 = this.$registeredChannels['ChatServer.ChatRoom.' + data.channel];
+		for (var $t2 = 0; $t2 < $t1.length; $t2++) {
+			var item = $t1[$t2];
+			queueManager.sendMessage($ChatServer_ChatMessageRoomModel).call(queueManager, item, item.gateway, 'Area.Chat.MessageReceived', data);
 		}
 	}));
 	queueManager.addChannel('Area.Chat.JoinRoom', Function.mkdel(this, function(sender1, data1) {
@@ -65,29 +59,32 @@ ChatServer.ChatServer = function() {
 	var redis = require('redis');
 	this.$client = redis.createClient(6379, CommonShuffleLibrary.IPs.get_redisIP());
 };
-ChatServer.ChatServer.prototype = {
+$ChatServer_ChatServer.prototype = {
 	cycle: function(channel) {
 		this.$client.blpop([channel, 0], Function.mkdel(this, function(caller, dtj) {
 			this.cycle(channel);
 		}));
 	},
 	$registerChannel: function(channel) {
-		var chan = this.$registeredChannels['ChatServer.ChatRoom.' + channel] = new Array();
+		var chan = this.$registeredChannels['ChatServer.ChatRoom.' + channel] = [];
 		this.cycle(channel);
 		return chan;
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.SendMessageToRoomModel
-ChatServer.SendMessageToRoomModel = function() {
+var $ChatServer_SendMessageToRoomModel = function() {
 };
-ChatServer.SendMessageToRoomModel.$ctor = function() {
+$ChatServer_SendMessageToRoomModel.createInstance = function() {
+	return $ChatServer_SendMessageToRoomModel.$ctor();
+};
+$ChatServer_SendMessageToRoomModel.$ctor = function() {
 	var $this = {};
 	return $this;
 };
-ChatServer.ChatCreateRoomModel.registerClass('ChatServer.ChatCreateRoomModel', Object);
-ChatServer.ChatJoinRoomModel.registerClass('ChatServer.ChatJoinRoomModel', Object);
-ChatServer.ChatMessageRoomModel.registerClass('ChatServer.ChatMessageRoomModel', Object);
-ChatServer.ChatServer.registerClass('ChatServer.ChatServer', Object);
-ChatServer.SendMessageToRoomModel.registerClass('ChatServer.SendMessageToRoomModel', Object);
+Type.registerClass(global, 'ChatServer.ChatCreateRoomModel', $ChatServer_ChatCreateRoomModel, Object);
+Type.registerClass(global, 'ChatServer.ChatJoinRoomModel', $ChatServer_ChatJoinRoomModel, Object);
+Type.registerClass(global, 'ChatServer.ChatMessageRoomModel', $ChatServer_ChatMessageRoomModel, Object);
+Type.registerClass(global, 'ChatServer.ChatServer', $ChatServer_ChatServer, Object);
+Type.registerClass(global, 'ChatServer.SendMessageToRoomModel', $ChatServer_SendMessageToRoomModel, Object);
 new ChatServer.ChatServer();

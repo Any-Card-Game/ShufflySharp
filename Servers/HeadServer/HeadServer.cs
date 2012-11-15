@@ -20,10 +20,7 @@ namespace HeadServer
         private int siteIndex;
 
         public HeadServer()
-        {
-             
-
-
+        { 
             qManager = new QueueManager("Head1", new QueueManagerOptions(new[]
                 {
                     new QueueWatcher("HeadServer", null),

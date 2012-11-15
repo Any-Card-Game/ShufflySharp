@@ -1,16 +1,15 @@
 require('./mscorlib.debug.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
-Type.registerNamespace('GatewayServer');
 ////////////////////////////////////////////////////////////////////////////////
 // GatewayServer.GatewayServer
-GatewayServer.GatewayServer = function() {
+var $GatewayServer_GatewayServer = function() {
 	this.$ps = null;
-	this.users = ({});
+	this.users = {};
 	debugger;
 	var http = require('http');
 	var app = http.createServer(function(req, res) {
 		res.end();
 	});
-	var io = (require('socket.io')).listen(app);
+	var io = require('socket.io').listen(app);
 	var fs = require('fs');
 	var queueManager;
 	var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
@@ -28,7 +27,7 @@ GatewayServer.GatewayServer = function() {
 		var user = null;
 		socket.on('Gateway.Message', function(data) {
 			var channel = 'Bad';
-			switch ((data.channel.split(String.fromCharCode(46)))[1]) {
+			switch (data.channel.split(String.fromCharCode(46))[1]) {
 				case 'Game': {
 					channel = 'GameServer';
 					break;
@@ -50,7 +49,7 @@ GatewayServer.GatewayServer = function() {
 					break;
 				}
 			}
-			queueManager.sendMessage(Object).call(queueManager, user, Object.coalesce(data.gameServer, channel), data.channel, data.content);
+			queueManager.sendMessage(Object).call(queueManager, user, ss.coalesce(data.gameServer, channel), data.channel, data.content);
 		});
 		socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
 			user = new Models.UserModel();
@@ -63,7 +62,7 @@ GatewayServer.GatewayServer = function() {
 		}));
 	}));
 };
-GatewayServer.GatewayServer.prototype = {
+$GatewayServer_GatewayServer.prototype = {
 	$messageReceived: function(gateway, user, eventChannel, content) {
 		if (Object.keyExists(this.users, user.userName)) {
 			var u = this.users[user.userName];
@@ -71,5 +70,5 @@ GatewayServer.GatewayServer.prototype = {
 		}
 	}
 };
-GatewayServer.GatewayServer.registerClass('GatewayServer.GatewayServer', Object);
+Type.registerClass(global, 'GatewayServer.GatewayServer', $GatewayServer_GatewayServer, Object);
 new GatewayServer.GatewayServer();

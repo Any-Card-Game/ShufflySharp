@@ -1,51 +1,50 @@
-Type.registerNamespace('CommonLibraries');
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.ExtensionMethods
-CommonLibraries.ExtensionMethods = function() {
+var $CommonLibraries_ExtensionMethods = function() {
 };
-CommonLibraries.ExtensionMethods.cleanUp = function(T) {
+$CommonLibraries_ExtensionMethods.cleanUp = function(T) {
 	return function(o) {
-		return JSON.parse(JSON.stringify(o, CommonLibraries.Help.sanitize));
+		return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));
 	};
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.GameAnswer
-CommonLibraries.GameAnswer = function() {
+var $CommonLibraries_GameAnswer = function() {
 	this.lineNumber = 0;
 	this.value = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Guid
-CommonLibraries.Guid = function() {
+var $CommonLibraries_Guid = function() {
 };
-CommonLibraries.Guid.newGuid = function() {
+$CommonLibraries_Guid.newGuid = function() {
 	var guid = '';
 	for (var i = 0; i < 12; i++) {
-		guid += String.fromCharCode((parseInt((Math.random() * 26 + 65).toString())));
+		guid += String.fromCharCode(parseInt((Math.random() * 26 + 65).toString()));
 	}
 	return guid;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Help
-CommonLibraries.Help = function() {
+var $CommonLibraries_Help = function() {
 };
-CommonLibraries.Help.cleanUp = function(T) {
+$CommonLibraries_Help.cleanUp = function(T) {
 	return function(o) {
-		return JSON.parse(JSON.stringify(o, CommonLibraries.Help.sanitize));
+		return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));
 	};
 };
-CommonLibraries.Help.sanitize = function(name, value) {
-	if (typeof value == 'function') {
+$CommonLibraries_Help.sanitize = function(name, value) {
+	if (typeof(value) == 'function') {
 		return null;
 	}
-	if ((name.indexOf(String.fromCharCode(95))) !== 0 && name.toLowerCase() !== 'socket' && name.toLowerCase() !== 'fiber' && name.toLowerCase() !== 'debuggingsocket') {
+	if (name.indexOf(String.fromCharCode(95)) !== 0 && name.toLowerCase() !== 'socket' && name.toLowerCase() !== 'fiber' && name.toLowerCase() !== 'debuggingsocket') {
 		return value;
 	}
 	return null;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Point
-CommonLibraries.Point = function(x, y) {
+var $CommonLibraries_Point = function(x, y) {
 	this.x = 0;
 	this.y = 0;
 	this.x = x;
@@ -53,13 +52,13 @@ CommonLibraries.Point = function(x, y) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Size
-CommonLibraries.Size = function() {
+var $CommonLibraries_Size = function() {
 	this.height = 0;
 	this.width = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
-// CommonLibraries.TypeOrFunction$1
-CommonLibraries.TypeOrFunction$1 = function(T) {
+// CommonLibraries.TypeOrFunction
+var $CommonLibraries_TypeOrFunction$1 = function(T) {
 	var $type = function(type) {
 		this.$1$FuncSetField = null;
 		this.$1$FuncGetField = null;
@@ -103,17 +102,17 @@ CommonLibraries.TypeOrFunction$1 = function(T) {
 		this.set_funcSet(_set);
 	};
 	$type.$ctor1.prototype = $type.prototype;
-	$type.registerGenericClassInstance($type, CommonLibraries.TypeOrFunction$1, [T], function() {
+	Type.registerGenericClassInstance($type, $CommonLibraries_TypeOrFunction$1, [T], function() {
 		return Object;
 	}, function() {
 		return [];
 	});
 	return $type;
 };
-CommonLibraries.TypeOrFunction$1.registerGenericClass('CommonLibraries.TypeOrFunction$1', 1);
-CommonLibraries.ExtensionMethods.registerClass('CommonLibraries.ExtensionMethods', Object);
-CommonLibraries.GameAnswer.registerClass('CommonLibraries.GameAnswer', Object);
-CommonLibraries.Guid.registerClass('CommonLibraries.Guid', Object);
-CommonLibraries.Help.registerClass('CommonLibraries.Help', Object);
-CommonLibraries.Point.registerClass('CommonLibraries.Point', Object);
-CommonLibraries.Size.registerClass('CommonLibraries.Size', Object);
+Type.registerGenericClass(global, 'CommonLibraries.TypeOrFunction$1', $CommonLibraries_TypeOrFunction$1, 1);
+Type.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods, Object);
+Type.registerClass(global, 'CommonLibraries.GameAnswer', $CommonLibraries_GameAnswer, Object);
+Type.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid, Object);
+Type.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help, Object);
+Type.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point, Object);
+Type.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size, Object);

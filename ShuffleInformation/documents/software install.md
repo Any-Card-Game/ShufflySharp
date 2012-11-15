@@ -46,11 +46,11 @@ Redis
 ------------
 
 	  # download and unpack the sources (see http://redis.io/download for the latest stable version)
-	  wget http://redis.googlecode.com/files/redis-2.4.5.tar.gz
-	  tar -zxvf redis-2.4.5.tar.gz
+	  wget http://redis.googlecode.com/files/redis-2.6.2.tar.gz
+	  tar -zxvf redis-2.6.2.tar.gz
  
 	  # build
-	  cd redis-2.4.5/
+	  cd redis-2.6.2/
 	  make
  
 	  # test

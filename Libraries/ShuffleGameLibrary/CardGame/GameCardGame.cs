@@ -59,7 +59,7 @@ namespace global
                 Deck.Cards.Add(new CardGameCard(0, 0));
             }
 
-            Size = new Size {Width = 16, Height = 12};
+            Size = new Size {Width = 22, Height = 10};
 
             /*
            

@@ -36,8 +36,8 @@ $ChatServer_ChatMessageRoomModel.$ctor = function(channel, user, content) {
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.ChatServer
 var $ChatServer_ChatServer = function() {
-	this.$registeredChannels = {};
 	this.$client = null;
+	this.$registeredChannels = {};
 	var queueManager = new CommonShuffleLibrary.QueueManager('Chat1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('ChatServer', null)], ['GatewayServer', 'Gateway*']));
 	queueManager.addChannel('Area.Chat.SendMessageToRoom', Function.mkdel(this, function(sender, data) {
 		this.$client.rpush('ChatServer.ChatRoom.' + data.channel, data.user.userName + ': ' + data.content);

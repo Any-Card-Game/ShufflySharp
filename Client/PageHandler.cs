@@ -15,7 +15,7 @@ namespace Client
     {
         private readonly BuildSite buildSite;
         private JsDictionary<string, ImageElement> cardImages;
-        private JsDictionary<string, CardDrawing> cards = new JsDictionary<string, CardDrawing>();
+        public JsDictionary<string, CardDrawing> cards = new JsDictionary<string, CardDrawing>();
         private DateTime endTime;
         public GameInfo gameStuff;
         public Gateway gateway;
@@ -32,7 +32,7 @@ namespace Client
                                                             "background-color",
                                                             "border",
                                                     };
-        private JsDictionary<string, SpaceDrawing> spaces = new JsDictionary<string, SpaceDrawing>();
+        public JsDictionary<string, SpaceDrawing> spaces = new JsDictionary<string, SpaceDrawing>();
         private DateTime startTime;
         private int timeValue;
 
@@ -42,7 +42,7 @@ namespace Client
             gameStuff = new GameInfo();
 
             startTime = DateTime.Now;
-            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
+            //            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
             gateway = new Gateway(gatewayServerAddress);
 
             gateway.On<object>("Area.Main.Login.Response", (data) => { Window.Alert(Json.Stringify(data)); });
@@ -51,19 +51,21 @@ namespace Client
 
             var randomName = "";
             var ra = Math.Random() * 10;
-            for (var i = 0; i < ra; i++) {
-                randomName += String.FromCharCode((char) ( 65 + ( Math.Random() * 26 ) ));
+            for (var i = 0; i < ra; i++)
+            {
+                randomName += String.FromCharCode((char)(65 + (Math.Random() * 26)));
             }
 
             gateway.Login(randomName);
 
             gateway.On<GameSourceResponseModel>("Area.Debug.GetGameSource.Response",
-                                                (data) => {
+                                                (data) =>
+                                                {
                                                     var endTime = new DateTime();
                                                     var time = endTime - startTime;
                                                     numOfTimes++;
                                                     timeValue += time;
-                                                    buildSite.devArea.Data.lblHowFast.Text = ( "Time Taken: " + ( timeValue / numOfTimes ) );
+                                                    buildSite.devArea.Data.lblHowFast.Text = ("Time Taken: " + (timeValue / numOfTimes));
 
                                                     buildSite.codeArea.Data.codeEditor.Information.editor.SetValue(data.Content);
                                                     buildSite.codeArea.Data.codeEditor.Information.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");
@@ -71,7 +73,8 @@ namespace Client
                                                 });
             gateway.Emit("Area.Debug2.GetGameSource.Request", new GameSourceRequestModel("Sevens"));
             cardImages = new JsDictionary<string, ImageElement>();
-            for (var i = 101; i < 153; i++) {
+            for (var i = 101; i < 153; i++)
+            {
                 var img = new ImageElement();
                 var domain = Globals.Window.topLevel + "assets";
                 var src = domain + "/cards/" + i;
@@ -90,7 +93,8 @@ namespace Client
             dvGame.Style.Bottom = "0";
 
             Document.Body.AddEventListener("contextmenu",
-                                           e => {
+                                           e =>
+                                           {
                                                //e.PreventDefault();
                                                //todo: Special right click menu;
                                            },
@@ -111,7 +115,8 @@ namespace Client
         public void startGameServer()
         {
             gateway.On<GameRoom>("Area.Game.RoomInfo",
-                                 data => {
+                                 data =>
+                                 {
                                      gameStuff.RoomID = data.RoomID;
                                      buildSite.home.Data.loadRoomInfo(data);
                                      buildSite.devArea.Data.loadRoomInfo(data);
@@ -124,18 +129,20 @@ namespace Client
                             });
             */
             gateway.On<GameAnswer>("Area.Debug.Log",
-                                   data => {
+                                   data =>
+                                   {
                                        buildSite.home.Data.loadRoomInfos(data);
 
                                        var lines = buildSite.codeArea.Data.console.Information.editor.GetValue().Split("\n");
-                                       lines = (string[]) lines.Extract(lines.Length - 40, 40);
+                                       lines = (string[])lines.Extract(lines.Length - 40, 40);
 
                                        buildSite.codeArea.Data.console.Information.editor.SetValue(lines.Join("\n") + "\n" + data.Value);
                                        buildSite.codeArea.Data.console.Information.editor.SetCursor(buildSite.codeArea.Data.console.Information.editor.LineCount(), 0);
                                    });
 
             gateway.On<GameAnswer>("Area.Debug.Break",
-                                   data => {
+                                   data =>
+                                   {
                                        buildSite.home.Data.loadRoomInfos(data);
 
                                        var cm = buildSite.codeArea.Data.codeEditor;
@@ -154,28 +161,33 @@ namespace Client
                             });
             */
             gateway.On<GameSendAnswerModel>("Area.Game.AskQuestion",
-                                            data => {
+                                            data =>
+                                            {
                                                 buildSite.questionArea.Data.load(data);
                                                 //alert(JSON.stringify(data));
                                                 endTime = new DateTime();
                                                 var time = endTime - startTime;
-                                                buildSite.devArea.Data.lblHowFast.Text = ( "how long: " + time );
-                                                Window.SetTimeout(() => {
-                                                                      gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(gameStuff.RoomID, 1), buildSite.devArea.Data.gameServer);
-                                                                      buildSite.questionArea.Visible = false;
-                                                                      startTime = new DateTime();
-                                                                  },
+                                                buildSite.devArea.Data.lblHowFast.Text = ("how long: " + time);
+                                                Window.SetTimeout(() =>
+                                                {
+                                                    gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(gameStuff.RoomID, 1), buildSite.devArea.Data.gameServer);
+                                                    buildSite.questionArea.Visible = false;
+                                                    startTime = new DateTime();
+                                                },
                                                                   200);
                                             });
 
             gateway.On<string>("Area.Game.UpdateState",
-                               data2 => {
+                               data2 =>
+                               {
                                    var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(data2));
                                    //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 
-                                   foreach (var space in data.Spaces) {
+                                   foreach (var space in data.Spaces)
+                                   {
                                        space.Appearance = fixAppearance(space.Appearance);
-                                       foreach (var card in space.Pile.Cards) {
+                                       foreach (var card in space.Pile.Cards)
+                                       {
                                            card.Appearance = fixAppearance(card.Appearance);
                                        }
                                    }
@@ -183,11 +195,15 @@ namespace Client
                                    drawArea(data);
                                });
             gateway.On<GameRoom>("Area.Game.Started",
-                                 data => {
+                                 data =>
+                                 {
                                      //alert(JSON.stringify(data));
                                  });
             gateway.On<string>("Area.Game.GameOver", data => { });
-            gateway.On<string>("Area.Debug.GameOver", data => { Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 1000); });
+            gateway.On<string>("Area.Debug.GameOver", data =>
+            {
+                
+            });
         }
 
         private CardGameAppearance fixAppearance(CardGameAppearance appearance)
@@ -199,7 +215,8 @@ namespace Client
         {
             newDrawArea(mainArea);
 
-            foreach (var ta in mainArea.TextAreas) {
+            foreach (var ta in mainArea.TextAreas)
+            {
                 //  gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
                 //  gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
             }
@@ -210,7 +227,8 @@ namespace Client
             string id = "dv_space_" + space.Name;
             if (spaces[id] != null)
                 return spaces[id];
-            else {
+            else
+            {
                 var sp = Document.CreateElement("div");
                 sp.ID = id;
                 sp.Style.Position = "absolute";
@@ -225,15 +243,19 @@ namespace Client
             var space = findSpace(wantedSpace);
 
             CardDrawing doc;
-            if (cards[id] != null) {
+            if (cards[id] != null)
+            {
                 var m = Document.GetElementById(id);
-                if (m.ParentNode != ( space.OuterElement )) {
+                if (m.ParentNode != (space.OuterElement))
+                {
                     m.ParentNode.RemoveChild(m);
                     space.OuterElement.AppendChild(m);
                 }
 
                 doc = cards[id];
-            } else {
+            }
+            else
+            {
                 var sp = Document.CreateElement("div");
                 sp.ID = id;
                 jQuery.FromElement(space.OuterElement).Append(sp);
@@ -252,45 +274,51 @@ namespace Client
         {
             //jQuery.Select("#dvGame").Children().Remove();
 
-            var scale = new Point(jQuery.Select("#dvGame").GetWidth() / mainArea.Size.Width, ( jQuery.Document.GetHeight() - 100 ) / mainArea.Size.Height);
+            var scale = new Point(jQuery.Select("#dvGame").GetWidth() / mainArea.Size.Width, (jQuery.Document.GetHeight() - 100) / mainArea.Size.Height);
             //ExtensionMethods.debugger(null);
             int l;
             var sl = mainArea.Spaces.Count;
-            for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++) {
+            for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++)
+            {
                 var space = mainArea.Spaces[spaceIndex];
                 var jf = findSpace(space).OuterElement;
 
-                for (int i = 0; i < resetStyles.Length; i++) {
+                for (int i = 0; i < resetStyles.Length; i++)
+                {
                     jf.Style[resetStyles[i]] = null;
                 }
 
                 l = space.Pile.Cards.Count;
-                for (int index = 0; index < l; index++) {
+                for (int index = 0; index < l; index++)
+                {
                     var card = space.Pile.Cards[index];
                     var m = findCard(space, card);
 
-                    for (int i = 0; i < resetStyles.Length; i++) {
+                    for (int i = 0; i < resetStyles.Length; i++)
+                    {
                         m.OuterElement.Style[resetStyles[i]] = null;
                         m.Image.Style[resetStyles[i]] = null;
                     }
                 }
             }
             l = mainArea.Spaces.Count;
-            for (int index = 0; index < l; index++) {
+            for (int index = 0; index < l; index++)
+            {
                 var space = mainArea.Spaces[index];
                 var vertical = space.Vertical;
 
                 var spaceDiv = findSpace(space);
                 // var spaceDivJ = jQuery.FromElement(spaceDiv);
 
-                spaceDiv.OuterElement.Style.Left = ( space.X * scale.X ).px();
-                spaceDiv.OuterElement.Style.Top = ( space.Y * scale.Y ).px();
-                spaceDiv.OuterElement.Style.Width = ( space.Width * scale.X ).px();
-                spaceDiv.OuterElement.Style.Height = ( space.Height * scale.Y ).px();
+                spaceDiv.OuterElement.Style.Left = (space.X * scale.X).px();
+                spaceDiv.OuterElement.Style.Top = (space.Y * scale.Y).px();
+                spaceDiv.OuterElement.Style.Width = (space.Width * scale.X).px();
+                spaceDiv.OuterElement.Style.Height = (space.Height * scale.Y).px();
 
                 //ExtensionMethods.debugger();
                 var cl = space.Appearance.Effects.Count;
-                for (int i = 0; i < cl; i++) {
+                for (int i = 0; i < cl; i++)
+                {
                     var effect = space.Appearance.Effects[i];
                     effect.Build(spaceDiv);
                 }
@@ -301,12 +329,14 @@ namespace Client
 
                 var j = 0;
                 var lc = space.Pile.Cards.Count;
-                for (int i = 0; i < lc; i++) {
+                for (int i = 0; i < lc; i++)
+                {
                     var card = space.Pile.Cards[i];
                     var xx = 0.0;
                     var yy = 0.0;
 
-                    switch (space.ResizeType) {
+                    switch (space.ResizeType)
+                    {
                         case TableSpaceResizeType.Static:
                             if (vertical)
                                 yy = card.Value * scale.Y / 2;
@@ -316,12 +346,12 @@ namespace Client
                             break;
 
                         case TableSpaceResizeType.Grow:
-                            xx = ( !vertical ? ( j * spaceScale.X * scale.X ) : 0 );
-                            yy = ( vertical ? ( j * spaceScale.Y * scale.Y ) : 0 );
+                            xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
+                            yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
                             break;
                         default:
-                            xx = ( !vertical ? ( j * spaceScale.X * scale.X ) : 0 );
-                            yy = ( vertical ? ( j * spaceScale.Y * scale.Y ) : 0 );
+                            xx = (!vertical ? (j * spaceScale.X * scale.X) : 0);
+                            yy = (vertical ? (j * spaceScale.Y * scale.Y) : 0);
 
                             break;
                     }
@@ -331,8 +361,8 @@ namespace Client
                     yy -= cardDiv.Image.Height / 2;
 
                     //cardDiv.OuterElement.Style["transform"] = 0.0.transformRadius();
-                    cardDiv.OuterElement.Style.Left = ( xx + ( vertical ? space.Width * scale.X / 2 : 0 ) ).px();
-                    cardDiv.OuterElement.Style.Top = ( yy + ( !vertical ? space.Height * scale.Y / 2 : 0 ) ).px();
+                    cardDiv.OuterElement.Style.Left = (xx + (vertical ? space.Width * scale.X / 2 : 0)).px();
+                    cardDiv.OuterElement.Style.Top = (yy + (!vertical ? space.Height * scale.Y / 2 : 0)).px();
                     cardDiv.OuterElement.Style["transform"] = space.Appearance.InnerStyle.Rotate.transformRadius();
 
                     styleAppearanceFromSpace(cardDiv, j, space);
@@ -352,7 +382,8 @@ namespace Client
                 }
 
                 var el = space.Appearance.Effects.Count;
-                for (int i = 0; i < el; i++) {
+                for (int i = 0; i < el; i++)
+                {
                     var effect = space.Appearance.Effects[i];
                     effect.TearDown(spaceDiv);
                 }
@@ -400,10 +431,12 @@ namespace Client
         private void styleAppearanceFromSpace(CardDrawing element, int cardIndex, CardGameTableSpace space)
         {
             CardGameAppearance appearance = space.Appearance;
-            foreach (var cardGameAppearanceEffect in appearance.Effects) {
+            foreach (var cardGameAppearanceEffect in appearance.Effects)
+            {
                 //   cardGameAppearanceEffect.Build(element.Item1);
 
-                switch (cardGameAppearanceEffect.Type) {
+                switch (cardGameAppearanceEffect.Type)
+                {
                     case EffectType.Bend:
 
                         var bEffect = cardGameAppearanceEffect.castValue<CardGameAppearanceEffectBend>();
@@ -412,7 +445,7 @@ namespace Client
                         string trans = element.OuterElement.Style["transform"];
 
                         if (trans.StartsWith("rotate("))
-                            element.OuterElement.Style["transform"] = ( ( ( -bEffect.Degrees / 2 + bEffect.Degrees / ( space.Pile.Cards.Count - 1 ) * cardIndex ) + trans.noTransformRadius() ) ).transformRadius();
+                            element.OuterElement.Style["transform"] = (((-bEffect.Degrees / 2 + bEffect.Degrees / (space.Pile.Cards.Count - 1) * cardIndex) + trans.noTransformRadius())).transformRadius();
                         else
                             element.OuterElement.Style["transform"] = appearance.InnerStyle.Rotate.transformRadius();
 
@@ -425,7 +458,8 @@ namespace Client
 
         private void styleAppearance(CardDrawing element, CardGameAppearance appearance)
         {
-            foreach (var cardGameAppearanceEffect in appearance.Effects) {
+            foreach (var cardGameAppearanceEffect in appearance.Effects)
+            {
                 cardGameAppearanceEffect.Build(element);
                 //new object().debugger();
                 cardGameAppearanceEffect.TearDown(element);
@@ -446,11 +480,13 @@ namespace Client
         {
             if (cardImage["transform"] != null)
                 cardImage["-webkit-transform"] = cardImage["transform"];
-            if (cardImage["box-shadow"] != null) {
+            if (cardImage["box-shadow"] != null)
+            {
                 cardImage["-moz-box-shadow"] = cardImage["box-shadow"];
                 cardImage["-webkit-box-shadow"] = cardImage["box-shadow"];
             }
-            if (cardImage["border-radius"] != null) {
+            if (cardImage["border-radius"] != null)
+            {
                 cardImage["-moz-border-radius"] = cardImage["box-shadow"];
                 cardImage["-webkit-border-radius"] = cardImage["box-shadow"];
             }
@@ -468,7 +504,7 @@ namespace Client
         {
             var src = "";
             var domain = Globals.Window.topLevel + "assets";
-            src = domain + "/cards/" + ( 100 + ( card.Value + 1 ) + ( card.Type ) * 13 );
+            src = domain + "/cards/" + (100 + (card.Value + 1) + (card.Type) * 13);
             return src + ".gif";
         }
 
@@ -504,6 +540,13 @@ namespace Client
             if (lastMainArea != null)
                 drawArea(lastMainArea);
         }*/
+
+        public void ClearCache()
+        {
+            cards = new JsDictionary<string, CardDrawing>();
+            spaces = new JsDictionary<string, SpaceDrawing>();
+            
+        }
     }
     public class PageGameContext
     {

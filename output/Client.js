@@ -13,6 +13,7 @@ var $Client_BuildSite = function(gatewayServerAddress) {
 	this.questionArea = null;
 	this.$scriptLoader = new $Client_ScriptLoader();
 	this.$shuffUIManager = null;
+	this.$selectedGame = 'Sevens';
 	$Client_BuildSite.instance = this;
 	this.$gatewayServerAddress = gatewayServerAddress;
 	var url = 'http://50.116.22.241:8881/';
@@ -63,7 +64,7 @@ $Client_BuildSite.prototype = {
 		$t2.y = 54;
 		$t2.width = $Client_ShuffUI_Number.op_Implicit$2(150);
 		$t2.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t2.text = 'Update game list';
+		$t2.text = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Update game list');
 		$t2.onClick = Function.mkdel(this, function(e) {
 			pageHandler.gateway.emit('Area.Game.GetGames', this.devArea.data.gameServer, null);
 			//NO EMIT'ING OUTSIDE OF PageHandler
@@ -91,7 +92,7 @@ $Client_BuildSite.prototype = {
 		$t4.y = 164;
 		$t4.width = $Client_ShuffUI_Number.op_Implicit$2(120);
 		$t4.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t4.text = 'Start Game';
+		$t4.text = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Start Game');
 		$t4.onClick = Function.mkdel(this, function(e1) {
 			pageHandler.gateway.emit('Area.Game.Start', Models.StartGameRequestModel.$ctor(pageHandler.gameStuff.roomID), this.devArea.data.gameServer);
 			//NO EMIT"ING OUTSIDE OF PageHandler
@@ -232,43 +233,69 @@ $Client_BuildSite.prototype = {
 		$t10.allowMinimize = true;
 		this.devArea = shuffUIManager.createWindow($Client_Information_DevAreaInformation).call(shuffUIManager, $t10);
 		this.devArea.data.beginGame = Function.mkdel(this, function() {
+			$('#dvGame').empty();
+			pageHandler.clearCache();
+			$('#dvGame').width('50%');
+			$('#dvGame').height('100%');
+			//clearLevel();
 			this.devArea.data.created = false;
 			this.devArea.data.joined = 0;
 			pageHandler.startGameServer();
-			var $t12 = pageHandler.gateway;
+			var $t13 = pageHandler.gateway;
+			var $t12 = this.$selectedGame;
 			var $t11 = new Models.UserModel();
 			$t11.userName = this.devArea.data.txtNumOfPlayers.get_text();
-			$t12.emit('Area.Debug.Create', { user: $t11, Name: 'main room', Source: this.codeArea.data.codeEditor.information.editor.getValue(), BreakPoints: this.codeArea.data.breakPoints }, null);
+			$t13.emit('Area.Debug.Create', { gameName: $t12, user: $t11, Name: 'main room', Source: this.codeArea.data.codeEditor.information.editor.getValue(), BreakPoints: this.codeArea.data.breakPoints }, null);
 		});
-		var $t14 = this.devArea;
-		var $t13 = $Client_ShuffUI_ShuffButtonOptions.$ctor();
-		$t13.x = 280;
-		$t13.y = 54;
-		$t13.width = $Client_ShuffUI_Number.op_Implicit$2(150);
-		$t13.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t13.text = 'Begin Game';
-		$t13.onClick = Function.mkdel(this, function(e2) {
+		var $t15 = this.devArea;
+		var $t14 = $Client_ShuffUI_ShuffButtonOptions.$ctor();
+		$t14.x = 280;
+		$t14.y = 54;
+		$t14.width = $Client_ShuffUI_Number.op_Implicit$2(150);
+		$t14.height = $Client_ShuffUI_Number.op_Implicit$2(25);
+		$t14.text = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Begin Game');
+		$t14.onClick = Function.mkdel(this, function(e2) {
 			this.devArea.data.beginGame();
 		});
-		$t14.addElement($Client_ShuffUI_ShuffButton).call($t14, new $Client_ShuffUI_ShuffButton($t13));
-		var $t17 = this.devArea.data;
-		var $t16 = this.devArea;
-		var $t15 = $Client_ShuffUI_ShuffLabelOptions.$ctor();
-		$t15.x = 80;
-		$t15.y = 80;
-		$t15.width = $Client_ShuffUI_Number.op_Implicit$2(250);
-		$t15.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t15.text = 'Time Taken: ';
-		$t17.lblHowFast = $t16.addElement($Client_ShuffUI_ShuffLabel).call($t16, new $Client_ShuffUI_ShuffLabel($t15));
+		$t15.addElement($Client_ShuffUI_ShuffButton).call($t15, new $Client_ShuffUI_ShuffButton($t14));
+		var but = null;
+		var $t17 = this.devArea;
+		var $t16 = $Client_ShuffUI_ShuffButtonOptions.$ctor();
+		$t16.x = 280;
+		$t16.y = 84;
+		$t16.width = $Client_ShuffUI_Number.op_Implicit$2(150);
+		$t16.height = $Client_ShuffUI_Number.op_Implicit$2(25);
+		$t16.text = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$1(Function.mkdel(this, function() {
+			return 'Game: ' + this.$selectedGame;
+		}));
+		$t16.onClick = Function.mkdel(this, function(e3) {
+			if (this.$selectedGame === 'Sevens') {
+				this.$selectedGame = 'BlackJack';
+			}
+			else {
+				this.$selectedGame = 'Sevens';
+			}
+			var m = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(but.text);
+		});
+		$t17.addElement($Client_ShuffUI_ShuffButton).call($t17, but = new $Client_ShuffUI_ShuffButton($t16));
 		var $t20 = this.devArea.data;
 		var $t19 = this.devArea;
 		var $t18 = $Client_ShuffUI_ShuffLabelOptions.$ctor();
 		$t18.x = 80;
-		$t18.y = 100;
+		$t18.y = 80;
 		$t18.width = $Client_ShuffUI_Number.op_Implicit$2(250);
 		$t18.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t18.text = 'Another: ';
-		$t20.lblAnother = $t19.addElement($Client_ShuffUI_ShuffLabel).call($t19, new $Client_ShuffUI_ShuffLabel($t18));
+		$t18.text = 'Time Taken: ';
+		$t20.lblHowFast = $t19.addElement($Client_ShuffUI_ShuffLabel).call($t19, new $Client_ShuffUI_ShuffLabel($t18));
+		var $t23 = this.devArea.data;
+		var $t22 = this.devArea;
+		var $t21 = $Client_ShuffUI_ShuffLabelOptions.$ctor();
+		$t21.x = 80;
+		$t21.y = 100;
+		$t21.width = $Client_ShuffUI_Number.op_Implicit$2(250);
+		$t21.height = $Client_ShuffUI_Number.op_Implicit$2(25);
+		$t21.text = 'Another: ';
+		$t23.lblAnother = $t22.addElement($Client_ShuffUI_ShuffLabel).call($t22, new $Client_ShuffUI_ShuffLabel($t21));
 		// devArea.AddButton(new ShuffButton()
 		// {
 		// X = 280,
@@ -282,13 +309,13 @@ $Client_BuildSite.prototype = {
 		// }
 		// });
 		var pop;
-		var $t22 = this.devArea;
-		var $t21 = $Client_ShuffUI_ShuffListBoxOptions.$ctor();
-		$t21.x = 25;
-		$t21.y = 200;
-		$t21.width = $Client_ShuffUI_Number.op_Implicit$2(250);
-		$t21.height = $Client_ShuffUI_Number.op_Implicit$2(250);
-		$t21.itemCreation = function(item, index) {
+		var $t25 = this.devArea;
+		var $t24 = $Client_ShuffUI_ShuffListBoxOptions.$ctor();
+		$t24.x = 25;
+		$t24.y = 200;
+		$t24.width = $Client_ShuffUI_Number.op_Implicit$2(250);
+		$t24.height = $Client_ShuffUI_Number.op_Implicit$2(250);
+		$t24.itemCreation = function(item, index) {
 			var ik = $(String.format('<div style=\'width=100%;height=25px; background-color={0};\'></div>', ((index % 2 === 0) ? 'red' : 'green')));
 			var ikc = $(String.format('<div style=\'width=50%;height=25px; float=left;\'>{0}</div>', item.label));
 			ik.append(ikc);
@@ -296,7 +323,7 @@ $Client_BuildSite.prototype = {
 			ik.append(ikd);
 			return ik;
 		};
-		var propBox = $t22.addElement($Client_ShuffUI_ShuffListBox).call($t22, pop = new $Client_ShuffUI_ShuffListBox($t21));
+		var propBox = $t25.addElement($Client_ShuffUI_ShuffListBox).call($t25, pop = new $Client_ShuffUI_ShuffListBox($t24));
 		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
 		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
 		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
@@ -314,15 +341,15 @@ $Client_BuildSite.prototype = {
 		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
 		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
 		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
-		var $t25 = this.devArea.data;
-		var $t24 = this.devArea;
-		var $t23 = $Client_ShuffUI_ShuffTextboxOptions.$ctor();
-		$t23.x = 150;
-		$t23.y = 134;
-		$t23.width = $Client_ShuffUI_Number.op_Implicit$2(100);
-		$t23.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t23.label = 'Var Lookup';
-		$t25.varText = $t24.addElement($Client_ShuffUI_ShuffTextbox).call($t24, new $Client_ShuffUI_ShuffTextbox($t23));
+		var $t28 = this.devArea.data;
+		var $t27 = this.devArea;
+		var $t26 = $Client_ShuffUI_ShuffTextboxOptions.$ctor();
+		$t26.x = 150;
+		$t26.y = 134;
+		$t26.width = $Client_ShuffUI_Number.op_Implicit$2(100);
+		$t26.height = $Client_ShuffUI_Number.op_Implicit$2(25);
+		$t26.label = 'Var Lookup';
+		$t28.varText = $t27.addElement($Client_ShuffUI_ShuffTextbox).call($t27, new $Client_ShuffUI_ShuffTextbox($t26));
 		//  devArea.AddButton(new ShuffButton()
 		//  {
 		//  X = 280,
@@ -356,104 +383,106 @@ $Client_BuildSite.prototype = {
 				pageHandler.gateway.emit('Area.Game.DebuggerJoin', Models.DebuggerJoinRequestModel.$ctor(room2.roomID), this.devArea.data.gameServer);
 				//NO EMIT"ING OUTSIDE OF PageHandler
 				for (var i1 = 0; i1 < count; i1++) {
-					var $t28 = pageHandler.gateway;
-					var $t27 = room2.roomID;
-					var $t26 = new Models.UserModel();
-					$t26.userName = 'player ' + (i1 + 1);
-					$t28.emit('Area.Game.Join', Models.JoinGameRequestModel.$ctor($t27, $t26), this.devArea.data.gameServer);
+					var $t31 = pageHandler.gateway;
+					var $t30 = room2.roomID;
+					var $t29 = new Models.UserModel();
+					$t29.userName = 'player ' + (i1 + 1);
+					$t31.emit('Area.Game.Join', Models.JoinGameRequestModel.$ctor($t30, $t29), this.devArea.data.gameServer);
 					//NO EMIT"ING OUTSIDE OF PageHandler
 				}
 				this.devArea.data.created = true;
 			}
-			else if (++this.devArea.data.joined === count) {
-				pageHandler.gateway.emit('Area.Game.Start', Models.StartGameRequestModel.$ctor(room2.roomID), this.devArea.data.gameServer);
+			else {
+				if (++this.devArea.data.joined === count) {
+					pageHandler.gateway.emit('Area.Game.Start', Models.StartGameRequestModel.$ctor(room2.roomID), this.devArea.data.gameServer);
+				}
 				//NO EMIT"ING OUTSIDE OF PageHandler
 			}
 		});
-		var $t31 = this.devArea.data;
-		var $t30 = this.devArea;
-		var $t29 = $Client_ShuffUI_ShuffTextboxOptions.$ctor();
-		$t29.x = 130;
-		$t29.y = 43;
-		$t29.width = $Client_ShuffUI_Number.op_Implicit$2(130);
-		$t29.height = $Client_ShuffUI_Number.op_Implicit$2(20);
-		$t29.text = '6';
-		$t29.label = 'Number of players=';
-		$t29.labelStyle = 'font-size=13px';
-		$t31.txtNumOfPlayers = $t30.addElement($Client_ShuffUI_ShuffTextbox).call($t30, new $Client_ShuffUI_ShuffTextbox($t29));
-		var $t32 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_CodeAreaInformation]).$ctor1)(new $Client_Information_CodeAreaInformation());
-		$t32.title = 'Code';
-		$t32.set_x(0);
-		$t32.set_y(0);
-		$t32.staticPositioning = true;
-		$t32.set_width($Client_ShuffUI_Number.op_Implicit$2($(window).width() * 0.5));
-		$t32.set_height($Client_ShuffUI_Number.op_Implicit$2($(window).height() * 0.9));
-		$t32.allowClose = true;
-		$t32.allowMinimize = true;
-		$t32.set_visible(true);
-		this.codeArea = shuffUIManager.createWindow($Client_Information_CodeAreaInformation).call(shuffUIManager, $t32);
+		var $t34 = this.devArea.data;
+		var $t33 = this.devArea;
+		var $t32 = $Client_ShuffUI_ShuffTextboxOptions.$ctor();
+		$t32.x = 130;
+		$t32.y = 43;
+		$t32.width = $Client_ShuffUI_Number.op_Implicit$2(130);
+		$t32.height = $Client_ShuffUI_Number.op_Implicit$2(20);
+		$t32.text = '6';
+		$t32.label = 'Number of players=';
+		$t32.labelStyle = 'font-size=13px';
+		$t34.txtNumOfPlayers = $t33.addElement($Client_ShuffUI_ShuffTextbox).call($t33, new $Client_ShuffUI_ShuffTextbox($t32));
+		var $t35 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_CodeAreaInformation]).$ctor1)(new $Client_Information_CodeAreaInformation());
+		$t35.title = 'Code';
+		$t35.set_x(0);
+		$t35.set_y(0);
+		$t35.staticPositioning = true;
+		$t35.set_width($Client_ShuffUI_Number.op_Implicit$2($(window).width() * 0.5));
+		$t35.set_height($Client_ShuffUI_Number.op_Implicit$2($(window).height() * 0.9));
+		$t35.allowClose = true;
+		$t35.allowMinimize = true;
+		$t35.set_visible(true);
+		this.codeArea = shuffUIManager.createWindow($Client_Information_CodeAreaInformation).call(shuffUIManager, $t35);
 		debugger;
 		this.codeArea.data.breakPoints = [];
-		var $t35 = this.codeArea.data;
-		var $t34 = this.codeArea;
-		var $t33 = $Client_ShuffUI_ShuffCodeEditorOptions.$ctor();
-		$t33.height = $Client_ShuffUI_Number.op_Implicit$3('80%');
-		$t33.lineNumbers = true;
-		$t35.codeEditor = $t34.addElement($Client_ShuffUI_ShuffCodeEditor).call($t34, new $Client_ShuffUI_ShuffCodeEditor.$ctor1($t33));
 		var $t38 = this.codeArea.data;
 		var $t37 = this.codeArea;
 		var $t36 = $Client_ShuffUI_ShuffCodeEditorOptions.$ctor();
-		$t36.height = $Client_ShuffUI_Number.op_Implicit$3('20%');
-		$t36.lineNumbers = false;
-		$t38.console = $t37.addElement($Client_ShuffUI_ShuffCodeEditor).call($t37, new $Client_ShuffUI_ShuffCodeEditor.$ctor1($t36));
-		var $t39 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_QuestionAreaInformation]).$ctor1)(new $Client_Information_QuestionAreaInformation());
-		$t39.title = 'Question';
-		$t39.set_x(600);
-		$t39.set_y(100);
-		$t39.set_width($Client_ShuffUI_Number.op_Implicit$2(300));
-		$t39.set_height($Client_ShuffUI_Number.op_Implicit$2(275));
-		$t39.allowClose = true;
-		$t39.allowMinimize = true;
-		$t39.set_visible(true);
-		this.questionArea = shuffUIManager.createWindow($Client_Information_QuestionAreaInformation).call(shuffUIManager, $t39);
-		var $t42 = this.questionArea.data;
-		var $t41 = this.questionArea;
-		var $t40 = $Client_ShuffUI_ShuffLabelOptions.$ctor();
-		$t40.x = 20;
-		$t40.y = 5;
-		$t40.width = $Client_ShuffUI_Number.op_Implicit$2(150);
-		$t40.height = $Client_ShuffUI_Number.op_Implicit$2(25);
-		$t40.text = '';
-		$t42.question = $t41.addElement($Client_ShuffUI_ShuffLabel).call($t41, new $Client_ShuffUI_ShuffLabel($t40));
+		$t36.height = $Client_ShuffUI_Number.op_Implicit$3('80%');
+		$t36.lineNumbers = true;
+		$t38.codeEditor = $t37.addElement($Client_ShuffUI_ShuffCodeEditor).call($t37, new $Client_ShuffUI_ShuffCodeEditor.$ctor1($t36));
+		var $t41 = this.codeArea.data;
+		var $t40 = this.codeArea;
+		var $t39 = $Client_ShuffUI_ShuffCodeEditorOptions.$ctor();
+		$t39.height = $Client_ShuffUI_Number.op_Implicit$3('20%');
+		$t39.lineNumbers = false;
+		$t41.console = $t40.addElement($Client_ShuffUI_ShuffCodeEditor).call($t40, new $Client_ShuffUI_ShuffCodeEditor.$ctor1($t39));
+		var $t42 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_QuestionAreaInformation]).$ctor1)(new $Client_Information_QuestionAreaInformation());
+		$t42.title = 'Question';
+		$t42.set_x(600);
+		$t42.set_y(100);
+		$t42.set_width($Client_ShuffUI_Number.op_Implicit$2(300));
+		$t42.set_height($Client_ShuffUI_Number.op_Implicit$2(275));
+		$t42.allowClose = true;
+		$t42.allowMinimize = true;
+		$t42.set_visible(true);
+		this.questionArea = shuffUIManager.createWindow($Client_Information_QuestionAreaInformation).call(shuffUIManager, $t42);
+		var $t45 = this.questionArea.data;
+		var $t44 = this.questionArea;
+		var $t43 = $Client_ShuffUI_ShuffLabelOptions.$ctor();
+		$t43.x = 20;
+		$t43.y = 5;
+		$t43.width = $Client_ShuffUI_Number.op_Implicit$2(150);
+		$t43.height = $Client_ShuffUI_Number.op_Implicit$2(25);
+		$t43.text = '';
+		$t45.question = $t44.addElement($Client_ShuffUI_ShuffLabel).call($t44, new $Client_ShuffUI_ShuffLabel($t43));
 		this.questionArea.data.load = Function.mkdel(this, function(question) {
 			this.questionArea.set_visible(true);
 			this.questionArea.data.question.set_text(question.question);
-			var $t43 = this.questionArea.data.answerBox.get_parent();
-			$t43.removeElement($Client_ShuffUI_ShuffListBox).call($t43, this.questionArea.data.answerBox);
+			var $t46 = this.questionArea.data.answerBox.get_parent();
+			$t46.removeElement($Client_ShuffUI_ShuffListBox).call($t46, this.questionArea.data.answerBox);
 			var answers = [];
 			for (var i2 = 0; i2 < question.answers.length; i2++) {
 				answers.add(new $Client_ShuffUI_ShuffListItem(question.answers[i2], i2));
 			}
-			var $t46 = this.questionArea.data;
-			var $t45 = this.questionArea;
-			var $t44 = $Client_ShuffUI_ShuffListBoxOptions.$ctor();
-			$t44.x = 30;
-			$t44.y = 65;
-			$t44.width = $Client_ShuffUI_Number.op_Implicit$2(215);
-			$t44.height = $Client_ShuffUI_Number.op_Implicit$2(125);
-			$t44.label = 'Answers';
-			$t44.items = answers;
-			$t46.answerBox = $t45.addElement($Client_ShuffUI_ShuffListBox).call($t45, new $Client_ShuffUI_ShuffListBox($t44));
+			var $t49 = this.questionArea.data;
+			var $t48 = this.questionArea;
+			var $t47 = $Client_ShuffUI_ShuffListBoxOptions.$ctor();
+			$t47.x = 30;
+			$t47.y = 65;
+			$t47.width = $Client_ShuffUI_Number.op_Implicit$2(215);
+			$t47.height = $Client_ShuffUI_Number.op_Implicit$2(125);
+			$t47.label = 'Answers';
+			$t47.items = answers;
+			$t49.answerBox = $t48.addElement($Client_ShuffUI_ShuffListBox).call($t48, new $Client_ShuffUI_ShuffListBox($t47));
 		});
-		var $t49 = this.questionArea.data;
-		var $t48 = this.questionArea;
-		var $t47 = $Client_ShuffUI_ShuffListBoxOptions.$ctor();
-		$t47.x = 30;
-		$t47.y = 65;
-		$t47.width = $Client_ShuffUI_Number.op_Implicit$2(215);
-		$t47.height = $Client_ShuffUI_Number.op_Implicit$2(125);
-		$t47.label = 'Answers';
-		$t49.answerBox = $t48.addElement($Client_ShuffUI_ShuffListBox).call($t48, new $Client_ShuffUI_ShuffListBox($t47));
+		var $t52 = this.questionArea.data;
+		var $t51 = this.questionArea;
+		var $t50 = $Client_ShuffUI_ShuffListBoxOptions.$ctor();
+		$t50.x = 30;
+		$t50.y = 65;
+		$t50.width = $Client_ShuffUI_Number.op_Implicit$2(215);
+		$t50.height = $Client_ShuffUI_Number.op_Implicit$2(125);
+		$t50.label = 'Answers';
+		$t52.answerBox = $t51.addElement($Client_ShuffUI_ShuffListBox).call($t51, new $Client_ShuffUI_ShuffListBox($t50));
 		shuffUIManager.focus(this.devArea.information);
 		//
 		//
@@ -573,21 +602,19 @@ var $Client_PageGameContext = function(context, canvasInfo) {
 var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
 	this.$buildSite = null;
 	this.$cardImages = null;
+	this.cards = {};
 	this.$endTime = 0;
 	this.gameStuff = null;
 	this.gateway = null;
 	this.$numOfTimes = 0;
+	this.$resetStyles = ['border-radius', '-moz-border-radius', '-webkit-border-radius', 'box-shadow', '-moz-box-shadow', 'transform', '-webkit-transform', 'padding', 'background-color', 'border'];
+	this.spaces = {};
 	this.$startTime = 0;
 	this.$timeValue = 0;
-	this.$spaces = {};
-	this.$cards = {};
-	this.$resetStyles = ['border-radius', '-moz-border-radius', '-webkit-border-radius', 'box-shadow', '-moz-box-shadow', 'transform', '-webkit-transform', 'padding', 'background-color', 'border'];
 	this.$buildSite = buildSite;
 	this.gameStuff = new $Client_GameInfo();
 	this.$startTime = Date.get_now();
-	window.setTimeout(function() {
-		buildSite.devArea.data.beginGame();
-	}, 2000);
+	//            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
 	this.gateway = new $Client_Gateway(gatewayServerAddress);
 	this.gateway.on('Area.Main.Login.Response', function(data) {
 		window.alert(JSON.stringify(data));
@@ -717,11 +744,8 @@ $Client_PageHandler.prototype = {
 		});
 		this.gateway.on('Area.Game.GameOver', function(data6) {
 		});
-		this.gateway.on('Area.Debug.GameOver', Function.mkdel(this, function(data7) {
-			window.setTimeout(Function.mkdel(this, function() {
-				this.$buildSite.devArea.data.beginGame();
-			}), 1000);
-		}));
+		this.gateway.on('Area.Debug.GameOver', function(data7) {
+		});
 	},
 	$fixAppearance: function(appearance) {
 		return global.Appearance.fromJson(appearance);
@@ -736,28 +760,28 @@ $Client_PageHandler.prototype = {
 	},
 	$findSpace: function(space) {
 		var id = 'dv_space_' + space.name;
-		if (ss.isValue(this.$spaces[id])) {
-			return this.$spaces[id];
+		if (ss.isValue(this.spaces[id])) {
+			return this.spaces[id];
 		}
 		else {
 			var sp = document.createElement('div');
 			sp.id = id;
 			sp.style.position = 'absolute';
 			$('#dvGame').append(sp);
-			return this.$spaces[id] = new global.SpaceDrawing(sp);
+			return this.spaces[id] = new global.SpaceDrawing(sp);
 		}
 	},
 	$findCard: function(wantedSpace, card) {
 		var id = 'dv_card_' + card.type + '_' + card.value;
 		var space = this.$findSpace(wantedSpace);
 		var doc;
-		if (ss.isValue(this.$cards[id])) {
+		if (ss.isValue(this.cards[id])) {
 			var m = document.getElementById(id);
 			if (!ss.referenceEquals(m.parentNode, space.outerElement)) {
 				m.parentNode.removeChild(m);
 				space.outerElement.appendChild(m);
 			}
-			doc = this.$cards[id];
+			doc = this.cards[id];
 		}
 		else {
 			var sp = document.createElement('div');
@@ -766,7 +790,7 @@ $Client_PageHandler.prototype = {
 			var cardImage = this.$cloneImage(this.$cardImages[this.drawCard(card)]);
 			sp.appendChild(cardImage);
 			sp.style.position = 'absolute';
-			doc = this.$cards[id] = new global.CardDrawing(sp, cardImage);
+			doc = this.cards[id] = new global.CardDrawing(sp, cardImage);
 		}
 		return doc;
 	},
@@ -921,7 +945,6 @@ $Client_PageHandler.prototype = {
 		var trans = element.outerElement.style['transform'];
 		if (trans.startsWith('rotate(')) {
 			element.outerElement.style['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate + parseInt(trans.replaceAll('rotate(', '').replaceAll('deg)', '')));
-			//todo regex??
 		}
 		else {
 			element.outerElement.style['transform'] = String.format('rotate({0}deg)', appearance.innerStyle.rotate);
@@ -964,6 +987,10 @@ $Client_PageHandler.prototype = {
 	},
 	handleScroll: function(e) {
 		e.preventDefault();
+	},
+	clearCache: function() {
+		this.cards = {};
+		this.spaces = {};
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -1085,6 +1112,68 @@ var $Client_ShuffUI_CodeMirrorInformation = function() {
 var $Client_ShuffUI_CodeMirrorInformationData = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
+// Client.ShuffUI.DelegateOrValue
+var $Client_ShuffUI_DelegateOrValue$1 = function(T) {
+	var $type = function(d) {
+		this.isValue = false;
+		this.$method = null;
+		this.$value = T.getDefaultValue();
+		this.$oldValue = T.getDefaultValue();
+		this.$1$StaticValueChangesField = null;
+		this.$method = d;
+		this.isValue = false;
+		this.$oldValue = this.$method();
+	};
+	$type.prototype = {
+		get_staticValueChanges: function() {
+			return this.$1$StaticValueChangesField;
+		},
+		set_staticValueChanges: function(value) {
+			this.$1$StaticValueChangesField = value;
+		},
+		$evaluate: function() {
+			if (this.isValue === true) {
+				return this.$value;
+			}
+			else if (this.isValue === false) {
+				var val = this.$method();
+				if (val !== this.$oldValue) {
+					this.get_staticValueChanges()(val);
+				}
+				this.$oldValue = val;
+				return val;
+			}
+			return T.getDefaultValue();
+		}
+	};
+	$type.$ctor1 = function(d) {
+		this.isValue = false;
+		this.$method = null;
+		this.$value = T.getDefaultValue();
+		this.$oldValue = T.getDefaultValue();
+		this.$1$StaticValueChangesField = null;
+		this.$value = d;
+		this.isValue = true;
+	};
+	$type.$ctor1.prototype = $type.prototype;
+	$type.op_Implicit$2 = function(d) {
+		return new (Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [T]).$ctor1)(d);
+	};
+	$type.op_Implicit$1 = function(d) {
+		return new (Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [T]))(d);
+	};
+	$type.op_Implicit = function(d) {
+		return d.$evaluate();
+	};
+	Type.registerGenericClassInstance($type, $Client_ShuffUI_DelegateOrValue$1, [T], function() {
+		return Object;
+	}, function() {
+		return [];
+	});
+	return $type;
+};
+Type.registerGenericClass(global, 'Client.ShuffUI.DelegateOrValue$1', $Client_ShuffUI_DelegateOrValue$1, 1);
+////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ItemClickedEvent
 var $Client_ShuffUI_ItemClickedEvent = function() {
 };
@@ -1142,22 +1231,26 @@ $Client_ShuffUI_PositionChangedEvent.$ctor = function(x, y) {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffButton
 var $Client_ShuffUI_ShuffButton = function(options) {
+	this.$myText = null;
 	this.text = null;
 	$Client_ShuffUI_ShuffElement.call(this);
-	var but = $('<div></div>');
-	this.element = but;
-	but.css('position', 'absolute');
+	this.element = $('<div></div>');
+	this.element.css('position', 'absolute');
 	this.text = options.text;
+	this.text.set_staticValueChanges(Function.combine(this.text.get_staticValueChanges(), Function.mkdel(this, function(value) {
+		this.element.text(value);
+	})));
+	this.element.text(Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(this.text));
 	this.set_x(options.x);
 	this.set_y(options.y);
 	this.set_width(options.width);
 	this.set_height(options.height);
 	this.set_visible(options.visible);
-	but.button();
-	but.click(function(a) {
+	this.element.button();
+	this.element.click(function(a) {
 		options.onClick($Client_ShuffUI_ButtonClickedEvent.$ctor(a.clientX, a.clientY));
 	});
-	but.disableSelection();
+	this.element.disableSelection();
 };
 $Client_ShuffUI_ShuffButton.prototype = {
 	bindCustomEvents: function() {
@@ -1195,9 +1288,9 @@ $Client_ShuffUI_ShuffButtonOptions.$ctor = function() {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffCodeEditor
 var $Client_ShuffUI_ShuffCodeEditor = function() {
-	this.$2$TextChangedField = null;
 	this.information = null;
 	this.$codeMirror = null;
+	this.$2$TextChangedField = null;
 	this.text = null;
 	this.lineNumbers = false;
 	$Client_ShuffUI_ShuffElement.call(this);
@@ -1256,9 +1349,9 @@ $Client_ShuffUI_ShuffCodeEditor.prototype = {
 	}
 };
 $Client_ShuffUI_ShuffCodeEditor.$ctor1 = function(options) {
-	this.$2$TextChangedField = null;
 	this.information = null;
 	this.$codeMirror = null;
+	this.$2$TextChangedField = null;
 	this.text = null;
 	this.lineNumbers = false;
 	$Client_ShuffUI_ShuffElement.call(this);
@@ -1318,15 +1411,15 @@ $Client_ShuffUI_ShuffCodeEditorOptions.$ctor = function() {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffElement
 var $Client_ShuffUI_ShuffElement = function() {
-	this.$myVisible = false;
-	this.$myX = 0;
-	this.$myY = 0;
-	this.$myWidth = null;
-	this.$myHeight = null;
 	this.parentChanged = null;
 	this.positionChanged = null;
 	this.sizeChanged = null;
 	this.visibleChanged = null;
+	this.$myHeight = null;
+	this.$myVisible = false;
+	this.$myWidth = null;
+	this.$myX = 0;
+	this.$myY = 0;
 	this.$1$ParentField = null;
 	this.element = null;
 	this.$myWidth = $Client_ShuffUI_Number.op_Implicit$2(0);

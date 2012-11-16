@@ -7,6 +7,7 @@ using Client.ShuffUI;
 using CommonLibraries;
 using CommonWebLibraries;
 using Models;
+using global;
 using jQueryApi;
 namespace Client
 {
@@ -21,6 +22,9 @@ namespace Client
         private ShuffUIManager shuffUIManager;
         [IntrinsicProperty]
         public static BuildSite Instance { get; set; }
+
+        string selectedGame="Sevens";
+
 
         public BuildSite(string gatewayServerAddress)
         {
@@ -244,11 +248,24 @@ namespace Client
                                                                                                                 });
 
             devArea.Data.beginGame = ( () => {
+
+
+                jQuery.Select("#dvGame").Empty();
+                                           pageHandler.ClearCache();
+
+                jQuery.Select("#dvGame").Width("50%");
+                jQuery.Select("#dvGame").Height("100%");
+
+
+                 
+
+                                           //clearLevel();
                                            devArea.Data.Created = false;
                                            devArea.Data.Joined = 0;
                                            pageHandler.startGameServer();
                                            pageHandler.gateway.Emit("Area.Debug.Create",
                                                                     new {
+                                                                        gameName=selectedGame,
                                                                                 user = new UserModel {UserName = devArea.Data.txtNumOfPlayers.Text},
                                                                                 Name = "main room",
                                                                                 Source = codeArea.Data.codeEditor.Information.editor.GetValue(),
@@ -256,13 +273,29 @@ namespace Client
                                                                         });
                                        } );
 
-            devArea.AddElement(new ShuffButton(new ShuffButtonOptions() {
+            devArea.AddElement(new ShuffButton(new ShuffButtonOptions()
+            {
+                X = 280,
+                Y = 54,
+                Width = 150,
+                Height = 25,
+                Text = "Begin Game",
+                OnClick = (e) => devArea.Data.beginGame()
+            }));
+
+            ShuffButton but=null;
+            devArea.AddElement(but=new ShuffButton(new ShuffButtonOptions() {
                                                                                 X = 280,
-                                                                                Y = 54,
+                                                                                Y = 84,
                                                                                 Width = 150,
                                                                                 Height = 25,
-                                                                                Text = "Begin Game",
-                                                                                OnClick = (e) => devArea.Data.beginGame()
+                                                                                Text = new Func<string>(() => "Game: " + selectedGame),
+
+                                                                                OnClick = (e) => {
+                                                                                              if (selectedGame == "Sevens") selectedGame = "BlackJack";
+                                                                                              else selectedGame = "Sevens";
+                                                                                              string m=but.Text;
+                                                                                          }
                                                                         }));
 
             devArea.Data.lblHowFast = devArea.AddElement(new ShuffLabel(new ShuffLabelOptions() {

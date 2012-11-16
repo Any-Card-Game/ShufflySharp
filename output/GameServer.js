@@ -126,7 +126,6 @@ var $GameServer_GameServer = function() {
 	//});
 	this.$qManager = new CommonShuffleLibrary.QueueManager(this.$gameServerIndex, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GameServer', null), new CommonShuffleLibrary.QueueWatcher(this.$gameServerIndex, null)], ['GameServer', 'GatewayServer', 'Gateway*']));
 	this.$qManager.addChannel('Area.Debug.Create', Function.mkdel(this, function(user, data) {
-		data.gameName = 'Sevens';
 		var room;
 		this.$rooms.add(room = new $GameServer_GameRoom());
 		room.name = data.name;

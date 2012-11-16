@@ -195,7 +195,8 @@ namespace Build
             }
 
             foreach (var d in Directory.GetDirectories(pre + shufSharp + @"\ShuffleGames\")) {
-                var to = pre + shufSharp + @"\output\Games\" + d.Split('\\').Last();
+                string game = d.Split('\\').Last();
+                var to = pre + shufSharp + @"\output\Games\" + game;
                 if (!Directory.Exists(to))
 
                     Directory.CreateDirectory(to);
@@ -203,24 +204,21 @@ namespace Build
                     continue;
                 File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
 
-/*
 #if FTP
-                Console.WriteLine("ftp start " + text.Length.ToString("N0"));
-                webftp.Upload(loc + "Games/" + depend + "/" + depend + "." + ext + ".js", fm);
-                Console.WriteLine("ftp complete " + fm);
+              
 
-                Console.WriteLine("server ftp start " + text.Length.ToString("N0"));
+                Console.WriteLine("server ftp start " );
 
-                var fileStream = new FileInfo(fm).OpenRead();
-                client.UploadFile(fileStream, serverloc + "Games/" + depend + "/" + depend + "." + ext + ".js", true);
-                fileStream.Close();
-                fileStream = new FileInfo(fm).OpenRead();
-                client.UploadFile(fileStream, serverloc2 + "Games/" + depend + "/" + depend + "." + ext + ".js", true);
+                var fileStream = new FileInfo(to + @"\app.js").OpenRead();
+                if (!client.Exists(serverloc + string.Format("Games/{0}", game))) {
+                    client.CreateDirectory(serverloc + string.Format("Games/{0}", game));
+                }
+                client.UploadFile(fileStream, serverloc + string.Format("Games/{0}/app.js", game), true);
                 fileStream.Close();
 
-                Console.WriteLine("server ftp complete " + fm);
+
+                Console.WriteLine("server ftp complete " + to);
 #endif
-*/
             }
         }
 

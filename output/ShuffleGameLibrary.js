@@ -18,7 +18,6 @@ $global__.clone = function(obj) {
 	//::dynamic okay
 	if (Type.isInstanceOfType(obj, Array)) {
 		temp = [];
-		//::dynamic okay
 	}
 	else {
 		temp = new Object();
@@ -396,8 +395,8 @@ var $global_CardGame = function(options) {
 		this.deck.cards.add(new $global_Card(0, 0));
 	}
 	var $t1 = new CommonLibraries.Size();
-	$t1.width = 16;
-	$t1.height = 12;
+	$t1.width = 22;
+	$t1.height = 10;
 	this.size = $t1;
 	//
 	//           

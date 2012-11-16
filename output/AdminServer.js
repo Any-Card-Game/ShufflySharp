@@ -3,13 +3,12 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 // AdminServer.AdminServer
 var $AdminServer_AdminServer = function() {
 	this.$__dirname = null;
-	this.$debug = false;
-	this.$fs = require('fs');
-	this.$debugs = null;
 	this.$chats = null;
+	this.$debug = false;
+	this.$debugs = null;
 	this.$exec = null;
+	this.$fs = require('fs');
 	this.$games = null;
-	this.$sites = null;
 	this.$gateways = null;
 	this.$head = null;
 	this.$indexPageData = 0;
@@ -17,8 +16,9 @@ var $AdminServer_AdminServer = function() {
 	this.$nonDebuggable = null;
 	this.$numOfChatServers = 1;
 	this.$numOfGameServers = 1;
-	this.$numOfSiteServers = 1;
 	this.$numOfGateways = 1;
+	this.$numOfSiteServers = 1;
+	this.$sites = null;
 	this.$util = null;
 	var fs = require('fs');
 	console.log('Shuffly Admin V0.44');

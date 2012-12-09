@@ -89,7 +89,7 @@ namespace Client.ShuffUI
                         );
                 outer.Resizable(new ResizableOptions {
                                                              Handles = "n, e, s, w, ne, se, sw, nw",
-                                                             OnResize = (evt, o) => { }
+                                                             OnResize = (evt, o) => { ui.onResize(evt, o); }
                                                      });
             }
 

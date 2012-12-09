@@ -941,6 +941,7 @@ Array.prototype.get_count = function Array$get_count() {
 };
 
 Array.prototype.getValue = function Array$getValue(indices) {
+ 
 	if (indices.length != (this._sizes ? this._sizes.length : 1))
 		throw 'Invalid number of indices';
 
@@ -960,6 +961,7 @@ Array.prototype.getValue = function Array$getValue(indices) {
 };
 
 Array.prototype.get = function Array$get() {
+ 
 	return this.getValue(arguments);
 };
 

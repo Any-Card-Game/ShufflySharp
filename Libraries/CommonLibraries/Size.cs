@@ -1,9 +1,18 @@
-using System.Runtime.CompilerServices;
+using System;
 namespace CommonLibraries
 {
+    [Serializable]
     public class Size
     {
-        [ScriptName("height")] public int Height;
-        [ScriptName("width")] public int Width;
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public Size(int width, int height)
+        {
+            Width = width;
+            Height = height;
+        }
+
+        public Size() {}
     }
 }

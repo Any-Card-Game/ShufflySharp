@@ -94,38 +94,38 @@ namespace global
             }
             public string BorderBottom
             {
-                get { return (string)props["borderBottom"]; }
+                get { return (string)props["border-bottom"]; }
                 set
                 {
-                    if (props["borderBottom"] == null) someCouner++;
-                    props["borderBottom"] = value;
+                    if (props["border-bottom"] == null) someCouner++;
+                    props["border-bottom"] = value;
                 }
             }
             public string BorderBottomColor
             {
-                get { return (string)props["borderBottomColor"]; }
+                get { return (string)props["border-bottomColor"]; }
                 set
                 {
-                    if (props["borderBottomColor"] == null) someCouner++;
-                    props["borderBottomColor"] = value;
+                    if (props["border-bottomColor"] == null) someCouner++;
+                    props["border-bottomColor"] = value;
                 }
             }
             public string BorderBottomStyle
             {
-                get { return (string)props["borderBottomStyle"]; }
+                get { return (string)props["border-bottomStyle"]; }
                 set
                 {
-                    if (props["borderBottomStyle"] == null) someCouner++;
-                    props["borderBottomStyle"] = value;
+                    if (props["border-bottomStyle"] == null) someCouner++;
+                    props["border-bottomStyle"] = value;
                 }
             }
             public string BorderBottomWidth
             {
-                get { return (string)props["borderBottomWidth"]; }
+                get { return (string)props["border-bottomWidth"]; }
                 set
                 {
-                    if (props["borderBottomWidth"] == null) someCouner++;
-                    props["borderBottomWidth"] = value;
+                    if (props["border-bottomWidth"] == null) someCouner++;
+                    props["border-bottomWidth"] = value;
                 }
             }
             public string BorderCollapse

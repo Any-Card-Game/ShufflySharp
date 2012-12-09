@@ -2,7 +2,7 @@
     var self = this;
     self.dealer = new Pile('dealer');
 
-    self.cardGame = new CardGame({ numberOfCards: 52 });
+    self.cardGame = new CardGame({ numberOfCards: 52, size: { width: 22, height: 10 } });
 
     self.constructor = function() {
         self.cardGame.spaces.push(new TableSpace({
@@ -11,7 +11,7 @@
             stack: false,
             name: 'Dealer',
             x: 8,
-            y: 3,
+            y: 2,
             width: 5,
             height: 0,
             pile: self.dealer,
@@ -27,7 +27,7 @@
             text: 'Dealer'
         }));
     };
-    
+
     function findSpaceByUser(user) {
         for (var i = 0; i < self.cardGame.spaces.length; i++) {
             if (self.cardGame.spaces[i].user == user) {
@@ -56,9 +56,9 @@
             text: text
         }));
         sp.user = user;
-        
-        sp.x = (~~(userIndex/2)) * 5 + 2;
-        sp.y = ((userIndex%2)==0?3:0) +12;
+
+        sp.x = (~~(userIndex / 2)) * 5 + 2;
+        sp.y = ((userIndex % 2) == 0 ? 3 : 0) + 4;
 
         var textArea = tta;
         textArea.x = sp.x;
@@ -87,20 +87,20 @@
         if (val < 17) {
             answers.push('Hit');
             answers.push('Double Down');
-        pile.appearance.effects.push(new Effect$Highlight({
-                radius: val*4,
+            pile.appearance.effects.push(new Effect$Highlight({
+                radius: val * 4,
                 color: 'rgba(0,241,58,0.7)',
                 opacity: .5
             }));
-            
-            } else {
+
+        } else {
             shuff.log("Bust!!!");
             pile.appearance.effects.push(new Effect$Highlight({
                 radius: 30,
                 color: 'rgba(255,0,24,0.7)',
                 opacity: .5
             }));
-            
+
 
             return;
         }
@@ -180,16 +180,16 @@
             }
         });
 
-        
+
         self.cardGame.users.foreach(function(u) {
-            evaluateBlackJackHand(u);         
- 
+            evaluateBlackJackHand(u);
+
 
         });
 
         evaluateDealerHand(self.dealer);
-        
-                        shuff.declareWinner(self.cardGame.users[0]);
+
+        shuff.declareWinner(self.cardGame.users[0]);
         return true;
     };
 

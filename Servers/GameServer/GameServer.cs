@@ -58,7 +58,7 @@ namespace GameServer
                                                                       }));
 
             qManager.AddChannel<CreateGameRequestModel>("Area.Debug.Create",
-                                                        (user, data) => { 
+                                                        (user, data) => {
                                                             GameRoom room;
                                                             rooms.Add(room = new GameRoom());
                                                             room.Name = data.Name;

@@ -1,15 +1,16 @@
 using System;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 namespace global
 {
     [Serializable]
     public class GameCardGameOptions
     {
         [IntrinsicProperty]
-        [ScriptName("numberOfCards")]
         public int NumberOfCards { get; set; }
         [IntrinsicProperty]
-        [ScriptName("numberOfJokers")]
         public int NumberOfJokers { get; set; }
+        [IntrinsicProperty]
+        public Size Size { get; set; }
     }
 }

@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ArrayUtils.cs" />
+    <Compile Include="CardGame\Appearance\Effects\InternalStyle.cs" />
     <Compile Include="CardGame\CardGameAnswer.cs" />
     <Compile Include="CardGame\Appearance\CardGameAppearance.cs" />
     <Compile Include="CardGame\CardGameArea.cs" />

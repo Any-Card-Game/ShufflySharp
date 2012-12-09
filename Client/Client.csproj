@@ -444,9 +444,11 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Information\HomeAreaInformation.cs" />
     <Compile Include="Information\QuestionAreaInformation.cs" />
+    <Compile Include="InternalStyle.cs" />
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
     <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
+    <Compile Include="ShuffUI\DelegateOrValue.cs" />
     <Compile Include="ShuffUI\ImportedExtensionMethods.cs" />
     <Compile Include="ShuffUI\Number.cs" />
     <Compile Include="ShuffUI\ShuffButton.cs" />

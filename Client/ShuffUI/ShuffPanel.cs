@@ -21,7 +21,7 @@ namespace Client.ShuffUI
             Visible = true;
         }
 
-        public T AddElement<T>(T element) where T : ShuffElement
+        public ShuffElement AddElement(ShuffElement element)
         {
             Element.Append(element.Element);
 
@@ -30,7 +30,7 @@ namespace Client.ShuffUI
             return element;
         }
 
-        public T RemoveElement<T>(T element) where T : ShuffElement
+        public ShuffElement RemoveElement(ShuffElement element)
         {
             element.Element.Remove();
 

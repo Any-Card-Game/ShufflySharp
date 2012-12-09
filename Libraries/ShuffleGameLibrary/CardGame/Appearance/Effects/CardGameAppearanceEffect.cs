@@ -7,13 +7,10 @@ namespace global
     [ScriptName("Effect")]
     public class CardGameAppearanceEffect
     {
-        [ScriptName("type")]
         [IntrinsicProperty]
         public EffectType Type { get; set; }
-        [ScriptName("post")]
         [IntrinsicProperty]
         public CardGameAppearanceEffectDrawTime DrawTime { get; set; }
-        [ScriptName("childrenEffects")]
         [IntrinsicProperty]
         public CardGameAppearanceEffect ChainedEffect { get; set; }
 
@@ -23,7 +20,6 @@ namespace global
             DrawTime = CardGameAppearanceEffectDrawTime.Pre;
         }
 
-        [ScriptName("chainEffect")]
         public CardGameAppearanceEffect ChainEffect(CardGameAppearanceEffect ef)
         {
             ChainedEffect = ( ef );
@@ -96,20 +92,18 @@ namespace global
         [IntrinsicProperty]
         public Element OuterElement { get; set; }
         [IntrinsicProperty]
-        public ImageElement Image { get; set; }
+        public InternalStyle OuterElementStyle { get; set; }
 
-        public CardDrawing(Element item1, ImageElement item2)
+        public CardDrawing(Element item1)
         {
             OuterElement = item1;
-            Image = item2;
+            OuterElementStyle = new InternalStyle();
         }
-
-        //public MyStyle OuterElementStyle { get; set; }
-        //public MyStyle ImageStyle { get; set; }
     }
     public class SpaceDrawing
     {
-        // public MyStyle OuterElementStyle { get; set; }
+        [IntrinsicProperty]
+        public InternalStyle OuterElementStyle { get; set; }
         [IntrinsicProperty]
         public Element OuterElement { get; set; }
         [IntrinsicProperty]
@@ -119,6 +113,7 @@ namespace global
         {
             OuterElement = item1;
             ChildNodes = new List<CardDrawing>();
+            OuterElementStyle = new InternalStyle();
         }
     }
     //[NamedValues]todo:::
@@ -153,27 +148,27 @@ namespace global
         public override void Build(CardDrawing m)
         {
             if (Style == null) return;
-            m.OuterElement.Style.BackgroundColor = Style.OuterStyle.BackColor;
+            m.OuterElementStyle.BackgroundColor = Style.OuterStyle.BackColor;
             if (Style.OuterStyle.Border != null) {
                 if (Style.OuterStyle.Border.Left != null) {
-                    m.OuterElement.Style.BorderLeftColor = Style.OuterStyle.Border.Left.Color;
-                    m.OuterElement.Style.BorderLeftStyle = Style.OuterStyle.Border.Left.Style.ToString();
-                    m.OuterElement.Style.BorderLeftWidth = Style.OuterStyle.Border.Left.Width;
+                    m.OuterElementStyle.BorderLeftColor = Style.OuterStyle.Border.Left.Color;
+                    m.OuterElementStyle.BorderLeftStyle = Style.OuterStyle.Border.Left.Style.ToString();
+                    m.OuterElementStyle.BorderLeftWidth = Style.OuterStyle.Border.Left.Width;
                 }
                 if (Style.OuterStyle.Border.Top != null) {
-                    m.OuterElement.Style.BorderTopColor = Style.OuterStyle.Border.Top.Color;
-                    m.OuterElement.Style.BorderTopStyle = Style.OuterStyle.Border.Top.Style.ToString();
-                    m.OuterElement.Style.BorderTopWidth = Style.OuterStyle.Border.Top.Width;
+                    m.OuterElementStyle.BorderTopColor = Style.OuterStyle.Border.Top.Color;
+                    m.OuterElementStyle.BorderTopStyle = Style.OuterStyle.Border.Top.Style.ToString();
+                    m.OuterElementStyle.BorderTopWidth = Style.OuterStyle.Border.Top.Width;
                 }
                 if (Style.OuterStyle.Border.Right != null) {
-                    m.OuterElement.Style.BorderRightColor = Style.OuterStyle.Border.Right.Color;
-                    m.OuterElement.Style.BorderRightStyle = Style.OuterStyle.Border.Right.Style.ToString();
-                    m.OuterElement.Style.BorderRightWidth = Style.OuterStyle.Border.Right.Width;
+                    m.OuterElementStyle.BorderRightColor = Style.OuterStyle.Border.Right.Color;
+                    m.OuterElementStyle.BorderRightStyle = Style.OuterStyle.Border.Right.Style.ToString();
+                    m.OuterElementStyle.BorderRightWidth = Style.OuterStyle.Border.Right.Width;
                 }
                 if (Style.OuterStyle.Border.Bottom != null) {
-                    m.OuterElement.Style.BorderBottomColor = Style.OuterStyle.Border.Bottom.Color;
-                    m.OuterElement.Style.BorderBottomStyle = Style.OuterStyle.Border.Bottom.Style.ToString();
-                    m.OuterElement.Style.BorderBottomWidth = Style.OuterStyle.Border.Bottom.Width;
+                    m.OuterElementStyle.BorderBottomColor = Style.OuterStyle.Border.Bottom.Color;
+                    m.OuterElementStyle.BorderBottomStyle = Style.OuterStyle.Border.Bottom.Style.ToString();
+                    m.OuterElementStyle.BorderBottomWidth = Style.OuterStyle.Border.Bottom.Width;
                 }
             }
         }
@@ -187,7 +182,7 @@ namespace global
         {
             if (Style == null) return;
 
-            m.OuterElement.Style.BackgroundColor = Style.OuterStyle.BackColor;
+            m.OuterElementStyle.BackgroundColor = Style.OuterStyle.BackColor;
         }
 
         public override void TearDown(SpaceDrawing em)

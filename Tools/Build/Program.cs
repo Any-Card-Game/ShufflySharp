@@ -92,12 +92,13 @@ namespace Build
                                                                                                                                                                            @"./Models.js",
                                                                                                                                                                    })
                                                                                      },
-                                                                      {shufSharp + @"\Servers\SiteServer\", new Application(true, "", new List<string> {})}, {
-                                                                                                                                                                     shufSharp + @"\Client\", new Application(false,
-                                                                                                                                                                                                              "",
-                                                                                                                                                                                                              new List<string>
-                                                                                                                                                                                                              {})
-                                                                                                                                                             },
+                                                                      {shufSharp + @"\Servers\SiteServer\", new Application(true, "", new List<string> {})},
+                                                                      {shufSharp + @"\ShuffleGameLibrary\", new Application(false, "", new List<string> {})}, {
+                                                                                                                                                                      shufSharp + @"\Client\", new Application(false,
+                                                                                                                                                                                                               "",
+                                                                                                                                                                                                               new List<string>
+                                                                                                                                                                                                               {})
+                                                                                                                                                              },
                                                               };
 
 #if FTP
@@ -205,17 +206,14 @@ namespace Build
                 File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
 
 #if FTP
-              
 
-                Console.WriteLine("server ftp start " );
+                Console.WriteLine("server ftp start ");
 
                 var fileStream = new FileInfo(to + @"\app.js").OpenRead();
-                if (!client.Exists(serverloc + string.Format("Games/{0}", game))) {
+                if (!client.Exists(serverloc + string.Format("Games/{0}", game)))
                     client.CreateDirectory(serverloc + string.Format("Games/{0}", game));
-                }
                 client.UploadFile(fileStream, serverloc + string.Format("Games/{0}/app.js", game), true);
                 fileStream.Close();
-
 
                 Console.WriteLine("server ftp complete " + to);
 #endif

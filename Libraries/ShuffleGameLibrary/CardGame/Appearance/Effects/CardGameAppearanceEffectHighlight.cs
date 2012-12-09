@@ -34,67 +34,83 @@ namespace global
 
         public override void Build(CardDrawing e)
         {
-            var em = e.OuterElement;
+            var em = e.OuterElementStyle;
 
-            em.Style.Padding = string.Format("{0} {0} {0} {0}", ( Radius ).px());
-            em.Style.BackgroundColor = Color;
-            em.Style.BackgroundColor = Color;
-            em.Style.Border = "solid 2px black";
+            em.Padding = string.Format("{0} {0} {0} {0}", ( Radius ).px());
+            em.BackgroundColor = Color;
+            em.Border = "solid 2px black";
+            em.Left = ( em.Left.nopx() - Radius ).px();
+            em.Top = ( em.Top.nopx() - Radius ).px();
 
             /// Window.Alert("good1");
 
-            em.Style["border-radius"] = 15.0.px();
-            em.Style["box-shadow"] = "4px 4px 2px #333";
+            em.BorderRadius = 15.0.px();
+            em.BoxShadow = "4px 4px 2px #333";
         }
 
         public override void Build(SpaceDrawing e)
         {
-            var em = e.OuterElement;
+            var cur = new InternalStyle();
 
-            em.Style.Padding = string.Format("{0} {0} {0} {0}", ( Radius ).px());
-            em.Style.BackgroundColor = Color;
-            em.Style.Border = "solid 2px black";
+            cur.AddChild(e.OuterElementStyle);
+            e.OuterElementStyle = cur;
+
+            var em = e.OuterElementStyle;
+            em.Padding = string.Format("{0} {0} {0} {0}", ( Radius ).px());
+            em.BackgroundColor = Color;
+            em.Border = "solid 2px black";
             /// Window.Alert("good1");
 
-            em.Style["border-radius"] = 15.0.px();
-            em.Style["box-shadow"] = "4px 4px 2px #333";
+            em.Left = ( em.Left.nopx() - Radius ).px();
+            em.Top = ( em.Top.nopx() - Radius ).px();
+
+            em.BorderRadius = 15.0.px();
+            em.BoxShadow = "4px 4px 2px #333";
         }
 
         public override void TearDown(CardDrawing e)
         {
-            var em = e.OuterElement;
+/*
+            var em = e.OuterElementStyle;
 
             ///     Window.Alert("good2");
+            
+            double paddingRadiusL = em.PaddingLeft.nopx();
+            double paddingRadiusT = em.PaddingTop.nopx();
+            em.Left = ( em.Left.nopx() - em.PaddingLeft.nopx() ).px();
+            em.Top = ( em.Top.nopx() - em.PaddingTop.nopx() ).px();
 
-            double paddingRadiusL = em.Style.PaddingLeft.nopx();
-            double paddingRadiusT = em.Style.PaddingTop.nopx();
-            em.Style.Left = ( em.Style.Left.nopx() - em.Style.PaddingLeft.nopx() ).px();
-            em.Style.Top = ( em.Style.Top.nopx() - em.Style.PaddingTop.nopx() ).px();
+            for (int i = 0; i < e.OuterElement.ChildNodes.Length; i++) {
+                var childNode = e.OuterElement.ChildNodes[i];
 
-            for (int i = 0; i < em.ChildNodes.Length; i++) {
-                if (em.ChildNodes[i].TagName == "DIV") {
-                    em.ChildNodes[i].Style.Left = ( em.ChildNodes[i].Style.Left.nopx() + paddingRadiusL ).px();
-                    em.ChildNodes[i].Style.Top = ( em.ChildNodes[i].Style.Top.nopx() + paddingRadiusT ).px();
+                if (childNode.TagName == "DIV") {
+                    childNode.Style.Left = ( childNode.Style.Left.nopx() + paddingRadiusL ).px();
+                    childNode.Style.Top = ( childNode.Style.Top.nopx() + paddingRadiusT ).px();
                 }
             }
+*/
         }
 
         public override void TearDown(SpaceDrawing e)
         {
-            var em = e.OuterElement;
+/*
+            var em = e.OuterElementStyle;
 
             ///     Window.Alert("good2");
 
-            double paddingRadiusL = em.Style.PaddingLeft.nopx();
-            double paddingRadiusT = em.Style.PaddingTop.nopx();
-            em.Style.Left = ( em.Style.Left.nopx() - em.Style.PaddingLeft.nopx() ).px();
-            em.Style.Top = ( em.Style.Top.nopx() - em.Style.PaddingTop.nopx() ).px();
-            for (int i = 0; i < em.ChildNodes.Length; i++) {
-                if (em.ChildNodes[i].TagName == "DIV") {
-                    em.ChildNodes[i].Style.Left = ( em.ChildNodes[i].Style.Left.nopx() + paddingRadiusL ).px();
-                    em.ChildNodes[i].Style.Top = ( em.ChildNodes[i].Style.Top.nopx() + paddingRadiusT ).px();
+            double paddingRadiusL = em.PaddingLeft.nopx();
+            double paddingRadiusT = em.PaddingTop.nopx();
+            em.Left = ( em.Left.nopx() - em.PaddingLeft.nopx() ).px();
+            em.Top = ( em.Top.nopx() - em.PaddingTop.nopx() ).px();
+
+            for (int i = 0; i < e.OuterElement.ChildNodes.Length; i++) {
+                var childNode = e.OuterElement.ChildNodes[i];
+                if (childNode.TagName == "DIV") {
+                    childNode.Style.Left = (childNode.Style.Left.nopx() + paddingRadiusL).px();
+                    childNode.Style.Top = (childNode.Style.Top.nopx() + paddingRadiusT).px();
                 }
             }
+*/
         }
     }
     [Serializable]

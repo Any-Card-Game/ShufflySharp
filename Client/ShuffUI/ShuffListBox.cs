@@ -1,57 +1,62 @@
 using System;
 using System.Collections.Generic;
+using System.Html;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using jQueryApi;
 namespace Client.ShuffUI
 {
-    [Serializable]
-    public class ShuffListBoxOptions : ShuffOptions
-    {
-        [IntrinsicProperty]
-        public string Label { get; set; }
-        [IntrinsicProperty]
-        public List<ShuffListItem> Items { get; set; }
-        [IntrinsicProperty]
-        public Func<ShuffListItem, int, jQueryObject> ItemCreation { get; set; }
-        [IntrinsicProperty]
-        public ShuffUIEvent<ItemClickedEvent> OnClick { get; set; }
-    }
     public class ShuffListBox : ShuffElement
     {
         [IntrinsicProperty]
-        public string Label { get; set; }
-        [IntrinsicProperty]
         public Func<ShuffListItem, int, jQueryObject> ItemCreation { get; set; }
         [IntrinsicProperty]
         public ShuffUIEvent<ItemClickedEvent> OnClick { get; set; }
         [IntrinsicProperty]
         public List<ShuffListItem> Items { get; set; }
 
-        public ShuffListBox(ShuffListBoxOptions options)
+        public ShuffListBox(int x, int y, Number width, Number height)
         {
-            var but = jQuery.Select("<div></div>");
+            var but = jQuery.Select("<div style='position:absolute;'></div>");
             Element = but;
 
-            X = options.X;
-            Y = options.Y;
-            Width = options.Width;
-            Height = options.Height;
-            Visible = options.Visible;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            Visible = true;
+            Items = new List<ShuffListItem>();
 
-            /* var theme = "getTheme()".me();
-                     var theme = getTheme();
-        but.jqxListBox({ source: options.items, width: options.width, height: options.height, theme: theme });
-        but.bind('select', function (event) {
-            var item = event.args.item;
-            if (options.click)
-                options.click(item);
-        });
-        return but;
-             */
+            var theme = "getTheme()".eval();
+            but.me().jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});
+
+            Window.SetTimeout(() => {
+                                  but.GetElement(0).Style.Left = X + "px";
+                                  but.GetElement(0).Style.Top = Y + "px";
+                              },
+                              2000);
+
+            but.Bind("select",
+                     (e) => {
+                         var item = e.me().args.item;
+                         if (OnClick != null)
+                             OnClick(item);
+                     });
         }
 
         public override void BindCustomEvents() {}
-        public void AddItem(ShuffListItem p0) {}
+
+        public void AddItem(ShuffListItem p0)
+        {
+            Items.Add(p0);
+            update();
+        }
+
+        private void update()
+        {
+            var theme = "getTheme()".me();
+            Element.me().jqxListBox(new {source = Items, width = (int) Width, height = (int) Height, theme = theme});
+        }
     }
     public class ShuffListItem
     {
@@ -71,8 +76,8 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public T Data { get; set; }
 
-        public ShuffListBox(ShuffListBoxOptions opts, T data)
-                : base(opts)
+        public ShuffListBox(T data, int x, int y, Number width, Number height)
+                : base(x, y, width, height)
         {
             Data = data;
         }

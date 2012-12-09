@@ -1,69 +1,50 @@
-using System;
 using System.Runtime.CompilerServices;
 using jQueryApi;
 namespace Client.ShuffUI
 {
-    [Serializable]
-    public class ShuffTextboxOptions : ShuffOptions
-    {
-        public string Label { get; set; }
-        public string LabelStyle { get; set; }
-        [IntrinsicProperty]
-        public string Text { get; set; }
-    }
     public class ShuffTextbox : ShuffElement
     {
-        private string myText;
         public string Text
         {
-            get { return myText; }
-            set
-            {
-                myText = value;
-                TextChanged(new TextChangedEvent(myText, false));
-            }
+            get { return Element.GetValue(); }
+            set { TextChanged(new TextChangedEvent(value, false)); }
         }
         public ShuffUIEvent<TextChangedEvent> TextChanged { get; set; }
         protected jQueryObject LabelElement { get; set; }
 
-        public ShuffTextbox(ShuffTextboxOptions options)
+        public ShuffTextbox(int x, int y, Number width, Number height, string text = "", string label = null, string labelStyle = null)
         {
-            var but = jQuery.Select("<input value='" + ( options.Text ?? "" ) + "' />");
+            var but = jQuery.Select("<input value='" + ( text ?? "" ) + "' />");
             Element = but;
             but.CSS("position", "absolute");
-            Text = options.Text;
-            X = options.X;
-            Y = options.Y;
-            Width = options.Width;
-            Height = options.Height;
-            Visible = options.Visible;
+            Text = text;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            Visible = true;
 
-            but.Keydown(a => {
-                            myText = but.GetText();
-                            TextChanged(new TextChangedEvent(myText, true));
-                        });
+            but.Keydown(a => { });
 
-            if (options.Label != null) {
+            if (label != null) {
                 ParentChanged += (e) => {
                                      if (e.Parent == null) {
                                          LabelElement.Remove();
                                          LabelElement = null;
                                      } else {
                                          //to LabeledElement
-                                         var lbl = jQuery.Select("<span style='" + options.LabelStyle + "'></span>");
+                                         var lbl = jQuery.Select("<span style='" + labelStyle + "'></span>");
                                          LabelElement = lbl;
-                                         lbl.Text(options.Label);
+                                         lbl.Text(label);
                                          Parent.Element.Append(lbl);
 
                                          lbl.CSS("position", "absolute");
-                                         lbl.CSS("left", X - lbl.GetWidth());
+                                         lbl.CSS("left", X - lbl.GetWidth() - 15);
                                          lbl.CSS("top", Y + 2);
                                          lbl.DisableSelection();
                                      }
                                  };
             }
-
-            but.DisableSelection();
         }
 
         public override void BindCustomEvents()
@@ -76,8 +57,8 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public T Data { get; set; }
 
-        public ShuffTextbox(ShuffTextboxOptions options, T data)
-                : base(options)
+        public ShuffTextbox(T data, int x, int y, Number width, Number height, string text = "", string label = null, string labelStyle = null)
+                : base(x, y, width, height, text, label, labelStyle)
         {
             Data = data;
         }

@@ -2,7 +2,7 @@ module.exports = BlackJack = function() {
     var self = this;
     self.dealer = new Pile('dealer');
 
-    self.cardGame = new CardGame({ numberOfCards: 52 });
+    self.cardGame = new CardGame({ numberOfCards: 52, size: { width: 22, height: 10 } });
 
     self.constructor = function() {
         self.cardGame.spaces.push(new TableSpace({
@@ -11,7 +11,7 @@ module.exports = BlackJack = function() {
             stack: false,
             name: 'Dealer',
             x: 8,
-            y: 3,
+            y: 2,
             width: 5,
             height: 0,
             pile: self.dealer,
@@ -58,7 +58,7 @@ module.exports = BlackJack = function() {
         sp.user = user;
         
         sp.x = (~~(userIndex/2)) * 5 + 2;
-        sp.y = ((userIndex%2)==0?3:0) +12;
+        sp.y = ((userIndex%2)==0?3:0) +4;
 
         var textArea = tta;
         textArea.x = sp.x;

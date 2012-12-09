@@ -6,12 +6,8 @@ namespace global
     [Imported(IsRealType = true)]
     public class GameObject : NodeModule
     {
-        [ScriptName("cardGame")] public GameCardGame CardGame;
-
-        [ScriptName("constructor")]
+        public GameCardGame CardGame;
         public void Constructor() {}
-
-        [ScriptName("runGame")]
         public void RunGame() {}
     }
 }

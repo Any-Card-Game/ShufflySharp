@@ -1,16 +1,9 @@
-﻿using System;
-using System.Html;
+﻿using System.Html;
 using System.Runtime.CompilerServices;
 using CodeMirrorLibrary;
 using jQueryApi;
 namespace Client.ShuffUI
 {
-    [Serializable]
-    public class ShuffCodeEditorOptions : ShuffOptions
-    {
-        public string Text { get; set; }
-        public bool LineNumbers { get; set; }
-    }
     public class ShuffCodeEditor : ShuffElement
     {
         public CodeMirrorInformation Information;
@@ -21,16 +14,16 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public bool LineNumbers { get; set; }
 
-        public ShuffCodeEditor(ShuffCodeEditorOptions options)
+        public ShuffCodeEditor(int x, int y, Number width, Number height, string text)
         {
-            dynamic fmw = options.Width;
-            dynamic fmh = options.Height;
+            dynamic fmw = width;
+            dynamic fmh = height;
             if (!fmw)
-                options.Width = "100%";
+                width = "100%";
             if (!fmh)
-                options.Height = "100%";
+                height = "100%";
 
-            var divs = jQuery.Select("<div style='width:" + options.Width + "; height:" + options.Height + "'> </div>");
+            var divs = jQuery.Select("<div style='width:" + width + "; height:" + height + "'> </div>");
 
             var fm = jQuery.FromHtml("<textarea id='code' name='code' class='CodeMirror-fullscreen ' style=''></textarea>");
             divs.Append(fm);
@@ -40,14 +33,18 @@ namespace Client.ShuffUI
                                                            element = (TextAreaElement) fm.GetElement(0)
                                                    };
 
-            codeMirror.element.Value = Text = options.Text;
+            codeMirror.element.Value = Text = text;
 
-            LineNumbers = options.LineNumbers;
-            X = options.X;
-            Y = options.Y;
-            Width = options.Width;
-            Height = options.Height;
-            Visible = options.Visible;
+            LineNumbers = true;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            Visible = true;
+            SizeChanged += (e) => {
+                               jQuery.FromElement(codeMirror.element).Width(e.Width);
+                               jQuery.FromElement(codeMirror.element).Height(e.Height);
+                           };
         }
 
         public ShuffCodeEditor()
@@ -116,7 +113,7 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public T Data { get; set; }
 
-        public ShuffCodeEditor(T data)
+        public ShuffCodeEditor(T data, int x, int y, Number width, Number height, string text) : base(x, y, width, height, text)
         {
             Data = data;
         }

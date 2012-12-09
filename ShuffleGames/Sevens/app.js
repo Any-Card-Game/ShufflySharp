@@ -6,7 +6,7 @@ module.exports = Sevens = function() {
     self.hearts = new Pile('hearts');
     self.diamonds = new Pile('diamonds');
 
-    self.cardGame = new CardGame({ numberOfCards: 52 });
+    self.cardGame = new CardGame({ numberOfCards: 52, size: { width: 16, height: 12 } });
 
     self.constructor = function() {
         self.cardGame.spaces.push(new TableSpace({
@@ -338,7 +338,7 @@ module.exports = Sevens = function() {
                                 }));
                                 break;
                             }
-                        }  
+                        }
 
 
                     }

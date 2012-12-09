@@ -1,17 +1,7 @@
-using System;
 using System.Runtime.CompilerServices;
 using jQueryApi;
 namespace Client.ShuffUI
 {
-    [Serializable]
-    public class ShuffOptions
-    {
-        public bool Visible = true;
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Number Width { get; set; }
-        public Number Height { get; set; }
-    }
     public class ShuffElement
     {
         public ShuffUIEvent<ParentChangedEvent> ParentChanged;

@@ -15,7 +15,7 @@ namespace Client.ShuffUI
             set
             {
                 outer = value;
-                outer.Resizable(new ResizableOptions {Handles = "n, e, s, w, ne, se, sw, nw"});
+                outer.Resizable(new ResizableOptions {Handles = "n, e, s, w, ne, se, sw, nw", OnResize = onResize});
             }
         }
         [IntrinsicProperty]
@@ -38,12 +38,18 @@ namespace Client.ShuffUI
         public ShuffWindow()
                 : base() {}
 
+        public void onResize(jQueryEvent e, ResizeEvent uievent)
+        {
+            Width = uievent.Size.Width + "px";
+            Height = uievent.Size.Height + "px";
+        }
+
         public override void BindCustomEvents()
         {
             base.BindCustomEvents();
             VisibleChanged += (e) => {
-                                  if (Window != null)
-                                      Window.CSS("display", e.Visible ? "block" : "none");
+                                  if (Outer != null)
+                                      Outer.CSS("display", e.Visible ? "block" : "none");
                               };
         }
     }

@@ -1,15 +1,7 @@
-using System;
 using System.Runtime.CompilerServices;
 using jQueryApi;
 namespace Client.ShuffUI
 {
-    [Serializable]
-    public class ShuffLabelOptions : ShuffOptions
-    {
-        [IntrinsicProperty]
-        public string Text { get; set; }
-        public ShuffUIEvent<ButtonClickedEvent> OnClick { get; set; }
-    }
     public class ShuffLabel : ShuffElement
     {
         private string myText;
@@ -24,16 +16,16 @@ namespace Client.ShuffUI
         }
         public ShuffUIEvent<TextChangedEvent> TextChanged { get; set; }
 
-        public ShuffLabel(ShuffLabelOptions options)
+        public ShuffLabel(int x, int y, DelegateOrValue<string> text)
         {
             var but = jQuery.Select("<span></span>");
             Element = but;
             but.CSS("position", "absolute");
 
-            Text = options.Text;
-            X = options.X;
-            Y = options.Y;
-            Visible = options.Visible;
+            Text = text;
+            X = x;
+            Y = y;
+            Visible = true;
             but.DisableSelection();
         }
 
@@ -47,8 +39,8 @@ namespace Client.ShuffUI
         [IntrinsicProperty]
         public T Data { get; set; }
 
-        public ShuffLabel(ShuffLabelOptions options, T data)
-                : base(options)
+        public ShuffLabel(T data, int x, int y, DelegateOrValue<string> text)
+                : base(x, y, text)
         {
             Data = data;
         }

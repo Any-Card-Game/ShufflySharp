@@ -112,16 +112,12 @@ namespace global
     }
     public class CardGameQuestion
     {
-        [ScriptName("user")]
         [IntrinsicProperty]
         public UserModel User { get; set; }
-        [ScriptName("question")]
         [IntrinsicProperty]
         public string Question { get; set; }
-        [ScriptName("answers")]
         [IntrinsicProperty]
         public string[] Answers { get; set; }
-        [ScriptName("cardGame")]
         [IntrinsicProperty]
         public GameCardGame CardGame { get; set; }
 

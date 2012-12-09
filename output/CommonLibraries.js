@@ -53,8 +53,23 @@ var $CommonLibraries_Point = function(x, y) {
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Size
 var $CommonLibraries_Size = function() {
-	this.height = 0;
-	this.width = 0;
+};
+$CommonLibraries_Size.createInstance = function() {
+	return $CommonLibraries_Size.$ctor();
+};
+$CommonLibraries_Size.$ctor1 = function(width, height) {
+	var $this = {};
+	$this.width = 0;
+	$this.height = 0;
+	$this.width = width;
+	$this.height = height;
+	return $this;
+};
+$CommonLibraries_Size.$ctor = function() {
+	var $this = {};
+	$this.width = 0;
+	$this.height = 0;
+	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.TypeOrFunction

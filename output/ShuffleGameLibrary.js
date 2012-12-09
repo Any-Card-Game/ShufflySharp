@@ -1,4 +1,5 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // global.GameUtils
 var $global__ = function() {
 };
@@ -361,11 +362,11 @@ var $global_Card = function(value, type) {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardDrawing
-var $global_CardDrawing = function(item1, item2) {
+var $global_CardDrawing = function(item1) {
 	this.outerElement = null;
-	this.image = null;
+	this.outerElementStyle = null;
 	this.outerElement = item1;
-	this.image = item2;
+	this.outerElementStyle = new $global_InternalStyle();
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.GameCardGame
@@ -394,10 +395,7 @@ var $global_CardGame = function(options) {
 	for (var i1 = 0; i1 < this.numberOfJokers; i1++) {
 		this.deck.cards.add(new $global_Card(0, 0));
 	}
-	var $t1 = new CommonLibraries.Size();
-	$t1.width = 22;
-	$t1.height = 10;
-	this.size = $t1;
+	this.size = options.size || CommonLibraries.Size.$ctor1(15, 15);
 	//
 	//           
 	//
@@ -572,10 +570,10 @@ $global_domUtils.nopx = function(ar) {
 $global_domUtils.px = function(ar) {
 	return ar + 'px';
 };
-$global_domUtils.transformRadius = function(ar) {
+$global_domUtils.transformRotate = function(ar) {
 	return String.format('rotate({0}deg)', ar);
 };
-$global_domUtils.noTransformRadius = function(ar) {
+$global_domUtils.noTransformRotate = function(ar) {
 	return parseFloat(ar.replaceAll('rotate(', '').replaceAll('deg)', ''));
 	//todo regex??
 };
@@ -583,14 +581,14 @@ $global_domUtils.noTransformRadius = function(ar) {
 // global.CardGameAppearanceEffect
 var $global_Effect = function(type) {
 	this.type = 0;
-	this.post = 0;
-	this.childrenEffects = null;
+	this.drawTime = 0;
+	this.chainedEffect = null;
 	this.type = type;
-	this.post = 0;
+	this.drawTime = 0;
 };
 $global_Effect.prototype = {
 	chainEffect: function(ef) {
-		this.childrenEffects = ef;
+		this.chainedEffect = ef;
 		return ef;
 	},
 	build: function(m) {
@@ -642,8 +640,8 @@ $global_Effect.fromJson = function(effect) {
 			break;
 		}
 	}
-	if (ss.isValue(ef.childrenEffects)) {
-		ef.childrenEffects = $global_Effect.fromJson(effect.childrenEffects);
+	if (ss.isValue(ef.chainedEffect)) {
+		ef.chainedEffect = $global_Effect.fromJson(effect.chainedEffect);
 	}
 	return ef;
 };
@@ -653,7 +651,7 @@ var $global_Effect$Bend = function(options) {
 	this.degrees = 0;
 	$global_Effect.call(this, 2);
 	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
-	this.post = 1;
+	this.drawTime = 1;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameAppearanceEffectHighlight
@@ -669,51 +667,101 @@ var $global_Effect$Highlight = function(options) {
 	this.rotate = ((options.rotate === 0) ? 0 : options.rotate);
 	this.offsetX = ((options.offsetX === 0) ? 0 : options.offsetX);
 	this.offsetY = ((options.offsetY === 0) ? 0 : options.offsetY);
-	this.post = 0;
+	this.drawTime = 0;
 };
 $global_Effect$Highlight.prototype = {
 	build: function(e) {
-		var em = e.outerElement;
-		em.style.padding = String.format('{0} {0} {0} {0}', $global_domUtils.px(this.radius));
-		em.style.backgroundColor = this.color;
-		em.style.backgroundColor = this.color;
-		em.style.border = 'solid 2px black';
-		em.style['border-radius'] = $global_domUtils.px(15);
-		em.style['box-shadow'] = '4px 4px 2px #333';
+		var em = e.outerElementStyle;
+		em.set_padding(String.format('{0} {0} {0} {0}', $global_domUtils.px(this.radius)));
+		em.set_backgroundColor(this.color);
+		em.set_border('solid 2px black');
+		em.set_left($global_domUtils.px($global_domUtils.nopx(em.get_left()) - this.radius));
+		em.set_top($global_domUtils.px($global_domUtils.nopx(em.get_top()) - this.radius));
+		em.set_borderRadius($global_domUtils.px(15));
+		em.set_boxShadow('4px 4px 2px #333');
 	},
 	build$1: function(e) {
-		var em = e.outerElement;
-		em.style.padding = String.format('{0} {0} {0} {0}', $global_domUtils.px(this.radius));
-		em.style.backgroundColor = this.color;
-		em.style.border = 'solid 2px black';
-		em.style['border-radius'] = $global_domUtils.px(15);
-		em.style['box-shadow'] = '4px 4px 2px #333';
+		var cur = new $global_InternalStyle();
+		cur.addChild(e.outerElementStyle);
+		e.outerElementStyle = cur;
+		var em = e.outerElementStyle;
+		em.set_padding(String.format('{0} {0} {0} {0}', $global_domUtils.px(this.radius)));
+		em.set_backgroundColor(this.color);
+		em.set_border('solid 2px black');
+		em.set_left($global_domUtils.px($global_domUtils.nopx(em.get_left()) - this.radius));
+		em.set_top($global_domUtils.px($global_domUtils.nopx(em.get_top()) - this.radius));
+		em.set_borderRadius($global_domUtils.px(15));
+		em.set_boxShadow('4px 4px 2px #333');
 	},
 	tearDown: function(e) {
-		var em = e.outerElement;
-		var paddingRadiusL = $global_domUtils.nopx(em.style.paddingLeft);
-		var paddingRadiusT = $global_domUtils.nopx(em.style.paddingTop);
-		em.style.left = $global_domUtils.px($global_domUtils.nopx(em.style.left) - $global_domUtils.nopx(em.style.paddingLeft));
-		em.style.top = $global_domUtils.px($global_domUtils.nopx(em.style.top) - $global_domUtils.nopx(em.style.paddingTop));
-		for (var i = 0; i < em.childNodes.length; i++) {
-			if (em.childNodes[i].tagName === 'DIV') {
-				em.childNodes[i].style.left = $global_domUtils.px($global_domUtils.nopx(em.childNodes[i].style.left) + paddingRadiusL);
-				em.childNodes[i].style.top = $global_domUtils.px($global_domUtils.nopx(em.childNodes[i].style.top) + paddingRadiusT);
-			}
-		}
+		//
+		//            var em = e.OuterElementStyle;
+		//
+		//            
+		//
+		//            ///     Window.Alert("good2");
+		//
+		//            
+		//
+		//            double paddingRadiusL = em.PaddingLeft.nopx();
+		//
+		//            double paddingRadiusT = em.PaddingTop.nopx();
+		//
+		//            em.Left = ( em.Left.nopx() - em.PaddingLeft.nopx() ).px();
+		//
+		//            em.Top = ( em.Top.nopx() - em.PaddingTop.nopx() ).px();
+		//
+		//            
+		//
+		//            for (int i = 0; i < e.OuterElement.ChildNodes.Length; i++) {
+		//
+		//            var childNode = e.OuterElement.ChildNodes[i];
+		//
+		//            
+		//
+		//            if (childNode.TagName == "DIV") {
+		//
+		//            childNode.Style.Left = ( childNode.Style.Left.nopx() + paddingRadiusL ).px();
+		//
+		//            childNode.Style.Top = ( childNode.Style.Top.nopx() + paddingRadiusT ).px();
+		//
+		//            }
+		//
+		//            }
 	},
 	tearDown$1: function(e) {
-		var em = e.outerElement;
-		var paddingRadiusL = $global_domUtils.nopx(em.style.paddingLeft);
-		var paddingRadiusT = $global_domUtils.nopx(em.style.paddingTop);
-		em.style.left = $global_domUtils.px($global_domUtils.nopx(em.style.left) - $global_domUtils.nopx(em.style.paddingLeft));
-		em.style.top = $global_domUtils.px($global_domUtils.nopx(em.style.top) - $global_domUtils.nopx(em.style.paddingTop));
-		for (var i = 0; i < em.childNodes.length; i++) {
-			if (em.childNodes[i].tagName === 'DIV') {
-				em.childNodes[i].style.left = $global_domUtils.px($global_domUtils.nopx(em.childNodes[i].style.left) + paddingRadiusL);
-				em.childNodes[i].style.top = $global_domUtils.px($global_domUtils.nopx(em.childNodes[i].style.top) + paddingRadiusT);
-			}
-		}
+		//
+		//            var em = e.OuterElementStyle;
+		//
+		//            
+		//
+		//            ///     Window.Alert("good2");
+		//
+		//            
+		//
+		//            double paddingRadiusL = em.PaddingLeft.nopx();
+		//
+		//            double paddingRadiusT = em.PaddingTop.nopx();
+		//
+		//            em.Left = ( em.Left.nopx() - em.PaddingLeft.nopx() ).px();
+		//
+		//            em.Top = ( em.Top.nopx() - em.PaddingTop.nopx() ).px();
+		//
+		//            
+		//
+		//            for (int i = 0; i < e.OuterElement.ChildNodes.Length; i++) {
+		//
+		//            var childNode = e.OuterElement.ChildNodes[i];
+		//
+		//            if (childNode.TagName == "DIV") {
+		//
+		//            childNode.Style.Left = (childNode.Style.Left.nopx() + paddingRadiusL).px();
+		//
+		//            childNode.Style.Top = (childNode.Style.Top.nopx() + paddingRadiusT).px();
+		//
+		//            }
+		//
+		//            }
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -722,7 +770,7 @@ var $global_Effect$Rotate = function(options) {
 	this.degrees = 0;
 	$global_Effect.call(this, 1);
 	this.degrees = ((options.degrees === 0) ? 0 : options.degrees);
-	this.post = 1;
+	this.drawTime = 1;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameAppearanceEffectStyleProperty
@@ -736,27 +784,27 @@ $global_Effect$StyleProperty.prototype = {
 		if (ss.isNullOrUndefined(this.style)) {
 			return;
 		}
-		m.outerElement.style.backgroundColor = this.style.outerStyle.backColor;
+		m.outerElementStyle.set_backgroundColor(this.style.outerStyle.backColor);
 		if (ss.isValue(this.style.outerStyle.border)) {
 			if (ss.isValue(this.style.outerStyle.border.left)) {
-				m.outerElement.style.borderLeftColor = this.style.outerStyle.border.left.color;
-				m.outerElement.style.borderLeftStyle = this.style.outerStyle.border.left.style.toString();
-				m.outerElement.style.borderLeftWidth = this.style.outerStyle.border.left.width;
+				m.outerElementStyle.set_borderLeftColor(this.style.outerStyle.border.left.color);
+				m.outerElementStyle.set_borderLeftStyle(this.style.outerStyle.border.left.style.toString());
+				m.outerElementStyle.set_borderLeftWidth(this.style.outerStyle.border.left.width);
 			}
 			if (ss.isValue(this.style.outerStyle.border.top)) {
-				m.outerElement.style.borderTopColor = this.style.outerStyle.border.top.color;
-				m.outerElement.style.borderTopStyle = this.style.outerStyle.border.top.style.toString();
-				m.outerElement.style.borderTopWidth = this.style.outerStyle.border.top.width;
+				m.outerElementStyle.set_borderTopColor(this.style.outerStyle.border.top.color);
+				m.outerElementStyle.set_borderTopStyle(this.style.outerStyle.border.top.style.toString());
+				m.outerElementStyle.set_borderTopWidth(this.style.outerStyle.border.top.width);
 			}
 			if (ss.isValue(this.style.outerStyle.border.right)) {
-				m.outerElement.style.borderRightColor = this.style.outerStyle.border.right.color;
-				m.outerElement.style.borderRightStyle = this.style.outerStyle.border.right.style.toString();
-				m.outerElement.style.borderRightWidth = this.style.outerStyle.border.right.width;
+				m.outerElementStyle.set_borderRightColor(this.style.outerStyle.border.right.color);
+				m.outerElementStyle.set_borderRightStyle(this.style.outerStyle.border.right.style.toString());
+				m.outerElementStyle.set_borderRightWidth(this.style.outerStyle.border.right.width);
 			}
 			if (ss.isValue(this.style.outerStyle.border.bottom)) {
-				m.outerElement.style.borderBottomColor = this.style.outerStyle.border.bottom.color;
-				m.outerElement.style.borderBottomStyle = this.style.outerStyle.border.bottom.style.toString();
-				m.outerElement.style.borderBottomWidth = this.style.outerStyle.border.bottom.width;
+				m.outerElementStyle.set_borderBottomColor(this.style.outerStyle.border.bottom.color);
+				m.outerElementStyle.set_borderBottomStyle(this.style.outerStyle.border.bottom.style.toString());
+				m.outerElementStyle.set_borderBottomWidth(this.style.outerStyle.border.bottom.width);
 			}
 		}
 	},
@@ -767,7 +815,7 @@ $global_Effect$StyleProperty.prototype = {
 		if (ss.isNullOrUndefined(this.style)) {
 			return;
 		}
-		m.outerElement.style.backgroundColor = this.style.outerStyle.backColor;
+		m.outerElementStyle.set_backgroundColor(this.style.outerStyle.backColor);
 	},
 	tearDown$1: function(em) {
 		$global_Effect.prototype.tearDown$1.call(this, em);
@@ -839,6 +887,7 @@ $global_GameCardGameOptions.$ctor = function() {
 	var $this = {};
 	$this.numberOfCards = 0;
 	$this.numberOfJokers = 0;
+	$this.size = null;
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -856,6 +905,1224 @@ $global_GameCardGameTextAreaOptions.$ctor = function() {
 	$this.text = null;
 	return $this;
 };
+////////////////////////////////////////////////////////////////////////////////
+// global.InternalStyle
+var $global_InternalStyle = function() {
+	this.parent = null;
+	this.children = null;
+	this.$lastStyle = null;
+	this.$keys = {};
+	this.$myAccelerator = false;
+	this.$myBackground = null;
+	this.$myBackgroundAttachment = null;
+	this.$myBoxShadow = null;
+	this.$myBorderRadius = null;
+	this.$myTransform = null;
+	this.$myBackgroundColor = null;
+	this.$myBackgroundImage = null;
+	this.$myBackgroundPosition = null;
+	this.$myBackgroundPositionX = null;
+	this.$myBackgroundPositionY = null;
+	this.$myBackgroundRepeat = null;
+	this.$myBorder = null;
+	this.$myBorderBottom = null;
+	this.$myBorderBottomColor = null;
+	this.$myBorderBottomStyle = null;
+	this.$myBorderBottomWidth = null;
+	this.$myBorderCollapse = null;
+	this.$myBorderColor = null;
+	this.$myBorderLeft = null;
+	this.$myBorderLeftColor = null;
+	this.$myBorderLeftStyle = null;
+	this.$myBorderLeftWidth = null;
+	this.$myBorderRight = null;
+	this.$myBorderRightColor = null;
+	this.$myBorderRightStyle = null;
+	this.$myBorderRightWidth = null;
+	this.$myBorderStyle = null;
+	this.$myBorderTop = null;
+	this.$myBorderTopColor = null;
+	this.$myBorderTopStyle = null;
+	this.$myBorderTopWidth = null;
+	this.$myBorderWidth = null;
+	this.$myBottom = null;
+	this.$myClear = null;
+	this.$myClip = null;
+	this.$myColor = null;
+	this.$myCssFloat = null;
+	this.$myCssText = null;
+	this.$myCursor = null;
+	this.$myDirection = null;
+	this.$myDisplay = null;
+	this.$myFilter = null;
+	this.$myFont = null;
+	this.$myFontFamily = null;
+	this.$myFontSize = null;
+	this.$myFontStyle = null;
+	this.$myFontVariant = null;
+	this.$myFontWeight = null;
+	this.$myHeight = null;
+	this.$myLeft = null;
+	this.$myLetterSpacing = null;
+	this.$myLineHeight = null;
+	this.$myListStyle = null;
+	this.$myListStyleImage = null;
+	this.$myListStylePosition = null;
+	this.$myListStyleType = null;
+	this.$myMargin = null;
+	this.$myMarginBottom = null;
+	this.$myMarginLeft = null;
+	this.$myMarginRight = null;
+	this.$myMarginTop = null;
+	this.$myMaxHeight = null;
+	this.$myMaxWidth = null;
+	this.$myMinHeight = null;
+	this.$myMinWidth = null;
+	this.$myMsInterpolationMode = null;
+	this.$myOpacity = null;
+	this.$myOverflow = null;
+	this.$myOverflowX = null;
+	this.$myOverflowY = null;
+	this.$myPadding = null;
+	this.$myPaddingBottom = null;
+	this.$myPaddingLeft = null;
+	this.$myPaddingRight = null;
+	this.$myPaddingTop = null;
+	this.$myPageBreakAfter = null;
+	this.$myPageBreakBefore = null;
+	this.$myPixelBottom = 0;
+	this.$myPixelHeight = 0;
+	this.$myPixelLeft = 0;
+	this.$myPixelRight = 0;
+	this.$myPixelTop = 0;
+	this.$myPixelWidth = 0;
+	this.$myPosBottom = 0;
+	this.$myPosHeight = 0;
+	this.$myPosition = null;
+	this.$myPosLeft = 0;
+	this.$myPosRight = 0;
+	this.$myPosTop = 0;
+	this.$myPosWidth = 0;
+	this.$myRight = null;
+	this.$myStyleFloat = null;
+	this.$myTableLayout = null;
+	this.$myTextAlign = null;
+	this.$myTextDecoration = null;
+	this.$myTextDecorationBlink = null;
+	this.$myTextDecorationLineThrough = null;
+	this.$myTextDecorationNone = null;
+	this.$myTextDecorationOverline = null;
+	this.$myTextDecorationUnderline = null;
+	this.$myTextIndent = null;
+	this.$myTextJustify = null;
+	this.$myTextOverflow = null;
+	this.$myTextTransform = null;
+	this.$myTop = null;
+	this.$myVerticalAlign = null;
+	this.$myVisibility = null;
+	this.$myWhiteSpace = null;
+	this.$myWidth = null;
+	this.$myWordSpacing = null;
+	this.$myWordWrap = null;
+	this.$myWritingMode = null;
+	this.$myZIndex = 0;
+	this.$myZoom = null;
+	this.children = [];
+	this.$lastStyle = new $global_InternalStyle.$ctor1(null);
+};
+$global_InternalStyle.prototype = {
+	addChild: function(style) {
+		this.children.add(style);
+		style.parent = this;
+	},
+	$setValue: function(name, v) {
+		this.$keys[name] = v;
+	},
+	get_accelerator: function() {
+		return this.$myAccelerator;
+	},
+	set_accelerator: function(value) {
+		this.$myAccelerator = value;
+		this.$setValue('accelerator', value);
+	},
+	get_background: function() {
+		return this.$myBackground;
+	},
+	set_background: function(value) {
+		this.$myBackground = value;
+		this.$setValue('background', value);
+	},
+	get_backgroundAttachment: function() {
+		return this.$myBackgroundAttachment;
+	},
+	set_backgroundAttachment: function(value) {
+		this.$myBackgroundAttachment = value;
+		this.$setValue('background-attachment', value);
+	},
+	get_boxShadow: function() {
+		return this.$myBoxShadow;
+	},
+	set_boxShadow: function(value) {
+		this.$myBoxShadow = value;
+		this.$setValue('box-shadow', value);
+	},
+	get_borderRadius: function() {
+		return this.$myBorderRadius;
+	},
+	set_borderRadius: function(value) {
+		this.$myBorderRadius = value;
+		this.$setValue('border-radius', value);
+	},
+	get_transform: function() {
+		return this.$myTransform;
+	},
+	set_transform: function(value) {
+		this.$myTransform = value;
+		this.$setValue('transform', value);
+	},
+	get_backgroundColor: function() {
+		return this.$myBackgroundColor;
+	},
+	set_backgroundColor: function(value) {
+		this.$myBackgroundColor = value;
+		this.$setValue('background-color', value);
+	},
+	get_backgroundImage: function() {
+		return this.$myBackgroundImage;
+	},
+	set_backgroundImage: function(value) {
+		this.$myBackgroundImage = value;
+		this.$setValue('background-image', value);
+	},
+	get_backgroundPosition: function() {
+		return this.$myBackgroundPosition;
+	},
+	set_backgroundPosition: function(value) {
+		this.$myBackgroundPosition = value;
+		this.$setValue('background-position', value);
+	},
+	get_backgroundPositionX: function() {
+		return this.$myBackgroundPositionX;
+	},
+	set_backgroundPositionX: function(value) {
+		this.$myBackgroundPositionX = value;
+		this.$setValue('background-position-x', value);
+	},
+	get_backgroundPositionY: function() {
+		return this.$myBackgroundPositionY;
+	},
+	set_backgroundPositionY: function(value) {
+		this.$myBackgroundPositionY = value;
+		this.$setValue('background-position-y', value);
+	},
+	get_backgroundRepeat: function() {
+		return this.$myBackgroundRepeat;
+	},
+	set_backgroundRepeat: function(value) {
+		this.$myBackgroundRepeat = value;
+		this.$setValue('background-repeat', value);
+	},
+	get_border: function() {
+		return this.$myBorder;
+	},
+	set_border: function(value) {
+		this.$myBorder = value;
+		this.$setValue('border', value);
+	},
+	get_borderBottom: function() {
+		return this.$myBorderBottom;
+	},
+	set_borderBottom: function(value) {
+		this.$myBorderBottom = value;
+		this.$setValue('border-bottom', value);
+	},
+	get_borderBottomColor: function() {
+		return this.$myBorderBottomColor;
+	},
+	set_borderBottomColor: function(value) {
+		this.$myBorderBottomColor = value;
+		this.$setValue('border-bottom-color', value);
+	},
+	get_borderBottomStyle: function() {
+		return this.$myBorderBottomStyle;
+	},
+	set_borderBottomStyle: function(value) {
+		this.$myBorderBottomStyle = value;
+		this.$setValue('border-bottom-style', value);
+	},
+	get_borderBottomWidth: function() {
+		return this.$myBorderBottomWidth;
+	},
+	set_borderBottomWidth: function(value) {
+		this.$myBorderBottomWidth = value;
+		this.$setValue('border-bottom-width', value);
+	},
+	get_borderCollapse: function() {
+		return this.$myBorderCollapse;
+	},
+	set_borderCollapse: function(value) {
+		this.$myBorderCollapse = value;
+		this.$setValue('border-collapse', value);
+	},
+	get_borderColor: function() {
+		return this.$myBorderColor;
+	},
+	set_borderColor: function(value) {
+		this.$myBorderColor = value;
+		this.$setValue('border-color', value);
+	},
+	get_borderLeft: function() {
+		return this.$myBorderLeft;
+	},
+	set_borderLeft: function(value) {
+		this.$myBorderLeft = value;
+		this.$setValue('border-left', value);
+	},
+	get_borderLeftColor: function() {
+		return this.$myBorderLeftColor;
+	},
+	set_borderLeftColor: function(value) {
+		this.$myBorderLeftColor = value;
+		this.$setValue('border-left-color', value);
+	},
+	get_borderLeftStyle: function() {
+		return this.$myBorderLeftStyle;
+	},
+	set_borderLeftStyle: function(value) {
+		this.$myBorderLeftStyle = value;
+		this.$setValue('border-left-style', value);
+	},
+	get_borderLeftWidth: function() {
+		return this.$myBorderLeftWidth;
+	},
+	set_borderLeftWidth: function(value) {
+		this.$myBorderLeftWidth = value;
+		this.$setValue('border-left-width', value);
+	},
+	get_borderRight: function() {
+		return this.$myBorderRight;
+	},
+	set_borderRight: function(value) {
+		this.$myBorderRight = value;
+		this.$setValue('border-right', value);
+	},
+	get_borderRightColor: function() {
+		return this.$myBorderRightColor;
+	},
+	set_borderRightColor: function(value) {
+		this.$myBorderRightColor = value;
+		this.$setValue('border-right-color', value);
+	},
+	get_borderRightStyle: function() {
+		return this.$myBorderRightStyle;
+	},
+	set_borderRightStyle: function(value) {
+		this.$myBorderRightStyle = value;
+		this.$setValue('border-right-style', value);
+	},
+	get_borderRightWidth: function() {
+		return this.$myBorderRightWidth;
+	},
+	set_borderRightWidth: function(value) {
+		this.$myBorderRightWidth = value;
+		this.$setValue('border-right-width', value);
+	},
+	get_borderStyle: function() {
+		return this.$myBorderStyle;
+	},
+	set_borderStyle: function(value) {
+		this.$myBorderStyle = value;
+		this.$setValue('border-style', value);
+	},
+	get_borderTop: function() {
+		return this.$myBorderTop;
+	},
+	set_borderTop: function(value) {
+		this.$myBorderTop = value;
+		this.$setValue('border-top', value);
+	},
+	get_borderTopColor: function() {
+		return this.$myBorderTopColor;
+	},
+	set_borderTopColor: function(value) {
+		this.$myBorderTopColor = value;
+		this.$setValue('border-top-color', value);
+	},
+	get_borderTopStyle: function() {
+		return this.$myBorderTopStyle;
+	},
+	set_borderTopStyle: function(value) {
+		this.$myBorderTopStyle = value;
+		this.$setValue('border-top-style', value);
+	},
+	get_borderTopWidth: function() {
+		return this.$myBorderTopWidth;
+	},
+	set_borderTopWidth: function(value) {
+		this.$myBorderTopWidth = value;
+		this.$setValue('border-top-width', value);
+	},
+	get_borderWidth: function() {
+		return this.$myBorderWidth;
+	},
+	set_borderWidth: function(value) {
+		this.$myBorderWidth = value;
+		this.$setValue('border-width', value);
+	},
+	get_bottom: function() {
+		return this.$myBottom;
+	},
+	set_bottom: function(value) {
+		this.$myBottom = value;
+		this.$setValue('bottom', value);
+	},
+	get_clear: function() {
+		return this.$myClear;
+	},
+	set_clear: function(value) {
+		this.$myClear = value;
+		this.$setValue('clear', value);
+	},
+	get_clip: function() {
+		return this.$myClip;
+	},
+	set_clip: function(value) {
+		this.$myClip = value;
+		this.$setValue('clip', value);
+	},
+	get_color: function() {
+		return this.$myColor;
+	},
+	set_color: function(value) {
+		this.$myColor = value;
+		this.$setValue('color', value);
+	},
+	get_cssFloat: function() {
+		return this.$myCssFloat;
+	},
+	set_cssFloat: function(value) {
+		this.$myCssFloat = value;
+		this.$setValue('css-float', value);
+	},
+	get_cssText: function() {
+		return this.$myCssText;
+	},
+	set_cssText: function(value) {
+		this.$myCssText = value;
+		this.$setValue('css-text', value);
+	},
+	get_cursor: function() {
+		return this.$myCursor;
+	},
+	set_cursor: function(value) {
+		this.$myCursor = value;
+		this.$setValue('cursor', value);
+	},
+	get_direction: function() {
+		return this.$myDirection;
+	},
+	set_direction: function(value) {
+		this.$myDirection = value;
+		this.$setValue('direction', value);
+	},
+	get_display: function() {
+		return this.$myDisplay;
+	},
+	set_display: function(value) {
+		this.$myDisplay = value;
+		this.$setValue('display', value);
+	},
+	get_filter: function() {
+		return this.$myFilter;
+	},
+	set_filter: function(value) {
+		this.$myFilter = value;
+		this.$setValue('filter', value);
+	},
+	get_font: function() {
+		return this.$myFont;
+	},
+	set_font: function(value) {
+		this.$myFont = value;
+		this.$setValue('font', value);
+	},
+	get_fontFamily: function() {
+		return this.$myFontFamily;
+	},
+	set_fontFamily: function(value) {
+		this.$myFontFamily = value;
+		this.$setValue('font-family', value);
+	},
+	get_fontSize: function() {
+		return this.$myFontSize;
+	},
+	set_fontSize: function(value) {
+		this.$myFontSize = value;
+		this.$setValue('font-size', value);
+	},
+	get_fontStyle: function() {
+		return this.$myFontStyle;
+	},
+	set_fontStyle: function(value) {
+		this.$myFontStyle = value;
+		this.$setValue('font-style', value);
+	},
+	get_fontVariant: function() {
+		return this.$myFontVariant;
+	},
+	set_fontVariant: function(value) {
+		this.$myFontVariant = value;
+		this.$setValue('font-variant', value);
+	},
+	get_fontWeight: function() {
+		return this.$myFontWeight;
+	},
+	set_fontWeight: function(value) {
+		this.$myFontWeight = value;
+		this.$setValue('font-weight', value);
+	},
+	get_height: function() {
+		return this.$myHeight;
+	},
+	set_height: function(value) {
+		this.$myHeight = value;
+		this.$setValue('height', value);
+	},
+	get_left: function() {
+		return this.$myLeft;
+	},
+	set_left: function(value) {
+		this.$myLeft = value;
+		this.$setValue('left', value);
+	},
+	get_letterSpacing: function() {
+		return this.$myLetterSpacing;
+	},
+	set_letterSpacing: function(value) {
+		this.$myLetterSpacing = value;
+		this.$setValue('letter-spacing', value);
+	},
+	get_lineHeight: function() {
+		return this.$myLineHeight;
+	},
+	set_lineHeight: function(value) {
+		this.$myLineHeight = value;
+		this.$setValue('line-height', value);
+	},
+	get_listStyle: function() {
+		return this.$myListStyle;
+	},
+	set_listStyle: function(value) {
+		this.$myListStyle = value;
+		this.$setValue('list-style', value);
+	},
+	get_listStyleImage: function() {
+		return this.$myListStyleImage;
+	},
+	set_listStyleImage: function(value) {
+		this.$myListStyleImage = value;
+		this.$setValue('list-style-image', value);
+	},
+	get_listStylePosition: function() {
+		return this.$myListStylePosition;
+	},
+	set_listStylePosition: function(value) {
+		this.$myListStylePosition = value;
+		this.$setValue('list-style-position', value);
+	},
+	get_listStyleType: function() {
+		return this.$myListStyleType;
+	},
+	set_listStyleType: function(value) {
+		this.$myListStyleType = value;
+		this.$setValue('list-style-type', value);
+	},
+	get_margin: function() {
+		return this.$myMargin;
+	},
+	set_margin: function(value) {
+		this.$myMargin = value;
+		this.$setValue('margin', value);
+	},
+	get_marginBottom: function() {
+		return this.$myMarginBottom;
+	},
+	set_marginBottom: function(value) {
+		this.$myMarginBottom = value;
+		this.$setValue('margin-bottom', value);
+	},
+	get_marginLeft: function() {
+		return this.$myMarginLeft;
+	},
+	set_marginLeft: function(value) {
+		this.$myMarginLeft = value;
+		this.$setValue('margin-left', value);
+	},
+	get_marginRight: function() {
+		return this.$myMarginRight;
+	},
+	set_marginRight: function(value) {
+		this.$myMarginRight = value;
+		this.$setValue('margin-right', value);
+	},
+	get_marginTop: function() {
+		return this.$myMarginTop;
+	},
+	set_marginTop: function(value) {
+		this.$myMarginTop = value;
+		this.$setValue('margin-top', value);
+	},
+	get_maxHeight: function() {
+		return this.$myMaxHeight;
+	},
+	set_maxHeight: function(value) {
+		this.$myMaxHeight = value;
+		this.$setValue('max-height', value);
+	},
+	get_maxWidth: function() {
+		return this.$myMaxWidth;
+	},
+	set_maxWidth: function(value) {
+		this.$myMaxWidth = value;
+		this.$setValue('max-width', value);
+	},
+	get_minHeight: function() {
+		return this.$myMinHeight;
+	},
+	set_minHeight: function(value) {
+		this.$myMinHeight = value;
+		this.$setValue('min-height', value);
+	},
+	get_minWidth: function() {
+		return this.$myMinWidth;
+	},
+	set_minWidth: function(value) {
+		this.$myMinWidth = value;
+		this.$setValue('min-width', value);
+	},
+	get_msInterpolationMode: function() {
+		return this.$myMsInterpolationMode;
+	},
+	set_msInterpolationMode: function(value) {
+		this.$myMsInterpolationMode = value;
+		this.$setValue('ms-interpolation-mode', value);
+	},
+	get_opacity: function() {
+		return this.$myOpacity;
+	},
+	set_opacity: function(value) {
+		this.$myOpacity = value;
+		this.$setValue('opacity', value);
+	},
+	get_overflow: function() {
+		return this.$myOverflow;
+	},
+	set_overflow: function(value) {
+		this.$myOverflow = value;
+		this.$setValue('overflow', value);
+	},
+	get_overflowX: function() {
+		return this.$myOverflowX;
+	},
+	set_overflowX: function(value) {
+		this.$myOverflowX = value;
+		this.$setValue('overflow-x', value);
+	},
+	get_overflowY: function() {
+		return this.$myOverflowY;
+	},
+	set_overflowY: function(value) {
+		this.$myOverflowY = value;
+		this.$setValue('overflow-y', value);
+	},
+	get_padding: function() {
+		return this.$myPadding;
+	},
+	set_padding: function(value) {
+		this.$myPadding = value;
+		this.$setValue('padding', value);
+	},
+	get_paddingBottom: function() {
+		return this.$myPaddingBottom;
+	},
+	set_paddingBottom: function(value) {
+		this.$myPaddingBottom = value;
+		this.$setValue('padding-bottom', value);
+	},
+	get_paddingLeft: function() {
+		return this.$myPaddingLeft;
+	},
+	set_paddingLeft: function(value) {
+		this.$myPaddingLeft = value;
+		this.$setValue('padding-left', value);
+	},
+	get_paddingRight: function() {
+		return this.$myPaddingRight;
+	},
+	set_paddingRight: function(value) {
+		this.$myPaddingRight = value;
+		this.$setValue('padding-right', value);
+	},
+	get_paddingTop: function() {
+		return this.$myPaddingTop;
+	},
+	set_paddingTop: function(value) {
+		this.$myPaddingTop = value;
+		this.$setValue('padding-top', value);
+	},
+	get_pageBreakAfter: function() {
+		return this.$myPageBreakAfter;
+	},
+	set_pageBreakAfter: function(value) {
+		this.$myPageBreakAfter = value;
+		this.$setValue('page-break-after', value);
+	},
+	get_pageBreakBefore: function() {
+		return this.$myPageBreakBefore;
+	},
+	set_pageBreakBefore: function(value) {
+		this.$myPageBreakBefore = value;
+		this.$setValue('page-break-before', value);
+	},
+	get_pixelBottom: function() {
+		return this.$myPixelBottom;
+	},
+	set_pixelBottom: function(value) {
+		this.$myPixelBottom = value;
+		this.$setValue('pixel-bottom', value);
+	},
+	get_pixelHeight: function() {
+		return this.$myPixelHeight;
+	},
+	set_pixelHeight: function(value) {
+		this.$myPixelHeight = value;
+		this.$setValue('pixel-height', value);
+	},
+	get_pixelLeft: function() {
+		return this.$myPixelLeft;
+	},
+	set_pixelLeft: function(value) {
+		this.$myPixelLeft = value;
+		this.$setValue('pixel-left', value);
+	},
+	get_pixelRight: function() {
+		return this.$myPixelRight;
+	},
+	set_pixelRight: function(value) {
+		this.$myPixelRight = value;
+		this.$setValue('pixel-right', value);
+	},
+	get_pixelTop: function() {
+		return this.$myPixelTop;
+	},
+	set_pixelTop: function(value) {
+		this.$myPixelTop = value;
+		this.$setValue('pixel-top', value);
+	},
+	get_pixelWidth: function() {
+		return this.$myPixelWidth;
+	},
+	set_pixelWidth: function(value) {
+		this.$myPixelWidth = value;
+		this.$setValue('pixel-width', value);
+	},
+	get_posBottom: function() {
+		return this.$myPosBottom;
+	},
+	set_posBottom: function(value) {
+		this.$myPosBottom = value;
+		this.$setValue('pos-bottom', value);
+	},
+	get_posHeight: function() {
+		return this.$myPosHeight;
+	},
+	set_posHeight: function(value) {
+		this.$myPosHeight = value;
+		this.$setValue('pos-height', value);
+	},
+	get_position: function() {
+		return this.$myPosition;
+	},
+	set_position: function(value) {
+		this.$myPosition = value;
+		this.$setValue('position', value);
+	},
+	get_posLeft: function() {
+		return this.$myPosLeft;
+	},
+	set_posLeft: function(value) {
+		this.$myPosLeft = value;
+		this.$setValue('pos-left', value);
+	},
+	get_posRight: function() {
+		return this.$myPosRight;
+	},
+	set_posRight: function(value) {
+		this.$myPosRight = value;
+		this.$setValue('pos-pight', value);
+	},
+	get_posTop: function() {
+		return this.$myPosTop;
+	},
+	set_posTop: function(value) {
+		this.$myPosTop = value;
+		this.$setValue('pos-top', value);
+	},
+	get_posWidth: function() {
+		return this.$myPosWidth;
+	},
+	set_posWidth: function(value) {
+		this.$myPosWidth = value;
+		this.$setValue('pos-width', value);
+	},
+	get_right: function() {
+		return this.$myRight;
+	},
+	set_right: function(value) {
+		this.$myRight = value;
+		this.$setValue('right', value);
+	},
+	get_styleFloat: function() {
+		return this.$myStyleFloat;
+	},
+	set_styleFloat: function(value) {
+		this.$myStyleFloat = value;
+		this.$setValue('float', value);
+	},
+	get_tableLayout: function() {
+		return this.$myTableLayout;
+	},
+	set_tableLayout: function(value) {
+		this.$myTableLayout = value;
+		this.$setValue('table-layout', value);
+	},
+	get_textAlign: function() {
+		return this.$myTextAlign;
+	},
+	set_textAlign: function(value) {
+		this.$myTextAlign = value;
+		this.$setValue('text-align', value);
+	},
+	get_textDecoration: function() {
+		return this.$myTextDecoration;
+	},
+	set_textDecoration: function(value) {
+		this.$myTextDecoration = value;
+		this.$setValue('text-decoration', value);
+	},
+	get_textDecorationBlink: function() {
+		return this.$myTextDecorationBlink;
+	},
+	set_textDecorationBlink: function(value) {
+		this.$myTextDecorationBlink = value;
+		this.$setValue('text-decoration-blink', value);
+	},
+	get_textDecorationLineThrough: function() {
+		return this.$myTextDecorationLineThrough;
+	},
+	set_textDecorationLineThrough: function(value) {
+		this.$myTextDecorationLineThrough = value;
+		this.$setValue('text-decoration-line-through', value);
+	},
+	get_textDecorationNone: function() {
+		return this.$myTextDecorationNone;
+	},
+	set_textDecorationNone: function(value) {
+		this.$myTextDecorationNone = value;
+		this.$setValue('text-decoration-none', value);
+	},
+	get_textDecorationOverline: function() {
+		return this.$myTextDecorationOverline;
+	},
+	set_textDecorationOverline: function(value) {
+		this.$myTextDecorationOverline = value;
+		this.$setValue('text-decoration-overline', value);
+	},
+	get_textDecorationUnderline: function() {
+		return this.$myTextDecorationUnderline;
+	},
+	set_textDecorationUnderline: function(value) {
+		this.$myTextDecorationUnderline = value;
+		this.$setValue('text-decoration-underline', value);
+	},
+	get_textIndent: function() {
+		return this.$myTextIndent;
+	},
+	set_textIndent: function(value) {
+		this.$myTextIndent = value;
+		this.$setValue('text-indent', value);
+	},
+	get_textJustify: function() {
+		return this.$myTextJustify;
+	},
+	set_textJustify: function(value) {
+		this.$myTextJustify = value;
+		this.$setValue('text-justify', value);
+	},
+	get_textOverflow: function() {
+		return this.$myTextOverflow;
+	},
+	set_textOverflow: function(value) {
+		this.$myTextOverflow = value;
+		this.$setValue('textOverflow', value);
+	},
+	get_textTransform: function() {
+		return this.$myTextTransform;
+	},
+	set_textTransform: function(value) {
+		this.$myTextTransform = value;
+		this.$setValue('text-transform', value);
+	},
+	get_top: function() {
+		return this.$myTop;
+	},
+	set_top: function(value) {
+		this.$myTop = value;
+		this.$setValue('top', value);
+	},
+	get_verticalAlign: function() {
+		return this.$myVerticalAlign;
+	},
+	set_verticalAlign: function(value) {
+		this.$myVerticalAlign = value;
+		this.$setValue('vertical-align', value);
+	},
+	get_visibility: function() {
+		return this.$myVisibility;
+	},
+	set_visibility: function(value) {
+		this.$myVisibility = value;
+		this.$setValue('visibility', value);
+	},
+	get_whiteSpace: function() {
+		return this.$myWhiteSpace;
+	},
+	set_whiteSpace: function(value) {
+		this.$myWhiteSpace = value;
+		this.$setValue('white-space', value);
+	},
+	get_width: function() {
+		return this.$myWidth;
+	},
+	set_width: function(value) {
+		this.$myWidth = value;
+		this.$setValue('width', value);
+	},
+	get_wordSpacing: function() {
+		return this.$myWordSpacing;
+	},
+	set_wordSpacing: function(value) {
+		this.$myWordSpacing = value;
+		this.$setValue('word-spacing', value);
+	},
+	get_wordWrap: function() {
+		return this.$myWordWrap;
+	},
+	set_wordWrap: function(value) {
+		this.$myWordWrap = value;
+		this.$setValue('word-wrap', value);
+	},
+	get_writingMode: function() {
+		return this.$myWritingMode;
+	},
+	set_writingMode: function(value) {
+		this.$myWritingMode = value;
+		this.$setValue('writing-mode', value);
+	},
+	get_zIndex: function() {
+		return this.$myZIndex;
+	},
+	set_zIndex: function(value) {
+		this.$myZIndex = value;
+		this.$setValue('z-index', value);
+	},
+	get_zoom: function() {
+		return this.$myZoom;
+	},
+	set_zoom: function(value) {
+		this.$myZoom = value;
+		this.$setValue('zoom', value);
+	},
+	setStyle: function(outerElement) {
+		var fm = this.$lastStyle.$keys;
+		var $t1 = Object.getObjectEnumerator(fm);
+		try {
+			while ($t1.moveNext()) {
+				var item = $t1.get_current();
+				if (!Object.keyExists(this.$keys, item.key)) {
+					outerElement.style[item.key] = null;
+				}
+			}
+		}
+		finally {
+			$t1.dispose();
+		}
+		var $t2 = Object.getObjectEnumerator(this.$keys);
+		try {
+			while ($t2.moveNext()) {
+				var key = $t2.get_current();
+				if (Object.keyExists(fm, key.key)) {
+					if (!ss.referenceEquals(fm[key.key], key.value)) {
+						outerElement.style[key.key] = (ss.isNullOrUndefined(key.value) ? null : key.value.toString());
+					}
+				}
+				else if (ss.isNullOrUndefined(key.value)) {
+					if (ss.isNullOrUndefined(outerElement.style[key.key])) {
+						outerElement.style[key.key] = null;
+					}
+				}
+				else {
+					outerElement.style[key.key] = key.value.toString();
+				}
+			}
+		}
+		finally {
+			$t2.dispose();
+		}
+		this.$lastStyle = new $global_InternalStyle.$ctor1(this);
+	}
+};
+$global_InternalStyle.$ctor1 = function(val) {
+	this.parent = null;
+	this.children = null;
+	this.$lastStyle = null;
+	this.$keys = {};
+	this.$myAccelerator = false;
+	this.$myBackground = null;
+	this.$myBackgroundAttachment = null;
+	this.$myBoxShadow = null;
+	this.$myBorderRadius = null;
+	this.$myTransform = null;
+	this.$myBackgroundColor = null;
+	this.$myBackgroundImage = null;
+	this.$myBackgroundPosition = null;
+	this.$myBackgroundPositionX = null;
+	this.$myBackgroundPositionY = null;
+	this.$myBackgroundRepeat = null;
+	this.$myBorder = null;
+	this.$myBorderBottom = null;
+	this.$myBorderBottomColor = null;
+	this.$myBorderBottomStyle = null;
+	this.$myBorderBottomWidth = null;
+	this.$myBorderCollapse = null;
+	this.$myBorderColor = null;
+	this.$myBorderLeft = null;
+	this.$myBorderLeftColor = null;
+	this.$myBorderLeftStyle = null;
+	this.$myBorderLeftWidth = null;
+	this.$myBorderRight = null;
+	this.$myBorderRightColor = null;
+	this.$myBorderRightStyle = null;
+	this.$myBorderRightWidth = null;
+	this.$myBorderStyle = null;
+	this.$myBorderTop = null;
+	this.$myBorderTopColor = null;
+	this.$myBorderTopStyle = null;
+	this.$myBorderTopWidth = null;
+	this.$myBorderWidth = null;
+	this.$myBottom = null;
+	this.$myClear = null;
+	this.$myClip = null;
+	this.$myColor = null;
+	this.$myCssFloat = null;
+	this.$myCssText = null;
+	this.$myCursor = null;
+	this.$myDirection = null;
+	this.$myDisplay = null;
+	this.$myFilter = null;
+	this.$myFont = null;
+	this.$myFontFamily = null;
+	this.$myFontSize = null;
+	this.$myFontStyle = null;
+	this.$myFontVariant = null;
+	this.$myFontWeight = null;
+	this.$myHeight = null;
+	this.$myLeft = null;
+	this.$myLetterSpacing = null;
+	this.$myLineHeight = null;
+	this.$myListStyle = null;
+	this.$myListStyleImage = null;
+	this.$myListStylePosition = null;
+	this.$myListStyleType = null;
+	this.$myMargin = null;
+	this.$myMarginBottom = null;
+	this.$myMarginLeft = null;
+	this.$myMarginRight = null;
+	this.$myMarginTop = null;
+	this.$myMaxHeight = null;
+	this.$myMaxWidth = null;
+	this.$myMinHeight = null;
+	this.$myMinWidth = null;
+	this.$myMsInterpolationMode = null;
+	this.$myOpacity = null;
+	this.$myOverflow = null;
+	this.$myOverflowX = null;
+	this.$myOverflowY = null;
+	this.$myPadding = null;
+	this.$myPaddingBottom = null;
+	this.$myPaddingLeft = null;
+	this.$myPaddingRight = null;
+	this.$myPaddingTop = null;
+	this.$myPageBreakAfter = null;
+	this.$myPageBreakBefore = null;
+	this.$myPixelBottom = 0;
+	this.$myPixelHeight = 0;
+	this.$myPixelLeft = 0;
+	this.$myPixelRight = 0;
+	this.$myPixelTop = 0;
+	this.$myPixelWidth = 0;
+	this.$myPosBottom = 0;
+	this.$myPosHeight = 0;
+	this.$myPosition = null;
+	this.$myPosLeft = 0;
+	this.$myPosRight = 0;
+	this.$myPosTop = 0;
+	this.$myPosWidth = 0;
+	this.$myRight = null;
+	this.$myStyleFloat = null;
+	this.$myTableLayout = null;
+	this.$myTextAlign = null;
+	this.$myTextDecoration = null;
+	this.$myTextDecorationBlink = null;
+	this.$myTextDecorationLineThrough = null;
+	this.$myTextDecorationNone = null;
+	this.$myTextDecorationOverline = null;
+	this.$myTextDecorationUnderline = null;
+	this.$myTextIndent = null;
+	this.$myTextJustify = null;
+	this.$myTextOverflow = null;
+	this.$myTextTransform = null;
+	this.$myTop = null;
+	this.$myVerticalAlign = null;
+	this.$myVisibility = null;
+	this.$myWhiteSpace = null;
+	this.$myWidth = null;
+	this.$myWordSpacing = null;
+	this.$myWordWrap = null;
+	this.$myWritingMode = null;
+	this.$myZIndex = 0;
+	this.$myZoom = null;
+	this.children = [];
+	if (ss.isNullOrUndefined(val)) {
+		return;
+	}
+	this.$myAccelerator = val.get_accelerator();
+	this.$myBackground = val.get_background();
+	this.$myBackgroundAttachment = val.get_backgroundAttachment();
+	this.$myBoxShadow = val.get_boxShadow();
+	this.$myBorderRadius = val.get_borderRadius();
+	this.$myTransform = val.get_transform();
+	this.$myBackgroundColor = val.get_backgroundColor();
+	this.$myBackgroundImage = val.get_backgroundImage();
+	this.$myBackgroundPosition = val.get_backgroundPosition();
+	this.$myBackgroundPositionX = val.get_backgroundPositionX();
+	this.$myBackgroundPositionY = val.get_backgroundPositionY();
+	this.$myBackgroundRepeat = val.get_backgroundRepeat();
+	this.$myBorder = val.get_border();
+	this.$myBorderBottom = val.get_borderBottom();
+	this.$myBorderBottomColor = val.get_borderBottomColor();
+	this.$myBorderBottomStyle = val.get_borderBottomStyle();
+	this.$myBorderBottomWidth = val.get_borderBottomWidth();
+	this.$myBorderCollapse = val.get_borderCollapse();
+	this.$myBorderColor = val.get_borderColor();
+	this.$myBorderLeft = val.get_borderLeft();
+	this.$myBorderLeftColor = val.get_borderLeftColor();
+	this.$myBorderLeftStyle = val.get_borderLeftStyle();
+	this.$myBorderLeftWidth = val.get_borderLeftWidth();
+	this.$myBorderRight = val.get_borderRight();
+	this.$myBorderRightColor = val.get_borderRightColor();
+	this.$myBorderRightStyle = val.get_borderRightStyle();
+	this.$myBorderRightWidth = val.get_borderRightWidth();
+	this.$myBorderStyle = val.get_borderStyle();
+	this.$myBorderTop = val.get_borderTop();
+	this.$myBorderTopColor = val.get_borderTopColor();
+	this.$myBorderTopStyle = val.get_borderTopStyle();
+	this.$myBorderTopWidth = val.get_borderTopWidth();
+	this.$myBorderWidth = val.get_borderWidth();
+	this.$myBottom = val.get_bottom();
+	this.$myClear = val.get_clear();
+	this.$myClip = val.get_clip();
+	this.$myColor = val.get_color();
+	this.$myCssFloat = val.get_cssFloat();
+	this.$myCssText = val.get_cssText();
+	this.$myCursor = val.get_cursor();
+	this.$myDirection = val.get_direction();
+	this.$myDisplay = val.get_display();
+	this.$myFilter = val.get_filter();
+	this.$myFont = val.get_font();
+	this.$myFontFamily = val.get_fontFamily();
+	this.$myFontSize = val.get_fontSize();
+	this.$myFontStyle = val.get_fontStyle();
+	this.$myFontVariant = val.get_fontVariant();
+	this.$myFontWeight = val.get_fontWeight();
+	this.$myHeight = val.get_height();
+	this.$myLeft = val.get_left();
+	this.$myLetterSpacing = val.get_letterSpacing();
+	this.$myLineHeight = val.get_lineHeight();
+	this.$myListStyle = val.get_listStyle();
+	this.$myListStyleImage = val.get_listStyleImage();
+	this.$myListStylePosition = val.get_listStylePosition();
+	this.$myListStyleType = val.get_listStyleType();
+	this.$myMargin = val.get_margin();
+	this.$myMarginBottom = val.get_marginBottom();
+	this.$myMarginLeft = val.get_marginLeft();
+	this.$myMarginRight = val.get_marginRight();
+	this.$myMarginTop = val.get_marginTop();
+	this.$myMaxHeight = val.get_maxHeight();
+	this.$myMaxWidth = val.get_maxWidth();
+	this.$myMinHeight = val.get_minHeight();
+	this.$myMinWidth = val.get_minWidth();
+	this.$myMsInterpolationMode = val.get_msInterpolationMode();
+	this.$myOpacity = val.get_opacity();
+	this.$myOverflow = val.get_overflow();
+	this.$myOverflowX = val.get_overflowX();
+	this.$myOverflowY = val.get_overflowY();
+	this.$myPadding = val.get_padding();
+	this.$myPaddingBottom = val.get_paddingBottom();
+	this.$myPaddingLeft = val.get_paddingLeft();
+	this.$myPaddingRight = val.get_paddingRight();
+	this.$myPaddingTop = val.get_paddingTop();
+	this.$myPageBreakAfter = val.get_pageBreakAfter();
+	this.$myPageBreakBefore = val.get_pageBreakBefore();
+	this.$myPixelBottom = val.get_pixelBottom();
+	this.$myPixelHeight = val.get_pixelHeight();
+	this.$myPixelLeft = val.get_pixelLeft();
+	this.$myPixelRight = val.get_pixelRight();
+	this.$myPixelTop = val.get_pixelTop();
+	this.$myPixelWidth = val.get_pixelWidth();
+	this.$myPosBottom = val.get_posBottom();
+	this.$myPosHeight = val.get_posHeight();
+	this.$myPosition = val.get_position();
+	this.$myPosLeft = val.get_posLeft();
+	this.$myPosRight = val.get_posRight();
+	this.$myPosTop = val.get_posTop();
+	this.$myPosWidth = val.get_posWidth();
+	this.$myRight = val.get_right();
+	this.$myStyleFloat = val.get_styleFloat();
+	this.$myTableLayout = val.get_tableLayout();
+	this.$myTextAlign = val.get_textAlign();
+	this.$myTextDecoration = val.get_textDecoration();
+	this.$myTextDecorationBlink = val.get_textDecorationBlink();
+	this.$myTextDecorationLineThrough = val.get_textDecorationLineThrough();
+	this.$myTextDecorationNone = val.get_textDecorationNone();
+	this.$myTextDecorationOverline = val.get_textDecorationOverline();
+	this.$myTextDecorationUnderline = val.get_textDecorationUnderline();
+	this.$myTextIndent = val.get_textIndent();
+	this.$myTextJustify = val.get_textJustify();
+	this.$myTextOverflow = val.get_textOverflow();
+	this.$myTextTransform = val.get_textTransform();
+	this.$myTop = val.get_top();
+	this.$myVerticalAlign = val.get_verticalAlign();
+	this.$myVisibility = val.get_visibility();
+	this.$myWhiteSpace = val.get_whiteSpace();
+	this.$myWidth = val.get_width();
+	this.$myWordSpacing = val.get_wordSpacing();
+	this.$myWordWrap = val.get_wordWrap();
+	this.$myWritingMode = val.get_writingMode();
+	this.$myZIndex = val.get_zIndex();
+	this.$myZoom = val.get_zoom();
+};
+$global_InternalStyle.$ctor1.prototype = $global_InternalStyle.prototype;
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameOrder
 var $global_Order = function() {
@@ -952,10 +2219,12 @@ $global_shuff.break_ = function(lineNumber, cardGame, varLookup) {
 ////////////////////////////////////////////////////////////////////////////////
 // global.SpaceDrawing
 var $global_SpaceDrawing = function(item1) {
+	this.outerElementStyle = null;
 	this.outerElement = null;
 	this.childNodes = null;
 	this.outerElement = item1;
 	this.childNodes = [];
+	this.outerElementStyle = new $global_InternalStyle();
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameTableSpace
@@ -1047,6 +2316,7 @@ Type.registerClass(global, 'global.Effect$StyleProperty', $global_Effect$StylePr
 Type.registerClass(global, 'global.FiberYieldResponse', $global_FiberYieldResponse, Object);
 Type.registerClass(global, 'global.GameCardGameOptions', $global_GameCardGameOptions, Object);
 Type.registerClass(global, 'global.GameCardGameTextAreaOptions', $global_GameCardGameTextAreaOptions, Object);
+Type.registerClass(global, 'global.InternalStyle', $global_InternalStyle, Object);
 Type.registerClass(global, 'global.Pile', $global_Pile, Object);
 Type.registerClass(global, 'global.PokerResult', $global_PokerResult, Object);
 Type.registerClass(global, 'global.Rectangle', $global_Rectangle, Object);

@@ -6,7 +6,6 @@ namespace NodeJSLibrary
     [ScriptName("util")]
     public class Util : NodeModule
     {
-        [ScriptName("print")]
         public void Print(string s) {}
     }
 }

@@ -5,8 +5,8 @@ namespace Models.ShufflyManagerModels
     [Serializable]
     public class StartGameRequestModel
     {
-        private StartGameRequestModel() {}
         public string RoomID { get; set; }
+        private StartGameRequestModel() {}
 
         [ObjectLiteral]
         public StartGameRequestModel(string roomId)

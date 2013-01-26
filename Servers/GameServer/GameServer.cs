@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using CommonLibraries;
 using NodeJSLibrary;
 using global;
@@ -9,14 +9,9 @@ namespace GameServer
         private ChildProcess childProcess;
         private string gameServerIndex;
 
-        public static void Main()
-        {
-            new GameServer();
-        }
-
         public GameServer()
         {
-            new ArrayUtils(); 
+            new ArrayUtils();
             childProcess = Global.Require<ChildProcess>("child_process");
             gameServerIndex = "GameServer" + Guid.NewGuid();
             Global.Require<NodeModule>("fibers");
@@ -29,8 +24,15 @@ namespace GameServer
                     GameRoom room;
                     rooms.Add(room = new GameRoom());
                 });*/
+        }
 
-
-        } 
+        public static void Main()
+        {
+            try {
+                new GameServer();
+            } catch (Exception exc) {
+                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+            }
+        }
     }
 }

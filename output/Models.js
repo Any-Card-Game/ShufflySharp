@@ -98,6 +98,19 @@ $Models_ShufflyManagerModels_GameAnswerRequestModel.$ctor = function() {
 	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
+// Models.ShufflyManagerModels.GameRoomModel
+var $Models_ShufflyManagerModels_GameRoomModel = function() {
+};
+$Models_ShufflyManagerModels_GameRoomModel.createInstance = function() {
+	return $Models_ShufflyManagerModels_GameRoomModel.$ctor();
+};
+$Models_ShufflyManagerModels_GameRoomModel.$ctor = function() {
+	var $this = {};
+	$this.roomID = null;
+	$this.gameServer = null;
+	return $this;
+};
+////////////////////////////////////////////////////////////////////////////////
 // Models.ShufflyManagerModels.GameSendAnswerModel
 var $Models_ShufflyManagerModels_GameSendAnswerModel = function() {
 };
@@ -153,6 +166,7 @@ Type.registerClass(global, 'Models.ShufflyManagerModels.DebuggerJoinRequestModel
 Type.registerClass(global, 'Models.ShufflyManagerModels.GameAnswerModel', $Models_ShufflyManagerModels_GameAnswerModel, Object);
 Type.registerClass(global, 'Models.ShufflyManagerModels.GameAnswerQuestionModel', $Models_ShufflyManagerModels_GameAnswerQuestionModel, Object);
 Type.registerClass(global, 'Models.ShufflyManagerModels.GameAnswerRequestModel', $Models_ShufflyManagerModels_GameAnswerRequestModel, Object);
+Type.registerClass(global, 'Models.ShufflyManagerModels.GameRoomModel', $Models_ShufflyManagerModels_GameRoomModel, Object);
 Type.registerClass(global, 'Models.ShufflyManagerModels.GameSendAnswerModel', $Models_ShufflyManagerModels_GameSendAnswerModel, Object);
 Type.registerClass(global, 'Models.ShufflyManagerModels.GameSourceRequestModel', $Models_ShufflyManagerModels_GameSourceRequestModel, Object);
 Type.registerClass(global, 'Models.ShufflyManagerModels.GameSourceResponseModel', $Models_ShufflyManagerModels_GameSourceResponseModel, Object);

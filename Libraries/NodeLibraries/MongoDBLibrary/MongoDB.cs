@@ -22,17 +22,13 @@ namespace MongoDBLibrary
     [Imported(IsRealType = true)]
     public class MongoDB : NodeModule
     {
-        [ScriptName("open")]
         public void Open(Action<object, object> action) {}
-
-        [ScriptName("collection")]
         public void Collection(string testInsert, Action<string, MongoCollection> test) {}
     }
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class MongoCollection
     {
-        [ScriptName("insert")]
         public void Insert(object gmo) {}
     }
 }

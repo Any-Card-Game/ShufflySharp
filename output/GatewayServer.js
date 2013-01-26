@@ -71,7 +71,13 @@ $GatewayServer_GatewayServer.prototype = {
 	}
 };
 $GatewayServer_GatewayServer.main = function() {
-	new $GatewayServer_GatewayServer();
+	try {
+		new $GatewayServer_GatewayServer();
+	}
+	catch ($t1) {
+		var exc = ss.Exception.wrap($t1);
+		console.log('CRITICAL FAILURE: ' + exc.toString());
+	}
 };
 Type.registerClass(global, 'GatewayServer.GatewayServer', $GatewayServer_GatewayServer, Object);
 $GatewayServer_GatewayServer.main();

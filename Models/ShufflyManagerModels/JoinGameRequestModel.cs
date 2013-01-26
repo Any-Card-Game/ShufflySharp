@@ -5,9 +5,9 @@ namespace Models.ShufflyManagerModels
     [Serializable]
     public class JoinGameRequestModel
     {
-        private JoinGameRequestModel() {}
         public string RoomID { get; set; }
         public UserModel User { get; set; }
+        private JoinGameRequestModel() {}
 
         [ObjectLiteral]
         public JoinGameRequestModel(string roomId, UserModel user)

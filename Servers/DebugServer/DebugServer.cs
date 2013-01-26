@@ -1,5 +1,6 @@
-﻿using CommonShuffleLibrary;
-using Models;
+﻿using System;
+using CommonLibraries;
+using CommonShuffleLibrary;
 using Models.ShufflyManagerModels;
 using NodeJSLibrary;
 namespace DebugServer
@@ -17,18 +18,21 @@ namespace DebugServer
                                                                         new[] {"GatewayServer", "Gateway*"}));
 
             queueManager.AddChannel("Area.Debug2.GetGameSource.Request",
-                                                            (sender, data) => {
-
-                                                                var sourceRequest = (GameSourceRequestModel) data;
-                                                                fs.ReadFile("/usr/local/src/new/Games/" + sourceRequest.GameName + "/app.js",
-                                                                            "ascii",
-                                                                            (err, data2) => { queueManager.SendMessage(sender, sender.Gateway, "Area.Debug.GetGameSource.Response", new GameSourceResponseModel(data2)); });
-                                                            });
+                                    (sender, data) => {
+                                        var sourceRequest = (GameSourceRequestModel) data;
+                                        fs.ReadFile("/usr/local/src/new/Games/" + sourceRequest.GameName + "/app.js",
+                                                    "ascii",
+                                                    (err, data2) => { queueManager.SendMessage(sender, sender.Gateway, "Area.Debug.GetGameSource.Response", new GameSourceResponseModel(data2)); });
+                                    });
         }
 
         public static void Main()
         {
-            new DebugServer();
+            try {
+                new DebugServer();
+            } catch (Exception exc) {
+                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+            }
         }
     }
 }

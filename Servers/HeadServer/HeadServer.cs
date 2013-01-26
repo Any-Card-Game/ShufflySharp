@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using CommonLibraries;
 using CommonShuffleLibrary;
 using NodeJSLibrary;
 namespace HeadServer
@@ -40,11 +42,6 @@ namespace HeadServer
 
             Global.SetInterval(pollGateways, 1000);
             pollGateways();
-        }
-
-        public static void Main()
-        {
-            new HeadServer();
         }
 
         private void pollGateways()
@@ -88,6 +85,15 @@ namespace HeadServer
         {
             indexPageData = content.ToString();
             Global.Require<Http>("http").CreateServer(handler).Listen(80);
+        }
+
+        public static void Main()
+        {
+            try {
+                new HeadServer();
+            } catch (Exception exc) {
+                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+            }
         }
     }
 }

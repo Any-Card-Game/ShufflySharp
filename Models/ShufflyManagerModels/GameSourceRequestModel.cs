@@ -5,8 +5,8 @@ namespace Models.ShufflyManagerModels
     [Serializable]
     public class GameSourceRequestModel
     {
-        private GameSourceRequestModel() {}
         public string GameName { get; set; }
+        private GameSourceRequestModel() {}
 
         [ObjectLiteral]
         public GameSourceRequestModel(string gameName)

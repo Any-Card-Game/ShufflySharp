@@ -4,18 +4,10 @@ namespace global
 {
     [Serializable]
     public class GameCardGameTextAreaOptions
-    {
-        [ScriptName("name")]
-        [IntrinsicProperty]
-        public string Name { get; set; }
-        [ScriptName("x")]
-        [IntrinsicProperty]
-        public int X { get; set; }
-        [ScriptName("nayme")]
-        [IntrinsicProperty]
-        public int Y { get; set; }
-        [ScriptName("text")]
-        [IntrinsicProperty]
+    { 
+        public string Name { get; set; } 
+        public int X { get; set; } 
+        public int Y { get; set; } 
         public string Text { get; set; }
     }
 }

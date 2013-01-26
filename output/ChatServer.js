@@ -74,7 +74,13 @@ $ChatServer_ChatServer.prototype = {
 	}
 };
 $ChatServer_ChatServer.main = function() {
-	new $ChatServer_ChatServer();
+	try {
+		new $ChatServer_ChatServer();
+	}
+	catch ($t1) {
+		var exc = ss.Exception.wrap($t1);
+		console.log('CRITICAL FAILURE: ' + exc.toString());
+	}
 };
 ////////////////////////////////////////////////////////////////////////////////
 // ChatServer.SendMessageToRoomModel

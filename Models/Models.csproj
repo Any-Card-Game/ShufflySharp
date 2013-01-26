@@ -39,6 +39,7 @@
     <Compile Include="ShufflyManagerModels\GameAnswerModel.cs" />
     <Compile Include="ShufflyManagerModels\GameAnswerQuestionModel.cs" />
     <Compile Include="ShufflyManagerModels\GameAnswerRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameRoomModel.cs" />
     <Compile Include="ShufflyManagerModels\GameSendAnswerModel.cs" />
     <Compile Include="ShufflyManagerModels\GameSourceRequestModel.cs" />
     <Compile Include="ShufflyManagerModels\GameSourceResponseModel.cs" />

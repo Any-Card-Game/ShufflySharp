@@ -1,9 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
-using Client.ShuffUI;
-using CommonShuffleLibrary;
-using GameServer;
-using GameServer.Models;
+using Client.ShuffUI; 
+using Models.ShufflyManagerModels;
 namespace Client.Information
 {
     public class DevAreaInformation
@@ -11,7 +9,7 @@ namespace Client.Information
         [IntrinsicProperty]
         public ShuffTextbox txtNumOfPlayers { get; set; }
         [IntrinsicProperty]
-        public Action<GameRoom> loadRoomInfo { get; set; }
+        public Action<GameRoomModel> loadRoomInfo { get; set; }
         [IntrinsicProperty]
         public ShuffTextbox varText { get; set; }
         [IntrinsicProperty]

@@ -67,10 +67,9 @@ $Client_BuildSite.prototype = {
 		$t1.allowMinimize = true;
 		$t1.set_visible(true);
 		this.home = shuffUIManager.createWindow($Client_Information_HomeAreaInformation).call(shuffUIManager, $t1);
-		this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Update game list'), Function.mkdel(this, function(e) {
-			pageHandler.gateway.emit('Area.Game.GetGames', this.devArea.data.gameServer, null);
-			//NO EMIT'ING OUTSIDE OF PageHandler
-		})));
+		this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Update game list'), function(e) {
+			pageHandler.clientManager.getGameList();
+		}));
 		//home.AddButton(new ShuffButton()
 		//{
 		//X = 280,
@@ -86,10 +85,9 @@ $Client_BuildSite.prototype = {
 		//
 		//}
 		//});
-		this.home.data.btnStartGame = this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 164, $Client_ShuffUI_Number.op_Implicit$2(120), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Start Game'), Function.mkdel(this, function(e1) {
-			pageHandler.gateway.emit('Area.Game.Start', { roomID: pageHandler.gameStuff.roomID }, this.devArea.data.gameServer);
-			//NO EMIT"ING OUTSIDE OF PageHandler
-		})));
+		this.home.data.btnStartGame = this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 164, $Client_ShuffUI_Number.op_Implicit$2(120), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Start Game'), function(e1) {
+			pageHandler.clientManager.startGame({ roomID: pageHandler.gameStuff.roomID });
+		}));
 		var randomName = '';
 		var ra = Math.random() * 10;
 		for (var i = 0; i < ra; i++) {
@@ -218,17 +216,18 @@ $Client_BuildSite.prototype = {
 		this.devArea.data.beginGame = Function.mkdel(this, function() {
 			$('#dvGame').empty();
 			// pageHandler.ClearCache();
+			pageHandler.gameDrawer.clearCache();
 			$('#dvGame').width('50%');
 			$('#dvGame').height('100%');
 			//clearLevel();
 			this.devArea.data.created = false;
 			this.devArea.data.joined = 0;
 			pageHandler.startGameServer();
-			var $t5 = pageHandler.gateway;
+			var $t5 = pageHandler.clientManager;
 			var $t4 = this.selectedGame;
 			var $t3 = new Models.UserModel();
 			$t3.userName = this.devArea.data.txtNumOfPlayers.get_text();
-			$t5.emit('Area.Debug.Create', { gameName: $t4, user: $t3, Name: 'main room', Source: this.codeArea.data.codeEditor.information.editor.getValue(), BreakPoints: this.codeArea.data.breakPoints }, null);
+			$t5.createDebuggedGame({ gameName: $t4, user: $t3, Name: 'main room', Source: this.codeArea.data.codeEditor.information.editor.getValue(), BreakPoints: this.codeArea.data.breakPoints });
 		});
 		this.devArea.addElement($Client_ShuffUI_ShuffButton).call(this.devArea, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Begin Game'), Function.mkdel(this, function(e2) {
 			this.devArea.data.beginGame();
@@ -243,7 +242,7 @@ $Client_BuildSite.prototype = {
 			else {
 				this.selectedGame = 'Sevens';
 			}
-			pageHandler.gateway.emit('Area.Debug2.GetGameSource.Request', { gameName: this.selectedGame }, null);
+			pageHandler.clientManager.requestGameSource({ gameName: this.selectedGame });
 			var m = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(but.text);
 		})));
 		this.devArea.data.lblHowFast = this.devArea.addElement($Client_ShuffUI_ShuffLabel).call(this.devArea, new $Client_ShuffUI_ShuffLabel(80, 80, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Time Taken:')));
@@ -304,23 +303,18 @@ $Client_BuildSite.prototype = {
 			this.devArea.data.lblAnother.set_text(room2.gameServer);
 			var count = parseInt(this.devArea.data.txtNumOfPlayers.get_text());
 			if (!this.devArea.data.created) {
-				pageHandler.gateway.emit('Area.Game.DebuggerJoin', { roomID: room2.roomID }, this.devArea.data.gameServer);
-				//NO EMIT"ING OUTSIDE OF PageHandler
+				pageHandler.clientManager.joinDebugger({ roomID: room2.roomID });
 				for (var i1 = 0; i1 < count; i1++) {
-					var $t10 = pageHandler.gateway;
+					var $t10 = pageHandler.clientManager;
 					var $t9 = room2.roomID;
 					var $t8 = new Models.UserModel();
 					$t8.userName = 'player ' + (i1 + 1);
-					$t10.emit('Area.Game.Join', { roomID: $t9, user: $t8 }, this.devArea.data.gameServer);
-					//NO EMIT"ING OUTSIDE OF PageHandler
+					$t10.joinPlayer({ roomID: $t9, user: $t8 });
 				}
 				this.devArea.data.created = true;
 			}
-			else {
-				if (++this.devArea.data.joined === count) {
-					pageHandler.gateway.emit('Area.Game.Start', { roomID: room2.roomID }, this.devArea.data.gameServer);
-				}
-				//NO EMIT"ING OUTSIDE OF PageHandler
+			else if (++this.devArea.data.joined === count) {
+				pageHandler.clientManager.startGame({ roomID: room2.roomID });
 			}
 		});
 		this.devArea.data.txtNumOfPlayers = this.devArea.addElement($Client_ShuffUI_ShuffTextbox).call(this.devArea, new $Client_ShuffUI_ShuffTextbox(130, 43, $Client_ShuffUI_Number.op_Implicit$2(130), $Client_ShuffUI_Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size=13px'));
@@ -792,41 +786,37 @@ $Client_Gateway.prototype = {
 // Client.PageHandler
 var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
 	this.$buildSite = null;
+	this.clientManager = null;
 	this.$endTime = 0;
-	this.$gameDrawer = null;
+	this.gameDrawer = null;
 	this.gameStuff = null;
-	this.gateway = null;
 	this.$numOfTimes = 0;
 	this.$startTime = 0;
 	this.$timeValue = 0;
 	this.$buildSite = buildSite;
 	this.gameStuff = new $Client_GameInfo();
-	this.$gameDrawer = new $Client_GameDrawer();
+	this.gameDrawer = new $Client_GameDrawer();
 	this.$startTime = Date.get_now();
 	//            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
-	this.gateway = new $Client_Gateway(gatewayServerAddress);
-	this.gateway.on('Area.Main.Login.Response', function(data) {
+	this.clientManager = new $GameServer_ShufflyClientManager(gatewayServerAddress);
+	this.clientManager.add_onLogin(function(data) {
 		window.alert(JSON.stringify(data));
 	});
-	this.gateway.on('Area.Lobby.ListCardGames.Response', function(data1) {
-	});
-	this.gateway.on('Area.Lobby.ListRooms.Response', function(data2) {
-		console.log(data2);
-	});
+	//gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
+	//gateway.On("Area.Lobby.ListRooms.Response", (data) => { Console.Log(data); });
 	var randomName = '';
 	var ra = Math.random() * 10;
 	for (var i = 0; i < ra; i++) {
 		randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
 	}
-	this.gateway.login(randomName);
-	this.gateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(data_) {
-		var data3 = data_;
+	this.clientManager.login(randomName);
+	this.clientManager.add_onGetGameSource(Function.mkdel(this, function(data1) {
 		var endTime = new Date();
 		var time = endTime - this.$startTime;
 		this.$numOfTimes++;
 		this.$timeValue += time;
 		buildSite.devArea.data.lblHowFast.set_text('Time Taken: ' + ss.Int32.div(this.$timeValue, this.$numOfTimes));
-		buildSite.codeArea.data.codeEditor.information.editor.setValue(data3.content);
+		buildSite.codeArea.data.codeEditor.information.editor.setValue(data1.content);
 		buildSite.codeArea.data.codeEditor.information.editor.setMarker(0, '<span style="color: #900">&nbsp;&nbsp;</span> %N%');
 		buildSite.codeArea.data.codeEditor.information.editor.refresh();
 	}));
@@ -855,8 +845,8 @@ var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
 };
 $Client_PageHandler.prototype = {
 	startGameServer: function() {
-		this.gateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(data) {
-			var roomInfo = data;
+		this.clientManager.add_onGetRoomInfo(Function.mkdel(this, function(roomInfo) {
+			this.clientManager.set_gameServer(roomInfo.gameServer);
 			this.gameStuff.roomID = roomInfo.roomID;
 			this.$buildSite.home.data.loadRoomInfo(roomInfo);
 			this.$buildSite.devArea.data.loadRoomInfo(roomInfo);
@@ -871,16 +861,14 @@ $Client_PageHandler.prototype = {
 		//                        
 		//
 		//                        });
-		this.gateway.on('Area.Debug.Log', Function.mkdel(this, function(data1) {
-			var gameAnswer = data1;
+		this.clientManager.add_onGetDebugLog(Function.mkdel(this, function(gameAnswer) {
 			this.$buildSite.home.data.loadRoomInfos(gameAnswer);
 			var lines = this.$buildSite.codeArea.data.console.information.editor.getValue().split('\n');
 			lines = lines.extract(lines.length - 40, 40);
 			this.$buildSite.codeArea.data.console.information.editor.setValue(lines.join('\n') + '\n' + gameAnswer.value);
 			this.$buildSite.codeArea.data.console.information.editor.setCursor(this.$buildSite.codeArea.data.console.information.editor.lineCount(), 0);
 		}));
-		this.gateway.on('Area.Debug.Break', Function.mkdel(this, function(data2) {
-			var gameAnswer1 = data2;
+		this.clientManager.add_onGetDebugBreak(Function.mkdel(this, function(gameAnswer1) {
 			this.$buildSite.home.data.loadRoomInfos(gameAnswer1);
 			var cm = this.$buildSite.codeArea.data.codeEditor;
 			cm.information.editor.clearMarker(gameAnswer1.lineNumber);
@@ -897,34 +885,31 @@ $Client_PageHandler.prototype = {
 		//                        Window.Alert(Json.Stringify(data));
 		//
 		//                        });
-		this.gateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(data3) {
-			var gameSendAnswerModel = data3;
+		this.clientManager.add_onAskQuestion(Function.mkdel(this, function(gameSendAnswerModel) {
 			this.$buildSite.questionArea.data.load(gameSendAnswerModel);
 			//alert(JSON.stringify(data));
 			this.$endTime = new Date();
 			var time = this.$endTime - this.$startTime;
 			this.$buildSite.devArea.data.lblHowFast.set_text('how long: ' + time);
 			window.setTimeout(Function.mkdel(this, function() {
-				this.gateway.emit('Area.Game.AnswerQuestion', { roomID: this.gameStuff.roomID, answer: 1 }, this.$buildSite.devArea.data.gameServer);
+				this.clientManager.answerQuestion({ roomID: this.gameStuff.roomID, answer: 1 });
 				this.$buildSite.questionArea.set_visible(false);
 				this.$startTime = new Date();
 			}), 200);
 		}));
-		this.gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(data21) {
-			var update = Type.cast(data21, String);
-			var data4 = JSON.parse((new Compressor()).DecompressText(update));
+		this.clientManager.add_onUpdateState(Function.mkdel(this, function(update) {
+			var data = JSON.parse((new Compressor()).DecompressText(update));
 			//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
-			this.$gameDrawer.draw(data4);
+			this.gameDrawer.draw(data);
 		}));
-		this.gateway.on('Area.Game.Started', function(data5) {
-			var room = data5;
+		this.clientManager.add_onGameStarted(function(room) {
 			//alert(JSON.stringify(data));
 		});
-		this.gateway.on('Area.Game.GameOver', function(data6) {
-			var room1 = Type.cast(data6, String);
+		this.clientManager.add_onGameOver(function(room1) {
+			//alert(JSON.stringify(data));
 		});
-		this.gateway.on('Area.Debug.GameOver', function(data7) {
-			var room2 = Type.cast(data7, String);
+		this.clientManager.add_onDebugGameOver(function(room2) {
+			//alert(JSON.stringify(data));
 		});
 	}
 };
@@ -1849,6 +1834,150 @@ $Client_ShuffUI_VisibleChangedEvent.$ctor = function(visible) {
 	$this.visible = visible;
 	return $this;
 };
+////////////////////////////////////////////////////////////////////////////////
+// GameServer.ShufflyClientManager
+var $GameServer_ShufflyClientManager = function(gatewayServerAddress) {
+	this.$myGatewayServerAddress = null;
+	this.$gateway = null;
+	this.$1$GameServerField = null;
+	this.$1$OnLoginField = null;
+	this.$1$OnGetGameSourceField = null;
+	this.$1$OnGetRoomInfoField = null;
+	this.$1$OnGetDebugLogField = null;
+	this.$1$OnGetDebugBreakField = null;
+	this.$1$OnAskQuestionField = null;
+	this.$1$OnUpdateStateField = null;
+	this.$1$OnGameStartedField = null;
+	this.$1$OnGameOverField = null;
+	this.$1$OnDebugGameOverField = null;
+	this.$myGatewayServerAddress = gatewayServerAddress;
+	this.$setup();
+};
+$GameServer_ShufflyClientManager.prototype = {
+	get_gameServer: function() {
+		return this.$1$GameServerField;
+	},
+	set_gameServer: function(value) {
+		this.$1$GameServerField = value;
+	},
+	add_onLogin: function(value) {
+		this.$1$OnLoginField = Function.combine(this.$1$OnLoginField, value);
+	},
+	remove_onLogin: function(value) {
+		this.$1$OnLoginField = Function.remove(this.$1$OnLoginField, value);
+	},
+	add_onGetGameSource: function(value) {
+		this.$1$OnGetGameSourceField = Function.combine(this.$1$OnGetGameSourceField, value);
+	},
+	remove_onGetGameSource: function(value) {
+		this.$1$OnGetGameSourceField = Function.remove(this.$1$OnGetGameSourceField, value);
+	},
+	add_onGetRoomInfo: function(value) {
+		this.$1$OnGetRoomInfoField = Function.combine(this.$1$OnGetRoomInfoField, value);
+	},
+	remove_onGetRoomInfo: function(value) {
+		this.$1$OnGetRoomInfoField = Function.remove(this.$1$OnGetRoomInfoField, value);
+	},
+	add_onGetDebugLog: function(value) {
+		this.$1$OnGetDebugLogField = Function.combine(this.$1$OnGetDebugLogField, value);
+	},
+	remove_onGetDebugLog: function(value) {
+		this.$1$OnGetDebugLogField = Function.remove(this.$1$OnGetDebugLogField, value);
+	},
+	add_onGetDebugBreak: function(value) {
+		this.$1$OnGetDebugBreakField = Function.combine(this.$1$OnGetDebugBreakField, value);
+	},
+	remove_onGetDebugBreak: function(value) {
+		this.$1$OnGetDebugBreakField = Function.remove(this.$1$OnGetDebugBreakField, value);
+	},
+	add_onAskQuestion: function(value) {
+		this.$1$OnAskQuestionField = Function.combine(this.$1$OnAskQuestionField, value);
+	},
+	remove_onAskQuestion: function(value) {
+		this.$1$OnAskQuestionField = Function.remove(this.$1$OnAskQuestionField, value);
+	},
+	add_onUpdateState: function(value) {
+		this.$1$OnUpdateStateField = Function.combine(this.$1$OnUpdateStateField, value);
+	},
+	remove_onUpdateState: function(value) {
+		this.$1$OnUpdateStateField = Function.remove(this.$1$OnUpdateStateField, value);
+	},
+	add_onGameStarted: function(value) {
+		this.$1$OnGameStartedField = Function.combine(this.$1$OnGameStartedField, value);
+	},
+	remove_onGameStarted: function(value) {
+		this.$1$OnGameStartedField = Function.remove(this.$1$OnGameStartedField, value);
+	},
+	add_onGameOver: function(value) {
+		this.$1$OnGameOverField = Function.combine(this.$1$OnGameOverField, value);
+	},
+	remove_onGameOver: function(value) {
+		this.$1$OnGameOverField = Function.remove(this.$1$OnGameOverField, value);
+	},
+	add_onDebugGameOver: function(value) {
+		this.$1$OnDebugGameOverField = Function.combine(this.$1$OnDebugGameOverField, value);
+	},
+	remove_onDebugGameOver: function(value) {
+		this.$1$OnDebugGameOverField = Function.remove(this.$1$OnDebugGameOverField, value);
+	},
+	$setup: function() {
+		this.$gateway = new $Client_Gateway(this.$myGatewayServerAddress);
+		this.$gateway.on('Area.Main.Login.Response', Function.mkdel(this, function(a) {
+			this.$1$OnLoginField(a);
+		}));
+		this.$gateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(a1) {
+			this.$1$OnGetGameSourceField(a1);
+		}));
+		this.$gateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(a2) {
+			this.$1$OnGetRoomInfoField(a2);
+		}));
+		this.$gateway.on('Area.Debug.Log', Function.mkdel(this, function(a3) {
+			this.$1$OnGetDebugLogField(a3);
+		}));
+		this.$gateway.on('Area.Debug.Break', Function.mkdel(this, function(a4) {
+			this.$1$OnGetDebugBreakField(a4);
+		}));
+		this.$gateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(a5) {
+			this.$1$OnAskQuestionField(a5);
+		}));
+		this.$gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(a6) {
+			this.$1$OnUpdateStateField(Type.cast(a6, String));
+		}));
+		this.$gateway.on('Area.Game.Started', Function.mkdel(this, function(a7) {
+			this.$1$OnGameStartedField(a7);
+		}));
+		this.$gateway.on('Area.Game.GameOver', Function.mkdel(this, function(a8) {
+			this.$1$OnGameOverField(Type.cast(a8, String));
+		}));
+		this.$gateway.on('Area.Debug.GameOver', Function.mkdel(this, function(a9) {
+			this.$1$OnDebugGameOverField(Type.cast(a9, String));
+		}));
+	},
+	login: function(randomName) {
+		this.$gateway.login(randomName);
+	},
+	answerQuestion: function(gameAnswerQuestionModel) {
+		this.$gateway.emit('Area.Game.AnswerQuestion', gameAnswerQuestionModel, this.get_gameServer());
+	},
+	getGameList: function() {
+		this.$gateway.emit('Area.Game.GetGames', this.get_gameServer(), null);
+	},
+	startGame: function(startGameRequestModel) {
+		this.$gateway.emit('Area.Game.Start', startGameRequestModel, this.get_gameServer());
+	},
+	createDebuggedGame: function(o) {
+		this.$gateway.emit('Area.Debug.Create', o, null);
+	},
+	requestGameSource: function(gameSourceRequestModel) {
+		this.$gateway.emit('Area.Debug2.GetGameSource.Request', gameSourceRequestModel, null);
+	},
+	joinDebugger: function(debuggerJoinRequestModel) {
+		this.$gateway.emit('Area.Game.DebuggerJoin', debuggerJoinRequestModel, this.get_gameServer());
+	},
+	joinPlayer: function(joinGameRequestModel) {
+		this.$gateway.emit('Area.Game.Join', joinGameRequestModel, this.get_gameServer());
+	}
+};
 Type.registerClass(global, 'Globals', $Globals, Object);
 Type.registerClass(global, 'LoginUI', $LoginUI, Object);
 Type.registerClass(global, 'Client.BuildSite', $Client_BuildSite, Object);
@@ -1879,6 +2008,7 @@ Type.registerClass(global, 'Client.ShuffUI.SizeChangedEvent', $Client_ShuffUI_Si
 Type.registerClass(global, 'Client.ShuffUI.TextChangedEvent', $Client_ShuffUI_TextChangedEvent, Object);
 Type.registerClass(global, 'Client.ShuffUI.UIAreaInformation', $Client_ShuffUI_UIAreaInformation, Object);
 Type.registerClass(global, 'Client.ShuffUI.VisibleChangedEvent', $Client_ShuffUI_VisibleChangedEvent, Object);
+Type.registerClass(global, 'GameServer.ShufflyClientManager', $GameServer_ShufflyClientManager, Object);
 Type.registerClass(global, 'Client.ShuffUI.ShuffButton', $Client_ShuffUI_ShuffButton, $Client_ShuffUI_ShuffElement);
 Type.registerClass(global, 'Client.ShuffUI.ShuffCodeEditor', $Client_ShuffUI_ShuffCodeEditor, $Client_ShuffUI_ShuffElement);
 $Client_BuildSite.instance = null;

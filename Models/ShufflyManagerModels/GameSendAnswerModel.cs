@@ -5,9 +5,10 @@ namespace Models.ShufflyManagerModels
     [Serializable]
     public class GameSendAnswerModel
     {
-        private GameSendAnswerModel() {}
         public string Question { get; set; }
         public string[] Answers { get; set; }
+        private GameSendAnswerModel() {}
+
         [ObjectLiteral]
         public GameSendAnswerModel(string question, string[] answers)
         {

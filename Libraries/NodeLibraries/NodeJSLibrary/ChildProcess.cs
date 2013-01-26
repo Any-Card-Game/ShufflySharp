@@ -7,7 +7,6 @@ namespace NodeJSLibrary
     public class ChildProcess : NodeModule
     {
         [IntrinsicProperty]
-        [ScriptName("exec")]
         public Func<string, Process> Exec { get; set; }
     }
 }

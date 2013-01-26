@@ -16,6 +16,22 @@ namespace Client
         public ShuffWindow<CodeAreaInformation> codeArea;
         public ShuffWindow<DevAreaInformation> devArea;
         private string gatewayServerAddress;
+        public ShuffWindow<HomeAreaInformation> home;
+        public ShuffWindow<QuestionAreaInformation> questionArea;
+        public string selectedGame = "Sevens";
+        private ShuffUIManager shuffUIManager;
+        [IntrinsicProperty]
+        public static BuildSite Instance { get; set; }
+
+        public BuildSite(string gatewayServerAddress)
+        {
+            Instance = this;
+            this.gatewayServerAddress = gatewayServerAddress;
+            var url = "http://50.116.22.241:8881/";
+            Globals.Window.topLevel = url;
+
+            loadJunk(url, ready);
+        }
 
         private static void loadJunk(string url, Action ready)
         {
@@ -55,7 +71,7 @@ namespace Client
                                                                                   () => scriptLoader.Load(new[] {
                                                                                                                         url + "CommonLibraries.js",
                                                                                                                         //url + "SalterelleTest.js",
-                                                                                                                        url + "ShuffleGameLibrary.js", 
+                                                                                                                        url + "ShuffleGameLibrary.js",
                                                                                                                         url + "Models.js",
 
                                                                                                                         //url + "uis/genericArea.js", 
@@ -66,23 +82,6 @@ namespace Client
                                                                                                                                         },
                                                                                                                                   true,
                                                                                                                                   ready)))));
-        }
-
-        public ShuffWindow<HomeAreaInformation> home;
-        public ShuffWindow<QuestionAreaInformation> questionArea;
-        public string selectedGame = "Sevens";
-        private ShuffUIManager shuffUIManager;
-        [IntrinsicProperty]
-        public static BuildSite Instance { get; set; }
-
-        public BuildSite(string gatewayServerAddress)
-        {
-            Instance = this;
-            this.gatewayServerAddress = gatewayServerAddress;
-            var url = "http://50.116.22.241:8881/";
-            Globals.Window.topLevel = url;
-
-            loadJunk(url, ready);
         }
 
         private void ready()
@@ -108,28 +107,26 @@ namespace Client
 
             new LoginUI(shuffUIManager, pageHandler);
 
-             
+            home = shuffUIManager.CreateWindow(new ShuffWindow<HomeAreaInformation>(new HomeAreaInformation()) {
+                                                                                                                       Title = "CardGame",
+                                                                                                                       X = jQuery.Select("body").GetInnerWidth() - 500,
+                                                                                                                       Y = 100,
+                                                                                                                       Width = 420,
+                                                                                                                       Height = 450,
+                                                                                                                       AllowClose = true,
+                                                                                                                       AllowMinimize = true,
+                                                                                                                       Visible = true
+                                                                                                               });
 
-
-            home = shuffUIManager.CreateWindow(new ShuffWindow<HomeAreaInformation>(new HomeAreaInformation())
-            {
-                Title = "CardGame",
-                X = jQuery.Select("body").GetInnerWidth() - 500,
-                Y = 100,
-                Width = 420,
-                Height = 450,
-                AllowClose = true,
-                AllowMinimize = true,
-                Visible = true
-            });
-
-            home.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) =>
-            {
-                pageHandler.gateway.Emit("Area.Game.GetGames",
-                                         devArea.Data.gameServer);
-                //NO EMIT'ING OUTSIDE OF PageHandler
-            }
-                                                                     ));
+            home.AddElement(new ShuffButton(280,
+                                            54,
+                                            150,
+                                            25,
+                                            "Update game list",
+                                            (e) => {
+                                                pageHandler.clientManager.GetGameList();
+                                            }
+                                    ));
 
             /*home.AddButton(new ShuffButton()
             {
@@ -147,16 +144,17 @@ namespace Client
                 }
             });*/
 
-            home.Data.btnStartGame = home.AddElement(new ShuffButton(280, 164, 120, 25, "Start Game", (e) =>
-            {
-                pageHandler.gateway.Emit("Area.Game.Start", new StartGameRequestModel(pageHandler.gameStuff.RoomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-            }));
+            home.Data.btnStartGame = home.AddElement(new ShuffButton(280,
+                                                                     164,
+                                                                     120,
+                                                                     25,
+                                                                     "Start Game",
+                                                                     (e) => { pageHandler.clientManager.StartGame(new StartGameRequestModel(pageHandler.gameStuff.RoomID)); }));
 
             var randomName = "";
             var ra = Math.Random() * 10;
-            for (var i = 0; i < ra; i++)
-            {
-                randomName += String.FromCharCode((char)(65 + (Math.Random() * 26)));
+            for (var i = 0; i < ra; i++) {
+                randomName += String.FromCharCode((char) ( 65 + ( Math.Random() * 26 ) ));
             }
 
             home.Data.txtUserName = home.AddElement(new ShuffTextbox(130, 43, 130, 20, randomName, "Username="));
@@ -184,9 +182,8 @@ namespace Client
                 }));
 */
 
-            home.Data.loadRoomInfo = (room) =>
-            {
-                /*
+            home.Data.loadRoomInfo = (room) => {
+                                         /*
 
 home.Data.userList.Remove();
 home.Data.btnStartGame.CSS("display","block");
@@ -208,11 +205,10 @@ Height = "125",
 Label= "Users",
 Items= users
 });*/
-            };
+                                     };
 
-            home.Data.loadRoomInfos = (room) =>
-            {
-                /*   home.Data.gameList.Remove();
+            home.Data.loadRoomInfos = (room) => {
+                                          /*   home.Data.gameList.Remove();
 
                              var rooms = new List<string>();
 
@@ -232,63 +228,58 @@ Click=  (item)=> {
  pageHandler.gateway.Emit("Area.Game.Join", new { roomID= item.value, user=new  { userName= home.Data.txtUserName.GetValue()} }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 }
 });*/
-            };
+                                      };
 
-            devArea = shuffUIManager.CreateWindow(new ShuffWindow<DevAreaInformation>(new DevAreaInformation())
-            {
-                Title = "Developer",
-                X = 500, //jQuery.Select("body").GetInnerWidth() -
-                Y = 100,
-                Width = 420,
-                Height = 450,
-                AllowClose = true,
-                AllowMinimize = true
-            });
+            devArea = shuffUIManager.CreateWindow(new ShuffWindow<DevAreaInformation>(new DevAreaInformation()) {
+                                                                                                                        Title = "Developer",
+                                                                                                                        X = 500, //jQuery.Select("body").GetInnerWidth() -
+                                                                                                                        Y = 100,
+                                                                                                                        Width = 420,
+                                                                                                                        Height = 450,
+                                                                                                                        AllowClose = true,
+                                                                                                                        AllowMinimize = true
+                                                                                                                });
 
-            devArea.Data.beginGame = (() =>
-            {
-
-
-                jQuery.Select("#dvGame").Empty();
-               // pageHandler.ClearCache();
-
-                jQuery.Select("#dvGame").Width("50%");
-                jQuery.Select("#dvGame").Height("100%");
+            devArea.Data.beginGame = ( () => {
+                                           jQuery.Select("#dvGame").Empty();
+                                           // pageHandler.ClearCache();
+                                        pageHandler.   gameDrawer.ClearCache();
 
 
+                                           jQuery.Select("#dvGame").Width("50%");
+                                           jQuery.Select("#dvGame").Height("100%");
 
+                                           //clearLevel();
+                                           devArea.Data.Created = false;
+                                           devArea.Data.Joined = 0;
+                                           pageHandler.startGameServer();
 
-                //clearLevel();
-                devArea.Data.Created = false;
-                devArea.Data.Joined = 0;
-                pageHandler.startGameServer();
-                pageHandler.gateway.Emit("Area.Debug.Create",
-                                         new
-                                         {
-                                             gameName = selectedGame,
-                                             user = new UserModel { UserName = devArea.Data.txtNumOfPlayers.Text },
-                                             Name = "main room",
-                                             Source = codeArea.Data.codeEditor.Information.editor.GetValue(),
-                                             BreakPoints = codeArea.Data.breakPoints
-                                         });
-            });
+                                           pageHandler.clientManager.CreateDebuggedGame(new {
+                                                                                                    gameName = selectedGame,
+                                                                                                    user = new UserModel {UserName = devArea.Data.txtNumOfPlayers.Text},
+                                                                                                    Name = "main room",
+                                                                                                    Source = codeArea.Data.codeEditor.Information.editor.GetValue(),
+                                                                                                    BreakPoints = codeArea.Data.breakPoints
+                                                                                            });
+                                       } );
 
-            devArea.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => devArea.Data.beginGame()     ));
+            devArea.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => devArea.Data.beginGame()));
 
             ShuffButton but = null;
-            devArea.AddElement(but = new ShuffButton(280, 84, 150, 25, new Func<string>(() => "Game: " + selectedGame),
+            devArea.AddElement(but = new ShuffButton(280,
+                                                     84,
+                                                     150,
+                                                     25,
+                                                     new Func<string>(() => "Game: " + selectedGame),
+                                                     (e) => {
+                                                         if (selectedGame == "Sevens") selectedGame = "BlackJack";
+                                                         else selectedGame = "Sevens";
 
-                                                                                (e) =>
-                                                                                {
-                                                                                    if (selectedGame == "Sevens") selectedGame = "BlackJack";
-                                                                                    else selectedGame = "Sevens";
+                                                         pageHandler.clientManager.RequestGameSource(new GameSourceRequestModel(selectedGame));
 
-
-                                                                                    pageHandler.gateway.Emit("Area.Debug2.GetGameSource.Request", new GameSourceRequestModel(selectedGame));
-
-                                                                                    string m = but.Text;
-                                                                                }
-                                                                        ));
+                                                         string m = but.Text;
+                                                     }
+                                             ));
 
             devArea.Data.lblHowFast = devArea.AddElement(new ShuffLabel(280 - 200, 80, "Time Taken:"));
             devArea.Data.lblAnother = devArea.AddElement(new ShuffLabel(280 - 200, 100, "Another: "));
@@ -307,19 +298,16 @@ Click=  (item)=> {
              });*/
 
             ShuffListBox pop;
-            var propBox = devArea.AddElement(pop = new ShuffListBox(25, 200, 250, 250)
-            {
-
-                ItemCreation = (item, index) =>
-                {
-                    var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", (index % 2 == 0 ? "red" : "green")));
-                    var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
-                    ik.Append(ikc);
-                    var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
-                    ik.Append(ikd);
-                    return ik;
-                }
-            });
+            var propBox = devArea.AddElement(pop = new ShuffListBox(25, 200, 250, 250) {
+                                                                                               ItemCreation = (item, index) => {
+                                                                                                                  var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", ( index % 2 == 0 ? "red" : "green" )));
+                                                                                                                  var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
+                                                                                                                  ik.Append(ikc);
+                                                                                                                  var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
+                                                                                                                  ik.Append(ikd);
+                                                                                                                  return ik;
+                                                                                                              }
+                                                                                       });
 
             pop.AddItem(new ShuffListItem("foos", 99));
 
@@ -351,96 +339,84 @@ Click=  (item)=> {
                    }
                });*/
 
-            devArea.Data.loadRoomInfo = ((room) =>
-            {
-                devArea.Data.gameServer = room.GameServer;
-                devArea.Data.lblAnother.Text = (room.GameServer);
+            devArea.Data.loadRoomInfo = ( (room) => {
+                                              devArea.Data.gameServer = room.GameServer;
+                                              devArea.Data.lblAnother.Text = ( room.GameServer );
 
-                var count = int.Parse(devArea.Data.txtNumOfPlayers.Text);
-                if (!devArea.Data.Created)
-                {
-                    pageHandler.gateway.Emit("Area.Game.DebuggerJoin", new DebuggerJoinRequestModel(room.RoomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+                                              var count = int.Parse(devArea.Data.txtNumOfPlayers.Text);
+                                              if (!devArea.Data.Created) {
+                                                  pageHandler.clientManager.JoinDebugger(new DebuggerJoinRequestModel(room.RoomID));
 
-                    for (var i = 0; i < count; i++)
-                    {
-                        pageHandler.gateway.Emit("Area.Game.Join", new JoinGameRequestModel(room.RoomID, new UserModel { UserName = "player " + (i + 1) }), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-                    }
-                    devArea.Data.Created = true;
-                }
-                else
-                {
-                    if ((++devArea.Data.Joined) == count)
-                        pageHandler.gateway.Emit("Area.Game.Start", new StartGameRequestModel(room.RoomID), devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-                }
-            });
+                                                  for (var i = 0; i < count; i++) {
+                                                      pageHandler.clientManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + ( i + 1 )}));
+                                                  }
+                                                  devArea.Data.Created = true;
+                                              } else {
+                                                  if (( ++devArea.Data.Joined ) == count)
+                                                      pageHandler.clientManager.StartGame(new StartGameRequestModel(room.RoomID));
+                                              }
+                                          } );
 
             devArea.Data.txtNumOfPlayers = devArea.AddElement(new ShuffTextbox(130, 43, 130, 20, "6", "Number of players=", "font-size=13px"));
 
-            codeArea = shuffUIManager.CreateWindow(new ShuffWindow<CodeAreaInformation>(new CodeAreaInformation())
-            {
-                Title = "Code",
-                X = 0,
-                Y = 0,
-                StaticPositioning = false,
-                Width = jQuery.Window.GetWidth() * .50,
-                Height = jQuery.Window.GetHeight() * .90,
-                AllowClose = true,
-                AllowMinimize = true,
-                Visible = true
-            });
-
+            codeArea = shuffUIManager.CreateWindow(new ShuffWindow<CodeAreaInformation>(new CodeAreaInformation()) {
+                                                                                                                           Title = "Code",
+                                                                                                                           X = 0,
+                                                                                                                           Y = 0,
+                                                                                                                           StaticPositioning = false,
+                                                                                                                           Width = jQuery.Window.GetWidth() * .50,
+                                                                                                                           Height = jQuery.Window.GetHeight() * .90,
+                                                                                                                           AllowClose = true,
+                                                                                                                           AllowMinimize = true,
+                                                                                                                           Visible = true
+                                                                                                                   });
 
             codeArea.Data.breakPoints = new List<int>();
 
             codeArea.Data.codeEditor = codeArea.AddElement(new ShuffCodeEditor(0, 0, "100%", "80%", ""));
 
-            codeArea.Data.console = codeArea.AddElement(new ShuffCodeEditor(0, 0, "100%", "20%", "") { LineNumbers = false });
+            codeArea.Data.console = codeArea.AddElement(new ShuffCodeEditor(0, 0, "100%", "20%", "") {LineNumbers = false});
 
-            questionArea = shuffUIManager.CreateWindow(new ShuffWindow<QuestionAreaInformation>(new QuestionAreaInformation())
-            {
-                Title = "Question",
-                X = 600,
-                Y = 100,
-                Width = 300,
-                Height = 275,
-                AllowClose = true,
-                AllowMinimize = true,
-                Visible = true
-            });
+            questionArea = shuffUIManager.CreateWindow(new ShuffWindow<QuestionAreaInformation>(new QuestionAreaInformation()) {
+                                                                                                                                       Title = "Question",
+                                                                                                                                       X = 600,
+                                                                                                                                       Y = 100,
+                                                                                                                                       Width = 300,
+                                                                                                                                       Height = 275,
+                                                                                                                                       AllowClose = true,
+                                                                                                                                       AllowMinimize = true,
+                                                                                                                                       Visible = true
+                                                                                                                               });
 
             questionArea.Data.question = questionArea.AddElement(new ShuffLabel(20, 70, ""));
 
-            questionArea.Data.load = (question) =>
-            {
-                questionArea.Visible = true;
-                questionArea.Data.question.Text = (question.Question);
-                questionArea.Data.answerBox.Parent.RemoveElement(questionArea.Data.answerBox);
+            questionArea.Data.load = (question) => {
+                                         questionArea.Visible = true;
+                                         questionArea.Data.question.Text = ( question.Question );
+                                         questionArea.Data.answerBox.Parent.RemoveElement(questionArea.Data.answerBox);
 
-                var answers = new List<ShuffListItem>();
-                for (var i = 0; i < question.Answers.Length; i++)
-                {
-                    answers.Add(new ShuffListItem(question.Answers[i], i));
-                }
+                                         var answers = new List<ShuffListItem>();
+                                         for (var i = 0; i < question.Answers.Length; i++) {
+                                             answers.Add(new ShuffListItem(question.Answers[i], i));
+                                         }
 
-                questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(30, 65, 215, 25 * 5)
-                {
-                    Items = answers,
-                    /*OnClick = (e) =>
+                                         questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(30, 65, 215, 25 * 5) {
+                                                                                                                                             Items = answers,
+                                                                                                                                             /*OnClick = (e) =>
 {
 pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
 questionArea.Visible = false;
 }*/
-                });
+                                                                                                                                     });
+                                     };
 
-            };
-
-            questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(30, 65, 215, 25 * 5)
-            {                   /*OnClick = (e) =>
+            questionArea.Data.answerBox = questionArea.AddElement(new ShuffListBox(30, 65, 215, 25 * 5) {
+                                                                                                                /*OnClick = (e) =>
                                               {
                                                   pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
                                                   questionArea.Visible = false;
                                               }*/
-            });
+                                                                                                        });
             shuffUIManager.Focus(devArea.Information);
 
             /*
@@ -460,7 +436,6 @@ questionArea.Visible = false;
 
         });
              */
-
         }
     }
 }

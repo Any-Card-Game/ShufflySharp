@@ -1,10 +1,16 @@
-﻿namespace SiteServer
+﻿using System;
+using CommonLibraries;
+namespace SiteServer
 {
     public class SiteServer
     {
         public static void Main()
         {
-            new SiteServer();
+            try {
+                new SiteServer();
+            } catch (Exception exc) {
+                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+            }
         }
     }
 }

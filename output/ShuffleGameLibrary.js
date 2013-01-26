@@ -431,7 +431,14 @@ $global_CardGame.prototype = {
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameAnswer
 var $global_CardGameAnswer = function() {
-	this.value = 0;
+};
+$global_CardGameAnswer.createInstance = function() {
+	return $global_CardGameAnswer.$ctor();
+};
+$global_CardGameAnswer.$ctor = function() {
+	var $this = {};
+	$this.value = 0;
+	return $this;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameAppearanceEffectDrawTime
@@ -520,30 +527,23 @@ var $global_CardGameQuestion = function(user, question, answers, cardGame) {
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameTableSpaceOptions
 var $global_CardGameTableSpaceOptions = function() {
-};
-$global_CardGameTableSpaceOptions.createInstance = function() {
-	return $global_CardGameTableSpaceOptions.$ctor();
-};
-$global_CardGameTableSpaceOptions.$ctor = function() {
-	var $this = {};
-	$this.vertical = false;
-	$this.x = 0;
-	$this.y = 0;
-	$this.width = 0;
-	$this.height = 0;
-	$this.pile = null;
-	$this.rotate = 0;
-	$this.visible = false;
-	$this.stackCards = false;
-	$this.drawCardsBent = false;
-	$this.name = null;
-	$this.sortPrder = 0;
-	$this.numerOfCardsHorizontal = 0;
-	$this.numerOfCardsVertical = 0;
-	$this.resizeType = 0;
-	$this.resizeType = 0;
-	$this.rotate = 0;
-	return $this;
+	this.vertical = false;
+	this.x = 0;
+	this.y = 0;
+	this.width = 0;
+	this.height = 0;
+	this.pile = null;
+	this.rotate = 0;
+	this.visible = false;
+	this.stackCards = false;
+	this.drawCardsBent = false;
+	this.name = null;
+	this.sortOrder = 0;
+	this.numerOfCardsHorizontal = 0;
+	this.numerOfCardsVertical = 0;
+	this.resizeType = 0;
+	this.resizeType = 0;
+	this.rotate = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // global.CardGameCardState
@@ -901,7 +901,7 @@ $global_GameCardGameTextAreaOptions.$ctor = function() {
 	var $this = {};
 	$this.name = null;
 	$this.x = 0;
-	$this.nayme = 0;
+	$this.y = 0;
 	$this.text = null;
 	return $this;
 };
@@ -2240,7 +2240,7 @@ var $global_TableSpace = function(options) {
 	this.stackCards = false;
 	this.drawCardsBent = false;
 	this.name = null;
-	this.sortPrder = 0;
+	this.sortOrder = 0;
 	this.numerOfCardsHorizontal = 0;
 	this.numerOfCardsVertical = 0;
 	this.resizeType = 0;
@@ -2255,7 +2255,7 @@ var $global_TableSpace = function(options) {
 	this.stackCards = (!options.stackCards ? false : options.stackCards);
 	this.drawCardsBent = (!options.drawCardsBent ? true : options.drawCardsBent);
 	this.name = ss.coalesce(options.name, 'TableSpace');
-	this.sortPrder = options.sortPrder;
+	this.sortOrder = options.sortOrder;
 	this.numerOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 	this.numerOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
 	this.resizeType = options.resizeType;
@@ -2277,7 +2277,7 @@ var $global_TableTextArea = function(options) {
 	this.text = null;
 	this.name = ss.coalesce(options.name, 'Text Area');
 	this.x = ((options.x === 0) ? 0 : options.x);
-	this.y = ((options.nayme === 0) ? 0 : options.nayme);
+	this.y = ((options.y === 0) ? 0 : options.y);
 	this.text = ss.coalesce(options.text, 'Text');
 };
 ////////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@ namespace Models.ShufflyManagerModels
     public class DebuggerJoinRequestModel
     {
         public string RoomID { get; set; }
+
         [ObjectLiteral]
         public DebuggerJoinRequestModel(string roomId)
         {

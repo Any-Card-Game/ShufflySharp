@@ -48,7 +48,7 @@ namespace CommonShuffleLibrary
                 channels[eventChannel](user, content);
         }
 
-        public void SendMessage(UserModel user, string channel, string eventChannel,  object content)
+        public void SendMessage(UserModel user, string channel, string eventChannel, object content)
         {
             if (qpCollection.GetByChannel(channel) == null) {
                 Console.Log(channel + " No Existy");
@@ -56,7 +56,7 @@ namespace CommonShuffleLibrary
             }
 
             var pusher = ( (QueuePusher) qpCollection.GetByChannel(channel) );
-           // Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
+            // Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
             pusher.Message(channel, Name, user, eventChannel, content);
         }
     }

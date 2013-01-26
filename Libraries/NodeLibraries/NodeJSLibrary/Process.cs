@@ -17,25 +17,19 @@ namespace NodeJSLibrary
         [ScriptName("stderr")]
         [IntrinsicProperty]
         public STDError STDError { get; set; }
-
-        [ScriptName("exit")]
         public void Exit() {}
     }
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class STDIn : EventEmitter
     {
-        [ScriptName("resume")]
         public void Resume() {}
-
-        [ScriptName("once")]
         public void Once(string data, Action<string> function) {}
     }
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class STDOut : EventEmitter
     {
-        [ScriptName("write")]
         public void Write(string question) {}
     }
     [IgnoreNamespace]
@@ -43,7 +37,6 @@ namespace NodeJSLibrary
     [ScriptName("STDErr")]
     public class STDError : EventEmitter
     {
-        [ScriptName("write")]
         public void Write(string question) {}
     }
 }

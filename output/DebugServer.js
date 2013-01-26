@@ -12,7 +12,13 @@ var $DebugServer_DebugServer = function() {
 	});
 };
 $DebugServer_DebugServer.main = function() {
-	new $DebugServer_DebugServer();
+	try {
+		new $DebugServer_DebugServer();
+	}
+	catch ($t1) {
+		var exc = ss.Exception.wrap($t1);
+		console.log('CRITICAL FAILURE: ' + exc.toString());
+	}
 };
 Type.registerClass(global, 'DebugServer.DebugServer', $DebugServer_DebugServer, Object);
 $DebugServer_DebugServer.main();

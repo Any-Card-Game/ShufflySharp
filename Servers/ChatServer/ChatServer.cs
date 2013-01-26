@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using CommonShuffleLibrary;
 using Models;
 using NodeJSLibrary;
@@ -46,7 +47,11 @@ namespace ChatServer
 
         public static void Main()
         {
-            new ChatServer();
+            try {
+                new ChatServer();
+            } catch (Exception exc) {
+                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+            }
         }
 
         public void Cycle(string channel)

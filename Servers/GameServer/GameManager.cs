@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommonLibraries;
-using CommonWebLibraries;
 using FibersLibrary;
 using GameServer.Models;
 using Models;
@@ -14,25 +13,19 @@ namespace GameServer
     public class GameManager
     {
         private int QUEUEPERTICK = 1;
+        private List<GameAnswerQuestionModel> answerQueue = new List<GameAnswerQuestionModel>();
+        private JsDictionary<string, GameObject> cachedGames;
+        private DataManager dataManager;
+        private GameData gameData;
+        private ShufflyServerManager myServerManager;
+        private List<GameRoom> rooms;
         private int skipped__;
         private DateTime startTime = new DateTime();
         private int total__;
         private bool verbose = false;
 
-
-
-        private DataManager dataManager;
-
-
-        private JsDictionary<string, GameObject> cachedGames;
-        private GameData gameData;
-        private List<GameRoom> rooms;
-
         public GameManager(string gameServerIndex)
         {
-
-
-
             myServerManager = new ShufflyServerManager(gameServerIndex);
             myServerManager.OnUserJoinGame += UserJoinGame;
             myServerManager.OnDebuggerJoinGame += DebuggerJoinGame;
@@ -40,24 +33,18 @@ namespace GameServer
             myServerManager.OnStartGame += StartGame;
             myServerManager.OnUserAnswerQuestion += UserAnswerQuestion;
 
-
             rooms = new List<GameRoom>();
             cachedGames = new JsDictionary<string, GameObject>();
             gameData = new GameData();
             dataManager = new DataManager();
             Global.SetInterval(flushQueue, 50);
-
-
         }
-         
 
         public void UserJoinGame(UserModel user, JoinGameRequestModel data)
         {
             GameRoom room = null;
-            foreach (var gameRoom in rooms)
-            {
-                if (gameRoom.RoomID == data.RoomID)
-                {
+            foreach (var gameRoom in rooms) {
+                if (gameRoom.RoomID == data.RoomID) {
                     room = gameRoom;
                     break;
                 }
@@ -88,22 +75,18 @@ namespace GameServer
                 gameObject = cachedGames[data.GameName] = Global.Require<GameObject>("./Games/" + data.GameName + "/app.js");
 
             room.Fiber = CreateFiber(room, gameObject, true);
-            room.Unwind = players =>
-            {
-                gameData.FinishedGames++;
-                Console.Log("--game closed");
-            };
+            room.Unwind = players => {
+                              gameData.FinishedGames++;
+                              Console.Log("--game closed");
+                          };
             myServerManager.SendRoomInfo(room);
-
         }
 
         public void StartGame(StartGameRequestModel data)
         {
             GameRoom room = null;
-            foreach (var gameRoom in rooms)
-            {
-                if (gameRoom.RoomID == data.RoomID)
-                {
+            foreach (var gameRoom in rooms) {
+                if (gameRoom.RoomID == data.RoomID) {
                     room = gameRoom;
                     break;
                 }
@@ -126,16 +109,12 @@ namespace GameServer
         {
             answerQueue.Add(data);
         }
-        private List<GameAnswerQuestionModel> answerQueue = new List<GameAnswerQuestionModel>();
-        private ShufflyServerManager myServerManager;
 
         public void DebuggerJoinGame(UserModel user, DebuggerJoinRequestModel data)
         {
             GameRoom room = null;
-            foreach (var gameRoom in rooms)
-            {
-                if (gameRoom.RoomID == data.RoomID)
-                {
+            foreach (var gameRoom in rooms) {
+                if (gameRoom.RoomID == data.RoomID) {
                     room = gameRoom;
                     break;
                 }
@@ -149,8 +128,7 @@ namespace GameServer
         private void flushQueue()
         {
             var ind = 0;
-            for (ind = 0; ind < QUEUEPERTICK; ind++)
-            {
+            for (ind = 0; ind < QUEUEPERTICK; ind++) {
                 if (answerQueue.Count == 0)
                     break;
 
@@ -158,10 +136,8 @@ namespace GameServer
                 answerQueue.RemoveAt(0);
                 var data = arg2.Cast<GameAnswerRequestModel>();
                 GameRoom room = null;
-                foreach (var gameRoom in rooms)
-                {
-                    if (gameRoom.RoomID == data.RoomID)
-                    {
+                foreach (var gameRoom in rooms) {
+                    if (gameRoom.RoomID == data.RoomID) {
                         room = gameRoom;
                         break;
                     }
@@ -182,31 +158,26 @@ namespace GameServer
                     continue;
                 }
                 gameData.TotalQuestionsAnswered++;
-                dataManager.GameData.Insert(new GameInfoModel() { GameName = room.Name, AnswerIndex = answ.Contents });
+                dataManager.GameData.Insert(new GameInfoModel() {GameName = room.Name, AnswerIndex = answ.Contents});
                 handleYield(room, answ);
             }
 
             if (ind == 0)
                 skipped__++;
-            else
-            {
+            else {
                 total__ += ind;
-                if ((total__ + skipped__) % 20 == 0)
-                {
-                    Console.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}", myServerManager.GameServerIndex.Substring(0, 19), (total__ + skipped__), ind, total__, skipped__, answerQueue.Count, rooms.Count));
-                }
+                if (( total__ + skipped__ ) % 20 == 0)
+                    Console.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}", myServerManager.GameServerIndex.Substring(0, 19), ( total__ + skipped__ ), ind, total__, skipped__, answerQueue.Count, rooms.Count));
             }
         }
 
         private void handleYield(GameRoom room, FiberYieldResponse answer)
         {
-            switch (answer.Type)
-            {
+            switch (answer.Type) {
                 case FiberYieldResponseType.AskQuestion:
                     var answ = answer.question;
 
-                    if (answ == null)
-                    {
+                    if (answ == null) {
                         myServerManager.SendGameOver(room);
                         room.Fiber.Run<FiberYieldResponse>();
                         //     profiler.takeSnapshot('game over ' + room.roomID);
@@ -218,14 +189,13 @@ namespace GameServer
                     var dt = new DateTime();
                     var then = dt.GetMilliseconds();
                     //Console.Log(then - now + " Milliseconds");
-                    Console.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds");
+                    Console.Log(gameData.TotalQuestionsAnswered / ( ( dt.GetTime() - startTime.GetTime() ) / 1000 ) + " Answers per seconds");
 
                     break;
                 case FiberYieldResponseType.GameOver:
 
-                    
                     myServerManager.SendUpdateState(room);
-                    
+
                     myServerManager.SendGameOver(room);
 
                     break;
@@ -234,50 +204,42 @@ namespace GameServer
                     var answ2 = room.Fiber.Run<FiberYieldResponse>();
                     handleYield(room, answ2);
 
-                    if (!room.Game.CardGame.Emulating && room.Debuggable)
-                    {
+                    if (!room.Game.CardGame.Emulating && room.Debuggable) {
                         //console.log(gameData.toString());
                         var ganswer = new GameAnswerModel(0, answer.Contents);
-                        
-                        myServerManager.SendDebugLog(room, ganswer);
 
+                        myServerManager.SendDebugLog(room, ganswer);
                     }
                     break;
                 case FiberYieldResponseType.Break:
-                    if (!room.Debuggable)
-                    {
+                    if (!room.Debuggable) {
                         var answ3 = room.Fiber.Run<FiberYieldResponse>();
                         handleYield(room, answ3);
                         return;
                     }
-                    if (!room.Game.CardGame.Emulating)
-                    {
-                        var ganswer = new GameAnswerModel(answer.LineNumber + 2,0);
-                        
-                        myServerManager.SendDebugBreak(room, ganswer);
+                    if (!room.Game.CardGame.Emulating) {
+                        var ganswer = new GameAnswerModel(answer.LineNumber + 2, 0);
 
+                        myServerManager.SendDebugBreak(room, ganswer);
                     }
                     break;
             }
         }
+
         private void askQuestion(GameQuestionAnswerModel answ, GameRoom room)
         {
             var user = getPlayerByUsername(room, answ.User.UserName);
 
-
             myServerManager.SendAskQuestion(user, new GameSendAnswerModel(answ.Question, answ.Answers));
 
-             
             //Console.Log(Json.Stringify(mjf).Length); 
 
             myServerManager.SendUpdateState(room);
 
-            if (verbose)
-            {
+            if (verbose) {
                 Console.Log(answ.User.UserName + ": " + answ.Question + "   ");
                 var ind = 0;
-                foreach (var answer in answ.Answers)
-                {
+                foreach (var answer in answ.Answers) {
                     Console.Log("     " + ind++ + ": " + answer);
                 }
             }
@@ -285,19 +247,16 @@ namespace GameServer
 
         private UserModel getPlayerByUsername(GameRoom room, string userName)
         {
-            foreach (var player in room.Players)
-            {
+            foreach (var player in room.Players) {
                 if (player.UserName == userName)
                     return player;
             }
             return null;
         }
 
-
         private Fiber<List<UserModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
         {
-            return new Fiber<List<UserModel>>(players =>
-                                              {
+            return new Fiber<List<UserModel>>(players => {
                                                   if (players == null || players.Count == 0) return true;
                                                   room.Players = players;
                                                   Console.Log("game started");

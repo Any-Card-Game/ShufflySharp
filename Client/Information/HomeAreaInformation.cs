@@ -1,10 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-using Client.ShuffUI;
-using CommonLibraries;
-using CommonShuffleLibrary;
-using GameServer;
-using GameServer.Models;
+using Client.ShuffUI; 
 using Models.ShufflyManagerModels;
 namespace Client.Information
 {
@@ -21,6 +17,6 @@ namespace Client.Information
         [IntrinsicProperty]
         public ShuffButton btnStartGame { get; set; }
         [IntrinsicProperty]
-        public Action<GameRoom> loadRoomInfo { get; set; }
+        public Action<GameRoomModel> loadRoomInfo { get; set; }
     }
 }

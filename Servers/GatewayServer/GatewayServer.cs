@@ -88,7 +88,11 @@ namespace GatewayServer
 
         public static void Main()
         {
-            new GatewayServer();
+            try {
+                new GatewayServer();
+            } catch (Exception exc) {
+                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+            }
         }
 
         private void messageReceived(string gateway, UserModel user, string eventChannel, object content)

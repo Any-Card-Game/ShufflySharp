@@ -62,22 +62,22 @@ $GameServer_GameInfoModel.$ctor = function() {
 // GameServer.GameManager
 var $GameServer_GameManager = function(gameServerIndex) {
 	this.$QUEUEPERTICK = 1;
+	this.$answerQueue = [];
+	this.$cachedGames = null;
+	this.$dataManager = null;
+	this.$gameData = null;
+	this.$myServerManager = null;
+	this.$rooms = null;
 	this.$skipped__ = 0;
 	this.$startTime = new Date();
 	this.$total__ = 0;
 	this.$verbose = false;
-	this.$dataManager = null;
-	this.$cachedGames = null;
-	this.$gameData = null;
-	this.$rooms = null;
-	this.$answerQueue = [];
-	this.$myServerManager = null;
 	this.$myServerManager = new $GameServer_ShufflyServerManager(gameServerIndex);
-	this.$myServerManager.set_onUserJoinGame(Function.combine(this.$myServerManager.get_onUserJoinGame(), Function.mkdel(this, this.userJoinGame)));
-	this.$myServerManager.set_onDebuggerJoinGame(Function.combine(this.$myServerManager.get_onDebuggerJoinGame(), Function.mkdel(this, this.debuggerJoinGame)));
-	this.$myServerManager.set_onGameCreate(Function.combine(this.$myServerManager.get_onGameCreate(), Function.mkdel(this, this.gameCreate)));
-	this.$myServerManager.set_onStartGame(Function.combine(this.$myServerManager.get_onStartGame(), Function.mkdel(this, this.startGame)));
-	this.$myServerManager.set_onUserAnswerQuestion(Function.combine(this.$myServerManager.get_onUserAnswerQuestion(), Function.mkdel(this, this.userAnswerQuestion)));
+	this.$myServerManager.add_onUserJoinGame(Function.mkdel(this, this.userJoinGame));
+	this.$myServerManager.add_onDebuggerJoinGame(Function.mkdel(this, this.debuggerJoinGame));
+	this.$myServerManager.add_onGameCreate(Function.mkdel(this, this.gameCreate));
+	this.$myServerManager.add_onStartGame(Function.mkdel(this, this.startGame));
+	this.$myServerManager.add_onUserAnswerQuestion(Function.mkdel(this, this.userAnswerQuestion));
 	this.$rooms = [];
 	this.$cachedGames = {};
 	this.$gameData = new $GameServer_GameData();
@@ -98,7 +98,7 @@ $GameServer_GameManager.prototype = {
 			return;
 		}
 		room.players.add(user);
-		this.$myServerManager.emitRoomInfo(room);
+		this.$myServerManager.sendRoomInfo(room);
 	},
 	gameCreate: function(user, data) {
 		var room;
@@ -122,7 +122,7 @@ $GameServer_GameManager.prototype = {
 			this.$gameData.finishedGames++;
 			console.log('--game closed');
 		});
-		this.$myServerManager.emitRoomInfo(room);
+		this.$myServerManager.sendRoomInfo(room);
 	},
 	startGame: function(data) {
 		var room = null;
@@ -136,7 +136,7 @@ $GameServer_GameManager.prototype = {
 		if (ss.isNullOrUndefined(room)) {
 			return;
 		}
-		this.$myServerManager.emitGameStarted(room);
+		this.$myServerManager.sendGameStarted(room);
 		room.started = true;
 		console.log('started');
 		var answer = room.fiber.run(room.players);
@@ -182,12 +182,12 @@ $GameServer_GameManager.prototype = {
 			if (ss.isNullOrUndefined(room)) {
 				return;
 			}
-			var dict = new global.CardGameAnswer();
+			var dict = global.CardGameAnswer.$ctor();
 			dict.value = data.answer;
 			room.answers.add(dict);
 			var answ = room.fiber.run(dict);
 			if (ss.isNullOrUndefined(answ)) {
-				this.$myServerManager.emitGameOver(room);
+				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				this.$rooms.remove(room);
 				room.unwind(room.players);
@@ -216,7 +216,7 @@ $GameServer_GameManager.prototype = {
 			case 0: {
 				var answ = answer.question;
 				if (ss.isNullOrUndefined(answ)) {
-					this.$myServerManager.emitGameOver(room);
+					this.$myServerManager.sendGameOver(room);
 					room.fiber.run();
 					//     profiler.takeSnapshot('game over ' + room.roomID);
 					return;
@@ -228,8 +228,8 @@ $GameServer_GameManager.prototype = {
 				break;
 			}
 			case 2: {
-				this.$myServerManager.emitUpdateState(room);
-				this.$myServerManager.emitGameOver(room);
+				this.$myServerManager.sendUpdateState(room);
+				this.$myServerManager.sendGameOver(room);
 				break;
 			}
 			case 1: {
@@ -238,7 +238,7 @@ $GameServer_GameManager.prototype = {
 				if (!room.game.cardGame.emulating && room.debuggable) {
 					//console.log(gameData.toString());
 					var ganswer = { lineNumber: 0, value: answer.contents };
-					this.$myServerManager.emitDebugLog(room, ganswer);
+					this.$myServerManager.sendDebugLog(room, ganswer);
 				}
 				break;
 			}
@@ -250,7 +250,7 @@ $GameServer_GameManager.prototype = {
 				}
 				if (!room.game.cardGame.emulating) {
 					var ganswer1 = { lineNumber: answer.lineNumber + 2, value: 0 };
-					this.$myServerManager.emitDebugBreak(room, ganswer1);
+					this.$myServerManager.sendDebugBreak(room, ganswer1);
 				}
 				break;
 			}
@@ -258,9 +258,9 @@ $GameServer_GameManager.prototype = {
 	},
 	$askQuestion: function(answ, room) {
 		var user = this.$getPlayerByUsername(room, answ.user.userName);
-		this.$myServerManager.askQuestion(user, { question: answ.question, answers: answ.answers });
+		this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
 		//Console.Log(Json.Stringify(mjf).Length); 
-		this.$myServerManager.emitUpdateState(room);
+		this.$myServerManager.sendUpdateState(room);
 		if (this.$verbose) {
 			console.log(answ.user.userName + ': ' + answ.question + '   ');
 			var ind = 0;
@@ -322,7 +322,13 @@ var $GameServer_GameServer = function() {
 	//});
 };
 $GameServer_GameServer.main = function() {
-	new $GameServer_GameServer();
+	try {
+		new $GameServer_GameServer();
+	}
+	catch ($t1) {
+		var exc = ss.Exception.wrap($t1);
+		console.log('CRITICAL FAILURE: ' + exc.toString());
+	}
 };
 ////////////////////////////////////////////////////////////////////////////////
 // GameServer.ShufflyServerManager
@@ -338,89 +344,94 @@ var $GameServer_ShufflyServerManager = function(gameServerIndex) {
 	this.$setup();
 };
 $GameServer_ShufflyServerManager.prototype = {
-	$setup: function() {
-		this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_gameServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GameServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_gameServerIndex(), null)], ['GameServer', 'GatewayServer', 'Gateway*']));
-		this.$qManager.addChannel('Area.Debug.Create', Function.mkdel(this, function(user, data) {
-			this.get_onGameCreate()(user, data);
-		}));
-		this.$qManager.addChannel('Area.Game.Join', Function.mkdel(this, function(user1, data1) {
-			this.get_onUserJoinGame()(user1, data1);
-		}));
-		this.$qManager.addChannel('Area.Game.DebuggerJoin', Function.mkdel(this, function(user2, data2) {
-			this.get_onDebuggerJoinGame()(user2, data2);
-		}));
-		this.$qManager.addChannel('Area.Game.Start', Function.mkdel(this, function(user3, data3) {
-			this.get_onStartGame()(data3);
-		}));
-		this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(user4, data4) {
-			this.get_onUserAnswerQuestion()(user4, data4);
-		}));
-	},
 	get_gameServerIndex: function() {
 		return this.$1$GameServerIndexField;
 	},
 	set_gameServerIndex: function(value) {
 		this.$1$GameServerIndexField = value;
 	},
-	get_onUserJoinGame: function() {
-		return this.$1$OnUserJoinGameField;
+	add_onUserJoinGame: function(value) {
+		this.$1$OnUserJoinGameField = Function.combine(this.$1$OnUserJoinGameField, value);
 	},
-	set_onUserJoinGame: function(value) {
-		this.$1$OnUserJoinGameField = value;
+	remove_onUserJoinGame: function(value) {
+		this.$1$OnUserJoinGameField = Function.remove(this.$1$OnUserJoinGameField, value);
 	},
-	get_onDebuggerJoinGame: function() {
-		return this.$1$OnDebuggerJoinGameField;
+	add_onDebuggerJoinGame: function(value) {
+		this.$1$OnDebuggerJoinGameField = Function.combine(this.$1$OnDebuggerJoinGameField, value);
 	},
-	set_onDebuggerJoinGame: function(value) {
-		this.$1$OnDebuggerJoinGameField = value;
+	remove_onDebuggerJoinGame: function(value) {
+		this.$1$OnDebuggerJoinGameField = Function.remove(this.$1$OnDebuggerJoinGameField, value);
 	},
-	get_onGameCreate: function() {
-		return this.$1$OnGameCreateField;
+	add_onGameCreate: function(value) {
+		this.$1$OnGameCreateField = Function.combine(this.$1$OnGameCreateField, value);
 	},
-	set_onGameCreate: function(value) {
-		this.$1$OnGameCreateField = value;
+	remove_onGameCreate: function(value) {
+		this.$1$OnGameCreateField = Function.remove(this.$1$OnGameCreateField, value);
 	},
-	get_onStartGame: function() {
-		return this.$1$OnStartGameField;
+	add_onStartGame: function(value) {
+		this.$1$OnStartGameField = Function.combine(this.$1$OnStartGameField, value);
 	},
-	set_onStartGame: function(value) {
-		this.$1$OnStartGameField = value;
+	remove_onStartGame: function(value) {
+		this.$1$OnStartGameField = Function.remove(this.$1$OnStartGameField, value);
 	},
-	get_onUserAnswerQuestion: function() {
-		return this.$1$OnUserAnswerQuestionField;
+	add_onUserAnswerQuestion: function(value) {
+		this.$1$OnUserAnswerQuestionField = Function.combine(this.$1$OnUserAnswerQuestionField, value);
 	},
-	set_onUserAnswerQuestion: function(value) {
-		this.$1$OnUserAnswerQuestionField = value;
+	remove_onUserAnswerQuestion: function(value) {
+		this.$1$OnUserAnswerQuestionField = Function.remove(this.$1$OnUserAnswerQuestionField, value);
 	},
-	$emitAll: function(room, message, val) {
+	$setup: function() {
+		this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_gameServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GameServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_gameServerIndex(), null)], ['GameServer', 'GatewayServer', 'Gateway*']));
+		this.$qManager.addChannel('Area.Debug.Create', Function.mkdel(this, function(user, data) {
+			this.$1$OnGameCreateField(user, data);
+		}));
+		this.$qManager.addChannel('Area.Game.Join', Function.mkdel(this, function(user1, data1) {
+			this.$1$OnUserJoinGameField(user1, data1);
+		}));
+		this.$qManager.addChannel('Area.Game.DebuggerJoin', Function.mkdel(this, function(user2, data2) {
+			this.$1$OnDebuggerJoinGameField(user2, data2);
+		}));
+		this.$qManager.addChannel('Area.Game.Start', Function.mkdel(this, function(user3, data3) {
+			this.$1$OnStartGameField(data3);
+		}));
+		this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(user4, data4) {
+			this.$1$OnUserAnswerQuestionField(user4, data4);
+		}));
+	},
+	$sendMessageToAll: function(room, message, val) {
 		for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 			var player = room.players[$t1];
 			this.$qManager.sendMessage(player, player.gateway, message, val);
 		}
 	},
-	emitRoomInfo: function(room) {
-		this.$emitAll(room, 'Area.Game.RoomInfo', CommonLibraries.Help.cleanUp($GameServer_Models_GameRoom).call(null, room));
-		//gay
+	sendRoomInfo: function(room) {
+		var $t1 = Models.ShufflyManagerModels.GameRoomModel.$ctor();
+		$t1.gameServer = room.gameServer;
+		$t1.roomID = room.roomID;
+		this.$sendMessageToAll(room, 'Area.Game.RoomInfo', $t1);
 	},
-	emitGameStarted: function(room) {
-		this.$emitAll(room, 'Area.Game.Started', JSON.parse(JSON.stringify(room, CommonLibraries.Help.sanitize)));
+	sendGameStarted: function(room) {
+		var $t1 = Models.ShufflyManagerModels.GameRoomModel.$ctor();
+		$t1.gameServer = room.gameServer;
+		$t1.roomID = room.roomID;
+		this.$sendMessageToAll(room, 'Area.Game.Started', $t1);
 	},
-	emitGameOver: function(room) {
-		this.$emitAll(room, 'Area.Game.GameOver', 'a');
+	sendGameOver: function(room) {
+		this.$sendMessageToAll(room, 'Area.Game.GameOver', 'a');
 		if (ss.isValue(room.debuggingSender)) {
 			this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', new Object());
 		}
 	},
-	emitUpdateState: function(room) {
-		this.$emitAll(room, 'Area.Game.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
+	sendUpdateState: function(room) {
+		this.$sendMessageToAll(room, 'Area.Game.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
 	},
-	emitDebugLog: function(room, ganswer) {
+	sendDebugLog: function(room, ganswer) {
 		this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Log', ganswer);
 	},
-	emitDebugBreak: function(room, ganswer) {
+	sendDebugBreak: function(room, ganswer) {
 		this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Break', ganswer);
 	},
-	askQuestion: function(user, gameAnswer) {
+	sendAskQuestion: function(user, gameAnswer) {
 		this.$qManager.sendMessage(user, user.gateway, 'Area.Game.AskQuestion', CommonLibraries.Help.cleanUp(Models.ShufflyManagerModels.GameSendAnswerModel).call(null, gameAnswer));
 	}
 };

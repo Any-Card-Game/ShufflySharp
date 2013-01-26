@@ -3,9 +3,9 @@ namespace global
 {
     [ScriptName("Card")]
     public class CardGameCard
-    { 
+    {
         [IntrinsicProperty]
-        public int Value { get; set; } 
+        public int Value { get; set; }
         [IntrinsicProperty]
         public int Type { get; set; }
         [IntrinsicProperty]

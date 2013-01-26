@@ -9,6 +9,7 @@ module.exports = Sevens = function() {
     self.cardGame = new CardGame({ numberOfCards: 52, size: { width: 16, height: 12 } });
 
     self.constructor = function() {
+        debugger;
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
             vertical: true,

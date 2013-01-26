@@ -5,7 +5,6 @@ namespace NodeJSLibrary
     [Imported(IsRealType = true)]
     public class HttpServer
     {
-        [ScriptName("listen")]
         public object Listen(int port)
         {
             return null;

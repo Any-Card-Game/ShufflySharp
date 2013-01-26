@@ -64,7 +64,13 @@ $HeadServer_HeadServer.prototype = {
 	}
 };
 $HeadServer_HeadServer.main = function() {
-	new $HeadServer_HeadServer();
+	try {
+		new $HeadServer_HeadServer();
+	}
+	catch ($t1) {
+		var exc = ss.Exception.wrap($t1);
+		console.log('CRITICAL FAILURE: ' + exc.toString());
+	}
 };
 Type.registerClass(global, 'HeadServer.HeadServer', $HeadServer_HeadServer, Object);
 $HeadServer_HeadServer.main();

@@ -1,11 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace global
 {
-    [ScriptName("Appearance")]
+    [ScriptName("Appearance")] 
     public class CardGameAppearance : CardGameAppearanceStyle
     {
-        [ScriptName("effects")]
         [IntrinsicProperty]
         public List<CardGameAppearanceEffect> Effects { get; set; }
 
@@ -28,14 +28,12 @@ namespace global
 
             return ap;
         }
-    }
+    } 
     [ScriptName("AppearanceStyle")]
     public class CardGameAppearanceStyle
     {
-        [ScriptName("outerStyle")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleItem OuterStyle { get; set; }
-        [ScriptName("innerStyle")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleItem InnerStyle { get; set; }
 
@@ -50,29 +48,24 @@ namespace global
             OuterStyle = new CardGameAppearanceStyleItem(new {});
             InnerStyle = new CardGameAppearanceStyleItem(new {});
         }
-    }
+    } 
     [ScriptName("AppearanceStyleItem")]
     public class CardGameAppearanceStyleItem
     {
-        [ScriptName("backColor")]
         [IntrinsicProperty]
         public string BackColor { get; set; }
-        [ScriptName("rotate")]
         [IntrinsicProperty]
         public double Rotate { get; set; }
-        [ScriptName("border")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorder Border { get; set; }
-        [ScriptName("padding")]
         [IntrinsicProperty]
         public CardGameAppearanceStylePadding Padding { get; set; }
-        [ScriptName("margin")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleMargin Margin { get; set; }
+ 
         [ScriptName("zindex")]
         [IntrinsicProperty]
         public int ZIndex { get; set; }
-        [ScriptName("cursor")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleCursor Cursor { get; set; }
 
@@ -121,22 +114,17 @@ namespace global
         Wait,
         Help
     }
-    [ScriptName("AppearanceStyleMargin")]
+    [ScriptName("AppearanceStyleMargin")] 
     public class CardGameAppearanceStyleMargin
     {
-        [ScriptName("top")]
         [IntrinsicProperty]
         public double Top { get; set; }
-        [ScriptName("bottom")]
         [IntrinsicProperty]
         public double Bottom { get; set; }
-        [ScriptName("left")]
         [IntrinsicProperty]
         public double Left { get; set; }
-        [ScriptName("right")]
         [IntrinsicProperty]
         public double Right { get; set; }
-        [ScriptName("all")]
         [IntrinsicProperty]
         public double All { get; set; }
 
@@ -159,23 +147,18 @@ namespace global
             sp.Top = st.Top;
             return sp;
         }
-    }
+    } 
     [ScriptName("AppearanceStylePadding")]
     public class CardGameAppearanceStylePadding
     {
-        [ScriptName("top")]
         [IntrinsicProperty]
         public double Top { get; set; }
-        [ScriptName("bottom")]
         [IntrinsicProperty]
         public double Bottom { get; set; }
-        [ScriptName("left")]
         [IntrinsicProperty]
         public double Left { get; set; }
-        [ScriptName("right")]
         [IntrinsicProperty]
         public double Right { get; set; }
-        [ScriptName("all")]
         [IntrinsicProperty]
         public double All { get; set; }
 
@@ -199,22 +182,17 @@ namespace global
             return sp;
         }
     }
-    [ScriptName("AppearanceStyleBorder")]
+    [ScriptName("AppearanceStyleBorder")] 
     public class CardGameAppearanceStyleBorder
     {
-        [ScriptName("top")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderArea Top { get; set; }
-        [ScriptName("bottom")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderArea Bottom { get; set; }
-        [ScriptName("left")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderArea Left { get; set; }
-        [ScriptName("right")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderArea Right { get; set; }
-        [ScriptName("all")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderArea All { get; set; }
 
@@ -237,20 +215,16 @@ namespace global
             sp.Top = st.Top;
             return sp;
         }
-    }
+    } 
     [ScriptName("AppearanceStyleBorderArea")]
     public class CardGameAppearanceStyleBorderArea
     {
-        [ScriptName("color")]
         [IntrinsicProperty]
         public string Color { get; set; }
-        [ScriptName("radius")]
         [IntrinsicProperty]
         public string Radius { get; set; }
-        [ScriptName("width")]
         [IntrinsicProperty]
         public string Width { get; set; }
-        [ScriptName("style")]
         [IntrinsicProperty]
         public CardGameAppearanceStyleBorderStyle Style { get; set; }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Models;
 using SocketIOWebLibrary;
@@ -8,7 +7,7 @@ namespace Client
     public delegate void GatewayMessage(object obj);
     public class Gateway
     {
-        private Dictionary<string, GatewayMessage> channels;  
+        private Dictionary<string, GatewayMessage> channels;
         [IntrinsicProperty]
         protected SocketIOClient GatewaySocket { get; set; }
 
@@ -20,7 +19,7 @@ namespace Client
         }
 
         [IgnoreGenericArguments]
-        public void Emit<T>(string channel, T content, string gameServer = null)
+        public void Emit(string channel, object content, string gameServer = null)
         {
             GatewaySocket.Emit("Gateway.Message", new GatewayMessageModel(channel, content, gameServer));
         }

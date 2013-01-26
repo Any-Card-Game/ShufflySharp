@@ -13,9 +13,7 @@ namespace GameServer
         public void Insert(GameInfoModel gmo)
         {
             manager.client.Collection("gameInfo",
-                                      (err, collection) => {  
-                                          collection.Insert(gmo);
-                                      });
+                                      (err, collection) => { collection.Insert(gmo); });
         }
     }
     [Serializable]

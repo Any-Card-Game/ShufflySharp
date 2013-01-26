@@ -7,6 +7,7 @@ namespace Models.ShufflyManagerModels
     {
         public string Name { get; set; }
         public string GameName { get; set; }
+
         [ObjectLiteral]
         public CreateGameRequestModel(string name, string gameName)
         {

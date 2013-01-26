@@ -4,20 +4,15 @@ namespace global
 {
     [ScriptName("Effect$Highlight")]
     public class CardGameAppearanceEffectHighlight : CardGameAppearanceEffect
-    {
-        [ScriptName("radius")]
+    { 
         [IntrinsicProperty]
-        public double Radius { get; set; }
-        [ScriptName("color")]
+        public double Radius { get; set; } 
         [IntrinsicProperty]
-        public string Color { get; set; }
-        [ScriptName("rotate")]
+        public string Color { get; set; } 
         [IntrinsicProperty]
-        public double Rotate { get; set; }
-        [ScriptName("offsetX")]
+        public double Rotate { get; set; } 
         [IntrinsicProperty]
-        public double OffsetX { get; set; }
-        [ScriptName("offsetY")]
+        public double OffsetX { get; set; } 
         [IntrinsicProperty]
         public double OffsetY { get; set; }
 
@@ -115,21 +110,11 @@ namespace global
     }
     [Serializable]
     public class CardGameEffectHighlightOptions
-    {
-        [ScriptName("radius")]
-        [IntrinsicProperty]
-        public double Radius { get; set; }
-        [ScriptName("color")]
-        [IntrinsicProperty]
-        public string Color { get; set; }
-        [ScriptName("rotate")]
-        [IntrinsicProperty]
-        public double Rotate { get; set; }
-        [ScriptName("offsetX")]
-        [IntrinsicProperty]
-        public double OffsetX { get; set; }
-        [ScriptName("offsetY")]
-        [IntrinsicProperty]
+    { 
+        public double Radius { get; set; } 
+        public string Color { get; set; } 
+        public double Rotate { get; set; } 
+        public double OffsetX { get; set; } 
         public double OffsetY { get; set; }
     }
 }

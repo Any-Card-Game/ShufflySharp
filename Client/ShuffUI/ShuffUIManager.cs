@@ -59,7 +59,7 @@ namespace Client.ShuffUI
             UIAreas.Add(info = new UIAreaInformation(outer, inner));
             ui.Information = info;
 
-            x.Click((evt) => { outer.CSS("display", "none"); }); 
+            x.Click((evt) => { outer.CSS("display", "none"); });
             var toggleSize = false;
             max.Click((evt) => {
                           toggleSize = !toggleSize;

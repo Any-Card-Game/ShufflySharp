@@ -17,10 +17,7 @@ namespace RedisLibrary
     }
     public class RedisClient : EventEmitter
     {
-        [ScriptName("publish")]
         public void Publish(string channel, object content) {}
-
-        [ScriptName("subscribe")]
         public void Subscribe(string channel) {}
 
         [ScriptName("rpush")]

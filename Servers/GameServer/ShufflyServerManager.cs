@@ -6,7 +6,6 @@ using Models;
 using Models.ShufflyManagerModels;
 namespace GameServer
 {
-
     public delegate void UserJoinGame(UserModel user, JoinGameRequestModel data);
     public delegate void DebuggerJoinGame(UserModel user, DebuggerJoinRequestModel data);
     public delegate void GameCreate(UserModel user, CreateGameRequestModel data);
@@ -15,6 +14,7 @@ namespace GameServer
     public class ShufflyServerManager
     {
         private QueueManager qManager;
+        public string GameServerIndex { get; set; }
 
         public ShufflyServerManager(string gameServerIndex)
         {
@@ -22,6 +22,12 @@ namespace GameServer
 
             Setup();
         }
+
+        public event UserJoinGame OnUserJoinGame;
+        public event DebuggerJoinGame OnDebuggerJoinGame;
+        public event GameCreate OnGameCreate;
+        public event StartGame OnStartGame;
+        public event UserAnswerQuestion OnUserAnswerQuestion;
 
         private void Setup()
         {
@@ -43,60 +49,43 @@ namespace GameServer
             qManager.AddChannel("Area.Game.AnswerQuestion", (user, data) => OnUserAnswerQuestion(user, (GameAnswerQuestionModel) data));
         }
 
-        public string GameServerIndex { get; set; }
-
-        public UserJoinGame OnUserJoinGame { get; set; }
-        public DebuggerJoinGame OnDebuggerJoinGame { get; set; }
-        public GameCreate OnGameCreate { get; set; }
-        public StartGame OnStartGame { get; set; }
-        public UserAnswerQuestion OnUserAnswerQuestion { get; set; }
-        
-
-
-        
         private void SendMessageToAll(GameRoom room, string message, object val)
         {
-            foreach (var player in room.Players)
-            {
+            foreach (var player in room.Players) {
                 qManager.SendMessage(player, player.Gateway, message, val);
             }
         }
 
         public void SendRoomInfo(GameRoom room)
-        { 
-            SendMessageToAll(room, "Area.Game.RoomInfo", room.CleanUp());//gay
-
+        {
+            SendMessageToAll(room, "Area.Game.RoomInfo", new GameRoomModel(){GameServer = room.GameServer,RoomID=room.RoomID});  
         }
 
         public void SendGameStarted(GameRoom room)
         {
-            SendMessageToAll(room, "Area.Game.Started", Json.Parse(Json.Stringify(room, Help.Sanitize)));
-
+            SendMessageToAll(room, "Area.Game.Started", new GameRoomModel() { GameServer = room.GameServer, RoomID = room.RoomID });
         }
 
         public void SendGameOver(GameRoom room)
         {
-
             SendMessageToAll(room, "Area.Game.GameOver", "a");
-             
+
             if (room.DebuggingSender != null)
                 qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.GameOver", new object());
-
         }
 
         public void SendUpdateState(GameRoom room)
         {
             SendMessageToAll(room, "Area.Game.UpdateState", new Compressor().CompressText(Json.Stringify(room.Game.CardGame.CleanUp())));
-
         }
 
         public void SendDebugLog(GameRoom room, GameAnswerModel ganswer)
         {
-            qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Log", ganswer); 
+            qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Log", ganswer);
         }
 
         public void SendDebugBreak(GameRoom room, GameAnswerModel ganswer)
-        { 
+        {
             qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Break", ganswer);
         }
 

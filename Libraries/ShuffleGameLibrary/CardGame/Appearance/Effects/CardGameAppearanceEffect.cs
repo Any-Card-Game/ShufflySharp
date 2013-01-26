@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 namespace global
-{
+{ 
     [ScriptName("Effect")]
     public class CardGameAppearanceEffect
     {
@@ -86,7 +87,7 @@ namespace global
 
             return ef;
         }
-    }
+    } 
     public class CardDrawing
     {
         [IntrinsicProperty]
@@ -134,8 +135,8 @@ namespace global
     }
     [ScriptName("Effect$StyleProperty")]
     public class CardGameAppearanceEffectStyleProperty : CardGameAppearanceEffect
-    {
-        [ScriptName("style")]
+    { 
+
         [IntrinsicProperty]
         public CardGameAppearanceStyle Style { get; set; }
 
@@ -196,16 +197,13 @@ namespace global
         [ScriptName("type")]
         [IntrinsicProperty]
         public CardGameAppearanceAnimatedEffectType AnimationType { get; set; }
-        [ScriptName("duration")]
+ 
         [IntrinsicProperty]
-        public int Duration { get; set; }
-        [ScriptName("pauseAfter")]
+        public int Duration { get; set; } 
         [IntrinsicProperty]
-        public int PauseAfter { get; set; }
-        [ScriptName("pauseBefore")]
+        public int PauseAfter { get; set; } 
         [IntrinsicProperty]
-        public int PauseBefore { get; set; }
-        [ScriptName("ease")]
+        public int PauseBefore { get; set; } 
         [IntrinsicProperty]
         public CardGameAppearanceAnimatedEffectEase Ease { get; set; }
 

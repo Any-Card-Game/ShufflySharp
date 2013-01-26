@@ -8,7 +8,6 @@ namespace NodeJSLibrary
     {
         public Http() {}
 
-        [ScriptName("createServer")]
         public HttpServer CreateServer(Action<HttpRequest, HttpResponse> callback)
         {
             return null;

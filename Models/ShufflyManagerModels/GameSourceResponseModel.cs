@@ -5,8 +5,8 @@ namespace Models.ShufflyManagerModels
     [Serializable]
     public class GameSourceResponseModel
     {
-        private GameSourceResponseModel() {}
         public string Content { get; set; }
+        private GameSourceResponseModel() {}
 
         [ObjectLiteral]
         public GameSourceResponseModel(string content)

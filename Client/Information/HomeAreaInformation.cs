@@ -2,13 +2,16 @@ using System;
 using System.Runtime.CompilerServices;
 using Client.ShuffUI;
 using CommonLibraries;
+using CommonShuffleLibrary;
 using GameServer;
+using GameServer.Models;
+using Models.ShufflyManagerModels;
 namespace Client.Information
 {
     public class HomeAreaInformation
     {
         [IntrinsicProperty]
-        public Action<GameAnswer> loadRoomInfos { get; set; }
+        public Action<GameAnswerModel> loadRoomInfos { get; set; }
         [IntrinsicProperty]
         public ShuffListBox userList { get; set; }
         [IntrinsicProperty]

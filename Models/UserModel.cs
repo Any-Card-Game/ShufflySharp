@@ -13,5 +13,9 @@ namespace Models
         [ScriptName("socket")]
         [IntrinsicProperty]
         public SocketIOConnection Socket { get; set; }
+        public override string ToString()
+        {
+            return string.Format("User {{{0} - {1}}}", Gateway, UserName);
+        }
     }
 }

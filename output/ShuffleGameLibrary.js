@@ -908,16 +908,11 @@ $global_GameCardGameTextAreaOptions.$ctor = function() {
 ////////////////////////////////////////////////////////////////////////////////
 // global.InternalStyle
 var $global_InternalStyle = function() {
-	this.parent = null;
-	this.children = null;
-	this.$lastStyle = null;
 	this.$keys = {};
+	this.$lastStyle = null;
 	this.$myAccelerator = false;
 	this.$myBackground = null;
 	this.$myBackgroundAttachment = null;
-	this.$myBoxShadow = null;
-	this.$myBorderRadius = null;
-	this.$myTransform = null;
 	this.$myBackgroundColor = null;
 	this.$myBackgroundImage = null;
 	this.$myBackgroundPosition = null;
@@ -935,6 +930,7 @@ var $global_InternalStyle = function() {
 	this.$myBorderLeftColor = null;
 	this.$myBorderLeftStyle = null;
 	this.$myBorderLeftWidth = null;
+	this.$myBorderRadius = null;
 	this.$myBorderRight = null;
 	this.$myBorderRightColor = null;
 	this.$myBorderRightStyle = null;
@@ -946,6 +942,7 @@ var $global_InternalStyle = function() {
 	this.$myBorderTopWidth = null;
 	this.$myBorderWidth = null;
 	this.$myBottom = null;
+	this.$myBoxShadow = null;
 	this.$myClear = null;
 	this.$myClip = null;
 	this.$myColor = null;
@@ -998,11 +995,11 @@ var $global_InternalStyle = function() {
 	this.$myPixelWidth = 0;
 	this.$myPosBottom = 0;
 	this.$myPosHeight = 0;
-	this.$myPosition = null;
 	this.$myPosLeft = 0;
 	this.$myPosRight = 0;
 	this.$myPosTop = 0;
 	this.$myPosWidth = 0;
+	this.$myPosition = null;
 	this.$myRight = null;
 	this.$myStyleFloat = null;
 	this.$myTableLayout = null;
@@ -1018,6 +1015,7 @@ var $global_InternalStyle = function() {
 	this.$myTextOverflow = null;
 	this.$myTextTransform = null;
 	this.$myTop = null;
+	this.$myTransform = null;
 	this.$myVerticalAlign = null;
 	this.$myVisibility = null;
 	this.$myWhiteSpace = null;
@@ -1027,17 +1025,12 @@ var $global_InternalStyle = function() {
 	this.$myWritingMode = null;
 	this.$myZIndex = 0;
 	this.$myZoom = null;
+	this.parent = null;
+	this.children = null;
 	this.children = [];
 	this.$lastStyle = new $global_InternalStyle.$ctor1(null);
 };
 $global_InternalStyle.prototype = {
-	addChild: function(style) {
-		this.children.add(style);
-		style.parent = this;
-	},
-	$setValue: function(name, v) {
-		this.$keys[name] = v;
-	},
 	get_accelerator: function() {
 		return this.$myAccelerator;
 	},
@@ -1843,6 +1836,13 @@ $global_InternalStyle.prototype = {
 		this.$myZoom = value;
 		this.$setValue('zoom', value);
 	},
+	addChild: function(style) {
+		this.children.add(style);
+		style.parent = this;
+	},
+	$setValue: function(name, v) {
+		this.$keys[name] = v;
+	},
 	setStyle: function(outerElement) {
 		var fm = this.$lastStyle.$keys;
 		var $t1 = Object.getObjectEnumerator(fm);
@@ -1883,16 +1883,11 @@ $global_InternalStyle.prototype = {
 	}
 };
 $global_InternalStyle.$ctor1 = function(val) {
-	this.parent = null;
-	this.children = null;
-	this.$lastStyle = null;
 	this.$keys = {};
+	this.$lastStyle = null;
 	this.$myAccelerator = false;
 	this.$myBackground = null;
 	this.$myBackgroundAttachment = null;
-	this.$myBoxShadow = null;
-	this.$myBorderRadius = null;
-	this.$myTransform = null;
 	this.$myBackgroundColor = null;
 	this.$myBackgroundImage = null;
 	this.$myBackgroundPosition = null;
@@ -1910,6 +1905,7 @@ $global_InternalStyle.$ctor1 = function(val) {
 	this.$myBorderLeftColor = null;
 	this.$myBorderLeftStyle = null;
 	this.$myBorderLeftWidth = null;
+	this.$myBorderRadius = null;
 	this.$myBorderRight = null;
 	this.$myBorderRightColor = null;
 	this.$myBorderRightStyle = null;
@@ -1921,6 +1917,7 @@ $global_InternalStyle.$ctor1 = function(val) {
 	this.$myBorderTopWidth = null;
 	this.$myBorderWidth = null;
 	this.$myBottom = null;
+	this.$myBoxShadow = null;
 	this.$myClear = null;
 	this.$myClip = null;
 	this.$myColor = null;
@@ -1973,11 +1970,11 @@ $global_InternalStyle.$ctor1 = function(val) {
 	this.$myPixelWidth = 0;
 	this.$myPosBottom = 0;
 	this.$myPosHeight = 0;
-	this.$myPosition = null;
 	this.$myPosLeft = 0;
 	this.$myPosRight = 0;
 	this.$myPosTop = 0;
 	this.$myPosWidth = 0;
+	this.$myPosition = null;
 	this.$myRight = null;
 	this.$myStyleFloat = null;
 	this.$myTableLayout = null;
@@ -1993,6 +1990,7 @@ $global_InternalStyle.$ctor1 = function(val) {
 	this.$myTextOverflow = null;
 	this.$myTextTransform = null;
 	this.$myTop = null;
+	this.$myTransform = null;
 	this.$myVerticalAlign = null;
 	this.$myVisibility = null;
 	this.$myWhiteSpace = null;
@@ -2002,6 +2000,8 @@ $global_InternalStyle.$ctor1 = function(val) {
 	this.$myWritingMode = null;
 	this.$myZIndex = 0;
 	this.$myZoom = null;
+	this.parent = null;
+	this.children = null;
 	this.children = [];
 	if (ss.isNullOrUndefined(val)) {
 		return;

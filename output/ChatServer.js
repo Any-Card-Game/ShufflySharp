@@ -39,23 +39,25 @@ var $ChatServer_ChatServer = function() {
 	this.$client = null;
 	this.$registeredChannels = {};
 	var queueManager = new CommonShuffleLibrary.QueueManager('Chat1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('ChatServer', null)], ['GatewayServer', 'Gateway*']));
-	queueManager.addChannel('Area.Chat.SendMessageToRoom', Function.mkdel(this, function(sender, data) {
-		this.$client.rpush('ChatServer.ChatRoom.' + data.channel, data.user.userName + ': ' + data.content);
-		var $t1 = this.$registeredChannels['ChatServer.ChatRoom.' + data.channel];
-		for (var $t2 = 0; $t2 < $t1.length; $t2++) {
-			var item = $t1[$t2];
-			queueManager.sendMessage($ChatServer_ChatMessageRoomModel).call(queueManager, item, item.gateway, 'Area.Chat.MessageReceived', data);
-		}
-	}));
-	queueManager.addChannel('Area.Chat.JoinRoom', Function.mkdel(this, function(sender1, data1) {
-		if (Object.keyExists(this.$registeredChannels, data1.channel)) {
-			this.$registeredChannels[data1.channel].add(sender1);
-		}
-	}));
-	queueManager.addChannel('Area.Chat.CreateRoom', Function.mkdel(this, function(sender2, data2) {
-		queueManager.qw.add(new CommonShuffleLibrary.QueueWatcher('ChatServer.Room.' + data2.channel, null));
-		this.$registerChannel(data2.channel).add(sender2);
-	}));
+	//queueManager.AddChannel<ChatMessageRoomModel>("Area.Chat.SendMessageToRoom",
+	//(sender, data) => {
+	//client.RPush("ChatServer.ChatRoom." + data.Channel, data.User.UserName + ": " + data.Content);
+	//foreach (var item in registeredChannels["ChatServer.ChatRoom." + data.Channel]) {
+	//queueManager.SendMessage(item, item.Gateway, "Area.Chat.MessageReceived", data);
+	//}
+	//});
+	//
+	//queueManager.AddChannel<ChatJoinRoomModel>("Area.Chat.JoinRoom",
+	//(sender, data) => {
+	//if (registeredChannels.ContainsKey(data.Channel))
+	//registeredChannels[data.Channel].Add(sender);
+	//});
+	//
+	//queueManager.AddChannel<ChatCreateRoomModel>("Area.Chat.CreateRoom",
+	//(sender, data) => {
+	//queueManager.qw.Add(new QueueWatcher("ChatServer.Room." + data.Channel, null));
+	//registerChannel(data.Channel).Add(sender);
+	//});
 	var redis = require('redis');
 	this.$client = redis.createClient(6379, CommonShuffleLibrary.IPs.get_redisIP());
 };

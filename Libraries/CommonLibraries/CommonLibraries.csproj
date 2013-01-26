@@ -35,7 +35,6 @@
     <Compile Include="Console.cs" />
     <Compile Include="EventEmitter.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="GameAnswer.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="Help.cs" />
     <Compile Include="Jsonner.cs" />

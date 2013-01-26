@@ -93,7 +93,10 @@ namespace Build
                                                                                                                                                                    })
                                                                                      },
                                                                       {shufSharp + @"\Servers\SiteServer\", new Application(true, "", new List<string> {})},
-                                                                      {shufSharp + @"\ShuffleGameLibrary\", new Application(false, "", new List<string> {})}, {
+                                                                      {shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false, "", new List<string> {})},
+                                                                      {shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {})},
+                                                                      {shufSharp + @"\Models\", new Application(false, "", new List<string> {})},
+                                                                      {shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, "", new List<string> {})}, {
                                                                                                                                                                       shufSharp + @"\Client\", new Application(false,
                                                                                                                                                                                                                "",
                                                                                                                                                                                                                new List<string>
@@ -178,14 +181,15 @@ namespace Build
                     Console.WriteLine("ftp complete " + to);
                 }
 */
-                if (!client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length) {
+                if (true || !client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length) {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
                     var fileStream = new FileInfo(to).OpenRead();
                     client.UploadFile(fileStream, serverloc + name, true);
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
-                if (!client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length) {
+                if (true || !client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length)
+                {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
                     var fileStream = new FileInfo(to).OpenRead();
                     client.UploadFile(fileStream, serverloc2 + name, true);

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Client.ShuffUI;
 using Models;
+using Models.ShufflyManagerModels;
 namespace Client.Information
 {
     public class QuestionAreaInformation

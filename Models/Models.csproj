@@ -32,18 +32,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CreateGameRequestModel.cs" />
-    <Compile Include="DebuggerJoinRequestModel.cs" />
-    <Compile Include="GameAnswerQuestionModel.cs" />
-    <Compile Include="GameAnswerRequestModel.cs" />
-    <Compile Include="GameSendAnswerModel.cs" />
-    <Compile Include="GameSourceRequestModel.cs" />
-    <Compile Include="GameSourceResponseModel.cs" />
     <Compile Include="GatewayLoginMessageModel.cs" />
     <Compile Include="GatewayMessageModel.cs" />
-    <Compile Include="JoinGameRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\CreateGameRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\DebuggerJoinRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameAnswerModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameAnswerQuestionModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameAnswerRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameSendAnswerModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameSourceRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\GameSourceResponseModel.cs" />
+    <Compile Include="ShufflyManagerModels\JoinGameRequestModel.cs" />
+    <Compile Include="ShufflyManagerModels\StartGameRequestModel.cs" />
     <Compile Include="SocketClientMessageModel.cs" />
-    <Compile Include="StartGameRequestModel.cs" />
     <Compile Include="UserModel.cs" />
   </ItemGroup>
   <ItemGroup>

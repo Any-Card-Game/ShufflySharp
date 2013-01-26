@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Models;
 using SocketIOWebLibrary;
 namespace Client
 {
+    public delegate void GatewayMessage(object obj);
     public class Gateway
     {
-        private dynamic channels; //::dynamic okay
+        private Dictionary<string, GatewayMessage> channels;  
         [IntrinsicProperty]
         protected SocketIOClient GatewaySocket { get; set; }
 
         public Gateway(string gatewayServer)
         {
-            channels = new object();
-            var someChannels = channels;
+            channels = new Dictionary<string, GatewayMessage>();
             GatewaySocket = SocketIOClient.Connect(gatewayServer);
-            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => someChannels[data.Channel](data.Content));
+            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.Content));
         }
 
         [IgnoreGenericArguments]
@@ -25,7 +26,7 @@ namespace Client
         }
 
         [IgnoreGenericArguments]
-        public void On<T>(string channel, Action<T> callback)
+        public void On(string channel, GatewayMessage callback)
         {
             channels[channel] = callback;
         }

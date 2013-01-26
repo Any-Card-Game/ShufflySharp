@@ -1,4 +1,5 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibrary.Consumer
 var $CommonShuffleLibrary_Consumer = function(obj) {
 	var tf = this;
@@ -108,13 +109,13 @@ var $CommonShuffleLibrary_QueueManager = function(name, options) {
 	this.qw = null;
 	this.$qwCollection = null;
 	this.name = name;
-	this.channels = new Object();
+	this.channels = new (Type.makeGenericType(ss.Dictionary$2, [String, Function]))();
 	this.qw = [];
 	this.qp = [];
 	for (var $t1 = 0; $t1 < options.watchers.length; $t1++) {
 		var queueWatcher = options.watchers[$t1];
 		if (ss.isNullOrUndefined(queueWatcher.get_callback())) {
-			queueWatcher.set_callback(Function.mkdel(this, this.$messageReceived(Object)));
+			queueWatcher.set_callback(Function.mkdel(this, this.$messageReceived));
 		}
 		this.qw.add(queueWatcher);
 	}
@@ -128,25 +129,22 @@ var $CommonShuffleLibrary_QueueManager = function(name, options) {
 };
 $CommonShuffleLibrary_QueueManager.prototype = {
 	addChannel: function(channel, callback) {
-		this.channels[channel] = callback;
+		this.channels.set_item(channel, callback);
 	},
-	$messageReceived: function(T) {
-		return function(name, user, eventChannel, content) {
-			user.gateway = name;
-			if (!!ss.isValue(this.channels[eventChannel])) {
-				this.channels[eventChannel](user, content);
-			}
-		};
+	$messageReceived: function(name, user, eventChannel, content) {
+		user.gateway = name;
+		if (ss.isValue(this.channels.get_item(eventChannel))) {
+			this.channels.get_item(eventChannel)(user, content);
+		}
 	},
-	sendMessage: function(T) {
-		return function(user, channel, eventChannel, content) {
-			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
-				console.log(channel + ' No Existy');
-				return;
-			}
-			var pusher = Type.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			pusher.message(T).call(pusher, channel, this.name, user, eventChannel, content);
-		};
+	sendMessage: function(user, channel, eventChannel, content) {
+		if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
+			console.log(channel + ' No Existy');
+			return;
+		}
+		var pusher = Type.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
+		// Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
+		pusher.message(Object).call(pusher, channel, this.name, user, eventChannel, content);
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////

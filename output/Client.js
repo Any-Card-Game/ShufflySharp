@@ -5,35 +5,36 @@ var $Globals = function() {
 };
 ////////////////////////////////////////////////////////////////////////////////
 // LoginUI
-var $LoginUI = function(shuffUIManager) {
+var $LoginUI = function(shuffUIManager, pageHandler) {
 	var $t1 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [Object]))();
 	$t1.title = 'Login';
 	$t1.set_x($('body').innerWidth() - 500);
 	$t1.set_y(100);
-	$t1.set_width($Client_ShuffUI_Number.op_Implicit$2(400));
-	$t1.set_height($Client_ShuffUI_Number.op_Implicit$2(400));
+	$t1.set_width($Client_ShuffUI_Number.op_Implicit$2(250));
+	$t1.set_height($Client_ShuffUI_Number.op_Implicit$2(165));
 	$t1.allowClose = true;
 	$t1.allowMinimize = true;
 	$t1.set_visible(true);
 	var loginScreen = shuffUIManager.createWindow(Object).call(shuffUIManager, $t1);
 	var loginName;
 	var password;
-	loginScreen.addElement(loginName = new $Client_ShuffUI_ShuffTextbox(140, 40, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(30), '', 'Username', null));
-	loginScreen.addElement(password = new $Client_ShuffUI_ShuffTextbox(140, 75, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(30), '', 'Password', null));
-	loginScreen.addElement(new $Client_ShuffUI_ShuffButton(40, 150, $Client_ShuffUI_Number.op_Implicit$2(250), $Client_ShuffUI_Number.op_Implicit$2(30), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e) {
+	loginScreen.addElement($Client_ShuffUI_ShuffTextbox).call(loginScreen, loginName = new $Client_ShuffUI_ShuffTextbox(140, 40, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(30), '', 'Username', null));
+	loginScreen.addElement($Client_ShuffUI_ShuffTextbox).call(loginScreen, password = new $Client_ShuffUI_ShuffTextbox(140, 75, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(30), '', 'Password', null));
+	loginScreen.addElement($Client_ShuffUI_ShuffButton).call(loginScreen, new $Client_ShuffUI_ShuffButton(40, 150, $Client_ShuffUI_Number.op_Implicit$2(250), $Client_ShuffUI_Number.op_Implicit$2(30), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e) {
 		window.alert(loginName.get_text() + '  ' + password.get_text());
+		//pageHandler.
 	}));
 };
 ////////////////////////////////////////////////////////////////////////////////
 // Client.BuildSite
 var $Client_BuildSite = function(gatewayServerAddress) {
-	this.$gatewayServerAddress = null;
 	this.codeArea = null;
 	this.devArea = null;
+	this.$gatewayServerAddress = null;
 	this.home = null;
 	this.questionArea = null;
-	this.$shuffUIManager = null;
 	this.selectedGame = 'Sevens';
+	this.$shuffUIManager = null;
 	$Client_BuildSite.instance = this;
 	this.$gatewayServerAddress = gatewayServerAddress;
 	var url = 'http://50.116.22.241:8881/';
@@ -55,7 +56,386 @@ $Client_BuildSite.prototype = {
 		var pageHandler = new $Client_PageHandler(this.$gatewayServerAddress, this);
 		var shuffUIManager = new $Client_ShuffUI_ShuffUIManager();
 		this.$shuffUIManager = shuffUIManager;
-		new $LoginUI(shuffUIManager);
+		new $LoginUI(shuffUIManager, pageHandler);
+		var $t1 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_HomeAreaInformation]).$ctor1)(new $Client_Information_HomeAreaInformation());
+		$t1.title = 'CardGame';
+		$t1.set_x($('body').innerWidth() - 500);
+		$t1.set_y(100);
+		$t1.set_width($Client_ShuffUI_Number.op_Implicit$2(420));
+		$t1.set_height($Client_ShuffUI_Number.op_Implicit$2(450));
+		$t1.allowClose = true;
+		$t1.allowMinimize = true;
+		$t1.set_visible(true);
+		this.home = shuffUIManager.createWindow($Client_Information_HomeAreaInformation).call(shuffUIManager, $t1);
+		this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Update game list'), Function.mkdel(this, function(e) {
+			pageHandler.gateway.emit('Area.Game.GetGames', this.devArea.data.gameServer, null);
+			//NO EMIT'ING OUTSIDE OF PageHandler
+		})));
+		//home.AddButton(new ShuffButton()
+		//{
+		//X = 280,
+		//Y = 84,
+		//Width = "150",
+		//Height = "25",
+		//Text = "Create Game",
+		//Click = (e) =>
+		//{
+		//
+		//pageHandler.gateway.Emit("Area.Game.Create", new { user = new { userName = home.Data.txtUserName[0].NodeValue } }, devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
+		//
+		//
+		//}
+		//});
+		this.home.data.btnStartGame = this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 164, $Client_ShuffUI_Number.op_Implicit$2(120), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Start Game'), Function.mkdel(this, function(e1) {
+			pageHandler.gateway.emit('Area.Game.Start', { roomID: pageHandler.gameStuff.roomID }, this.devArea.data.gameServer);
+			//NO EMIT"ING OUTSIDE OF PageHandler
+		})));
+		var randomName = '';
+		var ra = Math.random() * 10;
+		for (var i = 0; i < ra; i++) {
+			randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
+		}
+		this.home.data.txtUserName = this.home.addElement($Client_ShuffUI_ShuffTextbox).call(this.home, new $Client_ShuffUI_ShuffTextbox(130, 43, $Client_ShuffUI_Number.op_Implicit$2(130), $Client_ShuffUI_Number.op_Implicit$2(20), randomName, 'Username=', null));
+		//home.Data.gameList = home.AddListBox(new ShuffListBox()
+		//{
+		//X = 30,
+		//Y = 85,
+		//Width = "215",
+		//Height = "150".ToString(),
+		//Label = "Rooms",
+		//Click = (e) =>
+		//{
+		//pageHandler.gateway.Emit("Area.Game.Join", new { roomID = "foo", user = new { userName = home.Data.txtUserName.GetValue() } }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		//}
+		//});
+		//
+		//            home.Data.userList = home.AddElement(new ShuffListBox(new ShuffListBoxOptions() {
+		//
+		//            X = 30,
+		//
+		//            Y = 280,
+		//
+		//            Width = 215,
+		//
+		//            Height = 25 * 5,
+		//
+		//            Label = "Users"
+		//
+		//            }));
+		this.home.data.loadRoomInfo = function(room) {
+			//
+			//
+			//home.Data.userList.Remove();
+			//
+			//
+			//home.Data.btnStartGame.CSS("display","block");
+			//
+			//
+			//
+			//
+			//
+			//var users = new List<string>();
+			//
+			//
+			//
+			//
+			//
+			//for (var i = 0; i < room.players.length; i++) {
+			//
+			//
+			//
+			//
+			//
+			//users.Add(room.players[i]);
+			//
+			//
+			//
+			//
+			//
+			//}
+			//
+			//
+			//
+			//
+			//
+			//
+			//
+			//
+			//home.Data.userList = home.AddListBox(new ShuffListBox(){
+			//
+			//
+			//X= 30,
+			//
+			//
+			//Y= 280,
+			//
+			//
+			//Width= "215",
+			//
+			//
+			//Height = "125",
+			//
+			//
+			//Label= "Users",
+			//
+			//
+			//Items= users
+			//
+			//
+			//});
+		};
+		this.home.data.loadRoomInfos = function(room1) {
+			//   home.Data.gameList.Remove();
+			//   
+			//   var rooms = new List<string>();
+			//   
+			//   for (var i = 0; i < room.length; i++) {
+			//   //rooms.Add({ label= room[i].name, value= room[i].roomID });
+			//   }
+			//   
+			//   
+			//   home.Data.gameList = home.AddListBox(new ShuffListBox(){
+			//   X= 30,
+			//   Y= 85,
+			//   Width = "215",
+			//   Height = "150",
+			//   Label= "Rooms",
+			//   Items= rooms,
+			//   Click=  (item)=> {
+			//   pageHandler.gateway.Emit("Area.Game.Join", new { roomID= item.value, user=new  { userName= home.Data.txtUserName.GetValue()} }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+			//   }
+			//   });
+		};
+		var $t2 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_DevAreaInformation]).$ctor1)(new $Client_Information_DevAreaInformation());
+		$t2.title = 'Developer';
+		$t2.set_x(500);
+		$t2.set_y(100);
+		$t2.set_width($Client_ShuffUI_Number.op_Implicit$2(420));
+		$t2.set_height($Client_ShuffUI_Number.op_Implicit$2(450));
+		$t2.allowClose = true;
+		$t2.allowMinimize = true;
+		this.devArea = shuffUIManager.createWindow($Client_Information_DevAreaInformation).call(shuffUIManager, $t2);
+		this.devArea.data.beginGame = Function.mkdel(this, function() {
+			$('#dvGame').empty();
+			// pageHandler.ClearCache();
+			$('#dvGame').width('50%');
+			$('#dvGame').height('100%');
+			//clearLevel();
+			this.devArea.data.created = false;
+			this.devArea.data.joined = 0;
+			pageHandler.startGameServer();
+			var $t5 = pageHandler.gateway;
+			var $t4 = this.selectedGame;
+			var $t3 = new Models.UserModel();
+			$t3.userName = this.devArea.data.txtNumOfPlayers.get_text();
+			$t5.emit('Area.Debug.Create', { gameName: $t4, user: $t3, Name: 'main room', Source: this.codeArea.data.codeEditor.information.editor.getValue(), BreakPoints: this.codeArea.data.breakPoints }, null);
+		});
+		this.devArea.addElement($Client_ShuffUI_ShuffButton).call(this.devArea, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Begin Game'), Function.mkdel(this, function(e2) {
+			this.devArea.data.beginGame();
+		})));
+		var but = null;
+		this.devArea.addElement($Client_ShuffUI_ShuffButton).call(this.devArea, but = new $Client_ShuffUI_ShuffButton(280, 84, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$1(Function.mkdel(this, function() {
+			return 'Game: ' + this.selectedGame;
+		})), Function.mkdel(this, function(e3) {
+			if (this.selectedGame === 'Sevens') {
+				this.selectedGame = 'BlackJack';
+			}
+			else {
+				this.selectedGame = 'Sevens';
+			}
+			pageHandler.gateway.emit('Area.Debug2.GetGameSource.Request', { gameName: this.selectedGame }, null);
+			var m = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(but.text);
+		})));
+		this.devArea.data.lblHowFast = this.devArea.addElement($Client_ShuffUI_ShuffLabel).call(this.devArea, new $Client_ShuffUI_ShuffLabel(80, 80, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Time Taken:')));
+		this.devArea.data.lblAnother = this.devArea.addElement($Client_ShuffUI_ShuffLabel).call(this.devArea, new $Client_ShuffUI_ShuffLabel(80, 100, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Another: ')));
+		// devArea.AddButton(new ShuffButton()
+		// {
+		// X = 280,
+		// Y = 94,
+		// Width = "150",
+		// Height = "25",
+		// Text = "Continue",
+		// Click = (evt) =>
+		// {
+		// pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		// }
+		// });
+		var pop;
+		var $t7 = this.devArea;
+		var $t6 = new $Client_ShuffUI_ShuffListBox(25, 200, $Client_ShuffUI_Number.op_Implicit$2(250), $Client_ShuffUI_Number.op_Implicit$2(250));
+		$t6.itemCreation = function(item, index) {
+			var ik = $(String.format('<div style=\'width=100%;height=25px; background-color={0};\'></div>', ((index % 2 === 0) ? 'red' : 'green')));
+			var ikc = $(String.format('<div style=\'width=50%;height=25px; float=left;\'>{0}</div>', item.label));
+			ik.append(ikc);
+			var ikd = $(String.format('<input type=\'text\' style=\'width=48%;height=25px\' value=\'{0}\' />', item.value));
+			ik.append(ikd);
+			return ik;
+		};
+		var propBox = $t7.addElement($Client_ShuffUI_ShuffListBox).call($t7, pop = $t6);
+		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
+		this.devArea.data.varText = this.devArea.addElement($Client_ShuffUI_ShuffTextbox).call(this.devArea, new $Client_ShuffUI_ShuffTextbox(150, 134, $Client_ShuffUI_Number.op_Implicit$2(100), $Client_ShuffUI_Number.op_Implicit$2(25), 'Var Lookup', null, null));
+		//  devArea.AddButton(new ShuffButton()
+		//  {
+		//  X = 280,
+		//  Y = 134,
+		//  Width = "150",
+		//  Height = "25",
+		//  Text = "Lookup",
+		//  Click = (evt) =>
+		//  {
+		//  pageHandler.gateway.Emit("Area.Debug.VariableLookup.Request", new { variableName = devArea.Data.varText.GetValue() }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		//  }
+		//  });
+		//   devArea.AddButton(new ShuffButton()
+		//   {
+		//   X = 280,
+		//   Y = 164,
+		//   Width = "150",
+		//   Height = "25",
+		//   Text = "Push New Source",
+		//   Click = (evt) =>
+		//   {
+		//   pageHandler.gateway.Emit("Area.Debug.PushNewSource", new { source = codeArea.Data.codeEditor.editor.GetValue(), breakPoints = codeArea.Data.breakPoints },
+		//   devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
+		//   }
+		//   });
+		this.devArea.data.loadRoomInfo = Function.mkdel(this, function(room2) {
+			this.devArea.data.gameServer = room2.gameServer;
+			this.devArea.data.lblAnother.set_text(room2.gameServer);
+			var count = parseInt(this.devArea.data.txtNumOfPlayers.get_text());
+			if (!this.devArea.data.created) {
+				pageHandler.gateway.emit('Area.Game.DebuggerJoin', { roomID: room2.roomID }, this.devArea.data.gameServer);
+				//NO EMIT"ING OUTSIDE OF PageHandler
+				for (var i1 = 0; i1 < count; i1++) {
+					var $t10 = pageHandler.gateway;
+					var $t9 = room2.roomID;
+					var $t8 = new Models.UserModel();
+					$t8.userName = 'player ' + (i1 + 1);
+					$t10.emit('Area.Game.Join', { roomID: $t9, user: $t8 }, this.devArea.data.gameServer);
+					//NO EMIT"ING OUTSIDE OF PageHandler
+				}
+				this.devArea.data.created = true;
+			}
+			else {
+				if (++this.devArea.data.joined === count) {
+					pageHandler.gateway.emit('Area.Game.Start', { roomID: room2.roomID }, this.devArea.data.gameServer);
+				}
+				//NO EMIT"ING OUTSIDE OF PageHandler
+			}
+		});
+		this.devArea.data.txtNumOfPlayers = this.devArea.addElement($Client_ShuffUI_ShuffTextbox).call(this.devArea, new $Client_ShuffUI_ShuffTextbox(130, 43, $Client_ShuffUI_Number.op_Implicit$2(130), $Client_ShuffUI_Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size=13px'));
+		var $t11 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_CodeAreaInformation]).$ctor1)(new $Client_Information_CodeAreaInformation());
+		$t11.title = 'Code';
+		$t11.set_x(0);
+		$t11.set_y(0);
+		$t11.staticPositioning = false;
+		$t11.set_width($Client_ShuffUI_Number.op_Implicit$2($(window).width() * 0.5));
+		$t11.set_height($Client_ShuffUI_Number.op_Implicit$2($(window).height() * 0.9));
+		$t11.allowClose = true;
+		$t11.allowMinimize = true;
+		$t11.set_visible(true);
+		this.codeArea = shuffUIManager.createWindow($Client_Information_CodeAreaInformation).call(shuffUIManager, $t11);
+		this.codeArea.data.breakPoints = [];
+		this.codeArea.data.codeEditor = this.codeArea.addElement($Client_ShuffUI_ShuffCodeEditor).call(this.codeArea, new $Client_ShuffUI_ShuffCodeEditor.$ctor1(0, 0, $Client_ShuffUI_Number.op_Implicit$3('100%'), $Client_ShuffUI_Number.op_Implicit$3('80%'), ''));
+		var $t14 = this.codeArea.data;
+		var $t13 = this.codeArea;
+		var $t12 = new $Client_ShuffUI_ShuffCodeEditor.$ctor1(0, 0, $Client_ShuffUI_Number.op_Implicit$3('100%'), $Client_ShuffUI_Number.op_Implicit$3('20%'), '');
+		$t12.lineNumbers = false;
+		$t14.console = $t13.addElement($Client_ShuffUI_ShuffCodeEditor).call($t13, $t12);
+		var $t15 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_QuestionAreaInformation]).$ctor1)(new $Client_Information_QuestionAreaInformation());
+		$t15.title = 'Question';
+		$t15.set_x(600);
+		$t15.set_y(100);
+		$t15.set_width($Client_ShuffUI_Number.op_Implicit$2(300));
+		$t15.set_height($Client_ShuffUI_Number.op_Implicit$2(275));
+		$t15.allowClose = true;
+		$t15.allowMinimize = true;
+		$t15.set_visible(true);
+		this.questionArea = shuffUIManager.createWindow($Client_Information_QuestionAreaInformation).call(shuffUIManager, $t15);
+		this.questionArea.data.question = this.questionArea.addElement($Client_ShuffUI_ShuffLabel).call(this.questionArea, new $Client_ShuffUI_ShuffLabel(20, 70, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('')));
+		this.questionArea.data.load = Function.mkdel(this, function(question) {
+			this.questionArea.set_visible(true);
+			this.questionArea.data.question.set_text(question.question);
+			var $t16 = this.questionArea.data.answerBox.get_parent();
+			$t16.removeElement($Client_ShuffUI_ShuffListBox).call($t16, this.questionArea.data.answerBox);
+			var answers = [];
+			for (var i2 = 0; i2 < question.answers.length; i2++) {
+				answers.add(new $Client_ShuffUI_ShuffListItem(question.answers[i2], i2));
+			}
+			var $t19 = this.questionArea.data;
+			var $t18 = this.questionArea;
+			var $t17 = new $Client_ShuffUI_ShuffListBox(30, 65, $Client_ShuffUI_Number.op_Implicit$2(215), $Client_ShuffUI_Number.op_Implicit$2(125));
+			$t17.items = answers;
+			$t19.answerBox = $t18.addElement($Client_ShuffUI_ShuffListBox).call($t18, $t17);
+		});
+		this.questionArea.data.answerBox = this.questionArea.addElement($Client_ShuffUI_ShuffListBox).call(this.questionArea, new $Client_ShuffUI_ShuffListBox(30, 65, $Client_ShuffUI_Number.op_Implicit$2(215), $Client_ShuffUI_Number.op_Implicit$2(125)));
+		shuffUIManager.focus(this.devArea.information);
+		//
+		//
+		//
+		//
+		//
+		//        var chatArea = shuffUIManager.createWindow({
+		//
+		//
+		//
+		//
+		//
+		//        title: "Chat",
+		//
+		//
+		//
+		//
+		//
+		//        x: 600,
+		//
+		//
+		//
+		//
+		//
+		//        y: 100,
+		//
+		//
+		//
+		//
+		//
+		//        width: 300,
+		//
+		//
+		//
+		//
+		//
+		//        height: 275,
+		//
+		//
+		//
+		//
+		//
+		//        allowClose: true,
+		//
+		//
+		//
+		//
+		//
+		//        allowMinimize: true,
+		//
+		//
+		//
+		//
+		//
+		//        visible: false
+		//
+		//
+		//
+		//
+		//
+		//        
+		//
+		//
+		//
+		//
+		//
+		//        });
 	}
 };
 $Client_BuildSite.$loadJunk = function(url, ready) {
@@ -76,198 +456,33 @@ $Client_BuildSite.$loadJunk = function(url, ready) {
 	});
 };
 ////////////////////////////////////////////////////////////////////////////////
-// Client.GameCanvasInformation
-var $Client_GameCanvasInformation = function() {
-	this.canvas = null;
-	this.domCanvas = null;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.GameInfo
-var $Client_GameInfo = function() {
-	this.roomID = '-1';
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.Gateway
-var $Client_Gateway = function(gatewayServer) {
-	this.$channels = null;
-	this.gatewaySocket = null;
-	this.$channels = new Object();
-	var someChannels = this.$channels;
-	this.gatewaySocket = io.connect(gatewayServer);
-	this.gatewaySocket.on('Client.Message', function(data) {
-		someChannels[data.channel](data.content);
-	});
-};
-$Client_Gateway.prototype = {
-	emit: function(channel, content, gameServer) {
-		this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content, gameServer));
-	},
-	on: function(channel, callback) {
-		this.$channels[channel] = callback;
-	},
-	login: function(userName) {
-		var $t2 = this.gatewaySocket;
-		var $t1 = new Models.UserModel();
-		$t1.userName = userName;
-		$t2.emit('Gateway.Login', $t1);
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.PageGameContext
-var $Client_PageGameContext = function(context, canvasInfo) {
-	this.context = null;
-	this.canvasInfo = null;
-	this.context = context;
-	this.canvasInfo = canvasInfo;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.PageHandler
-var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
-	this.$buildSite = null;
+// Client.GameDrawer
+var $Client_GameDrawer = function() {
 	this.$cardImages = null;
 	this.cards = {};
-	this.$endTime = 0;
-	this.gameStuff = null;
-	this.gateway = null;
-	this.$numOfTimes = 0;
 	this.$resetStyles = ['border-radius', '-moz-border-radius', 'left', 'top', '-webkit-border-radius', 'box-shadow', '-moz-box-shadow', 'transform', '-webkit-transform', 'padding', 'background-color', 'border'];
 	this.spaces = {};
-	this.$startTime = 0;
-	this.$timeValue = 0;
-	this.$buildSite = buildSite;
-	this.gameStuff = new $Client_GameInfo();
-	this.$startTime = Date.get_now();
-	//            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
-	this.gateway = new $Client_Gateway(gatewayServerAddress);
-	this.gateway.on('Area.Main.Login.Response', function(data) {
-		window.alert(JSON.stringify(data));
-	});
-	this.gateway.on('Area.Lobby.ListCardGames.Response', function(data1) {
-	});
-	this.gateway.on('Area.Lobby.ListRooms.Response', function(data2) {
-		console.log(data2);
-	});
-	var randomName = '';
-	var ra = Math.random() * 10;
-	for (var i = 0; i < ra; i++) {
-		randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
-	}
-	this.gateway.login(randomName);
-	this.gateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(data3) {
-		var endTime = new Date();
-		var time = endTime - this.$startTime;
-		this.$numOfTimes++;
-		this.$timeValue += time;
-		buildSite.devArea.data.lblHowFast.set_text('Time Taken: ' + ss.Int32.div(this.$timeValue, this.$numOfTimes));
-		buildSite.codeArea.data.codeEditor.information.editor.setValue(data3.content);
-		buildSite.codeArea.data.codeEditor.information.editor.setMarker(0, '<span style="color: #900">&nbsp;&nbsp;</span> %N%');
-		buildSite.codeArea.data.codeEditor.information.editor.refresh();
-	}));
 	this.$cardImages = {};
-	for (var i1 = 101; i1 < 153; i1++) {
+	for (var i = 101; i < 153; i++) {
 		var img = new Image();
 		var domain = window.topLevel + 'assets';
-		var src = domain + '/cards/' + i1;
+		var src = domain + '/cards/' + i;
 		var jm;
 		img.src = jm = Type.cast(src + '.gif', String);
 		this.$cardImages[jm] = img;
 	}
-	var dvGame;
-	$('body').append(dvGame = document.createElement('div'));
-	dvGame.id = 'dvGame';
-	dvGame.style.left = '50%';
-	dvGame.style.position = 'absolute';
-	dvGame.style.top = '0';
-	dvGame.style.right = '0';
-	dvGame.style.bottom = '0';
-	document.body.addEventListener('contextmenu', function(e) {
-		//e.PreventDefault();
-		//todo: Special right click menu;
-	}, false);
-	//ie8
-	//   {
-	//   dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
-	//   
-	//   var m = (Action<string, ElementEventHandler>)d2;
-	//   m("contextmenu", () =>
-	//   {
-	//   
-	//   });
-	//   }
 };
-$Client_PageHandler.prototype = {
-	startGameServer: function() {
-		this.gateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(data) {
-			this.gameStuff.roomID = data.roomID;
-			this.$buildSite.home.data.loadRoomInfo(data);
-			this.$buildSite.devArea.data.loadRoomInfo(data);
-		}));
-		//
-		//                        gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
-		//
-		//                        {
-		//
-		//                        buildSite.home.Data.loadRoomInfos(data);
-		//
-		//                        
-		//
-		//                        });
-		this.gateway.on('Area.Debug.Log', Function.mkdel(this, function(data1) {
-			this.$buildSite.home.data.loadRoomInfos(data1);
-			var lines = this.$buildSite.codeArea.data.console.information.editor.getValue().split('\n');
-			lines = lines.extract(lines.length - 40, 40);
-			this.$buildSite.codeArea.data.console.information.editor.setValue(lines.join('\n') + '\n' + data1.value);
-			this.$buildSite.codeArea.data.console.information.editor.setCursor(this.$buildSite.codeArea.data.console.information.editor.lineCount(), 0);
-		}));
-		this.gateway.on('Area.Debug.Break', Function.mkdel(this, function(data2) {
-			this.$buildSite.home.data.loadRoomInfos(data2);
-			var cm = this.$buildSite.codeArea.data.codeEditor;
-			cm.information.editor.clearMarker(data2.lineNumber);
-			cm.information.editor.setMarker(data2.lineNumber, '<span style="color: #059">●</span> %N%');
-			cm.information.editor.setCursor(data2.lineNumber + 15, 0);
-			cm.information.editor.setCursor(data2.lineNumber - 15, 0);
-			cm.information.editor.setCursor(data2.lineNumber, 0);
-		}));
-		//
-		//                        gateway.On("Area.Debug.VariableLookup.Response", data =>
-		//
-		//                        {
-		//
-		//                        Window.Alert(Json.Stringify(data));
-		//
-		//                        });
-		this.gateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(data3) {
-			this.$buildSite.questionArea.data.load(data3);
-			//alert(JSON.stringify(data));
-			this.$endTime = new Date();
-			var time = this.$endTime - this.$startTime;
-			this.$buildSite.devArea.data.lblHowFast.set_text('how long: ' + time);
-			window.setTimeout(Function.mkdel(this, function() {
-				this.gateway.emit('Area.Game.AnswerQuestion', Models.GameAnswerQuestionModel.$ctor1(this.gameStuff.roomID, 1), this.$buildSite.devArea.data.gameServer);
-				this.$buildSite.questionArea.set_visible(false);
-				this.$startTime = new Date();
-			}), 200);
-		}));
-		this.gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(data21) {
-			var data4 = JSON.parse((new Compressor()).DecompressText(data21));
-			//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
-			for (var $t1 = 0; $t1 < data4.spaces.length; $t1++) {
-				var space = data4.spaces[$t1];
-				space.appearance = this.$fixAppearance(space.appearance);
-				for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
-					var card = space.pile.cards[$t2];
-					card.appearance = this.$fixAppearance(card.appearance);
-				}
+$Client_GameDrawer.prototype = {
+	draw: function(data) {
+		for (var $t1 = 0; $t1 < data.spaces.length; $t1++) {
+			var space = data.spaces[$t1];
+			space.appearance = this.$fixAppearance(space.appearance);
+			for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
+				var card = space.pile.cards[$t2];
+				card.appearance = this.$fixAppearance(card.appearance);
 			}
-			this.drawArea(data4);
-		}));
-		this.gateway.on('Area.Game.Started', function(data5) {
-			//alert(JSON.stringify(data));
-		});
-		this.gateway.on('Area.Game.GameOver', function(data6) {
-		});
-		this.gateway.on('Area.Debug.GameOver', function(data7) {
-		});
+		}
+		this.drawArea(data);
 	},
 	$fixAppearance: function(appearance) {
 		return global.Appearance.fromJson(appearance);
@@ -322,51 +537,51 @@ $Client_PageHandler.prototype = {
 		//ExtensionMethods.debugger(null);
 		var sl = mainArea.spaces.length;
 		//
-		//            for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++)
+		//                        for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++)
 		//
-		//            {
+		//                        {
 		//
-		//            var space = mainArea.Spaces[spaceIndex];
+		//                        var space = mainArea.Spaces[spaceIndex];
 		//
-		//            var jf = findSpace(space).OuterElement;
+		//                        var jf = findSpace(space).OuterElement;
 		//
-		//            
+		//                        
 		//
-		//            for (int i = 0; i < resetStyles.Length; i++)
+		//                        for (int i = 0; i < resetStyles.Length; i++)
 		//
-		//            {
+		//                        {
 		//
-		//            jf.Style[resetStyles[i]] = null;
+		//                        jf.Style[resetStyles[i]] = null;
 		//
-		//            }
+		//                        }
 		//
-		//            
+		//                        
 		//
-		//            l = space.Pile.Cards.Count;
+		//                        l = space.Pile.Cards.Count;
 		//
-		//            for (int index = 0; index < l; index++)
+		//                        for (int index = 0; index < l; index++)
 		//
-		//            {
+		//                        {
 		//
-		//            var card = space.Pile.Cards[index];
+		//                        var card = space.Pile.Cards[index];
 		//
-		//            var m = findCard(space, card);
+		//                        var m = findCard(space, card);
 		//
-		//            
+		//                        
 		//
-		//            for (int i = 0; i < resetStyles.Length; i++)
+		//                        for (int i = 0; i < resetStyles.Length; i++)
 		//
-		//            {
+		//                        {
 		//
-		//            m.OuterElement.Style[resetStyles[i]] = null;
+		//                        m.OuterElement.Style[resetStyles[i]] = null;
 		//
-		//            m.Image.Style[resetStyles[i]] = null;
+		//                        m.Image.Style[resetStyles[i]] = null;
 		//
-		//            }
+		//                        }
 		//
-		//            }
+		//                        }
 		//
-		//            }
+		//                        }
 		for (var index = 0; index < sl; index++) {
 			var space = mainArea.spaces[index];
 			var vertical = space.vertical;
@@ -442,9 +657,9 @@ $Client_PageHandler.prototype = {
 				//                    var m = findCard(space, card);
 				this.$findSpace(space1).outerElementStyle.setStyle(this.$findSpace(space1).outerElement);
 				//
-				//                    m.ImageStyle = new MyStyle();
+				//                                        m.ImageStyle = new MyStyle();
 				//
-				//                    m.OuterElementStyle = new MyStyle();
+				//                                        m.OuterElementStyle = new MyStyle();
 			}
 		}
 		//
@@ -541,6 +756,176 @@ $Client_PageHandler.prototype = {
 	clearCache: function() {
 		this.cards = {};
 		this.spaces = {};
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// Client.GameInfo
+var $Client_GameInfo = function() {
+	this.roomID = '-1';
+};
+////////////////////////////////////////////////////////////////////////////////
+// Client.Gateway
+var $Client_Gateway = function(gatewayServer) {
+	this.$channels = null;
+	this.gatewaySocket = null;
+	this.$channels = new (Type.makeGenericType(ss.Dictionary$2, [String, Function]))();
+	this.gatewaySocket = io.connect(gatewayServer);
+	this.gatewaySocket.on('Client.Message', Function.mkdel(this, function(data) {
+		this.$channels.get_item(data.channel)(data.content);
+	}));
+};
+$Client_Gateway.prototype = {
+	emit: function(channel, content, gameServer) {
+		this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content, gameServer));
+	},
+	on: function(channel, callback) {
+		this.$channels.set_item(channel, callback);
+	},
+	login: function(userName) {
+		var $t2 = this.gatewaySocket;
+		var $t1 = new Models.UserModel();
+		$t1.userName = userName;
+		$t2.emit('Gateway.Login', $t1);
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// Client.PageHandler
+var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
+	this.$buildSite = null;
+	this.$endTime = 0;
+	this.$gameDrawer = null;
+	this.gameStuff = null;
+	this.gateway = null;
+	this.$numOfTimes = 0;
+	this.$startTime = 0;
+	this.$timeValue = 0;
+	this.$buildSite = buildSite;
+	this.gameStuff = new $Client_GameInfo();
+	this.$gameDrawer = new $Client_GameDrawer();
+	this.$startTime = Date.get_now();
+	//            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
+	this.gateway = new $Client_Gateway(gatewayServerAddress);
+	this.gateway.on('Area.Main.Login.Response', function(data) {
+		window.alert(JSON.stringify(data));
+	});
+	this.gateway.on('Area.Lobby.ListCardGames.Response', function(data1) {
+	});
+	this.gateway.on('Area.Lobby.ListRooms.Response', function(data2) {
+		console.log(data2);
+	});
+	var randomName = '';
+	var ra = Math.random() * 10;
+	for (var i = 0; i < ra; i++) {
+		randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
+	}
+	this.gateway.login(randomName);
+	this.gateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(data_) {
+		var data3 = data_;
+		var endTime = new Date();
+		var time = endTime - this.$startTime;
+		this.$numOfTimes++;
+		this.$timeValue += time;
+		buildSite.devArea.data.lblHowFast.set_text('Time Taken: ' + ss.Int32.div(this.$timeValue, this.$numOfTimes));
+		buildSite.codeArea.data.codeEditor.information.editor.setValue(data3.content);
+		buildSite.codeArea.data.codeEditor.information.editor.setMarker(0, '<span style="color: #900">&nbsp;&nbsp;</span> %N%');
+		buildSite.codeArea.data.codeEditor.information.editor.refresh();
+	}));
+	var dvGame;
+	$('body').append(dvGame = document.createElement('div'));
+	dvGame.id = 'dvGame';
+	dvGame.style.left = '50%';
+	dvGame.style.position = 'absolute';
+	dvGame.style.top = '0';
+	dvGame.style.right = '0';
+	dvGame.style.bottom = '0';
+	document.body.addEventListener('contextmenu', function(e) {
+		//e.PreventDefault();
+		//todo: Special right click menu;
+	}, false);
+	//ie8
+	//   {
+	//   dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
+	//   
+	//   var m = (Action<string, ElementEventHandler>)d2;
+	//   m("contextmenu", () =>
+	//   {
+	//   
+	//   });
+	//   }
+};
+$Client_PageHandler.prototype = {
+	startGameServer: function() {
+		this.gateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(data) {
+			var roomInfo = data;
+			this.gameStuff.roomID = roomInfo.roomID;
+			this.$buildSite.home.data.loadRoomInfo(roomInfo);
+			this.$buildSite.devArea.data.loadRoomInfo(roomInfo);
+		}));
+		//
+		//                        gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
+		//
+		//                        {
+		//
+		//                        buildSite.home.Data.loadRoomInfos(data);
+		//
+		//                        
+		//
+		//                        });
+		this.gateway.on('Area.Debug.Log', Function.mkdel(this, function(data1) {
+			var gameAnswer = data1;
+			this.$buildSite.home.data.loadRoomInfos(gameAnswer);
+			var lines = this.$buildSite.codeArea.data.console.information.editor.getValue().split('\n');
+			lines = lines.extract(lines.length - 40, 40);
+			this.$buildSite.codeArea.data.console.information.editor.setValue(lines.join('\n') + '\n' + gameAnswer.value);
+			this.$buildSite.codeArea.data.console.information.editor.setCursor(this.$buildSite.codeArea.data.console.information.editor.lineCount(), 0);
+		}));
+		this.gateway.on('Area.Debug.Break', Function.mkdel(this, function(data2) {
+			var gameAnswer1 = data2;
+			this.$buildSite.home.data.loadRoomInfos(gameAnswer1);
+			var cm = this.$buildSite.codeArea.data.codeEditor;
+			cm.information.editor.clearMarker(gameAnswer1.lineNumber);
+			cm.information.editor.setMarker(gameAnswer1.lineNumber, '<span style="color: #059">●</span> %N%');
+			cm.information.editor.setCursor(gameAnswer1.lineNumber + 15, 0);
+			cm.information.editor.setCursor(gameAnswer1.lineNumber - 15, 0);
+			cm.information.editor.setCursor(gameAnswer1.lineNumber, 0);
+		}));
+		//
+		//                        gateway.On("Area.Debug.VariableLookup.Response", data =>
+		//
+		//                        {
+		//
+		//                        Window.Alert(Json.Stringify(data));
+		//
+		//                        });
+		this.gateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(data3) {
+			var gameSendAnswerModel = data3;
+			this.$buildSite.questionArea.data.load(gameSendAnswerModel);
+			//alert(JSON.stringify(data));
+			this.$endTime = new Date();
+			var time = this.$endTime - this.$startTime;
+			this.$buildSite.devArea.data.lblHowFast.set_text('how long: ' + time);
+			window.setTimeout(Function.mkdel(this, function() {
+				this.gateway.emit('Area.Game.AnswerQuestion', { roomID: this.gameStuff.roomID, answer: 1 }, this.$buildSite.devArea.data.gameServer);
+				this.$buildSite.questionArea.set_visible(false);
+				this.$startTime = new Date();
+			}), 200);
+		}));
+		this.gateway.on('Area.Game.UpdateState', Function.mkdel(this, function(data21) {
+			var update = Type.cast(data21, String);
+			var data4 = JSON.parse((new Compressor()).DecompressText(update));
+			//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+			this.$gameDrawer.draw(data4);
+		}));
+		this.gateway.on('Area.Game.Started', function(data5) {
+			var room = data5;
+			//alert(JSON.stringify(data));
+		});
+		this.gateway.on('Area.Game.GameOver', function(data6) {
+			var room1 = Type.cast(data6, String);
+		});
+		this.gateway.on('Area.Debug.GameOver', function(data7) {
+			var room2 = Type.cast(data7, String);
+		});
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -667,8 +1052,8 @@ var $Client_ShuffUI_DelegateOrValue$1 = function(T) {
 	var $type = function(d) {
 		this.isValue = false;
 		this.$method = null;
-		this.$value = T.getDefaultValue();
 		this.$oldValue = T.getDefaultValue();
+		this.$value = T.getDefaultValue();
 		this.$1$StaticValueChangesField = null;
 		this.$method = d;
 		this.isValue = false;
@@ -699,8 +1084,8 @@ var $Client_ShuffUI_DelegateOrValue$1 = function(T) {
 	$type.$ctor1 = function(d) {
 		this.isValue = false;
 		this.$method = null;
-		this.$value = T.getDefaultValue();
 		this.$oldValue = T.getDefaultValue();
+		this.$value = T.getDefaultValue();
 		this.$1$StaticValueChangesField = null;
 		this.$value = d;
 		this.isValue = true;
@@ -781,7 +1166,6 @@ $Client_ShuffUI_PositionChangedEvent.$ctor = function(x, y) {
 ////////////////////////////////////////////////////////////////////////////////
 // Client.ShuffUI.ShuffButton
 var $Client_ShuffUI_ShuffButton = function(x, y, width, height, text, click) {
-	this.$myText = null;
 	this.text = null;
 	$Client_ShuffUI_ShuffElement.call(this);
 	this.element = $('<div></div>');
@@ -1157,17 +1541,21 @@ var $Client_ShuffUI_ShuffPanel = function() {
 	this.set_visible(true);
 };
 $Client_ShuffUI_ShuffPanel.prototype = {
-	addElement: function(element) {
-		this.element.append(element.element);
-		this.elements.add(element);
-		element.parentChanged($Client_ShuffUI_ParentChangedEvent.$ctor(this));
-		return element;
+	addElement: function(T) {
+		return function(element) {
+			this.element.append(element.element);
+			this.elements.add(element);
+			element.parentChanged($Client_ShuffUI_ParentChangedEvent.$ctor(this));
+			return element;
+		};
 	},
-	removeElement: function(element) {
-		element.element.remove();
-		this.elements.remove(element);
-		element.parentChanged($Client_ShuffUI_ParentChangedEvent.$ctor(null));
-		return element;
+	removeElement: function(T) {
+		return function(element) {
+			element.element.remove();
+			this.elements.remove(element);
+			element.parentChanged($Client_ShuffUI_ParentChangedEvent.$ctor(null));
+			return element;
+		};
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
@@ -1269,7 +1657,7 @@ $Client_ShuffUI_ShuffUIManager.prototype = {
 				tp['-webkit-box-shadow'] = tp['box-shadow'];
 			}
 			outer.css('position', 'absolute');
-			outer.css('padding', '2em 0.8em 0.8em 1.3em');
+			outer.css('padding', '2em 2em 1em 1em');
 			outer.css('left', ui.get_x() + 'px');
 			outer.css('top', ui.get_y() + 'px');
 			outer.css('width', $Client_ShuffUI_Number.op_Implicit$1(ui.get_width()));
@@ -1464,10 +1852,9 @@ $Client_ShuffUI_VisibleChangedEvent.$ctor = function(visible) {
 Type.registerClass(global, 'Globals', $Globals, Object);
 Type.registerClass(global, 'LoginUI', $LoginUI, Object);
 Type.registerClass(global, 'Client.BuildSite', $Client_BuildSite, Object);
-Type.registerClass(global, 'Client.GameCanvasInformation', $Client_GameCanvasInformation, Object);
+Type.registerClass(global, 'Client.GameDrawer', $Client_GameDrawer, Object);
 Type.registerClass(global, 'Client.GameInfo', $Client_GameInfo, Object);
 Type.registerClass(global, 'Client.Gateway', $Client_Gateway, Object);
-Type.registerClass(global, 'Client.PageGameContext', $Client_PageGameContext, Object);
 Type.registerClass(global, 'Client.PageHandler', $Client_PageHandler, Object);
 Type.registerClass(global, 'Client.ScriptLoader', $Client_ScriptLoader, Object);
 Type.registerClass(global, 'Client.Information.CodeAreaInformation', $Client_Information_CodeAreaInformation, Object);

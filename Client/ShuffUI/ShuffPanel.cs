@@ -21,7 +21,8 @@ namespace Client.ShuffUI
             Visible = true;
         }
 
-        public ShuffElement AddElement(ShuffElement element)
+        
+        public T AddElement<T>(T element) where T :ShuffElement 
         {
             Element.Append(element.Element);
 
@@ -30,13 +31,13 @@ namespace Client.ShuffUI
             return element;
         }
 
-        public ShuffElement RemoveElement(ShuffElement element)
-        {
-            element.Element.Remove();
+        public T RemoveElement<T>(T element) where T :ShuffElement
+    {
+    element.Element.Remove();
 
-            Elements.Remove(element);
-            element.ParentChanged(new ParentChangedEvent(null));
-            return element;
-        }
+    Elements.Remove(element);
+    element.ParentChanged(new ParentChangedEvent(null));
+    return element;
+}
     }
 }

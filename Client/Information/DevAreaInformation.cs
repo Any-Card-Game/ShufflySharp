@@ -1,7 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
 using Client.ShuffUI;
+using CommonShuffleLibrary;
 using GameServer;
+using GameServer.Models;
 namespace Client.Information
 {
     public class DevAreaInformation

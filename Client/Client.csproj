@@ -437,6 +437,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
+    <Compile Include="GameDrawer.cs" />
     <Compile Include="GameInfo.cs" />
     <Compile Include="Information\CodeAreaInformation.cs" />
     <Compile Include="Information\DevAreaInformation.cs" />
@@ -444,7 +445,6 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Information\HomeAreaInformation.cs" />
     <Compile Include="Information\QuestionAreaInformation.cs" />
-    <Compile Include="InternalStyle.cs" />
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
     <Compile Include="ShuffUI\CodeMirrorInformation.cs" />

@@ -20,7 +20,7 @@ namespace CommonLibraries
 
         [InlineCode("{o}")]
         [InstanceMethodOnFirstArgument]
-        public static T castValue<T>(this object o)
+        public static T Cast<T>(this object o)
         {
             return default( T );
         }

@@ -338,7 +338,7 @@ module.exports = Sevens = function() {
                                 }));
                                 break;
                             }
-                        }  
+                        }
 
 
                     }

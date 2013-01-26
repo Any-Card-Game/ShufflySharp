@@ -28,7 +28,7 @@ namespace Client.ShuffUI
             }
 
             outer.CSS("position", "absolute");
-            outer.CSS("padding", "2em 0.8em 0.8em 1.3em");
+            outer.CSS("padding", "2em 2em 1em 1em");
             outer.CSS("left", ui.X + "px");
             outer.CSS("top", ui.Y + "px");
             outer.CSS("width", ui.Width);
@@ -59,7 +59,7 @@ namespace Client.ShuffUI
             UIAreas.Add(info = new UIAreaInformation(outer, inner));
             ui.Information = info;
 
-            x.Click((evt) => { outer.CSS("display", "none"); });
+            x.Click((evt) => { outer.CSS("display", "none"); }); 
             var toggleSize = false;
             max.Click((evt) => {
                           toggleSize = !toggleSize;

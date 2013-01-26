@@ -1,4 +1,5 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.ExtensionMethods
 var $CommonLibraries_ExtensionMethods = function() {
 };
@@ -6,12 +7,6 @@ $CommonLibraries_ExtensionMethods.cleanUp = function(T) {
 	return function(o) {
 		return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));
 	};
-};
-////////////////////////////////////////////////////////////////////////////////
-// CommonLibraries.GameAnswer
-var $CommonLibraries_GameAnswer = function() {
-	this.lineNumber = 0;
-	this.value = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Guid
@@ -126,7 +121,6 @@ var $CommonLibraries_TypeOrFunction$1 = function(T) {
 };
 Type.registerGenericClass(global, 'CommonLibraries.TypeOrFunction$1', $CommonLibraries_TypeOrFunction$1, 1);
 Type.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods, Object);
-Type.registerClass(global, 'CommonLibraries.GameAnswer', $CommonLibraries_GameAnswer, Object);
 Type.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid, Object);
 Type.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help, Object);
 Type.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point, Object);

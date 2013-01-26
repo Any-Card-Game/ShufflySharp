@@ -49,7 +49,7 @@ var $GatewayServer_GatewayServer = function() {
 					break;
 				}
 			}
-			queueManager.sendMessage(Object).call(queueManager, user, ss.coalesce(data.gameServer, channel), data.channel, data.content);
+			queueManager.sendMessage(user, ss.coalesce(data.gameServer, channel), data.channel, data.content);
 		});
 		socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
 			user = new Models.UserModel();

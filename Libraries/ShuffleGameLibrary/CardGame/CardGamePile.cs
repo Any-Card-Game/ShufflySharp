@@ -6,10 +6,8 @@ namespace global
     [ScriptName("Pile")]
     public class CardGamePile
     {
-        [ScriptName("name")]
         [IntrinsicProperty]
         public string Name { get; set; }
-        [ScriptName("cards")]
         [IntrinsicProperty]
         public List<CardGameCard> Cards { get; set; }
 
@@ -19,7 +17,6 @@ namespace global
             Cards = new List<CardGameCard>();
         }
 
-        [ScriptName("shuffle")]
         public void Shuffle()
         {
             var o = Cards;

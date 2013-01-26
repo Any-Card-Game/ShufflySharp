@@ -3,17 +3,13 @@ namespace global
 {
     [ScriptName("Card")]
     public class CardGameCard
-    {
-        [ScriptName("value")]
+    { 
         [IntrinsicProperty]
-        public int Value { get; set; }
-        [ScriptName("type")]
+        public int Value { get; set; } 
         [IntrinsicProperty]
         public int Type { get; set; }
-        [ScriptName("state")]
         [IntrinsicProperty]
         public CardGameCardState State { get; set; }
-        [ScriptName("appearance")]
         [IntrinsicProperty]
         public CardGameAppearance Appearance { get; set; }
 

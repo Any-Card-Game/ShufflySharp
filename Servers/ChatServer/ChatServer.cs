@@ -20,7 +20,7 @@ namespace ChatServer
                                                                               },
                                                                         new[] {"GatewayServer", "Gateway*"}));
 
-            queueManager.AddChannel<ChatMessageRoomModel>("Area.Chat.SendMessageToRoom",
+            /*queueManager.AddChannel<ChatMessageRoomModel>("Area.Chat.SendMessageToRoom",
                                                           (sender, data) => {
                                                               client.RPush("ChatServer.ChatRoom." + data.Channel, data.User.UserName + ": " + data.Content);
                                                               foreach (var item in registeredChannels["ChatServer.ChatRoom." + data.Channel]) {
@@ -38,7 +38,7 @@ namespace ChatServer
                                                          (sender, data) => {
                                                              queueManager.qw.Add(new QueueWatcher("ChatServer.Room." + data.Channel, null));
                                                              registerChannel(data.Channel).Add(sender);
-                                                         });
+                                                         });*/
 
             var redis = Global.Require<Redis>("redis");
             client = redis.CreateClient(6379, IPs.RedisIP);

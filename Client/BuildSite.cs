@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
 using Client;
 using Client.Information;
 using Client.ShuffUI;
 using CommonWebLibraries;
+using Models;
+using Models.ShufflyManagerModels;
 using jQueryApi;
 namespace Client
 {
@@ -13,46 +16,6 @@ namespace Client
         public ShuffWindow<CodeAreaInformation> codeArea;
         public ShuffWindow<DevAreaInformation> devArea;
         private string gatewayServerAddress;
-        public ShuffWindow<HomeAreaInformation> home;
-        public ShuffWindow<QuestionAreaInformation> questionArea;
-        public string selectedGame = "Sevens";
-        private ShuffUIManager shuffUIManager;
-        [IntrinsicProperty]
-        public static BuildSite Instance { get; set; }
-
-        public BuildSite(string gatewayServerAddress)
-        {
-            Instance = this;
-            this.gatewayServerAddress = gatewayServerAddress;
-            var url = "http://50.116.22.241:8881/";
-            Globals.Window.topLevel = url;
-
-            loadJunk(url, ready);
-        }
-
-        private void ready()
-        {
-            var elem = Document.GetElementById("loading");
-            elem.ParentNode.RemoveChild(elem);
-
-            var stats = new XStats();
-            Document.Body.AppendChild(stats.Element);
-            Window.SetTimeout(() => {
-                                  jQuery.Select(".xstats").CSS("right", "0px");
-                                  jQuery.Select(".xstats").CSS("position", "absolute");
-
-                                  jQuery.Select(".xstats").CSS("z-index", "9998!important");
-                                  jQuery.Select(".xstats").Children().CSS("z-index", "9998!important");
-                              },
-                              1000);
-
-            var pageHandler = new PageHandler(gatewayServerAddress, this);
-
-            var shuffUIManager = new ShuffUIManager();
-            this.shuffUIManager = shuffUIManager;
-
-            new LoginUI(shuffUIManager, pageHandler);
-        }
 
         private static void loadJunk(string url, Action ready)
         {
@@ -92,7 +55,7 @@ namespace Client
                                                                                   () => scriptLoader.Load(new[] {
                                                                                                                         url + "CommonLibraries.js",
                                                                                                                         //url + "SalterelleTest.js",
-                                                                                                                        url + "ShuffleGameLibrary.js",
+                                                                                                                        url + "ShuffleGameLibrary.js", 
                                                                                                                         url + "Models.js",
 
                                                                                                                         //url + "uis/genericArea.js", 
@@ -104,43 +67,48 @@ namespace Client
                                                                                                                                   true,
                                                                                                                                   ready)))));
         }
-    }
-}
-public class LoginUI
-{
-    public LoginUI(ShuffUIManager shuffUIManager, PageHandler pageHandler)
-    {
-        var loginScreen = shuffUIManager.CreateWindow(new ShuffWindow<object>() {
-                                                                                        Title = "Login",
-                                                                                        X = jQuery.Select("body").GetInnerWidth() - 500,
-                                                                                        Y = 100,
-                                                                                        Width = 250,
-                                                                                        Height = 165,
-                                                                                        AllowClose = true,
-                                                                                        AllowMinimize = true,
-                                                                                        Visible = true
-                                                                                });
 
-        ShuffTextbox loginName;
-        ShuffTextbox password;
-        loginScreen.AddElement(loginName = new ShuffTextbox(140, 40, 150, 30, "", "Username"));
-        loginScreen.AddElement(password = new ShuffTextbox(140, 75, 150, 30, "", "Password"));
+        public ShuffWindow<HomeAreaInformation> home;
+        public ShuffWindow<QuestionAreaInformation> questionArea;
+        public string selectedGame = "Sevens";
+        private ShuffUIManager shuffUIManager;
+        [IntrinsicProperty]
+        public static BuildSite Instance { get; set; }
 
-        loginScreen.AddElement(new ShuffButton(40,
-                                               150,
-                                               250,
-                                               30,
-                                               "Login",
-                                               (e) => {
-                                                   Window.Alert(loginName.Text + "  " + password.Text);
-                                                   pageHandler.cards
-                                               }));
-    }
-}
-/*
+        public BuildSite(string gatewayServerAddress)
+        {
+            Instance = this;
+            this.gatewayServerAddress = gatewayServerAddress;
+            var url = "http://50.116.22.241:8881/";
+            Globals.Window.topLevel = url;
 
+            loadJunk(url, ready);
+        }
 
+        private void ready()
+        {
+            var elem = Document.GetElementById("loading");
+            elem.ParentNode.RemoveChild(elem);
 
+            var stats = new XStats();
+            Document.Body.AppendChild(stats.Element);
+            Window.SetTimeout(() => {
+                                  jQuery.Select(".xstats").CSS("right", "0px");
+                                  jQuery.Select(".xstats").CSS("position", "absolute");
+
+                                  jQuery.Select(".xstats").CSS("z-index", "9998!important");
+                                  jQuery.Select(".xstats").Children().CSS("z-index", "9998!important");
+                              },
+                              1000);
+
+            var pageHandler = new PageHandler(gatewayServerAddress, this);
+
+            var shuffUIManager = new ShuffUIManager();
+            this.shuffUIManager = shuffUIManager;
+
+            new LoginUI(shuffUIManager, pageHandler);
+
+             
 
 
             home = shuffUIManager.CreateWindow(new ShuffWindow<HomeAreaInformation>(new HomeAreaInformation())
@@ -177,7 +145,7 @@ public class LoginUI
 
 
                 }
-            });#1#
+            });*/
 
             home.Data.btnStartGame = home.AddElement(new ShuffButton(280, 164, 120, 25, "Start Game", (e) =>
             {
@@ -204,7 +172,7 @@ public class LoginUI
                 {
                     pageHandler.gateway.Emit("Area.Game.Join", new { roomID = "foo", user = new { userName = home.Data.txtUserName.GetValue() } }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                 }
-            });#1#
+            });*/
 
             /*
             home.Data.userList = home.AddElement(new ShuffListBox(new ShuffListBoxOptions() {
@@ -214,7 +182,7 @@ public class LoginUI
                     Height = 25 * 5,
                     Label = "Users"
                 }));
-#1#
+*/
 
             home.Data.loadRoomInfo = (room) =>
             {
@@ -239,7 +207,7 @@ Width= "215",
 Height = "125",
 Label= "Users",
 Items= users
-});#1#
+});*/
             };
 
             home.Data.loadRoomInfos = (room) =>
@@ -263,7 +231,7 @@ Items= rooms,
 Click=  (item)=> {
  pageHandler.gateway.Emit("Area.Game.Join", new { roomID= item.value, user=new  { userName= home.Data.txtUserName.GetValue()} }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 }
-});#1#
+});*/
             };
 
             devArea = shuffUIManager.CreateWindow(new ShuffWindow<DevAreaInformation>(new DevAreaInformation())
@@ -282,7 +250,7 @@ Click=  (item)=> {
 
 
                 jQuery.Select("#dvGame").Empty();
-                pageHandler.ClearCache();
+               // pageHandler.ClearCache();
 
                 jQuery.Select("#dvGame").Width("50%");
                 jQuery.Select("#dvGame").Height("100%");
@@ -305,8 +273,7 @@ Click=  (item)=> {
                                          });
             });
 
-            devArea.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => devArea.Data.beginGame()
-            ));
+            devArea.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => devArea.Data.beginGame()     ));
 
             ShuffButton but = null;
             devArea.AddElement(but = new ShuffButton(280, 84, 150, 25, new Func<string>(() => "Game: " + selectedGame),
@@ -337,7 +304,7 @@ Click=  (item)=> {
                  {
                      pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                  }
-             });#1#
+             });*/
 
             ShuffListBox pop;
             var propBox = devArea.AddElement(pop = new ShuffListBox(25, 200, 250, 250)
@@ -368,7 +335,7 @@ Click=  (item)=> {
                   {
                       pageHandler.gateway.Emit("Area.Debug.VariableLookup.Request", new { variableName = devArea.Data.varText.GetValue() }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                   }
-              });#1#
+              });*/
 
             /*   devArea.AddButton(new ShuffButton()
                {
@@ -382,7 +349,7 @@ Click=  (item)=> {
                        pageHandler.gateway.Emit("Area.Debug.PushNewSource", new { source = codeArea.Data.codeEditor.editor.GetValue(), breakPoints = codeArea.Data.breakPoints },
                            devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                    }
-               });#1#
+               });*/
 
             devArea.Data.loadRoomInfo = ((room) =>
             {
@@ -462,7 +429,7 @@ Click=  (item)=> {
 {
 pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
 questionArea.Visible = false;
-}#1#
+}*/
                 });
 
             };
@@ -472,7 +439,7 @@ questionArea.Visible = false;
                                               {
                                                   pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
                                                   questionArea.Visible = false;
-                                              }#1#
+                                              }*/
             });
             shuffUIManager.Focus(devArea.Information);
 
@@ -492,4 +459,39 @@ questionArea.Visible = false;
             visible: false
 
         });
-             #1#*/
+             */
+
+        }
+    }
+}
+public class LoginUI
+{
+    public LoginUI(ShuffUIManager shuffUIManager, PageHandler pageHandler)
+    {
+        var loginScreen = shuffUIManager.CreateWindow(new ShuffWindow<object>() {
+                                                                                        Title = "Login",
+                                                                                        X = jQuery.Select("body").GetInnerWidth() - 500,
+                                                                                        Y = 100,
+                                                                                        Width = 250,
+                                                                                        Height = 165,
+                                                                                        AllowClose = true,
+                                                                                        AllowMinimize = true,
+                                                                                        Visible = true
+                                                                                });
+
+        ShuffTextbox loginName;
+        ShuffTextbox password;
+        loginScreen.AddElement(loginName = new ShuffTextbox(140, 40, 150, 30, "", "Username"));
+        loginScreen.AddElement(password = new ShuffTextbox(140, 75, 150, 30, "", "Password"));
+
+        loginScreen.AddElement(new ShuffButton(40,
+                                               150,
+                                               250,
+                                               30,
+                                               "Login",
+                                               (e) => {
+                                                   Window.Alert(loginName.Text + "  " + password.Text);
+                                                   //pageHandler.
+                                               }));
+    }
+}

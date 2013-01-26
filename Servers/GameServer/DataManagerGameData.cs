@@ -1,3 +1,4 @@
+using System;
 namespace GameServer
 {
     public class DataManagerGameData
@@ -9,20 +10,18 @@ namespace GameServer
             this.manager = manager;
         }
 
-        public void Insert(string gameName, int answerIndex)
+        public void Insert(GameInfoModel gmo)
         {
             manager.client.Collection("gameInfo",
-                                      (err, collection) => {
-                                          var gmo = new GameInfoObject();
-                                          gmo.GameName = gameName;
-                                          gmo.Answer = answerIndex;
+                                      (err, collection) => {  
                                           collection.Insert(gmo);
                                       });
         }
     }
-    public class GameInfoObject //todo:DATABASEMODEL
+    [Serializable]
+    public class GameInfoModel
     {
-        public int Answer;
-        public string GameName;
+        public int AnswerIndex { get; set; }
+        public string GameName { get; set; }
     }
 }

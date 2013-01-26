@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
+using Models;
 namespace Client
 {
     [IgnoreNamespace]
@@ -8,4 +12,5 @@ namespace Client
         [ScriptAlias("window")]
         public static dynamic Window { get; set; }
     }
+ 
 }

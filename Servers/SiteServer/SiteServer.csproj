@@ -35,6 +35,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SiteManager.cs" />
+    <Compile Include="SiteClientManager.cs" />
     <Compile Include="SiteServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -54,6 +56,22 @@
     <ProjectReference Include="..\..\Libraries\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
+      <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
+      <Name>CommonShuffleLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
+      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
+      <Name>NodeJSLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj">
+      <Project>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</Project>
+      <Name>ShuffleGameLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Models\Models.csproj">
+      <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
+      <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.1.6.2\tools\Saltarelle.Compiler.targets')" />

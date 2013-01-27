@@ -88,25 +88,55 @@
     <Content Include="assets\cards\153.gif" />
     <Content Include="assets\cards\154.gif" />
     <Content Include="assets\cards\155.gif" />
-    <Content Include="lib\codemirror\codemirror.css" />
-    <Content Include="lib\codemirror\codemirror.js" />
+    <Content Include="lib\codemirror\addon\dialog\dialog.css" />
+    <Content Include="lib\codemirror\addon\dialog\dialog.js" />
+    <Content Include="lib\codemirror\addon\edit\closetag.js" />
+    <Content Include="lib\codemirror\addon\edit\continuecomment.js" />
+    <Content Include="lib\codemirror\addon\edit\continuelist.js" />
+    <Content Include="lib\codemirror\addon\edit\matchbrackets.js" />
+    <Content Include="lib\codemirror\addon\fold\collapserange.js" />
+    <Content Include="lib\codemirror\addon\fold\foldcode.js" />
+    <Content Include="lib\codemirror\addon\format\formatting.js" />
+    <Content Include="lib\codemirror\addon\hint\javascript-hint.js" />
+    <Content Include="lib\codemirror\addon\hint\pig-hint.js" />
+    <Content Include="lib\codemirror\addon\hint\python-hint.js" />
+    <Content Include="lib\codemirror\addon\hint\simple-hint.css" />
+    <Content Include="lib\codemirror\addon\hint\simple-hint.js" />
+    <Content Include="lib\codemirror\addon\hint\xml-hint.js" />
+    <Content Include="lib\codemirror\addon\mode\loadmode.js" />
+    <Content Include="lib\codemirror\addon\mode\multiplex.js" />
+    <Content Include="lib\codemirror\addon\mode\overlay.js" />
+    <Content Include="lib\codemirror\addon\runmode\colorize.js" />
+    <Content Include="lib\codemirror\addon\runmode\runmode-standalone.js" />
+    <Content Include="lib\codemirror\addon\runmode\runmode.js" />
+    <Content Include="lib\codemirror\addon\runmode\runmode.node.js" />
+    <Content Include="lib\codemirror\addon\search\match-highlighter.js" />
+    <Content Include="lib\codemirror\addon\search\search.js" />
+    <Content Include="lib\codemirror\addon\search\searchcursor.js" />
+    <Content Include="lib\codemirror\keymap\emacs.js" />
+    <Content Include="lib\codemirror\keymap\vim.js" />
+    <Content Include="lib\codemirror\lib\codemirror.css" />
+    <Content Include="lib\codemirror\lib\codemirror.js" />
     <Content Include="lib\codemirror\mode\javascript\index.html" />
     <Content Include="lib\codemirror\mode\javascript\javascript.js" />
+    <Content Include="lib\codemirror\mode\javascript\typescript.html" />
+    <Content Include="lib\codemirror\mode\meta.js" />
+    <Content Include="lib\codemirror\theme\ambiance-mobile.css" />
+    <Content Include="lib\codemirror\theme\ambiance.css" />
+    <Content Include="lib\codemirror\theme\blackboard.css" />
+    <Content Include="lib\codemirror\theme\cobalt.css" />
+    <Content Include="lib\codemirror\theme\eclipse.css" />
+    <Content Include="lib\codemirror\theme\elegant.css" />
+    <Content Include="lib\codemirror\theme\erlang-dark.css" />
+    <Content Include="lib\codemirror\theme\lesser-dark.css" />
+    <Content Include="lib\codemirror\theme\monokai.css" />
+    <Content Include="lib\codemirror\theme\neat.css" />
     <Content Include="lib\codemirror\theme\night.css" />
-    <Content Include="lib\codemirror\util\closetag.js" />
-    <Content Include="lib\codemirror\util\dialog.css" />
-    <Content Include="lib\codemirror\util\dialog.js" />
-    <Content Include="lib\codemirror\util\foldcode.js" />
-    <Content Include="lib\codemirror\util\formatting.js" />
-    <Content Include="lib\codemirror\util\javascript-hint.js" />
-    <Content Include="lib\codemirror\util\loadmode.js" />
-    <Content Include="lib\codemirror\util\match-highlighter.js" />
-    <Content Include="lib\codemirror\util\overlay.js" />
-    <Content Include="lib\codemirror\util\runmode.js" />
-    <Content Include="lib\codemirror\util\search.js" />
-    <Content Include="lib\codemirror\util\searchcursor.js" />
-    <Content Include="lib\codemirror\util\simple-hint.css" />
-    <Content Include="lib\codemirror\util\simple-hint.js" />
+    <Content Include="lib\codemirror\theme\rubyblue.css" />
+    <Content Include="lib\codemirror\theme\solarized.css" />
+    <Content Include="lib\codemirror\theme\twilight.css" />
+    <Content Include="lib\codemirror\theme\vibrant-ink.css" />
+    <Content Include="lib\codemirror\theme\xq-dark.css" />
     <Content Include="lib\RawDeflate.js" />
     <Content Include="lib\Dialog.js" />
     <Content Include="lib\FunctionWorker.js" />
@@ -437,6 +467,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
+    <Compile Include="ClientDebugManager.cs" />
+    <Compile Include="ClientSiteManager.cs" />
     <Compile Include="GameDrawer.cs" />
     <Compile Include="GameInfo.cs" />
     <Compile Include="Information\CodeAreaInformation.cs" />
@@ -447,7 +479,7 @@
     <Compile Include="Information\QuestionAreaInformation.cs" />
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
-    <Compile Include="ShufflyClientManager.cs" />
+    <Compile Include="ClientGameManager.cs" />
     <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
     <Compile Include="ShuffUI\DelegateOrValue.cs" />
     <Compile Include="ShuffUI\ImportedExtensionMethods.cs" />
@@ -518,6 +550,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="lib\codemirror\bin\compress" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

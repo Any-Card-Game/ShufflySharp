@@ -49,13 +49,16 @@ var $GatewayServer_GatewayServer = function() {
 					break;
 				}
 			}
-			queueManager.sendMessage(user, ss.coalesce(data.gameServer, channel), data.channel, data.content);
+			queueManager.sendMessage(user.toUserModel(), ss.coalesce(data.gameServer, channel), data.channel, data.content);
 		});
 		socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
-			user = new Models.UserModel();
+			user = new Models.UserSocketModel();
+			user.set_password(data1.password);
 			user.socket = socket;
 			user.userName = data1.userName;
+			user.set_hash(data1.userName);
 			this.users[data1.userName] = user;
+			$GatewayServer_GatewayServer.$sendMessage(user, 'Area.Main.Login.Response', { successful: true, hash: user.get_hash() }, user.toUserModel());
 		}));
 		socket.on('disconnect', Function.mkdel(this, function(data2) {
 			delete this.users[user.userName];
@@ -66,7 +69,7 @@ $GatewayServer_GatewayServer.prototype = {
 	$messageReceived: function(gateway, user, eventChannel, content) {
 		if (Object.keyExists(this.users, user.userName)) {
 			var u = this.users[user.userName];
-			u.socket.emit('Client.Message', new Models.SocketClientMessageModel(user, eventChannel, content));
+			$GatewayServer_GatewayServer.$sendMessage(u, eventChannel, content, user);
 		}
 	}
 };
@@ -76,8 +79,11 @@ $GatewayServer_GatewayServer.main = function() {
 	}
 	catch ($t1) {
 		var exc = ss.Exception.wrap($t1);
-		console.log('CRITICAL FAILURE: ' + exc.toString());
+		console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
 	}
+};
+$GatewayServer_GatewayServer.$sendMessage = function(user, eventChannel, content, u) {
+	user.socket.emit('Client.Message', new Models.SocketClientMessageModel(u, eventChannel, content));
 };
 Type.registerClass(global, 'GatewayServer.GatewayServer', $GatewayServer_GatewayServer, Object);
 $GatewayServer_GatewayServer.main();

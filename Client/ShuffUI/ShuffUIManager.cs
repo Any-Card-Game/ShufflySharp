@@ -13,7 +13,7 @@ namespace Client.ShuffUI
         public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui)
         {
             var windowID = ui.Title;
-            var outer = jQuery.Select("<div class='window-outer' style='background-color: #87B6D9;'></div>");
+            var outer = jQuery.Select("<div class='window-outer' style='background-color: #87B6D9; overflow:hidden;'></div>");
 
             jQuery.Select("body").Append(outer);
             ui.outer = outer;
@@ -28,7 +28,7 @@ namespace Client.ShuffUI
             }
 
             outer.CSS("position", "absolute");
-            outer.CSS("padding", "2em 2em 1em 1em");
+            outer.CSS("padding", "2em 1em 1em 1em");
             outer.CSS("left", ui.X + "px");
             outer.CSS("top", ui.Y + "px");
             outer.CSS("width", ui.Width);
@@ -61,6 +61,7 @@ namespace Client.ShuffUI
 
             x.Click((evt) => { outer.CSS("display", "none"); });
             var toggleSize = false;
+            var toggleMinSize = false;
             max.Click((evt) => {
                           toggleSize = !toggleSize;
                           if (toggleSize) {
@@ -73,7 +74,21 @@ namespace Client.ShuffUI
                               outer.CSS("height", "100%");
                           }
                       });
-            jQuery.Select(".window-minimize").Click((evt) => { Window.Alert("3"); });
+            jQuery.Select(".window-minimize").Click((evt) =>
+            {
+                toggleMinSize = !toggleMinSize;
+                if (toggleMinSize)
+                {
+                    outer.CSS("height", "25px"); 
+                }
+                else
+                {
+                    outer.CSS("height", ui.Height + "px");
+ 
+
+//                    outer.CSS("height", "100%");
+                } 
+            });
 
             outer.MouseDown((evt) => { Focus(info); });
 
@@ -102,7 +117,7 @@ namespace Client.ShuffUI
         public void Focus(UIAreaInformation info)
         {
             for (var i = 0; i < UIAreas.Count; i++) {
-                UIAreas[i].Element.CSS("z-index", 1800);
+                UIAreas[i].Element.CSS("z-index", int.Parse(UIAreas[i].Element.GetCSS("z-index"))-1);
             }
             info.Element.CSS("z-index", 1900);
         }

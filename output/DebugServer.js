@@ -17,7 +17,7 @@ $DebugServer_DebugServer.main = function() {
 	}
 	catch ($t1) {
 		var exc = ss.Exception.wrap($t1);
-		console.log('CRITICAL FAILURE: ' + exc.toString());
+		console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
 	}
 };
 Type.registerClass(global, 'DebugServer.DebugServer', $DebugServer_DebugServer, Object);

@@ -1,7 +1,7 @@
 ﻿using System;
 using CommonLibraries;
 using CommonShuffleLibrary;
-using Models.ShufflyManagerModels;
+using Models.GameManagerModels;
 using NodeJSLibrary;
 namespace DebugServer
 {
@@ -31,7 +31,7 @@ namespace DebugServer
             try {
                 new DebugServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
             }
         }
     }

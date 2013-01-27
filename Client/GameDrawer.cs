@@ -111,7 +111,7 @@ namespace Client
         {
             //jQuery.Select("#dvGame").Children().Remove();
 
-            var scale = new Point(Document.DocumentElement.ClientWidth / 2 / mainArea.Size.Width, ( Document.DocumentElement.ClientHeight - 100 ) / mainArea.Size.Height);
+            var scale = new Point(Document.DocumentElement.ClientWidth /  mainArea.Size.Width*.9, ( Document.DocumentElement.ClientHeight - 250 ) / mainArea.Size.Height*.9);
             //ExtensionMethods.debugger(null);
             var sl = mainArea.Spaces.Count;
             /*

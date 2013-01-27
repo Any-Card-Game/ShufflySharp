@@ -3,6 +3,9 @@
 // CommonLibraries.ExtensionMethods
 var $CommonLibraries_ExtensionMethods = function() {
 };
+$CommonLibraries_ExtensionMethods.goodMessage = function(ex) {
+	return ex.get_message() + '  ' + ex.get_innerException();
+};
 $CommonLibraries_ExtensionMethods.cleanUp = function(T) {
 	return function(o) {
 		return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));

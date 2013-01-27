@@ -69,7 +69,7 @@ $HeadServer_HeadServer.main = function() {
 	}
 	catch ($t1) {
 		var exc = ss.Exception.wrap($t1);
-		console.log('CRITICAL FAILURE: ' + exc.toString());
+		console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
 	}
 };
 Type.registerClass(global, 'HeadServer.HeadServer', $HeadServer_HeadServer, Object);

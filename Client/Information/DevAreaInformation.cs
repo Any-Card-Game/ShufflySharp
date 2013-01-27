@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
-using Client.ShuffUI; 
-using Models.ShufflyManagerModels;
+using Client.ShuffUI;
+using Models.GameManagerModels;
 namespace Client.Information
 {
     public class DevAreaInformation

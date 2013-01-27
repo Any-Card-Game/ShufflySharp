@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonShuffleLibrary;
+using CommonShuffleLibrary.Data;
 using FibersLibrary;
 using GameServer.Models;
 using Models;
-using Models.ShufflyManagerModels;
+using Models.GameManagerModels;
 using NodeJSLibrary;
 using global;
 using FiberYieldResponse = GameServer.Models.FiberYieldResponse;
@@ -17,7 +19,7 @@ namespace GameServer
         private JsDictionary<string, GameObject> cachedGames;
         private DataManager dataManager;
         private GameData gameData;
-        private ShufflyServerManager myServerManager;
+        private GameClientManager myServerManager;
         private List<GameRoom> rooms;
         private int skipped__;
         private DateTime startTime = new DateTime();
@@ -26,10 +28,11 @@ namespace GameServer
 
         public GameManager(string gameServerIndex)
         {
-            myServerManager = new ShufflyServerManager(gameServerIndex);
+            myServerManager = new GameClientManager(gameServerIndex);
             myServerManager.OnUserJoinGame += UserJoinGame;
             myServerManager.OnDebuggerJoinGame += DebuggerJoinGame;
             myServerManager.OnGameCreate += GameCreate;
+            myServerManager.OnDebugGameCreate += DebugGameCreate;
             myServerManager.OnStartGame += StartGame;
             myServerManager.OnUserAnswerQuestion += UserAnswerQuestion;
 
@@ -54,7 +57,10 @@ namespace GameServer
             room.Players.Add(user);
             myServerManager.SendRoomInfo(room);
         }
-
+        public void DebugGameCreate(UserModel user, DebugCreateGameRequestModel data)
+        {
+            GameCreate(user,new CreateGameRequestModel(data.Name,data.GameName));
+        }
         public void GameCreate(UserModel user, CreateGameRequestModel data)
         {
             GameRoom room;

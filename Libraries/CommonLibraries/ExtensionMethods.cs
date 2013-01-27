@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 namespace CommonLibraries
 {
     public static class ExtensionMethods
@@ -7,6 +8,10 @@ namespace CommonLibraries
         public static dynamic me(this object script) //::dynamic okay
         {
             return script;
+        }
+        public static string GoodMessage(this Exception ex)  
+        {
+            return ex.Message+"  "+ex.InnerException;
         }
 
         [InlineCode("debugger")]

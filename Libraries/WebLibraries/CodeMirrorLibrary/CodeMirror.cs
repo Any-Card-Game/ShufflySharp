@@ -12,61 +12,56 @@ namespace CodeMirrorLibrary
             [ScriptName("getScrollerElement")] get { return null; }
         }
 
-        [ScriptName("fromTextArea")]
         public static CodeMirror FromTextArea(Element element, CodeMirrorOptions options)
         {
             return null;
         }
 
-        [ScriptName("refresh")]
         public void Refresh() {}
 
-        [ScriptName("setMarker")]
-        public void SetMarker(int lineIndex, string style) {}
+        public void SetGutterMarker(int lineIndex,string gutterID, string style) { }
 
-        [ScriptName("setValue")]
         public void SetValue(string data) {}
 
-        [ScriptName("clearMarker")]
-        public void ClearMarker(int lineNumber) {}
+        public void ClearGutter(string gutterID) { }
 
-        [ScriptName("setCursor")]
         public void SetCursor(int lineNumber, int colNumber) {}
 
-        [ScriptName("getValue")]
         public string GetValue()
         {
             return null;
         }
 
-        [ScriptName("getCursor")]
         public CodeEditorCursor GetCursor()
         {
             return null;
         }
 
-        [ScriptName("setLineClass")]
-        public CodeMirrorLine SetLineClass(CodeMirrorLine line, string style)
+        public CodeMirrorLine AddLineClass(CodeMirrorLine line, string where, string style)
         {
             return null;
         }
 
-        [ScriptName("setLineClass")]
-        public CodeMirrorLine SetLineClass(int lineIndex, string style)
+        public CodeMirrorLine AddLineClass(int lineIndex, string where, string style)
+        {
+            return null;
+        }
+        public CodeMirrorLine RemoveLineClass(CodeMirrorLine line, string where, string style)
         {
             return null;
         }
 
-        [ScriptName("setOption")]
+        public CodeMirrorLine RemoveLineClass(int lineIndex, string where, string style)
+        {
+            return null;
+        }
         public void SetOption(string key, object value) {}
 
-        [ScriptName("lineCount")]
         public int LineCount()
         {
             return 0;
         }
 
-        [ScriptName("lineInfo")]
         public CodeMirrorLine LineInfo(int lineIndex)
         {
             return null;

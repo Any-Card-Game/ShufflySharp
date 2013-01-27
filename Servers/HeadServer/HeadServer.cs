@@ -92,7 +92,7 @@ namespace HeadServer
             try {
                 new HeadServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
             }
         }
     }

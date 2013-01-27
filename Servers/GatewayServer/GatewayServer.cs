@@ -10,7 +10,7 @@ namespace GatewayServer
     public class GatewayServer
     {
         private PubSub ps;
-        public JsDictionary<string, UserModel> users = new JsDictionary<string, UserModel>();
+        public JsDictionary<string, UserSocketModel> users = new JsDictionary<string, UserSocketModel>();
 
         public GatewayServer()
         {
@@ -48,7 +48,7 @@ namespace GatewayServer
                                                                           }));
             io.Sockets.On("connection",
                           (SocketIOConnection socket) => {
-                              UserModel user = null;
+                              UserSocketModel user = null;
                               socket.On("Gateway.Message",
                                         (GatewayMessageModel data) => {
                                             var channel = "Bad";
@@ -69,7 +69,7 @@ namespace GatewayServer
                                                     channel = "ChatServer";
                                                     break;
                                             }
-                                            queueManager.SendMessage(user,
+                                            queueManager.SendMessage(user.ToUserModel(),
                                                                      data.GameServer ?? channel,
                                                                      data.Channel,
                                                                      data.Content);
@@ -77,10 +77,13 @@ namespace GatewayServer
 
                               socket.On("Gateway.Login",
                                         (GatewayLoginMessageModel data) => {
-                                            user = new UserModel();
+                                            user = new UserSocketModel();
+                                            user.Password = data.Password;
                                             user.Socket = socket;
                                             user.UserName = data.UserName;
+                                            user.Hash = data.UserName;
                                             users[data.UserName] = user;
+                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true,user.Hash), user.ToUserModel());
                                         });
                               socket.On("disconnect", (string data) => users.Remove(user.UserName));
                           });
@@ -91,7 +94,7 @@ namespace GatewayServer
             try {
                 new GatewayServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
             }
         }
 
@@ -99,8 +102,13 @@ namespace GatewayServer
         {
             if (users.ContainsKey(user.UserName)) {
                 var u = users[user.UserName];
-                u.Socket.Emit("Client.Message", new SocketClientMessageModel(user, eventChannel, content));
+                sendMessage(u, eventChannel, content, user);
             }
+        }
+
+        private static void sendMessage(UserSocketModel user, string eventChannel, object content, UserModel u)
+        {
+            user.Socket.Emit("Client.Message", new SocketClientMessageModel(u, eventChannel, content));
         }
     }
 }

@@ -50,7 +50,7 @@ namespace ChatServer
             try {
                 new ChatServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
             }
         }
 

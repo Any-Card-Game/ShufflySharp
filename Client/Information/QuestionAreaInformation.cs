@@ -1,16 +1,14 @@
 using System;
 using System.Runtime.CompilerServices;
 using Client.ShuffUI;
-using Models.ShufflyManagerModels;
+using Models.GameManagerModels;
 namespace Client.Information
 {
+    [Serializable]
     public class QuestionAreaInformation
     {
-        [IntrinsicProperty]
-        public ShuffLabel question { get; set; }
-        [IntrinsicProperty]
-        public ShuffListBox answerBox { get; set; }
-        [IntrinsicProperty]
-        public Action<GameSendAnswerModel> load { get; set; }
+        public ShuffLabel Question { get; set; }
+        public ShuffListBox AnswerBox { get; set; }
+        public Action<GameSendAnswerModel> Load { get; set; }
     }
 }

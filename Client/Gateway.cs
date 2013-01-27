@@ -30,9 +30,9 @@ namespace Client
             channels[channel] = callback;
         }
 
-        public void Login(string userName)
+        public void Login(string userName,string password)
         {
-            GatewaySocket.Emit("Gateway.Login", new UserModel {UserName = userName});
+            GatewaySocket.Emit("Gateway.Login", new UserModel { UserName = userName, Password = password });
         }
     }
 }

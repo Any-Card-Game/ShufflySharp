@@ -15,6 +15,30 @@ var $CommonShuffleLibrary_Consumer = function(obj) {
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////
+// CommonShuffleLibrary.DataManager
+var $CommonShuffleLibrary_DataManager = function() {
+	this.$connection = null;
+	this.$server = null;
+	this.client = null;
+	this.gameData = null;
+	this.siteData = null;
+	var mongo = require('mongodb');
+	var Db = mongo.Db;
+	this.$connection = mongo.Connection;
+	var server = this.$server = mongo.Server;
+	this.client = new Db('test', new server('50.116.28.16', 27017, {}));
+	this.client.open(function(arg1, arg2) {
+		//client.Collection("test_insert", "test");
+	});
+	this.$initData();
+};
+$CommonShuffleLibrary_DataManager.prototype = {
+	$initData: function() {
+		this.gameData = new $CommonShuffleLibrary_Data_DataManagerGameData(this);
+		this.siteData = new $CommonShuffleLibrary_Data_DataManagerSiteData(this);
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
 // CommonShuffleLibrary.IPs
 var $CommonShuffleLibrary_IPs = function() {
 };
@@ -226,7 +250,74 @@ $CommonShuffleLibrary_QueueWatcher.prototype = {
 		}));
 	}
 };
+////////////////////////////////////////////////////////////////////////////////
+// CommonShuffleLibrary.Data.DataManagerGameData
+var $CommonShuffleLibrary_Data_DataManagerGameData = function(manager) {
+	this.$manager = null;
+	this.$manager = manager;
+};
+$CommonShuffleLibrary_Data_DataManagerGameData.prototype = {
+	insert: function(gmo) {
+		this.$manager.client.collection('gameInfo', function(err, collection) {
+			collection.insert(gmo);
+		});
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// CommonShuffleLibrary.Data.DataManagerSiteData
+var $CommonShuffleLibrary_Data_DataManagerSiteData = function(manager) {
+	this.$manager = null;
+	this.$manager = manager;
+};
+$CommonShuffleLibrary_Data_DataManagerSiteData.prototype = {
+	insert: function(data) {
+		this.$manager.client.collection('UserData', function(err, collection) {
+			collection.insert(data);
+		});
+	},
+	get: function(data, results) {
+		this.$manager.client.collection('UserData', function(err, collection) {
+			var obj = new Object();
+			if (ss.isValue(data.username)) {
+				obj.username = data.username;
+			}
+			if (ss.isValue(data.password)) {
+				obj.password = data.password;
+			}
+			collection.find(obj, function(a, b) {
+				results(b);
+			});
+		});
+	}
+};
+////////////////////////////////////////////////////////////////////////////////
+// CommonShuffleLibrary.Data.GameInfoModel
+var $CommonShuffleLibrary_Data_GameInfoModel = function() {
+};
+$CommonShuffleLibrary_Data_GameInfoModel.createInstance = function() {
+	return $CommonShuffleLibrary_Data_GameInfoModel.$ctor();
+};
+$CommonShuffleLibrary_Data_GameInfoModel.$ctor = function() {
+	var $this = {};
+	$this.answerIndex = 0;
+	$this.gameName = null;
+	return $this;
+};
+////////////////////////////////////////////////////////////////////////////////
+// CommonShuffleLibrary.Data.UserModelData
+var $CommonShuffleLibrary_Data_UserModelData = function() {
+};
+$CommonShuffleLibrary_Data_UserModelData.createInstance = function() {
+	return $CommonShuffleLibrary_Data_UserModelData.$ctor();
+};
+$CommonShuffleLibrary_Data_UserModelData.$ctor = function() {
+	var $this = {};
+	$this.username = null;
+	$this.password = null;
+	return $this;
+};
 Type.registerClass(global, 'CommonShuffleLibrary.Consumer', $CommonShuffleLibrary_Consumer, Object);
+Type.registerClass(global, 'CommonShuffleLibrary.DataManager', $CommonShuffleLibrary_DataManager, Object);
 Type.registerClass(global, 'CommonShuffleLibrary.IPs', $CommonShuffleLibrary_IPs, Object);
 Type.registerClass(global, 'CommonShuffleLibrary.PubSub', $CommonShuffleLibrary_PubSub, Object);
 Type.registerClass(global, 'CommonShuffleLibrary.QueueItem', $CommonShuffleLibrary_QueueItem, Object);
@@ -235,3 +326,9 @@ Type.registerClass(global, 'CommonShuffleLibrary.QueueManager', $CommonShuffleLi
 Type.registerClass(global, 'CommonShuffleLibrary.QueueManagerOptions', $CommonShuffleLibrary_QueueManagerOptions, Object);
 Type.registerClass(global, 'CommonShuffleLibrary.QueuePusher', $CommonShuffleLibrary_QueuePusher, $CommonShuffleLibrary_QueueItem);
 Type.registerClass(global, 'CommonShuffleLibrary.QueueWatcher', $CommonShuffleLibrary_QueueWatcher, $CommonShuffleLibrary_QueueItem);
+Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData, Object);
+Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData, Object);
+Type.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel, Object);
+Type.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, Object);
+$CommonShuffleLibrary_DataManager.$connectionAddress = '50.116.28.16';
+$CommonShuffleLibrary_DataManager.$connectionPort = '27017';

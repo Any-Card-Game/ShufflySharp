@@ -35,12 +35,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DataManager.cs" />
-    <Compile Include="DataManagerGameData.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="GameServer.cs" />
     <Compile Include="GameManager.cs" />
-    <Compile Include="ShufflyServerManager.cs" />
+    <Compile Include="GameClientManager.cs" />
     <Compile Include="Models\FiberYieldResponse.cs" />
     <Compile Include="Models\GameQuestionAnswerModel.cs" />
     <Compile Include="Models\GameRoom.cs" />

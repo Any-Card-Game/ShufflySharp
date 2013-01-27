@@ -2,12 +2,18 @@ using System.Runtime.CompilerServices;
 using jQueryApi;
 namespace Client.ShuffUI
 {
+    public enum DockStyle
+    {
+        None, Fill, FillWidth, FillHeight
+    }
     public class ShuffElement
     {
         public ShuffUIEvent<ParentChangedEvent> ParentChanged;
         public ShuffUIEvent<PositionChangedEvent> PositionChanged;
         public ShuffUIEvent<SizeChangedEvent> SizeChanged;
+        public ShuffUIEvent<SizeChangedEvent> ParentSizeChanged;
         public ShuffUIEvent<VisibleChangedEvent> VisibleChanged;
+        public DockStyle Dock { get; set; }
         private Number myHeight;
         private bool myVisible;
         private Number myWidth;
@@ -72,12 +78,33 @@ namespace Client.ShuffUI
         internal void BindEvents()
         {
             SizeChanged += (e) => {
-                               if (( (dynamic) e.Width ))
+                               if (( (dynamic) e.Width )) {
+                                   myWidth = e.Width;
                                    Element.CSS("width", e.Width);
-                               if (( (dynamic) e.Height ))
+                               }
+                               if (( (dynamic) e.Height )) {
+                                   myHeight = e.Height;
+                                   
                                    Element.CSS("height", e.Height);
+                               }
                            };
-
+            ParentSizeChanged +=(e) => {
+                                    switch (Dock) {
+                                        case DockStyle.None:
+                                            break;
+                                        case DockStyle.Fill:
+                                            Width = e.Width;
+                                            Height = e.Height;
+                                            break;
+                                        case DockStyle.FillWidth:
+                                            Width = e.Width;
+                                            break;
+                                        case DockStyle.FillHeight:
+                                            Height = e.Height;
+                                            break;
+                                        
+                                    }
+                                };
             PositionChanged += (e) => {
                                    Element.CSS("left", e.X + "px");
                                    Element.CSS("top", e.Y + "px");

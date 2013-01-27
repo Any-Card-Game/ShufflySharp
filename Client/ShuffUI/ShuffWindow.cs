@@ -42,6 +42,15 @@ namespace Client.ShuffUI
         {
             Width = uievent.Size.Width + "px";
             Height = uievent.Size.Height + "px";
+
+
+            foreach (var shuffElement in Elements) {
+
+                shuffElement.ParentSizeChanged(new SizeChangedEvent(Width,Height));
+
+
+            }
+
         }
 
         public override void BindCustomEvents()

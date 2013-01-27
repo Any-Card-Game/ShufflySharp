@@ -42,6 +42,7 @@ namespace Client.ShuffUI
             Height = height;
             Visible = true;
             SizeChanged += (e) => {
+                Window.Alert(e.Width+" "+e.Height);
                                jQuery.FromElement(codeMirror.element).Width(e.Width);
                                jQuery.FromElement(codeMirror.element).Height(e.Height);
                            };
@@ -55,7 +56,7 @@ namespace Client.ShuffUI
 
         public override void BindCustomEvents()
         {
-            TextChanged += (e) => Element.Text(e.Text);
+            TextChanged += (e) => Element.Text(e.Text); 
             ParentChanged += (ev) => {
                                  if (ev.Parent != null) {
                                      CodeMirrorLine hlLine = null;
@@ -69,10 +70,10 @@ namespace Client.ShuffUI
                                                                                                                                    var info = cm.LineInfo(n);
                                                                                                                                    if (info.MarkerText) {
                                                                                                                                        BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
-                                                                                                                                       cm.ClearMarker(n);
+                                                                                                                                      // cm.SetGutterMarker(n);
                                                                                                                                    } else {
                                                                                                                                        BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
-                                                                                                                                       cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
+                                                                                                                                   //    cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
                                                                                                                                    }
                                                                                                                                },
                                                                                                                /*ExtraKeys= new JsDictionary<string,Action<dynamic>>()//::dynamic okay
@@ -89,14 +90,14 @@ namespace Client.ShuffUI
                         },*/
 
                                                                                                                OnCursorActivity = (e) => {
-                                                                                                                                      codeMirror.editor.SetLineClass(hlLine, null);
-                                                                                                                                      hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
+                                                                                                                                   //   codeMirror.editor.re(hlLine, null);
+                                                                                                                                 //     hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
                                                                                                                                   },
                                                                                                                OnFocus = (e) => { },
                                                                                                                OnBlur = (e) => { }
                                                                                                        });
 
-                                     hlLine = codeMirror.editor.SetLineClass(0, "activeline");
+                                   //  hlLine = codeMirror.editor.SetLineClass(0, "activeline");
                                      var scroller = codeMirror.editor.ScrollerElement;
                                      scroller.Style.Height = Element[0].OffsetHeight + "px";
                                      scroller.Style.Width = Element[0].OffsetWidth + "px";

@@ -23,12 +23,14 @@ namespace MongoDBLibrary
     public class MongoDB : NodeModule
     {
         public void Open(Action<object, object> action) {}
-        public void Collection(string testInsert, Action<string, MongoCollection> test) {}
+        public void Collection(string collectionName, Action<string, MongoCollection> onConnect) {}
     }
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class MongoCollection
     {
-        public void Insert(object gmo) {}
+        public void Insert(object gmo) { }
+        [IgnoreGenericArguments]
+        public void Find<T>(object gmo, Action<string, T[]> onFind) { }
     }
 }

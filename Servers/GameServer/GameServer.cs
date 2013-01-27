@@ -18,12 +18,7 @@ namespace GameServer
             Global.Process.On("exit", () => Console.Log("exi"));
 
             GameManager gameManager = new GameManager(gameServerIndex);
-
-            /*qManager.AddChannel("Area.Game.Create", (arg1, arg2) =>
-                {
-                    GameRoom room;
-                    rooms.Add(room = new GameRoom());
-                });*/
+             
         }
 
         public static void Main()
@@ -31,7 +26,7 @@ namespace GameServer
             try {
                 new GameServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.ToString());
+                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
             }
         }
     }

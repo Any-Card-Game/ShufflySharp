@@ -11,7 +11,8 @@
     <RootNamespace>ShuffUI</RootNamespace>
     <AssemblyName>ShuffUI</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
   </PropertyGroup>

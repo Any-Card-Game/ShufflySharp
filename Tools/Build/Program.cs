@@ -92,12 +92,17 @@ namespace Build
                                                                                                                                                                            @"./CommonShuffleLibrary.js",
                                                                                                                                                                            @"./Models.js",
                                                                                                                                                                    })
-                                                                                     },
-                                                                      {shufSharp + @"\Servers\SiteServer\", new Application(true, "", new List<string> {            @"./CommonLibraries.js",
-                                                                                                                                                                     @"./CommonShuffleLibrary.js",
-                                                                                                                                                                     @"./ShuffleGameLibrary.js",
-                                                                                                                                                                     @"./Models.js",
-                                                                                                                                                                     @"./RawDeflate.js",})},
+                                                                                     }, {
+                                                                                                shufSharp + @"\Servers\SiteServer\", new Application(true,
+                                                                                                                                                     "",
+                                                                                                                                                     new List<string> {
+                                                                                                                                                                              @"./CommonLibraries.js",
+                                                                                                                                                                              @"./CommonShuffleLibrary.js",
+                                                                                                                                                                              @"./ShuffleGameLibrary.js",
+                                                                                                                                                                              @"./Models.js",
+                                                                                                                                                                              @"./RawDeflate.js",
+                                                                                                                                                                      })
+                                                                                        },
                                                                       {shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {})},

@@ -9,9 +9,10 @@ namespace CommonLibraries
         {
             return script;
         }
-        public static string GoodMessage(this Exception ex)  
+
+        public static string GoodMessage(this Exception ex)
         {
-            return ex.Message+"  "+ex.InnerException;
+            return ex.Message + "  " + ex.InnerException;
         }
 
         [InlineCode("debugger")]

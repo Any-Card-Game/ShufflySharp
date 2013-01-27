@@ -1,7 +1,6 @@
-using System;
 using System.Runtime.CompilerServices;
 namespace global
-{ 
+{
     [ScriptName("User")]
     public class CardGameUser
     {

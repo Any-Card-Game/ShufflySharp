@@ -1,7 +1,6 @@
-using System;
 using System.Runtime.CompilerServices;
 namespace global
-{ 
+{
     [ScriptName("TableSpace")]
     public class CardGameTableSpace
     {
@@ -63,7 +62,7 @@ namespace global
     {
         [ScriptName("grow")] Grow,
         [ScriptName("static")] Static
-    } 
+    }
     public class CardGameTableSpaceOptions
     {
         [IntrinsicProperty]

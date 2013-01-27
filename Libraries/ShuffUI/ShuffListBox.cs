@@ -49,10 +49,10 @@ namespace ShuffUI
         public void AddItem(ShuffListItem p0)
         {
             Items.Add(p0);
-            update();
+            Update();
         }
 
-        private void update()
+        public void Update()
         {
             var theme = "getTheme()".me();
             ExtensionMethods.me(Element).jqxListBox(new {source = Items, width = (int) Width, height = (int) Height, theme = theme});

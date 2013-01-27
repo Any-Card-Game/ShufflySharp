@@ -4,12 +4,12 @@ namespace global
 {
     [ScriptName("PokerResult")]
     public class CardGamePokerResult
-    { 
+    {
         [IntrinsicProperty]
         public double Weight { get; set; }
         [ScriptName("state")]
         [IntrinsicProperty]
-        public CardGamePokerWinType Type { get; set; } 
+        public CardGamePokerWinType Type { get; set; }
         [IntrinsicProperty]
         public List<CardGameCard> Cards { get; set; }
 

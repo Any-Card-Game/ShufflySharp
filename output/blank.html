@@ -1,173 +1,331 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <title>Shuffly Admin</title>
-    <style type="text/css">
-        body, html
-        {
-            height: 100%;
-        }
-        body
-        {
-            background-color: cadetblue;
-        }
+    <head>
+        <title>Shuffly Admin</title>
+        <style type="text/css">
+            body, html { height: 100%; }
+
+            body { background-color: cadetblue; }
         
         
-        div.tabs
-        {
-            width: 100%;
-            margin: 0 0 0px 0;
-            padding: 0px;
-        }
-        
-        ul.tabs
-        {
-            list-style-type: none;
-            width: 100%;
-            float: left;
-            background: url(pixel.gif) bottom left repeat-x;
-            padding: 0px;
-            -webkit-padding-start: 0;
-            -webkit-margin-before: 0;
-            -webkit-margin-after: 0;
-        }
-        
-        ul.tabs li
-        {
-            margin: 0 2px 0 0;
-            float: left;
-        }
-        
-        ul.tabs a
-        {
-            float: left;
-            display: block;
-            padding: 4px 8px;
-            border: 1px solid #ccc;
-            border-bottom: 0;
-            color: #666;
-            background: #eee;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        ul.tabs a:hover
-        {
-            background: #fff;
-        }
-        
-        ul.tabs a.active
-        {
-            background: #fff;
-            padding-bottom: 5px;
-            cursor: default;
-            color: #00f;
-        }
-        
-        .tabs-container
-        {
-            clear: left;
-            border: 1px solid #ccc;
-            border-top: 0;
-            padding: 20px 8px 0 8px;
-        }
-        .spsp
-        {
-            float: left;
-            display: block;
-            padding: 4px 8px;
-            border: 1px solid #ccc;
-            border-bottom: 0;
-            color: white;
-            background: red;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-    <script type="text/javascript">
+            div.tabs {
+                margin: 0 0 0px 0;
+                padding: 0px;
+                width: 100%;
+            }
+
+            ul.tabs {
+                -webkit-margin-after: 0;
+                -webkit-margin-before: 0;
+                -webkit-padding-start: 0;
+                background: url(pixel.gif) bottom left repeat-x;
+                float: left;
+                list-style-type: none;
+                padding: 0px;
+                width: 100%;
+            }
+
+            ul.tabs li {
+                float: left;
+                margin: 0 2px 0 0;
+            }
+
+            ul.tabs a {
+                background: #eee;
+                border: 1px solid #ccc;
+                border-bottom: 0;
+                color: #666;
+                display: block;
+                float: left;
+                font-weight: bold;
+                padding: 4px 8px;
+                text-decoration: none;
+            }
+
+            ul.tabs a:hover { background: #fff; }
+
+            ul.tabs a.active {
+                background: #fff;
+                color: #00f;
+                cursor: default;
+                padding-bottom: 5px;
+            }
+
+            .tabs-container {
+                border: 1px solid #ccc;
+                border-top: 0;
+                clear: left;
+                padding: 20px 8px 0 8px;
+            }
+
+            .spsp {
+                background: red;
+                border: 1px solid #ccc;
+                border-bottom: 0;
+                color: white;
+                display: block;
+                float: left;
+                font-weight: bold;
+                padding: 4px 8px;
+                text-decoration: none;
+            }
+        </style>
+        <script type="text/javascript">
         /*Yetii - Yet (E)Another Tab Interface Implementation,version 1.7,http://www.kminek.pl/lab/yetii/,Copyright (c) Grzegorz Wojcik,Code licensed under the BSD License: http://www.kminek.pl/bsdlicense.txt*/
-        function Yetii() { this.defaults = { id: null, active: 1, interval: null, wait: null, persist: null, tabclass: "tab", activeclass: "active", callback: null, leavecallback: null }; this.activebackup = null; for (var c in arguments[0]) { this.defaults[c] = arguments[0][c] } this.getTabs = function () { var d = []; var f = document.getElementById(this.defaults.id).getElementsByTagName("*"); var g = new RegExp("(^|\\s)" + this.defaults.tabclass.replace(/\-/g, "\\-") + "(\\s|$)"); for (var e = 0; e < f.length; e++) { if (g.test(f[e].className)) { d.push(f[e]) } } return d }; this.links = document.getElementById(this.defaults.id + "-nav").getElementsByTagName("a"); this.listitems = document.getElementById(this.defaults.id + "-nav").getElementsByTagName("li"); this.show = function (e) { for (var d = 0; d < this.tabs.length; d++) { this.tabs[d].style.display = ((d + 1) == e) ? "block" : "none"; if ((d + 1) == e) { this.addClass(this.links[d], this.defaults.activeclass); this.addClass(this.listitems[d], this.defaults.activeclass + "li") } else { this.removeClass(this.links[d], this.defaults.activeclass); this.removeClass(this.listitems[d], this.defaults.activeclass + "li") } } if (this.defaults.leavecallback && (e != this.activebackup)) { this.defaults.leavecallback(this.defaults.active) } this.activebackup = e; this.defaults.active = e; if (this.defaults.callback) { this.defaults.callback(e) } }; this.rotate = function (e) { this.show(this.defaults.active); this.defaults.active++; if (this.defaults.active > this.tabs.length) { this.defaults.active = 1 } var d = this; if (this.defaults.wait) { clearTimeout(this.timer2) } this.timer1 = setTimeout(function () { d.rotate(e) }, e * 1000) }; this.next = function () { var d = (this.defaults.active + 1 > this.tabs.length) ? 1 : this.defaults.active + 1; this.show(d); this.defaults.active = d }; this.previous = function () { var d = ((this.defaults.active - 1) == 0) ? this.tabs.length : this.defaults.active - 1; this.show(d); this.defaults.active = d }; this.previous = function () { this.defaults.active--; if (!this.defaults.active) { this.defaults.active = this.tabs.length } this.show(this.defaults.active) }; this.gup = function (e) { e = e.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); var d = "[\\?&]" + e + "=([^&#]*)"; var g = new RegExp(d); var f = g.exec(window.location.href); if (f == null) { return null } else { return f[1] } }; this.parseurl = function (f) { var d = this.gup(f); if (d == null) { return null } if (parseInt(d)) { return parseInt(d) } if (document.getElementById(d)) { for (var e = 0; e < this.tabs.length; e++) { if (this.tabs[e].id == d) { return (e + 1) } } } return null }; this.createCookie = function (f, g, h) { if (h) { var e = new Date(); e.setTime(e.getTime() + (h * 24 * 60 * 60 * 1000)); var d = "; expires=" + e.toGMTString() } else { var d = "" } document.cookie = f + "=" + g + d + "; path=/" }; this.readCookie = function (e) { var g = e + "="; var d = document.cookie.split(";"); for (var f = 0; f < d.length; f++) { var h = d[f]; while (h.charAt(0) == " ") { h = h.substring(1, h.length) } if (h.indexOf(g) == 0) { return h.substring(g.length, h.length) } } return null }; this.hasClass = function (g, f) { var e = g.className.split(" "); for (var d = 0; d < e.length; d++) { if (e[d] == f) { return true } } return false }; this.addClass = function (e, d) { if (!this.hasClass(e, d)) { e.className = (e.className + " " + d).replace(/\s{2,}/g, " ").replace(/^\s+|\s+$/g, "") } }; this.removeClass = function (e, d) { e.className = e.className.replace(new RegExp("(^|\\s)" + d + "(?:\\s|$)"), "$1"); e.className.replace(/\s{2,}/g, " ").replace(/^\s+|\s+$/g, "") }; this.tabs = this.getTabs(); this.defaults.active = (this.parseurl(this.defaults.id)) ? this.parseurl(this.defaults.id) : this.defaults.active; if (this.defaults.persist && this.readCookie(this.defaults.id)) { this.defaults.active = this.readCookie(this.defaults.id) } this.activebackup = this.defaults.active; this.show(this.defaults.active); var a = this; for (var b = 0; b < this.links.length; b++) { this.links[b].customindex = b + 1; this.links[b].onclick = function () { if (a.timer1) { clearTimeout(a.timer1) } if (a.timer2) { clearTimeout(a.timer2) } a.show(this.customindex); if (a.defaults.persist) { a.createCookie(a.defaults.id, this.customindex, 0) } if (a.defaults.wait) { a.timer2 = setTimeout(function () { a.rotate(a.defaults.interval) }, a.defaults.wait * 1000) } return false } } if (this.defaults.interval) { this.rotate(this.defaults.interval) } };
-
-    </script>
-</head>
-<body>
-    <div style='height: 100%; width: 100%;'>
-        <table width='100%' height='100%'>
-            <tr height='100%'>
-                <td width='15%'>
-                    {0}
-                </td>
-                <td>
-                    <div class="tabs" id="tabs">
-                        <ul id="tabs-nav" class="tabs">
-                        </ul>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <script type="text/javascript">
-        var counter = 0;
-        function goHere(url, name) {
-
-            if (document.getElementById('tab' + name)) {
-                var d = document.getElementById('tab' + name);
-                while (d.hasChildNodes()) {
-                    d.removeChild(d.lastChild);
+            function Yetii() {
+                this.defaults = { id: null, active: 1, interval: null, wait: null, persist: null, tabclass: "tab", activeclass: "active", callback: null, leavecallback: null };
+                this.activebackup = null;
+                for (var c in arguments[0]) {
+                    this.defaults[c] = arguments[0][c]
                 }
+                this.getTabs = function() {
+                    var d = [];
+                    var f = document.getElementById(this.defaults.id).getElementsByTagName("*");
+                    var g = new RegExp("(^|\\s)" + this.defaults.tabclass.replace(/\-/g, "\\-") + "(\\s|$)");
+                    for (var e = 0; e < f.length; e++) {
+                        if (g.test(f[e].className)) {
+                            d.push(f[e])
+                        }
+                    }
+                    return d
+                };
+                this.links = document.getElementById(this.defaults.id + "-nav").getElementsByTagName("a");
+                this.listitems = document.getElementById(this.defaults.id + "-nav").getElementsByTagName("li");
+                this.show = function(e) {
+                    for (var d = 0; d < this.tabs.length; d++) {
+                        this.tabs[d].style.display = ((d + 1) == e) ? "block" : "none";
+                        if ((d + 1) == e) {
+                            this.addClass(this.links[d], this.defaults.activeclass);
+                            this.addClass(this.listitems[d], this.defaults.activeclass + "li")
+                        } else {
+                            this.removeClass(this.links[d], this.defaults.activeclass);
+                            this.removeClass(this.listitems[d], this.defaults.activeclass + "li")
+                        }
+                    }
+                    if (this.defaults.leavecallback && (e != this.activebackup)) {
+                        this.defaults.leavecallback(this.defaults.active)
+                    }
+                    this.activebackup = e;
+                    this.defaults.active = e;
+                    if (this.defaults.callback) {
+                        this.defaults.callback(e)
+                    }
+                };
+                this.rotate = function(e) {
+                    this.show(this.defaults.active);
+                    this.defaults.active++;
+                    if (this.defaults.active > this.tabs.length) {
+                        this.defaults.active = 1
+                    }
+                    var d = this;
+                    if (this.defaults.wait) {
+                        clearTimeout(this.timer2)
+                    }
+                    this.timer1 = setTimeout(function() { d.rotate(e) }, e * 1000)
+                };
+                this.next = function() {
+                    var d = (this.defaults.active + 1 > this.tabs.length) ? 1 : this.defaults.active + 1;
+                    this.show(d);
+                    this.defaults.active = d
+                };
+                this.previous = function() {
+                    var d = ((this.defaults.active - 1) == 0) ? this.tabs.length : this.defaults.active - 1;
+                    this.show(d);
+                    this.defaults.active = d
+                };
+                this.previous = function() {
+                    this.defaults.active--;
+                    if (!this.defaults.active) {
+                        this.defaults.active = this.tabs.length
+                    }
+                    this.show(this.defaults.active)
+                };
+                this.gup = function(e) {
+                    e = e.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var d = "[\\?&]" + e + "=([^&#]*)";
+                    var g = new RegExp(d);
+                    var f = g.exec(window.location.href);
+                    if (f == null) {
+                        return null
+                    } else {
+                        return f[1]
+                    }
+                };
+                this.parseurl = function(f) {
+                    var d = this.gup(f);
+                    if (d == null) {
+                        return null
+                    }
+                    if (parseInt(d)) {
+                        return parseInt(d)
+                    }
+                    if (document.getElementById(d)) {
+                        for (var e = 0; e < this.tabs.length; e++) {
+                            if (this.tabs[e].id == d) {
+                                return (e + 1)
+                            }
+                        }
+                    }
+                    return null
+                };
+                this.createCookie = function(f, g, h) {
+                    if (h) {
+                        var e = new Date();
+                        e.setTime(e.getTime() + (h * 24 * 60 * 60 * 1000));
+                        var d = "; expires=" + e.toGMTString()
+                    } else {
+                        var d = ""
+                    }
+                    document.cookie = f + "=" + g + d + "; path=/"
+                };
+                this.readCookie = function(e) {
+                    var g = e + "=";
+                    var d = document.cookie.split(";");
+                    for (var f = 0; f < d.length; f++) {
+                        var h = d[f];
+                        while (h.charAt(0) == " ") {
+                            h = h.substring(1, h.length)
+                        }
+                        if (h.indexOf(g) == 0) {
+                            return h.substring(g.length, h.length)
+                        }
+                    }
+                    return null
+                };
+                this.hasClass = function(g, f) {
+                    var e = g.className.split(" ");
+                    for (var d = 0; d < e.length; d++) {
+                        if (e[d] == f) {
+                            return true
+                        }
+                    }
+                    return false
+                };
+                this.addClass = function(e, d) {
+                    if (!this.hasClass(e, d)) {
+                        e.className = (e.className + " " + d).replace(/\s{2,}/g, " ").replace(/^\s+|\s+$/g, "")
+                    }
+                };
+                this.removeClass = function(e, d) {
+                    e.className = e.className.replace(new RegExp("(^|\\s)" + d + "(?:\\s|$)"), "$1");
+                    e.className.replace(/\s{2,}/g, " ").replace(/^\s+|\s+$/g, "")
+                };
+                this.tabs = this.getTabs();
+                this.defaults.active = (this.parseurl(this.defaults.id)) ? this.parseurl(this.defaults.id) : this.defaults.active;
+                if (this.defaults.persist && this.readCookie(this.defaults.id)) {
+                    this.defaults.active = this.readCookie(this.defaults.id)
+                }
+                this.activebackup = this.defaults.active;
+                this.show(this.defaults.active);
+                var a = this;
+                for (var b = 0; b < this.links.length; b++) {
+                    this.links[b].customindex = b + 1;
+                    this.links[b].onclick = function() {
+                        if (a.timer1) {
+                            clearTimeout(a.timer1)
+                        }
+                        if (a.timer2) {
+                            clearTimeout(a.timer2)
+                        }
+                        a.show(this.customindex);
+                        if (a.defaults.persist) {
+                            a.createCookie(a.defaults.id, this.customindex, 0)
+                        }
+                        if (a.defaults.wait) {
+                            a.timer2 = setTimeout(function() { a.rotate(a.defaults.interval) }, a.defaults.wait * 1000)
+                        }
+                        return false
+                    }
+                }
+                if (this.defaults.interval) {
+                    this.rotate(this.defaults.interval)
+                }
+            }
+
+            ;
+
+        </script>
+    </head>
+    <body>
+        <div style='height: 100%; width: 100%;'>
+            <table width='100%' height='100%'>
+                <tr height='100%'>
+                    <td width='15%'>
+                        {0}
+                    </td>
+                    <td>
+                        <div class="tabs" id="tabs">
+                            <ul id="tabs-nav" class="tabs">
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script type="text/javascript">
+            var counter = 0;
+
+            function goHere(url, name) {
+
+                if (document.getElementById('tab' + name)) {
+                    var d = document.getElementById('tab' + name);
+                    while (d.hasChildNodes()) {
+                        d.removeChild(d.lastChild);
+                    }
+
+                    var ifr = document.createElement('iframe');
+                    ifr.setAttribute('width', '100%');
+                    ifr.setAttribute('height', '90%');
+                    ifr.setAttribute('src', url);
+                    d.appendChild(ifr);
+
+                    var tabber1 = new Yetii({
+                        id: 'tabs',
+                        active: d.ind
+                    });
+                    return;
+                }
+
+                var ndiv = document.createElement('div');
+                ndiv.setAttribute('class', 'tab');
+                ndiv.ind = counter++;
+                ndiv.setAttribute('id', 'tab' + name);
+                document.getElementById('tabs').appendChild(ndiv);
 
                 var ifr = document.createElement('iframe');
                 ifr.setAttribute('width', '100%');
                 ifr.setAttribute('height', '90%');
                 ifr.setAttribute('src', url);
-                d.appendChild(ifr);
+                ndiv.appendChild(ifr);
+
+                var ndiv2 = document.createElement('li');
+                var na = document.createElement('a');
+                na.setAttribute('id', 'tabItem' + name);
+                na.setAttribute('href', '#tab' + (counter - 1));
+                na.innerText = name;
+                ndiv2.appendChild(na);
+
+                na = document.createElement('span');
+                na.setAttribute('class', 'spsp');
+                na.innerText = "X";
+                na.onclick = function(e) {
+                    document.getElementById('tabs').removeChild(ndiv);
+                    document.getElementById('tabs-nav').removeChild(ndiv2);
+
+                    return false;
+                };
+                ndiv2.appendChild(na);
+
+                document.getElementById('tabs-nav').appendChild(ndiv2);
 
                 var tabber1 = new Yetii({
-                    id: 'tabs', active: d.ind
+                    id: 'tabs'
                 });
-                return;
             }
 
-            var ndiv = document.createElement('div');
-            ndiv.setAttribute('class', 'tab');
-            ndiv.ind = counter++;
-            ndiv.setAttribute('id', 'tab' + name);
-            document.getElementById('tabs').appendChild(ndiv);
+            goHere('http://50.116.22.241', 'MainSite');
 
-            var ifr = document.createElement('iframe');
-            ifr.setAttribute('width', '100%');
-            ifr.setAttribute('height', '90%');
-            ifr.setAttribute('src', url);
-            ndiv.appendChild(ifr);
-
-            var ndiv2 = document.createElement('li');
-            var na = document.createElement('a');
-            na.setAttribute('id', 'tabItem' + name);
-            na.setAttribute('href', '#tab' + (counter - 1));
-            na.innerText = name;
-            ndiv2.appendChild(na);
-
-            na = document.createElement('span');
-            na.setAttribute('class', 'spsp');
-            na.innerText = "X";
-            na.onclick = function (e) {
-                document.getElementById('tabs').removeChild(ndiv);
-                document.getElementById('tabs-nav').removeChild(ndiv2);
-
-                return false;
-            };
-            ndiv2.appendChild(na);
-
-            document.getElementById('tabs-nav').appendChild(ndiv2);
-
-            var tabber1 = new Yetii({
-                id: 'tabs'
-            });
-        }
-
-        goHere('http://50.116.22.241', 'MainSite');
-
-    </script>
-</body>
+        </script>
+    </body>
 </html>
 working

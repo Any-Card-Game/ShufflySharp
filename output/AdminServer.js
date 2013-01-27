@@ -21,7 +21,7 @@ var $AdminServer_AdminServer = function() {
 	this.$sites = null;
 	this.$util = null;
 	var fs = require('fs');
-	console.log('Shuffly Admin V0.44');
+	console.log('Shuffly Admin V0.48');
 	this.$util = require('util');
 	this.$exec = require('child_process').exec;
 	this.$__dirname = '/usr/local/src/new/';
@@ -31,8 +31,10 @@ var $AdminServer_AdminServer = function() {
 	setInterval(function() {
 		console.log('keep alive ' + (new Date()).toString().substring(17, 24));
 	}, 10000);
-	this.$nodeInspector = this.$runProcess('node-inspector', [], 0, null);
-	console.log('node-inspector Started');
+	if (this.$debug) {
+		this.$nodeInspector = this.$runProcess('node-inspector', [], 0, null);
+		console.log('node-inspector Started');
+	}
 	process.on('exit', Function.mkdel(this, function() {
 		console.log('Exiting ');
 		this.$onAsk('k', false);
@@ -41,7 +43,7 @@ var $AdminServer_AdminServer = function() {
 	if (this.$debug) {
 		this.$onAsk('d', true);
 	}
-	this.$onAsk('d', true);
+	// onAsk("d", true);
 	this.$onAsk('s', false);
 };
 $AdminServer_AdminServer.prototype = {

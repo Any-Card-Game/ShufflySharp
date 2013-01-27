@@ -1,14 +1,12 @@
 using System.Runtime.CompilerServices;
-using CommonShuffleLibrary.Data;
 using MongoDBLibrary;
 using NodeJSLibrary;
 namespace CommonShuffleLibrary
 {
-    public partial  class DataManager
+    public partial class DataManager
     {
         private const string ConnectionAddress = "50.116.28.16";
         private const string ConnectionPort = "27017";
-
         private MongoConnection Connection;
         private MongoServer Server;
         public MongoDB client;
@@ -22,10 +20,9 @@ namespace CommonShuffleLibrary
             var server = Server = mongo.Server;
 
             client = getMongo();
-            client.Open((arg1, arg2) =>
-            {
-                //client.Collection("test_insert", "test");
-            });
+            client.Open((arg1, arg2) => {
+                            //client.Collection("test_insert", "test");
+                        });
 
             InitData();
         }
@@ -36,7 +33,6 @@ namespace CommonShuffleLibrary
             return null;
         }
     }
-
 } /*
 
 

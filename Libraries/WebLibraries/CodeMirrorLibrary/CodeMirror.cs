@@ -18,13 +18,9 @@ namespace CodeMirrorLibrary
         }
 
         public void Refresh() {}
-
-        public void SetGutterMarker(int lineIndex,string gutterID, string style) { }
-
+        public void SetGutterMarker(int lineIndex, string gutterID, string style) {}
         public void SetValue(string data) {}
-
-        public void ClearGutter(string gutterID) { }
-
+        public void ClearGutter(string gutterID) {}
         public void SetCursor(int lineNumber, int colNumber) {}
 
         public string GetValue()
@@ -46,6 +42,7 @@ namespace CodeMirrorLibrary
         {
             return null;
         }
+
         public CodeMirrorLine RemoveLineClass(CodeMirrorLine line, string where, string style)
         {
             return null;
@@ -55,6 +52,7 @@ namespace CodeMirrorLibrary
         {
             return null;
         }
+
         public void SetOption(string key, object value) {}
 
         public int LineCount()

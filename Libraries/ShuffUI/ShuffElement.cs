@@ -5,21 +5,24 @@ namespace ShuffUI
 {
     public enum DockStyle
     {
-        None, Fill, FillWidth, FillHeight
+        None,
+        Fill,
+        FillWidth,
+        FillHeight
     }
     public class ShuffElement
     {
         public ShuffUIEvent<ParentChangedEvent> ParentChanged;
+        public ShuffUIEvent<SizeChangedEvent> ParentSizeChanged;
         public ShuffUIEvent<PositionChangedEvent> PositionChanged;
         public ShuffUIEvent<SizeChangedEvent> SizeChanged;
-        public ShuffUIEvent<SizeChangedEvent> ParentSizeChanged;
         public ShuffUIEvent<VisibleChangedEvent> VisibleChanged;
-        public DockStyle Dock { get; set; }
         private Number myHeight;
         private bool myVisible;
         private Number myWidth;
         private int myX;
         private int myY;
+        public DockStyle Dock { get; set; }
         public int X
         {
             get { return myX; }
@@ -85,27 +88,26 @@ namespace ShuffUI
                                }
                                if (( (dynamic) e.Height )) {
                                    myHeight = e.Height;
-                                   
+
                                    Element.CSS("height", e.Height);
                                }
                            };
-            ParentSizeChanged +=(e) => {
-                                    switch (Dock) {
-                                        case DockStyle.None:
-                                            break;
-                                        case DockStyle.Fill:
-                                            Width = e.Width;
-                                            Height = e.Height;
-                                            break;
-                                        case DockStyle.FillWidth:
-                                            Width = e.Width;
-                                            break;
-                                        case DockStyle.FillHeight:
-                                            Height = e.Height;
-                                            break;
-                                        
-                                    }
-                                };
+            ParentSizeChanged += (e) => {
+                                     switch (Dock) {
+                                         case DockStyle.None:
+                                             break;
+                                         case DockStyle.Fill:
+                                             Width = e.Width;
+                                             Height = e.Height;
+                                             break;
+                                         case DockStyle.FillWidth:
+                                             Width = e.Width;
+                                             break;
+                                         case DockStyle.FillHeight:
+                                             Height = e.Height;
+                                             break;
+                                     }
+                                 };
             PositionChanged += (e) => {
                                    Element.CSS("left", e.X + "px");
                                    Element.CSS("top", e.Y + "px");

@@ -1,24 +1,50 @@
 ﻿using System;
 using System.Html;
+using System.Runtime.CompilerServices;
+using Client.Managers;
+using Client.UIWindow;
 using CommonLibraries;
 using CommonWebLibraries;
 using Models.GameManagerModels;
 using global;
-using jQueryApi;
 namespace Client
 {
+    [Serializable]
+    public class TimeTracker
+    {
+        public int NumOfTimes { get; set; }
+        public DateTime StartTime { get; set; }
+        public int TimeValue { get; set; }
+        public DateTime EndTime { get; set; }
+
+        public TimeTracker()
+        {
+            StartTime = DateTime.Now;
+        }
+    }
     public class PageHandler
     {
         private readonly BuildSite buildSite;
-        public ClientGameManager clientGameManager;
-        public ClientDebugManager clientDebugManager;
-        public ClientSiteManager clientSiteManager;
-        private DateTime endTime;
         public GameDrawer gameDrawer;
         public GameInfo gameStuff;
-        private int numOfTimes;
-        private DateTime startTime;
-        private int timeValue;
+        [IntrinsicProperty]
+        public ClientGameManager ClientGameManager { get; set; }
+        [IntrinsicProperty]
+        public ClientDebugManager ClientDebugManager { get; set; }
+        [IntrinsicProperty]
+        public ClientSiteManager ClientSiteManager { get; set; }
+        [IntrinsicProperty]
+        public TimeTracker TimeTracker { get; set; }
+        [IntrinsicProperty]
+        public CodeEditorUI CodeEditorUI { get; set; }
+        [IntrinsicProperty]
+        public QuestionUI QuestionUI { get; set; }
+        [IntrinsicProperty]
+        public DebugUI DebugUI { get; set; }
+        [IntrinsicProperty]
+        public HomeUI HomeUI { get; set; }
+        [IntrinsicProperty]
+        public LoginUI LoginUI { get; set; }
 
         public PageHandler(string gatewayServerAddress, BuildSite buildSite)
         {
@@ -26,40 +52,21 @@ namespace Client
             gameStuff = new GameInfo();
 
             gameDrawer = new GameDrawer();
-            startTime = DateTime.Now;
-            //            Window.SetTimeout(() => { buildSite.devArea.Data.beginGame(); }, 2000);
-
+            TimeTracker = new TimeTracker();
 
             var gateway = new Gateway(gatewayServerAddress);
-            clientGameManager = new ClientGameManager(gateway);
-            clientSiteManager = new ClientSiteManager(gateway);
-            clientDebugManager = new ClientDebugManager(gateway);
+            ClientGameManager = new ClientGameManager(gateway);
+            ClientSiteManager = new ClientSiteManager(gateway);
+            ClientDebugManager = new ClientDebugManager(gateway);
 
-            clientSiteManager.OnLogin += (data) => { Window.Alert("GooooD!"); };
+            LoginUI = new LoginUI(buildSite.shuffUIManager, this);
+            HomeUI = new HomeUI(buildSite.shuffUIManager, this);
+            DebugUI = new DebugUI(buildSite.shuffUIManager, this);
+            QuestionUI = new QuestionUI(buildSite.shuffUIManager, this);
+            CodeEditorUI = new CodeEditorUI(buildSite.shuffUIManager, this);
 
             /*gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
             gateway.On("Area.Lobby.ListRooms.Response", (data) => { Console.Log(data); });*/
-
-            var randomName = "";
-            var ra = Math.Random() * 10;
-            for (var i = 0; i < ra; i++) {
-                randomName += String.FromCharCode((char) ( 65 + ( Math.Random() * 26 ) ));
-            }
-
-
-            clientDebugManager.OnGetGameSource += gameSource =>
-            {
-                                                 var endTime = new DateTime();
-                                                 var time = endTime - startTime;
-                                                 numOfTimes++;
-                                                 timeValue += time;
-                                                 buildSite.devArea.Data.lblHowFast.Text = ( "Time Taken: " + ( timeValue / numOfTimes ) ); 
-                                                 buildSite.codeArea.Data.codeEditor.Information.editor.SetValue(gameSource.Content);/*
-                                                 buildSite.codeArea.Data.codeEditor.Information.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");*/
-                                                 buildSite.codeArea.Data.codeEditor.Information.editor.Refresh();
-                                             };
-
-           
 
             //ie8
             /*   {
@@ -73,15 +80,14 @@ namespace Client
                }*/
         }
 
-        public void startGameServer()
+        public void StartGameServer()
         {
-            clientGameManager.OnGetRoomInfo += roomInfo => {
-                                               clientGameManager.GameServer = roomInfo.GameServer;
-
-                                               gameStuff.RoomID = roomInfo.RoomID;
-                                               buildSite.home.Data.loadRoomInfo(roomInfo);
-                                               buildSite.devArea.Data.loadRoomInfo(roomInfo);
-                                           };
+            ClientGameManager.OnGetRoomInfo += roomInfo => {
+                                                   ClientGameManager.GameServer = roomInfo.GameServer;
+                                                   gameStuff.RoomID = roomInfo.RoomID;
+                                                   HomeUI.loadRoomInfo(roomInfo);
+                                                   DebugUI.loadRoomInfo(roomInfo);
+                                               };
 
             /*
                         gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
@@ -90,26 +96,26 @@ namespace Client
 
                             });
             */
-            clientGameManager.OnGetDebugLog += gameAnswer => {
-                                               buildSite.home.Data.loadRoomInfos(gameAnswer);
+            ClientGameManager.OnGetDebugLog += gameAnswer => {
+                                                   HomeUI.loadRoomInfos(gameAnswer);
 
-                                               var lines = buildSite.codeArea.Data.console.Information.editor.GetValue().Split("\n");
-                                               lines = lines.Extract(lines.Length - 40, 40);
+                                                   var lines = CodeEditorUI.console.Information.editor.GetValue().Split("\n");
+                                                   lines = lines.Extract(lines.Length - 40, 40);
 
-                                               buildSite.codeArea.Data.console.Information.editor.SetValue(lines.Join("\n") + "\n" + gameAnswer.Value);
-                                               buildSite.codeArea.Data.console.Information.editor.SetCursor(buildSite.codeArea.Data.console.Information.editor.LineCount(), 0);
-                                           };
-            clientGameManager.OnGetDebugBreak += gameAnswer => {
-                                                 buildSite.home.Data.loadRoomInfos(gameAnswer);
+                                                   CodeEditorUI.console.Information.editor.SetValue(lines.Join("\n") + "\n" + gameAnswer.Value);
+                                                   CodeEditorUI.console.Information.editor.SetCursor(CodeEditorUI.console.Information.editor.LineCount(), 0);
+                                               };
+            ClientGameManager.OnGetDebugBreak += gameAnswer => {
+                                                     HomeUI.loadRoomInfos(gameAnswer);
 
-                                                 var cm = buildSite.codeArea.Data.codeEditor;
+                                                     var cm = CodeEditorUI.codeEditor;
 
-                                             /*    cm.Information.editor.ClearMarker(gameAnswer.LineNumber);
+                                                     /*    cm.Information.editor.ClearMarker(gameAnswer.LineNumber);
                                                  cm.Information.editor.SetMarker(gameAnswer.LineNumber, "<span style=\"color: #059\">●</span> %N%");
                                                  cm.Information.editor.SetCursor(gameAnswer.LineNumber + 15, 0);
                                                  cm.Information.editor.SetCursor(gameAnswer.LineNumber - 15, 0);
                                                  cm.Information.editor.SetCursor(gameAnswer.LineNumber, 0);*/
-                                             };
+                                                 };
 
             /*
                         gateway.On("Area.Debug.VariableLookup.Response", data =>
@@ -118,39 +124,39 @@ namespace Client
                             });
             */
 
-            clientGameManager.OnAskQuestion += gameSendAnswerModel => {
-                                               buildSite.questionArea.Data.Load(gameSendAnswerModel);
-                                               //alert(JSON.stringify(data));
-                                               endTime = new DateTime();
-                                               var time = endTime - startTime;
-                                               buildSite.devArea.Data.lblHowFast.Text = ( "how long: " + time );
-                                               Window.SetTimeout(() => {
-                                                                     clientGameManager.AnswerQuestion(new GameAnswerQuestionModel(gameStuff.RoomID, 1));
+            ClientGameManager.OnAskQuestion += gameSendAnswerModel => {
+                                                   QuestionUI.Load(gameSendAnswerModel);
+                                                   //alert(JSON.stringify(data));
+                                                   TimeTracker.EndTime = new DateTime();
+                                                   var time = TimeTracker.EndTime - TimeTracker.StartTime;
+                                                   DebugUI.lblHowFast.Text = ( "how long: " + time );
+                                                   Window.SetTimeout(() => {
+                                                                         ClientGameManager.AnswerQuestion(new GameAnswerQuestionModel(gameStuff.RoomID, 1));
 
-                                                                     buildSite.questionArea.Visible = false;
-                                                                     startTime = new DateTime();
-                                                                 },
-                                                                 200);
-                                           };
+                                                                         QuestionUI.UIWindow.Visible = false;
+                                                                         TimeTracker.StartTime = new DateTime();
+                                                                     },
+                                                                     200);
+                                               };
 
-            clientGameManager.OnUpdateState += update => {
-                                               var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
-                                               //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+            ClientGameManager.OnUpdateState += update => {
+                                                   var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
+                                                   //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 
-                                               gameDrawer.Draw(data);
-                                           };
+                                                   gameDrawer.Draw(data);
+                                               };
 
-            clientGameManager.OnGameStarted += room => {
-                                               //alert(JSON.stringify(data));
-                                           };
+            ClientGameManager.OnGameStarted += room => {
+                                                   //alert(JSON.stringify(data));
+                                               };
 
-            clientGameManager.OnGameOver += room => {
-                                            //alert(JSON.stringify(data));
-                                        };
+            ClientGameManager.OnGameOver += room => {
+                                                //alert(JSON.stringify(data));
+                                            };
 
-            clientGameManager.OnDebugGameOver += room => {
-                //alert(JSON.stringify(data));
-                                             };
+            ClientGameManager.OnDebugGameOver += room => {
+                                                     //alert(JSON.stringify(data));
+                                                 };
         }
     }
 }

@@ -18,7 +18,6 @@ namespace GameServer
             Global.Process.On("exit", () => Console.Log("exi"));
 
             GameManager gameManager = new GameManager(gameServerIndex);
-             
         }
 
         public static void Main()

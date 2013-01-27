@@ -5,6 +5,7 @@ namespace CommonShuffleLibrary
     {
         public DataManagerGameData GameData;
         public DataManagerSiteData SiteData;
+
         private void InitData()
         {
             GameData = new DataManagerGameData(this);

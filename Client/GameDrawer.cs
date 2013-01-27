@@ -30,7 +30,7 @@ namespace Client
             cardImages = new JsDictionary<string, ImageElement>();
             for (var i = 101; i < 153; i++) {
                 var img = new ImageElement();
-                var domain = Globals.Window.topLevel + "assets";
+                var domain = BuildSite.TopLevelURL + "assets";
                 var src = domain + "/cards/" + i;
                 string jm;
                 img.Src = jm = src + ".gif";
@@ -111,7 +111,7 @@ namespace Client
         {
             //jQuery.Select("#dvGame").Children().Remove();
 
-            var scale = new Point(Document.DocumentElement.ClientWidth /  mainArea.Size.Width*.9, ( Document.DocumentElement.ClientHeight - 250 ) / mainArea.Size.Height*.9);
+            var scale = new Point(Document.DocumentElement.ClientWidth / mainArea.Size.Width * .9, ( Document.DocumentElement.ClientHeight - 250 ) / mainArea.Size.Height * .9);
             //ExtensionMethods.debugger(null);
             var sl = mainArea.Spaces.Count;
             /*
@@ -331,7 +331,7 @@ namespace Client
         public string drawCard(CardGameCard card)
         {
             var src = "";
-            var domain = Globals.Window.topLevel + "assets";
+            var domain = BuildSite.TopLevelURL + "assets";
             src = domain + "/cards/" + ( 100 + ( card.Value + 1 ) + ( card.Type ) * 13 );
             return src + ".gif";
         }

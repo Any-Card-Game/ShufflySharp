@@ -16,9 +16,7 @@ namespace Models.GameManagerModels
             GameName = gameName;
         }
 
-        private CreateGameRequestModel() { }
-
-       
+        private CreateGameRequestModel() {}
     }
     [Serializable]
     public class DebugCreateGameRequestModel
@@ -37,6 +35,6 @@ namespace Models.GameManagerModels
             BreakPoints = breakPoints;
         }
 
-            private DebugCreateGameRequestModel() { } 
+        private DebugCreateGameRequestModel() {}
     }
 }

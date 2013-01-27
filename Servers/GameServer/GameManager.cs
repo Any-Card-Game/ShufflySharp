@@ -57,10 +57,12 @@ namespace GameServer
             room.Players.Add(user);
             myServerManager.SendRoomInfo(room);
         }
+
         public void DebugGameCreate(UserModel user, DebugCreateGameRequestModel data)
         {
-            GameCreate(user,new CreateGameRequestModel(data.Name,data.GameName));
+            GameCreate(user, new CreateGameRequestModel(data.Name, data.GameName));
         }
+
         public void GameCreate(UserModel user, CreateGameRequestModel data)
         {
             GameRoom room;

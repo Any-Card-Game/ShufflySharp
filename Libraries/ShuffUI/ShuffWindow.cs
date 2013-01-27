@@ -3,11 +3,10 @@ using jQueryApi;
 using jQueryApi.UI.Interactions;
 namespace ShuffUI
 {
-    public class ShuffWindow<T> : ShuffPanel
+    public class ShuffWindow : ShuffPanel
     {
         public jQueryObject outer;
         [IntrinsicProperty]
-        public T Data { get; set; }
         internal jQueryObject Window { get; set; }
         internal jQueryObject Outer
         {
@@ -29,12 +28,6 @@ namespace ShuffUI
         [IntrinsicProperty]
         public UIAreaInformation Information { get; set; }
 
-        public ShuffWindow(T data)
-                : base()
-        {
-            Data = data;
-        }
-
         public ShuffWindow()
                 : base() {}
 
@@ -43,14 +36,9 @@ namespace ShuffUI
             Width = uievent.Size.Width + "px";
             Height = uievent.Size.Height + "px";
 
-
             foreach (var shuffElement in Elements) {
-
-                shuffElement.ParentSizeChanged(new SizeChangedEvent(Width,Height));
-
-
+                shuffElement.ParentSizeChanged(new SizeChangedEvent(Width, Height));
             }
-
         }
 
         public override void BindCustomEvents()
@@ -61,5 +49,13 @@ namespace ShuffUI
                                       Outer.CSS("display", e.Visible ? "block" : "none");
                               };
         }
+    }
+    public class ShuffWindow<T> : ShuffWindow
+    {
+        [IntrinsicProperty]
+        public T Data { get; set; }
+
+        public ShuffWindow(T data)
+                : base() {}
     }
 }

@@ -6,16 +6,19 @@ using Models;
 using Models.GameManagerModels;
 namespace GameServer
 {
-
     public class GameClientManager
     {
-        public delegate void UserJoinGame(UserModel user, JoinGameRequestModel data);
+        #region Delegates
+
+        public delegate void DebugGameCreate(UserModel user, DebugCreateGameRequestModel data);
         public delegate void DebuggerJoinGame(UserModel user, DebuggerJoinRequestModel data);
         public delegate void GameCreate(UserModel user, CreateGameRequestModel data);
-        public delegate void DebugGameCreate(UserModel user, DebugCreateGameRequestModel data);
-
         public delegate void StartGame(StartGameRequestModel data);
         public delegate void UserAnswerQuestion(UserModel user, GameAnswerQuestionModel data);
+        public delegate void UserJoinGame(UserModel user, JoinGameRequestModel data);
+
+        #endregion
+
         private QueueManager qManager;
         public string GameServerIndex { get; set; }
 
@@ -30,7 +33,6 @@ namespace GameServer
         public event DebuggerJoinGame OnDebuggerJoinGame;
         public event GameCreate OnGameCreate;
         public event DebugGameCreate OnDebugGameCreate;
-        
         public event StartGame OnStartGame;
         public event UserAnswerQuestion OnUserAnswerQuestion;
 
@@ -47,8 +49,8 @@ namespace GameServer
                                                                               "Gateway*"
                                                                       }));
 
-            qManager.AddChannel("Area.Debug.Create", (user, data) => OnDebugGameCreate(user, (DebugCreateGameRequestModel)data));
-            qManager.AddChannel("Area.Game.Create", (user, data) => OnGameCreate(user, (CreateGameRequestModel)data));
+            qManager.AddChannel("Area.Debug.Create", (user, data) => OnDebugGameCreate(user, (DebugCreateGameRequestModel) data));
+            qManager.AddChannel("Area.Game.Create", (user, data) => OnGameCreate(user, (CreateGameRequestModel) data));
             qManager.AddChannel("Area.Game.Join", (user, data) => OnUserJoinGame(user, (JoinGameRequestModel) data));
             qManager.AddChannel("Area.Game.DebuggerJoin", (user, data) => OnDebuggerJoinGame(user, (DebuggerJoinRequestModel) data));
             qManager.AddChannel("Area.Game.Start", (user, data) => OnStartGame((StartGameRequestModel) data));
@@ -64,12 +66,12 @@ namespace GameServer
 
         public void SendRoomInfo(GameRoom room)
         {
-            SendMessageToAll(room, "Area.Game.RoomInfo", new GameRoomModel(){GameServer = room.GameServer,RoomID=room.RoomID});  
+            SendMessageToAll(room, "Area.Game.RoomInfo", new GameRoomModel() {GameServer = room.GameServer, RoomID = room.RoomID});
         }
 
         public void SendGameStarted(GameRoom room)
         {
-            SendMessageToAll(room, "Area.Game.Started", new GameRoomModel() { GameServer = room.GameServer, RoomID = room.RoomID });
+            SendMessageToAll(room, "Area.Game.Started", new GameRoomModel() {GameServer = room.GameServer, RoomID = room.RoomID});
         }
 
         public void SendGameOver(GameRoom room)

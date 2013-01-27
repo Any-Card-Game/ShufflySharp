@@ -1,0 +1,60 @@
+﻿.documentation-option {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+    list-style-type: none;
+    text-indent: 0px;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.documentation-option-description {
+    color: #000;
+    cursor: text;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+}
+
+.documentation-code {
+    color: #555;
+    cursor: text;
+    display: block;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+    margin: 0 0 1em;
+}
+
+.documentation-code strong { color: #000; }
+
+.documentation-option-type-click {
+    color: #0b559b;
+    cursor: pointer;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+    text-align: left;
+}
+
+.documentation-option-type-click:hover {
+    color: #1b75bb;
+    cursor: pointer;
+}
+
+.documentation-table {
+    float: left;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 13px;
+    text-align: left;
+    vertical-align: top;
+    width: 100%;
+}
+
+.documentation-table th {
+    text-align: left;
+    vertical-align: top;
+    width: 33%;
+}
+
+.documentation-table td {
+    text-align: left;
+    vertical-align: top;
+    width: 33%;
+}

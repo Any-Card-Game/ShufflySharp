@@ -1,16 +1,17 @@
-﻿using CommonLibraries;
-using CommonShuffleLibrary;
+﻿using CommonShuffleLibrary;
 using Models;
 using Models.SiteManagerModels;
 namespace SiteServer
 {
-
     public class SiteClientManager
     {
-        public delegate void UserLogin(UserModel user,SiteLoginRequest data);
+        #region Delegates
+
+        public delegate void UserLogin(UserModel user, SiteLoginRequest data);
+
+        #endregion
 
         private QueueManager qManager;
-
         public string SiteServerIndex { get; set; }
 
         public SiteClientManager(string siteServerIndex)
@@ -19,6 +20,7 @@ namespace SiteServer
 
             Setup();
         }
+
         public event UserLogin OnUserLogin;
 
         private void Setup()
@@ -33,8 +35,7 @@ namespace SiteServer
                                                                               "GatewayServer",
                                                                               "Gateway*"
                                                                       }));
-            qManager.AddChannel("Area.Site.Login", (user, data) => OnUserLogin(user, (SiteLoginRequest)data));
-             
+            qManager.AddChannel("Area.Site.Login", (user, data) => OnUserLogin(user, (SiteLoginRequest) data));
         }
 
         public void SendLoginResponse(UserModel user)

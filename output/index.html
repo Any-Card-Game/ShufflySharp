@@ -1,20 +1,22 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-<title>Shuffly</title>
-<script type="text/javascript" src="http://50.116.22.241:8881/mscorlib.js"></script>
-<script type="text/javascript" src="http://50.116.22.241:8881/Client.js"></script>
-<script type="text/javascript">
-String.prototype.toString=function(){return this;}
+    <head>
+        <title>Shuffly</title>
+        <script type="text/javascript" src="http://50.116.22.241:8881/mscorlib.js"></script>
+        <script type="text/javascript" src="http://50.116.22.241:8881/Client.js"></script>
+        <script type="text/javascript">
+            String.prototype.toString = function() { return this; }
 
-new Client.BuildSite('{{gateway}}');</script>
-<style type="text/css">
-#dvGame  
-{
-    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+            new Client.BuildSite('{{gateway}}');
+        </script>
+        <style type="text/css">
+            #dvGame {
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                -webkit-transition: 1.2s;
      
-    -webkit-transition:1.2s;      
-}
+                box-sizing: border-box;
+            }
 
 /*
 #dv_space_User5{    -webkit-transform-style: preserve-3d;     -webkit-transition:1.2s;       -webkit-transform:scale(0.74);   }
@@ -42,14 +44,26 @@ new Client.BuildSite('{{gateway}}');</script>
 #dv_space_Spades{    -webkit-transform-style: preserve-3d;    -webkit-transition:1.2s;          }
 #dv_space_Spades:hover{       -webkit-transform:rotateY(-210deg)  rotateX(110deg) rotateZ(-70deg);       }
 */
-html, body { margin: 0; padding: 0;width:100%;height:100%;}
-body { position: relative;width:100%;height:100%; }
-body{background-color:cadetblue;}
+
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            body {
+                height: 100%;
+                position: relative;
+                width: 100%;
+            }
+
+            body { background-color: cadetblue; }
 
 
-</style>
-</head>
-<body>
-<div style="font-size:x-large;color:white;border:5px black solid;width:100%; text-align:center;position:absolute;top:50%;font-weight:bolder;" id="loading">Its loading...</div>
-</body>
-</html> 
+        </style>
+    </head>
+    <body>
+        <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder; position: absolute; text-align: center; top: 50%; width: 100%;" id="loading">Its loading...</div>
+    </body>
+</html>

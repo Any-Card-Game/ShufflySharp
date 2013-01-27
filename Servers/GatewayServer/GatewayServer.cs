@@ -51,6 +51,8 @@ namespace GatewayServer
                               UserSocketModel user = null;
                               socket.On("Gateway.Message",
                                         (GatewayMessageModel data) => {
+                                            if (user == null)
+                                                return;
                                             var channel = "Bad";
                                             switch (data.Channel.Split('.')[1]) {
                                                 case "Game":
@@ -83,14 +85,15 @@ namespace GatewayServer
                                             user.UserName = data.UserName;
                                             user.Hash = data.UserName;
                                             users[data.UserName] = user;
-                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true,user.Hash), user.ToUserModel());
+                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true, user.Hash), user.ToUserModel());
                                         });
-                              socket.On("disconnect", (string data) => {
-                                                          if (user != null) {
+                              socket.On("disconnect",
+                                        (string data) => {
+                                            if (user == null)
+                                                return;
 
-                                                              users.Remove(user.UserName);
-                                                          }
-                                                      });
+                                            users.Remove(user.UserName);
+                                        });
                           });
         }
 

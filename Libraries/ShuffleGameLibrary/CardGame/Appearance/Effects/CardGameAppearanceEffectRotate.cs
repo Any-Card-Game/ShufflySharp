@@ -4,7 +4,7 @@ namespace global
 {
     [ScriptName("Effect$Rotate")]
     public class CardGameAppearanceEffectRotate : CardGameAppearanceEffect
-    { 
+    {
         [IntrinsicProperty]
         public double Degrees { get; set; }
 
@@ -16,7 +16,7 @@ namespace global
     }
     [Serializable]
     public class CardGameEffectRotateOptions
-    { 
+    {
         public double Degrees { get; set; }
     }
 }

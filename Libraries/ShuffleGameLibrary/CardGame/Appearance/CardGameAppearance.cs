@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace global
 {
-    [ScriptName("Appearance")] 
+    [ScriptName("Appearance")]
     public class CardGameAppearance : CardGameAppearanceStyle
     {
         [IntrinsicProperty]
@@ -28,7 +27,7 @@ namespace global
 
             return ap;
         }
-    } 
+    }
     [ScriptName("AppearanceStyle")]
     public class CardGameAppearanceStyle
     {
@@ -48,7 +47,7 @@ namespace global
             OuterStyle = new CardGameAppearanceStyleItem(new {});
             InnerStyle = new CardGameAppearanceStyleItem(new {});
         }
-    } 
+    }
     [ScriptName("AppearanceStyleItem")]
     public class CardGameAppearanceStyleItem
     {
@@ -62,7 +61,6 @@ namespace global
         public CardGameAppearanceStylePadding Padding { get; set; }
         [IntrinsicProperty]
         public CardGameAppearanceStyleMargin Margin { get; set; }
- 
         [ScriptName("zindex")]
         [IntrinsicProperty]
         public int ZIndex { get; set; }
@@ -114,7 +112,7 @@ namespace global
         Wait,
         Help
     }
-    [ScriptName("AppearanceStyleMargin")] 
+    [ScriptName("AppearanceStyleMargin")]
     public class CardGameAppearanceStyleMargin
     {
         [IntrinsicProperty]
@@ -147,7 +145,7 @@ namespace global
             sp.Top = st.Top;
             return sp;
         }
-    } 
+    }
     [ScriptName("AppearanceStylePadding")]
     public class CardGameAppearanceStylePadding
     {
@@ -182,7 +180,7 @@ namespace global
             return sp;
         }
     }
-    [ScriptName("AppearanceStyleBorder")] 
+    [ScriptName("AppearanceStyleBorder")]
     public class CardGameAppearanceStyleBorder
     {
         [IntrinsicProperty]
@@ -215,7 +213,7 @@ namespace global
             sp.Top = st.Top;
             return sp;
         }
-    } 
+    }
     [ScriptName("AppearanceStyleBorderArea")]
     public class CardGameAppearanceStyleBorderArea
     {

@@ -10,14 +10,11 @@ namespace SiteServer
 
         public SiteServer()
         {
-
-
-            new ArrayUtils(); 
+            new ArrayUtils();
             siteServerIndex = "SiteServer" + Guid.NewGuid();
             Global.Process.On("exit", () => Console.Log("exi SiteServer"));
 
             SiteManager siteManager = new SiteManager(siteServerIndex);
-
         }
 
         public static void Main()

@@ -1,8 +1,7 @@
-using System;
 using System.Runtime.CompilerServices;
 namespace global
 {
-    [ScriptName("TableTextArea")] 
+    [ScriptName("TableTextArea")]
     public class GameCardGameTextArea
     {
         [IntrinsicProperty]

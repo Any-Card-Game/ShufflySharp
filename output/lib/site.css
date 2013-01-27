@@ -1,0 +1,38 @@
+.window-outer {
+    -khtml-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    border: black solid 1px;
+    border-radius: 20px;
+}
+
+.window-inner {
+    -khtml-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: blue solid 1px;
+    border-radius: 10px;
+}
+
+.rounded {
+    -khtml-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: blue solid 1px;
+    border-radius: 10px;
+}
+
+.window-title {
+    border: 1px solid black;
+    padding: 5px 5px -5px -5px;
+    width: 100%;
+}
+
+div, span, img {
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}

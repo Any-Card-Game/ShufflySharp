@@ -8,7 +8,6 @@ namespace global
     [ScriptName("CardGame")]
     public class GameCardGame
     {
-
         [IntrinsicProperty]
         public bool Emulating { get; set; }
         [IntrinsicProperty]

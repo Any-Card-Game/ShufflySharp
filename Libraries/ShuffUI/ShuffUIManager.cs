@@ -10,7 +10,7 @@ namespace ShuffUI
     {
         private List<UIAreaInformation> UIAreas = new List<UIAreaInformation>();
 
-        public ShuffWindow<T> CreateWindow<T>(ShuffWindow<T> ui)
+        public ShuffWindow CreateWindow(ShuffWindow ui)
         {
             var windowID = ui.Title;
             var outer = jQuery.Select("<div class='window-outer' style='background-color: #87B6D9; overflow:hidden;'></div>");
@@ -74,38 +74,35 @@ namespace ShuffUI
                               outer.CSS("height", "100%");
                           }
                       });
-            jQuery.Select(".window-minimize").Click((evt) =>
-            {
-                toggleMinSize = !toggleMinSize;
-                if (toggleMinSize)
-                {
-                    outer.CSS("height", "25px"); 
-                }
-                else
-                {
-                    outer.CSS("height", ui.Height + "px");
- 
+            jQuery.Select(".window-minimize").Click((evt) => {
+                                                        toggleMinSize = !toggleMinSize;
+                                                        if (toggleMinSize)
+                                                            outer.CSS("height", "25px");
+                                                        else {
+                                                            outer.CSS("height", ui.Height + "px");
 
 //                    outer.CSS("height", "100%");
-                } 
-            });
+                                                        }
+                                                    });
 
             outer.MouseDown((evt) => { Focus(info); });
 
             WidgetExtensions.Button(jQuery.Select(".window-header-button"));
 
             if (!ui.StaticPositioning) {
-                InteractionExtensions.Draggable(outer, new DraggableOptions {
-                                                             Cancel = ".window-inner, .CodeMirror, .CodeMirror-fullscreen, .CodeMirror-wrap, .CodeMirror-focused",
-                                                             Containment = "window",
-                                                             //TODO                Animate= true,
-                                                             OnStart = (evt, o) => { }
-                                                     }
+                InteractionExtensions.Draggable(outer,
+                                                new DraggableOptions {
+                                                                             Cancel = ".window-inner, .CodeMirror, .CodeMirror-fullscreen, .CodeMirror-wrap, .CodeMirror-focused",
+                                                                             Containment = "window",
+                                                                             //TODO                Animate= true,
+                                                                             OnStart = (evt, o) => { }
+                                                                     }
                         );
-                InteractionExtensions.Resizable(outer, new ResizableOptions {
-                                                             Handles = "n, e, s, w, ne, se, sw, nw",
-                                                             OnResize = (evt, o) => { ui.onResize(evt, o); }
-                                                     });
+                InteractionExtensions.Resizable(outer,
+                                                new ResizableOptions {
+                                                                             Handles = "n, e, s, w, ne, se, sw, nw",
+                                                                             OnResize = (evt, o) => { ui.onResize(evt, o); }
+                                                                     });
             }
 
             ui.Element = inner;
@@ -117,7 +114,7 @@ namespace ShuffUI
         public void Focus(UIAreaInformation info)
         {
             for (var i = 0; i < UIAreas.Count; i++) {
-                UIAreas[i].Element.CSS("z-index", int.Parse(UIAreas[i].Element.GetCSS("z-index"))-1);
+                UIAreas[i].Element.CSS("z-index", int.Parse(UIAreas[i].Element.GetCSS("z-index")) - 1);
             }
             info.Element.CSS("z-index", 1900);
         }

@@ -29,7 +29,7 @@ namespace AdminServer
         public AdminServer()
         {
             var fs = Global.Require<FS>("fs");
-            Console.Log("Shuffly Admin V0.44");
+            Console.Log("Shuffly Admin V0.48");
 
             util = Global.Require<Util>("util");
             exec = Global.Require<ChildProcess>("child_process").Exec;
@@ -41,8 +41,11 @@ namespace AdminServer
             debug = false;
             Global.SetInterval(() => { Console.Log("keep alive " + new DateTime().ToString().Substring(17, 24)); }, 10 * 1000);
 
-            nodeInspector = runProcess("node-inspector", new string[0]);
-            Console.Log("node-inspector Started");
+            if (debug) {
+                nodeInspector = runProcess("node-inspector", new string[0]);
+                Console.Log("node-inspector Started");
+            }
+
             Global.Process.On("exit",
                               () => {
                                   Console.Log("Exiting ");
@@ -52,7 +55,7 @@ namespace AdminServer
 
             if (debug)
                 onAsk("d", true);
-            onAsk("d", true);
+            // onAsk("d", true);
             onAsk("s");
         }
 

@@ -59,6 +59,26 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffleGames", "ShuffleGame
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffUI", "Libraries\ShuffUI\ShuffUI.csproj", "{B874741A-A80A-41ED-9F4C-72ECA778C59F}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "output", "output\", "{695D02E9-9050-4C99-AAFC-7B2249D8523C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/output"
+		Debug.AspNetCompiler.PhysicalPath = "output\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\output\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/output"
+		Release.AspNetCompiler.PhysicalPath = "output\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\output\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "57991"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -305,6 +325,16 @@ Global
 		{B874741A-A80A-41ED-9F4C-72ECA778C59F}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B874741A-A80A-41ED-9F4C-72ECA778C59F}.Release|x86.ActiveCfg = Release|x86
 		{B874741A-A80A-41ED-9F4C-72ECA778C59F}.Release|x86.Build.0 = Release|x86
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

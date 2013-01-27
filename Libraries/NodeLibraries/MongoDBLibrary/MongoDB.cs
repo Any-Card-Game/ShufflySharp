@@ -29,8 +29,9 @@ namespace MongoDBLibrary
     [Imported(IsRealType = true)]
     public class MongoCollection
     {
-        public void Insert(object gmo) { }
+        public void Insert(object gmo) {}
+
         [IgnoreGenericArguments]
-        public void Find<T>(object gmo, Action<string, T[]> onFind) { }
+        public void Find<T>(object gmo, Action<string, T[]> onFind) {}
     }
 }

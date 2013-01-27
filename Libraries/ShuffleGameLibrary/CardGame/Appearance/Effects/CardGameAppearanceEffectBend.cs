@@ -4,7 +4,7 @@ namespace global
 {
     [ScriptName("Effect$Bend")]
     public class CardGameAppearanceEffectBend : CardGameAppearanceEffect
-    { 
+    {
         [IntrinsicProperty]
         public double Degrees { get; set; }
 
@@ -16,7 +16,7 @@ namespace global
     }
     [Serializable]
     public class CardGameEffectBendOptions
-    {  
+    {
         public double Degrees { get; set; }
     }
 }

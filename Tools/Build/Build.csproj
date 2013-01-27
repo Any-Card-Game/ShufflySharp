@@ -37,8 +37,9 @@
     <Reference Include="Ftp">
       <HintPath>..\..\packages\Ftp.dll.2.0.12260.2251\lib\Ftp.dll</HintPath>
     </Reference>
-    <Reference Include="Renci.SshNet">
-      <HintPath>..\..\packages\SSH.NET.2012.3.9\lib\net40\Renci.SshNet.dll</HintPath>
+    <Reference Include="Renci.SshNet, Version=2013.1.27.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SSH.NET.2013.1.27\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

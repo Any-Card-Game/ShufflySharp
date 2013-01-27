@@ -31,7 +31,7 @@ namespace ShuffUI
         public ShuffWindow()
                 : base() {}
 
-        public void onResize(jQueryEvent e, ResizeEvent uievent)
+        public void onResize(jQueryEvent e, ResizableResizeEvent uievent)
         {
             Width = uievent.Size.Width + "px";
             Height = uievent.Size.Height + "px";

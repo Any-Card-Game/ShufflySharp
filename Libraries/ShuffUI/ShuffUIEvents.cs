@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
-namespace Client.ShuffUI
+using CommonLibraries;
+namespace ShuffUI
 {
     public delegate void ShuffUIEvent<T>(T t);
     [Serializable]

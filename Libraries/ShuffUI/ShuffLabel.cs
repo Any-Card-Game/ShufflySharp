@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using jQueryApi;
-namespace Client.ShuffUI
+namespace ShuffUI
 {
     public class ShuffLabel : ShuffElement
     {
@@ -26,7 +27,7 @@ namespace Client.ShuffUI
             X = x;
             Y = y;
             Visible = true;
-            but.DisableSelection();
+            ImportedExtensionMethods.DisableSelection(but);
         }
 
         public override void BindCustomEvents()

@@ -17,6 +17,7 @@ namespace Build
                                       shufSharp + @"\Libraries\CommonLibraries\",
                                       shufSharp + @"\Libraries\CommonShuffleLibrary\",
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
+                                      shufSharp + @"\Libraries\ShuffUI\",
                                       shufSharp + @"\Servers\AdminServer\",
                                       shufSharp + @"\Servers\ChatServer\",
                                       shufSharp + @"\Servers\DebugServer\",
@@ -99,6 +100,7 @@ namespace Build
                                                                                                                                                                      @"./RawDeflate.js",})},
                                                                       {shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {})},
+                                                                      {shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Models\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, "", new List<string> {})}, {
                                                                                                                                                                                 shufSharp + @"\Client\", new Application(false,

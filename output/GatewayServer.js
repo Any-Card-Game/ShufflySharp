@@ -61,7 +61,9 @@ var $GatewayServer_GatewayServer = function() {
 			$GatewayServer_GatewayServer.$sendMessage(user, 'Area.Main.Login.Response', { successful: true, hash: user.get_hash() }, user.toUserModel());
 		}));
 		socket.on('disconnect', Function.mkdel(this, function(data2) {
-			delete this.users[user.userName];
+			if (ss.isValue(user)) {
+				delete this.users[user.userName];
+			}
 		}));
 	}));
 };

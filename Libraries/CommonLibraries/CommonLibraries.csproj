@@ -33,12 +33,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Console.cs" />
+    <Compile Include="DelegateOrValue.cs" />
     <Compile Include="EventEmitter.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="Help.cs" />
     <Compile Include="Jsonner.cs" />
     <Compile Include="MyStyle.cs" />
+    <Compile Include="Number.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Size.cs" />
     <Compile Include="TypeOrFunction.cs" />

@@ -1,8 +1,9 @@
 ﻿using System.Html;
 using System.Runtime.CompilerServices;
 using CodeMirrorLibrary;
+using CommonLibraries;
 using jQueryApi;
-namespace Client.ShuffUI
+namespace ShuffUI
 {
     public class ShuffCodeEditor : ShuffElement
     {
@@ -69,10 +70,10 @@ namespace Client.ShuffUI
                                                                                                                OnGutterClick = (cm, n, e) => {
                                                                                                                                    var info = cm.LineInfo(n);
                                                                                                                                    if (info.MarkerText) {
-                                                                                                                                       BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
+                                                                                                                                     //  BuildSite.Instance.codeArea.Data.breakPoints.Extract(BuildSite.Instance.codeArea.Data.breakPoints.IndexOf(n - 1), 0);
                                                                                                                                       // cm.SetGutterMarker(n);
                                                                                                                                    } else {
-                                                                                                                                       BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
+                                                                                                                                    //   BuildSite.Instance.codeArea.Data.breakPoints.Add(n - 1);
                                                                                                                                    //    cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
                                                                                                                                    }
                                                                                                                                },

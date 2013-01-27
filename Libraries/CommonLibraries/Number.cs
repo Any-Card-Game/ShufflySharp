@@ -1,4 +1,4 @@
-namespace Client.ShuffUI
+namespace CommonLibraries
 {
     public class Number
     {

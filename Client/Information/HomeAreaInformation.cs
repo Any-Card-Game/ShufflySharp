@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
-using Client.ShuffUI;
 using Models.GameManagerModels;
+using ShuffUI;
 namespace Client.Information
 {
     public class HomeAreaInformation

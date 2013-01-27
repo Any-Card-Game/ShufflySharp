@@ -4,7 +4,7 @@ using System.Html;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using jQueryApi;
-namespace Client.ShuffUI
+namespace ShuffUI
 {
     public class ShuffListBox : ShuffElement
     {
@@ -28,7 +28,7 @@ namespace Client.ShuffUI
             Items = new List<ShuffListItem>();
 
             var theme = "getTheme()".eval();
-            but.me().jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});
+            ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});
 
             Window.SetTimeout(() => {
                                   but.GetElement(0).Style.Left = X + "px";
@@ -38,7 +38,7 @@ namespace Client.ShuffUI
 
             but.Bind("select",
                      (e) => {
-                         var item = e.me().args.item;
+                         var item = ExtensionMethods.me(e).args.item;
                          if (OnClick != null)
                              OnClick(item);
                      });
@@ -55,7 +55,7 @@ namespace Client.ShuffUI
         private void update()
         {
             var theme = "getTheme()".me();
-            Element.me().jqxListBox(new {source = Items, width = (int) Width, height = (int) Height, theme = theme});
+            ExtensionMethods.me(Element).jqxListBox(new {source = Items, width = (int) Width, height = (int) Height, theme = theme});
         }
     }
     public class ShuffListItem

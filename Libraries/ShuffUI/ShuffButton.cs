@@ -1,7 +1,8 @@
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using jQueryApi;
 using jQueryApi.UI.Widgets;
-namespace Client.ShuffUI
+namespace ShuffUI
 {
     public class ShuffButton : ShuffElement
     {
@@ -23,10 +24,10 @@ namespace Client.ShuffUI
             Width = width;
             Height = height;
             Visible = true;
-            Element.Button();
+            WidgetExtensions.Button(Element);
             Element.Click(a => click(new ButtonClickedEvent(a.ClientX, a.ClientY)));
 
-            Element.DisableSelection();
+            ImportedExtensionMethods.DisableSelection(Element);
         }
 
         public override void BindCustomEvents() {}

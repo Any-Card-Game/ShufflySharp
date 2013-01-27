@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Client.ShuffUI;
+using ShuffUI;
 namespace Client.Information
 {
     public class CodeAreaInformation

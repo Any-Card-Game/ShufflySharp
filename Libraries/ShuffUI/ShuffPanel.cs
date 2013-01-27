@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using jQueryApi;
-namespace Client.ShuffUI
+namespace ShuffUI
 {
     public class ShuffPanel : ShuffElement
     {

@@ -103,8 +103,7 @@
 
     var btou = function (bin) {
         return bin.replace(re_bytes_nonascii, sub_bytes_nonascii);
-    };
-console.log('aaa');
+    }; 
     global.Base64 = {
         fromBase64: fromBase64,
         toBase64: toBase64,
@@ -124,8 +123,7 @@ console.log('aaa');
             })));
         }
     };
-    console.log(global.Base64.utob);
-
+    
 
 })(global || window);
    
@@ -2578,19 +2576,13 @@ console.log('aaa');
 
 function Compressor() {
     var CompressText = function (str) {
-console.log('Jj3j');
 
-    console.log(global.Base64.utob);
         return global.Base64.toBase64(global.RawDeflate.deflate(global.Base64.utob(str)));
-console.log('Jjj2');
     };
     var DecompressText = function (str) {
-console.log('Jjcsj');
         return global.Base64.btou(global.RawDeflate.inflate(global.Base64.fromBase64(str)));
-console.log('Jjjc');
     };
 
-console.log('Jjj');
 
 
     this.CompressText = CompressText;

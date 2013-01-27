@@ -6,21 +6,21 @@ var $Globals = function() {
 ////////////////////////////////////////////////////////////////////////////////
 // LoginUI
 var $LoginUI = function(shuffUIManager, pageHandler) {
-	var $t1 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [Object]))();
+	var $t1 = new (Type.makeGenericType(ShuffUI.ShuffWindow$1, [Object]))();
 	$t1.title = 'Login';
 	$t1.set_x($('body').innerWidth() - 500);
 	$t1.set_y(100);
-	$t1.set_width($Client_ShuffUI_Number.op_Implicit$2(250));
-	$t1.set_height($Client_ShuffUI_Number.op_Implicit$2(165));
+	$t1.set_width(CommonLibraries.Number.op_Implicit$2(250));
+	$t1.set_height(CommonLibraries.Number.op_Implicit$2(165));
 	$t1.allowClose = true;
 	$t1.allowMinimize = true;
 	$t1.set_visible(true);
 	var loginScreen = shuffUIManager.createWindow(Object).call(shuffUIManager, $t1);
 	var loginName;
 	var password;
-	loginScreen.addElement($Client_ShuffUI_ShuffTextbox).call(loginScreen, loginName = new $Client_ShuffUI_ShuffTextbox(140, 40, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(30), '', 'Username', null));
-	loginScreen.addElement($Client_ShuffUI_ShuffTextbox).call(loginScreen, password = new $Client_ShuffUI_ShuffTextbox(140, 75, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(30), '', 'Password', null));
-	loginScreen.addElement($Client_ShuffUI_ShuffButton).call(loginScreen, new $Client_ShuffUI_ShuffButton(40, 150, $Client_ShuffUI_Number.op_Implicit$2(250), $Client_ShuffUI_Number.op_Implicit$2(30), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e) {
+	loginScreen.addElement(ShuffUI.ShuffTextbox).call(loginScreen, loginName = new ShuffUI.ShuffTextbox(140, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
+	loginScreen.addElement(ShuffUI.ShuffTextbox).call(loginScreen, password = new ShuffUI.ShuffTextbox(140, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
+	loginScreen.addElement(ShuffUI.ShuffButton).call(loginScreen, new ShuffUI.ShuffButton(40, 150, CommonLibraries.Number.op_Implicit$2(250), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e) {
 		pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 	}));
 };
@@ -67,20 +67,20 @@ $Client_BuildSite.prototype = {
 			//todo: Special right click menu;
 		}, false);
 		var pageHandler = new $Client_PageHandler(this.$gatewayServerAddress, this);
-		this.$shuffUIManager = new $Client_ShuffUI_ShuffUIManager();
+		this.$shuffUIManager = new ShuffUI.ShuffUIManager();
 		new $LoginUI(this.$shuffUIManager, pageHandler);
 		var $t2 = this.$shuffUIManager;
-		var $t1 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_HomeAreaInformation]).$ctor1)(new $Client_Information_HomeAreaInformation());
+		var $t1 = new (Type.makeGenericType(ShuffUI.ShuffWindow$1, [$Client_Information_HomeAreaInformation]).$ctor1)(new $Client_Information_HomeAreaInformation());
 		$t1.title = 'CardGame';
 		$t1.set_x($('body').innerWidth() - 500);
 		$t1.set_y(100);
-		$t1.set_width($Client_ShuffUI_Number.op_Implicit$2(420));
-		$t1.set_height($Client_ShuffUI_Number.op_Implicit$2(450));
+		$t1.set_width(CommonLibraries.Number.op_Implicit$2(420));
+		$t1.set_height(CommonLibraries.Number.op_Implicit$2(450));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
 		$t1.set_visible(true);
 		this.home = $t2.createWindow($Client_Information_HomeAreaInformation).call($t2, $t1);
-		this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Update game list'), function(e1) {
+		this.home.addElement(ShuffUI.ShuffButton).call(this.home, new ShuffUI.ShuffButton(280, 54, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Update game list'), function(e1) {
 			pageHandler.clientSiteManager.getGameList();
 		}));
 		//home.AddButton(new ShuffButton()
@@ -98,7 +98,7 @@ $Client_BuildSite.prototype = {
 		//
 		//}
 		//});
-		this.home.data.btnStartGame = this.home.addElement($Client_ShuffUI_ShuffButton).call(this.home, new $Client_ShuffUI_ShuffButton(280, 164, $Client_ShuffUI_Number.op_Implicit$2(120), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Start Game'), function(e2) {
+		this.home.data.btnStartGame = this.home.addElement(ShuffUI.ShuffButton).call(this.home, new ShuffUI.ShuffButton(280, 164, CommonLibraries.Number.op_Implicit$2(120), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game'), function(e2) {
 			pageHandler.clientGameManager.startGame({ roomID: pageHandler.gameStuff.roomID });
 		}));
 		var randomName = '';
@@ -106,7 +106,7 @@ $Client_BuildSite.prototype = {
 		for (var i = 0; i < ra; i++) {
 			randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
 		}
-		this.home.data.txtUserName = this.home.addElement($Client_ShuffUI_ShuffTextbox).call(this.home, new $Client_ShuffUI_ShuffTextbox(130, 43, $Client_ShuffUI_Number.op_Implicit$2(130), $Client_ShuffUI_Number.op_Implicit$2(20), randomName, 'Username=', null));
+		this.home.data.txtUserName = this.home.addElement(ShuffUI.ShuffTextbox).call(this.home, new ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), randomName, 'Username=', null));
 		//home.Data.gameList = home.AddListBox(new ShuffListBox()
 		//{
 		//X = 30,
@@ -218,12 +218,12 @@ $Client_BuildSite.prototype = {
 			//   });
 		};
 		var $t4 = this.$shuffUIManager;
-		var $t3 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_DevAreaInformation]).$ctor1)(new $Client_Information_DevAreaInformation());
+		var $t3 = new (Type.makeGenericType(ShuffUI.ShuffWindow$1, [$Client_Information_DevAreaInformation]).$ctor1)(new $Client_Information_DevAreaInformation());
 		$t3.title = 'Developer';
 		$t3.set_x(500);
 		$t3.set_y(100);
-		$t3.set_width($Client_ShuffUI_Number.op_Implicit$2(420));
-		$t3.set_height($Client_ShuffUI_Number.op_Implicit$2(450));
+		$t3.set_width(CommonLibraries.Number.op_Implicit$2(420));
+		$t3.set_height(CommonLibraries.Number.op_Implicit$2(450));
 		$t3.allowClose = true;
 		$t3.allowMinimize = true;
 		this.devArea = $t4.createWindow($Client_Information_DevAreaInformation).call($t4, $t3);
@@ -239,11 +239,11 @@ $Client_BuildSite.prototype = {
 			pageHandler.startGameServer();
 			pageHandler.clientGameManager.createDebuggedGame({ name: 'main room', gameName: this.selectedGame, source: this.codeArea.data.codeEditor.information.editor.getValue(), breakPoints: this.codeArea.data.breakPoints });
 		});
-		this.devArea.addElement($Client_ShuffUI_ShuffButton).call(this.devArea, new $Client_ShuffUI_ShuffButton(280, 54, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Begin Game'), Function.mkdel(this, function(e3) {
+		this.devArea.addElement(ShuffUI.ShuffButton).call(this.devArea, new ShuffUI.ShuffButton(280, 54, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Begin Game'), Function.mkdel(this, function(e3) {
 			this.devArea.data.beginGame();
 		})));
 		var but = null;
-		this.devArea.addElement($Client_ShuffUI_ShuffButton).call(this.devArea, but = new $Client_ShuffUI_ShuffButton(280, 84, $Client_ShuffUI_Number.op_Implicit$2(150), $Client_ShuffUI_Number.op_Implicit$2(25), Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$1(Function.mkdel(this, function() {
+		this.devArea.addElement(ShuffUI.ShuffButton).call(this.devArea, but = new ShuffUI.ShuffButton(280, 84, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$1(Function.mkdel(this, function() {
 			return 'Game: ' + this.selectedGame;
 		})), Function.mkdel(this, function(e4) {
 			if (this.selectedGame === 'Sevens') {
@@ -253,10 +253,10 @@ $Client_BuildSite.prototype = {
 				this.selectedGame = 'Sevens';
 			}
 			pageHandler.clientDebugManager.requestGameSource({ gameName: this.selectedGame });
-			var m = Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(but.text);
+			var m = Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(but.text);
 		})));
-		this.devArea.data.lblHowFast = this.devArea.addElement($Client_ShuffUI_ShuffLabel).call(this.devArea, new $Client_ShuffUI_ShuffLabel(80, 80, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Time Taken:')));
-		this.devArea.data.lblAnother = this.devArea.addElement($Client_ShuffUI_ShuffLabel).call(this.devArea, new $Client_ShuffUI_ShuffLabel(80, 100, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('Another: ')));
+		this.devArea.data.lblHowFast = this.devArea.addElement(ShuffUI.ShuffLabel).call(this.devArea, new ShuffUI.ShuffLabel(80, 80, Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Time Taken:')));
+		this.devArea.data.lblAnother = this.devArea.addElement(ShuffUI.ShuffLabel).call(this.devArea, new ShuffUI.ShuffLabel(80, 100, Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Another: ')));
 		// devArea.AddButton(new ShuffButton()
 		// {
 		// X = 280,
@@ -271,7 +271,7 @@ $Client_BuildSite.prototype = {
 		// });
 		var pop;
 		var $t6 = this.devArea;
-		var $t5 = new $Client_ShuffUI_ShuffListBox(25, 200, $Client_ShuffUI_Number.op_Implicit$2(250), $Client_ShuffUI_Number.op_Implicit$2(250));
+		var $t5 = new ShuffUI.ShuffListBox(25, 200, CommonLibraries.Number.op_Implicit$2(250), CommonLibraries.Number.op_Implicit$2(250));
 		$t5.itemCreation = function(item, index) {
 			var ik = $(String.format('<div style=\'width=100%;height=25px; background-color={0};\'></div>', ((index % 2 === 0) ? 'red' : 'green')));
 			var ikc = $(String.format('<div style=\'width=50%;height=25px; float=left;\'>{0}</div>', item.label));
@@ -280,9 +280,9 @@ $Client_BuildSite.prototype = {
 			ik.append(ikd);
 			return ik;
 		};
-		var propBox = $t6.addElement($Client_ShuffUI_ShuffListBox).call($t6, pop = $t5);
-		pop.addItem(new $Client_ShuffUI_ShuffListItem('foos', 99));
-		this.devArea.data.varText = this.devArea.addElement($Client_ShuffUI_ShuffTextbox).call(this.devArea, new $Client_ShuffUI_ShuffTextbox(150, 134, $Client_ShuffUI_Number.op_Implicit$2(100), $Client_ShuffUI_Number.op_Implicit$2(25), 'Var Lookup', null, null));
+		var propBox = $t6.addElement(ShuffUI.ShuffListBox).call($t6, pop = $t5);
+		pop.addItem(new ShuffUI.ShuffListItem('foos', 99));
+		this.devArea.data.varText = this.devArea.addElement(ShuffUI.ShuffTextbox).call(this.devArea, new ShuffUI.ShuffTextbox(150, 134, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(25), 'Var Lookup', null, null));
 		//  devArea.AddButton(new ShuffButton()
 		//  {
 		//  X = 280,
@@ -327,15 +327,15 @@ $Client_BuildSite.prototype = {
 				pageHandler.clientGameManager.startGame({ roomID: room2.roomID });
 			}
 		});
-		this.devArea.data.txtNumOfPlayers = this.devArea.addElement($Client_ShuffUI_ShuffTextbox).call(this.devArea, new $Client_ShuffUI_ShuffTextbox(130, 43, $Client_ShuffUI_Number.op_Implicit$2(130), $Client_ShuffUI_Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size=13px'));
+		this.devArea.data.txtNumOfPlayers = this.devArea.addElement(ShuffUI.ShuffTextbox).call(this.devArea, new ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size=13px'));
 		var $t11 = this.$shuffUIManager;
-		var $t10 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_CodeAreaInformation]).$ctor1)(new $Client_Information_CodeAreaInformation());
+		var $t10 = new (Type.makeGenericType(ShuffUI.ShuffWindow$1, [$Client_Information_CodeAreaInformation]).$ctor1)(new $Client_Information_CodeAreaInformation());
 		$t10.title = 'Code';
 		$t10.set_x(0);
 		$t10.set_y(0);
 		$t10.staticPositioning = false;
-		$t10.set_width($Client_ShuffUI_Number.op_Implicit$2($(window).width() * 0.5));
-		$t10.set_height($Client_ShuffUI_Number.op_Implicit$2($(window).height() * 0.9));
+		$t10.set_width(CommonLibraries.Number.op_Implicit$2($(window).width() * 0.5));
+		$t10.set_height(CommonLibraries.Number.op_Implicit$2($(window).height() * 0.9));
 		$t10.allowClose = true;
 		$t10.allowMinimize = true;
 		$t10.set_visible(false);
@@ -343,43 +343,43 @@ $Client_BuildSite.prototype = {
 		this.codeArea.data.breakPoints = [];
 		var $t14 = this.codeArea.data;
 		var $t13 = this.codeArea;
-		var $t12 = new $Client_ShuffUI_ShuffCodeEditor.$ctor1(0, 0, $Client_ShuffUI_Number.op_Implicit$3('100%'), $Client_ShuffUI_Number.op_Implicit$3('80%'), '');
+		var $t12 = new ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
 		$t12.set_dock(2);
-		$t14.codeEditor = $t13.addElement($Client_ShuffUI_ShuffCodeEditor).call($t13, $t12);
+		$t14.codeEditor = $t13.addElement(ShuffUI.ShuffCodeEditor).call($t13, $t12);
 		var $t17 = this.codeArea.data;
 		var $t16 = this.codeArea;
-		var $t15 = new $Client_ShuffUI_ShuffCodeEditor.$ctor1(0, 0, $Client_ShuffUI_Number.op_Implicit$3('100%'), $Client_ShuffUI_Number.op_Implicit$3('20%'), '');
+		var $t15 = new ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
 		$t15.lineNumbers = false;
 		$t15.set_dock(2);
-		$t17.console = $t16.addElement($Client_ShuffUI_ShuffCodeEditor).call($t16, $t15);
+		$t17.console = $t16.addElement(ShuffUI.ShuffCodeEditor).call($t16, $t15);
 		var $t19 = this.$shuffUIManager;
-		var $t18 = new (Type.makeGenericType($Client_ShuffUI_ShuffWindow$1, [$Client_Information_QuestionAreaInformation]).$ctor1)($Client_Information_QuestionAreaInformation.$ctor());
+		var $t18 = new (Type.makeGenericType(ShuffUI.ShuffWindow$1, [$Client_Information_QuestionAreaInformation]).$ctor1)($Client_Information_QuestionAreaInformation.$ctor());
 		$t18.title = 'Question';
 		$t18.set_x(600);
 		$t18.set_y(100);
-		$t18.set_width($Client_ShuffUI_Number.op_Implicit$2(300));
-		$t18.set_height($Client_ShuffUI_Number.op_Implicit$2(275));
+		$t18.set_width(CommonLibraries.Number.op_Implicit$2(300));
+		$t18.set_height(CommonLibraries.Number.op_Implicit$2(275));
 		$t18.allowClose = true;
 		$t18.allowMinimize = true;
 		$t18.set_visible(true);
 		this.questionArea = $t19.createWindow($Client_Information_QuestionAreaInformation).call($t19, $t18);
-		this.questionArea.data.question = this.questionArea.addElement($Client_ShuffUI_ShuffLabel).call(this.questionArea, new $Client_ShuffUI_ShuffLabel(20, 70, Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit$2('')));
+		this.questionArea.data.question = this.questionArea.addElement(ShuffUI.ShuffLabel).call(this.questionArea, new ShuffUI.ShuffLabel(20, 70, Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('')));
 		this.questionArea.data.load = Function.mkdel(this, function(question) {
 			this.questionArea.set_visible(true);
 			this.questionArea.data.question.set_text(question.question);
 			var $t20 = this.questionArea.data.answerBox.get_parent();
-			$t20.removeElement($Client_ShuffUI_ShuffListBox).call($t20, this.questionArea.data.answerBox);
+			$t20.removeElement(ShuffUI.ShuffListBox).call($t20, this.questionArea.data.answerBox);
 			var answers = [];
 			for (var i2 = 0; i2 < question.answers.length; i2++) {
-				answers.add(new $Client_ShuffUI_ShuffListItem(question.answers[i2], i2));
+				answers.add(new ShuffUI.ShuffListItem(question.answers[i2], i2));
 			}
 			var $t23 = this.questionArea.data;
 			var $t22 = this.questionArea;
-			var $t21 = new $Client_ShuffUI_ShuffListBox(30, 65, $Client_ShuffUI_Number.op_Implicit$2(215), $Client_ShuffUI_Number.op_Implicit$2(125));
+			var $t21 = new ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125));
 			$t21.items = answers;
-			$t23.answerBox = $t22.addElement($Client_ShuffUI_ShuffListBox).call($t22, $t21);
+			$t23.answerBox = $t22.addElement(ShuffUI.ShuffListBox).call($t22, $t21);
 		});
-		this.questionArea.data.answerBox = this.questionArea.addElement($Client_ShuffUI_ShuffListBox).call(this.questionArea, new $Client_ShuffUI_ShuffListBox(30, 65, $Client_ShuffUI_Number.op_Implicit$2(215), $Client_ShuffUI_Number.op_Implicit$2(125)));
+		this.questionArea.data.answerBox = this.questionArea.addElement(ShuffUI.ShuffListBox).call(this.questionArea, new ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125)));
 		this.$shuffUIManager.focus(this.devArea.information);
 		//
 		//
@@ -460,7 +460,7 @@ $Client_BuildSite.$loadJunk = function(url, ready) {
 		scriptLoader.load([url + 'lib/jqwidgets/jqxbuttons.js', url + 'lib/jqwidgets/jqxscrollbar.js', url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/lib/codemirror.js', url + 'lib/jqwidgets/jqxlistbox.js'], false, function() {
 			scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'lib/Dialog.js'], false, function() {
 				scriptLoader.load([url + 'CommonLibraries.js', url + 'ShuffleGameLibrary.js', url + 'Models.js'], true, function() {
-					scriptLoader.load([url + 'lib/RawDeflate.js'], true, ready);
+					scriptLoader.load([url + 'lib/RawDeflate.js', url + 'ShuffUI.js'], true, ready);
 				});
 			});
 		});
@@ -1205,882 +1205,6 @@ $Client_Information_QuestionAreaInformation.$ctor = function() {
 	$this.load = null;
 	return $this;
 };
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ButtonClickedEvent
-var $Client_ShuffUI_ButtonClickedEvent = function() {
-};
-$Client_ShuffUI_ButtonClickedEvent.$ctor = function(x, y) {
-	var $this = {};
-	$this.x = 0;
-	$this.y = 0;
-	$this.x = x;
-	$this.y = y;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.CodeMirrorInformation
-var $Client_ShuffUI_CodeMirrorInformation = function() {
-	this.codeElement = null;
-	this.editor = null;
-	this.element = null;
-	this.data = null;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.CodeMirrorInformationData
-var $Client_ShuffUI_CodeMirrorInformationData = function() {
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.DelegateOrValue
-var $Client_ShuffUI_DelegateOrValue$1 = function(T) {
-	var $type = function(d) {
-		this.isValue = false;
-		this.$method = null;
-		this.$oldValue = T.getDefaultValue();
-		this.$value = T.getDefaultValue();
-		this.$1$StaticValueChangesField = null;
-		this.$method = d;
-		this.isValue = false;
-		this.$oldValue = this.$method();
-	};
-	$type.prototype = {
-		get_staticValueChanges: function() {
-			return this.$1$StaticValueChangesField;
-		},
-		set_staticValueChanges: function(value) {
-			this.$1$StaticValueChangesField = value;
-		},
-		$evaluate: function() {
-			if (this.isValue === true) {
-				return this.$value;
-			}
-			else if (this.isValue === false) {
-				var val = this.$method();
-				if (val !== this.$oldValue) {
-					this.get_staticValueChanges()(val);
-				}
-				this.$oldValue = val;
-				return val;
-			}
-			return T.getDefaultValue();
-		}
-	};
-	$type.$ctor1 = function(d) {
-		this.isValue = false;
-		this.$method = null;
-		this.$oldValue = T.getDefaultValue();
-		this.$value = T.getDefaultValue();
-		this.$1$StaticValueChangesField = null;
-		this.$value = d;
-		this.isValue = true;
-	};
-	$type.$ctor1.prototype = $type.prototype;
-	$type.op_Implicit$2 = function(d) {
-		return new (Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [T]).$ctor1)(d);
-	};
-	$type.op_Implicit$1 = function(d) {
-		return new (Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [T]))(d);
-	};
-	$type.op_Implicit = function(d) {
-		return d.$evaluate();
-	};
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_DelegateOrValue$1, [T], function() {
-		return Object;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.DelegateOrValue$1', $Client_ShuffUI_DelegateOrValue$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.DockStyle
-var $Client_ShuffUI_DockStyle = function() {
-};
-$Client_ShuffUI_DockStyle.prototype = { none: 0, fill: 1, fillWidth: 2, fillHeight: 3 };
-Type.registerEnum(global, 'Client.ShuffUI.DockStyle', $Client_ShuffUI_DockStyle, false);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ItemClickedEvent
-var $Client_ShuffUI_ItemClickedEvent = function() {
-};
-$Client_ShuffUI_ItemClickedEvent.$ctor = function(item) {
-	var $this = {};
-	$this.item = null;
-	$this.item = item;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.Number
-var $Client_ShuffUI_Number = function(s) {
-	this.$value = null;
-	this.$value = s.toString();
-};
-$Client_ShuffUI_Number.$ctor1 = function(s) {
-	this.$value = null;
-	this.$value = s;
-};
-$Client_ShuffUI_Number.$ctor1.prototype = $Client_ShuffUI_Number.prototype;
-$Client_ShuffUI_Number.op_Implicit = function(d) {
-	return parseFloat(d.$value);
-};
-$Client_ShuffUI_Number.op_Implicit$3 = function(d) {
-	return new $Client_ShuffUI_Number.$ctor1(d);
-};
-$Client_ShuffUI_Number.op_Implicit$2 = function(d) {
-	return new $Client_ShuffUI_Number(d);
-};
-$Client_ShuffUI_Number.op_Implicit$1 = function(d) {
-	return ((d.$value.indexOf('%') < 0) ? (d.$value + 'px') : d.$value);
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ParentChangedEvent
-var $Client_ShuffUI_ParentChangedEvent = function() {
-};
-$Client_ShuffUI_ParentChangedEvent.$ctor = function(parent) {
-	var $this = {};
-	$this.parent = null;
-	$this.parent = parent;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.PositionChangedEvent
-var $Client_ShuffUI_PositionChangedEvent = function() {
-};
-$Client_ShuffUI_PositionChangedEvent.$ctor = function(x, y) {
-	var $this = {};
-	$this.x = 0;
-	$this.y = 0;
-	$this.x = x;
-	$this.y = y;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffButton
-var $Client_ShuffUI_ShuffButton = function(x, y, width, height, text, click) {
-	this.text = null;
-	$Client_ShuffUI_ShuffElement.call(this);
-	this.element = $('<div></div>');
-	this.element.css('position', 'absolute');
-	this.text = text;
-	this.text.set_staticValueChanges(Function.combine(this.text.get_staticValueChanges(), Function.mkdel(this, function(value) {
-		this.element.text(value);
-	})));
-	this.element.text(Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(this.text));
-	this.set_x(x);
-	this.set_y(y);
-	this.set_width(width);
-	this.set_height(height);
-	this.set_visible(true);
-	this.element.button();
-	this.element.click(function(a) {
-		click($Client_ShuffUI_ButtonClickedEvent.$ctor(a.clientX, a.clientY));
-	});
-	this.element.disableSelection();
-};
-$Client_ShuffUI_ShuffButton.prototype = {
-	bindCustomEvents: function() {
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffButton
-var $Client_ShuffUI_ShuffButton$1 = function(T) {
-	var $type = function(data, x, y, width, height, text, click) {
-		this.data = T.getDefaultValue();
-		$Client_ShuffUI_ShuffButton.call(this, x, y, width, height, text, click);
-		this.data = data;
-	};
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_ShuffButton$1, [T], function() {
-		return $Client_ShuffUI_ShuffButton;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.ShuffButton$1', $Client_ShuffUI_ShuffButton$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffCodeEditor
-var $Client_ShuffUI_ShuffCodeEditor = function() {
-	this.information = null;
-	this.$codeMirror = null;
-	this.$2$TextChangedField = null;
-	this.text = null;
-	this.lineNumbers = false;
-	$Client_ShuffUI_ShuffElement.call(this);
-	this.set_width($Client_ShuffUI_Number.op_Implicit$3('100%'));
-	this.set_height($Client_ShuffUI_Number.op_Implicit$3('100%'));
-};
-$Client_ShuffUI_ShuffCodeEditor.prototype = {
-	get_textChanged: function() {
-		return this.$2$TextChangedField;
-	},
-	set_textChanged: function(value) {
-		this.$2$TextChangedField = value;
-	},
-	bindCustomEvents: function() {
-		this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
-			this.element.text(e.text);
-		})));
-		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(ev) {
-			if (ss.isValue(ev.parent)) {
-				var hlLine = null;
-				this.$codeMirror.editor = CodeMirror.fromTextArea(this.$codeMirror.element, {
-					lineNumbers: this.lineNumbers,
-					lineWrapping: true,
-					matchBrackets: true,
-					onGutterClick: function(cm, n, e1) {
-						var info = cm.lineInfo(n);
-						if (info.markerText) {
-							$Client_BuildSite.instance.codeArea.data.breakPoints.extract($Client_BuildSite.instance.codeArea.data.breakPoints.indexOf(n - 1), 0);
-							// cm.SetGutterMarker(n);
-						}
-						else {
-							$Client_BuildSite.instance.codeArea.data.breakPoints.add(n - 1);
-							//    cm.SetMarker(n, "<span style=\"color= #900\">●</span> %N%");
-						}
-					},
-					onCursorActivity: function(e2) {
-						//   codeMirror.editor.re(hlLine, null);
-						//     hlLine = codeMirror.editor.SetLineClass(codeMirror.editor.GetCursor().Line, "activeline");
-					},
-					onFocus: function(e3) {
-					},
-					onBlur: function(e4) {
-					}
-				});
-				//  hlLine = codeMirror.editor.SetLineClass(0, "activeline");
-				var scroller = this.$codeMirror.editor.getScrollerElement();
-				scroller.style.height = this.element[0].offsetHeight + 'px';
-				scroller.style.width = this.element[0].offsetWidth + 'px';
-				this.$codeMirror.editor.refresh();
-				this.$codeMirror.editor.setOption('theme', 'night');
-				this.information = this.$codeMirror;
-			}
-			else {
-			}
-		}));
-	}
-};
-$Client_ShuffUI_ShuffCodeEditor.$ctor1 = function(x, y, width, height, text) {
-	this.information = null;
-	this.$codeMirror = null;
-	this.$2$TextChangedField = null;
-	this.text = null;
-	this.lineNumbers = false;
-	$Client_ShuffUI_ShuffElement.call(this);
-	var fmw = width;
-	var fmh = height;
-	if (!!!fmw) {
-		width = $Client_ShuffUI_Number.op_Implicit$3('100%');
-	}
-	if (!!!fmh) {
-		height = $Client_ShuffUI_Number.op_Implicit$3('100%');
-	}
-	var divs = $('<div style=\'width:' + $Client_ShuffUI_Number.op_Implicit$1(width) + '; height:' + $Client_ShuffUI_Number.op_Implicit$1(height) + '\'> </div>');
-	var fm = $('<textarea id=\'code\' name=\'code\' class=\'CodeMirror-fullscreen \' style=\'\'></textarea>');
-	divs.append(fm);
-	this.element = divs;
-	var $t1 = new $Client_ShuffUI_CodeMirrorInformation();
-	$t1.element = fm.get(0);
-	this.$codeMirror = $t1;
-	this.$codeMirror.element.value = this.text = text;
-	this.lineNumbers = true;
-	this.set_x(x);
-	this.set_y(y);
-	this.set_width(width);
-	this.set_height(height);
-	this.set_visible(true);
-	this.sizeChanged = Function.combine(this.sizeChanged, Function.mkdel(this, function(e) {
-		window.alert($Client_ShuffUI_Number.op_Implicit$1(e.width) + ' ' + $Client_ShuffUI_Number.op_Implicit$1(e.height));
-		$(this.$codeMirror.element).width($Client_ShuffUI_Number.op_Implicit$1(e.width));
-		$(this.$codeMirror.element).height($Client_ShuffUI_Number.op_Implicit$1(e.height));
-	}));
-};
-$Client_ShuffUI_ShuffCodeEditor.$ctor1.prototype = $Client_ShuffUI_ShuffCodeEditor.prototype;
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffCodeEditor
-var $Client_ShuffUI_ShuffCodeEditor$1 = function(T) {
-	var $type = function(data, x, y, width, height, text) {
-		this.data = T.getDefaultValue();
-		$Client_ShuffUI_ShuffCodeEditor.$ctor1.call(this, x, y, width, height, text);
-		this.data = data;
-	};
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_ShuffCodeEditor$1, [T], function() {
-		return $Client_ShuffUI_ShuffCodeEditor;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.ShuffCodeEditor$1', $Client_ShuffUI_ShuffCodeEditor$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffElement
-var $Client_ShuffUI_ShuffElement = function() {
-	this.parentChanged = null;
-	this.positionChanged = null;
-	this.sizeChanged = null;
-	this.parentSizeChanged = null;
-	this.visibleChanged = null;
-	this.$1$DockField = 0;
-	this.$myHeight = null;
-	this.$myVisible = false;
-	this.$myWidth = null;
-	this.$myX = 0;
-	this.$myY = 0;
-	this.$1$ParentField = null;
-	this.element = null;
-	this.$myWidth = $Client_ShuffUI_Number.op_Implicit$2(0);
-	this.$myHeight = $Client_ShuffUI_Number.op_Implicit$2(0);
-	this.$bindEvents();
-};
-$Client_ShuffUI_ShuffElement.prototype = {
-	get_dock: function() {
-		return this.$1$DockField;
-	},
-	set_dock: function(value) {
-		this.$1$DockField = value;
-	},
-	get_x: function() {
-		return this.$myX;
-	},
-	set_x: function(value) {
-		this.$myX = value;
-		this.positionChanged($Client_ShuffUI_PositionChangedEvent.$ctor(this.$myX, this.$myY));
-	},
-	get_parent: function() {
-		return this.$1$ParentField;
-	},
-	set_parent: function(value) {
-		this.$1$ParentField = value;
-	},
-	get_y: function() {
-		return this.$myY;
-	},
-	set_y: function(value) {
-		this.$myY = value;
-		this.positionChanged($Client_ShuffUI_PositionChangedEvent.$ctor(this.$myX, this.$myY));
-	},
-	get_width: function() {
-		return this.$myWidth;
-	},
-	set_width: function(value) {
-		this.$myWidth = value;
-		this.sizeChanged($Client_ShuffUI_SizeChangedEvent.$ctor(this.$myWidth, this.$myHeight));
-	},
-	get_height: function() {
-		return this.$myHeight;
-	},
-	set_height: function(value) {
-		this.$myHeight = value;
-		this.sizeChanged($Client_ShuffUI_SizeChangedEvent.$ctor(this.$myWidth, this.$myHeight));
-	},
-	get_visible: function() {
-		return this.$myVisible;
-	},
-	set_visible: function(value) {
-		this.$myVisible = value;
-		this.visibleChanged($Client_ShuffUI_VisibleChangedEvent.$ctor(this.$myVisible));
-	},
-	$bindEvents: function() {
-		this.sizeChanged = Function.combine(this.sizeChanged, Function.mkdel(this, function(e) {
-			if (!!e.width) {
-				this.$myWidth = e.width;
-				this.element.css('width', $Client_ShuffUI_Number.op_Implicit$1(e.width));
-			}
-			if (!!e.height) {
-				this.$myHeight = e.height;
-				this.element.css('height', $Client_ShuffUI_Number.op_Implicit$1(e.height));
-			}
-		}));
-		this.parentSizeChanged = Function.combine(this.parentSizeChanged, Function.mkdel(this, function(e1) {
-			switch (this.get_dock()) {
-				case 0: {
-					break;
-				}
-				case 1: {
-					this.set_width(e1.width);
-					this.set_height(e1.height);
-					break;
-				}
-				case 2: {
-					this.set_width(e1.width);
-					break;
-				}
-				case 3: {
-					this.set_height(e1.height);
-					break;
-				}
-			}
-		}));
-		this.positionChanged = Function.combine(this.positionChanged, Function.mkdel(this, function(e2) {
-			this.element.css('left', e2.x + 'px');
-			this.element.css('top', e2.y + 'px');
-		}));
-		this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e3) {
-			this.element.css('display', (e3.visible ? 'block' : 'none'));
-		}));
-		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e4) {
-			this.set_parent(e4.parent);
-			if (ss.isNullOrUndefined(this.get_parent())) {
-				this.element.remove();
-			}
-			else {
-				this.get_parent().element.append(this.element);
-			}
-		}));
-		this.bindCustomEvents();
-	},
-	bindCustomEvents: function() {
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffLabel
-var $Client_ShuffUI_ShuffLabel = function(x, y, text) {
-	this.$myText = null;
-	this.$2$TextChangedField = null;
-	$Client_ShuffUI_ShuffElement.call(this);
-	var but = $('<span></span>');
-	this.element = but;
-	but.css('position', 'absolute');
-	this.set_text(Type.makeGenericType($Client_ShuffUI_DelegateOrValue$1, [String]).op_Implicit(text));
-	this.set_x(x);
-	this.set_y(y);
-	this.set_visible(true);
-	but.disableSelection();
-};
-$Client_ShuffUI_ShuffLabel.prototype = {
-	get_text: function() {
-		return this.$myText;
-	},
-	set_text: function(value) {
-		this.$myText = value;
-		this.get_textChanged()($Client_ShuffUI_TextChangedEvent.$ctor(this.$myText, false));
-	},
-	get_textChanged: function() {
-		return this.$2$TextChangedField;
-	},
-	set_textChanged: function(value) {
-		this.$2$TextChangedField = value;
-	},
-	bindCustomEvents: function() {
-		this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
-			this.element.text(e.text);
-		})));
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffLabel
-var $Client_ShuffUI_ShuffLabel$1 = function(T) {
-	var $type = function(data, x, y, text) {
-		this.data = T.getDefaultValue();
-		$Client_ShuffUI_ShuffLabel.call(this, x, y, text);
-		this.data = data;
-	};
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_ShuffLabel$1, [T], function() {
-		return $Client_ShuffUI_ShuffLabel;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.ShuffLabel$1', $Client_ShuffUI_ShuffLabel$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffListBox
-var $Client_ShuffUI_ShuffListBox = function(x, y, width, height) {
-	this.itemCreation = null;
-	this.onClick = null;
-	this.items = null;
-	$Client_ShuffUI_ShuffElement.call(this);
-	var but = $('<div style=\'position:absolute;\'></div>');
-	this.element = but;
-	this.set_x(x);
-	this.set_y(y);
-	this.set_width(width);
-	this.set_height(height);
-	this.set_visible(true);
-	this.items = [];
-	var theme = eval('getTheme()');
-	but.jqxListBox({ source: this.items, width: $Client_ShuffUI_Number.op_Implicit(width), height: $Client_ShuffUI_Number.op_Implicit(height), theme: theme });
-	window.setTimeout(Function.mkdel(this, function() {
-		but.get(0).style.left = this.get_x() + 'px';
-		but.get(0).style.top = this.get_y() + 'px';
-	}), 2000);
-	but.bind('select', Function.mkdel(this, function(e) {
-		var item = e.args.item;
-		if (ss.isValue(this.onClick)) {
-			this.onClick(item);
-		}
-	}));
-};
-$Client_ShuffUI_ShuffListBox.prototype = {
-	bindCustomEvents: function() {
-	},
-	addItem: function(p0) {
-		this.items.add(p0);
-		this.$update();
-	},
-	$update: function() {
-		var theme = 'getTheme()';
-		this.element.jqxListBox({ source: this.items, width: $Client_ShuffUI_Number.op_Implicit(this.get_width()), height: $Client_ShuffUI_Number.op_Implicit(this.get_height()), theme: theme });
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffListBox
-var $Client_ShuffUI_ShuffListBox$1 = function(T) {
-	var $type = function(data, x, y, width, height) {
-		this.data = T.getDefaultValue();
-		$Client_ShuffUI_ShuffListBox.call(this, x, y, width, height);
-		this.data = data;
-	};
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_ShuffListBox$1, [T], function() {
-		return $Client_ShuffUI_ShuffListBox;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.ShuffListBox$1', $Client_ShuffUI_ShuffListBox$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffListItem
-var $Client_ShuffUI_ShuffListItem = function(label, value) {
-	this.label = null;
-	this.value = 0;
-	this.label = label;
-	this.value = value;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffPanel
-var $Client_ShuffUI_ShuffPanel = function() {
-	this.elements = null;
-	$Client_ShuffUI_ShuffElement.call(this);
-	this.elements = [];
-	var but = $('<div />');
-	this.element = but;
-	but.css('position', 'absolute');
-	but.css('width', '100%');
-	but.css('height', '100%');
-	but.css('top', '0');
-	but.css('left', '0');
-	this.set_visible(true);
-};
-$Client_ShuffUI_ShuffPanel.prototype = {
-	addElement: function(T) {
-		return function(element) {
-			this.element.append(element.element);
-			this.elements.add(element);
-			element.parentChanged($Client_ShuffUI_ParentChangedEvent.$ctor(this));
-			return element;
-		};
-	},
-	removeElement: function(T) {
-		return function(element) {
-			element.element.remove();
-			this.elements.remove(element);
-			element.parentChanged($Client_ShuffUI_ParentChangedEvent.$ctor(null));
-			return element;
-		};
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffTextbox
-var $Client_ShuffUI_ShuffTextbox = function(x, y, width, height, text, label, labelStyle) {
-	this.$2$TextChangedField = null;
-	this.$2$LabelElementField = null;
-	$Client_ShuffUI_ShuffElement.call(this);
-	var but = $('<input value=\'' + ss.coalesce(text, '') + '\' />');
-	this.element = but;
-	but.css('position', 'absolute');
-	this.set_text(text);
-	this.set_x(x);
-	this.set_y(y);
-	this.set_width(width);
-	this.set_height(height);
-	this.set_visible(true);
-	but.keydown(function(a) {
-	});
-	if (ss.isValue(label)) {
-		this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e) {
-			if (ss.isNullOrUndefined(e.parent)) {
-				this.get_labelElement().remove();
-				this.set_labelElement(null);
-			}
-			else {
-				//to LabeledElement
-				var lbl = $('<span style=\'' + labelStyle + '\'></span>');
-				this.set_labelElement(lbl);
-				lbl.text(label);
-				this.get_parent().element.append(lbl);
-				lbl.css('position', 'absolute');
-				lbl.css('left', this.get_x() - lbl.width() - 15);
-				lbl.css('top', this.get_y() + 2);
-				lbl.disableSelection();
-			}
-		}));
-	}
-};
-$Client_ShuffUI_ShuffTextbox.prototype = {
-	get_text: function() {
-		return this.element.val();
-	},
-	set_text: function(value) {
-		this.get_textChanged()($Client_ShuffUI_TextChangedEvent.$ctor(value, false));
-	},
-	get_textChanged: function() {
-		return this.$2$TextChangedField;
-	},
-	set_textChanged: function(value) {
-		this.$2$TextChangedField = value;
-	},
-	get_labelElement: function() {
-		return this.$2$LabelElementField;
-	},
-	set_labelElement: function(value) {
-		this.$2$LabelElementField = value;
-	},
-	bindCustomEvents: function() {
-		this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
-			if (!e.live) {
-				this.element.val(e.text);
-			}
-		})));
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffTextbox
-var $Client_ShuffUI_ShuffTextbox$1 = function(T) {
-	var $type = function(data, x, y, width, height, text, label, labelStyle) {
-		this.data = T.getDefaultValue();
-		$Client_ShuffUI_ShuffTextbox.call(this, x, y, width, height, text, label, labelStyle);
-		this.data = data;
-	};
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_ShuffTextbox$1, [T], function() {
-		return $Client_ShuffUI_ShuffTextbox;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.ShuffTextbox$1', $Client_ShuffUI_ShuffTextbox$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffUIManager
-var $Client_ShuffUI_ShuffUIManager = function() {
-	this.$uiAreas = [];
-};
-$Client_ShuffUI_ShuffUIManager.prototype = {
-	createWindow: function(T) {
-		return function(ui) {
-			var windowID = ui.title;
-			var outer = $('<div class=\'window-outer\' style=\'background-color: #87B6D9; overflow:hidden;\'></div>');
-			$('body').append(outer);
-			ui.outer = outer;
-			var tp = outer[0].style;
-			tp['box-shadow'] = '4px 4px 2px #333';
-			if (ss.isValue(tp['box-shadow'])) {
-				tp['-moz-box-shadow'] = tp['box-shadow'];
-				tp['-webkit-box-shadow'] = tp['box-shadow'];
-			}
-			outer.css('position', 'absolute');
-			outer.css('padding', '2em 1em 1em 1em');
-			outer.css('left', ui.get_x() + 'px');
-			outer.css('top', ui.get_y() + 'px');
-			outer.css('width', $Client_ShuffUI_Number.op_Implicit$1(ui.get_width()));
-			outer.css('height', $Client_ShuffUI_Number.op_Implicit$1(ui.get_height()));
-			outer.css('display', ((ui.get_visible() === false) ? 'none' : 'block'));
-			var top = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  \'></div>');
-			outer.append(top);
-			var title = $('<div class=\'rounded\' style=\'margin:auto; background-color:white; width:40%; text-align:center;opacity:0.4;\'>' + ui.title + '</div>');
-			top.append(title);
-			var rightSideBar = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;\'></div>');
-			top.append(rightSideBar);
-			var x = $('<div class=\'rounded window-header-button window-close\' style=\'height:30px; vertical-align:top;background-color:white; width:6%; text-align:center;opacity:0.4;float:right;\'>X</div> ');
-			rightSideBar.append(x);
-			var max = $('<div class=\'rounded window-header-button window-maximize\' style=\'height:30px; vertical-align:top; background-color:white; width:6%; text-align:center;opacity:0.4;float:right;\'>[]</div>  ');
-			rightSideBar.append(max);
-			var min = $('<div class=\'rounded window-header-button window-minimize\' style=\'height:30px; vertical-align:top; background-color:white; width:6%; text-align:center;opacity:0.4;float:right;\'>_</div>  ');
-			rightSideBar.append(min);
-			var inner = $('<div class=\'window-inner\' id=\'window' + windowID + '\' style=\'background-color: #FDFEFE;width:100%; height:100%; \'> </div> ');
-			outer.append(inner);
-			ui.set_$window($('#window' + windowID));
-			var info;
-			this.$uiAreas.add(info = new $Client_ShuffUI_UIAreaInformation(outer, inner));
-			ui.information = info;
-			x.click(function(evt) {
-				outer.css('display', 'none');
-			});
-			var toggleSize = false;
-			var toggleMinSize = false;
-			max.click(function(evt1) {
-				toggleSize = !toggleSize;
-				if (toggleSize) {
-					outer.css('width', '100%');
-					outer.css('height', '100%');
-					outer.css('left', '0px');
-					outer.css('top', '0px');
-				}
-				else {
-					outer.css('width', '100%');
-					outer.css('height', '100%');
-				}
-			});
-			$('.window-minimize').click(function(evt2) {
-				toggleMinSize = !toggleMinSize;
-				if (toggleMinSize) {
-					outer.css('height', '25px');
-				}
-				else {
-					outer.css('height', $Client_ShuffUI_Number.op_Implicit$1(ui.get_height()) + 'px');
-					//                    outer.CSS("height", "100%");
-				}
-			});
-			outer.mousedown(Function.mkdel(this, function(evt3) {
-				this.focus(info);
-			}));
-			$('.window-header-button').button();
-			if (!ui.staticPositioning) {
-				outer.draggable({
-					cancel: '.window-inner, .CodeMirror, .CodeMirror-fullscreen, .CodeMirror-wrap, .CodeMirror-focused',
-					containment: 'window',
-					start: function(evt4, o) {
-					}
-				});
-				outer.resizable({
-					handles: 'n, e, s, w, ne, se, sw, nw',
-					resize: function(evt5, o1) {
-						ui.onResize(evt5, o1);
-					}
-				});
-			}
-			ui.element = inner;
-			//inner.Append(ui.Element);
-			return ui;
-		};
-	},
-	focus: function(info) {
-		for (var i = 0; i < this.$uiAreas.length; i++) {
-			this.$uiAreas[i].get_element().css('z-index', parseInt(this.$uiAreas[i].get_element().css('z-index')) - 1);
-		}
-		info.get_element().css('z-index', 1900);
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.ShuffWindow
-var $Client_ShuffUI_ShuffWindow$1 = function(T) {
-	var $type = function() {
-		this.outer = null;
-		this.data = T.getDefaultValue();
-		this.$3$WindowField = null;
-		this.title = null;
-		this.allowClose = false;
-		this.allowMinimize = false;
-		this.staticPositioning = false;
-		this.information = null;
-		$Client_ShuffUI_ShuffPanel.call(this);
-	};
-	$type.prototype = {
-		get_$window: function() {
-			return this.$3$WindowField;
-		},
-		set_$window: function(value) {
-			this.$3$WindowField = value;
-		},
-		get_$outer: function() {
-			return this.outer;
-		},
-		set_$outer: function(value) {
-			this.outer = value;
-			this.outer.resizable({ handles: 'n, e, s, w, ne, se, sw, nw', resize: Function.mkdel(this, this.onResize) });
-		},
-		onResize: function(e, uievent) {
-			this.set_width($Client_ShuffUI_Number.op_Implicit$3(uievent.size.width + 'px'));
-			this.set_height($Client_ShuffUI_Number.op_Implicit$3(uievent.size.height + 'px'));
-			for (var $t1 = 0; $t1 < this.elements.length; $t1++) {
-				var shuffElement = this.elements[$t1];
-				shuffElement.parentSizeChanged($Client_ShuffUI_SizeChangedEvent.$ctor(this.get_width(), this.get_height()));
-			}
-		},
-		bindCustomEvents: function() {
-			$Client_ShuffUI_ShuffElement.prototype.bindCustomEvents.call(this);
-			this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e) {
-				if (ss.isValue(this.get_$outer())) {
-					this.get_$outer().css('display', (e.visible ? 'block' : 'none'));
-				}
-			}));
-		}
-	};
-	$type.$ctor1 = function(data) {
-		this.outer = null;
-		this.data = T.getDefaultValue();
-		this.$3$WindowField = null;
-		this.title = null;
-		this.allowClose = false;
-		this.allowMinimize = false;
-		this.staticPositioning = false;
-		this.information = null;
-		$Client_ShuffUI_ShuffPanel.call(this);
-		this.data = data;
-	};
-	$type.$ctor1.prototype = $type.prototype;
-	Type.registerGenericClassInstance($type, $Client_ShuffUI_ShuffWindow$1, [T], function() {
-		return $Client_ShuffUI_ShuffPanel;
-	}, function() {
-		return [];
-	});
-	return $type;
-};
-Type.registerGenericClass(global, 'Client.ShuffUI.ShuffWindow$1', $Client_ShuffUI_ShuffWindow$1, 1);
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.SizeChangedEvent
-var $Client_ShuffUI_SizeChangedEvent = function() {
-};
-$Client_ShuffUI_SizeChangedEvent.$ctor = function(w, h) {
-	var $this = {};
-	$this.width = null;
-	$this.height = null;
-	$this.width = w;
-	$this.height = h;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.TextChangedEvent
-var $Client_ShuffUI_TextChangedEvent = function() {
-};
-$Client_ShuffUI_TextChangedEvent.$ctor = function(text, live) {
-	var $this = {};
-	$this.text = null;
-	$this.live = false;
-	$this.live = live;
-	$this.text = text;
-	return $this;
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.UIAreaInformation
-var $Client_ShuffUI_UIAreaInformation = function(element, inner) {
-	this.$1$ElementField = null;
-	this.$1$InnerField = null;
-	this.set_element(element);
-	this.set_inner(inner);
-};
-$Client_ShuffUI_UIAreaInformation.prototype = {
-	get_element: function() {
-		return this.$1$ElementField;
-	},
-	set_element: function(value) {
-		this.$1$ElementField = value;
-	},
-	get_inner: function() {
-		return this.$1$InnerField;
-	},
-	set_inner: function(value) {
-		this.$1$InnerField = value;
-	}
-};
-////////////////////////////////////////////////////////////////////////////////
-// Client.ShuffUI.VisibleChangedEvent
-var $Client_ShuffUI_VisibleChangedEvent = function() {
-};
-$Client_ShuffUI_VisibleChangedEvent.$ctor = function(visible) {
-	var $this = {};
-	$this.visible = false;
-	$this.visible = visible;
-	return $this;
-};
 Type.registerClass(global, 'Globals', $Globals, Object);
 Type.registerClass(global, 'LoginUI', $LoginUI, Object);
 Type.registerClass(global, 'Client.BuildSite', $Client_BuildSite, Object);
@@ -2096,24 +1220,4 @@ Type.registerClass(global, 'Client.Information.CodeAreaInformation', $Client_Inf
 Type.registerClass(global, 'Client.Information.DevAreaInformation', $Client_Information_DevAreaInformation, Object);
 Type.registerClass(global, 'Client.Information.HomeAreaInformation', $Client_Information_HomeAreaInformation, Object);
 Type.registerClass(global, 'Client.Information.QuestionAreaInformation', $Client_Information_QuestionAreaInformation, Object);
-Type.registerClass(global, 'Client.ShuffUI.ButtonClickedEvent', $Client_ShuffUI_ButtonClickedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.CodeMirrorInformation', $Client_ShuffUI_CodeMirrorInformation, Object);
-Type.registerClass(global, 'Client.ShuffUI.CodeMirrorInformationData', $Client_ShuffUI_CodeMirrorInformationData, Object);
-Type.registerClass(global, 'Client.ShuffUI.ItemClickedEvent', $Client_ShuffUI_ItemClickedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.Number', $Client_ShuffUI_Number, Object);
-Type.registerClass(global, 'Client.ShuffUI.ParentChangedEvent', $Client_ShuffUI_ParentChangedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.PositionChangedEvent', $Client_ShuffUI_PositionChangedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.ShuffElement', $Client_ShuffUI_ShuffElement, Object);
-Type.registerClass(global, 'Client.ShuffUI.ShuffLabel', $Client_ShuffUI_ShuffLabel, $Client_ShuffUI_ShuffElement);
-Type.registerClass(global, 'Client.ShuffUI.ShuffListBox', $Client_ShuffUI_ShuffListBox, $Client_ShuffUI_ShuffElement);
-Type.registerClass(global, 'Client.ShuffUI.ShuffListItem', $Client_ShuffUI_ShuffListItem, Object);
-Type.registerClass(global, 'Client.ShuffUI.ShuffPanel', $Client_ShuffUI_ShuffPanel, $Client_ShuffUI_ShuffElement);
-Type.registerClass(global, 'Client.ShuffUI.ShuffTextbox', $Client_ShuffUI_ShuffTextbox, $Client_ShuffUI_ShuffElement);
-Type.registerClass(global, 'Client.ShuffUI.ShuffUIManager', $Client_ShuffUI_ShuffUIManager, Object);
-Type.registerClass(global, 'Client.ShuffUI.SizeChangedEvent', $Client_ShuffUI_SizeChangedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.TextChangedEvent', $Client_ShuffUI_TextChangedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.UIAreaInformation', $Client_ShuffUI_UIAreaInformation, Object);
-Type.registerClass(global, 'Client.ShuffUI.VisibleChangedEvent', $Client_ShuffUI_VisibleChangedEvent, Object);
-Type.registerClass(global, 'Client.ShuffUI.ShuffButton', $Client_ShuffUI_ShuffButton, $Client_ShuffUI_ShuffElement);
-Type.registerClass(global, 'Client.ShuffUI.ShuffCodeEditor', $Client_ShuffUI_ShuffCodeEditor, $Client_ShuffUI_ShuffElement);
 $Client_BuildSite.instance = null;

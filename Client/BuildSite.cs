@@ -4,10 +4,10 @@ using System.Html;
 using System.Runtime.CompilerServices;
 using Client;
 using Client.Information;
-using Client.ShuffUI;
 using CommonWebLibraries;
 using Models;
 using Models.GameManagerModels;
+using ShuffUI;
 using jQueryApi;
 namespace Client
 {
@@ -79,6 +79,7 @@ namespace Client
                                                                                                           true,
                                                                                                           () => scriptLoader.Load(new[] {
                                                                                                                                                 url + "lib/RawDeflate.js",
+                                                                                                                        url + "ShuffUI.js",
                                                                                                                                         },
                                                                                                                                   true,
                                                                                                                                   ready)))));
@@ -86,7 +87,7 @@ namespace Client
 
         private void ready()
         {
-            var elem = Document.GetElementById("loading");
+            var elem = Document.GetElementById("loading"); 
             elem.ParentNode.RemoveChild(elem);
 
             var stats = new XStats();

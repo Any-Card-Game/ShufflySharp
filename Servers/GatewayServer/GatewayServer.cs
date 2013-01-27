@@ -85,7 +85,12 @@ namespace GatewayServer
                                             users[data.UserName] = user;
                                             sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true,user.Hash), user.ToUserModel());
                                         });
-                              socket.On("disconnect", (string data) => users.Remove(user.UserName));
+                              socket.On("disconnect", (string data) => {
+                                                          if (user != null) {
+
+                                                              users.Remove(user.UserName);
+                                                          }
+                                                      });
                           });
         }
 

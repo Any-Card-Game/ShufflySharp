@@ -1,5 +1,67 @@
 
 ////////////////////////////////////////////////////////////////////////////////
+// CommonLibraries.DelegateOrValue
+var $CommonLibraries_DelegateOrValue$1 = function(T) {
+	var $type = function(d) {
+		this.isValue = false;
+		this.$method = null;
+		this.$oldValue = T.getDefaultValue();
+		this.$value = T.getDefaultValue();
+		this.$1$StaticValueChangesField = null;
+		this.$method = d;
+		this.isValue = false;
+		this.$oldValue = this.$method();
+	};
+	$type.prototype = {
+		get_staticValueChanges: function() {
+			return this.$1$StaticValueChangesField;
+		},
+		set_staticValueChanges: function(value) {
+			this.$1$StaticValueChangesField = value;
+		},
+		$evaluate: function() {
+			if (this.isValue === true) {
+				return this.$value;
+			}
+			else if (this.isValue === false) {
+				var val = this.$method();
+				if (val !== this.$oldValue) {
+					this.get_staticValueChanges()(val);
+				}
+				this.$oldValue = val;
+				return val;
+			}
+			return T.getDefaultValue();
+		}
+	};
+	$type.$ctor1 = function(d) {
+		this.isValue = false;
+		this.$method = null;
+		this.$oldValue = T.getDefaultValue();
+		this.$value = T.getDefaultValue();
+		this.$1$StaticValueChangesField = null;
+		this.$value = d;
+		this.isValue = true;
+	};
+	$type.$ctor1.prototype = $type.prototype;
+	$type.op_Implicit$2 = function(d) {
+		return new (Type.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]).$ctor1)(d);
+	};
+	$type.op_Implicit$1 = function(d) {
+		return new (Type.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]))(d);
+	};
+	$type.op_Implicit = function(d) {
+		return d.$evaluate();
+	};
+	Type.registerGenericClassInstance($type, $CommonLibraries_DelegateOrValue$1, [T], function() {
+		return Object;
+	}, function() {
+		return [];
+	});
+	return $type;
+};
+Type.registerGenericClass(global, 'CommonLibraries.DelegateOrValue$1', $CommonLibraries_DelegateOrValue$1, 1);
+////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.ExtensionMethods
 var $CommonLibraries_ExtensionMethods = function() {
 };
@@ -39,6 +101,29 @@ $CommonLibraries_Help.sanitize = function(name, value) {
 		return value;
 	}
 	return null;
+};
+////////////////////////////////////////////////////////////////////////////////
+// CommonLibraries.Number
+var $CommonLibraries_Number = function(s) {
+	this.$value = null;
+	this.$value = s.toString();
+};
+$CommonLibraries_Number.$ctor1 = function(s) {
+	this.$value = null;
+	this.$value = s;
+};
+$CommonLibraries_Number.$ctor1.prototype = $CommonLibraries_Number.prototype;
+$CommonLibraries_Number.op_Implicit = function(d) {
+	return parseFloat(d.$value);
+};
+$CommonLibraries_Number.op_Implicit$3 = function(d) {
+	return new $CommonLibraries_Number.$ctor1(d);
+};
+$CommonLibraries_Number.op_Implicit$2 = function(d) {
+	return new $CommonLibraries_Number(d);
+};
+$CommonLibraries_Number.op_Implicit$1 = function(d) {
+	return ((d.$value.indexOf('%') < 0) ? (d.$value + 'px') : d.$value);
 };
 ////////////////////////////////////////////////////////////////////////////////
 // CommonLibraries.Point
@@ -126,5 +211,6 @@ Type.registerGenericClass(global, 'CommonLibraries.TypeOrFunction$1', $CommonLib
 Type.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods, Object);
 Type.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid, Object);
 Type.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help, Object);
+Type.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number, Object);
 Type.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point, Object);
 Type.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size, Object);

@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
-namespace Client.ShuffUI
+namespace CommonLibraries
 {
     public class DelegateOrValue<T>
     {

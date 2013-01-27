@@ -480,20 +480,6 @@
     <Compile Include="PageHandler.cs" />
     <Compile Include="ScriptLoader.cs" />
     <Compile Include="ClientGameManager.cs" />
-    <Compile Include="ShuffUI\CodeMirrorInformation.cs" />
-    <Compile Include="ShuffUI\DelegateOrValue.cs" />
-    <Compile Include="ShuffUI\ImportedExtensionMethods.cs" />
-    <Compile Include="ShuffUI\Number.cs" />
-    <Compile Include="ShuffUI\ShuffButton.cs" />
-    <Compile Include="ShuffUI\ShuffCodeEditor.cs" />
-    <Compile Include="ShuffUI\ShuffElement.cs" />
-    <Compile Include="ShuffUI\ShuffLabel.cs" />
-    <Compile Include="ShuffUI\ShuffListBox.cs" />
-    <Compile Include="ShuffUI\ShuffPanel.cs" />
-    <Compile Include="ShuffUI\ShuffTextbox.cs" />
-    <Compile Include="ShuffUI\ShuffUIEvents.cs" />
-    <Compile Include="ShuffUI\ShuffUIManager.cs" />
-    <Compile Include="ShuffUI\ShuffWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
@@ -547,6 +533,10 @@
     <ProjectReference Include="..\Servers\GatewayServer\GatewayServer.csproj">
       <Project>{DF31877E-A85A-4FE1-AB8D-5025011F4EAA}</Project>
       <Name>GatewayServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\ShuffUI\ShuffUI.csproj">
+      <Project>{B874741A-A80A-41ED-9F4C-72ECA778C59F}</Project>
+      <Name>WebUI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

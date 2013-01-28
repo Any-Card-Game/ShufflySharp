@@ -14,7 +14,7 @@ namespace GatewayServer
 
         public GatewayServer()
         {
-            ExtensionMethods.debugger("");
+            //ExtensionMethods.debugger("");
             var http = Global.Require<Http>("http");
             var app = http.CreateServer((req, res) => res.End());
 
@@ -24,7 +24,7 @@ namespace GatewayServer
             var port = 1800 + Math.Truncate((int) ( Math.Random() * 4000 ));
 
             app.Listen(port);
-            io.Set("log level", 1);
+            io.Set("log level", 0);
             var myName = "Gateway " + Guid.NewGuid();
 
             ps = new PubSub(() => {
@@ -85,7 +85,7 @@ namespace GatewayServer
                                             user.UserName = data.UserName;
                                             user.Hash = data.UserName;
                                             users[data.UserName] = user;
-                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true, user.Hash), user.ToUserModel());
+                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true, user.ToUserModel()), user.ToUserModel());
                                         });
                               socket.On("disconnect",
                                         (string data) => {

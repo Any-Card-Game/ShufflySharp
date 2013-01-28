@@ -31,16 +31,6 @@
 	$ShuffUI_DockStyle.prototype = { none: 0, fill: 1, fillWidth: 2, fillHeight: 3 };
 	Type.registerEnum(global, 'ShuffUI.DockStyle', $ShuffUI_DockStyle, false);
 	////////////////////////////////////////////////////////////////////////////////
-	// ShuffUI.ItemClickedEvent
-	var $ShuffUI_ItemClickedEvent = function() {
-	};
-	$ShuffUI_ItemClickedEvent.$ctor = function(item) {
-		var $this = {};
-		$this.item = null;
-		$this.item = item;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ParentChangedEvent
 	var $ShuffUI_ParentChangedEvent = function() {
 	};
@@ -349,7 +339,7 @@
 		var but = $('<span></span>');
 		this.element = but;
 		but.css('position', 'absolute');
-		this.set_text(Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(text));
+		this.set_text(text);
 		this.set_x(x);
 		this.set_y(y);
 		this.set_visible(true);
@@ -394,7 +384,6 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffListBox
 	var $ShuffUI_ShuffListBox = function(x, y, width, height) {
-		this.itemCreation = null;
 		this.onClick = null;
 		this.items = null;
 		$ShuffUI_ShuffElement.call(this);
@@ -418,6 +407,7 @@
 				this.onClick(item);
 			}
 		}));
+		this.update();
 	};
 	$ShuffUI_ShuffListBox.prototype = {
 		bindCustomEvents: function() {
@@ -429,6 +419,10 @@
 		update: function() {
 			var theme = 'getTheme()';
 			this.element.jqxListBox({ source: this.items, width: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(this.get_width())), height: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(this.get_height())), theme: theme });
+		},
+		clearItems: function() {
+			this.items.clear();
+			this.update();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -451,7 +445,7 @@
 	// ShuffUI.ShuffListItem
 	var $ShuffUI_ShuffListItem = function(label, value) {
 		this.label = null;
-		this.value = 0;
+		this.value = null;
 		this.label = label;
 		this.value = value;
 	};
@@ -778,7 +772,6 @@
 	Type.registerClass(global, 'ShuffUI.ButtonClickedEvent', $ShuffUI_ButtonClickedEvent, Object);
 	Type.registerClass(global, 'ShuffUI.CodeMirrorInformation', $ShuffUI_CodeMirrorInformation, Object);
 	Type.registerClass(global, 'ShuffUI.CodeMirrorInformationData', $ShuffUI_CodeMirrorInformationData, Object);
-	Type.registerClass(global, 'ShuffUI.ItemClickedEvent', $ShuffUI_ItemClickedEvent, Object);
 	Type.registerClass(global, 'ShuffUI.ParentChangedEvent', $ShuffUI_ParentChangedEvent, Object);
 	Type.registerClass(global, 'ShuffUI.PositionChangedEvent', $ShuffUI_PositionChangedEvent, Object);
 	Type.registerClass(global, 'ShuffUI.ShuffElement', $ShuffUI_ShuffElement, Object);

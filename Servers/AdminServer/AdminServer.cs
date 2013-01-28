@@ -38,13 +38,10 @@ namespace AdminServer
 
             Global.Require<Http>("http").CreateServer(handler).Listen(8090);
 
-            debug = false;
+            debug = true;
             Global.SetInterval(() => { Console.Log("keep alive " + new DateTime().ToString().Substring(17, 24)); }, 10 * 1000);
 
-            if (debug) {
-                nodeInspector = runProcess("node-inspector", new string[0]);
-                Console.Log("node-inspector Started");
-            }
+      
 
             Global.Process.On("exit",
                               () => {
@@ -55,7 +52,13 @@ namespace AdminServer
 
             if (debug)
                 onAsk("d", true);
-            // onAsk("d", true);
+              onAsk("d", true);
+              if (debug)
+              {
+                  nodeInspector = runProcess("node-inspector", new string[0]);
+                  Console.Log("node-inspector Started");
+              }
+
             onAsk("s");
         }
 

@@ -26,7 +26,7 @@ namespace Client.UIWindow
                                                                              Height = 275,
                                                                              AllowClose = true,
                                                                              AllowMinimize = true,
-                                                                             Visible = true
+                                                                             Visible = false
                                                                      });
 
             Question = UIWindow.AddElement(new ShuffLabel(20, 40, ""));
@@ -49,8 +49,7 @@ pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel
 questionArea.Visible = false;
 }*/
                                                                                              });
-
-                       AnswerBox.Update();
+                 
                    };
 
             AnswerBox = UIWindow.AddElement(new ShuffListBox(30, 65, 215, 25 * 5) {

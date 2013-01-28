@@ -1,138 +1,129 @@
-using System;
+using System.Collections.Generic;
+using System.Html;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using Models.GameManagerModels;
+using Models.SiteManagerModels;
 using ShuffUI;
-using jQueryApi;
 namespace Client.UIWindow
 {
     public class HomeUI
     {
+        private readonly PageHandler myPageHandler;
+        private readonly ShuffUIManager myShuffUIManager;
+        private ShuffLabel lblHeader;
+        private ShuffListBox myGameTypeList;
+        private List<RoomData> myLoadedRooms;
+        private ShuffListBox myRoomsList;
+        private ShuffListBox myRoomPlayers;
+        private ShuffLabel myRoomName;
+        private ShuffLabel myRoomGameType;
+        private ShuffButton myJoinRoom;
+        private ShuffButton mySpectateRoom;
+        private ShuffButton myCreateGameType;
+        private ShuffButton myCreateRoom;
         [IntrinsicProperty]
         public ShuffWindow UIWindow { get; set; }
-        [IntrinsicProperty]
-        public Action<GameAnswerModel> loadRoomInfos { get; set; }
-        [IntrinsicProperty]
-        public ShuffListBox userList { get; set; }
-        [IntrinsicProperty]
-        public ShuffListBox gameList { get; set; }
-        [IntrinsicProperty]
-        public ShuffTextbox txtUserName { get; set; }
-        [IntrinsicProperty]
-        public ShuffButton btnStartGame { get; set; }
-        [IntrinsicProperty]
-        public Action<GameRoomModel> loadRoomInfo { get; set; }
 
         public HomeUI(ShuffUIManager shuffUIManager, PageHandler pageHandler)
         {
+            myShuffUIManager = shuffUIManager;
+            myPageHandler = pageHandler;
+
+            pageHandler.ClientSiteManager.OnGetGameTypesReceived += PopulateGames;
+            pageHandler.ClientSiteManager.OnGetRoomsReceived += PopulateRooms;
+
             UIWindow = shuffUIManager.CreateWindow(new ShuffWindow() {
                                                                              Title = "CardGame",
-                                                                             X = jQuery.Select("body").GetInnerWidth() - 500,
+                                                                             X = 400,
                                                                              Y = 100,
-                                                                             Width = 420,
+                                                                             Width = 600,
                                                                              Height = 450,
                                                                              AllowClose = true,
                                                                              AllowMinimize = true,
                                                                              Visible = false
                                                                      });
 
-            UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
+            lblHeader = UIWindow.AddElement(new ShuffLabel(40, 44, "Please Login!"));
 
-            /*home.AddButton(new ShuffButton()
+            UIWindow.AddElement(new ShuffLabel(30, 80, "Game Types"));
+            myGameTypeList = UIWindow.AddElement(new ShuffListBox(25, 100, 150, 300) {
+                                                                                             OnClick = (item) => { myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string) item.Value)); }
+                                                                                     });
+
+            myCreateGameType = UIWindow.AddElement(new ShuffButton(45, 410, 100, 40, "Create New Game!", c => { Window.Alert("Insert Developer UI Here"); }));
+
+            UIWindow.AddElement(new ShuffLabel(240, 80, "Rooms"));
+
+            myRoomsList = UIWindow.AddElement(new ShuffListBox(200, 100, 175, 300)
             {
-                X = 280,
-                Y = 84,
-                Width = "150",
-                Height = "25",
-                Text = "Create Game",
-                Click = (e) =>
+                OnClick = (item) =>
                 {
-
-                    pageHandler.gateway.Emit("Area.Game.Create", new { user = new { userName = home.Data.txtUserName[0].NodeValue } }, devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
-
-
+                    var room = myLoadedRooms.First(a => a.RoomName == (string)item.Value);
+                    PopulateRoom(room);
                 }
-            });*/
+            });
+            myCreateRoom = UIWindow.AddElement(new ShuffButton(225, 410, 100, 40, "Create New Room!", c => { Window.Alert("Insert Insert Here"); }));
 
-            btnStartGame = UIWindow.AddElement(new ShuffButton(280, 164, 120, 25, "Start Game", (e) => { pageHandler.ClientGameManager.StartGame(new StartGameRequestModel(pageHandler.gameStuff.RoomID)); }));
+            myRoomPlayers = UIWindow.AddElement(new ShuffListBox(400, 200, 175, 250){Visible=false});
 
-            var randomName = "";
-            var ra = Math.Random() * 10;
-            for (var i = 0; i < ra; i++) {
-                randomName += String.FromCharCode((char) ( 65 + ( Math.Random() * 26 ) ));
+
+            myRoomGameType = UIWindow.AddElement(new ShuffLabel(400, 100, "") { Visible = false });
+            myRoomName = UIWindow.AddElement(new ShuffLabel(400, 130, "") { Visible = false });
+            myJoinRoom = UIWindow.AddElement(new ShuffButton(410, 160, 75, 25, "Join!", c =>
+            {
+                Window.Alert("Joined!");
+            }) { Visible = false });
+
+            mySpectateRoom = UIWindow.AddElement(new ShuffButton(490, 160, 75, 25, "Spectate!", c =>
+            {
+                Window.Alert("Spectate!");
+            }) { Visible = false });
+
+            //UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
+        }
+
+        public void UserLoggedIn()
+        {
+            lblHeader.Text = string.Format("Welcome: {0}!", myPageHandler.ClientInfo.LoggedInUser.UserName);
+            myPageHandler.ClientSiteManager.GetGameTypes();
+            UIWindow.Visible = true;
+        }
+
+        private void PopulateGames(GetGameTypesReceivedResponse o)
+        {
+            myGameTypeList.ClearItems();
+
+            foreach (var gameType in o.GameTypes) {
+                myGameTypeList.AddItem(new ShuffListItem(gameType.Name, gameType.Name));
             }
 
-            txtUserName = UIWindow.AddElement(new ShuffTextbox(130, 43, 130, 20, randomName, "Username="));
+            myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest(o.GameTypes[0].Name));
+        }
 
-            /*home.Data.gameList = home.AddListBox(new ShuffListBox()
-            {
-                X = 30,
-                Y = 85,
-                Width = "215",
-                Height = "150".ToString(),
-                Label = "Rooms",
-                Click = (e) =>
-                {
-                    pageHandler.gateway.Emit("Area.Game.Join", new { roomID = "foo", user = new { userName = home.Data.txtUserName.GetValue() } }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-                }
-            });*/
+        private void PopulateRooms(GetRoomsResponse o)
+        {
+            myRoomsList.ClearItems();
+            myLoadedRooms = o.Rooms;
+            foreach (var room in o.Rooms) {
+                myRoomsList.AddItem(new ShuffListItem(room.RoomName, room.RoomName));
+            }
+            PopulateRoom(o.Rooms[0]);
+        }
 
-            /*
-            home.Data.userList = home.AddElement(new ShuffListBox(new ShuffListBoxOptions() {
-                    X = 30,
-                    Y = 280,
-                    Width = 215,
-                    Height = 25 * 5,
-                    Label = "Users"
-                }));
-*/
+        private void PopulateRoom(RoomData roomData)
+        {
+            myRoomPlayers.Visible = true;
+            myRoomName.Visible = true;
+            myRoomGameType.Visible = true;
+            myJoinRoom.Visible = true;
+            mySpectateRoom.Visible = true;
 
-            loadRoomInfo = (room) => {
-                               /*
-
-home.Data.userList.Remove();
-home.Data.btnStartGame.CSS("display","block");
-
-var users = new List<string>();
-
-for (var i = 0; i < room.players.length; i++) {
-
-users.Add(room.players[i]);
-
-}
-
-
-home.Data.userList = home.AddListBox(new ShuffListBox(){
-X= 30,
-Y= 280,
-Width= "215",
-Height = "125",
-Label= "Users",
-Items= users
-});*/
-                           };
-
-            loadRoomInfos = (room) => {
-                                /*   home.Data.gameList.Remove();
-
-   var rooms = new List<string>();
-
-for (var i = 0; i < room.length; i++) {
-//rooms.Add({ label= room[i].name, value= room[i].roomID });
-}
-
-
-home.Data.gameList = home.AddListBox(new ShuffListBox(){
-X= 30,
-Y= 85,
-Width = "215",
-Height = "150",
-Label= "Rooms",
-Items= rooms,
-Click=  (item)=> {
-pageHandler.gateway.Emit("Area.Game.Join", new { roomID= item.value, user=new  { userName= home.Data.txtUserName.GetValue()} }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-}
-});*/
-                            };
+            myRoomPlayers.ClearItems();
+            foreach (var userModel in roomData.Players) {
+                myRoomPlayers.AddItem(new ShuffListItem(userModel.UserName, userModel.UserName));
+            }
+            myRoomName.Text = string.Format("Room: {0}", roomData.RoomName);
+            myRoomGameType.Text = string.Format("Game Type: {0}", roomData.GameType);
         }
     }
 }

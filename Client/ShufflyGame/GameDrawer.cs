@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Html;
 using CommonLibraries;
 using global;
 using jQueryApi;
-namespace Client
+namespace Client.ShufflyGame
 {
     public class GameDrawer
     {

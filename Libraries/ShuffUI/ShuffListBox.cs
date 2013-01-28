@@ -7,11 +7,9 @@ using jQueryApi;
 namespace ShuffUI
 {
     public class ShuffListBox : ShuffElement
-    {
+    { 
         [IntrinsicProperty]
-        public Func<ShuffListItem, int, jQueryObject> ItemCreation { get; set; }
-        [IntrinsicProperty]
-        public ShuffUIEvent<ItemClickedEvent> OnClick { get; set; }
+        public ShuffUIEvent<ShuffListItem> OnClick { get; set; }
         [IntrinsicProperty]
         public List<ShuffListItem> Items { get; set; }
 
@@ -38,10 +36,13 @@ namespace ShuffUI
 
             but.Bind("select",
                      (e) => {
-                         var item = ExtensionMethods.me(e).args.item;
+                         var item = ExtensionMethods.Cast<ShuffListItem>((object)(e.me().args.item));
                          if (OnClick != null)
                              OnClick(item);
                      });
+
+
+            Update();
         }
 
         public override void BindCustomEvents() {}
@@ -57,15 +58,23 @@ namespace ShuffUI
             var theme = "getTheme()".me();
             ExtensionMethods.me(Element).jqxListBox(new {source = Items, width = (int) Width, height = (int) Height, theme = theme});
         }
+
+        public void ClearItems()
+        {
+
+            Items.Clear();
+            Update();
+
+        }
     }
     public class ShuffListItem
     {
         [IntrinsicProperty]
         public string Label { get; set; }
         [IntrinsicProperty]
-        public int Value { get; set; }
+        public object Value { get; set; }
 
-        public ShuffListItem(string label, int value)
+        public ShuffListItem(string label, object value)
         {
             Label = label;
             Value = value;

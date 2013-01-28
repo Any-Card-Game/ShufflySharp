@@ -287,10 +287,7 @@ namespace GameServer
                                               });
         }
 
-        /*qManager.AddChannel ("Area.Game.GetGames", (sender, data) =>
-            {
-                qManager.SendMessage(sender, sender.Gateway, "Area.Game.RoomInfos", Json.Parse(Json.Stringify(rooms, Help.Sanitize)));
-            });*/
+  
         /*
              
 

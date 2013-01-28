@@ -45,6 +45,9 @@
     <Compile Include="GameManagerModels\GameSourceResponseModel.cs" />
     <Compile Include="GameManagerModels\JoinGameRequestModel.cs" />
     <Compile Include="GameManagerModels\StartGameRequestModel.cs" />
+    <Compile Include="SiteManagerModels\GameTypeModel.cs" />
+    <Compile Include="SiteManagerModels\GetGameTypesReceivedResponse.cs" />
+    <Compile Include="SiteManagerModels\GetRoomsRequest.cs" />
     <Compile Include="SiteManagerModels\SiteLoginRequest.cs" />
     <Compile Include="SocketClientMessageModel.cs" />
     <Compile Include="UserLoginResponse.cs" />

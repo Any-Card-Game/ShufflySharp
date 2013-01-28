@@ -5,7 +5,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 	var $GatewayServer_GatewayServer = function() {
 		this.$ps = null;
 		this.users = {};
-		debugger;
+		//ExtensionMethods.debugger("");
 		var http = require('http');
 		var app = http.createServer(function(req, res) {
 			res.end();
@@ -15,7 +15,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		var queueManager;
 		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
 		app.listen(port);
-		io.set('log level', 1);
+		io.set('log level', 0);
 		var myName = 'Gateway ' + CommonLibraries.Guid.newGuid();
 		this.$ps = new CommonShuffleLibrary.PubSub(Function.mkdel(this, function() {
 			this.$ps.subscribe('PUBSUB.GatewayServers.Ping', Function.mkdel(this, function(message) {
@@ -53,16 +53,16 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 						break;
 					}
 				}
-				queueManager.sendMessage(user.toUserModel(), ss.coalesce(data.gameServer, channel), data.channel, data.content);
+				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), ss.coalesce(data.gameServer, channel), data.channel, data.content);
 			});
 			socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
-				user = new Models.UserSocketModel();
-				user.set_password(data1.password);
+				user = Models.UserSocketModel.$ctor();
+				user.password = data1.password;
 				user.socket = socket;
 				user.userName = data1.userName;
-				user.set_hash(data1.userName);
+				user.hash = data1.userName;
 				this.users[data1.userName] = user;
-				$GatewayServer_GatewayServer.$sendMessage(user, 'Area.Main.Login.Response', { successful: true, hash: user.get_hash() }, user.toUserModel());
+				$GatewayServer_GatewayServer.$sendMessage(user, 'Area.Main.Login.Response', { successful: true, user: Models.UserSocketModel.toUserModel(user) }, Models.UserSocketModel.toUserModel(user));
 			}));
 			socket.on('disconnect', Function.mkdel(this, function(data2) {
 				if (ss.isNullOrUndefined(user)) {

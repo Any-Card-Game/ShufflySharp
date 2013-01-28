@@ -37,15 +37,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
-    <Compile Include="GameDrawer.cs" />
-    <Compile Include="GameInfo.cs" />
-    <Compile Include="Gateway.cs" />
+    <Compile Include="ClientInformation.cs" />
+    <Compile Include="Libs\Gateway.cs" />
+    <Compile Include="Libs\ScriptLoader.cs" />
+    <Compile Include="Libs\TimeTracker.cs" />
     <Compile Include="Managers\ClientDebugManager.cs" />
     <Compile Include="Managers\ClientGameManager.cs" />
     <Compile Include="Managers\ClientSiteManager.cs" />
     <Compile Include="PageHandler.cs" />
-    <Compile Include="ScriptLoader.cs" />
+    <Compile Include="ShufflyGame\GameDrawer.cs" />
     <Compile Include="UIWindow\CodeEditorUI.cs" />
+    <Compile Include="UIWindow\ActiveLobbyUI.cs" />
     <Compile Include="UIWindow\DebugUI.cs" />
     <Compile Include="UIWindow\HomeUI.cs" />
     <Compile Include="UIWindow\LoginUI.cs" />
@@ -123,6 +125,9 @@
     <Reference Include="Script.jQuery.UI, Version=1.7.0.0, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Saltarelle.jQuery.UI.1.7.1\lib\Script.jQuery.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Script.Linq">
+      <HintPath>..\packages\Saltarelle.Linq.1.7.1\lib\Script.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Script.Web, Version=1.7.0.0, Culture=neutral, PublicKeyToken=8fc0e3af5abcb6c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

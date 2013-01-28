@@ -62,10 +62,7 @@ namespace Client.UIWindow
             UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => beginGame()));
 
             ShuffButton but = null;
-            UIWindow.AddElement(but = new ShuffButton(280,
-                                                      84,
-                                                      150,
-                                                      25,
+            UIWindow.AddElement(but = new ShuffButton(280,84,150,25,
                                                       new Func<string>(() => "Game: " + selectedGame),
                                                       (e) => {
                                                           if (selectedGame == "Sevens") selectedGame = "BlackJack";
@@ -94,16 +91,7 @@ namespace Client.UIWindow
              });*/
 
             ShuffListBox pop;
-            var propBox = UIWindow.AddElement(pop = new ShuffListBox(25, 200, 250, 250) {
-                                                                                                ItemCreation = (item, index) => {
-                                                                                                                   var ik = jQuery.Select(string.Format("<div style='width=100%;height=25px; background-color={0};'></div>", ( index % 2 == 0 ? "red" : "green" )));
-                                                                                                                   var ikc = jQuery.Select(string.Format("<div style='width=50%;height=25px; float=left;'>{0}</div>", item.Label));
-                                                                                                                   ik.Append(ikc);
-                                                                                                                   var ikd = jQuery.Select(string.Format("<input type='text' style='width=48%;height=25px' value='{0}' />", item.Value));
-                                                                                                                   ik.Append(ikd);
-                                                                                                                   return ik;
-                                                                                                               }
-                                                                                        });
+           UIWindow.AddElement(pop = new ShuffListBox(25, 200, 250, 250)  );
 
             pop.AddItem(new ShuffListItem("foos", 99));
 

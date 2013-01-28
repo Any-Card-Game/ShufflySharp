@@ -28,14 +28,10 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$__dirname = '/usr/local/src/new/';
 		this.$nonDebuggable = ['node-inspector', 'pkill'];
 		require('http').createServer(Function.mkdel(this, this.$handler)).listen(8090);
-		this.$debug = false;
+		this.$debug = true;
 		setInterval(function() {
 			console.log('keep alive ' + (new Date()).toString().substring(17, 24));
 		}, 10000);
-		if (this.$debug) {
-			this.$nodeInspector = this.$runProcess('node-inspector', [], 0, null);
-			console.log('node-inspector Started');
-		}
 		process.on('exit', Function.mkdel(this, function() {
 			console.log('Exiting ');
 			this.$onAsk('k', false);
@@ -44,7 +40,11 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		if (this.$debug) {
 			this.$onAsk('d', true);
 		}
-		// onAsk("d", true);
+		this.$onAsk('d', true);
+		if (this.$debug) {
+			this.$nodeInspector = this.$runProcess('node-inspector', [], 0, null);
+			console.log('node-inspector Started');
+		}
 		this.$onAsk('s', false);
 	};
 	$AdminServer_AdminServer.prototype = {

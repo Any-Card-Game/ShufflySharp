@@ -18,17 +18,7 @@ namespace ShuffUI
             Y = y;
         }
     }
-    [Serializable]
-    public class ItemClickedEvent
-    {
-        public ShuffListItem Item { get; set; }
-
-        public ItemClickedEvent(ShuffListItem item)
-        {
-            Item = item;
-        }
-    }
-    [Serializable]
+     [Serializable]
     public class SizeChangedEvent
     {
         [IntrinsicProperty]

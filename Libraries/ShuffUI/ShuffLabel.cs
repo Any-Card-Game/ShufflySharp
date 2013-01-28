@@ -17,7 +17,7 @@ namespace ShuffUI
         }
         public ShuffUIEvent<TextChangedEvent> TextChanged { get; set; }
 
-        public ShuffLabel(int x, int y, DelegateOrValue<string> text)
+        public ShuffLabel(int x, int y, string text)
         {
             var but = jQuery.Select("<span></span>");
             Element = but;
@@ -40,7 +40,7 @@ namespace ShuffUI
         [IntrinsicProperty]
         public T Data { get; set; }
 
-        public ShuffLabel(T data, int x, int y, DelegateOrValue<string> text)
+        public ShuffLabel(T data, int x, int y, string text)
                 : base(x, y, text)
         {
             Data = data;

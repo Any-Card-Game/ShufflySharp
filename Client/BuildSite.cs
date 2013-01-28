@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Html;
 using System.Runtime.CompilerServices;
+using Client.Libs;
 using CommonWebLibraries;
 using ShuffUI;
 using jQueryApi;
@@ -109,9 +110,8 @@ namespace Client
                                            },
                                            false);
 
-            var pageHandler = new PageHandler(gatewayServerAddress, this);
+            var pageHandler = new PageHandler(gatewayServerAddress);
 
-            shuffUIManager = new ShuffUIManager();
 
             /*
 

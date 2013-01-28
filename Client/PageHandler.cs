@@ -1,32 +1,22 @@
 ﻿using System;
 using System.Html;
 using System.Runtime.CompilerServices;
+using Client.Libs;
 using Client.Managers;
+using Client.ShufflyGame;
 using Client.UIWindow;
 using CommonLibraries;
 using CommonWebLibraries;
 using Models.GameManagerModels;
+using ShuffUI;
 using global;
 namespace Client
 {
-    [Serializable]
-    public class TimeTracker
-    {
-        public int NumOfTimes { get; set; }
-        public DateTime StartTime { get; set; }
-        public int TimeValue { get; set; }
-        public DateTime EndTime { get; set; }
-
-        public TimeTracker()
-        {
-            StartTime = DateTime.Now;
-        }
-    }
     public class PageHandler
     {
-        private readonly BuildSite buildSite;
-        public GameDrawer gameDrawer;
-        public GameInfo gameStuff;
+        public readonly GameDrawer gameDrawer; 
+        private readonly ShuffUIManager shuffUIManager;
+        private string RoomID;
         [IntrinsicProperty]
         public ClientGameManager ClientGameManager { get; set; }
         [IntrinsicProperty]
@@ -46,10 +36,14 @@ namespace Client
         [IntrinsicProperty]
         public LoginUI LoginUI { get; set; }
 
-        public PageHandler(string gatewayServerAddress, BuildSite buildSite)
+        [IntrinsicProperty]
+        public ClientInformation ClientInfo { get; set; }
+
+
+        public PageHandler(string gatewayServerAddress)
         {
-            this.buildSite = buildSite;
-            gameStuff = new GameInfo();
+
+            shuffUIManager = new ShuffUIManager(); 
 
             gameDrawer = new GameDrawer();
             TimeTracker = new TimeTracker();
@@ -58,12 +52,14 @@ namespace Client
             ClientGameManager = new ClientGameManager(gateway);
             ClientSiteManager = new ClientSiteManager(gateway);
             ClientDebugManager = new ClientDebugManager(gateway);
+            ClientInfo = new ClientInformation();
 
-            LoginUI = new LoginUI(buildSite.shuffUIManager, this);
-            HomeUI = new HomeUI(buildSite.shuffUIManager, this);
-            DebugUI = new DebugUI(buildSite.shuffUIManager, this);
-            QuestionUI = new QuestionUI(buildSite.shuffUIManager, this);
-            CodeEditorUI = new CodeEditorUI(buildSite.shuffUIManager, this);
+
+            LoginUI = new LoginUI(shuffUIManager, this);
+            HomeUI = new HomeUI(shuffUIManager, this);
+            DebugUI = new DebugUI(shuffUIManager, this);
+            QuestionUI = new QuestionUI(shuffUIManager, this);
+            CodeEditorUI = new CodeEditorUI(shuffUIManager, this);
 
             /*gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
             gateway.On("Area.Lobby.ListRooms.Response", (data) => { Console.Log(data); });*/
@@ -84,8 +80,8 @@ namespace Client
         {
             ClientGameManager.OnGetRoomInfo += roomInfo => {
                                                    ClientGameManager.GameServer = roomInfo.GameServer;
-                                                   gameStuff.RoomID = roomInfo.RoomID;
-                                                   HomeUI.loadRoomInfo(roomInfo);
+                                                   RoomID = roomInfo.RoomID;
+//                                                   HomeUI.loadRoomInfo(roomInfo);
                                                    DebugUI.loadRoomInfo(roomInfo);
                                                };
 
@@ -97,7 +93,7 @@ namespace Client
                             });
             */
             ClientGameManager.OnGetDebugLog += gameAnswer => {
-                                                   HomeUI.loadRoomInfos(gameAnswer);
+//                                                   HomeUI.loadRoomInfos(gameAnswer);
 
                                                    var lines = CodeEditorUI.console.Information.editor.GetValue().Split("\n");
                                                    lines = lines.Extract(lines.Length - 40, 40);
@@ -106,7 +102,7 @@ namespace Client
                                                    CodeEditorUI.console.Information.editor.SetCursor(CodeEditorUI.console.Information.editor.LineCount(), 0);
                                                };
             ClientGameManager.OnGetDebugBreak += gameAnswer => {
-                                                     HomeUI.loadRoomInfos(gameAnswer);
+//                                                     HomeUI.loadRoomInfos(gameAnswer);
 
                                                      var cm = CodeEditorUI.codeEditor;
 
@@ -131,7 +127,7 @@ namespace Client
                                                    var time = TimeTracker.EndTime - TimeTracker.StartTime;
                                                    DebugUI.lblHowFast.Text = ( "how long: " + time );
                                                    Window.SetTimeout(() => {
-                                                                         ClientGameManager.AnswerQuestion(new GameAnswerQuestionModel(gameStuff.RoomID, 1));
+                                                                         ClientGameManager.AnswerQuestion(new GameAnswerQuestionModel(RoomID, 1));
 
                                                                          QuestionUI.UIWindow.Visible = false;
                                                                          TimeTracker.StartTime = new DateTime();

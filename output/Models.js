@@ -44,62 +44,42 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserModel
 	var $Models_UserModel = function() {
-		this.gateway = null;
-		this.userName = null;
-		this.$1$PasswordField = null;
-		this.$1$HashField = null;
 	};
-	$Models_UserModel.prototype = {
-		get_password: function() {
-			return this.$1$PasswordField;
-		},
-		set_password: function(value) {
-			this.$1$PasswordField = value;
-		},
-		get_hash: function() {
-			return this.$1$HashField;
-		},
-		set_hash: function(value) {
-			this.$1$HashField = value;
-		},
-		toString: function() {
-			return String.format('User {{{0} - {1}}}', this.gateway, this.userName);
-		}
+	$Models_UserModel.createInstance = function() {
+		return $Models_UserModel.$ctor();
+	};
+	$Models_UserModel.$ctor = function() {
+		var $this = {};
+		$this.gateway = null;
+		$this.userName = null;
+		$this.password = null;
+		$this.hash = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserSocketModel
 	var $Models_UserSocketModel = function() {
-		this.$localUserModel = null;
-		this.gateway = null;
-		this.userName = null;
-		this.$1$PasswordField = null;
-		this.$1$HashField = null;
-		this.socket = null;
 	};
-	$Models_UserSocketModel.prototype = {
-		get_password: function() {
-			return this.$1$PasswordField;
-		},
-		set_password: function(value) {
-			this.$1$PasswordField = value;
-		},
-		get_hash: function() {
-			return this.$1$HashField;
-		},
-		set_hash: function(value) {
-			this.$1$HashField = value;
-		},
-		toString: function() {
-			return String.format('User {{{0} - {1}}}', this.gateway, this.userName);
-		},
-		toUserModel: function() {
-			var m = this.$localUserModel || (this.$localUserModel = new $Models_UserModel());
-			m.gateway = this.gateway;
-			m.set_hash(this.get_hash());
-			m.set_password(this.get_password());
-			m.userName = this.userName;
-			return m;
-		}
+	$Models_UserSocketModel.createInstance = function() {
+		return $Models_UserSocketModel.$ctor();
+	};
+	$Models_UserSocketModel.toUserModel = function($this) {
+		var m = $this.localUserModel || ($this.localUserModel = $Models_UserModel.$ctor());
+		m.gateway = $this.gateway;
+		m.hash = $this.hash;
+		m.password = $this.password;
+		m.userName = $this.userName;
+		return m;
+	};
+	$Models_UserSocketModel.$ctor = function() {
+		var $this = {};
+		$this.localUserModel = null;
+		$this.gateway = null;
+		$this.userName = null;
+		$this.password = null;
+		$this.hash = null;
+		$this.socket = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.GameManagerModels.CreateGameRequestModel
@@ -223,6 +203,26 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GameTypeModel
+	var $Models_SiteManagerModels_GameTypeModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetGameTypesReceivedResponse
+	var $Models_SiteManagerModels_GetGameTypesReceivedResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetRoomsRequest
+	var $Models_SiteManagerModels_GetRoomsRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetRoomsResponse
+	var $Models_SiteManagerModels_GetRoomsResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.RoomData
+	var $Models_SiteManagerModels_RoomData = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.SiteLoginRequest
 	var $Models_SiteManagerModels_SiteLoginRequest = function() {
 	};
@@ -244,5 +244,10 @@
 	Type.registerClass(global, 'Models.GameManagerModels.GameSourceResponseModel', $Models_GameManagerModels_GameSourceResponseModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.JoinGameRequestModel', $Models_GameManagerModels_JoinGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.GameTypeModel', $Models_SiteManagerModels_GameTypeModel, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.GetGameTypesReceivedResponse', $Models_SiteManagerModels_GetGameTypesReceivedResponse, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest, Object);
 })();

@@ -36,8 +36,7 @@
 				e.preventDefault();
 				//todo: Special right click menu;
 			}, false);
-			var pageHandler = new $Client_PageHandler(this.$gatewayServerAddress, this);
-			this.shuffUIManager = new ShuffUI.ShuffUIManager();
+			var pageHandler = new $Client_PageHandler(this.$gatewayServerAddress);
 			//
 			//
 			//
@@ -107,12 +106,12 @@
 		}
 	};
 	$Client_BuildSite.$loadJunk = function(url, ready) {
-		var scriptLoader = new $Client_ScriptLoader();
-		$Client_ScriptLoader.loadCss(url + 'lib/jquery-ui-1.8.20.custom.css');
-		$Client_ScriptLoader.loadCss(url + 'lib/codemirror/lib/codemirror.css');
-		$Client_ScriptLoader.loadCss(url + 'lib/codemirror/theme/night.css');
-		$Client_ScriptLoader.loadCss(url + 'lib/jqwidgets/styles/jqx.base.css');
-		$Client_ScriptLoader.loadCss(url + 'lib/site.css');
+		var scriptLoader = new $Client_Libs_ScriptLoader();
+		$Client_Libs_ScriptLoader.loadCss(url + 'lib/jquery-ui-1.8.20.custom.css');
+		$Client_Libs_ScriptLoader.loadCss(url + 'lib/codemirror/lib/codemirror.css');
+		$Client_Libs_ScriptLoader.loadCss(url + 'lib/codemirror/theme/night.css');
+		$Client_Libs_ScriptLoader.loadCss(url + 'lib/jqwidgets/styles/jqx.base.css');
+		$Client_Libs_ScriptLoader.loadCss(url + 'lib/site.css');
 		var stepFour = function() {
 			scriptLoader.load([url + 'lib/RawDeflate.js', url + 'ShuffUI.js'], true, ready);
 		};
@@ -128,8 +127,434 @@
 		scriptLoader.loadSync([url + 'lib/jquery-1.7.2.min.js', url + 'lib/jquery-ui-1.8.20.custom.min.js', url + 'lib/jqwidgets/scripts/gettheme.js', url + 'lib/jqwidgets/jqxcore.js'], stepOne);
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.GameDrawer
-	var $Client_GameDrawer = function() {
+	// Client.ClientInformation
+	var $Client_ClientInformation = function() {
+	};
+	$Client_ClientInformation.createInstance = function() {
+		return $Client_ClientInformation.$ctor();
+	};
+	$Client_ClientInformation.$ctor = function() {
+		var $this = {};
+		$this.loggedInUser = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.PageHandler
+	var $Client_PageHandler = function(gatewayServerAddress) {
+		this.gameDrawer = null;
+		this.$shuffUIManager = null;
+		this.$roomID = null;
+		this.clientGameManager = null;
+		this.clientDebugManager = null;
+		this.clientSiteManager = null;
+		this.timeTracker = null;
+		this.codeEditorUI = null;
+		this.questionUI = null;
+		this.debugUI = null;
+		this.homeUI = null;
+		this.loginUI = null;
+		this.clientInfo = null;
+		this.$shuffUIManager = new ShuffUI.ShuffUIManager();
+		this.gameDrawer = new $Client_ShufflyGame_GameDrawer();
+		this.timeTracker = $Client_Libs_TimeTracker.$ctor();
+		var gateway = new $Client_Libs_Gateway(gatewayServerAddress);
+		this.clientGameManager = new $Client_Managers_ClientGameManager(gateway);
+		this.clientSiteManager = new $Client_Managers_ClientSiteManager(gateway);
+		this.clientDebugManager = new $Client_Managers_ClientDebugManager(gateway);
+		this.clientInfo = $Client_ClientInformation.$ctor();
+		this.loginUI = new $Client_UIWindow_LoginUI(this.$shuffUIManager, this);
+		this.homeUI = new $Client_UIWindow_HomeUI(this.$shuffUIManager, this);
+		this.debugUI = new $Client_UIWindow_DebugUI(this.$shuffUIManager, this);
+		this.questionUI = new $Client_UIWindow_QuestionUI(this.$shuffUIManager, this);
+		this.codeEditorUI = new $Client_UIWindow_CodeEditorUI(this.$shuffUIManager, this);
+		//gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
+		//gateway.On("Area.Lobby.ListRooms.Response", (data) => { Console.Log(data); });
+		//ie8
+		//   {
+		//   dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
+		//   
+		//   var m = (Action<string, ElementEventHandler>)d2;
+		//   m("contextmenu", () =>
+		//   {
+		//   
+		//   });
+		//   }
+	};
+	$Client_PageHandler.prototype = {
+		startGameServer: function() {
+			this.clientGameManager.add_onGetRoomInfo(Function.mkdel(this, function(roomInfo) {
+				this.clientGameManager.set_gameServer(roomInfo.gameServer);
+				this.$roomID = roomInfo.roomID;
+				//                                                   HomeUI.loadRoomInfo(roomInfo);
+				this.debugUI.loadRoomInfo(roomInfo);
+			}));
+			//
+			//                        gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
+			//
+			//                        {
+			//
+			//                        buildSite.home.Data.loadRoomInfos(data);
+			//
+			//                        
+			//
+			//                        });
+			this.clientGameManager.add_onGetDebugLog(Function.mkdel(this, function(gameAnswer) {
+				//                                                   HomeUI.loadRoomInfos(gameAnswer);
+				var lines = this.codeEditorUI.console.information.editor.getValue().split('\n');
+				lines = lines.extract(lines.length - 40, 40);
+				this.codeEditorUI.console.information.editor.setValue(lines.join('\n') + '\n' + gameAnswer.value);
+				this.codeEditorUI.console.information.editor.setCursor(this.codeEditorUI.console.information.editor.lineCount(), 0);
+			}));
+			this.clientGameManager.add_onGetDebugBreak(Function.mkdel(this, function(gameAnswer1) {
+				//                                                     HomeUI.loadRoomInfos(gameAnswer);
+				var cm = this.codeEditorUI.codeEditor;
+				//    cm.Information.editor.ClearMarker(gameAnswer.LineNumber);
+				//    cm.Information.editor.SetMarker(gameAnswer.LineNumber, "<span style=\"color: #059\">●</span> %N%");
+				//    cm.Information.editor.SetCursor(gameAnswer.LineNumber + 15, 0);
+				//    cm.Information.editor.SetCursor(gameAnswer.LineNumber - 15, 0);
+				//    cm.Information.editor.SetCursor(gameAnswer.LineNumber, 0);
+			}));
+			//
+			//                        gateway.On("Area.Debug.VariableLookup.Response", data =>
+			//
+			//                        {
+			//
+			//                        Window.Alert(Json.Stringify(data));
+			//
+			//                        });
+			this.clientGameManager.add_onAskQuestion(Function.mkdel(this, function(gameSendAnswerModel) {
+				this.questionUI.load(gameSendAnswerModel);
+				//alert(JSON.stringify(data));
+				this.timeTracker.endTime = new Date();
+				var time = this.timeTracker.endTime - this.timeTracker.startTime;
+				this.debugUI.lblHowFast.set_text('how long: ' + time);
+				window.setTimeout(Function.mkdel(this, function() {
+					this.clientGameManager.answerQuestion({ roomID: this.$roomID, answer: 1 });
+					this.questionUI.uiWindow.set_visible(false);
+					this.timeTracker.startTime = new Date();
+				}), 200);
+			}));
+			this.clientGameManager.add_onUpdateState(Function.mkdel(this, function(update) {
+				var data = JSON.parse((new Compressor()).DecompressText(update));
+				//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+				this.gameDrawer.draw(data);
+			}));
+			this.clientGameManager.add_onGameStarted(function(room) {
+				//alert(JSON.stringify(data));
+			});
+			this.clientGameManager.add_onGameOver(function(room1) {
+				//alert(JSON.stringify(data));
+			});
+			this.clientGameManager.add_onDebugGameOver(function(room2) {
+				//alert(JSON.stringify(data));
+			});
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Libs.Gateway
+	var $Client_Libs_Gateway = function(gatewayServer) {
+		this.$channels = null;
+		this.gatewaySocket = null;
+		this.$channels = new (Type.makeGenericType(ss.Dictionary$2, [String, Function]))();
+		this.gatewaySocket = io.connect(gatewayServer);
+		this.gatewaySocket.on('Client.Message', Function.mkdel(this, function(data) {
+			this.$channels.get_item(data.channel)(data.content);
+		}));
+	};
+	$Client_Libs_Gateway.prototype = {
+		emit: function(channel, content, gameServer) {
+			this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content, gameServer));
+		},
+		on: function(channel, callback) {
+			this.$channels.set_item(channel, callback);
+		},
+		login: function(userName, password) {
+			var $t2 = this.gatewaySocket;
+			var $t1 = Models.UserModel.$ctor();
+			$t1.userName = userName;
+			$t1.password = password;
+			$t2.emit('Gateway.Login', $t1);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Libs.ScriptLoader
+	var $Client_Libs_ScriptLoader = function() {
+	};
+	$Client_Libs_ScriptLoader.prototype = {
+		$loadScript: function(url, cache, callback) {
+			cache = false;
+			var head = document.getElementsByTagName('head')[0];
+			var script = document.createElement('script');
+			script.type = 'text/javascript';
+			script.src = url + (cache ? ('?' + Math.floor(Math.random() * 10000)) : '');
+			//caching
+			if (ss.isValue(callback)) {
+				script.onreadystatechange = function(a) {
+					if (!!(script.readyState === 'loaded' || script.readyState === 'complete')) {
+						callback();
+					}
+				};
+				script.onload = function(a1) {
+					callback();
+				};
+			}
+			head.appendChild(script);
+		},
+		load: function(items, cache, done) {
+			var counter = 0;
+			for (var i = 0; i < items.length; i++) {
+				this.$loadScript(items[i], cache, function() {
+					counter++;
+					if (counter >= items.length) {
+						done();
+					}
+				});
+			}
+		},
+		loadSync: function(items, done) {
+			var counter = 0;
+			var nextOne = null;
+			nextOne = Function.mkdel(this, function() {
+				counter++;
+				if (counter >= items.length) {
+					done();
+				}
+				else {
+					this.$loadScript(items[counter], false, nextOne);
+				}
+			});
+			this.$loadScript(items[0], false, nextOne);
+		}
+	};
+	$Client_Libs_ScriptLoader.loadCss = function(filename) {
+		var fileref = document.createElement('link');
+		fileref.setAttribute('rel', 'stylesheet');
+		fileref.setAttribute('type', 'text/css');
+		fileref.setAttribute('href', filename);
+		document.getElementsByTagName('head')[0].appendChild(fileref);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Libs.TimeTracker
+	var $Client_Libs_TimeTracker = function() {
+	};
+	$Client_Libs_TimeTracker.createInstance = function() {
+		return $Client_Libs_TimeTracker.$ctor();
+	};
+	$Client_Libs_TimeTracker.$ctor = function() {
+		var $this = {};
+		$this.numOfTimes = 0;
+		$this.startTime = 0;
+		$this.timeValue = 0;
+		$this.endTime = 0;
+		$this.startTime = Date.get_now();
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Managers.ClientDebugManager
+	var $Client_Managers_ClientDebugManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$OnGetGameSourceField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$Client_Managers_ClientDebugManager.prototype = {
+		add_onGetGameSource: function(value) {
+			this.$1$OnGetGameSourceField = Function.combine(this.$1$OnGetGameSourceField, value);
+		},
+		remove_onGetGameSource: function(value) {
+			this.$1$OnGetGameSourceField = Function.remove(this.$1$OnGetGameSourceField, value);
+		},
+		$setup: function() {
+			this.$myGateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(a) {
+				this.$1$OnGetGameSourceField(a);
+			}));
+		},
+		requestGameSource: function(gameSourceRequestModel) {
+			this.$myGateway.emit('Area.Debug2.GetGameSource.Request', gameSourceRequestModel, null);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Managers.ClientGameManager
+	var $Client_Managers_ClientGameManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$GameServerField = null;
+		this.$1$OnGetRoomInfoField = null;
+		this.$1$OnGetDebugLogField = null;
+		this.$1$OnGetDebugBreakField = null;
+		this.$1$OnAskQuestionField = null;
+		this.$1$OnUpdateStateField = null;
+		this.$1$OnGameStartedField = null;
+		this.$1$OnGameOverField = null;
+		this.$1$OnDebugGameOverField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$Client_Managers_ClientGameManager.prototype = {
+		get_gameServer: function() {
+			return this.$1$GameServerField;
+		},
+		set_gameServer: function(value) {
+			this.$1$GameServerField = value;
+		},
+		add_onGetRoomInfo: function(value) {
+			this.$1$OnGetRoomInfoField = Function.combine(this.$1$OnGetRoomInfoField, value);
+		},
+		remove_onGetRoomInfo: function(value) {
+			this.$1$OnGetRoomInfoField = Function.remove(this.$1$OnGetRoomInfoField, value);
+		},
+		add_onGetDebugLog: function(value) {
+			this.$1$OnGetDebugLogField = Function.combine(this.$1$OnGetDebugLogField, value);
+		},
+		remove_onGetDebugLog: function(value) {
+			this.$1$OnGetDebugLogField = Function.remove(this.$1$OnGetDebugLogField, value);
+		},
+		add_onGetDebugBreak: function(value) {
+			this.$1$OnGetDebugBreakField = Function.combine(this.$1$OnGetDebugBreakField, value);
+		},
+		remove_onGetDebugBreak: function(value) {
+			this.$1$OnGetDebugBreakField = Function.remove(this.$1$OnGetDebugBreakField, value);
+		},
+		add_onAskQuestion: function(value) {
+			this.$1$OnAskQuestionField = Function.combine(this.$1$OnAskQuestionField, value);
+		},
+		remove_onAskQuestion: function(value) {
+			this.$1$OnAskQuestionField = Function.remove(this.$1$OnAskQuestionField, value);
+		},
+		add_onUpdateState: function(value) {
+			this.$1$OnUpdateStateField = Function.combine(this.$1$OnUpdateStateField, value);
+		},
+		remove_onUpdateState: function(value) {
+			this.$1$OnUpdateStateField = Function.remove(this.$1$OnUpdateStateField, value);
+		},
+		add_onGameStarted: function(value) {
+			this.$1$OnGameStartedField = Function.combine(this.$1$OnGameStartedField, value);
+		},
+		remove_onGameStarted: function(value) {
+			this.$1$OnGameStartedField = Function.remove(this.$1$OnGameStartedField, value);
+		},
+		add_onGameOver: function(value) {
+			this.$1$OnGameOverField = Function.combine(this.$1$OnGameOverField, value);
+		},
+		remove_onGameOver: function(value) {
+			this.$1$OnGameOverField = Function.remove(this.$1$OnGameOverField, value);
+		},
+		add_onDebugGameOver: function(value) {
+			this.$1$OnDebugGameOverField = Function.combine(this.$1$OnDebugGameOverField, value);
+		},
+		remove_onDebugGameOver: function(value) {
+			this.$1$OnDebugGameOverField = Function.remove(this.$1$OnDebugGameOverField, value);
+		},
+		$setup: function() {
+			this.$myGateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(a) {
+				this.$1$OnGetRoomInfoField(a);
+			}));
+			this.$myGateway.on('Area.Debug.Log', Function.mkdel(this, function(a1) {
+				this.$1$OnGetDebugLogField(a1);
+			}));
+			this.$myGateway.on('Area.Debug.Break', Function.mkdel(this, function(a2) {
+				this.$1$OnGetDebugBreakField(a2);
+			}));
+			this.$myGateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(a3) {
+				this.$1$OnAskQuestionField(a3);
+			}));
+			this.$myGateway.on('Area.Game.UpdateState', Function.mkdel(this, function(a4) {
+				this.$1$OnUpdateStateField(Type.cast(a4, String));
+			}));
+			this.$myGateway.on('Area.Game.Started', Function.mkdel(this, function(a5) {
+				this.$1$OnGameStartedField(a5);
+			}));
+			this.$myGateway.on('Area.Game.GameOver', Function.mkdel(this, function(a6) {
+				this.$1$OnGameOverField(Type.cast(a6, String));
+			}));
+			this.$myGateway.on('Area.Debug.GameOver', Function.mkdel(this, function(a7) {
+				this.$1$OnDebugGameOverField(Type.cast(a7, String));
+			}));
+		},
+		answerQuestion: function(gameAnswerQuestionModel) {
+			this.$myGateway.emit('Area.Game.AnswerQuestion', gameAnswerQuestionModel, this.get_gameServer());
+		},
+		startGame: function(startGameRequestModel) {
+			this.$myGateway.emit('Area.Game.Start', startGameRequestModel, this.get_gameServer());
+		},
+		createDebuggedGame: function(o) {
+			this.$myGateway.emit('Area.Debug.Create', o, null);
+		},
+		joinDebugger: function(debuggerJoinRequestModel) {
+			this.$myGateway.emit('Area.Game.DebuggerJoin', debuggerJoinRequestModel, this.get_gameServer());
+		},
+		joinPlayer: function(joinGameRequestModel) {
+			this.$myGateway.emit('Area.Game.Join', joinGameRequestModel, this.get_gameServer());
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Managers.ClientSiteManager
+	var $Client_Managers_ClientSiteManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$GameServerField = null;
+		this.$1$OnGetGameTypesReceivedField = null;
+		this.$1$OnLoginField = null;
+		this.$1$OnGetRoomsReceivedField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$Client_Managers_ClientSiteManager.prototype = {
+		get_gameServer: function() {
+			return this.$1$GameServerField;
+		},
+		set_gameServer: function(value) {
+			this.$1$GameServerField = value;
+		},
+		add_onGetGameTypesReceived: function(value) {
+			this.$1$OnGetGameTypesReceivedField = Function.combine(this.$1$OnGetGameTypesReceivedField, value);
+		},
+		remove_onGetGameTypesReceived: function(value) {
+			this.$1$OnGetGameTypesReceivedField = Function.remove(this.$1$OnGetGameTypesReceivedField, value);
+		},
+		add_onLogin: function(value) {
+			this.$1$OnLoginField = Function.combine(this.$1$OnLoginField, value);
+		},
+		remove_onLogin: function(value) {
+			this.$1$OnLoginField = Function.remove(this.$1$OnLoginField, value);
+		},
+		add_onGetRoomsReceived: function(value) {
+			this.$1$OnGetRoomsReceivedField = Function.combine(this.$1$OnGetRoomsReceivedField, value);
+		},
+		remove_onGetRoomsReceived: function(value) {
+			this.$1$OnGetRoomsReceivedField = Function.remove(this.$1$OnGetRoomsReceivedField, value);
+		},
+		$setup: function() {
+			this.$myGateway.on('Area.Main.Login.Response', Function.mkdel(this, function(a) {
+				var userLoginResponse = a;
+				if (userLoginResponse.successful) {
+					this.$siteLogin(userLoginResponse.user.hash);
+				}
+			}));
+			this.$myGateway.on('Area.Site.Login.Response', Function.mkdel(this, function(a1) {
+				this.$1$OnLoginField(a1);
+			}));
+			this.$myGateway.on('Area.Site.GetGameTypes.Response', Function.mkdel(this, function(a2) {
+				this.$1$OnGetGameTypesReceivedField(a2);
+			}));
+			this.$myGateway.on('Area.Site.GetRooms.Response', Function.mkdel(this, function(a3) {
+				this.$1$OnGetRoomsReceivedField(a3);
+			}));
+		},
+		$siteLogin: function(hash) {
+			this.$myGateway.emit('Area.Site.Login', { hash: hash }, this.get_gameServer());
+		},
+		login: function(userName, password) {
+			this.$myGateway.login(userName, password);
+		},
+		getGameTypes: function() {
+			this.$myGateway.emit('Area.Site.GetGameTypes', null, null);
+		},
+		getRooms: function(getRoomsRequest) {
+			this.$myGateway.emit('Area.Site.GetRooms', getRoomsRequest, this.get_gameServer());
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.ShufflyGame.GameDrawer
+	var $Client_ShufflyGame_GameDrawer = function() {
 		this.$cardImages = null;
 		this.cards = {};
 		this.$resetStyles = ['border-radius', '-moz-border-radius', 'left', 'top', '-webkit-border-radius', 'box-shadow', '-moz-box-shadow', 'transform', '-webkit-transform', 'padding', 'background-color', 'border'];
@@ -144,7 +569,7 @@
 			this.$cardImages[jm] = img;
 		}
 	};
-	$Client_GameDrawer.prototype = {
+	$Client_ShufflyGame_GameDrawer.prototype = {
 		draw: function(data) {
 			for (var $t1 = 0; $t1 < data.spaces.length; $t1++) {
 				var space = data.spaces[$t1];
@@ -431,399 +856,23 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.GameInfo
-	var $Client_GameInfo = function() {
-		this.roomID = '-1';
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Gateway
-	var $Client_Gateway = function(gatewayServer) {
-		this.$channels = null;
-		this.gatewaySocket = null;
-		this.$channels = new (Type.makeGenericType(ss.Dictionary$2, [String, Function]))();
-		this.gatewaySocket = io.connect(gatewayServer);
-		this.gatewaySocket.on('Client.Message', Function.mkdel(this, function(data) {
-			this.$channels.get_item(data.channel)(data.content);
-		}));
-	};
-	$Client_Gateway.prototype = {
-		emit: function(channel, content, gameServer) {
-			this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content, gameServer));
-		},
-		on: function(channel, callback) {
-			this.$channels.set_item(channel, callback);
-		},
-		login: function(userName, password) {
-			var $t2 = this.gatewaySocket;
-			var $t1 = new Models.UserModel();
-			$t1.userName = userName;
-			$t1.set_password(password);
-			$t2.emit('Gateway.Login', $t1);
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.PageHandler
-	var $Client_PageHandler = function(gatewayServerAddress, buildSite) {
-		this.$buildSite = null;
-		this.gameDrawer = null;
-		this.gameStuff = null;
-		this.clientGameManager = null;
-		this.clientDebugManager = null;
-		this.clientSiteManager = null;
-		this.timeTracker = null;
-		this.codeEditorUI = null;
-		this.questionUI = null;
-		this.debugUI = null;
-		this.homeUI = null;
-		this.loginUI = null;
-		this.$buildSite = buildSite;
-		this.gameStuff = new $Client_GameInfo();
-		this.gameDrawer = new $Client_GameDrawer();
-		this.timeTracker = $Client_TimeTracker.$ctor();
-		var gateway = new $Client_Gateway(gatewayServerAddress);
-		this.clientGameManager = new $Client_Managers_ClientGameManager(gateway);
-		this.clientSiteManager = new $Client_Managers_ClientSiteManager(gateway);
-		this.clientDebugManager = new $Client_Managers_ClientDebugManager(gateway);
-		this.loginUI = new $Client_UIWindow_LoginUI(buildSite.shuffUIManager, this);
-		this.homeUI = new $Client_UIWindow_HomeUI(buildSite.shuffUIManager, this);
-		this.debugUI = new $Client_UIWindow_DebugUI(buildSite.shuffUIManager, this);
-		this.questionUI = new $Client_UIWindow_QuestionUI(buildSite.shuffUIManager, this);
-		this.codeEditorUI = new $Client_UIWindow_CodeEditorUI(buildSite.shuffUIManager, this);
-		//gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
-		//gateway.On("Area.Lobby.ListRooms.Response", (data) => { Console.Log(data); });
-		//ie8
-		//   {
-		//   dynamic d2 = (Action<string, ElementEventHandler>)Document.Body.AttachEvent;
-		//   
-		//   var m = (Action<string, ElementEventHandler>)d2;
-		//   m("contextmenu", () =>
-		//   {
-		//   
-		//   });
-		//   }
-	};
-	$Client_PageHandler.prototype = {
-		startGameServer: function() {
-			this.clientGameManager.add_onGetRoomInfo(Function.mkdel(this, function(roomInfo) {
-				this.clientGameManager.set_gameServer(roomInfo.gameServer);
-				this.gameStuff.roomID = roomInfo.roomID;
-				this.homeUI.loadRoomInfo(roomInfo);
-				this.debugUI.loadRoomInfo(roomInfo);
-			}));
-			//
-			//                        gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
-			//
-			//                        {
-			//
-			//                        buildSite.home.Data.loadRoomInfos(data);
-			//
-			//                        
-			//
-			//                        });
-			this.clientGameManager.add_onGetDebugLog(Function.mkdel(this, function(gameAnswer) {
-				this.homeUI.loadRoomInfos(gameAnswer);
-				var lines = this.codeEditorUI.console.information.editor.getValue().split('\n');
-				lines = lines.extract(lines.length - 40, 40);
-				this.codeEditorUI.console.information.editor.setValue(lines.join('\n') + '\n' + gameAnswer.value);
-				this.codeEditorUI.console.information.editor.setCursor(this.codeEditorUI.console.information.editor.lineCount(), 0);
-			}));
-			this.clientGameManager.add_onGetDebugBreak(Function.mkdel(this, function(gameAnswer1) {
-				this.homeUI.loadRoomInfos(gameAnswer1);
-				var cm = this.codeEditorUI.codeEditor;
-				//    cm.Information.editor.ClearMarker(gameAnswer.LineNumber);
-				//    cm.Information.editor.SetMarker(gameAnswer.LineNumber, "<span style=\"color: #059\">●</span> %N%");
-				//    cm.Information.editor.SetCursor(gameAnswer.LineNumber + 15, 0);
-				//    cm.Information.editor.SetCursor(gameAnswer.LineNumber - 15, 0);
-				//    cm.Information.editor.SetCursor(gameAnswer.LineNumber, 0);
-			}));
-			//
-			//                        gateway.On("Area.Debug.VariableLookup.Response", data =>
-			//
-			//                        {
-			//
-			//                        Window.Alert(Json.Stringify(data));
-			//
-			//                        });
-			this.clientGameManager.add_onAskQuestion(Function.mkdel(this, function(gameSendAnswerModel) {
-				this.questionUI.load(gameSendAnswerModel);
-				//alert(JSON.stringify(data));
-				this.timeTracker.endTime = new Date();
-				var time = this.timeTracker.endTime - this.timeTracker.startTime;
-				this.debugUI.lblHowFast.set_text('how long: ' + time);
-				window.setTimeout(Function.mkdel(this, function() {
-					this.clientGameManager.answerQuestion({ roomID: this.gameStuff.roomID, answer: 1 });
-					this.questionUI.uiWindow.set_visible(false);
-					this.timeTracker.startTime = new Date();
-				}), 200);
-			}));
-			this.clientGameManager.add_onUpdateState(Function.mkdel(this, function(update) {
-				var data = JSON.parse((new Compressor()).DecompressText(update));
-				//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
-				this.gameDrawer.draw(data);
-			}));
-			this.clientGameManager.add_onGameStarted(function(room) {
-				//alert(JSON.stringify(data));
-			});
-			this.clientGameManager.add_onGameOver(function(room1) {
-				//alert(JSON.stringify(data));
-			});
-			this.clientGameManager.add_onDebugGameOver(function(room2) {
-				//alert(JSON.stringify(data));
-			});
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.ScriptLoader
-	var $Client_ScriptLoader = function() {
-	};
-	$Client_ScriptLoader.prototype = {
-		$loadScript: function(url, cache, callback) {
-			cache = false;
-			var head = document.getElementsByTagName('head')[0];
-			var script = document.createElement('script');
-			script.type = 'text/javascript';
-			script.src = url + (cache ? ('?' + Math.floor(Math.random() * 10000)) : '');
-			//caching
-			if (ss.isValue(callback)) {
-				script.onreadystatechange = function(a) {
-					if (!!(script.readyState === 'loaded' || script.readyState === 'complete')) {
-						callback();
-					}
-				};
-				script.onload = function(a1) {
-					callback();
-				};
-			}
-			head.appendChild(script);
-		},
-		load: function(items, cache, done) {
-			var counter = 0;
-			for (var i = 0; i < items.length; i++) {
-				this.$loadScript(items[i], cache, function() {
-					counter++;
-					if (counter >= items.length) {
-						done();
-					}
-				});
-			}
-		},
-		loadSync: function(items, done) {
-			var counter = 0;
-			var nextOne = null;
-			nextOne = Function.mkdel(this, function() {
-				counter++;
-				if (counter >= items.length) {
-					done();
-				}
-				else {
-					this.$loadScript(items[counter], false, nextOne);
-				}
-			});
-			this.$loadScript(items[0], false, nextOne);
-		}
-	};
-	$Client_ScriptLoader.loadCss = function(filename) {
-		var fileref = document.createElement('link');
-		fileref.setAttribute('rel', 'stylesheet');
-		fileref.setAttribute('type', 'text/css');
-		fileref.setAttribute('href', filename);
-		document.getElementsByTagName('head')[0].appendChild(fileref);
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.TimeTracker
-	var $Client_TimeTracker = function() {
-	};
-	$Client_TimeTracker.createInstance = function() {
-		return $Client_TimeTracker.$ctor();
-	};
-	$Client_TimeTracker.$ctor = function() {
-		var $this = {};
-		$this.numOfTimes = 0;
-		$this.startTime = 0;
-		$this.timeValue = 0;
-		$this.endTime = 0;
-		$this.startTime = Date.get_now();
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Managers.ClientDebugManager
-	var $Client_Managers_ClientDebugManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$OnGetGameSourceField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$Client_Managers_ClientDebugManager.prototype = {
-		add_onGetGameSource: function(value) {
-			this.$1$OnGetGameSourceField = Function.combine(this.$1$OnGetGameSourceField, value);
-		},
-		remove_onGetGameSource: function(value) {
-			this.$1$OnGetGameSourceField = Function.remove(this.$1$OnGetGameSourceField, value);
-		},
-		$setup: function() {
-			this.$myGateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(a) {
-				this.$1$OnGetGameSourceField(a);
-			}));
-		},
-		requestGameSource: function(gameSourceRequestModel) {
-			this.$myGateway.emit('Area.Debug2.GetGameSource.Request', gameSourceRequestModel, null);
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Managers.ClientGameManager
-	var $Client_Managers_ClientGameManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$GameServerField = null;
-		this.$1$OnGetRoomInfoField = null;
-		this.$1$OnGetDebugLogField = null;
-		this.$1$OnGetDebugBreakField = null;
-		this.$1$OnAskQuestionField = null;
-		this.$1$OnUpdateStateField = null;
-		this.$1$OnGameStartedField = null;
-		this.$1$OnGameOverField = null;
-		this.$1$OnDebugGameOverField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$Client_Managers_ClientGameManager.prototype = {
-		get_gameServer: function() {
-			return this.$1$GameServerField;
-		},
-		set_gameServer: function(value) {
-			this.$1$GameServerField = value;
-		},
-		add_onGetRoomInfo: function(value) {
-			this.$1$OnGetRoomInfoField = Function.combine(this.$1$OnGetRoomInfoField, value);
-		},
-		remove_onGetRoomInfo: function(value) {
-			this.$1$OnGetRoomInfoField = Function.remove(this.$1$OnGetRoomInfoField, value);
-		},
-		add_onGetDebugLog: function(value) {
-			this.$1$OnGetDebugLogField = Function.combine(this.$1$OnGetDebugLogField, value);
-		},
-		remove_onGetDebugLog: function(value) {
-			this.$1$OnGetDebugLogField = Function.remove(this.$1$OnGetDebugLogField, value);
-		},
-		add_onGetDebugBreak: function(value) {
-			this.$1$OnGetDebugBreakField = Function.combine(this.$1$OnGetDebugBreakField, value);
-		},
-		remove_onGetDebugBreak: function(value) {
-			this.$1$OnGetDebugBreakField = Function.remove(this.$1$OnGetDebugBreakField, value);
-		},
-		add_onAskQuestion: function(value) {
-			this.$1$OnAskQuestionField = Function.combine(this.$1$OnAskQuestionField, value);
-		},
-		remove_onAskQuestion: function(value) {
-			this.$1$OnAskQuestionField = Function.remove(this.$1$OnAskQuestionField, value);
-		},
-		add_onUpdateState: function(value) {
-			this.$1$OnUpdateStateField = Function.combine(this.$1$OnUpdateStateField, value);
-		},
-		remove_onUpdateState: function(value) {
-			this.$1$OnUpdateStateField = Function.remove(this.$1$OnUpdateStateField, value);
-		},
-		add_onGameStarted: function(value) {
-			this.$1$OnGameStartedField = Function.combine(this.$1$OnGameStartedField, value);
-		},
-		remove_onGameStarted: function(value) {
-			this.$1$OnGameStartedField = Function.remove(this.$1$OnGameStartedField, value);
-		},
-		add_onGameOver: function(value) {
-			this.$1$OnGameOverField = Function.combine(this.$1$OnGameOverField, value);
-		},
-		remove_onGameOver: function(value) {
-			this.$1$OnGameOverField = Function.remove(this.$1$OnGameOverField, value);
-		},
-		add_onDebugGameOver: function(value) {
-			this.$1$OnDebugGameOverField = Function.combine(this.$1$OnDebugGameOverField, value);
-		},
-		remove_onDebugGameOver: function(value) {
-			this.$1$OnDebugGameOverField = Function.remove(this.$1$OnDebugGameOverField, value);
-		},
-		$setup: function() {
-			this.$myGateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(a) {
-				this.$1$OnGetRoomInfoField(a);
-			}));
-			this.$myGateway.on('Area.Debug.Log', Function.mkdel(this, function(a1) {
-				this.$1$OnGetDebugLogField(a1);
-			}));
-			this.$myGateway.on('Area.Debug.Break', Function.mkdel(this, function(a2) {
-				this.$1$OnGetDebugBreakField(a2);
-			}));
-			this.$myGateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(a3) {
-				this.$1$OnAskQuestionField(a3);
-			}));
-			this.$myGateway.on('Area.Game.UpdateState', Function.mkdel(this, function(a4) {
-				this.$1$OnUpdateStateField(Type.cast(a4, String));
-			}));
-			this.$myGateway.on('Area.Game.Started', Function.mkdel(this, function(a5) {
-				this.$1$OnGameStartedField(a5);
-			}));
-			this.$myGateway.on('Area.Game.GameOver', Function.mkdel(this, function(a6) {
-				this.$1$OnGameOverField(Type.cast(a6, String));
-			}));
-			this.$myGateway.on('Area.Debug.GameOver', Function.mkdel(this, function(a7) {
-				this.$1$OnDebugGameOverField(Type.cast(a7, String));
-			}));
-		},
-		answerQuestion: function(gameAnswerQuestionModel) {
-			this.$myGateway.emit('Area.Game.AnswerQuestion', gameAnswerQuestionModel, this.get_gameServer());
-		},
-		startGame: function(startGameRequestModel) {
-			this.$myGateway.emit('Area.Game.Start', startGameRequestModel, this.get_gameServer());
-		},
-		createDebuggedGame: function(o) {
-			this.$myGateway.emit('Area.Debug.Create', o, null);
-		},
-		joinDebugger: function(debuggerJoinRequestModel) {
-			this.$myGateway.emit('Area.Game.DebuggerJoin', debuggerJoinRequestModel, this.get_gameServer());
-		},
-		joinPlayer: function(joinGameRequestModel) {
-			this.$myGateway.emit('Area.Game.Join', joinGameRequestModel, this.get_gameServer());
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Managers.ClientSiteManager
-	var $Client_Managers_ClientSiteManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$GameServerField = null;
-		this.$1$OnLoginField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$Client_Managers_ClientSiteManager.prototype = {
-		get_gameServer: function() {
-			return this.$1$GameServerField;
-		},
-		set_gameServer: function(value) {
-			this.$1$GameServerField = value;
-		},
-		add_onLogin: function(value) {
-			this.$1$OnLoginField = Function.combine(this.$1$OnLoginField, value);
-		},
-		remove_onLogin: function(value) {
-			this.$1$OnLoginField = Function.remove(this.$1$OnLoginField, value);
-		},
-		$setup: function() {
-			this.$myGateway.on('Area.Main.Login.Response', Function.mkdel(this, function(a) {
-				var userLoginResponse = a;
-				if (userLoginResponse.successful) {
-					this.$siteLogin(userLoginResponse.hash);
-				}
-			}));
-			this.$myGateway.on('Area.Site.Login.Response', Function.mkdel(this, function(a1) {
-				this.$1$OnLoginField(a1);
-			}));
-		},
-		$siteLogin: function(hash) {
-			this.$myGateway.emit('Area.Site.Login', { hash: hash }, this.get_gameServer());
-		},
-		login: function(userName, password) {
-			this.$myGateway.login(userName, password);
-		},
-		getGameList: function() {
-			this.$myGateway.emit('Area.Game.GetGames', null, this.get_gameServer());
-		}
+	// Client.UIWindow.ActiveLobbyUI
+	var $Client_UIWindow_ActiveLobbyUI = function(shuffUIManager, pageHandler) {
+		this.$myPageHandler = null;
+		this.$myShuffUIManager = null;
+		this.uiWindow = null;
+		this.$myShuffUIManager = shuffUIManager;
+		this.$myPageHandler = pageHandler;
+		var $t1 = new ShuffUI.ShuffWindow();
+		$t1.title = 'CardGame';
+		$t1.set_x(400);
+		$t1.set_y(100);
+		$t1.set_width(CommonLibraries.Number.op_Implicit$2(600));
+		$t1.set_height(CommonLibraries.Number.op_Implicit$2(450));
+		$t1.allowClose = true;
+		$t1.allowMinimize = true;
+		$t1.set_visible(false);
+		this.uiWindow = shuffUIManager.createWindow($t1);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.CodeEditorUI
@@ -937,8 +986,8 @@
 			pageHandler.clientDebugManager.requestGameSource({ gameName: this.selectedGame });
 			var m = Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(but.text);
 		})));
-		this.lblHowFast = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(80, 80, Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Time Taken:')));
-		this.lblAnother = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(80, 100, Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Another: ')));
+		this.lblHowFast = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(80, 80, 'Time Taken:'));
+		this.lblAnother = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(80, 100, 'Another: '));
 		// devArea.AddButton(new ShuffButton()
 		// {
 		// X = 280,
@@ -952,17 +1001,7 @@
 		// }
 		// });
 		var pop;
-		var $t3 = this.uiWindow;
-		var $t2 = new ShuffUI.ShuffListBox(25, 200, CommonLibraries.Number.op_Implicit$2(250), CommonLibraries.Number.op_Implicit$2(250));
-		$t2.itemCreation = function(item, index) {
-			var ik = $(String.format('<div style=\'width=100%;height=25px; background-color={0};\'></div>', ((index % 2 === 0) ? 'red' : 'green')));
-			var ikc = $(String.format('<div style=\'width=50%;height=25px; float=left;\'>{0}</div>', item.label));
-			ik.append(ikc);
-			var ikd = $(String.format('<input type=\'text\' style=\'width=48%;height=25px\' value=\'{0}\' />', item.value));
-			ik.append(ikd);
-			return ik;
-		};
-		var propBox = $t3.addElement(ShuffUI.ShuffListBox).call($t3, pop = $t2);
+		this.uiWindow.addElement(ShuffUI.ShuffListBox).call(this.uiWindow, pop = new ShuffUI.ShuffListBox(25, 200, CommonLibraries.Number.op_Implicit$2(250), CommonLibraries.Number.op_Implicit$2(250)));
 		pop.addItem(new ShuffUI.ShuffListItem('foos', 99));
 		this.varText = this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, new ShuffUI.ShuffTextbox(150, 134, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(25), 'Var Lookup', null, null));
 		//  devArea.AddButton(new ShuffButton()
@@ -997,11 +1036,11 @@
 			if (!this.created) {
 				pageHandler.clientGameManager.joinDebugger({ roomID: room.roomID });
 				for (var i = 0; i < count; i++) {
-					var $t6 = pageHandler.clientGameManager;
-					var $t5 = room.roomID;
-					var $t4 = new Models.UserModel();
-					$t4.userName = 'player ' + (i + 1);
-					$t6.joinPlayer({ roomID: $t5, user: $t4 });
+					var $t4 = pageHandler.clientGameManager;
+					var $t3 = room.roomID;
+					var $t2 = Models.UserModel.$ctor();
+					$t2.userName = 'player ' + (i + 1);
+					$t4.joinPlayer({ roomID: $t3, user: $t2 });
 				}
 				this.created = true;
 			}
@@ -1014,160 +1053,121 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.HomeUI
 	var $Client_UIWindow_HomeUI = function(shuffUIManager, pageHandler) {
+		this.$myPageHandler = null;
+		this.$myShuffUIManager = null;
+		this.$lblHeader = null;
+		this.$myGameTypeList = null;
+		this.$myLoadedRooms = null;
+		this.$myRoomsList = null;
+		this.$myRoomPlayers = null;
+		this.$myRoomName = null;
+		this.$myRoomGameType = null;
+		this.$myJoinRoom = null;
+		this.$mySpectateRoom = null;
+		this.$myCreateGameType = null;
+		this.$myCreateRoom = null;
 		this.uiWindow = null;
-		this.loadRoomInfos = null;
-		this.userList = null;
-		this.gameList = null;
-		this.txtUserName = null;
-		this.btnStartGame = null;
-		this.loadRoomInfo = null;
+		this.$myShuffUIManager = shuffUIManager;
+		this.$myPageHandler = pageHandler;
+		pageHandler.clientSiteManager.add_onGetGameTypesReceived(Function.mkdel(this, this.$populateGames));
+		pageHandler.clientSiteManager.add_onGetRoomsReceived(Function.mkdel(this, this.$populateRooms));
 		var $t1 = new ShuffUI.ShuffWindow();
 		$t1.title = 'CardGame';
-		$t1.set_x($('body').innerWidth() - 500);
+		$t1.set_x(400);
 		$t1.set_y(100);
-		$t1.set_width(CommonLibraries.Number.op_Implicit$2(420));
+		$t1.set_width(CommonLibraries.Number.op_Implicit$2(600));
 		$t1.set_height(CommonLibraries.Number.op_Implicit$2(450));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
 		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(280, 54, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Update game list'), function(e) {
-			pageHandler.clientSiteManager.getGameList();
+		this.$lblHeader = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(40, 44, 'Please Login!'));
+		this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(30, 80, 'Game Types'));
+		var $t3 = this.uiWindow;
+		var $t2 = new ShuffUI.ShuffListBox(25, 100, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(300));
+		$t2.onClick = Function.mkdel(this, function(item) {
+			this.$myPageHandler.clientSiteManager.getRooms({ gameType: Type.cast(item.value, String) });
+		});
+		this.$myGameTypeList = $t3.addElement(ShuffUI.ShuffListBox).call($t3, $t2);
+		this.$myCreateGameType = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(45, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Game!'), function(c) {
+			window.alert('Insert Developer UI Here');
 		}));
-		//home.AddButton(new ShuffButton()
-		//{
-		//X = 280,
-		//Y = 84,
-		//Width = "150",
-		//Height = "25",
-		//Text = "Create Game",
-		//Click = (e) =>
-		//{
-		//
-		//pageHandler.gateway.Emit("Area.Game.Create", new { user = new { userName = home.Data.txtUserName[0].NodeValue } }, devArea.Data.gameServer); //NO EMIT'ING OUTSIDE OF PageHandler
-		//
-		//
-		//}
-		//});
-		this.btnStartGame = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(280, 164, CommonLibraries.Number.op_Implicit$2(120), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game'), function(e1) {
-			pageHandler.clientGameManager.startGame({ roomID: pageHandler.gameStuff.roomID });
+		this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(240, 80, 'Rooms'));
+		var $t5 = this.uiWindow;
+		var $t4 = new ShuffUI.ShuffListBox(200, 100, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300));
+		$t4.onClick = Function.mkdel(this, function(item1) {
+			var room = Enumerable.from(this.$myLoadedRooms).first(function(a) {
+				return ss.referenceEquals(a.roomName, Type.cast(item1.value, String));
+			});
+			this.$populateRoom(room);
+		});
+		this.$myRoomsList = $t5.addElement(ShuffUI.ShuffListBox).call($t5, $t4);
+		this.$myCreateRoom = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), function(c1) {
+			window.alert('Insert Insert Here');
 		}));
-		var randomName = '';
-		var ra = Math.random() * 10;
-		for (var i = 0; i < ra; i++) {
-			randomName += String.fromCharCode(ss.Int32.trunc(65 + Math.random() * 26));
+		var $t7 = this.uiWindow;
+		var $t6 = new ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(250));
+		$t6.set_visible(false);
+		this.$myRoomPlayers = $t7.addElement(ShuffUI.ShuffListBox).call($t7, $t6);
+		var $t9 = this.uiWindow;
+		var $t8 = new ShuffUI.ShuffLabel(400, 100, '');
+		$t8.set_visible(false);
+		this.$myRoomGameType = $t9.addElement(ShuffUI.ShuffLabel).call($t9, $t8);
+		var $t11 = this.uiWindow;
+		var $t10 = new ShuffUI.ShuffLabel(400, 130, '');
+		$t10.set_visible(false);
+		this.$myRoomName = $t11.addElement(ShuffUI.ShuffLabel).call($t11, $t10);
+		var $t13 = this.uiWindow;
+		var $t12 = new ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), function(c2) {
+			window.alert('Joined!');
+		});
+		$t12.set_visible(false);
+		this.$myJoinRoom = $t13.addElement(ShuffUI.ShuffButton).call($t13, $t12);
+		var $t15 = this.uiWindow;
+		var $t14 = new ShuffUI.ShuffButton(490, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Spectate!'), function(c3) {
+			window.alert('Spectate!');
+		});
+		$t14.set_visible(false);
+		this.$mySpectateRoom = $t15.addElement(ShuffUI.ShuffButton).call($t15, $t14);
+		//UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
+	};
+	$Client_UIWindow_HomeUI.prototype = {
+		userLoggedIn: function() {
+			this.$lblHeader.set_text(String.format('Welcome: {0}!', this.$myPageHandler.clientInfo.loggedInUser.userName));
+			this.$myPageHandler.clientSiteManager.getGameTypes();
+			this.uiWindow.set_visible(true);
+		},
+		$populateGames: function(o) {
+			this.$myGameTypeList.clearItems();
+			for (var $t1 = 0; $t1 < o.gameTypes.length; $t1++) {
+				var gameType = o.gameTypes[$t1];
+				this.$myGameTypeList.addItem(new ShuffUI.ShuffListItem(gameType.name, gameType.name));
+			}
+			this.$myPageHandler.clientSiteManager.getRooms({ gameType: o.gameTypes[0].name });
+		},
+		$populateRooms: function(o) {
+			this.$myRoomsList.clearItems();
+			this.$myLoadedRooms = o.rooms;
+			for (var $t1 = 0; $t1 < o.rooms.length; $t1++) {
+				var room = o.rooms[$t1];
+				this.$myRoomsList.addItem(new ShuffUI.ShuffListItem(room.roomName, room.roomName));
+			}
+			this.$populateRoom(o.rooms[0]);
+		},
+		$populateRoom: function(roomData) {
+			this.$myRoomPlayers.set_visible(true);
+			this.$myRoomName.set_visible(true);
+			this.$myRoomGameType.set_visible(true);
+			this.$myJoinRoom.set_visible(true);
+			this.$mySpectateRoom.set_visible(true);
+			this.$myRoomPlayers.clearItems();
+			for (var $t1 = 0; $t1 < roomData.players.length; $t1++) {
+				var userModel = roomData.players[$t1];
+				this.$myRoomPlayers.addItem(new ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
+			}
+			this.$myRoomName.set_text(String.format('Room: {0}', roomData.roomName));
+			this.$myRoomGameType.set_text(String.format('Game Type: {0}', roomData.gameType));
 		}
-		this.txtUserName = this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, new ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), randomName, 'Username=', null));
-		//home.Data.gameList = home.AddListBox(new ShuffListBox()
-		//{
-		//X = 30,
-		//Y = 85,
-		//Width = "215",
-		//Height = "150".ToString(),
-		//Label = "Rooms",
-		//Click = (e) =>
-		//{
-		//pageHandler.gateway.Emit("Area.Game.Join", new { roomID = "foo", user = new { userName = home.Data.txtUserName.GetValue() } }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-		//}
-		//});
-		//
-		//            home.Data.userList = home.AddElement(new ShuffListBox(new ShuffListBoxOptions() {
-		//
-		//            X = 30,
-		//
-		//            Y = 280,
-		//
-		//            Width = 215,
-		//
-		//            Height = 25 * 5,
-		//
-		//            Label = "Users"
-		//
-		//            }));
-		this.loadRoomInfo = function(room) {
-			//
-			//
-			//home.Data.userList.Remove();
-			//
-			//
-			//home.Data.btnStartGame.CSS("display","block");
-			//
-			//
-			//
-			//
-			//
-			//var users = new List<string>();
-			//
-			//
-			//
-			//
-			//
-			//for (var i = 0; i < room.players.length; i++) {
-			//
-			//
-			//
-			//
-			//
-			//users.Add(room.players[i]);
-			//
-			//
-			//
-			//
-			//
-			//}
-			//
-			//
-			//
-			//
-			//
-			//
-			//
-			//
-			//home.Data.userList = home.AddListBox(new ShuffListBox(){
-			//
-			//
-			//X= 30,
-			//
-			//
-			//Y= 280,
-			//
-			//
-			//Width= "215",
-			//
-			//
-			//Height = "125",
-			//
-			//
-			//Label= "Users",
-			//
-			//
-			//Items= users
-			//
-			//
-			//});
-		};
-		this.loadRoomInfos = function(room1) {
-			//   home.Data.gameList.Remove();
-			//   
-			//   var rooms = new List<string>();
-			//   
-			//   for (var i = 0; i < room.length; i++) {
-			//   //rooms.Add({ label= room[i].name, value= room[i].roomID });
-			//   }
-			//   
-			//   
-			//   home.Data.gameList = home.AddListBox(new ShuffListBox(){
-			//   X= 30,
-			//   Y= 85,
-			//   Width = "215",
-			//   Height = "150",
-			//   Label= "Rooms",
-			//   Items= rooms,
-			//   Click=  (item)=> {
-			//   pageHandler.gateway.Emit("Area.Game.Join", new { roomID= item.value, user=new  { userName= home.Data.txtUserName.GetValue()} }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
-			//   }
-			//   });
-		};
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.LoginUI
@@ -1177,7 +1177,7 @@
 		$t1.title = 'Login';
 		$t1.set_x($('body').innerWidth() - 500);
 		$t1.set_y(100);
-		$t1.set_width(CommonLibraries.Number.op_Implicit$2(250));
+		$t1.set_width(CommonLibraries.Number.op_Implicit$2(280));
 		$t1.set_height(CommonLibraries.Number.op_Implicit$2(165));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
@@ -1185,13 +1185,17 @@
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		var loginName;
 		var password;
-		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, loginName = new ShuffUI.ShuffTextbox(140, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
-		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, password = new ShuffUI.ShuffTextbox(140, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(40, 150, CommonLibraries.Number.op_Implicit$2(250), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e) {
+		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, loginName = new ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
+		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, password = new ShuffUI.ShuffTextbox(115, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
+		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(55, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), function(e) {
+			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
+		}));
+		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(155, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e1) {
 			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 		}));
 		pageHandler.clientSiteManager.add_onLogin(function(data) {
-			window.alert('GooooD!');
+			pageHandler.clientInfo.loggedInUser = data.user;
+			pageHandler.homeUI.userLoggedIn();
 		});
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1209,9 +1213,9 @@
 		$t1.set_height(CommonLibraries.Number.op_Implicit$2(275));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
-		$t1.set_visible(true);
+		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
-		this.question = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(20, 40, Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('')));
+		this.question = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(20, 40, ''));
 		this.load = Function.mkdel(this, function(question) {
 			this.uiWindow.set_visible(true);
 			this.question.set_text(question.question);
@@ -1225,20 +1229,20 @@
 			var $t3 = new ShuffUI.ShuffListBox(30, 95, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125));
 			$t3.items = answers;
 			this.answerBox = $t4.addElement(ShuffUI.ShuffListBox).call($t4, $t3);
-			this.answerBox.update();
 		});
 		this.answerBox = this.uiWindow.addElement(ShuffUI.ShuffListBox).call(this.uiWindow, new ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125)));
 	};
 	Type.registerClass(global, 'Client.BuildSite', $Client_BuildSite, Object);
-	Type.registerClass(global, 'Client.GameDrawer', $Client_GameDrawer, Object);
-	Type.registerClass(global, 'Client.GameInfo', $Client_GameInfo, Object);
-	Type.registerClass(global, 'Client.Gateway', $Client_Gateway, Object);
+	Type.registerClass(global, 'Client.ClientInformation', $Client_ClientInformation, Object);
 	Type.registerClass(global, 'Client.PageHandler', $Client_PageHandler, Object);
-	Type.registerClass(global, 'Client.ScriptLoader', $Client_ScriptLoader, Object);
-	Type.registerClass(global, 'Client.TimeTracker', $Client_TimeTracker, Object);
+	Type.registerClass(global, 'Client.Libs.Gateway', $Client_Libs_Gateway, Object);
+	Type.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader, Object);
+	Type.registerClass(global, 'Client.Libs.TimeTracker', $Client_Libs_TimeTracker, Object);
 	Type.registerClass(global, 'Client.Managers.ClientDebugManager', $Client_Managers_ClientDebugManager, Object);
 	Type.registerClass(global, 'Client.Managers.ClientGameManager', $Client_Managers_ClientGameManager, Object);
 	Type.registerClass(global, 'Client.Managers.ClientSiteManager', $Client_Managers_ClientSiteManager, Object);
+	Type.registerClass(global, 'Client.ShufflyGame.GameDrawer', $Client_ShufflyGame_GameDrawer, Object);
+	Type.registerClass(global, 'Client.UIWindow.ActiveLobbyUI', $Client_UIWindow_ActiveLobbyUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.CodeEditorUI', $Client_UIWindow_CodeEditorUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.DebugUI', $Client_UIWindow_DebugUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.HomeUI', $Client_UIWindow_HomeUI, Object);

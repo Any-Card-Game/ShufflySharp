@@ -6,13 +6,12 @@ namespace Models
     public class UserLoginResponse
     {
         public bool Successful { get; set; }
-        public string Hash { get; set; }
-
+        public UserModel User { get; set; }
         [ObjectLiteral]
-        public UserLoginResponse(bool successful, string hash)
+        public UserLoginResponse(bool successful, UserModel user)
         {
             Successful = successful;
-            Hash = hash;
+            User = user;
         }
     }
 }

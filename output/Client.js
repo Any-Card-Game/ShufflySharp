@@ -494,6 +494,8 @@
 		this.$1$OnGetGameTypesReceivedField = null;
 		this.$1$OnLoginField = null;
 		this.$1$OnGetRoomsReceivedField = null;
+		this.$1$OnRoomJoinedField = null;
+		this.$1$OnGetRoomInfoReceivedField = null;
 		this.$myGateway = gateway;
 		this.$setup();
 	};
@@ -522,6 +524,18 @@
 		remove_onGetRoomsReceived: function(value) {
 			this.$1$OnGetRoomsReceivedField = Function.remove(this.$1$OnGetRoomsReceivedField, value);
 		},
+		add_onRoomJoined: function(value) {
+			this.$1$OnRoomJoinedField = Function.combine(this.$1$OnRoomJoinedField, value);
+		},
+		remove_onRoomJoined: function(value) {
+			this.$1$OnRoomJoinedField = Function.remove(this.$1$OnRoomJoinedField, value);
+		},
+		add_onGetRoomInfoReceived: function(value) {
+			this.$1$OnGetRoomInfoReceivedField = Function.combine(this.$1$OnGetRoomInfoReceivedField, value);
+		},
+		remove_onGetRoomInfoReceived: function(value) {
+			this.$1$OnGetRoomInfoReceivedField = Function.remove(this.$1$OnGetRoomInfoReceivedField, value);
+		},
 		$setup: function() {
 			this.$myGateway.on('Area.Main.Login.Response', Function.mkdel(this, function(a) {
 				var userLoginResponse = a;
@@ -538,6 +552,12 @@
 			this.$myGateway.on('Area.Site.GetRooms.Response', Function.mkdel(this, function(a3) {
 				this.$1$OnGetRoomsReceivedField(a3);
 			}));
+			this.$myGateway.on('Area.Site.GetRoomInfo.Response', Function.mkdel(this, function(a4) {
+				this.$1$OnGetRoomInfoReceivedField(a4);
+			}));
+			this.$myGateway.on('Area.Site.JoinRoom.Response', Function.mkdel(this, function(a5) {
+				this.$1$OnRoomJoinedField(a5);
+			}));
 		},
 		$siteLogin: function(hash) {
 			this.$myGateway.emit('Area.Site.Login', { hash: hash }, this.get_gameServer());
@@ -550,6 +570,15 @@
 		},
 		getRooms: function(getRoomsRequest) {
 			this.$myGateway.emit('Area.Site.GetRooms', getRoomsRequest, this.get_gameServer());
+		},
+		createRoom: function(createRoom) {
+			this.$myGateway.emit('Area.Site.CreateRoom', createRoom, this.get_gameServer());
+		},
+		getRoomInfo: function(roomInfo) {
+			this.$myGateway.emit('Area.Site.GetRoomInfo', roomInfo, this.get_gameServer());
+		},
+		joinRoom: function(joinRoom) {
+			this.$myGateway.emit('Area.Site.JoinRoom', joinRoom, this.get_gameServer());
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -935,6 +964,32 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.UIWindow.CreateRoomUI
+	var $Client_UIWindow_CreateRoomUI = function(shuffUIManager, pageHandler, gameType) {
+		this.uiWindow = null;
+		var $t1 = new ShuffUI.ShuffWindow();
+		$t1.title = 'Login';
+		$t1.set_x(ss.Int32.div($('body').innerWidth(), 2) - 140);
+		$t1.set_y(ss.Int32.div($('body').innerHeight(), 2) - 62);
+		$t1.set_width(CommonLibraries.Number.op_Implicit$2(280));
+		$t1.set_height(CommonLibraries.Number.op_Implicit$2(125));
+		$t1.allowClose = true;
+		$t1.allowMinimize = true;
+		$t1.set_visible(true);
+		this.uiWindow = shuffUIManager.createWindow($t1);
+		var roomName;
+		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, roomName = new ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null));
+		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(55, 100, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), Function.mkdel(this, function(e) {
+			pageHandler.clientSiteManager.createRoom({ gameType: gameType, roomName: roomName.get_text() });
+			this.uiWindow.set_visible(false);
+			//todo: delete
+		})));
+		pageHandler.clientSiteManager.add_onLogin(function(data) {
+			pageHandler.clientInfo.loggedInUser = data.user;
+			pageHandler.homeUI.userLoggedIn();
+		});
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.DebugUI
 	var $Client_UIWindow_DebugUI = function(shuffUIManager, pageHandler) {
 		this.selectedGame = 'Sevens';
@@ -1066,11 +1121,14 @@
 		this.$mySpectateRoom = null;
 		this.$myCreateGameType = null;
 		this.$myCreateRoom = null;
+		this.$myRefreshRoom = null;
 		this.uiWindow = null;
 		this.$myShuffUIManager = shuffUIManager;
 		this.$myPageHandler = pageHandler;
 		pageHandler.clientSiteManager.add_onGetGameTypesReceived(Function.mkdel(this, this.$populateGames));
 		pageHandler.clientSiteManager.add_onGetRoomsReceived(Function.mkdel(this, this.$populateRooms));
+		pageHandler.clientSiteManager.add_onRoomJoined(Function.mkdel(this, this.$roomJoined));
+		pageHandler.clientSiteManager.add_onGetRoomInfoReceived(Function.mkdel(this, this.$getRoomInfo));
 		var $t1 = new ShuffUI.ShuffWindow();
 		$t1.title = 'CardGame';
 		$t1.set_x(400);
@@ -1102,11 +1160,12 @@
 			this.$populateRoom(room);
 		});
 		this.$myRoomsList = $t5.addElement(ShuffUI.ShuffListBox).call($t5, $t4);
-		this.$myCreateRoom = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), function(c1) {
-			window.alert('Insert Insert Here');
-		}));
+		this.$myCreateRoom = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), Function.mkdel(this, function(c1) {
+			var create = new $Client_UIWindow_CreateRoomUI(shuffUIManager, pageHandler, Type.cast(this.$myGameTypeList.selectedItem.value, String));
+			shuffUIManager.focus(create.uiWindow);
+		})));
 		var $t7 = this.uiWindow;
-		var $t6 = new ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(250));
+		var $t6 = new ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(200));
 		$t6.set_visible(false);
 		this.$myRoomPlayers = $t7.addElement(ShuffUI.ShuffListBox).call($t7, $t6);
 		var $t9 = this.uiWindow;
@@ -1118,9 +1177,9 @@
 		$t10.set_visible(false);
 		this.$myRoomName = $t11.addElement(ShuffUI.ShuffLabel).call($t11, $t10);
 		var $t13 = this.uiWindow;
-		var $t12 = new ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), function(c2) {
-			window.alert('Joined!');
-		});
+		var $t12 = new ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), Function.mkdel(this, function(c2) {
+			pageHandler.clientSiteManager.joinRoom({ gameType: Type.cast(this.$myGameTypeList.selectedItem.value, String), roomName: Type.cast(this.$myRoomsList.selectedItem.value, String) });
+		}));
 		$t12.set_visible(false);
 		this.$myJoinRoom = $t13.addElement(ShuffUI.ShuffButton).call($t13, $t12);
 		var $t15 = this.uiWindow;
@@ -1129,9 +1188,22 @@
 		});
 		$t14.set_visible(false);
 		this.$mySpectateRoom = $t15.addElement(ShuffUI.ShuffButton).call($t15, $t14);
+		var $t17 = this.uiWindow;
+		var $t16 = new ShuffUI.ShuffButton(420, 410, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), Function.mkdel(this, function(c4) {
+			pageHandler.clientSiteManager.getRoomInfo({ gameType: Type.cast(this.$myGameTypeList.selectedItem.value, String), roomName: Type.cast(this.$myRoomsList.selectedItem.value, String) });
+		}));
+		$t16.set_visible(false);
+		this.$myRefreshRoom = $t17.addElement(ShuffUI.ShuffButton).call($t17, $t16);
 		//UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
 	};
 	$Client_UIWindow_HomeUI.prototype = {
+		$getRoomInfo: function(o) {
+			this.$populateRoom(o.room);
+		},
+		$roomJoined: function(o) {
+			//todo pop open chat room window
+			this.$populateRoom(o.room);
+		},
 		userLoggedIn: function() {
 			this.$lblHeader.set_text(String.format('Welcome: {0}!', this.$myPageHandler.clientInfo.loggedInUser.userName));
 			this.$myPageHandler.clientSiteManager.getGameTypes();
@@ -1160,6 +1232,7 @@
 			this.$myRoomGameType.set_visible(true);
 			this.$myJoinRoom.set_visible(true);
 			this.$mySpectateRoom.set_visible(true);
+			this.$myRefreshRoom.set_visible(true);
 			this.$myRoomPlayers.clearItems();
 			for (var $t1 = 0; $t1 < roomData.players.length; $t1++) {
 				var userModel = roomData.players[$t1];
@@ -1244,6 +1317,7 @@
 	Type.registerClass(global, 'Client.ShufflyGame.GameDrawer', $Client_ShufflyGame_GameDrawer, Object);
 	Type.registerClass(global, 'Client.UIWindow.ActiveLobbyUI', $Client_UIWindow_ActiveLobbyUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.CodeEditorUI', $Client_UIWindow_CodeEditorUI, Object);
+	Type.registerClass(global, 'Client.UIWindow.CreateRoomUI', $Client_UIWindow_CreateRoomUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.DebugUI', $Client_UIWindow_DebugUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.HomeUI', $Client_UIWindow_HomeUI, Object);
 	Type.registerClass(global, 'Client.UIWindow.LoginUI', $Client_UIWindow_LoginUI, Object);

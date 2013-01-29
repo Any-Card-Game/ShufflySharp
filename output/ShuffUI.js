@@ -386,6 +386,7 @@
 	var $ShuffUI_ShuffListBox = function(x, y, width, height) {
 		this.onClick = null;
 		this.items = null;
+		this.selectedItem = null;
 		$ShuffUI_ShuffElement.call(this);
 		var but = $('<div style=\'position:absolute;\'></div>');
 		this.element = but;
@@ -403,6 +404,7 @@
 		}), 2000);
 		but.bind('select', Function.mkdel(this, function(e) {
 			var item = e.args.item;
+			this.selectedItem = item;
 			if (ss.isValue(this.onClick)) {
 				this.onClick(item);
 			}
@@ -412,8 +414,11 @@
 	$ShuffUI_ShuffListBox.prototype = {
 		bindCustomEvents: function() {
 		},
-		addItem: function(p0) {
-			this.items.add(p0);
+		addItem: function(item) {
+			if (this.items.length === 0) {
+				this.selectedItem = item;
+			}
+			this.items.add(item);
 			this.update();
 		},
 		update: function() {
@@ -633,7 +638,7 @@
 				}
 			});
 			outer.mousedown(Function.mkdel(this, function(evt3) {
-				this.focus(info);
+				this.focus(ui);
 			}));
 			$('.window-header-button').button();
 			if (!ui.staticPositioning) {
@@ -658,7 +663,7 @@
 			for (var i = 0; i < this.$uiAreas.length; i++) {
 				this.$uiAreas[i].get_element().css('z-index', parseInt(this.$uiAreas[i].get_element().css('z-index')) - 1);
 			}
-			info.get_element().css('z-index', 1900);
+			info.information.get_element().css('z-index', 1900);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

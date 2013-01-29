@@ -8,27 +8,62 @@ namespace SiteServer
 {
     public class SiteManager
     {
-        private DataManager dataManager;
+        private readonly DataManager myDataManager;
         private SiteClientManager myServerManager;
 
         public SiteManager(string siteServerIndex)
         {
+            myDataManager = new DataManager();
             myServerManager = new SiteClientManager(siteServerIndex);
 
-            dataManager = new DataManager();
 
             myServerManager.OnUserLogin += OnUserLogin;
             myServerManager.OnGetGameTypes += OnGetGameTypes;
+            myServerManager.OnGetRoomInfo += OnGetRoomInfo;
             myServerManager.OnGetRooms += OnGetRooms;
+            myServerManager.OnCreateRoom += OnCreateRoom;
+            myServerManager.OnJoinRoom += OnJoinRoom;
         }
 
         void OnGetRooms(UserModel user, GetRoomsRequest data)
         {
-            ExtensionMethods.debugger("");
-             
+            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { myServerManager.SendRooms(user, new GetRoomsResponse(a)); });
 
-            dataManager.SiteData.Room_GetAllByGameType(data.GameType,a => {myServerManager.SendRooms(user, new GetRoomsResponse(a));});
-           
+        }
+        void OnGetRoomInfo(UserModel user, GetRoomInfoRequest data)
+        {
+            myDataManager.SiteData.Room_GetByRoomName(data.GameType, data.RoomName, a => { myServerManager.SendRoomInfo(user, new GetRoomInfoResponse(a)); });
+
+        }
+        void OnCreateRoom(UserModel user, CreateRoomRequest data)
+        {
+            myDataManager.SiteData.Room_CreateRoom(data.GameType, data.RoomName, user, (room) =>
+            {
+
+                myServerManager.RoomJoined(user, new RoomJoinResponse(room));
+                myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { myServerManager.SendRooms(user, new GetRoomsResponse(a)); });
+            });
+
+
+        }
+        void OnJoinRoom(UserModel user, RoomJoinRequest data)
+        {
+            myDataManager.SiteData.Room_JoinRoom(data.GameType,
+                                                 data.RoomName,
+                                                 user,
+                                                 (room) =>
+                                                 {
+
+                                                     myServerManager.RoomJoined(user, new RoomJoinResponse(room));
+
+                                                     foreach (var userModel in room.Players) {
+                                                         myServerManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
+                                                     }
+                                                 }
+
+                    );
+
+
         }
 
         private void OnGetGameTypes(UserModel user)

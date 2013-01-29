@@ -37,6 +37,12 @@ namespace MongoDBLibrary
 
         [IgnoreGenericArguments]
         public void Find<T>(JsDictionary<string, object> gmo, Action<string, MongoCollectionResult<T>> onFind) { }
+
+        [IgnoreGenericArguments]
+        public void Save<T>(T roomData)
+        {
+        
+        }
     }
 
     [IgnoreNamespace]

@@ -48,6 +48,7 @@
     <Compile Include="ShufflyGame\GameDrawer.cs" />
     <Compile Include="UIWindow\CodeEditorUI.cs" />
     <Compile Include="UIWindow\ActiveLobbyUI.cs" />
+    <Compile Include="UIWindow\CreateRoomUI.cs" />
     <Compile Include="UIWindow\DebugUI.cs" />
     <Compile Include="UIWindow\HomeUI.cs" />
     <Compile Include="UIWindow\LoginUI.cs" />

@@ -203,12 +203,24 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.CreateRoomRequest
+	var $Models_SiteManagerModels_CreateRoomRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.GameTypeModel
 	var $Models_SiteManagerModels_GameTypeModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.GetGameTypesReceivedResponse
 	var $Models_SiteManagerModels_GetGameTypesReceivedResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetRoomInfoRequest
+	var $Models_SiteManagerModels_GetRoomInfoRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetRoomInfoResponse
+	var $Models_SiteManagerModels_GetRoomInfoResponse = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.GetRoomsRequest
@@ -221,6 +233,14 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.RoomData
 	var $Models_SiteManagerModels_RoomData = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.RoomJoinRequest
+	var $Models_SiteManagerModels_RoomJoinRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.RoomJoinResponse
+	var $Models_SiteManagerModels_RoomJoinResponse = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.SiteLoginRequest
@@ -244,10 +264,15 @@
 	Type.registerClass(global, 'Models.GameManagerModels.GameSourceResponseModel', $Models_GameManagerModels_GameSourceResponseModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.JoinGameRequestModel', $Models_GameManagerModels_JoinGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.CreateRoomRequest', $Models_SiteManagerModels_CreateRoomRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GameTypeModel', $Models_SiteManagerModels_GameTypeModel, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetGameTypesReceivedResponse', $Models_SiteManagerModels_GetGameTypesReceivedResponse, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoRequest', $Models_SiteManagerModels_GetRoomInfoRequest, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoResponse', $Models_SiteManagerModels_GetRoomInfoResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest, Object);
 })();

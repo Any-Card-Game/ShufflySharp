@@ -37,6 +37,7 @@
     <Compile Include="Data\DataManager.Data.cs" />
     <Compile Include="Data\DataManagerGameData.cs" />
     <Compile Include="Data\DataManagerSiteData.cs" />
+    <Compile Include="Data\MongoHelper.cs" />
     <Compile Include="IPs.cs" />
     <Compile Include="PubSub.cs" />
     <Compile Include="QueueItem.cs" />

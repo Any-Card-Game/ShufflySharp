@@ -85,7 +85,7 @@ namespace ShuffUI
                                                         }
                                                     });
 
-            outer.MouseDown((evt) => { Focus(info); });
+            outer.MouseDown((evt) => { Focus(ui); });
 
             WidgetExtensions.Button(jQuery.Select(".window-header-button"));
 
@@ -111,12 +111,12 @@ namespace ShuffUI
             return ui;
         }
 
-        public void Focus(UIAreaInformation info)
+        public void Focus(ShuffWindow  info)
         {
             for (var i = 0; i < UIAreas.Count; i++) {
                 UIAreas[i].Element.CSS("z-index", int.Parse(UIAreas[i].Element.GetCSS("z-index")) - 1);
             }
-            info.Element.CSS("z-index", 1900);
+            info.Information.Element.CSS("z-index", 1900);
         }
     }
     public class UIAreaInformation

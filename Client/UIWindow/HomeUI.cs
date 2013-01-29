@@ -21,6 +21,7 @@ namespace Client.UIWindow
         private ShuffButton mySpectateRoom;
         private ShuffButton myCreateGameType;
         private ShuffButton myCreateRoom;
+        private ShuffButton myRefreshRoom;
         [IntrinsicProperty]
         public ShuffWindow UIWindow { get; set; }
 
@@ -31,6 +32,8 @@ namespace Client.UIWindow
 
             pageHandler.ClientSiteManager.OnGetGameTypesReceived += PopulateGames;
             pageHandler.ClientSiteManager.OnGetRoomsReceived += PopulateRooms;
+            pageHandler.ClientSiteManager.OnRoomJoined += RoomJoined;
+            pageHandler.ClientSiteManager.OnGetRoomInfoReceived += GetRoomInfo;
 
             UIWindow = shuffUIManager.CreateWindow(new ShuffWindow() {
                                                                              Title = "CardGame",
@@ -59,19 +62,27 @@ namespace Client.UIWindow
                 OnClick = (item) =>
                 {
                     var room = myLoadedRooms.First(a => a.RoomName == (string)item.Value);
+
                     PopulateRoom(room);
                 }
             });
-            myCreateRoom = UIWindow.AddElement(new ShuffButton(225, 410, 100, 40, "Create New Room!", c => { Window.Alert("Insert Insert Here"); }));
 
-            myRoomPlayers = UIWindow.AddElement(new ShuffListBox(400, 200, 175, 250){Visible=false});
+
+            myCreateRoom = UIWindow.AddElement(new ShuffButton(225, 410, 100, 40, "Create New Room!",
+                                                               c =>
+                                                               {
+                                                                  var create= new CreateRoomUI(shuffUIManager, pageHandler, (string)myGameTypeList.SelectedItem.Value);
+                                                                  shuffUIManager.Focus(create.UIWindow);
+                                                               }));
+
+            myRoomPlayers = UIWindow.AddElement(new ShuffListBox(400, 200, 175, 200){Visible=false});
 
 
             myRoomGameType = UIWindow.AddElement(new ShuffLabel(400, 100, "") { Visible = false });
             myRoomName = UIWindow.AddElement(new ShuffLabel(400, 130, "") { Visible = false });
             myJoinRoom = UIWindow.AddElement(new ShuffButton(410, 160, 75, 25, "Join!", c =>
             {
-                Window.Alert("Joined!");
+                pageHandler.ClientSiteManager.JoinRoom(new RoomJoinRequest((string)myGameTypeList.SelectedItem.Value,(string)myRoomsList.SelectedItem.Value));
             }) { Visible = false });
 
             mySpectateRoom = UIWindow.AddElement(new ShuffButton(490, 160, 75, 25, "Spectate!", c =>
@@ -79,7 +90,24 @@ namespace Client.UIWindow
                 Window.Alert("Spectate!");
             }) { Visible = false });
 
+
+            myRefreshRoom = UIWindow.AddElement(new ShuffButton(420, 410, 150, 25, "Refresh!", c =>
+            {
+                pageHandler.ClientSiteManager.GetRoomInfo(new GetRoomInfoRequest((string)myGameTypeList.SelectedItem.Value, (string)myRoomsList.SelectedItem.Value));
+            }) { Visible = false });
+
             //UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
+        }
+
+        private void GetRoomInfo(GetRoomInfoResponse o)
+        {
+            PopulateRoom(o.Room); 
+        }
+
+        private void RoomJoined(RoomJoinResponse o)
+        {
+            //todo pop open chat room window
+            PopulateRoom(o.Room);
         }
 
         public void UserLoggedIn()
@@ -94,6 +122,7 @@ namespace Client.UIWindow
             myGameTypeList.ClearItems();
 
             foreach (var gameType in o.GameTypes) {
+
                 myGameTypeList.AddItem(new ShuffListItem(gameType.Name, gameType.Name));
             }
 
@@ -117,6 +146,7 @@ namespace Client.UIWindow
             myRoomGameType.Visible = true;
             myJoinRoom.Visible = true;
             mySpectateRoom.Visible = true;
+            myRefreshRoom.Visible = true;
 
             myRoomPlayers.ClearItems();
             foreach (var userModel in roomData.Players) {

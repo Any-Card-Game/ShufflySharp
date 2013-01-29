@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Models;
 using Models.SiteManagerModels;
-using MongoDBLibrary;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerSiteData
@@ -34,33 +34,69 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_Insert(RoomData data)
-        {
-            manager.client.Collection("Room", (err, collection) => { collection.Insert(data); });
-        }
+   
 
 
 
-        public void Room_GetAllByGameType(string gameType, Action<List<RoomData>> results )
+        public void Room_GetAllByGameType(string gameType, Action<List<RoomData>> results)
         {
             manager.client.Collection("Room",
                              (err, collection) =>
                              {
                                  var js = new JsDictionary<string, object>();
-                                 js["gameType"] = gameType;
-                                  
+                                 js["gameType"] = gameType; 
                                  MongoHelper.Find<RoomData>(collection, js, (a, b) => results(b));
-                             }); 
+                             });
         }
-    }
-    public static class MongoHelper
-    {
-        public static void Find<T>(MongoCollection collection, JsDictionary<string, object> query, Action<string, List<T>> result)
+        public void Room_CreateRoom(string gameType, string roomName, UserModel user, Action<RoomData> onRoomCreated)
         {
-            collection.Find<T>(query, (a, b) => b.ToArray((c,d) => result(a, d)));
+            RoomData rd = new RoomData(gameType,roomName,new List<UserModel>(){user});
+            manager.client.Collection("Room", (err, collection) => { collection.Insert(rd);
+                                                  onRoomCreated(rd);
+
+                                              });
+        }
+
+        public void Room_JoinRoom(string gameType, string roomName, UserModel user, Action<RoomData> onRoomJoined)
+        {
+
+            manager.client.Collection("Room",
+                 (err, collection) =>
+                 {
+                     var js = new JsDictionary<string, object>();
+                     js["gameType"] = gameType;
+                     js["roomName"] = roomName;
+                     MongoHelper.Find<RoomData>(collection, js, (a, b) => {
+
+                         if (b.Count == 0) {
+                             onRoomJoined(null);
+                         } else {
+                             var roomData = b[0];
+                             roomData.Players.Add(user);
+
+                             collection.Save(roomData);
+                             onRoomJoined(roomData);
+                         }
+                                                                });
+                 });
+
+
+        }
+
+        public void Room_GetByRoomName(string gameType, string roomName, Action<RoomData> results)
+        {
+            manager.client.Collection("Room",
+                    (err, collection) =>
+                    {
+                        var js = new JsDictionary<string, object>();
+                        js["gameType"] = gameType;
+                        js["roomName"] = roomName;
+                        MongoHelper.Find<RoomData>(collection, js, (a, b) => results(b.Count>0?b[0]:null));
+                    });
 
         }
     }
+
     [Serializable]
     public class UserModelData
     {

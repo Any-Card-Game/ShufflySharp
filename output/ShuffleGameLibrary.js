@@ -2167,15 +2167,7 @@
 	Type.registerEnum(global, 'global.PokerWinType', $global_PokerWinType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.Rectangle
-	var $global_Rectangle = function(x, y, width, height) {
-		this.x = 0;
-		this.y = 0;
-		this.width = 0;
-		this.height = 0;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	var $global_Rectangle = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// global.Shuff

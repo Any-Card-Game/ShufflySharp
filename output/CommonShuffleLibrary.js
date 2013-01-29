@@ -286,17 +286,49 @@
 				});
 			});
 		},
-		room_Insert: function(data) {
-			this.$manager.client.collection('Room', function(err, collection) {
-				collection.insert(data);
-			});
-		},
 		room_GetAllByGameType: function(gameType, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
 				var js = {};
 				js['gameType'] = gameType;
 				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, js, function(a, b) {
 					results(b);
+				});
+			});
+		},
+		room_CreateRoom: function(gameType, roomName, user, onRoomCreated) {
+			var $t1 = [];
+			$t1.add(user);
+			var rd = { gameType: gameType, roomName: roomName, players: $t1 };
+			this.$manager.client.collection('Room', function(err, collection) {
+				collection.insert(rd);
+				onRoomCreated(rd);
+			});
+		},
+		room_JoinRoom: function(gameType, roomName, user, onRoomJoined) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				var js = {};
+				js['gameType'] = gameType;
+				js['roomName'] = roomName;
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, js, function(a, b) {
+					if (b.length === 0) {
+						onRoomJoined(null);
+					}
+					else {
+						var roomData = b[0];
+						roomData.players.add(user);
+						collection.save(roomData);
+						onRoomJoined(roomData);
+					}
+				});
+			});
+		},
+		room_GetByRoomName: function(gameType, roomName, results) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				var js = {};
+				js['gameType'] = gameType;
+				js['roomName'] = roomName;
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, js, function(a, b) {
+					results(((b.length > 0) ? b[0] : null));
 				});
 			});
 		}

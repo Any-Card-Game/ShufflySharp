@@ -13,6 +13,9 @@ namespace ShuffUI
         [IntrinsicProperty]
         public List<ShuffListItem> Items { get; set; }
 
+        [IntrinsicProperty]
+        public ShuffListItem SelectedItem { get; set; }
+
         public ShuffListBox(int x, int y, Number width, Number height)
         {
             var but = jQuery.Select("<div style='position:absolute;'></div>");
@@ -27,7 +30,7 @@ namespace ShuffUI
 
             var theme = "getTheme()".eval();
             ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});
-
+            
             Window.SetTimeout(() => {
                                   but.GetElement(0).Style.Left = X + "px";
                                   but.GetElement(0).Style.Top = Y + "px";
@@ -37,6 +40,9 @@ namespace ShuffUI
             but.Bind("select",
                      (e) => {
                          var item = ExtensionMethods.Cast<ShuffListItem>((object)(e.me().args.item));
+
+                         SelectedItem = item;
+                         
                          if (OnClick != null)
                              OnClick(item);
                      });
@@ -47,9 +53,12 @@ namespace ShuffUI
 
         public override void BindCustomEvents() {}
 
-        public void AddItem(ShuffListItem p0)
+        public void AddItem(ShuffListItem item)
         {
-            Items.Add(p0);
+            if (Items.Count == 0) {
+                SelectedItem = item;
+            }
+            Items.Add(item);
             Update();
         }
 

@@ -14,6 +14,7 @@ namespace SiteServer
         public delegate void CreateRoom(UserModel user, CreateRoomRequest data);
         public delegate void JoinRoom(UserModel user, RoomJoinRequest data);
         public delegate void GetRoomInfo(UserModel user, GetRoomInfoRequest data);
+        public delegate void UserDisconnect(UserModel user, UserDisconnectModel data);
         
         #endregion
 
@@ -31,6 +32,7 @@ namespace SiteServer
         public event GetGameTypes OnGetGameTypes;
         public event GetRooms OnGetRooms;
         public event GetRoomInfo OnGetRoomInfo;
+        public event UserDisconnect OnUserDisconnect;
         
 
         public event CreateRoom OnCreateRoom;
@@ -55,6 +57,8 @@ namespace SiteServer
 
             qManager.AddChannel("Area.Site.CreateRoom", (user, data) => OnCreateRoom(user, (CreateRoomRequest)data));
             qManager.AddChannel("Area.Site.JoinRoom", (user, data) => OnJoinRoom(user, (RoomJoinRequest)data));
+            qManager.AddChannel("Area.Site.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
+            
         }
 
         public void SendLoginResponse(UserModel user)

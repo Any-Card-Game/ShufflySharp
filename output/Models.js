@@ -38,6 +38,10 @@
 		this.content = content;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.UserDisconnectModel
+	var $Models_UserDisconnectModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserLoginResponse
 	var $Models_UserLoginResponse = function() {
 	};
@@ -249,6 +253,7 @@
 	Type.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel, Object);
 	Type.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel, Object);
 	Type.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel, Object);
+	Type.registerClass(global, 'Models.UserDisconnectModel', $Models_UserDisconnectModel, Object);
 	Type.registerClass(global, 'Models.UserLoginResponse', $Models_UserLoginResponse, Object);
 	Type.registerClass(global, 'Models.UserModel', $Models_UserModel, Object);
 	Type.registerClass(global, 'Models.UserSocketModel', $Models_UserSocketModel, Object);
@@ -271,7 +276,7 @@
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoResponse', $Models_SiteManagerModels_GetRoomInfoResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest, Object);

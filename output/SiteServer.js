@@ -9,6 +9,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$1$OnGetGameTypesField = null;
 		this.$1$OnGetRoomsField = null;
 		this.$1$OnGetRoomInfoField = null;
+		this.$1$OnUserDisconnectField = null;
 		this.$1$OnCreateRoomField = null;
 		this.$1$OnJoinRoomField = null;
 		this.set_siteServerIndex(siteServerIndex);
@@ -45,6 +46,12 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		remove_onGetRoomInfo: function(value) {
 			this.$1$OnGetRoomInfoField = Function.remove(this.$1$OnGetRoomInfoField, value);
 		},
+		add_onUserDisconnect: function(value) {
+			this.$1$OnUserDisconnectField = Function.combine(this.$1$OnUserDisconnectField, value);
+		},
+		remove_onUserDisconnect: function(value) {
+			this.$1$OnUserDisconnectField = Function.remove(this.$1$OnUserDisconnectField, value);
+		},
 		add_onCreateRoom: function(value) {
 			this.$1$OnCreateRoomField = Function.combine(this.$1$OnCreateRoomField, value);
 		},
@@ -77,6 +84,9 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			this.$qManager.addChannel('Area.Site.JoinRoom', Function.mkdel(this, function(user5, data5) {
 				this.$1$OnJoinRoomField(user5, data5);
 			}));
+			this.$qManager.addChannel('Area.Site.UserDisconnect', Function.mkdel(this, function(user6, data6) {
+				this.$1$OnUserDisconnectField(user6, data6);
+			}));
 		},
 		sendLoginResponse: function(user) {
 			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.Login.Response', { successful: true, user: user });
@@ -107,8 +117,39 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$myServerManager.add_onGetRooms(Function.mkdel(this, this.$onGetRooms));
 		this.$myServerManager.add_onCreateRoom(Function.mkdel(this, this.$onCreateRoom));
 		this.$myServerManager.add_onJoinRoom(Function.mkdel(this, this.$onJoinRoom));
+		this.$myServerManager.add_onUserDisconnect(Function.mkdel(this, this.$onUserDisconnect));
 	};
 	$SiteServer_SiteManager.prototype = {
+		$onUserDisconnect: function(user, data) {
+			console.log('Awww, dat ' + user.userName + ' disconnected');
+			this.$removeUserFromRoom(data.user, function(room) {
+			});
+		},
+		$removeUserFromRoom: function(user, result) {
+			this.$myDataManager.siteData.room_GetRoomByUser(user, Function.mkdel(this, function(room) {
+				if (ss.isNullOrUndefined(room)) {
+					result(null);
+					return;
+				}
+				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
+					var player = room.players[$t1];
+					if (ss.referenceEquals(player.userName, user.userName)) {
+						room.players.remove(player);
+					}
+				}
+				if (room.players.length === 0) {
+					this.$myDataManager.siteData.room_DeleteRoom(room);
+				}
+				else {
+					this.$myDataManager.siteData.room_UpdateRoom(room);
+					for (var $t2 = 0; $t2 < room.players.length; $t2++) {
+						var userModel = room.players[$t2];
+						this.$myServerManager.sendRoomInfo(userModel, { room: room });
+					}
+				}
+				result(room);
+			}));
+		},
 		$onGetRooms: function(user, data) {
 			this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, Function.mkdel(this, function(a) {
 				this.$myServerManager.sendRooms(user, { rooms: a });
@@ -120,20 +161,24 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}));
 		},
 		$onCreateRoom: function(user, data) {
-			this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, Function.mkdel(this, function(room) {
-				this.$myServerManager.roomJoined(user, { room: room });
-				this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, Function.mkdel(this, function(a) {
-					this.$myServerManager.sendRooms(user, { rooms: a });
+			this.$removeUserFromRoom(user, Function.mkdel(this, function(disconnectedRoom) {
+				this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, Function.mkdel(this, function(room) {
+					this.$myServerManager.roomJoined(user, { room: room });
+					this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, Function.mkdel(this, function(a) {
+						this.$myServerManager.sendRooms(user, { rooms: a });
+					}));
 				}));
 			}));
 		},
 		$onJoinRoom: function(user, data) {
-			this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, Function.mkdel(this, function(room) {
-				this.$myServerManager.roomJoined(user, { room: room });
-				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
-					var userModel = room.players[$t1];
-					this.$myServerManager.sendRoomInfo(userModel, { room: room });
-				}
+			this.$removeUserFromRoom(user, Function.mkdel(this, function(disconnectedRoom) {
+				this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, Function.mkdel(this, function(room) {
+					this.$myServerManager.roomJoined(user, { room: room });
+					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
+						var userModel = room.players[$t1];
+						this.$myServerManager.sendRoomInfo(userModel, { room: room });
+					}
+				}));
 			}));
 		},
 		$onGetGameTypes: function(user) {

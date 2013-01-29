@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using MongoDBLibrary;
 namespace Models.SiteManagerModels
 {
     [Serializable]
-    public class RoomData
+    public class RoomData : MongoDocument
     {
         [ObjectLiteral]
         public RoomData(string gameType, string roomName, List<UserModel> players)

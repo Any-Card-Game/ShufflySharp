@@ -35,12 +35,19 @@ namespace GameServer
             myServerManager.OnDebugGameCreate += DebugGameCreate;
             myServerManager.OnStartGame += StartGame;
             myServerManager.OnUserAnswerQuestion += UserAnswerQuestion;
+            myServerManager.OnUserDisconnect += UserDisconnect;
 
             rooms = new List<GameRoom>();
             cachedGames = new JsDictionary<string, GameObject>();
             gameData = new GameData();
             dataManager = new DataManager();
             Global.SetInterval(flushQueue, 50);
+        }
+
+        private void UserDisconnect(UserModel user, UserDisconnectModel data)
+        {
+        
+            //todo does
         }
 
         public void UserJoinGame(UserModel user, JoinGameRequestModel data)

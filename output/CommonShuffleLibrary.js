@@ -278,19 +278,25 @@
 		},
 		user_GetFirstByUsernamePassword: function(username, password, results) {
 			this.$manager.client.collection('User', function(err, collection) {
-				var js = {};
-				js['username'] = username;
-				js['password'] = password;
-				$CommonShuffleLibrary_Data_MongoHelper.find($CommonShuffleLibrary_Data_UserModelData).call(null, collection, js, function(a, b) {
+				var j = { username: username, password: password };
+				$CommonShuffleLibrary_Data_MongoHelper.find($CommonShuffleLibrary_Data_UserModelData).call(null, collection, j, function(a, b) {
 					results(b);
+				});
+			});
+		},
+		room_GetRoomByUser: function(user, results) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				var j = {};
+				j['players.userName'] = user.userName;
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, function(a, b) {
+					results(((b.length > 0) ? b[0] : null));
 				});
 			});
 		},
 		room_GetAllByGameType: function(gameType, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
-				var js = {};
-				js['gameType'] = gameType;
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, js, function(a, b) {
+				var j = { gameType: gameType };
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, function(a, b) {
 					results(b);
 				});
 			});
@@ -305,31 +311,37 @@
 			});
 		},
 		room_JoinRoom: function(gameType, roomName, user, onRoomJoined) {
-			this.$manager.client.collection('Room', function(err, collection) {
-				var js = {};
-				js['gameType'] = gameType;
-				js['roomName'] = roomName;
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, js, function(a, b) {
+			this.$manager.client.collection('Room', Function.mkdel(this, function(err, collection) {
+				var j = { gameType: gameType, roomName: roomName };
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, Function.mkdel(this, function(a, b) {
 					if (b.length === 0) {
 						onRoomJoined(null);
 					}
 					else {
 						var roomData = b[0];
 						roomData.players.add(user);
-						collection.save(roomData);
+						this.room_UpdateRoom(roomData);
 						onRoomJoined(roomData);
 					}
-				});
-			});
+				}));
+			}));
 		},
 		room_GetByRoomName: function(gameType, roomName, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
-				var js = {};
-				js['gameType'] = gameType;
-				js['roomName'] = roomName;
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, js, function(a, b) {
+				var j = { gameType: gameType, roomName: roomName };
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, function(a, b) {
 					results(((b.length > 0) ? b[0] : null));
 				});
+			});
+		},
+		room_UpdateRoom: function(room) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				collection.save(room);
+			});
+		},
+		room_DeleteRoom: function(room) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				collection.remove({ _id: room._id });
 			});
 		}
 	};
@@ -367,7 +379,7 @@
 		return $CommonShuffleLibrary_Data_UserModelData.$ctor();
 	};
 	$CommonShuffleLibrary_Data_UserModelData.$ctor = function() {
-		var $this = {};
+		var $this = MongoDBLibrary.MongoDocument.$ctor();
 		$this.username = null;
 		$this.password = null;
 		return $this;
@@ -386,7 +398,7 @@
 	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, Object);
+	Type.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData);
 	$CommonShuffleLibrary_DataManager.$connectionAddress = '50.116.28.16';
 	$CommonShuffleLibrary_DataManager.$connectionPort = '27017';
 })();

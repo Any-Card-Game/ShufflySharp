@@ -16,6 +16,7 @@ namespace GameServer
         public delegate void StartGame(StartGameRequestModel data);
         public delegate void UserAnswerQuestion(UserModel user, GameAnswerQuestionModel data);
         public delegate void UserJoinGame(UserModel user, JoinGameRequestModel data);
+        public delegate void UserDisconnect(UserModel user, UserDisconnectModel data);
 
         #endregion
 
@@ -35,7 +36,8 @@ namespace GameServer
         public event DebugGameCreate OnDebugGameCreate;
         public event StartGame OnStartGame;
         public event UserAnswerQuestion OnUserAnswerQuestion;
-
+        public event UserDisconnect OnUserDisconnect;
+        
         private void Setup()
         {
             qManager = new QueueManager(GameServerIndex,
@@ -54,7 +56,8 @@ namespace GameServer
             qManager.AddChannel("Area.Game.Join", (user, data) => OnUserJoinGame(user, (JoinGameRequestModel) data));
             qManager.AddChannel("Area.Game.DebuggerJoin", (user, data) => OnDebuggerJoinGame(user, (DebuggerJoinRequestModel) data));
             qManager.AddChannel("Area.Game.Start", (user, data) => OnStartGame((StartGameRequestModel) data));
-            qManager.AddChannel("Area.Game.AnswerQuestion", (user, data) => OnUserAnswerQuestion(user, (GameAnswerQuestionModel) data));
+            qManager.AddChannel("Area.Game.AnswerQuestion", (user, data) => OnUserAnswerQuestion(user, (GameAnswerQuestionModel)data));
+            qManager.AddChannel("Area.Game.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
         }
 
         private void SendMessageToAll(GameRoom room, string message, object val)

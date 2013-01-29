@@ -11,6 +11,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$1$OnDebugGameCreateField = null;
 		this.$1$OnStartGameField = null;
 		this.$1$OnUserAnswerQuestionField = null;
+		this.$1$OnUserDisconnectField = null;
 		this.set_gameServerIndex(gameServerIndex);
 		this.$setup();
 	};
@@ -57,6 +58,12 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		remove_onUserAnswerQuestion: function(value) {
 			this.$1$OnUserAnswerQuestionField = Function.remove(this.$1$OnUserAnswerQuestionField, value);
 		},
+		add_onUserDisconnect: function(value) {
+			this.$1$OnUserDisconnectField = Function.combine(this.$1$OnUserDisconnectField, value);
+		},
+		remove_onUserDisconnect: function(value) {
+			this.$1$OnUserDisconnectField = Function.remove(this.$1$OnUserDisconnectField, value);
+		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_gameServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GameServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_gameServerIndex(), null)], ['GameServer', 'GatewayServer', 'Gateway*']));
 			this.$qManager.addChannel('Area.Debug.Create', Function.mkdel(this, function(user, data) {
@@ -76,6 +83,9 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}));
 			this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(user5, data5) {
 				this.$1$OnUserAnswerQuestionField(user5, data5);
+			}));
+			this.$qManager.addChannel('Area.Game.UserDisconnect', Function.mkdel(this, function(user6, data6) {
+				this.$1$OnUserDisconnectField(user6, data6);
 			}));
 		},
 		$sendMessageToAll: function(room, message, val) {
@@ -152,6 +162,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$myServerManager.add_onDebugGameCreate(Function.mkdel(this, this.debugGameCreate));
 		this.$myServerManager.add_onStartGame(Function.mkdel(this, this.startGame));
 		this.$myServerManager.add_onUserAnswerQuestion(Function.mkdel(this, this.userAnswerQuestion));
+		this.$myServerManager.add_onUserDisconnect(Function.mkdel(this, this.$userDisconnect));
 		this.$rooms = [];
 		this.$cachedGames = {};
 		this.$gameData = new $GameServer_GameData();
@@ -159,6 +170,9 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		setInterval(Function.mkdel(this, this.$flushQueue), 50);
 	};
 	$GameServer_GameManager.prototype = {
+		$userDisconnect: function(user, data) {
+			//todo does
+		},
 		userJoinGame: function(user, data) {
 			var room = null;
 			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {

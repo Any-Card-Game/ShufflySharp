@@ -68,6 +68,8 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
+				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), 'SiteServer', 'Area.Site.UserDisconnect', { user: Models.UserSocketModel.toUserModel(user) });
+				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), 'GameServer', 'Area.Game.UserDisconnect', { user: Models.UserSocketModel.toUserModel(user) });
 				delete this.users[user.userName];
 			}));
 		}));

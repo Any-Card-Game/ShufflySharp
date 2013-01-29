@@ -14,4 +14,15 @@ namespace Models
             User = user;
         }
     }
+    [Serializable]
+    public class UserDisconnectModel
+    {
+        public UserModel User { get; set; }
+        [ObjectLiteral]
+        public UserDisconnectModel( UserModel user)
+        {
+            User = user;
+        }
+    }
+    
 }

@@ -91,6 +91,8 @@ namespace GatewayServer
                                         (string data) => {
                                             if (user == null)
                                                 return;
+                                            queueManager.SendMessage(user.ToUserModel(), "SiteServer", "Area.Site.UserDisconnect", new UserDisconnectModel(user.ToUserModel()));
+                                            queueManager.SendMessage(user.ToUserModel(), "GameServer", "Area.Game.UserDisconnect", new UserDisconnectModel(user.ToUserModel()));
 
                                             users.Remove(user.UserName);
                                         });

@@ -23,6 +23,43 @@ namespace SiteServer
             myServerManager.OnGetRooms += OnGetRooms;
             myServerManager.OnCreateRoom += OnCreateRoom;
             myServerManager.OnJoinRoom += OnJoinRoom;
+
+            myServerManager.OnUserDisconnect += OnUserDisconnect;
+        }
+
+        private void OnUserDisconnect(UserModel user, UserDisconnectModel data)
+        {
+            Console.Log("Awww, dat " + user.UserName + " disconnected");
+            removeUserFromRoom(data.User, (room) => { });
+        }
+
+        private void removeUserFromRoom( UserModel user,Action<RoomData> result)
+        {
+            myDataManager.SiteData.Room_GetRoomByUser(user,
+                                                      room => {
+
+                                                          if (room == null) {
+                                                              result(null);
+                                                              return;
+                                                          }
+                                                          foreach (var player in room.Players) {
+                                                              if (player.UserName == user.UserName) room.Players.Remove(player);
+                                                          }
+                                                          if (room.Players.Count == 0) {
+
+                                                              myDataManager.SiteData.Room_DeleteRoom(room);
+
+
+                                                          } else {
+                                                              myDataManager.SiteData.Room_UpdateRoom(room);
+                                                              foreach (var userModel in room.Players)
+                                                              {
+                                                                  myServerManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
+                                                              }
+   
+                                                          }
+                                                          result(room);
+                                                      });
         }
 
         void OnGetRooms(UserModel user, GetRoomsRequest data)
@@ -35,33 +72,42 @@ namespace SiteServer
             myDataManager.SiteData.Room_GetByRoomName(data.GameType, data.RoomName, a => { myServerManager.SendRoomInfo(user, new GetRoomInfoResponse(a)); });
 
         }
-        void OnCreateRoom(UserModel user, CreateRoomRequest data)
-        {
-            myDataManager.SiteData.Room_CreateRoom(data.GameType, data.RoomName, user, (room) =>
-            {
 
-                myServerManager.RoomJoined(user, new RoomJoinResponse(room));
-                myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { myServerManager.SendRooms(user, new GetRoomsResponse(a)); });
-            });
+        private void OnCreateRoom(UserModel user, CreateRoomRequest data)
+        {
+            removeUserFromRoom(user,
+                               disconnectedRoom => {
+                                   myDataManager.SiteData.Room_CreateRoom(data.GameType,
+                                                                          data.RoomName,
+                                                                          user,
+                                                                          (room) => {
+                                                                              myServerManager.RoomJoined(user, new RoomJoinResponse(room));
+                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { myServerManager.SendRooms(user, new GetRoomsResponse(a)); });
+                                                                          });
+                               });
 
 
         }
+
+
         void OnJoinRoom(UserModel user, RoomJoinRequest data)
         {
-            myDataManager.SiteData.Room_JoinRoom(data.GameType,
-                                                 data.RoomName,
-                                                 user,
-                                                 (room) =>
-                                                 {
+            removeUserFromRoom(user,disconnectedRoom => {
+                                        myDataManager.SiteData.Room_JoinRoom(data.GameType,
+                                                                             data.RoomName,
+                                                                             user,
+                                                                             (room) => {
 
-                                                     myServerManager.RoomJoined(user, new RoomJoinResponse(room));
+                                                                                 myServerManager.RoomJoined(user, new RoomJoinResponse(room));
 
-                                                     foreach (var userModel in room.Players) {
-                                                         myServerManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
-                                                     }
-                                                 }
+                                                                                 foreach (var userModel in room.Players) {
+                                                                                     myServerManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
+                                                                                 }
+                                                                             }
 
-                    );
+                                                );
+                                    });
+             
 
 
         }

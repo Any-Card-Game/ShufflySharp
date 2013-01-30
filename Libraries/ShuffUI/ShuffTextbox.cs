@@ -52,6 +52,11 @@ namespace ShuffUI
         {
             TextChanged += (e) => { if (!e.Live) Element.Value(e.Text); };
         }
+
+        public void Focus()
+        {
+            Element.Focus();
+        }
     }
     public class ShuffTextbox<T> : ShuffTextbox
     {

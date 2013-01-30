@@ -24,6 +24,8 @@ namespace Client
         [IntrinsicProperty]
         public ClientSiteManager ClientSiteManager { get; set; }
         [IntrinsicProperty]
+        public ClientChatManager ClientChatManager { get; set; }
+        [IntrinsicProperty]
         public TimeTracker TimeTracker { get; set; }
         [IntrinsicProperty]
         public CodeEditorUI CodeEditorUI { get; set; }
@@ -39,7 +41,6 @@ namespace Client
         [IntrinsicProperty]
         public ClientInformation ClientInfo { get; set; }
 
-
         public PageHandler(string gatewayServerAddress)
         {
 
@@ -52,6 +53,8 @@ namespace Client
             ClientGameManager = new ClientGameManager(gateway);
             ClientSiteManager = new ClientSiteManager(gateway);
             ClientDebugManager = new ClientDebugManager(gateway);
+            ClientChatManager=new ClientChatManager(gateway);
+
             ClientInfo = new ClientInformation();
 
 

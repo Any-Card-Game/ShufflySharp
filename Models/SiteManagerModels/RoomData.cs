@@ -8,15 +8,17 @@ namespace Models.SiteManagerModels
     public class RoomData : MongoDocument
     {
         [ObjectLiteral]
-        public RoomData(string gameType, string roomName, List<UserModel> players)
+        public RoomData(string gameType, string roomName,string chatChannel, List<UserModel> players)
         {
             GameType = gameType;
             RoomName = roomName;
+            ChatChannel = chatChannel;
             Players = players;
         }
 
         public string GameType { get; set; }
         public string RoomName { get; set; }
+        public string ChatChannel { get; set; }
         public List<UserModel> Players { get; set; }
     }
 }

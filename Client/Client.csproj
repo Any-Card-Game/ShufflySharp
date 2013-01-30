@@ -41,6 +41,7 @@
     <Compile Include="Libs\Gateway.cs" />
     <Compile Include="Libs\ScriptLoader.cs" />
     <Compile Include="Libs\TimeTracker.cs" />
+    <Compile Include="Managers\ClientChatManager.cs" />
     <Compile Include="Managers\ClientDebugManager.cs" />
     <Compile Include="Managers\ClientGameManager.cs" />
     <Compile Include="Managers\ClientSiteManager.cs" />

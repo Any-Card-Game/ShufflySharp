@@ -38,7 +38,7 @@ namespace ShuffUI
             var top = jQuery.Select("<div style='width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  '></div>");
             outer.Append(top);
 
-            var title = jQuery.Select("<div class='rounded' style='margin:auto; background-color:white; width:40%; text-align:center;opacity:0.4;'>" + ui.Title + "</div>");
+            var title = jQuery.Select("<div class='rounded' style='margin:auto; background-color:white; width:60%; text-align:center;opacity:0.4;'>" + ui.Title + "</div>");
             top.Append(title);
 
             var rightSideBar = jQuery.Select("<div style='width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;'></div>");
@@ -59,7 +59,9 @@ namespace ShuffUI
             UIAreas.Add(info = new UIAreaInformation(outer, inner));
             ui.Information = info;
 
-            x.Click((evt) => { outer.CSS("display", "none"); });
+            x.Click((evt) => { outer.CSS("display", "none");
+                        ui.OnClose();
+                    });
             var toggleSize = false;
             var toggleMinSize = false;
             max.Click((evt) => {

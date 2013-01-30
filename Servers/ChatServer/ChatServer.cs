@@ -6,65 +6,36 @@ using CommonShuffleLibrary;
 using Models;
 using NodeJSLibrary;
 using RedisLibrary;
+using global;
 namespace ChatServer
 {
     public class ChatServer
     {
-        private RedisClient client;
-        private JsDictionary<string, List<UserModel>> registeredChannels = new JsDictionary<string, List<UserModel>>();
+
+        private string chatServerIndex;
 
         public ChatServer()
         {
-            var queueManager = new QueueManager("Chat1",
-                                                new QueueManagerOptions(new[] {
-                                                                                      new QueueWatcher("ChatServer", null),
-                                                                              },
-                                                                        new[] {"GatewayServer", "Gateway*"}));
+            new ArrayUtils();
+            chatServerIndex = "ChatServer" + Guid.NewGuid();
+            Global.Process.On("exit", () => Console.Log("exi ChatServer"));
 
-            /*queueManager.AddChannel<ChatMessageRoomModel>("Area.Chat.SendMessageToRoom",
-                                                          (sender, data) => {
-                                                              client.RPush("ChatServer.ChatRoom." + data.Channel, data.User.UserName + ": " + data.Content);
-                                                              foreach (var item in registeredChannels["ChatServer.ChatRoom." + data.Channel]) {
-                                                                  queueManager.SendMessage(item, item.Gateway, "Area.Chat.MessageReceived", data);
-                                                              }
-                                                          });
-
-            queueManager.AddChannel<ChatJoinRoomModel>("Area.Chat.JoinRoom",
-                                                       (sender, data) => {
-                                                           if (registeredChannels.ContainsKey(data.Channel))
-                                                               registeredChannels[data.Channel].Add(sender);
-                                                       });
-
-            queueManager.AddChannel<ChatCreateRoomModel>("Area.Chat.CreateRoom",
-                                                         (sender, data) => {
-                                                             queueManager.qw.Add(new QueueWatcher("ChatServer.Room." + data.Channel, null));
-                                                             registerChannel(data.Channel).Add(sender);
-                                                         });*/
-
-            var redis = Global.Require<Redis>("redis");
-            client = redis.CreateClient(6379, IPs.RedisIP);
+            ChatManager chatManager = new ChatManager(chatServerIndex);
         }
 
         public static void Main()
         {
-            try {
+            try
+            {
                 new ChatServer();
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
             }
         }
 
-        public void Cycle(string channel)
-        {
-            client.BLPop(new object[] {channel, 0}, (caller, dtj) => { Cycle(channel); });
-        }
 
-        private List<UserModel> registerChannel(string channel)
-        {
-            var chan = registeredChannels["ChatServer.ChatRoom." + channel] = new List<UserModel>();
-            Cycle(channel);
-            return chan;
-        }
     }
     [Serializable]
     public sealed class ChatCreateRoomModel
@@ -106,5 +77,5 @@ namespace ChatServer
         }
     }
     [Serializable]
-    public sealed class SendMessageToRoomModel {}
+    public sealed class SendMessageToRoomModel { }
 }

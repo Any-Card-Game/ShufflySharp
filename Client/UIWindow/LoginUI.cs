@@ -36,7 +36,8 @@ namespace Client.UIWindow
             {
                 pageHandler.ClientInfo.LoggedInUser = data.User;
                 pageHandler.HomeUI.UserLoggedIn();
-            };
+                                                         UIWindow.Visible = false;
+                                                     };
         }
     }
 }

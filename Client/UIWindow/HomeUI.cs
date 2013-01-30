@@ -1,9 +1,12 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Html;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Models.SiteManagerModels;
 using ShuffUI;
+using jQueryApi;
 namespace Client.UIWindow
 {
     public class HomeUI
@@ -55,7 +58,14 @@ namespace Client.UIWindow
 
             myCreateGameType = UIWindow.AddElement(new ShuffButton(45, 410, 100, 40, "Create New Game!", c => { Window.Alert("Insert Developer UI Here"); }));
 
-            UIWindow.AddElement(new ShuffLabel(240, 80, "Rooms"));
+            UIWindow.AddElement(new ShuffLabel(210, 80, "Rooms"));
+
+            myCreateRoom = UIWindow.AddElement(new ShuffButton(260, 70, 70, 25, "Refresh!",
+                                                   c =>
+                                                   {
+                                                       myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string)myGameTypeList.SelectedItem.Value));
+                                                   }));
+
 
             myRoomsList = UIWindow.AddElement(new ShuffListBox(200, 100, 175, 300)
             {
@@ -73,6 +83,8 @@ namespace Client.UIWindow
                                                                {
                                                                   var create= new CreateRoomUI(shuffUIManager, pageHandler, (string)myGameTypeList.SelectedItem.Value);
                                                                   shuffUIManager.Focus(create.UIWindow);
+
+
                                                                }));
 
             myRoomPlayers = UIWindow.AddElement(new ShuffListBox(400, 200, 175, 200){Visible=false});
@@ -83,12 +95,12 @@ namespace Client.UIWindow
             myJoinRoom = UIWindow.AddElement(new ShuffButton(410, 160, 75, 25, "Join!", c =>
             {
                 pageHandler.ClientSiteManager.JoinRoom(new RoomJoinRequest((string)myGameTypeList.SelectedItem.Value,(string)myRoomsList.SelectedItem.Value));
+
+
             }) { Visible = false });
 
-            mySpectateRoom = UIWindow.AddElement(new ShuffButton(490, 160, 75, 25, "Spectate!", c =>
-            {
-                Window.Alert("Spectate!");
-            }) { Visible = false });
+            mySpectateRoom = UIWindow.AddElement(new ShuffButton(490, 160, 75, 25, "Spectate!", c => {
+                                                                                                }) { Visible = false });
 
 
             myRefreshRoom = UIWindow.AddElement(new ShuffButton(420, 410, 150, 25, "Refresh!", c =>
@@ -101,6 +113,17 @@ namespace Client.UIWindow
 
         private void GetRoomInfo(GetRoomInfoResponse o)
         {
+
+            for (int i = 0; i < myLoadedRooms.Count; i++)
+            {
+                if (myLoadedRooms[i].ID == o.Room.ID) {
+                    myLoadedRooms.RemoveAt(i);
+                    myLoadedRooms.Insert(i,o.Room);
+                    break;
+                }
+            }
+
+
             PopulateRoom(o.Room); 
         }
 
@@ -108,6 +131,9 @@ namespace Client.UIWindow
         {
             //todo pop open chat room window
             PopulateRoom(o.Room);
+
+            UIWindow.SwingAway(SwingDirection.TopLeft);
+            new ActiveLobbyUI(myShuffUIManager, myPageHandler, o.Room);
         }
 
         public void UserLoggedIn()
@@ -133,6 +159,7 @@ namespace Client.UIWindow
         {
             myRoomsList.ClearItems();
             myLoadedRooms = o.Rooms;
+            if (o.Rooms.Count == 0) return;
             foreach (var room in o.Rooms) {
                 myRoomsList.AddItem(new ShuffListItem(room.RoomName, room.RoomName));
             }

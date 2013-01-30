@@ -15,7 +15,7 @@ namespace Client.UIWindow
         {
             UIWindow = shuffUIManager.CreateWindow(new ShuffWindow()
             {
-                Title = "Login",
+                Title = "Create Room",
                 X = jQuery.Select("body").GetInnerWidth()/2-280/2,
                 Y = jQuery.Select("body").GetInnerHeight() / 2-125/2,
                 Width = 280,
@@ -31,8 +31,8 @@ namespace Client.UIWindow
             UIWindow.AddElement(new ShuffButton(55, 100, 90, 30, "Create", (e) => { pageHandler.ClientSiteManager.CreateRoom(new CreateRoomRequest(gameType,roomName.Text));
 
                                                                                UIWindow.Visible = false;//todo: delete
-                                                                           })); 
-
+                                                                           }));
+            roomName.Focus();
             pageHandler.ClientSiteManager.OnLogin += (data) =>
             {
                 pageHandler.ClientInfo.LoggedInUser = data.User;

@@ -549,6 +549,9 @@
 					this.element.val(e.text);
 				}
 			})));
+		},
+		focus: function() {
+			this.element.focus();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -593,7 +596,7 @@
 			outer.css('display', ((ui.get_visible() === false) ? 'none' : 'block'));
 			var top = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;  \'></div>');
 			outer.append(top);
-			var title = $('<div class=\'rounded\' style=\'margin:auto; background-color:white; width:40%; text-align:center;opacity:0.4;\'>' + ui.title + '</div>');
+			var title = $('<div class=\'rounded\' style=\'margin:auto; background-color:white; width:60%; text-align:center;opacity:0.4;\'>' + ui.title + '</div>');
 			top.append(title);
 			var rightSideBar = $('<div style=\'width:100%; text-align:center; font-size:25px; position:absolute; top:0px;left:-2px;\'></div>');
 			top.append(rightSideBar);
@@ -611,6 +614,7 @@
 			ui.information = info;
 			x.click(function(evt) {
 				outer.css('display', 'none');
+				ui.onClose();
 			});
 			var toggleSize = false;
 			var toggleMinSize = false;
@@ -671,6 +675,7 @@
 	var $ShuffUI_ShuffWindow = function() {
 		this.outer = null;
 		this.window = null;
+		this.onClose = null;
 		this.title = null;
 		this.allowClose = false;
 		this.allowMinimize = false;
@@ -701,6 +706,60 @@
 					this.get_$outer().css('display', (e.visible ? 'block' : 'none'));
 				}
 			}));
+		},
+		swingBack: function() {
+			var js = {};
+			js['left'] = this.get_x() + 'px';
+			js['top'] = this.get_y() + 'px';
+			this.information.get_element().animate(js, 'fast', 'swing');
+		},
+		swingAway: function(direction, simulate) {
+			var js = {};
+			var distance = '1000px';
+			switch (direction) {
+				case 0: {
+					js['left'] = '-' + distance;
+					js['top'] = '-' + distance;
+					break;
+				}
+				case 1: {
+					js['top'] = '-' + distance;
+					break;
+				}
+				case 2: {
+					js['left'] = distance;
+					js['top'] = '-' + distance;
+					break;
+				}
+				case 3: {
+					js['left'] = distance;
+					break;
+				}
+				case 4: {
+					js['left'] = distance;
+					js['top'] = distance;
+					break;
+				}
+				case 5: {
+					js['top'] = distance;
+					break;
+				}
+				case 6: {
+					js['left'] = '-' + distance;
+					js['top'] = distance;
+					break;
+				}
+				case 7: {
+					js['left'] = distance;
+					break;
+				}
+			}
+			if (simulate) {
+				this.information.get_element().css(js);
+			}
+			else {
+				this.information.get_element().animate(js, 'slow', 'swing');
+			}
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -730,6 +789,12 @@
 		$this.height = h;
 		return $this;
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// ShuffUI.SwingDirection
+	var $ShuffUI_SwingDirection = function() {
+	};
+	$ShuffUI_SwingDirection.prototype = { topLeft: 0, top: 1, topRight: 2, right: 3, bottomRight: 4, bottom: 5, bottomLeft: 6, left: 7 };
+	Type.registerEnum(global, 'ShuffUI.SwingDirection', $ShuffUI_SwingDirection, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.TextChangedEvent
 	var $ShuffUI_TextChangedEvent = function() {

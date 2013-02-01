@@ -3,74 +3,74 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibrary;
 using Models;
+using Models.ChatManagerModels;
 using Models.SiteManagerModels;
 namespace SiteServer
 {
     public class SiteManager
     {
         private readonly DataManager myDataManager;
-        private SiteClientManager myServerManager;
+        private SiteClientManager mySiteClientManager;
 
         public SiteManager(string siteServerIndex)
         {
             myDataManager = new DataManager();
-            myServerManager = new SiteClientManager(siteServerIndex);
+            mySiteClientManager = new SiteClientManager(siteServerIndex);
 
+            mySiteClientManager.OnUserLogin += OnUserLogin;
+            mySiteClientManager.OnGetGameTypes += OnGetGameTypes;
+            mySiteClientManager.OnGetRoomInfo += OnGetRoomInfo;
+            mySiteClientManager.OnGetRooms += OnGetRooms;
+            mySiteClientManager.OnCreateRoom += OnCreateRoom;
+            mySiteClientManager.OnJoinRoom += OnJoinRoom;
+            mySiteClientManager.OnLeaveRoom += OnLeaveRoom;
 
-            myServerManager.OnUserLogin += OnUserLogin;
-            myServerManager.OnGetGameTypes += OnGetGameTypes;
-            myServerManager.OnGetRoomInfo += OnGetRoomInfo;
-            myServerManager.OnGetRooms += OnGetRooms;
-            myServerManager.OnCreateRoom += OnCreateRoom;
-            myServerManager.OnJoinRoom += OnJoinRoom;
+            mySiteClientManager.OnUserDisconnect += OnUserDisconnect;
+        }
 
-            myServerManager.OnUserDisconnect += OnUserDisconnect;
+        private void OnLeaveRoom(UserModel user, LeaveRoomRequest data)
+        {
+            removeUserFromRoom(user, (room) => { });
         }
 
         private void OnUserDisconnect(UserModel user, UserDisconnectModel data)
         {
-            Console.Log("Awww, dat " + user.UserName + " disconnected");
+            Console.Log(user.UserName + " disconnected");
             removeUserFromRoom(data.User, (room) => { });
         }
 
-        private void removeUserFromRoom( UserModel user,Action<RoomData> result)
+        private void removeUserFromRoom(UserModel user, Action<RoomData> result)
         {
             myDataManager.SiteData.Room_GetRoomByUser(user,
                                                       room => {
-
                                                           if (room == null) {
                                                               result(null);
                                                               return;
                                                           }
+                                                          //       mySiteClientManager.LeaveChatRoom(user);
                                                           foreach (var player in room.Players) {
                                                               if (player.UserName == user.UserName) room.Players.Remove(player);
                                                           }
-                                                          if (room.Players.Count == 0) {
-
+                                                          if (room.Players.Count == 0)
                                                               myDataManager.SiteData.Room_DeleteRoom(room);
-
-
-                                                          } else {
+                                                          else {
                                                               myDataManager.SiteData.Room_UpdateRoom(room);
-                                                              foreach (var userModel in room.Players)
-                                                              {
-                                                                  myServerManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
+                                                              foreach (var userModel in room.Players) {
+                                                                  mySiteClientManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
                                                               }
-   
                                                           }
                                                           result(room);
                                                       });
         }
 
-        void OnGetRooms(UserModel user, GetRoomsRequest data)
+        private void OnGetRooms(UserModel user, GetRoomsRequest data)
         {
-            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { myServerManager.SendRooms(user, new GetRoomsResponse(a)); });
-
+            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a)); });
         }
-        void OnGetRoomInfo(UserModel user, GetRoomInfoRequest data)
-        {
-            myDataManager.SiteData.Room_GetByRoomName(data.GameType, data.RoomName, a => { myServerManager.SendRoomInfo(user, new GetRoomInfoResponse(a)); });
 
+        private void OnGetRoomInfo(UserModel user, GetRoomInfoRequest data)
+        {
+            myDataManager.SiteData.Room_GetByRoomName(data.GameType, data.RoomName, a => { mySiteClientManager.SendRoomInfo(user, new GetRoomInfoResponse(a)); });
         }
 
         private void OnCreateRoom(UserModel user, CreateRoomRequest data)
@@ -81,49 +81,43 @@ namespace SiteServer
                                                                           data.RoomName,
                                                                           user,
                                                                           (room) => {
-                                                                              myServerManager.RoomJoined(user, new RoomJoinResponse(room));
-                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { myServerManager.SendRooms(user, new GetRoomsResponse(a)); });
+                                                                              mySiteClientManager.CreateChatRoom(user, new CreateChatRoomRequest(room.ChatChannel));
+
+                                                                              mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room));
+                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a)); });
                                                                           });
                                });
-
-
         }
 
-
-        void OnJoinRoom(UserModel user, RoomJoinRequest data)
+        private void OnJoinRoom(UserModel user, RoomJoinRequest data)
         {
-            removeUserFromRoom(user,disconnectedRoom => {
-                                        myDataManager.SiteData.Room_JoinRoom(data.GameType,
-                                                                             data.RoomName,
-                                                                             user,
-                                                                             (room) => {
+            removeUserFromRoom(user,
+                               disconnectedRoom => {
+                                   myDataManager.SiteData.Room_JoinRoom(data.GameType,
+                                                                        data.RoomName,
+                                                                        user,
+                                                                        (room) => {
+                                                                            mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room));
+                                                                            mySiteClientManager.JoinChatRoom(user, new JoinChatRoomRequest(room.ChatChannel));
 
-                                                                                 myServerManager.RoomJoined(user, new RoomJoinResponse(room));
-
-                                                                                 foreach (var userModel in room.Players) {
-                                                                                     myServerManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
-                                                                                 }
-                                                                             }
-
-                                                );
-                                    });
-             
-
-
+                                                                            foreach (var userModel in room.Players) {
+                                                                                mySiteClientManager.SendRoomInfo(userModel, new GetRoomInfoResponse(room));
+                                                                            }
+                                                                        }
+                                           );
+                               });
         }
 
         private void OnGetGameTypes(UserModel user)
         {
-            var types = new List<GameTypeModel>() { new GameTypeModel("Blackjack"), new GameTypeModel("Sevens") };
+            var types = new List<GameTypeModel>() {new GameTypeModel("Blackjack"), new GameTypeModel("Sevens")};
 
-            myServerManager.SendGameTypes(user, new GetGameTypesReceivedResponse(types));
+            mySiteClientManager.SendGameTypes(user, new GetGameTypesReceivedResponse(types));
         }
 
         private void OnUserLogin(UserModel user, SiteLoginRequest data)
         {
-            Console.Log(user.UserName + "  " + data.Hash + "    We did it!");
-
-            myServerManager.SendLoginResponse(user);
+            mySiteClientManager.SendLoginResponse(user);
         }
     }
 }

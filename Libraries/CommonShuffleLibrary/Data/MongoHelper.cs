@@ -7,8 +7,7 @@ namespace CommonShuffleLibrary.Data
     {
         public static void Find<T>(MongoCollection collection, object query, Action<string, List<T>> result)
         {
-            collection.Find<T>(query, (a, b) => b.ToArray((c,d) => result(a, d)));
-
+            collection.Find<T>(query, (a, b) => b.ToArray((c, d) => result(a, d)));
         }
     }
 }

@@ -9,10 +9,21 @@ namespace Models.SiteManagerModels
         public string GameType { get; set; }
 
         [ObjectLiteral]
-        public RoomJoinRequest(string gameType,string roomName)
+        public RoomJoinRequest(string gameType, string roomName)
         {
             RoomName = roomName;
             GameType = gameType;
+        }
+    }
+    [Serializable]
+    public class LeaveRoomRequest
+    {
+        public RoomData Room { get; set; }
+
+        [ObjectLiteral]
+        public LeaveRoomRequest(RoomData room)
+        {
+            Room = room;
         }
     }
     [Serializable]
@@ -26,5 +37,4 @@ namespace Models.SiteManagerModels
             Room = room;
         }
     }
-
 }

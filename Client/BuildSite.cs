@@ -19,7 +19,7 @@ namespace Client
         {
             Instance = this;
             this.gatewayServerAddress = gatewayServerAddress;
-            loadJunk(TopLevelURL, ready); 
+            loadJunk(TopLevelURL, ready);
         }
 
         private static void loadJunk(string url, Action ready)
@@ -109,7 +109,6 @@ namespace Client
                                            false);
 
             var pageHandler = new PageHandler(gatewayServerAddress);
-
 
             /*
 

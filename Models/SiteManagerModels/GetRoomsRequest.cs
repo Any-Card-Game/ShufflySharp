@@ -20,7 +20,7 @@ namespace Models.SiteManagerModels
         public string RoomName { get; set; }
 
         [ObjectLiteral]
-        public GetRoomInfoRequest(string gameType,string roomName)
+        public GetRoomInfoRequest(string gameType, string roomName)
         {
             GameType = gameType;
             RoomName = roomName;

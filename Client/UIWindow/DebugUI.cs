@@ -62,7 +62,10 @@ namespace Client.UIWindow
             UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => beginGame()));
 
             ShuffButton but = null;
-            UIWindow.AddElement(but = new ShuffButton(280,84,150,25,
+            UIWindow.AddElement(but = new ShuffButton(280,
+                                                      84,
+                                                      150,
+                                                      25,
                                                       new Func<string>(() => "Game: " + selectedGame),
                                                       (e) => {
                                                           if (selectedGame == "Sevens") selectedGame = "BlackJack";
@@ -91,7 +94,7 @@ namespace Client.UIWindow
              });*/
 
             ShuffListBox pop;
-           UIWindow.AddElement(pop = new ShuffListBox(25, 200, 250, 250)  );
+            UIWindow.AddElement(pop = new ShuffListBox(25, 200, 250, 250));
 
             pop.AddItem(new ShuffListItem("foos", 99));
 

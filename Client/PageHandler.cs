@@ -14,7 +14,7 @@ namespace Client
 {
     public class PageHandler
     {
-        public readonly GameDrawer gameDrawer; 
+        public readonly GameDrawer gameDrawer;
         private readonly ShuffUIManager shuffUIManager;
         private string RoomID;
         [IntrinsicProperty]
@@ -37,14 +37,12 @@ namespace Client
         public HomeUI HomeUI { get; set; }
         [IntrinsicProperty]
         public LoginUI LoginUI { get; set; }
-
         [IntrinsicProperty]
         public ClientInformation ClientInfo { get; set; }
 
         public PageHandler(string gatewayServerAddress)
         {
-
-            shuffUIManager = new ShuffUIManager(); 
+            shuffUIManager = new ShuffUIManager();
 
             gameDrawer = new GameDrawer();
             TimeTracker = new TimeTracker();
@@ -53,10 +51,9 @@ namespace Client
             ClientGameManager = new ClientGameManager(gateway);
             ClientSiteManager = new ClientSiteManager(gateway);
             ClientDebugManager = new ClientDebugManager(gateway);
-            ClientChatManager=new ClientChatManager(gateway);
+            ClientChatManager = new ClientChatManager(gateway);
 
             ClientInfo = new ClientInformation();
-
 
             LoginUI = new LoginUI(shuffUIManager, this);
             HomeUI = new HomeUI(shuffUIManager, this);
@@ -82,7 +79,6 @@ namespace Client
         public void StartGameServer()
         {
             ClientGameManager.OnGetRoomInfo += roomInfo => {
-                                                   ClientGameManager.GameServer = roomInfo.GameServer;
                                                    RoomID = roomInfo.RoomID;
 //                                                   HomeUI.loadRoomInfo(roomInfo);
                                                    DebugUI.loadRoomInfo(roomInfo);

@@ -19,9 +19,9 @@ namespace Client.Libs
         }
 
         [IgnoreGenericArguments]
-        public void Emit(string channel, object content = null, string gameServer = null)
+        public void Emit(string channel, object content = null)
         {
-            GatewaySocket.Emit("Gateway.Message", new GatewayMessageModel(channel, content, gameServer));
+            GatewaySocket.Emit("Gateway.Message", new GatewayMessageModel(channel, content));
         }
 
         [IgnoreGenericArguments]

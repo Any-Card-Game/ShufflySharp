@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
@@ -7,12 +6,11 @@ using jQueryApi;
 namespace ShuffUI
 {
     public class ShuffListBox : ShuffElement
-    { 
+    {
         [IntrinsicProperty]
         public ShuffUIEvent<ShuffListItem> OnClick { get; set; }
         [IntrinsicProperty]
         public List<ShuffListItem> Items { get; set; }
-
         [IntrinsicProperty]
         public ShuffListItem SelectedItem { get; set; }
 
@@ -30,7 +28,7 @@ namespace ShuffUI
 
             var theme = "getTheme()".eval();
             ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});
-            
+
             Window.SetTimeout(() => {
                                   but.GetElement(0).Style.Left = X + "px";
                                   but.GetElement(0).Style.Top = Y + "px";
@@ -39,14 +37,13 @@ namespace ShuffUI
 
             but.Bind("select",
                      (e) => {
-                         var item = ExtensionMethods.Cast<ShuffListItem>((object)(e.me().args.item));
+                         var item = ExtensionMethods.Cast<ShuffListItem>((object) ( e.me().args.item ));
 
                          SelectedItem = item;
-                         
+
                          if (OnClick != null)
                              OnClick(item);
                      });
-
 
             Update();
         }
@@ -55,9 +52,7 @@ namespace ShuffUI
 
         public void AddItem(ShuffListItem item)
         {
-            if (Items.Count == 0) {
-                SelectedItem = item;
-            }
+            if (Items.Count == 0) SelectedItem = item;
             Items.Add(item);
             Update();
         }
@@ -70,10 +65,8 @@ namespace ShuffUI
 
         public void ClearItems()
         {
-
             Items.Clear();
             Update();
-
         }
     }
     public class ShuffListItem

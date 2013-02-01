@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using SocketIONodeLibrary;
 namespace Models
 {
@@ -10,7 +9,6 @@ namespace Models
         public string UserName { get; set; }
         public string Password { get; set; }
         public string Hash { get; set; }
-         
     }
     [Serializable]
     public class UserSocketModel
@@ -21,7 +19,8 @@ namespace Models
         public string Password { get; set; }
         public string Hash { get; set; }
         public SocketIOConnection Socket { get; set; }
-         
+        public string CurrentGameServer { get; set; }
+        public string CurrentChatServer { get; set; }
 
         public UserModel ToUserModel()
         {
@@ -33,5 +32,4 @@ namespace Models
             return m;
         }
     }
-
 }

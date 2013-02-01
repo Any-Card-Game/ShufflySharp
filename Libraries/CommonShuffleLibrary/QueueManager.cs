@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using CommonLibraries;
 using Models;
 namespace CommonShuffleLibrary
@@ -34,7 +33,6 @@ namespace CommonShuffleLibrary
             qpCollection = new QueueItemCollection(qp);
         }
 
-        [IgnoreGenericArguments]
         public void AddChannel(string channel, Action<UserModel, object> callback)
         {
             channels[channel] = callback;
@@ -42,7 +40,7 @@ namespace CommonShuffleLibrary
 
         private void messageReceived(string name, UserModel user, string eventChannel, object content)
         {
-            user.Gateway = name;
+            //todo?        user.Gateway = name;
 
             if (channels[eventChannel] != null)
                 channels[eventChannel](user, content);
@@ -51,7 +49,8 @@ namespace CommonShuffleLibrary
         public void SendMessage(UserModel user, string channel, string eventChannel, object content)
         {
             if (qpCollection.GetByChannel(channel) == null) {
-                Console.Log(channel + " No Existy");
+                Console.Log("Cannot send message:" + channel + " No Existy");
+                Console.Log("       " + eventChannel + " " + Json.Stringify(content));
                 return;
             }
 

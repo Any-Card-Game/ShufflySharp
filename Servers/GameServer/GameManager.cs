@@ -46,7 +46,6 @@ namespace GameServer
 
         private void UserDisconnect(UserModel user, UserDisconnectModel data)
         {
-        
             //todo does
         }
 
@@ -294,7 +293,6 @@ namespace GameServer
                                               });
         }
 
-  
         /*
              
 

@@ -5,13 +5,12 @@ namespace Models.SiteManagerModels
     [Serializable]
     public class GameTypeModel
     {
-        [ObjectLiteral]
+        public string Name { get; set; }
 
+        [ObjectLiteral]
         public GameTypeModel(string name)
         {
             Name = name;
         }
-
-        public string Name { get; set; }
     }
 }

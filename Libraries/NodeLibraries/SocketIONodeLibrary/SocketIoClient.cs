@@ -6,8 +6,7 @@ namespace SocketIONodeLibrary
     public class SocketIOClient
     {
         [IntrinsicProperty]
-         public SocketNamespace Sockets { get; set; }
-
+        public SocketNamespace Sockets { get; set; }
         public void Set(string option, object value) {}
     }
 }

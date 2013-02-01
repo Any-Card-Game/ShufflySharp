@@ -57,7 +57,9 @@ namespace Build
                                                                                                                                       new List<string> {
                                                                                                                                                                @"./CommonLibraries.js",
                                                                                                                                                                @"./CommonShuffleLibrary.js",
+                                                                                                                                                               @"./ShuffleGameLibrary.js",
                                                                                                                                                                @"./Models.js",
+                                                                                                                                                               @"./RawDeflate.js",
                                                                                                                                                        })
                                                                          }, {
                                                                                     shufSharp + @"\Servers\DebugServer\", new Application(true,

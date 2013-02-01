@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using CommonLibraries;
 using jQueryApi;
 namespace ShuffUI
 {

@@ -7,6 +7,7 @@ namespace Models.SiteManagerModels
     public class GetRoomsResponse
     {
         public List<RoomData> Rooms { get; set; }
+
         [ObjectLiteral]
         public GetRoomsResponse(List<RoomData> rooms)
         {
@@ -17,11 +18,11 @@ namespace Models.SiteManagerModels
     public class GetRoomInfoResponse
     {
         public RoomData Room { get; set; }
+
         [ObjectLiteral]
         public GetRoomInfoResponse(RoomData room)
         {
             Room = room;
         }
     }
-    
 }

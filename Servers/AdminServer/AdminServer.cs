@@ -41,8 +41,6 @@ namespace AdminServer
             debug = true;
             Global.SetInterval(() => { Console.Log("keep alive " + new DateTime().ToString().Substring(17, 24)); }, 10 * 1000);
 
-      
-
             Global.Process.On("exit",
                               () => {
                                   Console.Log("Exiting ");
@@ -52,12 +50,11 @@ namespace AdminServer
 
             if (debug)
                 onAsk("d", true);
-              onAsk("d", true);
-              if (debug)
-              {
-                  nodeInspector = runProcess("node-inspector", new string[0]);
-                  Console.Log("node-inspector Started");
-              }
+            onAsk("d", true);
+            if (debug) {
+                nodeInspector = runProcess("node-inspector", new string[0]);
+                Console.Log("node-inspector Started");
+            }
 
             onAsk("s");
         }

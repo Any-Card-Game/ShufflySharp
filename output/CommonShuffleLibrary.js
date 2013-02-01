@@ -23,6 +23,7 @@
 		this.client = null;
 		this.gameData = null;
 		this.siteData = null;
+		this.chatData = null;
 		var mongo = require('mongodb');
 		var Db = mongo.Db;
 		this.$connection = mongo.Connection;
@@ -36,6 +37,7 @@
 	$CommonShuffleLibrary_DataManager.prototype = {
 		$initData: function() {
 			this.gameData = new $CommonShuffleLibrary_Data_DataManagerGameData(this);
+			this.chatData = new $CommonShuffleLibrary_Data_DataManagerChatData(this);
 			this.siteData = new $CommonShuffleLibrary_Data_DataManagerSiteData(this);
 		}
 	};
@@ -157,19 +159,20 @@
 			this.channels.set_item(channel, callback);
 		},
 		$messageReceived: function(name, user, eventChannel, content) {
-			user.gateway = name;
+			//todo?        user.Gateway = name;
 			if (ss.isValue(this.channels.get_item(eventChannel))) {
 				this.channels.get_item(eventChannel)(user, content);
 			}
 		},
 		sendMessage: function(user, channel, eventChannel, content) {
 			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
-				console.log(channel + ' No Existy');
+				console.log('Cannot send message:' + channel + ' No Existy');
+				console.log('       ' + eventChannel + ' ' + JSON.stringify(content));
 				return;
 			}
 			var pusher = Type.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
 			// Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
-			pusher.message(Object).call(pusher, channel, this.name, user, eventChannel, content);
+			pusher.message(channel, this.name, user, eventChannel, content);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -182,25 +185,16 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueMessage
-	var $CommonShuffleLibrary_QueueMessage$1 = function(T) {
-		var $type = function(name, user, eventChannel, content) {
-			this.content = T.getDefaultValue();
-			this.eventChannel = null;
-			this.name = null;
-			this.user = null;
-			this.name = name;
-			this.user = user;
-			this.eventChannel = eventChannel;
-			this.content = content;
-		};
-		Type.registerGenericClassInstance($type, $CommonShuffleLibrary_QueueMessage$1, [T], function() {
-			return Object;
-		}, function() {
-			return [];
-		});
-		return $type;
+	var $CommonShuffleLibrary_QueueMessage = function(name, user, eventChannel, content) {
+		this.content = null;
+		this.eventChannel = null;
+		this.name = null;
+		this.user = null;
+		this.name = name;
+		this.user = user;
+		this.eventChannel = eventChannel;
+		this.content = content;
 	};
-	Type.registerGenericClass(global, 'CommonShuffleLibrary.QueueMessage$1', $CommonShuffleLibrary_QueueMessage$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueuePusher
 	var $CommonShuffleLibrary_QueuePusher = function(pusher) {
@@ -211,13 +205,11 @@
 		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.get_redisIP());
 	};
 	$CommonShuffleLibrary_QueuePusher.prototype = {
-		message: function(T) {
-			return function(channel, name, user, eventChannel, content) {
-				var message = new (Type.makeGenericType($CommonShuffleLibrary_QueueMessage$1, [T]))(name, user, eventChannel, content);
-				var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
-				this.$client1.rpush(channel, value);
-				//todo:maybe sanitize
-			};
+		message: function(channel, name, user, eventChannel, content) {
+			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
+			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
+			this.$client1.rpush(channel, value);
+			//todo:maybe sanitize
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -249,6 +241,46 @@
 				}
 				this.cycle(channel);
 			}));
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CommonShuffleLibrary.Data.DataManagerChatData
+	var $CommonShuffleLibrary_Data_DataManagerChatData = function(manager) {
+		this.$manager = null;
+		this.$manager = manager;
+	};
+	$CommonShuffleLibrary_Data_DataManagerChatData.prototype = {
+		createChatChannel: function(roomName, user, complete) {
+			this.$manager.client.collection('ChatRoom', function(err, collection) {
+				var $t1 = [];
+				$t1.add(user);
+				var chatRoomModel = { roomName: roomName, users: $t1, messages: [] };
+				collection.insert(chatRoomModel);
+				complete(chatRoomModel);
+			});
+		},
+		addChatLine: function(user, room, message, complete) {
+			this.$manager.client.collection('ChatRoom', function(err, collection) {
+				var messageModel = { user: user, content: message, time: Date.get_now() };
+				collection.update({ _id: room._id }, { $push: { messages: messageModel } }, function(err2) {
+					if (ss.isValue(err2)) {
+						console.log('Data Error: ' + err2);
+					}
+					room.messages.add(messageModel);
+					complete(messageModel);
+				});
+			});
+		},
+		addUser: function(currentRoom, user, complete) {
+			this.$manager.client.collection('ChatRoom', function(err, collection) {
+				collection.update({ _id: currentRoom._id }, { $push: { users: user } }, function(err2) {
+					if (ss.isValue(err2)) {
+						console.log('Data Error: ' + err2);
+					}
+					currentRoom.users.add(user);
+					complete(currentRoom);
+				});
+			});
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +336,7 @@
 		room_CreateRoom: function(gameType, roomName, user, onRoomCreated) {
 			var $t1 = [];
 			$t1.add(user);
-			var rd = { gameType: gameType, roomName: roomName, players: $t1 };
+			var rd = { gameType: gameType, roomName: roomName, chatChannel: roomName + 'RoomName', players: $t1 };
 			this.$manager.client.collection('Room', function(err, collection) {
 				collection.insert(rd);
 				onRoomCreated(rd);
@@ -392,8 +424,10 @@
 	Type.registerClass(global, 'CommonShuffleLibrary.QueueItemCollection', $CommonShuffleLibrary_QueueItemCollection, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.QueueManager', $CommonShuffleLibrary_QueueManager, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.QueueManagerOptions', $CommonShuffleLibrary_QueueManagerOptions, Object);
+	Type.registerClass(global, 'CommonShuffleLibrary.QueueMessage', $CommonShuffleLibrary_QueueMessage, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.QueuePusher', $CommonShuffleLibrary_QueuePusher, $CommonShuffleLibrary_QueueItem);
 	Type.registerClass(global, 'CommonShuffleLibrary.QueueWatcher', $CommonShuffleLibrary_QueueWatcher, $CommonShuffleLibrary_QueueItem);
+	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerChatData', $CommonShuffleLibrary_Data_DataManagerChatData, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData, Object);
 	Type.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel, Object);

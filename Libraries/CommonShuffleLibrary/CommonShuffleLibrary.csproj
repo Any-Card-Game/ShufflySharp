@@ -35,6 +35,7 @@
     <Compile Include="Consumer.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="Data\DataManager.Data.cs" />
+    <Compile Include="Data\DataManagerChatData.cs" />
     <Compile Include="Data\DataManagerGameData.cs" />
     <Compile Include="Data\DataManagerSiteData.cs" />
     <Compile Include="Data\MongoHelper.cs" />

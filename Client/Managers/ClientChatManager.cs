@@ -4,8 +4,12 @@ namespace Client.Managers
 {
     public class ClientChatManager
     {
-        public delegate void GetChatContent(GetChatInfoMessages o);
-         
+        #region Delegates
+
+        public delegate void GetChatInfo(ChatRoomInfoModel o);
+        public delegate void GetChatLines(ChatMessagesModel o);
+
+        #endregion
 
         private readonly Gateway myGateway;
 
@@ -13,18 +17,20 @@ namespace Client.Managers
         {
             myGateway = gateway;
             Setup();
-        } 
+        }
+
+        public event GetChatLines OnGetChatLines;
+        public event GetChatInfo OnGetChatInfo;
 
         private void Setup()
         {
-            myGateway.On("Area.Chat.GetChatContent", a => OnGetChatContent((GetChatInfoMessages)a));
+            myGateway.On("Area.Chat.ChatLines.Response", a => OnGetChatLines((ChatMessagesModel) a));
+            myGateway.On("Area.Chat.ChatInfo.Response", a => OnGetChatInfo((ChatRoomInfoModel) a));
         }
 
-        public void RegisterChatChannel(string chatChannel)
+        public void SendChatMessage(SendChatMessageModel sendChatMessageModel)
         {
-            myGateway.Emit("Area.Chat.RegisterChatChannel", new RegisterChatChannelModel(chatChannel));
+            myGateway.Emit("Area.Chat.SendMessage", sendChatMessageModel);
         }
-
-        public event GetChatContent OnGetChatContent;
     }
 }

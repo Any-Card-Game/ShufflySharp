@@ -9,14 +9,11 @@ namespace Models
         public string Channel { get; set; }
         [IntrinsicProperty]
         public object Content { get; set; }
-        [IntrinsicProperty]
-        public string GameServer { get; set; }
 
-        public GatewayMessageModel(string channel, object content, string gameServer)
+        public GatewayMessageModel(string channel, object content)
         {
             Channel = channel;
             Content = content;
-            GameServer = gameServer;
         }
     }
 }

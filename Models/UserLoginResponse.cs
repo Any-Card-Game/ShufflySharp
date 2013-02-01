@@ -7,6 +7,7 @@ namespace Models
     {
         public bool Successful { get; set; }
         public UserModel User { get; set; }
+
         [ObjectLiteral]
         public UserLoginResponse(bool successful, UserModel user)
         {
@@ -18,11 +19,11 @@ namespace Models
     public class UserDisconnectModel
     {
         public UserModel User { get; set; }
+
         [ObjectLiteral]
-        public UserDisconnectModel( UserModel user)
+        public UserDisconnectModel(UserModel user)
         {
             User = user;
         }
     }
-    
 }

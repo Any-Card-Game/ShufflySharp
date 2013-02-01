@@ -59,7 +59,8 @@ namespace ShuffUI
             UIAreas.Add(info = new UIAreaInformation(outer, inner));
             ui.Information = info;
 
-            x.Click((evt) => { outer.CSS("display", "none");
+            x.Click((evt) => {
+                        outer.CSS("display", "none");
                         ui.OnClose();
                     });
             var toggleSize = false;
@@ -113,7 +114,7 @@ namespace ShuffUI
             return ui;
         }
 
-        public void Focus(ShuffWindow  info)
+        public void Focus(ShuffWindow info)
         {
             for (var i = 0; i < UIAreas.Count; i++) {
                 UIAreas[i].Element.CSS("z-index", int.Parse(UIAreas[i].Element.GetCSS("z-index")) - 1);

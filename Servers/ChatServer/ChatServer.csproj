@@ -51,6 +51,10 @@
       <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
       <Name>CommonShuffleLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\NodeLibraries\MongoDBLibrary\MongoDBLibrary.csproj">
+      <Project>{2C02E0B6-3542-4CA5-AA18-6435BDFD714E}</Project>
+      <Name>MongoDBLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
       <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
       <Name>NodeJSLibrary</Name>

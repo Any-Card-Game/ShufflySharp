@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using jQueryApi;
@@ -12,6 +13,7 @@ namespace ShuffUI
         }
         public ShuffUIEvent<TextChangedEvent> TextChanged { get; set; }
         protected jQueryObject LabelElement { get; set; }
+        public Action OnEnter { get; set; }
 
         public ShuffTextbox(int x, int y, Number width, Number height, string text = "", string label = null, string labelStyle = null)
         {
@@ -25,7 +27,7 @@ namespace ShuffUI
             Height = height;
             Visible = true;
 
-            but.Keydown(a => { });
+            but.Keyup(a => { if (a.Which == 13) if (OnEnter != null) OnEnter(); });
 
             if (label != null) {
                 ParentChanged += (e) => {

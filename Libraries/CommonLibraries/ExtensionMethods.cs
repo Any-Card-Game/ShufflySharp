@@ -16,7 +16,7 @@ namespace CommonLibraries
         }
 
         [InlineCode("debugger")]
-        public static void debugger(this object script) {}
+        public static void debugger() {}
 
         [InlineCode("eval({script})")]
         public static dynamic eval(this object script) //::dynamic okay
@@ -28,13 +28,14 @@ namespace CommonLibraries
         [InstanceMethodOnFirstArgument]
         public static T Cast<T>(this object o)
         {
-            return default(T);
+            return default( T );
         }
+
         [InlineCode("{o}")]
         [InstanceMethodOnFirstArgument]
-        public static T CastDynamic<T>(  dynamic o)
+        public static T CastDynamic<T>(dynamic o)
         {
-            return default(T);
+            return default( T );
         }
 
         public static T CleanUp<T>(T o)

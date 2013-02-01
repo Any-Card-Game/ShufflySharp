@@ -17,14 +17,12 @@
 	// Models.GatewayMessageModel
 	var $Models_GatewayMessageModel = function() {
 	};
-	$Models_GatewayMessageModel.$ctor = function(channel, content, gameServer) {
+	$Models_GatewayMessageModel.$ctor = function(channel, content) {
 		var $this = {};
 		$this.channel = null;
 		$this.content = null;
-		$this.gameServer = null;
 		$this.channel = channel;
 		$this.content = content;
-		$this.gameServer = gameServer;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +81,41 @@
 		$this.password = null;
 		$this.hash = null;
 		$this.socket = null;
+		$this.currentGameServer = null;
+		$this.currentChatServer = null;
 		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.ChatMessageRoomModel
+	var $Models_ChatManagerModels_ChatMessageRoomModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.ChatMessagesModel
+	var $Models_ChatManagerModels_ChatMessagesModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.ChatRoomInfoModel
+	var $Models_ChatManagerModels_ChatRoomInfoModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.ChatRoomModel
+	var $Models_ChatManagerModels_ChatRoomModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.CreateChatRoomRequest
+	var $Models_ChatManagerModels_CreateChatRoomRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.JoinChatRoomRequest
+	var $Models_ChatManagerModels_JoinChatRoomRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.RegisterChatChannelModel
+	var $Models_ChatManagerModels_RegisterChatChannelModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.SendChatMessageModel
+	var $Models_ChatManagerModels_SendChatMessageModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.GameManagerModels.CreateGameRequestModel
@@ -235,6 +267,10 @@
 	var $Models_SiteManagerModels_GetRoomsResponse = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.LeaveRoomRequest
+	var $Models_SiteManagerModels_LeaveRoomRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.RoomData
 	var $Models_SiteManagerModels_RoomData = function() {
 	};
@@ -257,6 +293,14 @@
 	Type.registerClass(global, 'Models.UserLoginResponse', $Models_UserLoginResponse, Object);
 	Type.registerClass(global, 'Models.UserModel', $Models_UserModel, Object);
 	Type.registerClass(global, 'Models.UserSocketModel', $Models_UserSocketModel, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.ChatMessageRoomModel', $Models_ChatManagerModels_ChatMessageRoomModel, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.ChatMessagesModel', $Models_ChatManagerModels_ChatMessagesModel, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.ChatRoomInfoModel', $Models_ChatManagerModels_ChatRoomInfoModel, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.ChatRoomModel', $Models_ChatManagerModels_ChatRoomModel);
+	Type.registerClass(global, 'Models.ChatManagerModels.CreateChatRoomRequest', $Models_ChatManagerModels_CreateChatRoomRequest, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.SendChatMessageModel', $Models_ChatManagerModels_SendChatMessageModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.CreateGameRequestModel', $Models_GameManagerModels_CreateGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.DebugCreateGameRequestModel', $Models_GameManagerModels_DebugCreateGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.DebuggerJoinRequestModel', $Models_GameManagerModels_DebuggerJoinRequestModel, Object);
@@ -276,6 +320,7 @@
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoResponse', $Models_SiteManagerModels_GetRoomInfoResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.LeaveRoomRequest', $Models_SiteManagerModels_LeaveRoomRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse, Object);

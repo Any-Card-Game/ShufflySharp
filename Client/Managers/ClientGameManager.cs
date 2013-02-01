@@ -18,7 +18,6 @@ namespace Client.Managers
         #endregion
 
         private readonly Gateway myGateway;
-        public string GameServer { get; set; }
 
         public ClientGameManager(Gateway gateway)
         {
@@ -49,12 +48,12 @@ namespace Client.Managers
 
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)
         {
-            myGateway.Emit("Area.Game.AnswerQuestion", gameAnswerQuestionModel, GameServer);
+            myGateway.Emit("Area.Game.AnswerQuestion", gameAnswerQuestionModel);
         }
 
         public void StartGame(StartGameRequestModel startGameRequestModel)
         {
-            myGateway.Emit("Area.Game.Start", startGameRequestModel, GameServer);
+            myGateway.Emit("Area.Game.Start", startGameRequestModel);
         }
 
         public void CreateDebuggedGame(DebugCreateGameRequestModel o)
@@ -64,12 +63,12 @@ namespace Client.Managers
 
         public void JoinDebugger(DebuggerJoinRequestModel debuggerJoinRequestModel)
         {
-            myGateway.Emit("Area.Game.DebuggerJoin", debuggerJoinRequestModel, GameServer);
+            myGateway.Emit("Area.Game.DebuggerJoin", debuggerJoinRequestModel);
         }
 
         public void JoinPlayer(JoinGameRequestModel joinGameRequestModel)
         {
-            myGateway.Emit("Area.Game.Join", joinGameRequestModel, GameServer);
+            myGateway.Emit("Area.Game.Join", joinGameRequestModel);
         }
     }
 }

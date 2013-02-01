@@ -18,7 +18,7 @@ namespace ShuffUI
             Y = y;
         }
     }
-     [Serializable]
+    [Serializable]
     public class SizeChangedEvent
     {
         [IntrinsicProperty]

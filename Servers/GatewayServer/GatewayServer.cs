@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibrary;
 using Models;
+using Models.GameManagerModels;
 using NodeJSLibrary;
 using SocketIONodeLibrary;
 namespace GatewayServer
 {
     public class GatewayServer
     {
+        private string myGatewayName;
         private PubSub ps;
         public JsDictionary<string, UserSocketModel> users = new JsDictionary<string, UserSocketModel>();
 
@@ -25,7 +27,7 @@ namespace GatewayServer
 
             app.Listen(port);
             io.Set("log level", 0);
-            var myName = "Gateway " + Guid.NewGuid();
+            myGatewayName = "Gateway " + Guid.NewGuid();
 
             ps = new PubSub(() => {
                                 ps.Subscribe<string>("PUBSUB.GatewayServers.Ping",
@@ -34,10 +36,10 @@ namespace GatewayServer
                                 ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port));
                             });
 
-            queueManager = new QueueManager(myName,
+            queueManager = new QueueManager(myGatewayName,
                                             new QueueManagerOptions(new[] {
                                                                                   new QueueWatcher("GatewayServer", messageReceived),
-                                                                                  new QueueWatcher(myName, messageReceived)
+                                                                                  new QueueWatcher(myGatewayName, messageReceived)
                                                                           },
                                                                     new[] {
                                                                                   "SiteServer",
@@ -62,17 +64,17 @@ namespace GatewayServer
                                                     channel = "SiteServer";
                                                     break;
                                                 case "Debug":
-                                                    channel = "GameServer";
+                                                    channel = user.CurrentGameServer ?? "GameServer";
                                                     break;
                                                 case "Debug2":
                                                     channel = "DebugServer";
                                                     break;
                                                 case "Chat":
-                                                    channel = "ChatServer";
+                                                    channel = user.CurrentChatServer ?? "ChatServer";
                                                     break;
                                             }
                                             queueManager.SendMessage(user.ToUserModel(),
-                                                                     data.GameServer ?? channel,
+                                                                     channel,
                                                                      data.Channel,
                                                                      data.Content);
                                         });
@@ -84,14 +86,16 @@ namespace GatewayServer
                                             user.Socket = socket;
                                             user.UserName = data.UserName;
                                             user.Hash = data.UserName;
+                                            user.Gateway = myGatewayName;
                                             users[data.UserName] = user;
-                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true, user.ToUserModel()), user.ToUserModel());
+                                            sendMessage(user, "Area.Main.Login.Response", new UserLoginResponse(true, user.ToUserModel()));
                                         });
                               socket.On("disconnect",
                                         (string data) => {
                                             if (user == null)
                                                 return;
                                             queueManager.SendMessage(user.ToUserModel(), "SiteServer", "Area.Site.UserDisconnect", new UserDisconnectModel(user.ToUserModel()));
+                                            queueManager.SendMessage(user.ToUserModel(), "ChatServer", "Area.Chat.UserDisconnect", new UserDisconnectModel(user.ToUserModel()));
                                             queueManager.SendMessage(user.ToUserModel(), "GameServer", "Area.Game.UserDisconnect", new UserDisconnectModel(user.ToUserModel()));
 
                                             users.Remove(user.UserName);
@@ -112,13 +116,28 @@ namespace GatewayServer
         {
             if (users.ContainsKey(user.UserName)) {
                 var u = users[user.UserName];
-                sendMessage(u, eventChannel, content, user);
+
+                sendMessage(u, eventChannel, content);
             }
         }
 
-        private static void sendMessage(UserSocketModel user, string eventChannel, object content, UserModel u)
+        private void sendMessage(UserSocketModel user, string eventChannel, object content)
         {
-            user.Socket.Emit("Client.Message", new SocketClientMessageModel(u, eventChannel, content));
+            specialHandle(user, eventChannel, content);
+
+            user.Socket.Emit("Client.Message", new SocketClientMessageModel(user.ToUserModel(), eventChannel, content));
+        }
+
+        private void specialHandle(UserSocketModel user, string eventChannel, object content)
+        {
+            if (eventChannel == "Area.Game.RoomInfo") {
+                user.CurrentGameServer = ( (GameRoomModel) content ).GameServer;
+                ( (GameRoomModel) content ).GameServer = null;
+            }
+            if (eventChannel == "Area.Chat.IDKJOINCHAT") {
+                // user.CurrentGameServer = ((CHATROOMMODELIDKLOL)content).GameServer;
+                // ((GameRoomModel)content).GameServer = null;
+            }
         }
     }
 }

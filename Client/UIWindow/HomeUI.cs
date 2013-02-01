@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Html;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Models.SiteManagerModels;
 using ShuffUI;
-using jQueryApi;
 namespace Client.UIWindow
 {
     public class HomeUI
@@ -14,17 +11,17 @@ namespace Client.UIWindow
         private readonly PageHandler myPageHandler;
         private readonly ShuffUIManager myShuffUIManager;
         private ShuffLabel lblHeader;
-        private ShuffListBox myGameTypeList;
-        private List<RoomData> myLoadedRooms;
-        private ShuffListBox myRoomsList;
-        private ShuffListBox myRoomPlayers;
-        private ShuffLabel myRoomName;
-        private ShuffLabel myRoomGameType;
-        private ShuffButton myJoinRoom;
-        private ShuffButton mySpectateRoom;
         private ShuffButton myCreateGameType;
         private ShuffButton myCreateRoom;
+        private ShuffListBox myGameTypeList;
+        private ShuffButton myJoinRoom;
+        private List<RoomData> myLoadedRooms;
         private ShuffButton myRefreshRoom;
+        private ShuffLabel myRoomGameType;
+        private ShuffLabel myRoomName;
+        private ShuffListBox myRoomPlayers;
+        private ShuffListBox myRoomsList;
+        private ShuffButton mySpectateRoom;
         [IntrinsicProperty]
         public ShuffWindow UIWindow { get; set; }
 
@@ -60,71 +57,55 @@ namespace Client.UIWindow
 
             UIWindow.AddElement(new ShuffLabel(210, 80, "Rooms"));
 
-            myCreateRoom = UIWindow.AddElement(new ShuffButton(260, 70, 70, 25, "Refresh!",
-                                                   c =>
-                                                   {
-                                                       myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string)myGameTypeList.SelectedItem.Value));
-                                                   }));
+            myCreateRoom = UIWindow.AddElement(new ShuffButton(260,
+                                                               70,
+                                                               70,
+                                                               25,
+                                                               "Refresh!",
+                                                               c => { myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string) myGameTypeList.SelectedItem.Value)); }));
 
+            myRoomsList = UIWindow.AddElement(new ShuffListBox(200, 100, 175, 300) {
+                                                                                           OnClick = (item) => {
+                                                                                                         var room = myLoadedRooms.First(a => a.RoomName == (string) item.Value);
 
-            myRoomsList = UIWindow.AddElement(new ShuffListBox(200, 100, 175, 300)
-            {
-                OnClick = (item) =>
-                {
-                    var room = myLoadedRooms.First(a => a.RoomName == (string)item.Value);
+                                                                                                         PopulateRoom(room);
+                                                                                                     }
+                                                                                   });
 
-                    PopulateRoom(room);
-                }
-            });
-
-
-            myCreateRoom = UIWindow.AddElement(new ShuffButton(225, 410, 100, 40, "Create New Room!",
-                                                               c =>
-                                                               {
-                                                                  var create= new CreateRoomUI(shuffUIManager, pageHandler, (string)myGameTypeList.SelectedItem.Value);
-                                                                  shuffUIManager.Focus(create.UIWindow);
-
-
+            myCreateRoom = UIWindow.AddElement(new ShuffButton(225,
+                                                               410,
+                                                               100,
+                                                               40,
+                                                               "Create New Room!",
+                                                               c => {
+                                                                   var create = new CreateRoomUI(shuffUIManager, pageHandler, (string) myGameTypeList.SelectedItem.Value);
+                                                                   shuffUIManager.Focus(create.UIWindow);
                                                                }));
 
-            myRoomPlayers = UIWindow.AddElement(new ShuffListBox(400, 200, 175, 200){Visible=false});
+            myRoomPlayers = UIWindow.AddElement(new ShuffListBox(400, 200, 175, 200) {Visible = false});
 
+            myRoomGameType = UIWindow.AddElement(new ShuffLabel(400, 100, "") {Visible = false});
+            myRoomName = UIWindow.AddElement(new ShuffLabel(400, 130, "") {Visible = false});
+            myJoinRoom = UIWindow.AddElement(new ShuffButton(410, 160, 75, 25, "Join!", c => { pageHandler.ClientSiteManager.JoinRoom(new RoomJoinRequest((string) myGameTypeList.SelectedItem.Value, (string) myRoomsList.SelectedItem.Value)); }) {Visible = false});
 
-            myRoomGameType = UIWindow.AddElement(new ShuffLabel(400, 100, "") { Visible = false });
-            myRoomName = UIWindow.AddElement(new ShuffLabel(400, 130, "") { Visible = false });
-            myJoinRoom = UIWindow.AddElement(new ShuffButton(410, 160, 75, 25, "Join!", c =>
-            {
-                pageHandler.ClientSiteManager.JoinRoom(new RoomJoinRequest((string)myGameTypeList.SelectedItem.Value,(string)myRoomsList.SelectedItem.Value));
+            mySpectateRoom = UIWindow.AddElement(new ShuffButton(490, 160, 75, 25, "Spectate!", c => { }) {Visible = false});
 
-
-            }) { Visible = false });
-
-            mySpectateRoom = UIWindow.AddElement(new ShuffButton(490, 160, 75, 25, "Spectate!", c => {
-                                                                                                }) { Visible = false });
-
-
-            myRefreshRoom = UIWindow.AddElement(new ShuffButton(420, 410, 150, 25, "Refresh!", c =>
-            {
-                pageHandler.ClientSiteManager.GetRoomInfo(new GetRoomInfoRequest((string)myGameTypeList.SelectedItem.Value, (string)myRoomsList.SelectedItem.Value));
-            }) { Visible = false });
+            myRefreshRoom = UIWindow.AddElement(new ShuffButton(420, 410, 150, 25, "Refresh!", c => { pageHandler.ClientSiteManager.GetRoomInfo(new GetRoomInfoRequest((string) myGameTypeList.SelectedItem.Value, (string) myRoomsList.SelectedItem.Value)); }) {Visible = false});
 
             //UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
         }
 
         private void GetRoomInfo(GetRoomInfoResponse o)
         {
-
-            for (int i = 0; i < myLoadedRooms.Count; i++)
-            {
+            for (int i = 0; i < myLoadedRooms.Count; i++) {
                 if (myLoadedRooms[i].ID == o.Room.ID) {
                     myLoadedRooms.RemoveAt(i);
-                    myLoadedRooms.Insert(i,o.Room);
+                    myLoadedRooms.Insert(i, o.Room);
                     break;
                 }
             }
 
-
-            PopulateRoom(o.Room); 
+            PopulateRoom(o.Room);
         }
 
         private void RoomJoined(RoomJoinResponse o)
@@ -141,6 +122,8 @@ namespace Client.UIWindow
             lblHeader.Text = string.Format("Welcome: {0}!", myPageHandler.ClientInfo.LoggedInUser.UserName);
             myPageHandler.ClientSiteManager.GetGameTypes();
             UIWindow.Visible = true;
+            UIWindow.SwingAway(SwingDirection.BottomLeft, true);
+            UIWindow.SwingBack();
         }
 
         private void PopulateGames(GetGameTypesReceivedResponse o)
@@ -148,7 +131,6 @@ namespace Client.UIWindow
             myGameTypeList.ClearItems();
 
             foreach (var gameType in o.GameTypes) {
-
                 myGameTypeList.AddItem(new ShuffListItem(gameType.Name, gameType.Name));
             }
 

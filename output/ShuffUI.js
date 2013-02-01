@@ -492,6 +492,7 @@
 	var $ShuffUI_ShuffTextbox = function(x, y, width, height, text, label, labelStyle) {
 		this.$2$TextChangedField = null;
 		this.$2$LabelElementField = null;
+		this.$2$OnEnterField = null;
 		$ShuffUI_ShuffElement.call(this);
 		var but = $('<input value=\'' + ss.coalesce(text, '') + '\' />');
 		this.element = but;
@@ -502,8 +503,13 @@
 		this.set_width(width);
 		this.set_height(height);
 		this.set_visible(true);
-		but.keydown(function(a) {
-		});
+		but.keyup(Function.mkdel(this, function(a) {
+			if (a.which === 13) {
+				if (ss.isValue(this.get_onEnter())) {
+					this.get_onEnter()();
+				}
+			}
+		}));
 		if (ss.isValue(label)) {
 			this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e) {
 				if (ss.isNullOrUndefined(e.parent)) {
@@ -542,6 +548,12 @@
 		},
 		set_labelElement: function(value) {
 			this.$2$LabelElementField = value;
+		},
+		get_onEnter: function() {
+			return this.$2$OnEnterField;
+		},
+		set_onEnter: function(value) {
+			this.$2$OnEnterField = value;
 		},
 		bindCustomEvents: function() {
 			this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
@@ -715,42 +727,42 @@
 		},
 		swingAway: function(direction, simulate) {
 			var js = {};
-			var distance = '1000px';
+			var distance = '2000';
 			switch (direction) {
 				case 0: {
-					js['left'] = '-' + distance;
-					js['top'] = '-' + distance;
+					js['left'] = '-' + distance + 'px';
+					js['top'] = '-' + distance + 'px';
 					break;
 				}
 				case 1: {
-					js['top'] = '-' + distance;
+					js['top'] = '-' + distance + 'px';
 					break;
 				}
 				case 2: {
-					js['left'] = distance;
-					js['top'] = '-' + distance;
+					js['left'] = distance + 'px';
+					js['top'] = '-' + distance + 'px';
 					break;
 				}
 				case 3: {
-					js['left'] = distance;
+					js['left'] = distance + 'px';
 					break;
 				}
 				case 4: {
-					js['left'] = distance;
-					js['top'] = distance;
+					js['left'] = distance + 'px';
+					js['top'] = distance + 'px';
 					break;
 				}
 				case 5: {
-					js['top'] = distance;
+					js['top'] = distance + 'px';
 					break;
 				}
 				case 6: {
-					js['left'] = '-' + distance;
-					js['top'] = distance;
+					js['left'] = '-' + distance + 'px';
+					js['top'] = distance + 'px';
 					break;
 				}
 				case 7: {
-					js['left'] = distance;
+					js['left'] = distance + 'px';
 					break;
 				}
 			}

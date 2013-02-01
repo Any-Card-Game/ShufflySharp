@@ -30,7 +30,7 @@ namespace CommonShuffleLibrary
                           (caller, dtj) => {
                               var data = (string[]) dtj;
                               if (dtj != null) {
-                                  var dt = Json.ParseData<QueueMessage<object>>(data[1]);
+                                  var dt = Json.ParseData<QueueMessage>(data[1]);
                                   Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);
                               }
                               Cycle(channel);

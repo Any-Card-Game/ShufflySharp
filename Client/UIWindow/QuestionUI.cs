@@ -49,7 +49,6 @@ pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel
 questionArea.Visible = false;
 }*/
                                                                                              });
-                 
                    };
 
             AnswerBox = UIWindow.AddElement(new ShuffListBox(30, 65, 215, 25 * 5) {

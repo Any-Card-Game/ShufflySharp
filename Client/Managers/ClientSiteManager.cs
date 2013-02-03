@@ -7,11 +7,11 @@ namespace Client.Managers
     {
         #region Delegates
 
-        public delegate void GetGameTypesReceived(GetGameTypesReceivedResponse o);
-        public delegate void GetRoomInfoReceived(GetRoomInfoResponse o);
-        public delegate void GetRoomsReceived(GetRoomsResponse o);
-        public delegate void RoomJoined(RoomJoinResponse o);
-        public delegate void UserLogin(UserLoginResponse o);
+        public delegate void GetGameTypesReceived(UserModel user, GetGameTypesReceivedResponse o);
+        public delegate void GetRoomInfoReceived(UserModel user, GetRoomInfoResponse o);
+        public delegate void GetRoomsReceived(UserModel user, GetRoomsResponse o);
+        public delegate void RoomJoined(UserModel user, RoomJoinResponse o);
+        public delegate void UserLogin(UserModel user, UserLoginResponse o);
 
         #endregion
 
@@ -32,17 +32,17 @@ namespace Client.Managers
         private void Setup()
         {
             myGateway.On("Area.Main.Login.Response",
-                         a => {
-                             UserLoginResponse userLoginResponse = (UserLoginResponse) a;
+                         (user,data) => {
+                             UserLoginResponse userLoginResponse = (UserLoginResponse)data;
                              if (userLoginResponse.Successful)
-                                 SiteLogin(userLoginResponse.User.Hash);
+                                 SiteLogin(user.Hash);
                          });
 
-            myGateway.On("Area.Site.Login.Response", a => { OnLogin(( (UserLoginResponse) a )); });
-            myGateway.On("Area.Site.GetGameTypes.Response", a => { OnGetGameTypesReceived(( (GetGameTypesReceivedResponse) a )); });
-            myGateway.On("Area.Site.GetRooms.Response", a => { OnGetRoomsReceived(( (GetRoomsResponse) a )); });
-            myGateway.On("Area.Site.GetRoomInfo.Response", a => { OnGetRoomInfoReceived(( (GetRoomInfoResponse) a )); });
-            myGateway.On("Area.Site.JoinRoom.Response", a => { OnRoomJoined(( (RoomJoinResponse) a )); });
+            myGateway.On("Area.Site.Login.Response", (user, data) => { OnLogin(user,((UserLoginResponse)data)); });
+            myGateway.On("Area.Site.GetGameTypes.Response", (user, data) => { OnGetGameTypesReceived(user, ((GetGameTypesReceivedResponse)data)); });
+            myGateway.On("Area.Site.GetRooms.Response", (user, data) => { OnGetRoomsReceived(user, ((GetRoomsResponse)data)); });
+            myGateway.On("Area.Site.GetRoomInfo.Response", (user, data) => { OnGetRoomInfoReceived(user, ((GetRoomInfoResponse)data)); });
+            myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { OnRoomJoined(user, ((RoomJoinResponse)data)); });
         }
 
         private void SiteLogin(string hash)

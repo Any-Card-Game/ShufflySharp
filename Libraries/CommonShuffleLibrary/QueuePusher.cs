@@ -15,7 +15,7 @@ namespace CommonShuffleLibrary
             client1 = redis.CreateClient(6379, IPs.RedisIP);
         }
 
-        public void Message(string channel, string name, UserModel user, string eventChannel, object content)
+        public void Message(string channel, string name, UserLogicModel user, string eventChannel, object content)
         {
             var message = new QueueMessage(name, user, eventChannel, content);
             var value = Json.Stringify(message, Help.Sanitize);
@@ -27,9 +27,9 @@ namespace CommonShuffleLibrary
         public object Content;
         public string EventChannel;
         public string Name;
-        public UserModel User;
+        public UserLogicModel User;
 
-        public QueueMessage(string name, UserModel user, string eventChannel, object content)
+        public QueueMessage(string name, UserLogicModel user, string eventChannel, object content)
         {
             Name = name;
             User = user;

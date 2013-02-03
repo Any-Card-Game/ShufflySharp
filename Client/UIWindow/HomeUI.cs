@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Html;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Models;
 using Models.SiteManagerModels;
 using ShuffUI;
 namespace Client.UIWindow
@@ -95,7 +96,7 @@ namespace Client.UIWindow
             //UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
         }
 
-        private void GetRoomInfo(GetRoomInfoResponse o)
+        private void GetRoomInfo(UserModel user, GetRoomInfoResponse o)
         {
             for (int i = 0; i < myLoadedRooms.Count; i++) {
                 if (myLoadedRooms[i].ID == o.Room.ID) {
@@ -108,9 +109,8 @@ namespace Client.UIWindow
             PopulateRoom(o.Room);
         }
 
-        private void RoomJoined(RoomJoinResponse o)
-        {
-            //todo pop open chat room window
+        private void RoomJoined(UserModel user, RoomJoinResponse o)
+        { 
             PopulateRoom(o.Room);
 
             UIWindow.SwingAway(SwingDirection.TopLeft);
@@ -126,7 +126,7 @@ namespace Client.UIWindow
             UIWindow.SwingBack();
         }
 
-        private void PopulateGames(GetGameTypesReceivedResponse o)
+        private void PopulateGames(UserModel user, GetGameTypesReceivedResponse o)
         {
             myGameTypeList.ClearItems();
 
@@ -137,7 +137,7 @@ namespace Client.UIWindow
             myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest(o.GameTypes[0].Name));
         }
 
-        private void PopulateRooms(GetRoomsResponse o)
+        private void PopulateRooms(UserModel user, GetRoomsResponse o)
         {
             myRoomsList.ClearItems();
             myLoadedRooms = o.Rooms;

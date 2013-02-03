@@ -40,6 +40,23 @@
 	var $Models_UserDisconnectModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.UserLogicModel
+	var $Models_UserLogicModel = function() {
+	};
+	$Models_UserLogicModel.createInstance = function() {
+		return $Models_UserLogicModel.$ctor();
+	};
+	$Models_UserLogicModel.$ctor = function() {
+		var $this = {};
+		$this.gateway = null;
+		$this.userName = null;
+		$this.password = null;
+		$this.hash = null;
+		$this.currentGameServer = null;
+		$this.currentChatServer = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserLoginResponse
 	var $Models_UserLoginResponse = function() {
 	};
@@ -73,9 +90,20 @@
 		m.userName = $this.userName;
 		return m;
 	};
+	$Models_UserSocketModel.toLogicModel = function($this) {
+		var m = $this.localLogicModel || ($this.localLogicModel = $Models_UserLogicModel.$ctor());
+		m.gateway = $this.gateway;
+		m.hash = $this.hash;
+		m.currentChatServer = $this.currentChatServer;
+		m.currentGameServer = $this.currentGameServer;
+		m.password = $this.password;
+		m.userName = $this.userName;
+		return m;
+	};
 	$Models_UserSocketModel.$ctor = function() {
 		var $this = {};
 		$this.localUserModel = null;
+		$this.localLogicModel = null;
 		$this.gateway = null;
 		$this.userName = null;
 		$this.password = null;
@@ -112,6 +140,10 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.ChatManagerModels.RegisterChatChannelModel
 	var $Models_ChatManagerModels_RegisterChatChannelModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.ChatManagerModels.RegisterChatServerModel
+	var $Models_ChatManagerModels_RegisterChatServerModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.ChatManagerModels.SendChatMessageModel
@@ -290,6 +322,7 @@
 	Type.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel, Object);
 	Type.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel, Object);
 	Type.registerClass(global, 'Models.UserDisconnectModel', $Models_UserDisconnectModel, Object);
+	Type.registerClass(global, 'Models.UserLogicModel', $Models_UserLogicModel, Object);
 	Type.registerClass(global, 'Models.UserLoginResponse', $Models_UserLoginResponse, Object);
 	Type.registerClass(global, 'Models.UserModel', $Models_UserModel, Object);
 	Type.registerClass(global, 'Models.UserSocketModel', $Models_UserSocketModel, Object);
@@ -300,6 +333,7 @@
 	Type.registerClass(global, 'Models.ChatManagerModels.CreateChatRoomRequest', $Models_ChatManagerModels_CreateChatRoomRequest, Object);
 	Type.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest, Object);
 	Type.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel, Object);
+	Type.registerClass(global, 'Models.ChatManagerModels.RegisterChatServerModel', $Models_ChatManagerModels_RegisterChatServerModel, Object);
 	Type.registerClass(global, 'Models.ChatManagerModels.SendChatMessageModel', $Models_ChatManagerModels_SendChatMessageModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.CreateGameRequestModel', $Models_GameManagerModels_CreateGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.DebugCreateGameRequestModel', $Models_GameManagerModels_DebugCreateGameRequestModel, Object);

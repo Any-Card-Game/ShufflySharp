@@ -20,11 +20,42 @@ namespace ChatServer
             myServerManager.OnCreateChatChannel += OnCreateChatChannel;
             myServerManager.OnJoinChatChannel += OnJoinChatChannel;
             myServerManager.OnSendMessage += OnSendMessage;
+            myServerManager.OnLeaveChatRoom += OnLeaveChatRoom;
 
             myServerManager.OnUserDisconnect += OnUserDisconnect;
         }
 
-        private void OnSendMessage(UserModel user, SendChatMessageModel data)
+        private void OnLeaveChatRoom(UserLogicModel user)
+        {
+            leaveChatRoom(user);
+        }
+
+        private void leaveChatRoom(UserLogicModel user)
+        {
+            ExtensionMethods.debugger();
+            var room = getRoomFromUser(user);
+            if (room == null) throw new Exception("idk");
+
+            foreach (var userLogicModel in room.Users) {
+                if (userLogicModel.Hash == user.Hash) {
+                    room.Users.Remove(userLogicModel);
+                    break;
+                }
+            }
+            myDataManager.ChatData.RemoveUser(room, user, (a) =>
+            {
+                myServerManager.UnregisterChatServer(user);
+                var roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
+
+                foreach (var userLogicModel in room.Users)
+                {
+                    myServerManager.SendChatInfo(userLogicModel, roomToSend);
+                }
+            });
+
+        }
+
+        private void OnSendMessage(UserLogicModel user, SendChatMessageModel data)
         {
             var room = getRoomFromUser(user);
             if (room == null)
@@ -33,28 +64,41 @@ namespace ChatServer
             myDataManager.ChatData.AddChatLine(user,
                                                room,
                                                data.Message,
-                                               a => {
-                                                   foreach (var userModel in room.Users) {
-                                                       myServerManager.SendChatLines(userModel, new ChatMessagesModel(new List<ChatMessageRoomModel>() {a}));
+                                               a =>
+                                               {
+                                                   foreach (var userLogicModel in room.Users)
+                                                   {
+                                                       myServerManager.SendChatLines(userLogicModel, new ChatMessagesModel(new List<ChatMessageRoomModel>() { a }));
                                                    }
                                                });
         }
 
-        private ChatRoomModel getRoomFromUser(UserModel user)
+        private ChatRoomModel getRoomFromUser(UserLogicModel user)
         {
             ChatRoomModel currentRoom = null;
-            foreach (var chatRoomModel in runningRooms) {
-                foreach (var item in chatRoomModel.Users) {
+            foreach (var chatRoomModel in runningRooms)
+            {
+                foreach (var item in chatRoomModel.Users)
+                {
                     if (item.UserName == user.UserName) currentRoom = chatRoomModel;
                 }
             }
             return currentRoom;
         }
 
-        private void OnJoinChatChannel(UserModel user, JoinChatRoomRequest data)
+        private void OnJoinChatChannel(UserLogicModel user, JoinChatRoomRequest data)
         {
+
+
+            var cur = getRoomFromUser(user);
+            if (cur != null) {
+                leaveChatRoom(user);
+            }
+
+
             ChatRoomModel currentRoom = null;
-            foreach (var chatRoomModel in runningRooms) {
+            foreach (var chatRoomModel in runningRooms)
+            {
                 if (chatRoomModel.RoomName == data.RoomName)
                     currentRoom = chatRoomModel;
             }
@@ -63,8 +107,9 @@ namespace ChatServer
 
             myDataManager.ChatData.AddUser(currentRoom,
                                            user,
-                                           room => {
-                                               ExtensionMethods.debugger();
+                                           room =>
+                                           {
+                                               myServerManager.RegisterChatServer(user);
                                                var roomToSend = new ChatRoomModel(room.RoomName, room.Users, room.Messages);
 
                                                roomToSend.Messages = room.Messages.Extract(room.Messages.Count - 5);
@@ -72,33 +117,43 @@ namespace ChatServer
 
                                                roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
 
-                                               foreach (var userModel in currentRoom.Users) {
-                                                   myServerManager.SendChatInfo(userModel, roomToSend);
+                                               foreach (var UserLogicModel in currentRoom.Users)
+                                               {
+                                                   myServerManager.SendChatInfo(UserLogicModel, roomToSend);
                                                }
                                            });
         }
 
-        private void OnCreateChatChannel(UserModel user, CreateChatRoomRequest data)
+        private void OnCreateChatChannel(UserLogicModel user, CreateChatRoomRequest data)
         {
+            var cur = getRoomFromUser(user);
+            if (cur != null)
+            {
+                leaveChatRoom(user);
+            }
+
+
+
             myDataManager.ChatData.CreateChatChannel(data.RoomName,
                                                      user,
                                                      a => {
+                                                         ExtensionMethods.debugger();
+                                                         myServerManager.RegisterChatServer(user);
+
                                                          runningRooms.Add(a);
                                                          myServerManager.SendChatInfo(user, a);
                                                      });
         }
 
-        /*todo 
-         * chat create channel  
-         *  notify gateway of the new chatserver for specific user
-         * join chat 
-         *  notify gateway of new chatserver for specific user 
-         * chat server on disconnect remove
-         */
 
-        private void OnUserDisconnect(UserModel user, UserDisconnectModel data)
+
+        private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
             Console.Log("Awww, dat " + user.UserName + " disconnected");
+            myServerManager.UnregisterChatServer(user);
+            leaveChatRoom(user);
+
+
             //removeUserFromRoom(data.User, (room) => { });
         }
     }

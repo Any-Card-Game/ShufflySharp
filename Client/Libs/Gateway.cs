@@ -4,7 +4,7 @@ using Models;
 using SocketIOWebLibrary;
 namespace Client.Libs
 {
-    public delegate void GatewayMessage(object obj);
+    public delegate void GatewayMessage(UserModel user, object obj);
     public class Gateway
     {
         private Dictionary<string, GatewayMessage> channels;
@@ -15,7 +15,7 @@ namespace Client.Libs
         {
             channels = new Dictionary<string, GatewayMessage>();
             GatewaySocket = SocketIOClient.Connect(gatewayServer);
-            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.Content));
+            GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.User, data.Content));
         }
 
         [IgnoreGenericArguments]

@@ -9,9 +9,9 @@ namespace CommonShuffleLibrary
     public class QueueWatcher : QueueItem //todo generisize
     {
         private RedisClient client1;
-        public Action<string, UserModel, string, object> Callback { get; set; }
+        public Action<string, UserLogicModel, string, object> Callback { get; set; }
 
-        public QueueWatcher(string queue, Action<string, UserModel, string, object> callback)
+        public QueueWatcher(string queue, Action<string, UserLogicModel, string, object> callback)
         {
             Channel = queue;
             Callback = callback;

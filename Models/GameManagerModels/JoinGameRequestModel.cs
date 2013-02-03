@@ -6,11 +6,11 @@ namespace Models.GameManagerModels
     public class JoinGameRequestModel
     {
         public string RoomID { get; set; }
-        public UserModel User { get; set; }
+        public UserLogicModel User { get; set; }
         private JoinGameRequestModel() {}
 
         [ObjectLiteral]
-        public JoinGameRequestModel(string roomId, UserModel user)
+        public JoinGameRequestModel(string roomId, UserLogicModel user)
         {
             RoomID = roomId;
             User = user;

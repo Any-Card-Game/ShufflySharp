@@ -7,10 +7,11 @@ namespace ChatServer
     {
         #region Delegates
 
-        public delegate void CreateChatChannel(UserModel user, CreateChatRoomRequest data);
-        public delegate void JoinChatChannel(UserModel user, JoinChatRoomRequest data);
-        public delegate void SendMessage(UserModel user, SendChatMessageModel data);
-        public delegate void UserDisconnect(UserModel user, UserDisconnectModel data);
+        public delegate void CreateChatChannel(UserLogicModel user, CreateChatRoomRequest data);
+        public delegate void JoinChatChannel(UserLogicModel user, JoinChatRoomRequest data);
+        public delegate void SendMessage(UserLogicModel user, SendChatMessageModel data);
+        public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
+        public delegate void LeaveChatRoom(UserLogicModel user);
 
         #endregion
 
@@ -28,6 +29,7 @@ namespace ChatServer
         public event SendMessage OnSendMessage;
         public event JoinChatChannel OnJoinChatChannel;
         public event UserDisconnect OnUserDisconnect;
+        public event LeaveChatRoom OnLeaveChatRoom;
 
         private void Setup()
         {
@@ -45,17 +47,27 @@ namespace ChatServer
             qManager.AddChannel("Area.Chat.CreateChatRoom", (user, data) => OnCreateChatChannel(user, (CreateChatRoomRequest) data));
             qManager.AddChannel("Area.Chat.JoinChatRoom", (user, data) => OnJoinChatChannel(user, (JoinChatRoomRequest) data));
             qManager.AddChannel("Area.Chat.SendMessage", (user, data) => OnSendMessage(user, (SendChatMessageModel) data));
-            qManager.AddChannel("Area.Chat.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel) data));
+            qManager.AddChannel("Area.Chat.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
+            qManager.AddChannel("Area.Chat.LeaveChatRoom", (user, data) => OnLeaveChatRoom(user));
         }
 
-        public void SendChatLines(UserModel user, ChatMessagesModel response)
+        public void SendChatLines(UserLogicModel user, ChatMessagesModel response)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Chat.ChatLines.Response", response);
         }
 
-        public void SendChatInfo(UserModel user, ChatRoomModel response)
+        public void SendChatInfo(UserLogicModel user, ChatRoomModel response)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Chat.ChatInfo.Response", new ChatRoomInfoModel(response));
+        }
+
+        public void RegisterChatServer(UserLogicModel user)
+        {
+            qManager.SendMessage(user, user.Gateway, "Area.Chat.RegisterChatServer",new RegisterChatServerModel(ChatServerIndex));
+        }
+        public void UnregisterChatServer(UserLogicModel user)
+        {
+            qManager.SendMessage(user, user.Gateway, "Area.Chat.UnregisterChatServer", new RegisterChatServerModel(ChatServerIndex));
         }
     }
 }

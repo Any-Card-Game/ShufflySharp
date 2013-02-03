@@ -38,25 +38,14 @@ namespace MongoDBLibrary
         [IgnoreGenericArguments]
         public void Save<T>(T item) {}
 
-        public void Update(object query, MongoUpdateStructure item, Action<string> callback = null) {}
+        public void Update(object query, JsDictionary<string,object> item, Action<string> callback = null) {}
 
         [IgnoreGenericArguments]
         public void Remove<T>(T item) {}
 
         public void Remove(object obj) {}
     }
-    [Serializable]
-    public class MongoUpdateStructure
-    {
-        [ScriptName("$push")]
-        public object Push { get; set; }
-
-        [ObjectLiteral]
-        public MongoUpdateStructure(object push = null)
-        {
-            Push = push;
-        }
-    }
+ 
     [IgnoreNamespace]
     [Imported(IsRealType = true)]
     public class MongoCollectionResult<T>

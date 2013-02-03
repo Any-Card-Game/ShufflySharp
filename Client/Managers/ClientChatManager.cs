@@ -1,4 +1,5 @@
 using Client.Libs;
+using Models;
 using Models.ChatManagerModels;
 namespace Client.Managers
 {
@@ -6,8 +7,8 @@ namespace Client.Managers
     {
         #region Delegates
 
-        public delegate void GetChatInfo(ChatRoomInfoModel o);
-        public delegate void GetChatLines(ChatMessagesModel o);
+        public delegate void GetChatInfo(UserModel user, ChatRoomInfoModel o);
+        public delegate void GetChatLines(UserModel user, ChatMessagesModel o);
 
         #endregion
 
@@ -24,8 +25,8 @@ namespace Client.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Chat.ChatLines.Response", a => OnGetChatLines((ChatMessagesModel) a));
-            myGateway.On("Area.Chat.ChatInfo.Response", a => OnGetChatInfo((ChatRoomInfoModel) a));
+            myGateway.On("Area.Chat.ChatLines.Response", (user,data) => OnGetChatLines(user,(ChatMessagesModel) data));
+            myGateway.On("Area.Chat.ChatInfo.Response", (user, data) => OnGetChatInfo(user ,(ChatRoomInfoModel)data));
         }
 
         public void SendChatMessage(SendChatMessageModel sendChatMessageModel)

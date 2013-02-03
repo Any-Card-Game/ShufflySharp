@@ -78,7 +78,8 @@ namespace Client
 
         public void StartGameServer()
         {
-            ClientGameManager.OnGetRoomInfo += roomInfo => {
+            ClientGameManager.OnGetRoomInfo += (user, roomInfo) =>
+            {
                                                    RoomID = roomInfo.RoomID;
 //                                                   HomeUI.loadRoomInfo(roomInfo);
                                                    DebugUI.loadRoomInfo(roomInfo);
@@ -91,7 +92,8 @@ namespace Client
 
                             });
             */
-            ClientGameManager.OnGetDebugLog += gameAnswer => {
+            ClientGameManager.OnGetDebugLog += (user, gameAnswer) =>
+            {
 //                                                   HomeUI.loadRoomInfos(gameAnswer);
 
                                                    var lines = CodeEditorUI.console.Information.editor.GetValue().Split("\n");
@@ -100,7 +102,8 @@ namespace Client
                                                    CodeEditorUI.console.Information.editor.SetValue(lines.Join("\n") + "\n" + gameAnswer.Value);
                                                    CodeEditorUI.console.Information.editor.SetCursor(CodeEditorUI.console.Information.editor.LineCount(), 0);
                                                };
-            ClientGameManager.OnGetDebugBreak += gameAnswer => {
+            ClientGameManager.OnGetDebugBreak += (user, gameAnswer) =>
+            {
 //                                                     HomeUI.loadRoomInfos(gameAnswer);
 
                                                      var cm = CodeEditorUI.codeEditor;
@@ -119,7 +122,8 @@ namespace Client
                             });
             */
 
-            ClientGameManager.OnAskQuestion += gameSendAnswerModel => {
+            ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) =>
+            {
                                                    QuestionUI.Load(gameSendAnswerModel);
                                                    //alert(JSON.stringify(data));
                                                    TimeTracker.EndTime = new DateTime();
@@ -134,22 +138,26 @@ namespace Client
                                                                      200);
                                                };
 
-            ClientGameManager.OnUpdateState += update => {
+            ClientGameManager.OnUpdateState += (user, update) =>
+            {
                                                    var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
                                                    //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 
                                                    gameDrawer.Draw(data);
                                                };
 
-            ClientGameManager.OnGameStarted += room => {
+            ClientGameManager.OnGameStarted += (user, room) =>
+            {
                                                    //alert(JSON.stringify(data));
                                                };
 
-            ClientGameManager.OnGameOver += room => {
+            ClientGameManager.OnGameOver += (user, room) =>
+            {
                                                 //alert(JSON.stringify(data));
                                             };
 
-            ClientGameManager.OnDebugGameOver += room => {
+            ClientGameManager.OnDebugGameOver += (user, room) =>
+            {
                                                      //alert(JSON.stringify(data));
                                                  };
         }

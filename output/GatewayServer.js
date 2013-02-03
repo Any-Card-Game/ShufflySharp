@@ -3,9 +3,9 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 	////////////////////////////////////////////////////////////////////////////////
 	// GatewayServer.GatewayServer
 	var $GatewayServer_GatewayServer = function() {
+		this.$myGatewayName = null;
 		this.$ps = null;
 		this.users = {};
-		this.$myGatewayName = null;
 		//ExtensionMethods.debugger("");
 		var http = require('http');
 		var app = http.createServer(function(req, res) {
@@ -24,7 +24,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}));
 			this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibrary.IPs.get_gatewayIP(), port));
 		}));
-		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', Function.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, Function.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'DebugServer', 'ChatServer', 'HeadServer']));
+		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', Function.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, Function.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
 		io.sockets.on('connection', Function.mkdel(this, function(socket) {
 			var user = null;
 			socket.on('Gateway.Message', function(data) {
@@ -34,7 +34,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				var channel = 'Bad';
 				switch (data.channel.split(String.fromCharCode(46))[1]) {
 					case 'Game': {
-						channel = 'GameServer';
+						channel = ss.coalesce(user.currentGameServer, 'GameServer');
 						break;
 					}
 					case 'Site': {
@@ -54,7 +54,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 						break;
 					}
 				}
-				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), channel, data.channel, data.content);
+				queueManager.sendMessage(Models.UserSocketModel.toLogicModel(user), channel, data.channel, data.content);
 			});
 			socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
 				user = Models.UserSocketModel.$ctor();
@@ -64,15 +64,19 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				user.hash = data1.userName;
 				user.gateway = this.$myGatewayName;
 				this.users[data1.userName] = user;
-				this.$sendMessage(user, 'Area.Main.Login.Response', { successful: true, user: Models.UserSocketModel.toUserModel(user) });
+				queueManager.sendMessage(Models.UserSocketModel.toLogicModel(user), 'SiteServer', 'Area.Site.Login', { hash: user.hash });
 			}));
 			socket.on('disconnect', Function.mkdel(this, function(data2) {
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
-				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), 'SiteServer', 'Area.Site.UserDisconnect', { user: Models.UserSocketModel.toUserModel(user) });
-				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), 'ChatServer', 'Area.Chat.UserDisconnect', { user: Models.UserSocketModel.toUserModel(user) });
-				queueManager.sendMessage(Models.UserSocketModel.toUserModel(user), 'GameServer', 'Area.Game.UserDisconnect', { user: Models.UserSocketModel.toUserModel(user) });
+				queueManager.sendMessage(Models.UserSocketModel.toLogicModel(user), 'SiteServer', 'Area.Site.UserDisconnect', { user: Models.UserSocketModel.toLogicModel(user) });
+				//disconnecting from the room in site server disconencts from chat..
+				// if (user.CurrentChatServer != null)
+				//     queueManager.SendMessage(user.ToLogicModel(), user.CurrentChatServer, "Area.Chat.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
+				if (ss.isValue(user.currentGameServer)) {
+					queueManager.sendMessage(Models.UserSocketModel.toLogicModel(user), user.currentGameServer, 'Area.Game.UserDisconnect', { user: Models.UserSocketModel.toLogicModel(user) });
+				}
 				delete this.users[user.userName];
 			}));
 		}));
@@ -85,18 +89,27 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}
 		},
 		$sendMessage: function(user, eventChannel, content) {
-			this.$specialHandle(user, eventChannel, content);
-			user.socket.emit('Client.Message', new Models.SocketClientMessageModel(Models.UserSocketModel.toUserModel(user), eventChannel, content));
+			if (this.$specialHandle(user, eventChannel, content)) {
+				user.socket.emit('Client.Message', new Models.SocketClientMessageModel(Models.UserSocketModel.toUserModel(user), eventChannel, content));
+			}
 		},
 		$specialHandle: function(user, eventChannel, content) {
 			if (eventChannel === 'Area.Game.RoomInfo') {
 				user.currentGameServer = content.gameServer;
 				content.gameServer = null;
+				return true;
 			}
-			if (eventChannel === 'Area.Chat.IDKJOINCHAT') {
-				// user.CurrentGameServer = ((CHATROOMMODELIDKLOL)content).GameServer;
-				// ((GameRoomModel)content).GameServer = null;
+			if (eventChannel === 'Area.Chat.RegisterChatServer') {
+				console.log(String.format('Chat Server {0} Registered to {1}', content.chatServer, user.hash));
+				user.currentChatServer = content.chatServer;
+				return false;
 			}
+			if (eventChannel === 'Area.Chat.UnregisterChatServer') {
+				console.log('Chat Server UnRegistered');
+				user.currentChatServer = null;
+				return false;
+			}
+			return true;
 		}
 	};
 	$GatewayServer_GatewayServer.main = function() {

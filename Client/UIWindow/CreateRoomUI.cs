@@ -21,9 +21,14 @@ namespace Client.UIWindow
                                                                              AllowMinimize = true,
                                                                              Visible = true
                                                                      });
+            UIWindow.SwingAway(SwingDirection.BottomLeft, true);
+            UIWindow.SwingBack();
 
-            ShuffTextbox roomName;
-            UIWindow.AddElement(roomName = new ShuffTextbox(115, 40, 150, 30, "", "Room Name"));
+            ShuffTextbox roomName=null;
+            UIWindow.AddElement(roomName = new ShuffTextbox(115, 40, 150, 30, "", "Room Name"){OnEnter = () => {
+                                                                                                             createRoom(pageHandler, gameType, roomName);
+
+                                                                                                         }});
 
             UIWindow.AddElement(new ShuffButton(55,
                                                 100,
@@ -31,15 +36,16 @@ namespace Client.UIWindow
                                                 30,
                                                 "Create",
                                                 (e) => {
-                                                    pageHandler.ClientSiteManager.CreateRoom(new CreateRoomRequest(gameType, roomName.Text));
-
-                                                    UIWindow.Visible = false; //todo: delete
+                                                    createRoom(pageHandler, gameType, roomName);
                                                 }));
-            roomName.Focus();
-            pageHandler.ClientSiteManager.OnLogin += (data) => {
-                                                         pageHandler.ClientInfo.LoggedInUser = data.User;
-                                                         pageHandler.HomeUI.UserLoggedIn();
-                                                     };
+            roomName.Focus(); 
+        }
+
+        private void createRoom(PageHandler pageHandler, string gameType, ShuffTextbox roomName)
+        {
+            pageHandler.ClientSiteManager.CreateRoom(new CreateRoomRequest(gameType, roomName.Text));
+
+            UIWindow.SwingAway(SwingDirection.TopRight);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Client.UIWindow.Controls;
+using Models;
 using Models.ChatManagerModels;
 using Models.SiteManagerModels;
 using ShuffUI;
@@ -37,7 +38,9 @@ namespace Client.UIWindow
                                                                              Visible = true
                                                                      });
             UIWindow.OnClose += () => {
-                                    pageHandler.ClientSiteManager.LeaveRoom(new LeaveRoomRequest(room));
+                                    UIWindow.Visible = true;
+                UIWindow.SwingAway(SwingDirection.BottomRight);
+                pageHandler.ClientSiteManager.LeaveRoom(new LeaveRoomRequest(room));
                                     pageHandler.HomeUI.UIWindow.SwingBack();
                                 };
 
@@ -74,17 +77,17 @@ namespace Client.UIWindow
             PopulateGameRoom(room);
         }
 
-        private void GetChatLines(ChatMessagesModel o)
+        private void GetChatLines(UserModel user, ChatMessagesModel o)
         {
             myChatBox.AddChatMessages(o.Messages);
         }
 
-        private void GetChatInfo(ChatRoomInfoModel o)
+        private void GetChatInfo(UserModel user, ChatRoomInfoModel o)
         {
             PopulateChatRoom(o.Info);
         }
 
-        private void GetRoomInfo(GetRoomInfoResponse o)
+        private void GetRoomInfo(UserModel user, GetRoomInfoResponse o)
         {
             PopulateGameRoom(o.Room);
         }

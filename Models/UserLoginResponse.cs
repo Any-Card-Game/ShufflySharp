@@ -5,23 +5,21 @@ namespace Models
     [Serializable]
     public class UserLoginResponse
     {
-        public bool Successful { get; set; }
-        public UserModel User { get; set; }
+        public bool Successful { get; set; } 
 
         [ObjectLiteral]
-        public UserLoginResponse(bool successful, UserModel user)
+        public UserLoginResponse(bool successful)
         {
-            Successful = successful;
-            User = user;
+            Successful = successful; 
         }
     }
     [Serializable]
     public class UserDisconnectModel
     {
-        public UserModel User { get; set; }
+        public UserLogicModel User { get; set; }
 
         [ObjectLiteral]
-        public UserDisconnectModel(UserModel user)
+        public UserDisconnectModel(UserLogicModel user)
         {
             User = user;
         }

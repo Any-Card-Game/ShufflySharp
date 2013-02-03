@@ -10,10 +10,10 @@ namespace Models.SiteManagerModels
         public string GameType { get; set; }
         public string RoomName { get; set; }
         public string ChatChannel { get; set; }
-        public List<UserModel> Players { get; set; }
+        public List<UserLogicModel> Players { get; set; }
 
         [ObjectLiteral]
-        public RoomData(string gameType, string roomName, string chatChannel, List<UserModel> players)
+        public RoomData(string gameType, string roomName, string chatChannel, List<UserLogicModel> players)
         {
             GameType = gameType;
             RoomName = roomName;

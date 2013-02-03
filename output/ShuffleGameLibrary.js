@@ -147,6 +147,12 @@
 		this.style = 0;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameAppearanceStyleCursor
+	var $global_AppearanceStyleCursor = function() {
+	};
+	$global_AppearanceStyleCursor.prototype = {};
+	Type.registerEnum(global, 'global.AppearanceStyleCursor', $global_AppearanceStyleCursor, false);
+	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameAppearanceStyleItem
 	var $global_AppearanceStyleItem = function(options) {
 		this.backColor = null;
@@ -453,12 +459,6 @@
 	};
 	$global_CardGameAppearanceStyleBorderStyle.prototype = { none: 0, dotted: 1, dashed: 2, solid: 3, double: 4, groove: 5, ridge: 6, inset: 7, offset: 8 };
 	Type.registerEnum(global, 'global.CardGameAppearanceStyleBorderStyle', $global_CardGameAppearanceStyleBorderStyle, false);
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameAppearanceStyleCursor
-	var $global_CardGameAppearanceStyleCursor = function() {
-	};
-	$global_CardGameAppearanceStyleCursor.prototype = { default: 0, auto: 1, pointer: 2, move: 3, eResize: 4, neResize: 5, nwResize: 6, nResize: 7, seResize: 8, swResize: 9, sResize: 10, wResize: 11, text: 12, wait: 13, help: 14 };
-	Type.registerEnum(global, 'global.CardGameAppearanceStyleCursor', $global_CardGameAppearanceStyleCursor, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameArea
 	var $global_CardGameArea = function() {

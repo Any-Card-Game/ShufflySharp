@@ -21,9 +21,9 @@
 		this.$connection = null;
 		this.$server = null;
 		this.client = null;
+		this.chatData = null;
 		this.gameData = null;
 		this.siteData = null;
-		this.chatData = null;
 		var mongo = require('mongodb');
 		var Db = mongo.Db;
 		this.$connection = mongo.Connection;
@@ -262,7 +262,9 @@
 		addChatLine: function(user, room, message, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var messageModel = { user: user, content: message, time: Date.get_now() };
-				collection.update({ _id: room._id }, { $push: { messages: messageModel } }, function(err2) {
+				var query = {};
+				query['$push'] = { messages: messageModel };
+				collection.update({ _id: room._id }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						console.log('Data Error: ' + err2);
 					}
@@ -271,14 +273,29 @@
 				});
 			});
 		},
-		addUser: function(currentRoom, user, complete) {
+		addUser: function(room, user, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
-				collection.update({ _id: currentRoom._id }, { $push: { users: user } }, function(err2) {
+				var query = {};
+				query['$push'] = { users: user };
+				collection.update({ _id: room._id }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						console.log('Data Error: ' + err2);
 					}
-					currentRoom.users.add(user);
-					complete(currentRoom);
+					room.users.add(user);
+					complete(room);
+				});
+			});
+		},
+		removeUser: function(room, user, complete) {
+			this.$manager.client.collection('ChatRoom', function(err, collection) {
+				var query = {};
+				query['$pop'] = { users: user };
+				collection.update({ _id: room._id }, query, function(err2) {
+					if (ss.isValue(err2)) {
+						console.log('Data Error: ' + err2);
+					}
+					room.users.remove(user);
+					complete(room);
 				});
 			});
 		}

@@ -29,7 +29,7 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_GetRoomByUser(UserModel user, Action<RoomData> results)
+        public void Room_GetRoomByUser(UserLogicModel user, Action<RoomData> results)
         {
             manager.client.Collection("Room",
                                       (err, collection) => {
@@ -48,9 +48,9 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_CreateRoom(string gameType, string roomName, UserModel user, Action<RoomData> onRoomCreated)
+        public void Room_CreateRoom(string gameType, string roomName, UserLogicModel user, Action<RoomData> onRoomCreated)
         {
-            RoomData rd = new RoomData(gameType, roomName, roomName + "RoomName", new List<UserModel>() {user});
+            RoomData rd = new RoomData(gameType, roomName, roomName + "RoomName", new List<UserLogicModel>() { user });
             manager.client.Collection("Room",
                                       (err, collection) => {
                                           collection.Insert(rd);
@@ -58,7 +58,7 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_JoinRoom(string gameType, string roomName, UserModel user, Action<RoomData> onRoomJoined)
+        public void Room_JoinRoom(string gameType, string roomName, UserLogicModel user, Action<RoomData> onRoomJoined)
         {
             manager.client.Collection("Room",
                                       (err, collection) => {

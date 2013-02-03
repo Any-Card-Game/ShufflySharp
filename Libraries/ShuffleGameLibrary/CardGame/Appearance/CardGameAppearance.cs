@@ -93,7 +93,8 @@ namespace global
             return si;
         }
     }
-    //[NamedValues]todo:::
+    [NamedValues]
+    [ScriptName("AppearanceStyleCursor")]
     public enum CardGameAppearanceStyleCursor
     {
         Default,

@@ -8,7 +8,7 @@ namespace global
     public static class Shuff
     {
         [ScriptName("askQuestion")]
-        public static int AskQuestion(UserModel user, string question, string[] answers, GameCardGame cardGame)
+        public static int AskQuestion(UserLogicModel user, string question, string[] answers, GameCardGame cardGame)
         {
             cardGame.Emulating = false;
             if (cardGame.Answers.Count - 1 > cardGame.AnswerIndex) {
@@ -23,7 +23,7 @@ namespace global
         }
 
         [ScriptName("declareWinner")]
-        public static void DeclareWinner(UserModel user)
+        public static void DeclareWinner(UserLogicModel user)
         {
             Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.GameOver));
         }
@@ -113,7 +113,7 @@ namespace global
     public class CardGameQuestion
     {
         [IntrinsicProperty]
-        public UserModel User { get; set; }
+        public UserLogicModel User { get; set; }
         [IntrinsicProperty]
         public string Question { get; set; }
         [IntrinsicProperty]
@@ -121,7 +121,7 @@ namespace global
         [IntrinsicProperty]
         public GameCardGame CardGame { get; set; }
 
-        public CardGameQuestion(UserModel user, string question, string[] answers, GameCardGame cardGame)
+        public CardGameQuestion(UserLogicModel user, string question, string[] answers, GameCardGame cardGame)
         {
             User = user;
             Question = question;

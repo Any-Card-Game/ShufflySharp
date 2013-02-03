@@ -9,6 +9,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$1$OnSendMessageField = null;
 		this.$1$OnJoinChatChannelField = null;
 		this.$1$OnUserDisconnectField = null;
+		this.$1$OnLeaveChatRoomField = null;
 		this.set_chatServerIndex(chatServerIndex);
 		this.$setup();
 	};
@@ -43,6 +44,12 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		remove_onUserDisconnect: function(value) {
 			this.$1$OnUserDisconnectField = Function.remove(this.$1$OnUserDisconnectField, value);
 		},
+		add_onLeaveChatRoom: function(value) {
+			this.$1$OnLeaveChatRoomField = Function.combine(this.$1$OnLeaveChatRoomField, value);
+		},
+		remove_onLeaveChatRoom: function(value) {
+			this.$1$OnLeaveChatRoomField = Function.remove(this.$1$OnLeaveChatRoomField, value);
+		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_chatServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('ChatServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_chatServerIndex(), null)], ['ChatServer', 'GatewayServer', 'Gateway*']));
 			this.$qManager.addChannel('Area.Chat.CreateChatRoom', Function.mkdel(this, function(user, data) {
@@ -57,12 +64,21 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			this.$qManager.addChannel('Area.Chat.UserDisconnect', Function.mkdel(this, function(user3, data3) {
 				this.$1$OnUserDisconnectField(user3, data3);
 			}));
+			this.$qManager.addChannel('Area.Chat.LeaveChatRoom', Function.mkdel(this, function(user4, data4) {
+				this.$1$OnLeaveChatRoomField(user4);
+			}));
 		},
 		sendChatLines: function(user, response) {
 			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.ChatLines.Response', response);
 		},
 		sendChatInfo: function(user, response) {
 			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.ChatInfo.Response', { info: response });
+		},
+		registerChatServer: function(user) {
+			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.RegisterChatServer', { chatServer: this.get_chatServerIndex() });
+		},
+		unregisterChatServer: function(user) {
+			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.UnregisterChatServer', { chatServer: this.get_chatServerIndex() });
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -76,9 +92,35 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$myServerManager.add_onCreateChatChannel(Function.mkdel(this, this.$onCreateChatChannel));
 		this.$myServerManager.add_onJoinChatChannel(Function.mkdel(this, this.$onJoinChatChannel));
 		this.$myServerManager.add_onSendMessage(Function.mkdel(this, this.$onSendMessage));
+		this.$myServerManager.add_onLeaveChatRoom(Function.mkdel(this, this.$onLeaveChatRoom));
 		this.$myServerManager.add_onUserDisconnect(Function.mkdel(this, this.$onUserDisconnect));
 	};
 	$ChatServer_ChatManager.prototype = {
+		$onLeaveChatRoom: function(user) {
+			this.$leaveChatRoom(user);
+		},
+		$leaveChatRoom: function(user) {
+			debugger;
+			var room = this.$getRoomFromUser(user);
+			if (ss.isNullOrUndefined(room)) {
+				throw new ss.Exception('idk');
+			}
+			for (var $t1 = 0; $t1 < room.users.length; $t1++) {
+				var userLogicModel = room.users[$t1];
+				if (ss.referenceEquals(userLogicModel.hash, user.hash)) {
+					room.users.remove(userLogicModel);
+					break;
+				}
+			}
+			this.$myDataManager.chatData.removeUser(room, user, Function.mkdel(this, function(a) {
+				this.$myServerManager.unregisterChatServer(user);
+				var roomToSend = { roomName: room.roomName, users: room.users, messages: null };
+				for (var $t2 = 0; $t2 < room.users.length; $t2++) {
+					var userLogicModel1 = room.users[$t2];
+					this.$myServerManager.sendChatInfo(userLogicModel1, roomToSend);
+				}
+			}));
+		},
 		$onSendMessage: function(user, data) {
 			var room = this.$getRoomFromUser(user);
 			if (ss.isNullOrUndefined(room)) {
@@ -86,11 +128,11 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}
 			this.$myDataManager.chatData.addChatLine(user, room, data.message, Function.mkdel(this, function(a) {
 				for (var $t1 = 0; $t1 < room.users.length; $t1++) {
-					var userModel = room.users[$t1];
+					var userLogicModel = room.users[$t1];
 					var $t3 = this.$myServerManager;
 					var $t2 = [];
 					$t2.add(a);
-					$t3.sendChatLines(userModel, { messages: $t2 });
+					$t3.sendChatLines(userLogicModel, { messages: $t2 });
 				}
 			}));
 		},
@@ -108,6 +150,10 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			return currentRoom;
 		},
 		$onJoinChatChannel: function(user, data) {
+			var cur = this.$getRoomFromUser(user);
+			if (ss.isValue(cur)) {
+				this.$leaveChatRoom(user);
+			}
 			var currentRoom = null;
 			for (var $t1 = 0; $t1 < this.$runningRooms.length; $t1++) {
 				var chatRoomModel = this.$runningRooms[$t1];
@@ -119,25 +165,33 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				throw new ss.Exception('idk');
 			}
 			this.$myDataManager.chatData.addUser(currentRoom, user, Function.mkdel(this, function(room) {
-				debugger;
+				this.$myServerManager.registerChatServer(user);
 				var roomToSend = { roomName: room.roomName, users: room.users, messages: room.messages };
 				roomToSend.messages = room.messages.extract(room.messages.length - 5);
 				this.$myServerManager.sendChatInfo(user, roomToSend);
 				roomToSend = { roomName: room.roomName, users: room.users, messages: null };
 				for (var $t2 = 0; $t2 < currentRoom.users.length; $t2++) {
-					var userModel = currentRoom.users[$t2];
-					this.$myServerManager.sendChatInfo(userModel, roomToSend);
+					var UserLogicModel = currentRoom.users[$t2];
+					this.$myServerManager.sendChatInfo(UserLogicModel, roomToSend);
 				}
 			}));
 		},
 		$onCreateChatChannel: function(user, data) {
+			var cur = this.$getRoomFromUser(user);
+			if (ss.isValue(cur)) {
+				this.$leaveChatRoom(user);
+			}
 			this.$myDataManager.chatData.createChatChannel(data.roomName, user, Function.mkdel(this, function(a) {
+				debugger;
+				this.$myServerManager.registerChatServer(user);
 				this.$runningRooms.add(a);
 				this.$myServerManager.sendChatInfo(user, a);
 			}));
 		},
 		$onUserDisconnect: function(user, data) {
 			console.log('Awww, dat ' + user.userName + ' disconnected');
+			this.$myServerManager.unregisterChatServer(user);
+			this.$leaveChatRoom(user);
 			//removeUserFromRoom(data.User, (room) => { });
 		}
 	};

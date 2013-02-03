@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Models;
 using Models.GameManagerModels;
 using ShuffUI;
 using jQueryApi;
@@ -45,7 +46,7 @@ namespace Client.UIWindow
             pageHandler.ClientDebugManager.OnGetGameSource += populateGameSource;
         }
 
-        private void populateGameSource(GameSourceResponseModel gameSource)
+        private void populateGameSource(UserModel user, GameSourceResponseModel gameSource)
         {
             var endTime = new DateTime();
 

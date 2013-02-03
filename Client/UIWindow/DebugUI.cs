@@ -135,7 +135,7 @@ namespace Client.UIWindow
                                      pageHandler.ClientGameManager.JoinDebugger(new DebuggerJoinRequestModel(room.RoomID));
 
                                      for (var i = 0; i < count; i++) {
-                                         pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + ( i + 1 )}));
+                                         //todo pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + ( i + 1 )}));
                                      }
                                      Created = true;
                                  } else {

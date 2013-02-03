@@ -10,13 +10,13 @@ namespace GameServer
     {
         #region Delegates
 
-        public delegate void DebugGameCreate(UserModel user, DebugCreateGameRequestModel data);
-        public delegate void DebuggerJoinGame(UserModel user, DebuggerJoinRequestModel data);
-        public delegate void GameCreate(UserModel user, CreateGameRequestModel data);
+        public delegate void DebugGameCreate(UserLogicModel user, DebugCreateGameRequestModel data);
+        public delegate void DebuggerJoinGame(UserLogicModel user, DebuggerJoinRequestModel data);
+        public delegate void GameCreate(UserLogicModel user, CreateGameRequestModel data);
         public delegate void StartGame(StartGameRequestModel data);
-        public delegate void UserAnswerQuestion(UserModel user, GameAnswerQuestionModel data);
-        public delegate void UserDisconnect(UserModel user, UserDisconnectModel data);
-        public delegate void UserJoinGame(UserModel user, JoinGameRequestModel data);
+        public delegate void UserAnswerQuestion(UserLogicModel user, GameAnswerQuestionModel data);
+        public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
+        public delegate void UserJoinGame(UserLogicModel user, JoinGameRequestModel data);
 
         #endregion
 
@@ -100,7 +100,7 @@ namespace GameServer
             qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Break", ganswer);
         }
 
-        public void SendAskQuestion(UserModel user, GameSendAnswerModel gameAnswer)
+        public void SendAskQuestion(UserLogicModel user, GameSendAnswerModel gameAnswer)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", gameAnswer.CleanUp());
         }

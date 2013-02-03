@@ -66,7 +66,7 @@ namespace global
         }
 
         [ScriptName("setPlayers")]
-        public void SetPlayers(List<UserModel> players)
+        public void SetPlayers(List<UserLogicModel> players)
         {
             Users = new List<CardGameUser>();
 

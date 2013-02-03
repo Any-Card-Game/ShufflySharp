@@ -183,7 +183,7 @@
 	};
 	$Client_PageHandler.prototype = {
 		startGameServer: function() {
-			this.clientGameManager.add_onGetRoomInfo(Function.mkdel(this, function(roomInfo) {
+			this.clientGameManager.add_onGetRoomInfo(Function.mkdel(this, function(user, roomInfo) {
 				this.$roomID = roomInfo.roomID;
 				//                                                   HomeUI.loadRoomInfo(roomInfo);
 				this.debugUI.loadRoomInfo(roomInfo);
@@ -198,14 +198,14 @@
 			//                        
 			//
 			//                        });
-			this.clientGameManager.add_onGetDebugLog(Function.mkdel(this, function(gameAnswer) {
+			this.clientGameManager.add_onGetDebugLog(Function.mkdel(this, function(user1, gameAnswer) {
 				//                                                   HomeUI.loadRoomInfos(gameAnswer);
 				var lines = this.codeEditorUI.console.information.editor.getValue().split('\n');
 				lines = lines.extract(lines.length - 40, 40);
 				this.codeEditorUI.console.information.editor.setValue(lines.join('\n') + '\n' + gameAnswer.value);
 				this.codeEditorUI.console.information.editor.setCursor(this.codeEditorUI.console.information.editor.lineCount(), 0);
 			}));
-			this.clientGameManager.add_onGetDebugBreak(Function.mkdel(this, function(gameAnswer1) {
+			this.clientGameManager.add_onGetDebugBreak(Function.mkdel(this, function(user2, gameAnswer1) {
 				//                                                     HomeUI.loadRoomInfos(gameAnswer);
 				var cm = this.codeEditorUI.codeEditor;
 				//    cm.Information.editor.ClearMarker(gameAnswer.LineNumber);
@@ -222,7 +222,7 @@
 			//                        Window.Alert(Json.Stringify(data));
 			//
 			//                        });
-			this.clientGameManager.add_onAskQuestion(Function.mkdel(this, function(gameSendAnswerModel) {
+			this.clientGameManager.add_onAskQuestion(Function.mkdel(this, function(user3, gameSendAnswerModel) {
 				this.questionUI.load(gameSendAnswerModel);
 				//alert(JSON.stringify(data));
 				this.timeTracker.endTime = new Date();
@@ -234,18 +234,18 @@
 					this.timeTracker.startTime = new Date();
 				}), 200);
 			}));
-			this.clientGameManager.add_onUpdateState(Function.mkdel(this, function(update) {
+			this.clientGameManager.add_onUpdateState(Function.mkdel(this, function(user4, update) {
 				var data = JSON.parse((new Compressor()).DecompressText(update));
 				//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 				this.gameDrawer.draw(data);
 			}));
-			this.clientGameManager.add_onGameStarted(function(room) {
+			this.clientGameManager.add_onGameStarted(function(user5, room) {
 				//alert(JSON.stringify(data));
 			});
-			this.clientGameManager.add_onGameOver(function(room1) {
+			this.clientGameManager.add_onGameOver(function(user6, room1) {
 				//alert(JSON.stringify(data));
 			});
-			this.clientGameManager.add_onDebugGameOver(function(room2) {
+			this.clientGameManager.add_onDebugGameOver(function(user7, room2) {
 				//alert(JSON.stringify(data));
 			});
 		}
@@ -258,7 +258,7 @@
 		this.$channels = new (Type.makeGenericType(ss.Dictionary$2, [String, Function]))();
 		this.gatewaySocket = io.connect(gatewayServer);
 		this.gatewaySocket.on('Client.Message', Function.mkdel(this, function(data) {
-			this.$channels.get_item(data.channel)(data.content);
+			this.$channels.get_item(data.channel)(data.user, data.content);
 		}));
 	};
 	$Client_Libs_Gateway.prototype = {
@@ -352,9 +352,9 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Managers.ClientChatManager
 	var $Client_Managers_ClientChatManager = function(gateway) {
+		this.$myGateway = null;
 		this.$1$OnGetChatLinesField = null;
 		this.$1$OnGetChatInfoField = null;
-		this.$myGateway = null;
 		this.$myGateway = gateway;
 		this.$setup();
 	};
@@ -372,11 +372,11 @@
 			this.$1$OnGetChatInfoField = Function.remove(this.$1$OnGetChatInfoField, value);
 		},
 		$setup: function() {
-			this.$myGateway.on('Area.Chat.ChatLines.Response', Function.mkdel(this, function(a) {
-				this.$1$OnGetChatLinesField(a);
+			this.$myGateway.on('Area.Chat.ChatLines.Response', Function.mkdel(this, function(user, data) {
+				this.$1$OnGetChatLinesField(user, data);
 			}));
-			this.$myGateway.on('Area.Chat.ChatInfo.Response', Function.mkdel(this, function(a1) {
-				this.$1$OnGetChatInfoField(a1);
+			this.$myGateway.on('Area.Chat.ChatInfo.Response', Function.mkdel(this, function(user1, data1) {
+				this.$1$OnGetChatInfoField(user1, data1);
 			}));
 		},
 		sendChatMessage: function(sendChatMessageModel) {
@@ -399,8 +399,8 @@
 			this.$1$OnGetGameSourceField = Function.remove(this.$1$OnGetGameSourceField, value);
 		},
 		$setup: function() {
-			this.$myGateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(a) {
-				this.$1$OnGetGameSourceField(a);
+			this.$myGateway.on('Area.Debug.GetGameSource.Response', Function.mkdel(this, function(user, data) {
+				this.$1$OnGetGameSourceField(user, data);
 			}));
 		},
 		requestGameSource: function(gameSourceRequestModel) {
@@ -472,29 +472,29 @@
 			this.$1$OnDebugGameOverField = Function.remove(this.$1$OnDebugGameOverField, value);
 		},
 		$setup: function() {
-			this.$myGateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(a) {
-				this.$1$OnGetRoomInfoField(a);
+			this.$myGateway.on('Area.Game.RoomInfo', Function.mkdel(this, function(user, data) {
+				this.$1$OnGetRoomInfoField(user, data);
 			}));
-			this.$myGateway.on('Area.Debug.Log', Function.mkdel(this, function(a1) {
-				this.$1$OnGetDebugLogField(a1);
+			this.$myGateway.on('Area.Debug.Log', Function.mkdel(this, function(user1, data1) {
+				this.$1$OnGetDebugLogField(user1, data1);
 			}));
-			this.$myGateway.on('Area.Debug.Break', Function.mkdel(this, function(a2) {
-				this.$1$OnGetDebugBreakField(a2);
+			this.$myGateway.on('Area.Debug.Break', Function.mkdel(this, function(user2, data2) {
+				this.$1$OnGetDebugBreakField(user2, data2);
 			}));
-			this.$myGateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(a3) {
-				this.$1$OnAskQuestionField(a3);
+			this.$myGateway.on('Area.Game.AskQuestion', Function.mkdel(this, function(user3, data3) {
+				this.$1$OnAskQuestionField(user3, data3);
 			}));
-			this.$myGateway.on('Area.Game.UpdateState', Function.mkdel(this, function(a4) {
-				this.$1$OnUpdateStateField(Type.cast(a4, String));
+			this.$myGateway.on('Area.Game.UpdateState', Function.mkdel(this, function(user4, data4) {
+				this.$1$OnUpdateStateField(user4, Type.cast(data4, String));
 			}));
-			this.$myGateway.on('Area.Game.Started', Function.mkdel(this, function(a5) {
-				this.$1$OnGameStartedField(a5);
+			this.$myGateway.on('Area.Game.Started', Function.mkdel(this, function(user5, data5) {
+				this.$1$OnGameStartedField(user5, data5);
 			}));
-			this.$myGateway.on('Area.Game.GameOver', Function.mkdel(this, function(a6) {
-				this.$1$OnGameOverField(Type.cast(a6, String));
+			this.$myGateway.on('Area.Game.GameOver', Function.mkdel(this, function(user6, data6) {
+				this.$1$OnGameOverField(user6, Type.cast(data6, String));
 			}));
-			this.$myGateway.on('Area.Debug.GameOver', Function.mkdel(this, function(a7) {
-				this.$1$OnDebugGameOverField(Type.cast(a7, String));
+			this.$myGateway.on('Area.Debug.GameOver', Function.mkdel(this, function(user7, data7) {
+				this.$1$OnDebugGameOverField(user7, Type.cast(data7, String));
 			}));
 		},
 		answerQuestion: function(gameAnswerQuestionModel) {
@@ -557,26 +557,26 @@
 			this.$1$OnGetRoomInfoReceivedField = Function.remove(this.$1$OnGetRoomInfoReceivedField, value);
 		},
 		$setup: function() {
-			this.$myGateway.on('Area.Main.Login.Response', Function.mkdel(this, function(a) {
-				var userLoginResponse = a;
+			this.$myGateway.on('Area.Main.Login.Response', Function.mkdel(this, function(user, data) {
+				var userLoginResponse = data;
 				if (userLoginResponse.successful) {
-					this.$siteLogin(userLoginResponse.user.hash);
+					this.$siteLogin(user.hash);
 				}
 			}));
-			this.$myGateway.on('Area.Site.Login.Response', Function.mkdel(this, function(a1) {
-				this.$1$OnLoginField(a1);
+			this.$myGateway.on('Area.Site.Login.Response', Function.mkdel(this, function(user1, data1) {
+				this.$1$OnLoginField(user1, data1);
 			}));
-			this.$myGateway.on('Area.Site.GetGameTypes.Response', Function.mkdel(this, function(a2) {
-				this.$1$OnGetGameTypesReceivedField(a2);
+			this.$myGateway.on('Area.Site.GetGameTypes.Response', Function.mkdel(this, function(user2, data2) {
+				this.$1$OnGetGameTypesReceivedField(user2, data2);
 			}));
-			this.$myGateway.on('Area.Site.GetRooms.Response', Function.mkdel(this, function(a3) {
-				this.$1$OnGetRoomsReceivedField(a3);
+			this.$myGateway.on('Area.Site.GetRooms.Response', Function.mkdel(this, function(user3, data3) {
+				this.$1$OnGetRoomsReceivedField(user3, data3);
 			}));
-			this.$myGateway.on('Area.Site.GetRoomInfo.Response', Function.mkdel(this, function(a4) {
-				this.$1$OnGetRoomInfoReceivedField(a4);
+			this.$myGateway.on('Area.Site.GetRoomInfo.Response', Function.mkdel(this, function(user4, data4) {
+				this.$1$OnGetRoomInfoReceivedField(user4, data4);
 			}));
-			this.$myGateway.on('Area.Site.JoinRoom.Response', Function.mkdel(this, function(a5) {
-				this.$1$OnRoomJoinedField(a5);
+			this.$myGateway.on('Area.Site.JoinRoom.Response', Function.mkdel(this, function(user5, data5) {
+				this.$1$OnRoomJoinedField(user5, data5);
 			}));
 		},
 		$siteLogin: function(hash) {
@@ -913,9 +913,9 @@
 		this.$myPageHandler = null;
 		this.$myRoom = null;
 		this.$myShuffUIManager = null;
-		this.$myRoomPlayers = null;
 		this.$myChatBox = null;
 		this.$myChatText = null;
+		this.$myRoomPlayers = null;
 		this.uiWindow = null;
 		pageHandler.clientSiteManager.add_onGetRoomInfoReceived(Function.mkdel(this, this.$getRoomInfo));
 		pageHandler.clientChatManager.add_onGetChatLines(Function.mkdel(this, this.$getChatLines));
@@ -933,10 +933,12 @@
 		$t1.allowMinimize = true;
 		$t1.set_visible(true);
 		this.uiWindow = shuffUIManager.createWindow($t1);
-		this.uiWindow.onClose = Function.combine(this.uiWindow.onClose, function() {
+		this.uiWindow.onClose = Function.combine(this.uiWindow.onClose, Function.mkdel(this, function() {
+			this.uiWindow.set_visible(true);
+			this.uiWindow.swingAway(4, false);
 			pageHandler.clientSiteManager.leaveRoom({ room: room });
 			pageHandler.homeUI.uiWindow.swingBack();
-		});
+		}));
 		this.uiWindow.swingAway(4, true);
 		var $t3 = this.uiWindow;
 		var $t2 = new ShuffUI.ShuffListBox(600, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300));
@@ -967,13 +969,13 @@
 		this.$populateGameRoom(room);
 	};
 	$Client_UIWindow_ActiveLobbyUI.prototype = {
-		$getChatLines: function(o) {
+		$getChatLines: function(user, o) {
 			this.$myChatBox.addChatMessages(o.messages);
 		},
-		$getChatInfo: function(o) {
+		$getChatInfo: function(user, o) {
 			this.$populateChatRoom(o.info);
 		},
-		$getRoomInfo: function(o) {
+		$getRoomInfo: function(user, o) {
 			this.$populateGameRoom(o.room);
 		},
 		$populateChatRoom: function(roomData) {
@@ -1036,7 +1038,7 @@
 		set_pageHandler: function(value) {
 			this.$1$PageHandlerField = value;
 		},
-		$populateGameSource: function(gameSource) {
+		$populateGameSource: function(user, gameSource) {
 			var endTime = new Date();
 			var timeTracker = this.get_pageHandler().timeTracker;
 			var time = endTime - timeTracker.startTime;
@@ -1063,18 +1065,25 @@
 		$t1.allowMinimize = true;
 		$t1.set_visible(true);
 		this.uiWindow = shuffUIManager.createWindow($t1);
-		var roomName;
-		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, roomName = new ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null));
+		this.uiWindow.swingAway(6, true);
+		this.uiWindow.swingBack();
+		var roomName = null;
+		var $t3 = this.uiWindow;
+		var $t2 = new ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null);
+		$t2.set_onEnter(Function.mkdel(this, function() {
+			this.$createRoom(pageHandler, gameType, roomName);
+		}));
+		$t3.addElement(ShuffUI.ShuffTextbox).call($t3, roomName = $t2);
 		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(55, 100, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), Function.mkdel(this, function(e) {
-			pageHandler.clientSiteManager.createRoom({ gameType: gameType, roomName: roomName.get_text() });
-			this.uiWindow.set_visible(false);
-			//todo: delete
+			this.$createRoom(pageHandler, gameType, roomName);
 		})));
 		roomName.focus();
-		pageHandler.clientSiteManager.add_onLogin(function(data) {
-			pageHandler.clientInfo.loggedInUser = data.user;
-			pageHandler.homeUI.userLoggedIn();
-		});
+	};
+	$Client_UIWindow_CreateRoomUI.prototype = {
+		$createRoom: function(pageHandler, gameType, roomName) {
+			pageHandler.clientSiteManager.createRoom({ gameType: gameType, roomName: roomName.get_text() });
+			this.uiWindow.swingAway(2, false);
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.DebugUI
@@ -1178,11 +1187,7 @@
 			if (!this.created) {
 				pageHandler.clientGameManager.joinDebugger({ roomID: room.roomID });
 				for (var i = 0; i < count; i++) {
-					var $t4 = pageHandler.clientGameManager;
-					var $t3 = room.roomID;
-					var $t2 = Models.UserModel.$ctor();
-					$t2.userName = 'player ' + (i + 1);
-					$t4.joinPlayer({ roomID: $t3, user: $t2 });
+					//todo pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + ( i + 1 )}));
 				}
 				this.created = true;
 			}
@@ -1198,17 +1203,17 @@
 		this.$myPageHandler = null;
 		this.$myShuffUIManager = null;
 		this.$lblHeader = null;
-		this.$myGameTypeList = null;
-		this.$myLoadedRooms = null;
-		this.$myRoomsList = null;
-		this.$myRoomPlayers = null;
-		this.$myRoomName = null;
-		this.$myRoomGameType = null;
-		this.$myJoinRoom = null;
-		this.$mySpectateRoom = null;
 		this.$myCreateGameType = null;
 		this.$myCreateRoom = null;
+		this.$myGameTypeList = null;
+		this.$myJoinRoom = null;
+		this.$myLoadedRooms = null;
 		this.$myRefreshRoom = null;
+		this.$myRoomGameType = null;
+		this.$myRoomName = null;
+		this.$myRoomPlayers = null;
+		this.$myRoomsList = null;
+		this.$mySpectateRoom = null;
 		this.uiWindow = null;
 		this.$myShuffUIManager = shuffUIManager;
 		this.$myPageHandler = pageHandler;
@@ -1286,7 +1291,7 @@
 		//UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
 	};
 	$Client_UIWindow_HomeUI.prototype = {
-		$getRoomInfo: function(o) {
+		$getRoomInfo: function(user, o) {
 			for (var i = 0; i < this.$myLoadedRooms.length; i++) {
 				if (ss.referenceEquals(this.$myLoadedRooms[i]._id, o.room._id)) {
 					this.$myLoadedRooms.removeAt(i);
@@ -1296,8 +1301,7 @@
 			}
 			this.$populateRoom(o.room);
 		},
-		$roomJoined: function(o) {
-			//todo pop open chat room window
+		$roomJoined: function(user, o) {
 			this.$populateRoom(o.room);
 			this.uiWindow.swingAway(0, false);
 			new $Client_UIWindow_ActiveLobbyUI(this.$myShuffUIManager, this.$myPageHandler, o.room);
@@ -1309,7 +1313,7 @@
 			this.uiWindow.swingAway(6, true);
 			this.uiWindow.swingBack();
 		},
-		$populateGames: function(o) {
+		$populateGames: function(user, o) {
 			this.$myGameTypeList.clearItems();
 			for (var $t1 = 0; $t1 < o.gameTypes.length; $t1++) {
 				var gameType = o.gameTypes[$t1];
@@ -1317,7 +1321,7 @@
 			}
 			this.$myPageHandler.clientSiteManager.getRooms({ gameType: o.gameTypes[0].name });
 		},
-		$populateRooms: function(o) {
+		$populateRooms: function(user, o) {
 			this.$myRoomsList.clearItems();
 			this.$myLoadedRooms = o.rooms;
 			if (o.rooms.length === 0) {
@@ -1369,8 +1373,8 @@
 		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(155, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e1) {
 			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 		}));
-		pageHandler.clientSiteManager.add_onLogin(Function.mkdel(this, function(data) {
-			pageHandler.clientInfo.loggedInUser = data.user;
+		pageHandler.clientSiteManager.add_onLogin(Function.mkdel(this, function(user, data) {
+			pageHandler.clientInfo.loggedInUser = user;
 			pageHandler.homeUI.userLoggedIn();
 			this.uiWindow.swingAway(7, false);
 		}));

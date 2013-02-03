@@ -16,6 +16,19 @@ namespace Models.ChatManagerModels
         }
     }
     [Serializable]
+    public class RegisterChatServerModel
+    {
+        [ObjectLiteral]
+        public RegisterChatServerModel(string chatServer)
+        {
+            ChatServer = chatServer;
+        }
+
+        public string ChatServer { get; set; }
+    }
+
+
+    [Serializable]
     public class ChatRoomInfoModel
     {
         public ChatRoomModel Info { get; set; }
@@ -52,11 +65,11 @@ namespace Models.ChatManagerModels
     public class ChatRoomModel : MongoDocument
     {
         public string RoomName { get; set; }
-        public List<UserModel> Users { get; set; }
+        public List<UserLogicModel> Users { get; set; }
         public List<ChatMessageRoomModel> Messages { get; set; }
 
         [ObjectLiteral]
-        public ChatRoomModel(string roomName, List<UserModel> users, List<ChatMessageRoomModel> messages)
+        public ChatRoomModel(string roomName, List<UserLogicModel> users, List<ChatMessageRoomModel> messages)
         {
             RoomName = roomName;
             Users = users;
@@ -66,12 +79,12 @@ namespace Models.ChatManagerModels
     [Serializable]
     public sealed class ChatMessageRoomModel
     {
-        public UserModel User { get; set; }
+        public UserLogicModel User { get; set; }
         public string Content { get; set; }
         public DateTime Time { get; set; }
 
         [ObjectLiteral]
-        public ChatMessageRoomModel(UserModel user, string content, DateTime time)
+        public ChatMessageRoomModel(UserLogicModel user, string content, DateTime time)
         {
             User = user;
             Content = content;

@@ -44,12 +44,12 @@ namespace GameServer
             Global.SetInterval(flushQueue, 50);
         }
 
-        private void UserDisconnect(UserModel user, UserDisconnectModel data)
+        private void UserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
             //todo does
         }
 
-        public void UserJoinGame(UserModel user, JoinGameRequestModel data)
+        public void UserJoinGame(UserLogicModel user, JoinGameRequestModel data)
         {
             GameRoom room = null;
             foreach (var gameRoom in rooms) {
@@ -64,12 +64,12 @@ namespace GameServer
             myServerManager.SendRoomInfo(room);
         }
 
-        public void DebugGameCreate(UserModel user, DebugCreateGameRequestModel data)
+        public void DebugGameCreate(UserLogicModel user, DebugCreateGameRequestModel data)
         {
             GameCreate(user, new CreateGameRequestModel(data.Name, data.GameName));
         }
 
-        public void GameCreate(UserModel user, CreateGameRequestModel data)
+        public void GameCreate(UserLogicModel user, CreateGameRequestModel data)
         {
             GameRoom room;
             rooms.Add(room = new GameRoom());
@@ -119,12 +119,12 @@ namespace GameServer
             Console.Log("doign2");
         }
 
-        public void UserAnswerQuestion(UserModel user, GameAnswerQuestionModel data)
+        public void UserAnswerQuestion(UserLogicModel user, GameAnswerQuestionModel data)
         {
             answerQueue.Add(data);
         }
 
-        public void DebuggerJoinGame(UserModel user, DebuggerJoinRequestModel data)
+        public void DebuggerJoinGame(UserLogicModel user, DebuggerJoinRequestModel data)
         {
             GameRoom room = null;
             foreach (var gameRoom in rooms) {
@@ -259,7 +259,7 @@ namespace GameServer
             }
         }
 
-        private UserModel getPlayerByUsername(GameRoom room, string userName)
+        private UserLogicModel getPlayerByUsername(GameRoom room, string userName)
         {
             foreach (var player in room.Players) {
                 if (player.UserName == userName)
@@ -268,9 +268,9 @@ namespace GameServer
             return null;
         }
 
-        private Fiber<List<UserModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
+        private Fiber<List<UserLogicModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
         {
-            return new Fiber<List<UserModel>>(players => {
+            return new Fiber<List<UserLogicModel>>(players => {
                                                   if (players == null || players.Count == 0) return true;
                                                   room.Players = players;
                                                   Console.Log("game started");

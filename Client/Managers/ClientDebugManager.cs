@@ -1,4 +1,5 @@
 using Client.Libs;
+using Models;
 using Models.GameManagerModels;
 namespace Client.Managers
 {
@@ -6,7 +7,7 @@ namespace Client.Managers
     {
         #region Delegates
 
-        public delegate void GetGameSource(GameSourceResponseModel o);
+        public delegate void GetGameSource(UserModel user, GameSourceResponseModel o);
 
         #endregion
 
@@ -22,7 +23,7 @@ namespace Client.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Debug.GetGameSource.Response", a => OnGetGameSource((GameSourceResponseModel) a));
+            myGateway.On("Area.Debug.GetGameSource.Response", (user,data) => OnGetGameSource(user,(GameSourceResponseModel) data));
         }
 
         public void RequestGameSource(GameSourceRequestModel gameSourceRequestModel)

@@ -99,7 +99,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}));
 		},
 		sendLoginResponse: function(user) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.Login.Response', { successful: true, user: user });
+			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.Login.Response', { successful: true });
 		},
 		sendGameTypes: function(user, gameTypes) {
 			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.GetGameTypes.Response', gameTypes);
@@ -118,6 +118,9 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		},
 		roomJoined: function(user, roomJoinResponse) {
 			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.JoinRoom.Response', roomJoinResponse);
+		},
+		leaveChatRoom: function(user) {
+			this.$qManager.sendMessage(user, user.currentChatServer, 'Area.Chat.LeaveChatRoom', null);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +155,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 					result(null);
 					return;
 				}
-				//       mySiteClientManager.LeaveChatRoom(user);
+				this.$mySiteClientManager.leaveChatRoom(user);
 				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 					var player = room.players[$t1];
 					if (ss.referenceEquals(player.userName, user.userName)) {
@@ -165,8 +168,8 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				else {
 					this.$myDataManager.siteData.room_UpdateRoom(room);
 					for (var $t2 = 0; $t2 < room.players.length; $t2++) {
-						var userModel = room.players[$t2];
-						this.$mySiteClientManager.sendRoomInfo(userModel, { room: room });
+						var userLogicModel = room.players[$t2];
+						this.$mySiteClientManager.sendRoomInfo(userLogicModel, { room: room });
 					}
 				}
 				result(room);
@@ -199,8 +202,8 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 					this.$mySiteClientManager.roomJoined(user, { room: room });
 					this.$mySiteClientManager.joinChatRoom(user, { roomName: room.chatChannel });
 					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
-						var userModel = room.players[$t1];
-						this.$mySiteClientManager.sendRoomInfo(userModel, { room: room });
+						var UserLogicModel = room.players[$t1];
+						this.$mySiteClientManager.sendRoomInfo(UserLogicModel, { room: room });
 					}
 				}));
 			}));

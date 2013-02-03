@@ -8,14 +8,14 @@ namespace SiteServer
     {
         #region Delegates
 
-        public delegate void CreateRoom(UserModel user, CreateRoomRequest data);
-        public delegate void GetGameTypes(UserModel user);
-        public delegate void GetRoomInfo(UserModel user, GetRoomInfoRequest data);
-        public delegate void GetRooms(UserModel user, GetRoomsRequest data);
-        public delegate void JoinRoom(UserModel user, RoomJoinRequest data);
-        public delegate void LeaveRoom(UserModel user, LeaveRoomRequest data);
-        public delegate void UserDisconnect(UserModel user, UserDisconnectModel data);
-        public delegate void UserLogin(UserModel user, SiteLoginRequest data);
+        public delegate void CreateRoom(UserLogicModel user, CreateRoomRequest data);
+        public delegate void GetGameTypes(UserLogicModel user);
+        public delegate void GetRoomInfo(UserLogicModel user, GetRoomInfoRequest data);
+        public delegate void GetRooms(UserLogicModel user, GetRoomsRequest data);
+        public delegate void JoinRoom(UserLogicModel user, RoomJoinRequest data);
+        public delegate void LeaveRoom(UserLogicModel user, LeaveRoomRequest data);
+        public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
+        public delegate void UserLogin(UserLogicModel user, SiteLoginRequest data);
 
         #endregion
 
@@ -62,39 +62,45 @@ namespace SiteServer
             qManager.AddChannel("Area.Site.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel) data));
         }
 
-        public void SendLoginResponse(UserModel user)
+        public void SendLoginResponse(UserLogicModel user)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Site.Login.Response", new UserLoginResponse(true, user));
+            qManager.SendMessage(user, user.Gateway, "Area.Site.Login.Response", new UserLoginResponse(true));
         }
 
-        public void SendGameTypes(UserModel user, GetGameTypesReceivedResponse gameTypes)
+        public void SendGameTypes(UserLogicModel user, GetGameTypesReceivedResponse gameTypes)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Site.GetGameTypes.Response", gameTypes);
         }
 
-        public void CreateChatRoom(UserModel user, CreateChatRoomRequest roomRequest)
+        public void CreateChatRoom(UserLogicModel user, CreateChatRoomRequest roomRequest)
         {
             qManager.SendMessage(user, "ChatServer", "Area.Chat.CreateChatRoom", roomRequest);
         }
 
-        public void JoinChatRoom(UserModel user, JoinChatRoomRequest joinChatRoomRequest)
+        public void JoinChatRoom(UserLogicModel user, JoinChatRoomRequest joinChatRoomRequest)
         {
             qManager.SendMessage(user, "ChatServer", "Area.Chat.JoinChatRoom", joinChatRoomRequest);
         }
 
-        public void SendRooms(UserModel user, GetRoomsResponse response)
+        public void SendRooms(UserLogicModel user, GetRoomsResponse response)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Site.GetRooms.Response", response);
         }
 
-        public void SendRoomInfo(UserModel user, GetRoomInfoResponse response)
+        public void SendRoomInfo(UserLogicModel user, GetRoomInfoResponse response)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Site.GetRoomInfo.Response", response);
         }
 
-        public void RoomJoined(UserModel user, RoomJoinResponse roomJoinResponse)
+        public void RoomJoined(UserLogicModel user, RoomJoinResponse roomJoinResponse)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Site.JoinRoom.Response", roomJoinResponse);
+        }
+
+        public void LeaveChatRoom(UserLogicModel user)
+        {
+            qManager.SendMessage(user, user.CurrentChatServer, "Area.Chat.LeaveChatRoom");
+
         }
     }
 }

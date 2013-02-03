@@ -11,21 +11,21 @@ namespace GameServer.Models
     {
         public List<CardGameAnswer> Answers { get; set; }
         public bool Debuggable { get; set; }
-        public UserModel DebuggingSender { get; set; }
-        public Fiber<List<UserModel>> Fiber { get; set; }
+        public UserLogicModel DebuggingSender { get; set; }
+        public Fiber<List<UserLogicModel>> Fiber { get; set; }
         public GameObject Game { get; set; }
         public string GameName { get; set; }
         public string GameServer { get; set; }
         public int MaxUsers { get; set; }
         public string Name { get; set; }
-        public List<UserModel> Players { get; set; }
+        public List<UserLogicModel> Players { get; set; }
         public string RoomID { get; set; }
         public bool Started { get; set; }
-        public Action<List<UserModel>> Unwind { get; set; }
+        public Action<List<UserLogicModel>> Unwind { get; set; }
 
         public GameRoom()
         {
-            Players = new List<UserModel>();
+            Players = new List<UserLogicModel>();
             RoomID = Guid.NewGuid();
             Answers = new List<CardGameAnswer>();
         }

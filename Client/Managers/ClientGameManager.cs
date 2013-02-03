@@ -1,4 +1,5 @@
 using Client.Libs;
+using Models;
 using Models.GameManagerModels;
 namespace Client.Managers
 {
@@ -6,14 +7,14 @@ namespace Client.Managers
     {
         #region Delegates
 
-        public delegate void AskQuestion(GameSendAnswerModel o);
-        public delegate void DebugGameOver(string o);
-        public delegate void GameOver(string o);
-        public delegate void GameStarted(GameRoomModel o);
-        public delegate void GetDebugBreak(GameAnswerModel o);
-        public delegate void GetDebugLog(GameAnswerModel o);
-        public delegate void GetRoomInfo(GameRoomModel o);
-        public delegate void UpdateState(string o);
+        public delegate void AskQuestion(UserModel user, GameSendAnswerModel o);
+        public delegate void DebugGameOver(UserModel user, string o);
+        public delegate void GameOver(UserModel user, string o);
+        public delegate void GameStarted(UserModel user, GameRoomModel o);
+        public delegate void GetDebugBreak(UserModel user, GameAnswerModel o);
+        public delegate void GetDebugLog(UserModel user, GameAnswerModel o);
+        public delegate void GetRoomInfo(UserModel user, GameRoomModel o);
+        public delegate void UpdateState(UserModel user, string o);
 
         #endregion
 
@@ -36,14 +37,14 @@ namespace Client.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Game.RoomInfo", a => OnGetRoomInfo((GameRoomModel) a));
-            myGateway.On("Area.Debug.Log", a => OnGetDebugLog((GameAnswerModel) a));
-            myGateway.On("Area.Debug.Break", a => OnGetDebugBreak((GameAnswerModel) a));
-            myGateway.On("Area.Game.AskQuestion", a => OnAskQuestion((GameSendAnswerModel) a));
-            myGateway.On("Area.Game.UpdateState", a => OnUpdateState((string) a));
-            myGateway.On("Area.Game.Started", a => OnGameStarted((GameRoomModel) a));
-            myGateway.On("Area.Game.GameOver", a => OnGameOver((string) a));
-            myGateway.On("Area.Debug.GameOver", a => OnDebugGameOver((string) a));
+            myGateway.On("Area.Game.RoomInfo", (user, data) => OnGetRoomInfo(user, (GameRoomModel)data));
+            myGateway.On("Area.Debug.Log", (user, data) => OnGetDebugLog(user, (GameAnswerModel)data));
+            myGateway.On("Area.Debug.Break", (user, data) => OnGetDebugBreak(user, (GameAnswerModel)data));
+            myGateway.On("Area.Game.AskQuestion", (user, data) => OnAskQuestion(user, (GameSendAnswerModel)data));
+            myGateway.On("Area.Game.UpdateState", (user, data) => OnUpdateState(user, (string)data));
+            myGateway.On("Area.Game.Started", (user, data) => OnGameStarted(user, (GameRoomModel)data));
+            myGateway.On("Area.Game.GameOver", (user, data) => OnGameOver(user, (string)data));
+            myGateway.On("Area.Debug.GameOver", (user, data) => OnDebugGameOver(user,(string)data));
         }
 
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)

@@ -65,20 +65,4 @@ namespace CodeMirrorLibrary
             return null;
         }
     }
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    public class CodeMirrorLine
-    {
-        [IntrinsicProperty]
-        [ScriptName("markerText")]
-        public bool MarkerText { get; set; }
-    }
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    public class CodeEditorCursor
-    {
-        [IntrinsicProperty]
-        [ScriptName("line")]
-        public CodeMirrorLine Line { get; set; }
-    }
 }

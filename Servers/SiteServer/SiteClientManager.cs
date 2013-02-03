@@ -100,7 +100,6 @@ namespace SiteServer
         public void LeaveChatRoom(UserLogicModel user)
         {
             qManager.SendMessage(user, user.CurrentChatServer, "Area.Chat.LeaveChatRoom");
-
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Client.UIWindow
         }
 
         private void RoomJoined(UserModel user, RoomJoinResponse o)
-        { 
+        {
             PopulateRoom(o.Room);
 
             UIWindow.SwingAway(SwingDirection.TopLeft);

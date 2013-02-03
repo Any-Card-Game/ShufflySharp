@@ -39,9 +39,12 @@
     <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpResponse.cs" />
     <Compile Include="HttpServer.cs" />
-    <Compile Include="Node.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="NodeModule.cs" />
     <Compile Include="Process.cs" />
+    <Compile Include="STDError.cs" />
+    <Compile Include="STDIn.cs" />
+    <Compile Include="STDOut.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

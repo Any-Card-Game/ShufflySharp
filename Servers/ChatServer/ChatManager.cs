@@ -42,17 +42,16 @@ namespace ChatServer
                     break;
                 }
             }
-            myDataManager.ChatData.RemoveUser(room, user, (a) =>
-            {
-                myServerManager.UnregisterChatServer(user);
-                var roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
+            myDataManager.ChatData.RemoveUser(room,
+                                              user,
+                                              (a) => {
+                                                  myServerManager.UnregisterChatServer(user);
+                                                  var roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
 
-                foreach (var userLogicModel in room.Users)
-                {
-                    myServerManager.SendChatInfo(userLogicModel, roomToSend);
-                }
-            });
-
+                                                  foreach (var userLogicModel in room.Users) {
+                                                      myServerManager.SendChatInfo(userLogicModel, roomToSend);
+                                                  }
+                                              });
         }
 
         private void OnSendMessage(UserLogicModel user, SendChatMessageModel data)
@@ -64,11 +63,9 @@ namespace ChatServer
             myDataManager.ChatData.AddChatLine(user,
                                                room,
                                                data.Message,
-                                               a =>
-                                               {
-                                                   foreach (var userLogicModel in room.Users)
-                                                   {
-                                                       myServerManager.SendChatLines(userLogicModel, new ChatMessagesModel(new List<ChatMessageRoomModel>() { a }));
+                                               a => {
+                                                   foreach (var userLogicModel in room.Users) {
+                                                       myServerManager.SendChatLines(userLogicModel, new ChatMessagesModel(new List<ChatMessageRoomModel>() {a}));
                                                    }
                                                });
         }
@@ -76,10 +73,8 @@ namespace ChatServer
         private ChatRoomModel getRoomFromUser(UserLogicModel user)
         {
             ChatRoomModel currentRoom = null;
-            foreach (var chatRoomModel in runningRooms)
-            {
-                foreach (var item in chatRoomModel.Users)
-                {
+            foreach (var chatRoomModel in runningRooms) {
+                foreach (var item in chatRoomModel.Users) {
                     if (item.UserName == user.UserName) currentRoom = chatRoomModel;
                 }
             }
@@ -88,17 +83,11 @@ namespace ChatServer
 
         private void OnJoinChatChannel(UserLogicModel user, JoinChatRoomRequest data)
         {
-
-
             var cur = getRoomFromUser(user);
-            if (cur != null) {
-                leaveChatRoom(user);
-            }
-
+            if (cur != null) leaveChatRoom(user);
 
             ChatRoomModel currentRoom = null;
-            foreach (var chatRoomModel in runningRooms)
-            {
+            foreach (var chatRoomModel in runningRooms) {
                 if (chatRoomModel.RoomName == data.RoomName)
                     currentRoom = chatRoomModel;
             }
@@ -107,8 +96,7 @@ namespace ChatServer
 
             myDataManager.ChatData.AddUser(currentRoom,
                                            user,
-                                           room =>
-                                           {
+                                           room => {
                                                myServerManager.RegisterChatServer(user);
                                                var roomToSend = new ChatRoomModel(room.RoomName, room.Users, room.Messages);
 
@@ -117,8 +105,7 @@ namespace ChatServer
 
                                                roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
 
-                                               foreach (var UserLogicModel in currentRoom.Users)
-                                               {
+                                               foreach (var UserLogicModel in currentRoom.Users) {
                                                    myServerManager.SendChatInfo(UserLogicModel, roomToSend);
                                                }
                                            });
@@ -128,11 +115,7 @@ namespace ChatServer
         {
             var cur = getRoomFromUser(user);
             if (cur != null)
-            {
                 leaveChatRoom(user);
-            }
-
-
 
             myDataManager.ChatData.CreateChatChannel(data.RoomName,
                                                      user,
@@ -145,14 +128,11 @@ namespace ChatServer
                                                      });
         }
 
-
-
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
             Console.Log("Awww, dat " + user.UserName + " disconnected");
             myServerManager.UnregisterChatServer(user);
             leaveChatRoom(user);
-
 
             //removeUserFromRoom(data.User, (room) => { });
         }

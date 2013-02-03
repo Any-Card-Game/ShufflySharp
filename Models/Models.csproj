@@ -32,7 +32,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ChatManagerModels\ChatMessageRoomModel.cs" />
     <Compile Include="ChatManagerModels\ChatMessagesModel.cs" />
+    <Compile Include="ChatManagerModels\ChatRoomInfoModel.cs" />
+    <Compile Include="ChatManagerModels\ChatRoomModel.cs" />
+    <Compile Include="ChatManagerModels\CreateChatRoomRequest.cs" />
+    <Compile Include="ChatManagerModels\JoinChatRoomRequest.cs" />
+    <Compile Include="ChatManagerModels\RegisterChatChannelModel.cs" />
+    <Compile Include="ChatManagerModels\RegisterChatServerModel.cs" />
+    <Compile Include="ChatManagerModels\SendChatMessageModel.cs" />
+    <Compile Include="GameManagerModels\DebugCreateGameRequestModel.cs" />
     <Compile Include="GatewayLoginMessageModel.cs" />
     <Compile Include="GatewayMessageModel.cs" />
     <Compile Include="GameManagerModels\CreateGameRequestModel.cs" />
@@ -49,14 +58,21 @@
     <Compile Include="SiteManagerModels\CreateRoomRequest.cs" />
     <Compile Include="SiteManagerModels\GameTypeModel.cs" />
     <Compile Include="SiteManagerModels\GetGameTypesReceivedResponse.cs" />
+    <Compile Include="SiteManagerModels\GetRoomInfoRequest.cs" />
+    <Compile Include="SiteManagerModels\GetRoomInfoResponse.cs" />
     <Compile Include="SiteManagerModels\GetRoomsRequest.cs" />
     <Compile Include="SiteManagerModels\GetRoomsResponse.cs" />
+    <Compile Include="SiteManagerModels\LeaveRoomRequest.cs" />
     <Compile Include="SiteManagerModels\RoomData.cs" />
     <Compile Include="SiteManagerModels\RoomJoinRequest.cs" />
+    <Compile Include="SiteManagerModels\RoomJoinResponse.cs" />
     <Compile Include="SiteManagerModels\SiteLoginRequest.cs" />
     <Compile Include="SocketClientMessageModel.cs" />
+    <Compile Include="UserDisconnectModel.cs" />
+    <Compile Include="UserLogicModel.cs" />
     <Compile Include="UserLoginResponse.cs" />
     <Compile Include="UserModel.cs" />
+    <Compile Include="UserSocketModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Libraries\CommonLibraries\CommonLibraries.csproj">

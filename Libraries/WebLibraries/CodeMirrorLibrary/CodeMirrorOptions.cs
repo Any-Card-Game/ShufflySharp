@@ -29,7 +29,4 @@ namespace CodeMirrorLibrary
         public Action<ElementEvent> OnFocus { get; set; }
         public Action<ElementEvent> OnBlur { get; set; }
     }
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    public class CodeMirrorKeyMap {}
 }

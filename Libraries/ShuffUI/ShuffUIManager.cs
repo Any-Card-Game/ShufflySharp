@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Html;
-using System.Runtime.CompilerServices;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
 using jQueryApi.UI.Widgets;
@@ -120,19 +119,6 @@ namespace ShuffUI
                 UIAreas[i].Element.CSS("z-index", int.Parse(UIAreas[i].Element.GetCSS("z-index")) - 1);
             }
             info.Information.Element.CSS("z-index", 1900);
-        }
-    }
-    public class UIAreaInformation
-    {
-        [ScriptName("element")]
-        public jQueryObject Element { get; set; }
-        [ScriptName("inner")]
-        public jQueryObject Inner { get; set; }
-
-        public UIAreaInformation(jQueryObject element, jQueryObject inner)
-        {
-            Element = element;
-            Inner = inner;
         }
     }
 }

@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="RawDeflate.cs" />
+    <Compile Include="Compressor.cs" />
     <Compile Include="XStats.cs" />
   </ItemGroup>
   <ItemGroup>

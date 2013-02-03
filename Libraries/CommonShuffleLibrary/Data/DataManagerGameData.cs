@@ -1,4 +1,3 @@
-using System;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerGameData
@@ -15,11 +14,5 @@ namespace CommonShuffleLibrary.Data
             manager.client.Collection("gameInfo",
                                       (err, collection) => { collection.Insert(gmo); });
         }
-    }
-    [Serializable]
-    public class GameInfoModel
-    {
-        public int AnswerIndex { get; set; }
-        public string GameName { get; set; }
     }
 }

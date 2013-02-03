@@ -14,15 +14,4 @@ namespace Models.SiteManagerModels
             Rooms = rooms;
         }
     }
-    [Serializable]
-    public class GetRoomInfoResponse
-    {
-        public RoomData Room { get; set; }
-
-        [ObjectLiteral]
-        public GetRoomInfoResponse(RoomData room)
-        {
-            Room = room;
-        }
-    }
 }

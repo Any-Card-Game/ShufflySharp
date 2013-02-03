@@ -29,8 +29,8 @@ namespace Client.UIWindow
             UIWindow.AddElement(new ShuffButton(55, 150, 90, 30, "Create", (e) => { pageHandler.ClientSiteManager.Login(loginName.Text, password.Text); }));
             UIWindow.AddElement(new ShuffButton(155, 150, 90, 30, "Login", (e) => { pageHandler.ClientSiteManager.Login(loginName.Text, password.Text); }));
 
-            pageHandler.ClientSiteManager.OnLogin += (user,data) => {
-                                                         pageHandler.ClientInfo.LoggedInUser = user ;
+            pageHandler.ClientSiteManager.OnLogin += (user, data) => {
+                                                         pageHandler.ClientInfo.LoggedInUser = user;
                                                          pageHandler.HomeUI.UserLoggedIn();
                                                          UIWindow.SwingAway(SwingDirection.Left);
                                                      };

@@ -1107,7 +1107,7 @@
 		$t1.set_height(CommonLibraries.Number.op_Implicit$2(450));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
-		$t1.set_visible(false);
+		$t1.set_visible(true);
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		this.beginGame = Function.mkdel(this, function() {
 			$('#dvGame').empty();
@@ -1187,7 +1187,11 @@
 			if (!this.created) {
 				pageHandler.clientGameManager.joinDebugger({ roomID: room.roomID });
 				for (var i = 0; i < count; i++) {
-					//todo pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + ( i + 1 )}));
+					var $t4 = pageHandler.clientGameManager;
+					var $t3 = room.roomID;
+					var $t2 = Models.UserLogicModel.$ctor();
+					$t2.userName = 'player ' + (i + 1);
+					$t4.joinPlayer({ roomID: $t3, user: $t2 });
 				}
 				this.created = true;
 			}

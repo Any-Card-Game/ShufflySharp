@@ -40,7 +40,7 @@ namespace Client.UIWindow
                                                                              Height = 450,
                                                                              AllowClose = true,
                                                                              AllowMinimize = true,
-                                                                             Visible = false
+                                                                             Visible = true
                                                                      });
 
             beginGame = ( () => {
@@ -135,7 +135,7 @@ namespace Client.UIWindow
                                      pageHandler.ClientGameManager.JoinDebugger(new DebuggerJoinRequestModel(room.RoomID));
 
                                      for (var i = 0; i < count; i++) {
-                                         //todo pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserModel {UserName = "player " + ( i + 1 )}));
+                                         pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserLogicModel {UserName = "player " + ( i + 1 )}));
                                      }
                                      Created = true;
                                  } else {

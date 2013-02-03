@@ -23,7 +23,7 @@ namespace Client.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Debug.GetGameSource.Response", (user,data) => OnGetGameSource(user,(GameSourceResponseModel) data));
+            myGateway.On("Area.Debug.GetGameSource.Response", (user, data) => OnGetGameSource(user, (GameSourceResponseModel) data));
         }
 
         public void RequestGameSource(GameSourceRequestModel gameSourceRequestModel)

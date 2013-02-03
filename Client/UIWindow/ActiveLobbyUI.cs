@@ -39,8 +39,8 @@ namespace Client.UIWindow
                                                                      });
             UIWindow.OnClose += () => {
                                     UIWindow.Visible = true;
-                UIWindow.SwingAway(SwingDirection.BottomRight);
-                pageHandler.ClientSiteManager.LeaveRoom(new LeaveRoomRequest(room));
+                                    UIWindow.SwingAway(SwingDirection.BottomRight);
+                                    pageHandler.ClientSiteManager.LeaveRoom(new LeaveRoomRequest(room));
                                     pageHandler.HomeUI.UIWindow.SwingBack();
                                 };
 

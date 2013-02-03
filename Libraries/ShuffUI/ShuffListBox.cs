@@ -69,19 +69,6 @@ namespace ShuffUI
             Update();
         }
     }
-    public class ShuffListItem
-    {
-        [IntrinsicProperty]
-        public string Label { get; set; }
-        [IntrinsicProperty]
-        public object Value { get; set; }
-
-        public ShuffListItem(string label, object value)
-        {
-            Label = label;
-            Value = value;
-        }
-    }
     public class ShuffListBox<T> : ShuffListBox
     {
         [IntrinsicProperty]

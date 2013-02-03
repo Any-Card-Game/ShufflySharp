@@ -271,26 +271,26 @@ namespace GameServer
         private Fiber<List<UserLogicModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
         {
             return new Fiber<List<UserLogicModel>>(players => {
-                                                  if (players == null || players.Count == 0) return true;
-                                                  room.Players = players;
-                                                  Console.Log("game started");
-                                                  GameObject sev = null;
+                                                       if (players == null || players.Count == 0) return true;
+                                                       room.Players = players;
+                                                       Console.Log("game started");
+                                                       GameObject sev = null;
 
-                                                  Script.Eval("sev= new gameObject();");
+                                                       Script.Eval("sev= new gameObject();");
 
-                                                  sev.CardGame.Emulating = emulating;
-                                                  room.Game = sev;
-                                                  sev.CardGame.SetAnswers(room.Answers);
-                                                  sev.CardGame.SetPlayers(players);
-                                                  gameData.TotalGames++;
-                                                  gameData.TotalPlayers += players.Count;
-                                                  sev.CardGame.AnswerIndex = 0;
-                                                  sev.Constructor();
-                                                  sev.RunGame();
+                                                       sev.CardGame.Emulating = emulating;
+                                                       room.Game = sev;
+                                                       sev.CardGame.SetAnswers(room.Answers);
+                                                       sev.CardGame.SetPlayers(players);
+                                                       gameData.TotalGames++;
+                                                       gameData.TotalPlayers += players.Count;
+                                                       sev.CardGame.AnswerIndex = 0;
+                                                       sev.Constructor();
+                                                       sev.RunGame();
 
-                                                  room.Unwind(players);
-                                                  return true;
-                                              });
+                                                       room.Unwind(players);
+                                                       return true;
+                                                   });
         }
 
         /*

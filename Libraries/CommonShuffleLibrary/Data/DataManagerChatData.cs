@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CommonLibraries;
 using Models;
 using Models.ChatManagerModels;
-using MongoDBLibrary;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerChatData
@@ -19,7 +18,7 @@ namespace CommonShuffleLibrary.Data
         {
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
-                                          ChatRoomModel chatRoomModel = new ChatRoomModel(roomName, new List<UserLogicModel>() { user }, new List<ChatMessageRoomModel>());
+                                          ChatRoomModel chatRoomModel = new ChatRoomModel(roomName, new List<UserLogicModel>() {user}, new List<ChatMessageRoomModel>());
                                           collection.Insert(chatRoomModel);
                                           complete(chatRoomModel);
                                       });
@@ -33,8 +32,7 @@ namespace CommonShuffleLibrary.Data
 
                                           JsDictionary<string, object> query = new JsDictionary<string, object>();
 
-                                          query["$push"] = new { messages = messageModel };
-
+                                          query["$push"] = new {messages = messageModel};
 
                                           collection.Update(new {_id = room.ID},
                                                             query,
@@ -51,7 +49,6 @@ namespace CommonShuffleLibrary.Data
         {
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
-
                                           JsDictionary<string, object> query = new JsDictionary<string, object>();
 
                                           query["$push"] = new {users = user};
@@ -70,24 +67,20 @@ namespace CommonShuffleLibrary.Data
         public void RemoveUser(ChatRoomModel room, UserLogicModel user, Action<ChatRoomModel> complete)
         {
             manager.client.Collection("ChatRoom",
-                          (err, collection) =>
-                          {
+                                      (err, collection) => {
+                                          JsDictionary<string, object> query = new JsDictionary<string, object>();
 
-                              JsDictionary<string, object> query = new JsDictionary<string, object>();
+                                          query["$pop"] = new {users = user};
 
-                              query["$pop"] = new { users = user };
+                                          collection.Update(new {_id = room.ID},
+                                                            query,
+                                                            (err2) => {
+                                                                if (err2 != null) Console.Log("Data Error: " + err2);
+                                                                room.Users.Remove(user);
 
-                              collection.Update(new { _id = room.ID },
-                                                query,
-                                                (err2) =>
-                                                {
-                                                    if (err2 != null) Console.Log("Data Error: " + err2);
-                                                    room.Users.Remove(user);
-
-                                                    complete(room);
-                                                });
-                          });
-
+                                                                complete(room);
+                                                            });
+                                      });
         }
     }
 }

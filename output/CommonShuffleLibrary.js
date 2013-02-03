@@ -221,7 +221,6 @@
 		this.channel = queue;
 		this.set_callback(callback);
 		var redis = require('redis');
-		redis['foo'] = 2;
 		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.get_redisIP());
 		this.cycle(queue);
 	};

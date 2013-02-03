@@ -105,17 +105,6 @@ namespace ShuffUI
             else Information.Element.Animate(js, EffectDuration.Slow, EffectEasing.Swing);
         }
     }
-    public enum SwingDirection
-    {
-        TopLeft,
-        Top,
-        TopRight,
-        Right,
-        BottomRight,
-        Bottom,
-        BottomLeft,
-        Left
-    }
     public class ShuffWindow<T> : ShuffWindow
     {
         [IntrinsicProperty]

@@ -32,7 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeEditorCursor.cs" />
     <Compile Include="CodeMirror.cs" />
+    <Compile Include="CodeMirrorKeyMap.cs" />
+    <Compile Include="CodeMirrorLine.cs" />
     <Compile Include="CodeMirrorOptions.cs" />
   </ItemGroup>
   <ItemGroup>

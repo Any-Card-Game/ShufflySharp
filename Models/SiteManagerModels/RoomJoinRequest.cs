@@ -15,26 +15,4 @@ namespace Models.SiteManagerModels
             GameType = gameType;
         }
     }
-    [Serializable]
-    public class LeaveRoomRequest
-    {
-        public RoomData Room { get; set; }
-
-        [ObjectLiteral]
-        public LeaveRoomRequest(RoomData room)
-        {
-            Room = room;
-        }
-    }
-    [Serializable]
-    public class RoomJoinResponse
-    {
-        public RoomData Room { get; set; }
-
-        [ObjectLiteral]
-        public RoomJoinResponse(RoomData room)
-        {
-            Room = room;
-        }
-    }
 }

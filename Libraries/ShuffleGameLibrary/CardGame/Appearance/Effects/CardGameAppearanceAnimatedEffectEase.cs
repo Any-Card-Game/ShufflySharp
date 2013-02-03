@@ -1,0 +1,41 @@
+using System.Runtime.CompilerServices;
+namespace global
+{
+    [ScriptName("AnimatedEffectEase")]
+    //[NamedValues]todo:::
+    public enum CardGameAppearanceAnimatedEffectEase
+    {
+        Linear,
+        Swing,
+        EaseInQuad,
+        EaseOutQuad,
+        EaseInOutQuad,
+        EaseInCubic,
+        EaseOutCubic,
+        EaseInOutCubic,
+        EaseInQuart,
+        EaseOutQuart,
+        EaseInOutQuart,
+        EaseInQuint,
+        EaseOutQuint,
+        EaseInOutQuint,
+        EaseInSine,
+        EaseOutSine,
+        EaseInOutSine,
+        EaseInExpo,
+        EaseOutExpo,
+        EaseInOutExpo,
+        EaseInCirc,
+        EaseOutCirc,
+        EaseInOutCirc,
+        EaseInElastic,
+        EaseOutElastic,
+        EaseInOutElastic,
+        EaseInBack,
+        EaseOutBack,
+        EaseInOutBack,
+        EaseInBounce,
+        EaseOutBounce,
+        EaseInOutBounce,
+    }
+}

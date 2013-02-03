@@ -13,5 +13,4 @@ namespace ShuffUI
         [IntrinsicProperty]
         public CodeMirrorInformationData Data { get; set; }
     }
-    public class CodeMirrorInformationData {}
 }

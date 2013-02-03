@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Models;
 using Models.SiteManagerModels;
-using MongoDBLibrary;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerSiteData
@@ -50,7 +49,7 @@ namespace CommonShuffleLibrary.Data
 
         public void Room_CreateRoom(string gameType, string roomName, UserLogicModel user, Action<RoomData> onRoomCreated)
         {
-            RoomData rd = new RoomData(gameType, roomName, roomName + "RoomName", new List<UserLogicModel>() { user });
+            RoomData rd = new RoomData(gameType, roomName, roomName + "RoomName", new List<UserLogicModel>() {user});
             manager.client.Collection("Room",
                                       (err, collection) => {
                                           collection.Insert(rd);
@@ -96,11 +95,5 @@ namespace CommonShuffleLibrary.Data
         {
             manager.client.Collection("Room", (err, collection) => { collection.Remove(new {_id = room.ID}); });
         }
-    }
-    [Serializable]
-    public class UserModelData : MongoDocument
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }

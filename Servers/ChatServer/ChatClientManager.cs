@@ -9,9 +9,9 @@ namespace ChatServer
 
         public delegate void CreateChatChannel(UserLogicModel user, CreateChatRoomRequest data);
         public delegate void JoinChatChannel(UserLogicModel user, JoinChatRoomRequest data);
+        public delegate void LeaveChatRoom(UserLogicModel user);
         public delegate void SendMessage(UserLogicModel user, SendChatMessageModel data);
         public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
-        public delegate void LeaveChatRoom(UserLogicModel user);
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace ChatServer
             qManager.AddChannel("Area.Chat.CreateChatRoom", (user, data) => OnCreateChatChannel(user, (CreateChatRoomRequest) data));
             qManager.AddChannel("Area.Chat.JoinChatRoom", (user, data) => OnJoinChatChannel(user, (JoinChatRoomRequest) data));
             qManager.AddChannel("Area.Chat.SendMessage", (user, data) => OnSendMessage(user, (SendChatMessageModel) data));
-            qManager.AddChannel("Area.Chat.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
+            qManager.AddChannel("Area.Chat.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel) data));
             qManager.AddChannel("Area.Chat.LeaveChatRoom", (user, data) => OnLeaveChatRoom(user));
         }
 
@@ -63,8 +63,9 @@ namespace ChatServer
 
         public void RegisterChatServer(UserLogicModel user)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Chat.RegisterChatServer",new RegisterChatServerModel(ChatServerIndex));
+            qManager.SendMessage(user, user.Gateway, "Area.Chat.RegisterChatServer", new RegisterChatServerModel(ChatServerIndex));
         }
+
         public void UnregisterChatServer(UserLogicModel user)
         {
             qManager.SendMessage(user, user.Gateway, "Area.Chat.UnregisterChatServer", new RegisterChatServerModel(ChatServerIndex));

@@ -39,19 +39,30 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ButtonClickedEvent.cs" />
     <Compile Include="CodeMirrorInformation.cs" />
+    <Compile Include="CodeMirrorInformationData.cs" />
+    <Compile Include="DockStyle.cs" />
     <Compile Include="ImportedExtensionMethods.cs" />
+    <Compile Include="ParentChangedEvent.cs" />
+    <Compile Include="PositionChangedEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShuffButton.cs" />
     <Compile Include="ShuffCodeEditor.cs" />
     <Compile Include="ShuffElement.cs" />
     <Compile Include="ShuffLabel.cs" />
     <Compile Include="ShuffListBox.cs" />
+    <Compile Include="ShuffListItem.cs" />
     <Compile Include="ShuffPanel.cs" />
     <Compile Include="ShuffTextbox.cs" />
     <Compile Include="ShuffUIEvents.cs" />
     <Compile Include="ShuffUIManager.cs" />
     <Compile Include="ShuffWindow.cs" />
+    <Compile Include="SizeChangedEvent.cs" />
+    <Compile Include="SwingDirection.cs" />
+    <Compile Include="TextChangedEvent.cs" />
+    <Compile Include="UIAreaInformation.cs" />
+    <Compile Include="VisibleChangedEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">

@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 using CommonsLibraries;
 namespace NodeJSLibrary
@@ -18,25 +17,5 @@ namespace NodeJSLibrary
         [IntrinsicProperty]
         public STDError STDError { get; set; }
         public void Exit() {}
-    }
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    public class STDIn : EventEmitter
-    {
-        public void Resume() {}
-        public void Once(string data, Action<string> function) {}
-    }
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    public class STDOut : EventEmitter
-    {
-        public void Write(string question) {}
-    }
-    [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    [ScriptName("STDErr")]
-    public class STDError : EventEmitter
-    {
-        public void Write(string question) {}
     }
 }

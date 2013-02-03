@@ -3,13 +3,6 @@ using CommonLibraries;
 using jQueryApi;
 namespace ShuffUI
 {
-    public enum DockStyle
-    {
-        None,
-        Fill,
-        FillWidth,
-        FillHeight
-    }
     public class ShuffElement
     {
         public ShuffUIEvent<ParentChangedEvent> ParentChanged;

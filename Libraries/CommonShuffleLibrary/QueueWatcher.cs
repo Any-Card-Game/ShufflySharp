@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using CommonLibraries;
 using Models;
 using NodeJSLibrary;
@@ -17,7 +16,6 @@ namespace CommonShuffleLibrary
             Callback = callback;
 
             var redis = Global.Require<Redis>("redis");
-            ( (JsDictionary) (object) redis )["foo"] = 2;
 
             client1 = redis.CreateClient(6379, IPs.RedisIP);
 

@@ -19,15 +19,13 @@ namespace CommonShuffleLibrary
             channels = new Dictionary<string, Action<UserLogicModel, object>>();
             qw = new List<QueueWatcher>();
             qp = new List<QueuePusher>();
-            foreach (var queueWatcher in options.Watchers)
-            {
+            foreach (var queueWatcher in options.Watchers) {
                 if (queueWatcher.Callback == null)
                     queueWatcher.Callback = messageReceived;
                 qw.Add(queueWatcher);
             }
             qw.AddRange(options.Watchers);
-            foreach (var pusher in options.Pushers)
-            {
+            foreach (var pusher in options.Pushers) {
                 qp.Add(new QueuePusher(pusher));
             }
 
@@ -50,14 +48,13 @@ namespace CommonShuffleLibrary
 
         public void SendMessage(UserLogicModel user, string channel, string eventChannel, object content = null)
         {
-            if (qpCollection.GetByChannel(channel) == null)
-            {
+            if (qpCollection.GetByChannel(channel) == null) {
                 Console.Log("Cannot send message:" + channel + " No Existy");
                 Console.Log("       " + eventChannel + " " + Json.Stringify(content));
                 return;
             }
 
-            var pusher = ((QueuePusher)qpCollection.GetByChannel(channel));
+            var pusher = ( (QueuePusher) qpCollection.GetByChannel(channel) );
             // Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
             pusher.Message(channel, Name, user, eventChannel, content);
         }

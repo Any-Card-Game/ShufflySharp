@@ -102,8 +102,8 @@
 	};
 	$Models_UserSocketModel.$ctor = function() {
 		var $this = {};
-		$this.localUserModel = null;
 		$this.localLogicModel = null;
+		$this.localUserModel = null;
 		$this.gateway = null;
 		$this.userName = null;
 		$this.password = null;

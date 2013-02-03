@@ -47,7 +47,7 @@ namespace SiteServer
                                                               result(null);
                                                               return;
                                                           }
-                                                        mySiteClientManager.LeaveChatRoom(user);
+                                                          mySiteClientManager.LeaveChatRoom(user);
                                                           foreach (var player in room.Players) {
                                                               if (player.UserName == user.UserName) room.Players.Remove(player);
                                                           }

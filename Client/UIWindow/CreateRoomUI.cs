@@ -24,21 +24,16 @@ namespace Client.UIWindow
             UIWindow.SwingAway(SwingDirection.BottomLeft, true);
             UIWindow.SwingBack();
 
-            ShuffTextbox roomName=null;
-            UIWindow.AddElement(roomName = new ShuffTextbox(115, 40, 150, 30, "", "Room Name"){OnEnter = () => {
-                                                                                                             createRoom(pageHandler, gameType, roomName);
-
-                                                                                                         }});
+            ShuffTextbox roomName = null;
+            UIWindow.AddElement(roomName = new ShuffTextbox(115, 40, 150, 30, "", "Room Name") {OnEnter = () => { createRoom(pageHandler, gameType, roomName); }});
 
             UIWindow.AddElement(new ShuffButton(55,
                                                 100,
                                                 90,
                                                 30,
                                                 "Create",
-                                                (e) => {
-                                                    createRoom(pageHandler, gameType, roomName);
-                                                }));
-            roomName.Focus(); 
+                                                (e) => { createRoom(pageHandler, gameType, roomName); }));
+            roomName.Focus();
         }
 
         private void createRoom(PageHandler pageHandler, string gameType, ShuffTextbox roomName)

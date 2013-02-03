@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 namespace global
 {
@@ -13,10 +12,5 @@ namespace global
             Degrees = options.Degrees == 0 ? 0 : options.Degrees;
             DrawTime = CardGameAppearanceEffectDrawTime.During;
         }
-    }
-    [Serializable]
-    public class CardGameEffectBendOptions
-    {
-        public double Degrees { get; set; }
     }
 }

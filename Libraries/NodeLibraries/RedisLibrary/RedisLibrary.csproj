@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Redis.cs" />
+    <Compile Include="RedisClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CommonLibraries\CommonLibraries.csproj">

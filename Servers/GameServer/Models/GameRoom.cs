@@ -14,10 +14,8 @@ namespace GameServer.Models
         public UserLogicModel DebuggingSender { get; set; }
         public Fiber<List<UserLogicModel>> Fiber { get; set; }
         public GameObject Game { get; set; }
-        public string GameName { get; set; }
-        public string GameServer { get; set; }
+        public string GameType{ get; set; }
         public int MaxUsers { get; set; }
-        public string Name { get; set; }
         public List<UserLogicModel> Players { get; set; }
         public string RoomID { get; set; }
         public bool Started { get; set; }

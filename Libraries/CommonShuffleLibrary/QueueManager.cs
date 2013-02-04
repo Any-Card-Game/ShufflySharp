@@ -46,7 +46,7 @@ namespace CommonShuffleLibrary
                 channels[eventChannel](user, content);
         }
 
-        public void SendMessage(UserLogicModel user, string channel, string eventChannel, object content = null)
+        public void SendMessage(string channel, string eventChannel, UserLogicModel user , object content)
         {
             if (qpCollection.GetByChannel(channel) == null) {
                 Console.Log("Cannot send message:" + channel + " No Existy");

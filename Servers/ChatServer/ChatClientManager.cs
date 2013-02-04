@@ -53,22 +53,22 @@ namespace ChatServer
 
         public void SendChatLines(UserLogicModel user, ChatMessagesModel response)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Chat.ChatLines.Response", response);
+            qManager.SendMessage(user.Gateway, "Area.Chat.ChatLines.Response", user, response);
         }
 
         public void SendChatInfo(UserLogicModel user, ChatRoomModel response)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Chat.ChatInfo.Response", new ChatRoomInfoModel(response));
+            qManager.SendMessage(user.Gateway, "Area.Chat.ChatInfo.Response", user, new ChatRoomInfoModel(response));
         }
 
         public void RegisterChatServer(UserLogicModel user)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Chat.RegisterChatServer", new RegisterChatServerModel(ChatServerIndex));
+            qManager.SendMessage(user.Gateway, "Area.Chat.RegisterServer", user, new RegisterServerModel(ChatServerIndex));
         }
 
         public void UnregisterChatServer(UserLogicModel user)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Chat.UnregisterChatServer", new RegisterChatServerModel(ChatServerIndex));
+            qManager.SendMessage(user.Gateway, "Area.Chat.UnregisterServer", user, new RegisterServerModel(ChatServerIndex));
         }
     }
 }

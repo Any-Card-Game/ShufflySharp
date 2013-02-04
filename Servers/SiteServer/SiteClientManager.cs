@@ -1,6 +1,8 @@
-﻿using CommonShuffleLibrary;
+﻿using System;
+using CommonShuffleLibrary;
 using Models;
 using Models.ChatManagerModels;
+using Models.GameManagerModels;
 using Models.SiteManagerModels;
 namespace SiteServer
 {
@@ -16,6 +18,7 @@ namespace SiteServer
         public delegate void LeaveRoom(UserLogicModel user, LeaveRoomRequest data);
         public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
         public delegate void UserLogin(UserLogicModel user, SiteLoginRequest data);
+        public delegate void StartGame(UserLogicModel user, StartGameRequest data);
 
         #endregion
 
@@ -37,6 +40,7 @@ namespace SiteServer
         public event LeaveRoom OnLeaveRoom;
         public event CreateRoom OnCreateRoom;
         public event JoinRoom OnJoinRoom;
+        public event StartGame OnStartGame;
 
         private void Setup()
         {
@@ -47,6 +51,7 @@ namespace SiteServer
                                                                       },
                                                                 new[] {
                                                                               "ChatServer",
+                                                                              "GameServer",
                                                                               "SiteServer",
                                                                               "GatewayServer",
                                                                               "Gateway*"
@@ -58,48 +63,59 @@ namespace SiteServer
 
             qManager.AddChannel("Area.Site.CreateRoom", (user, data) => OnCreateRoom(user, (CreateRoomRequest) data));
             qManager.AddChannel("Area.Site.LeaveRoom", (user, data) => OnLeaveRoom(user, (LeaveRoomRequest) data));
-            qManager.AddChannel("Area.Site.JoinRoom", (user, data) => OnJoinRoom(user, (RoomJoinRequest) data));
+            qManager.AddChannel("Area.Site.JoinRoom", (user, data) => OnJoinRoom(user, (RoomJoinRequest)data));
+            qManager.AddChannel("Area.Site.StartGame", (user, data) => OnStartGame(user, (StartGameRequest)data));
             qManager.AddChannel("Area.Site.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel) data));
         }
 
         public void SendLoginResponse(UserLogicModel user)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Site.Login.Response", new UserLoginResponse(true));
+            qManager.SendMessage(user.Gateway, "Area.Site.Login.Response", user, new UserLoginResponse(true));
         }
 
         public void SendGameTypes(UserLogicModel user, GetGameTypesReceivedResponse gameTypes)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Site.GetGameTypes.Response", gameTypes);
+            qManager.SendMessage(user.Gateway, "Area.Site.GetGameTypes.Response", user, gameTypes);
         }
 
         public void CreateChatRoom(UserLogicModel user, CreateChatRoomRequest roomRequest)
         {
-            qManager.SendMessage(user, "ChatServer", "Area.Chat.CreateChatRoom", roomRequest);
+            qManager.SendMessage("ChatServer", "Area.Chat.CreateChatRoom", user, roomRequest);
         }
 
         public void JoinChatRoom(UserLogicModel user, JoinChatRoomRequest joinChatRoomRequest)
         {
-            qManager.SendMessage(user, "ChatServer", "Area.Chat.JoinChatRoom", joinChatRoomRequest);
+            qManager.SendMessage("ChatServer", "Area.Chat.JoinChatRoom", user, joinChatRoomRequest);
         }
 
         public void SendRooms(UserLogicModel user, GetRoomsResponse response)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Site.GetRooms.Response", response);
+            qManager.SendMessage(user.Gateway, "Area.Site.GetRooms.Response", user, response);
         }
 
         public void SendRoomInfo(UserLogicModel user, GetRoomInfoResponse response)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Site.GetRoomInfo.Response", response);
+            qManager.SendMessage(user.Gateway, "Area.Site.GetRoomInfo.Response", user, response);
         }
 
         public void RoomJoined(UserLogicModel user, RoomJoinResponse roomJoinResponse)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Site.JoinRoom.Response", roomJoinResponse);
+            qManager.SendMessage(user.Gateway, "Area.Site.JoinRoom.Response", user, roomJoinResponse);
         }
 
         public void LeaveChatRoom(UserLogicModel user)
         {
-            qManager.SendMessage(user, user.CurrentChatServer, "Area.Chat.LeaveChatRoom");
+            qManager.SendMessage(user.CurrentChatServer, "Area.Chat.LeaveChatRoom", user, null);
         }
+        public void LeaveGameRoom(UserLogicModel user)
+        {
+            qManager.SendMessage(user.CurrentGameServer, "Area.Game.LeaveGameRoom", user,null);
+        }
+
+        public void CreateGame(GameCreateRequestModel gameCreateRequestModel)
+        {
+            qManager.SendMessage("GameServer", "Area.Game.Create", null, gameCreateRequestModel);
+        }
+
     }
 }

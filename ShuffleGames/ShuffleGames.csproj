@@ -37,7 +37,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="BlackJack\app.js" />
+    <Content Include="Blackjack\app.js" />
     <Content Include="Sevens\app.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -383,7 +383,7 @@
 	Type.registerGenericClass(global, 'ShuffUI.ShuffLabel$1', $ShuffUI_ShuffLabel$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffListBox
-	var $ShuffUI_ShuffListBox = function(x, y, width, height) {
+	var $ShuffUI_ShuffListBox = function(x, y, width, height, items) {
 		this.onClick = null;
 		this.items = null;
 		this.selectedItem = null;
@@ -395,7 +395,7 @@
 		this.set_width(width);
 		this.set_height(height);
 		this.set_visible(true);
-		this.items = [];
+		this.items = items || [];
 		var theme = eval('getTheme()');
 		but.jqxListBox({ source: this.items, width: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(width)), height: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(height)), theme: theme });
 		window.setTimeout(Function.mkdel(this, function() {
@@ -435,7 +435,7 @@
 	var $ShuffUI_ShuffListBox$1 = function(T) {
 		var $type = function(data, x, y, width, height) {
 			this.data = T.getDefaultValue();
-			$ShuffUI_ShuffListBox.call(this, x, y, width, height);
+			$ShuffUI_ShuffListBox.call(this, x, y, width, height, null);
 			this.data = data;
 		};
 		Type.registerGenericClassInstance($type, $ShuffUI_ShuffListBox$1, [T], function() {

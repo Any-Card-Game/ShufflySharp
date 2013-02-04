@@ -14,7 +14,7 @@ namespace ShuffUI
         [IntrinsicProperty]
         public ShuffListItem SelectedItem { get; set; }
 
-        public ShuffListBox(int x, int y, Number width, Number height)
+        public ShuffListBox(int x, int y, Number width, Number height,List<ShuffListItem> items=null )
         {
             var but = jQuery.Select("<div style='position:absolute;'></div>");
             Element = but;
@@ -24,7 +24,7 @@ namespace ShuffUI
             Width = width;
             Height = height;
             Visible = true;
-            Items = new List<ShuffListItem>();
+            Items =items?? new List<ShuffListItem>();
 
             var theme = "getTheme()".eval();
             ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});

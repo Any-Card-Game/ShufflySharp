@@ -164,7 +164,7 @@
 				this.channels.get_item(eventChannel)(user, content);
 			}
 		},
-		sendMessage: function(user, channel, eventChannel, content) {
+		sendMessage: function(channel, eventChannel, user, content) {
 			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
 				console.log('Cannot send message:' + channel + ' No Existy');
 				console.log('       ' + eventChannel + ' ' + JSON.stringify(content));

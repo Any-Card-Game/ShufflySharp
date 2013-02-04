@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibrary;
-using Models;
-using Models.ChatManagerModels;
-using Models.GameManagerModels;
+using Models; 
 using Models.SiteManagerModels;
 using NodeJSLibrary;
 using SocketIONodeLibrary;
@@ -77,14 +75,13 @@ namespace GatewayServer
                                                     channel = user.CurrentChatServer ?? "ChatServer";
                                                     break;
                                             }
-                                            queueManager.SendMessage(user.ToLogicModel(),
-                                                                     channel,
-                                                                     data.Channel,
-                                                                     data.Content);
+                                            queueManager.SendMessage(channel,
+                                                                     data.Channel, user.ToLogicModel(), data.Content);
                                         });
 
                               socket.On("Gateway.Login",
                                         (GatewayLoginMessageModel data) => {
+                                            ExtensionMethods.debugger();
                                             user = new UserSocketModel();
                                             user.Password = data.Password;
                                             user.Socket = socket;
@@ -92,21 +89,19 @@ namespace GatewayServer
                                             user.Hash = data.UserName;
                                             user.Gateway = myGatewayName;
                                             users[data.UserName] = user;
-                                            queueManager.SendMessage(user.ToLogicModel(),
-                                                                     "SiteServer",
-                                                                     "Area.Site.Login",
-                                                                     new SiteLoginRequest(user.Hash));
+                                            queueManager.SendMessage("SiteServer",
+                                                                     "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
                                         });
                               socket.On("disconnect",
                                         (string data) => {
                                             if (user == null)
                                                 return;
-                                            queueManager.SendMessage(user.ToLogicModel(), "SiteServer", "Area.Site.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
+                                            queueManager.SendMessage("SiteServer", "Area.Site.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
                                             //disconnecting from the room in site server disconencts from chat..
                                             // if (user.CurrentChatServer != null)
                                             //     queueManager.SendMessage(user.ToLogicModel(), user.CurrentChatServer, "Area.Chat.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
                                             if (user.CurrentGameServer != null)
-                                                queueManager.SendMessage(user.ToLogicModel(), user.CurrentGameServer, "Area.Game.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
+                                                queueManager.SendMessage(user.CurrentGameServer, "Area.Game.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
 
                                             users.Remove(user.UserName);
                                         });
@@ -139,20 +134,26 @@ namespace GatewayServer
 
         private bool specialHandle(UserSocketModel user, string eventChannel, object content)
         {
-            if (eventChannel == "Area.Game.RoomInfo") {
-                user.CurrentGameServer = ( (GameRoomModel) content ).GameServer;
-                ( (GameRoomModel) content ).GameServer = null;
-                return true;
-            }
-            if (eventChannel == "Area.Chat.RegisterChatServer") {
-                Console.Log(string.Format("Chat Server {0} Registered to {1}", ( (RegisterChatServerModel) content ).ChatServer, user.Hash));
-                user.CurrentChatServer = ( (RegisterChatServerModel) content ).ChatServer;
+          
+            if (eventChannel == "Area.Chat.RegisterServer") {
+                Console.Log(string.Format("Chat Server {0} Registered to {1}", ( (RegisterServerModel) content ).Server, user.Hash));
+                user.CurrentChatServer = ( (RegisterServerModel) content ).Server;
                 return false;
             }
-            if (eventChannel == "Area.Chat.UnregisterChatServer") {
+            if (eventChannel == "Area.Chat.UnregisterServer") {
                 Console.Log("Chat Server UnRegistered");
 
                 user.CurrentChatServer = null;
+                return false;
+            }
+            if (eventChannel == "Area.Game.RegisterServer") {
+                Console.Log(string.Format("Game Server {0} Registered to {1}", ( (RegisterServerModel) content ).Server, user.Hash));
+                user.CurrentGameServer = ( (RegisterServerModel) content ).Server;
+                return false;
+            }
+            if (eventChannel == "Area.Game.UnregisterServer") {
+                Console.Log("Game Server UnRegistered");
+                user.CurrentGameServer = null;
                 return false;
             }
             return true;

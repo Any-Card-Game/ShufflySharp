@@ -4,6 +4,7 @@ using CommonLibraries;
 using CommonShuffleLibrary;
 using Models;
 using Models.ChatManagerModels;
+using Models.GameManagerModels;
 using Models.SiteManagerModels;
 namespace SiteServer
 {
@@ -24,6 +25,7 @@ namespace SiteServer
             mySiteClientManager.OnCreateRoom += OnCreateRoom;
             mySiteClientManager.OnJoinRoom += OnJoinRoom;
             mySiteClientManager.OnLeaveRoom += OnLeaveRoom;
+            mySiteClientManager.OnStartGame += OnStartGame;
 
             mySiteClientManager.OnUserDisconnect += OnUserDisconnect;
         }
@@ -48,6 +50,7 @@ namespace SiteServer
                                                               return;
                                                           }
                                                           mySiteClientManager.LeaveChatRoom(user);
+                                                          mySiteClientManager.LeaveGameRoom(user);
                                                           foreach (var player in room.Players) {
                                                               if (player.UserName == user.UserName) room.Players.Remove(player);
                                                           }
@@ -66,6 +69,23 @@ namespace SiteServer
         private void OnGetRooms(UserLogicModel user, GetRoomsRequest data)
         {
             myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a)); });
+        }
+        private void OnStartGame(UserLogicModel user, StartGameRequest data)
+        {
+            myDataManager.SiteData.Room_GetRoomByUser(user,
+                                          room =>
+                                          {
+                                              if (room == null)
+                                              { 
+                                                  throw new Exception("idk");
+                                                  return;
+                                              }
+                                              
+                                              mySiteClientManager.CreateGame(new GameCreateRequestModel(room.GameType,room.Players));
+                                          });
+
+
+             
         }
 
         private void OnGetRoomInfo(UserLogicModel user, GetRoomInfoRequest data)

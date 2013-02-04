@@ -5,11 +5,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 	var $GameServer_GameClientManager = function(gameServerIndex) {
 		this.$qManager = null;
 		this.$1$GameServerIndexField = null;
-		this.$1$OnUserJoinGameField = null;
-		this.$1$OnDebuggerJoinGameField = null;
 		this.$1$OnGameCreateField = null;
-		this.$1$OnDebugGameCreateField = null;
-		this.$1$OnStartGameField = null;
 		this.$1$OnUserAnswerQuestionField = null;
 		this.$1$OnUserDisconnectField = null;
 		this.set_gameServerIndex(gameServerIndex);
@@ -22,35 +18,11 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		set_gameServerIndex: function(value) {
 			this.$1$GameServerIndexField = value;
 		},
-		add_onUserJoinGame: function(value) {
-			this.$1$OnUserJoinGameField = Function.combine(this.$1$OnUserJoinGameField, value);
-		},
-		remove_onUserJoinGame: function(value) {
-			this.$1$OnUserJoinGameField = Function.remove(this.$1$OnUserJoinGameField, value);
-		},
-		add_onDebuggerJoinGame: function(value) {
-			this.$1$OnDebuggerJoinGameField = Function.combine(this.$1$OnDebuggerJoinGameField, value);
-		},
-		remove_onDebuggerJoinGame: function(value) {
-			this.$1$OnDebuggerJoinGameField = Function.remove(this.$1$OnDebuggerJoinGameField, value);
-		},
 		add_onGameCreate: function(value) {
 			this.$1$OnGameCreateField = Function.combine(this.$1$OnGameCreateField, value);
 		},
 		remove_onGameCreate: function(value) {
 			this.$1$OnGameCreateField = Function.remove(this.$1$OnGameCreateField, value);
-		},
-		add_onDebugGameCreate: function(value) {
-			this.$1$OnDebugGameCreateField = Function.combine(this.$1$OnDebugGameCreateField, value);
-		},
-		remove_onDebugGameCreate: function(value) {
-			this.$1$OnDebugGameCreateField = Function.remove(this.$1$OnDebugGameCreateField, value);
-		},
-		add_onStartGame: function(value) {
-			this.$1$OnStartGameField = Function.combine(this.$1$OnStartGameField, value);
-		},
-		remove_onStartGame: function(value) {
-			this.$1$OnStartGameField = Function.remove(this.$1$OnStartGameField, value);
 		},
 		add_onUserAnswerQuestion: function(value) {
 			this.$1$OnUserAnswerQuestionField = Function.combine(this.$1$OnUserAnswerQuestionField, value);
@@ -66,63 +38,50 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_gameServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GameServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_gameServerIndex(), null)], ['GameServer', 'GatewayServer', 'Gateway*']));
-			this.$qManager.addChannel('Area.Debug.Create', Function.mkdel(this, function(user, data) {
-				this.$1$OnDebugGameCreateField(user, data);
+			this.$qManager.addChannel('Area.Game.Create', Function.mkdel(this, function(user, data) {
+				this.$1$OnGameCreateField(data);
 			}));
-			this.$qManager.addChannel('Area.Game.Create', Function.mkdel(this, function(user1, data1) {
-				this.$1$OnGameCreateField(user1, data1);
+			this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(user1, data1) {
+				this.$1$OnUserAnswerQuestionField(user1, data1);
 			}));
-			this.$qManager.addChannel('Area.Game.Join', Function.mkdel(this, function(user2, data2) {
-				this.$1$OnUserJoinGameField(user2, data2);
-			}));
-			this.$qManager.addChannel('Area.Game.DebuggerJoin', Function.mkdel(this, function(user3, data3) {
-				this.$1$OnDebuggerJoinGameField(user3, data3);
-			}));
-			this.$qManager.addChannel('Area.Game.Start', Function.mkdel(this, function(user4, data4) {
-				this.$1$OnStartGameField(data4);
-			}));
-			this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(user5, data5) {
-				this.$1$OnUserAnswerQuestionField(user5, data5);
-			}));
-			this.$qManager.addChannel('Area.Game.UserDisconnect', Function.mkdel(this, function(user6, data6) {
-				this.$1$OnUserDisconnectField(user6, data6);
+			this.$qManager.addChannel('Area.Game.UserDisconnect', Function.mkdel(this, function(user2, data2) {
+				this.$1$OnUserDisconnectField(user2, data2);
 			}));
 		},
 		$sendMessageToAll: function(room, message, val) {
 			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 				var player = room.players[$t1];
-				this.$qManager.sendMessage(player, player.gateway, message, val);
+				this.$qManager.sendMessage(player.gateway, message, player, val);
 			}
-		},
-		sendRoomInfo: function(room) {
-			var $t1 = Models.GameManagerModels.GameRoomModel.$ctor();
-			$t1.gameServer = room.gameServer;
-			$t1.roomID = room.roomID;
-			this.$sendMessageToAll(room, 'Area.Game.RoomInfo', $t1);
 		},
 		sendGameStarted: function(room) {
 			var $t1 = Models.GameManagerModels.GameRoomModel.$ctor();
-			$t1.gameServer = room.gameServer;
 			$t1.roomID = room.roomID;
 			this.$sendMessageToAll(room, 'Area.Game.Started', $t1);
 		},
 		sendGameOver: function(room) {
 			this.$sendMessageToAll(room, 'Area.Game.GameOver', 'a');
 			if (ss.isValue(room.debuggingSender)) {
-				this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.GameOver', new Object());
+				this.$qManager.sendMessage(room.debuggingSender.gateway, 'Area.Debug.GameOver', room.debuggingSender, new Object());
 			}
 		},
 		sendUpdateState: function(room) {
 			this.$sendMessageToAll(room, 'Area.Game.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
 		},
 		sendDebugLog: function(room, ganswer) {
-			this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Log', ganswer);
+			this.$qManager.sendMessage(room.debuggingSender.gateway, 'Area.Debug.Log', room.debuggingSender, ganswer);
 		},
 		sendDebugBreak: function(room, ganswer) {
-			this.$qManager.sendMessage(room.debuggingSender, room.debuggingSender.gateway, 'Area.Debug.Break', ganswer);
+			this.$qManager.sendMessage(room.debuggingSender.gateway, 'Area.Debug.Break', room.debuggingSender, ganswer);
 		},
 		sendAskQuestion: function(user, gameAnswer) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Game.AskQuestion', CommonLibraries.Help.cleanUp(Models.GameManagerModels.GameSendAnswerModel).call(null, gameAnswer));
+			this.$qManager.sendMessage(user.gateway, 'Area.Game.AskQuestion', user, CommonLibraries.Help.cleanUp(Models.GameManagerModels.GameSendAnswerModel).call(null, gameAnswer));
+		},
+		registerGameServer: function(user) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Game.RegisterServer', user, { server: this.get_gameServerIndex() });
+		},
+		unregisterGameServer: function(user) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Game.UnregisterServer', user, { server: this.get_gameServerIndex() });
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -156,11 +115,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$total__ = 0;
 		this.$verbose = false;
 		this.$myServerManager = new $GameServer_GameClientManager(gameServerIndex);
-		this.$myServerManager.add_onUserJoinGame(Function.mkdel(this, this.userJoinGame));
-		this.$myServerManager.add_onDebuggerJoinGame(Function.mkdel(this, this.debuggerJoinGame));
-		this.$myServerManager.add_onGameCreate(Function.mkdel(this, this.gameCreate));
-		this.$myServerManager.add_onDebugGameCreate(Function.mkdel(this, this.debugGameCreate));
-		this.$myServerManager.add_onStartGame(Function.mkdel(this, this.startGame));
+		this.$myServerManager.add_onGameCreate(Function.mkdel(this, this.createGame));
 		this.$myServerManager.add_onUserAnswerQuestion(Function.mkdel(this, this.userAnswerQuestion));
 		this.$myServerManager.add_onUserDisconnect(Function.mkdel(this, this.$userDisconnect));
 		this.$rooms = [];
@@ -173,124 +128,57 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		$userDisconnect: function(user, data) {
 			//todo does
 		},
-		userJoinGame: function(user, data) {
-			var room = null;
-			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
-				var gameRoom = this.$rooms[$t1];
-				if (ss.referenceEquals(gameRoom.roomID, data.roomID)) {
-					room = gameRoom;
-					break;
-				}
-			}
-			if (ss.isNullOrUndefined(room)) {
-				return;
-			}
-			room.players.add(user);
-			this.$myServerManager.sendRoomInfo(room);
-		},
-		debugGameCreate: function(user, data) {
-			this.gameCreate(user, { name: data.name, gameName: data.gameName });
-		},
-		gameCreate: function(user, data) {
+		createGame: function(data) {
 			var room;
 			this.$rooms.add(room = $GameServer_Models_GameRoom.$ctor());
-			room.name = data.name;
-			room.maxUsers = 6;
-			room.debuggable = true;
-			room.gameName = data.gameName;
+			room.maxUsers = data.players.length;
+			//todo idk
+			room.gameType = data.gameType;
 			room.started = false;
-			room.gameServer = this.$myServerManager.get_gameServerIndex();
-			room.players.add(user);
+			room.players.addRange(data.players);
 			var gameObject;
-			if (Object.keyExists(this.$cachedGames, data.gameName)) {
-				gameObject = this.$cachedGames[data.gameName];
+			if (Object.keyExists(this.$cachedGames, room.gameType)) {
+				gameObject = this.$cachedGames[room.gameType];
 			}
 			else {
-				gameObject = this.$cachedGames[data.gameName] = require('./Games/' + data.gameName + '/app.js');
+				gameObject = this.$cachedGames[room.gameType] = require(String.format('./Games/{0}/app.js', room.gameType));
 			}
 			room.fiber = this.$createFiber(room, gameObject, true);
 			room.unwind = Function.mkdel(this, function(players) {
 				this.$gameData.finishedGames++;
 				console.log('--game closed');
 			});
-			this.$myServerManager.sendRoomInfo(room);
+			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
+				var userLogicModel = room.players[$t1];
+				this.$myServerManager.registerGameServer(userLogicModel);
+			}
+			this.$startGame(room);
 		},
-		startGame: function(data) {
-			var room = null;
-			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
-				var gameRoom = this.$rooms[$t1];
-				if (ss.referenceEquals(gameRoom.roomID, data.roomID)) {
-					room = gameRoom;
-					break;
-				}
-			}
-			if (ss.isNullOrUndefined(room)) {
-				return;
-			}
+		$startGame: function(room) {
 			this.$myServerManager.sendGameStarted(room);
 			room.started = true;
-			console.log('started');
 			var answer = room.fiber.run(room.players);
-			console.log('doign');
-			this.$handleYield(room, answer);
-			console.log('doign2');
+			this.$processGameResponse(room, answer);
 		},
 		userAnswerQuestion: function(user, data) {
-			this.$answerQueue.add(data);
-		},
-		debuggerJoinGame: function(user, data) {
-			var room = null;
-			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
-				var gameRoom = this.$rooms[$t1];
-				if (ss.referenceEquals(gameRoom.roomID, data.roomID)) {
-					room = gameRoom;
-					break;
-				}
-			}
-			if (ss.isNullOrUndefined(room)) {
-				return;
-			}
-			room.debuggingSender = user;
-			console.log('debuggable');
+			this.$answerQueue.add({ item1: user, item2: data });
 		},
 		$flushQueue: function() {
 			var ind = 0;
-			for (ind = 0; ind < this.$QUEUEPERTICK; ind++) {
-				if (this.$answerQueue.length === 0) {
-					break;
-				}
+			for (ind = 0; this.$answerQueue.length > 0 && ind < this.$QUEUEPERTICK; ind++) {
 				var arg2 = this.$answerQueue[0];
 				this.$answerQueue.removeAt(0);
 				var data = arg2;
-				var room = null;
-				for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
-					var gameRoom = this.$rooms[$t1];
-					if (ss.referenceEquals(gameRoom.roomID, data.roomID)) {
-						room = gameRoom;
-						break;
-					}
-				}
+				var room = this.$getRoomByPlayer(arg2.item1.userName);
 				if (ss.isNullOrUndefined(room)) {
-					return;
+					throw new ss.Exception('idk');
 				}
 				var dict = global.CardGameAnswer.$ctor();
-				dict.value = data.answer;
+				dict.value = data.item2.answer;
 				room.answers.add(dict);
 				var answ = room.fiber.run(dict);
-				if (ss.isNullOrUndefined(answ)) {
-					this.$myServerManager.sendGameOver(room);
-					room.fiber.run();
-					this.$rooms.remove(room);
-					room.unwind(room.players);
-					continue;
-				}
-				this.$gameData.totalQuestionsAnswered++;
-				var $t3 = this.$dataManager.gameData;
-				var $t2 = CommonShuffleLibrary.Data.GameInfoModel.$ctor();
-				$t2.gameName = room.name;
-				$t2.answerIndex = answ.contents;
-				$t3.insert($t2);
-				this.$handleYield(room, answ);
+				//dataManager.GameData.Insert(new GameInfoModel() {GameName = room.Name, AnswerIndex = answ.Contents});
+				this.$processGameResponse(room, answ);
 			}
 			if (ind === 0) {
 				this.$skipped__++;
@@ -301,74 +189,6 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 					console.log(String.format('{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}', this.$myServerManager.get_gameServerIndex().substring(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$skipped__, this.$answerQueue.length, this.$rooms.length));
 				}
 			}
-		},
-		$handleYield: function(room, answer) {
-			switch (answer.type) {
-				case 0: {
-					var answ = answer.question;
-					if (ss.isNullOrUndefined(answ)) {
-						this.$myServerManager.sendGameOver(room);
-						room.fiber.run();
-						//     profiler.takeSnapshot('game over ' + room.roomID);
-						return;
-					}
-					this.$askQuestion(answ, room);
-					var dt = new Date();
-					var then = dt.getMilliseconds();
-					console.log(ss.Int32.div(this.$gameData.totalQuestionsAnswered, ss.Int32.div(dt.getTime() - this.$startTime.getTime(), 1000)) + ' Answers per seconds');
-					break;
-				}
-				case 2: {
-					this.$myServerManager.sendUpdateState(room);
-					this.$myServerManager.sendGameOver(room);
-					break;
-				}
-				case 1: {
-					var answ2 = room.fiber.run();
-					this.$handleYield(room, answ2);
-					if (!room.game.cardGame.emulating && room.debuggable) {
-						//console.log(gameData.toString());
-						var ganswer = { lineNumber: 0, value: answer.contents };
-						this.$myServerManager.sendDebugLog(room, ganswer);
-					}
-					break;
-				}
-				case 3: {
-					if (!room.debuggable) {
-						var answ3 = room.fiber.run();
-						this.$handleYield(room, answ3);
-						return;
-					}
-					if (!room.game.cardGame.emulating) {
-						var ganswer1 = { lineNumber: answer.lineNumber + 2, value: 0 };
-						this.$myServerManager.sendDebugBreak(room, ganswer1);
-					}
-					break;
-				}
-			}
-		},
-		$askQuestion: function(answ, room) {
-			var user = this.$getPlayerByUsername(room, answ.user.userName);
-			this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
-			//Console.Log(Json.Stringify(mjf).Length); 
-			this.$myServerManager.sendUpdateState(room);
-			if (this.$verbose) {
-				console.log(answ.user.userName + ': ' + answ.question + '   ');
-				var ind = 0;
-				for (var $t1 = 0; $t1 < answ.answers.length; $t1++) {
-					var answer = answ.answers[$t1];
-					console.log('     ' + ind++ + ': ' + answer);
-				}
-			}
-		},
-		$getPlayerByUsername: function(room, userName) {
-			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
-				var player = room.players[$t1];
-				if (ss.referenceEquals(player.userName, userName)) {
-					return player;
-				}
-			}
-			return null;
 		},
 		$createFiber: function(room, gameObject, emulating) {
 			return new Fiber(Function.mkdel(this, function(players) {
@@ -391,6 +211,110 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				room.unwind(players);
 				return true;
 			}));
+		},
+		$processGameResponse: function(room, response) {
+			if (ss.isNullOrUndefined(response)) {
+				console.log('game request over');
+				this.$myServerManager.sendGameOver(room);
+				room.fiber.run();
+				this.$rooms.remove(room);
+				room.unwind(room.players);
+				return;
+			}
+			switch (response.type) {
+				case 0: {
+					this.$askPlayerQuestion(room, response);
+					break;
+				}
+				case 2: {
+					this.$gameOver(room);
+					break;
+				}
+				case 1: {
+					this.$logGameConsoleLine(room, response);
+					break;
+				}
+				case 3: {
+					this.$breakGameExecution(room, response);
+					break;
+				}
+			}
+		},
+		$breakGameExecution: function(room, response) {
+			if (!room.debuggable) {
+				var answ3 = room.fiber.run();
+				this.$processGameResponse(room, answ3);
+				return;
+			}
+			if (!room.game.cardGame.emulating) {
+				var ganswer = { lineNumber: response.lineNumber + 2, value: 0 };
+				this.$myServerManager.sendDebugBreak(room, ganswer);
+			}
+		},
+		$logGameConsoleLine: function(room, answer) {
+			var answ2 = room.fiber.run();
+			this.$processGameResponse(room, answ2);
+			if (!room.game.cardGame.emulating && room.debuggable) {
+				//console.log(gameData.toString());
+				var ganswer = { lineNumber: 0, value: answer.contents };
+				this.$myServerManager.sendDebugLog(room, ganswer);
+			}
+		},
+		$gameOver: function(room) {
+			console.log('game real over');
+			this.$myServerManager.sendUpdateState(room);
+			this.$myServerManager.sendGameOver(room);
+		},
+		$askPlayerQuestion: function(room, answer) {
+			this.$gameData.totalQuestionsAnswered++;
+			var answ = answer.question;
+			if (ss.isNullOrUndefined(answ)) {
+				console.log('game question over');
+				this.$myServerManager.sendGameOver(room);
+				room.fiber.run();
+				//     profiler.takeSnapshot('game over ' + room.roomID);
+				return;
+			}
+			this.$askQuestion(answ, room);
+			//console.log(gameData.toString());
+			var dt = new Date();
+			var then = dt.getMilliseconds();
+			//Console.Log(then - now + " Milliseconds");
+			console.log(ss.Int32.div(this.$gameData.totalQuestionsAnswered, ss.Int32.div(dt.getTime() - this.$startTime.getTime(), 1000)) + ' Answers per seconds');
+		},
+		$askQuestion: function(answ, room) {
+			var user = this.$getPlayerByUsername(room, answ.user.userName);
+			this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
+			this.$myServerManager.sendUpdateState(room);
+			if (this.$verbose) {
+				console.log(answ.user.userName + ': ' + answ.question + '   ');
+				var ind = 0;
+				for (var $t1 = 0; $t1 < answ.answers.length; $t1++) {
+					var answer = answ.answers[$t1];
+					console.log('     ' + ind++ + ': ' + answer);
+				}
+			}
+		},
+		$getPlayerByUsername: function(room, userName) {
+			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
+				var player = room.players[$t1];
+				if (ss.referenceEquals(player.userName, userName)) {
+					return player;
+				}
+			}
+			return null;
+		},
+		$getRoomByPlayer: function(userName) {
+			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
+				var gameRoom = this.$rooms[$t1];
+				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
+					var userLogicModel = gameRoom.players[$t2];
+					if (ss.referenceEquals(userLogicModel.userName, userName)) {
+						return gameRoom;
+					}
+				}
+			}
+			return null;
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -460,10 +384,8 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		$this.debuggingSender = null;
 		$this.fiber = null;
 		$this.game = null;
-		$this.gameName = null;
-		$this.gameServer = null;
+		$this.gameType = null;
 		$this.maxUsers = 0;
-		$this.name = null;
 		$this.players = null;
 		$this.roomID = null;
 		$this.started = false;

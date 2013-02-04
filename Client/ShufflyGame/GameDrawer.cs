@@ -374,5 +374,16 @@ namespace Client.ShufflyGame
             cards = new JsDictionary<string, CardDrawing>();
             spaces = new JsDictionary<string, SpaceDrawing>();
         }
+
+        public void Init()
+        {
+            ClearCache();
+
+            jQuery.Select("#dvGame").Width("100%");
+            jQuery.Select("#dvGame").Height("100%");
+            jQuery.Select("#dvGame").Empty();
+
+
+        }
     }
 }

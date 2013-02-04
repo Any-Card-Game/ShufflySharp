@@ -9,5 +9,6 @@ namespace global
         public GameCardGame CardGame;
         public void Constructor() {}
         public void RunGame() {}
+        
     }
 }

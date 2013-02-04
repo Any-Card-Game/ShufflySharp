@@ -3,6 +3,7 @@ using CommonShuffleLibrary;
 using CommonWebLibraries;
 using GameServer.Models;
 using Models;
+using Models.ChatManagerModels;
 using Models.GameManagerModels;
 namespace GameServer
 {
@@ -10,13 +11,9 @@ namespace GameServer
     {
         #region Delegates
 
-        public delegate void DebugGameCreate(UserLogicModel user, DebugCreateGameRequestModel data);
-        public delegate void DebuggerJoinGame(UserLogicModel user, DebuggerJoinRequestModel data);
-        public delegate void GameCreate(UserLogicModel user, CreateGameRequestModel data);
-        public delegate void StartGame(StartGameRequestModel data);
+        public delegate void GameCreate(GameCreateRequestModel data);
         public delegate void UserAnswerQuestion(UserLogicModel user, GameAnswerQuestionModel data);
         public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
-        public delegate void UserJoinGame(UserLogicModel user, JoinGameRequestModel data);
 
         #endregion
 
@@ -29,12 +26,8 @@ namespace GameServer
 
             Setup();
         }
-
-        public event UserJoinGame OnUserJoinGame;
-        public event DebuggerJoinGame OnDebuggerJoinGame;
-        public event GameCreate OnGameCreate;
-        public event DebugGameCreate OnDebugGameCreate;
-        public event StartGame OnStartGame;
+         
+        public event GameCreate OnGameCreate; 
         public event UserAnswerQuestion OnUserAnswerQuestion;
         public event UserDisconnect OnUserDisconnect;
 
@@ -50,12 +43,8 @@ namespace GameServer
                                                                               "GatewayServer",
                                                                               "Gateway*"
                                                                       }));
-
-            qManager.AddChannel("Area.Debug.Create", (user, data) => OnDebugGameCreate(user, (DebugCreateGameRequestModel) data));
-            qManager.AddChannel("Area.Game.Create", (user, data) => OnGameCreate(user, (CreateGameRequestModel) data));
-            qManager.AddChannel("Area.Game.Join", (user, data) => OnUserJoinGame(user, (JoinGameRequestModel) data));
-            qManager.AddChannel("Area.Game.DebuggerJoin", (user, data) => OnDebuggerJoinGame(user, (DebuggerJoinRequestModel) data));
-            qManager.AddChannel("Area.Game.Start", (user, data) => OnStartGame((StartGameRequestModel) data));
+             
+            qManager.AddChannel("Area.Game.Create", (user, data) => OnGameCreate((GameCreateRequestModel) data)); 
             qManager.AddChannel("Area.Game.AnswerQuestion", (user, data) => OnUserAnswerQuestion(user, (GameAnswerQuestionModel) data));
             qManager.AddChannel("Area.Game.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel) data));
         }
@@ -63,18 +52,15 @@ namespace GameServer
         private void SendMessageToAll(GameRoom room, string message, object val)
         {
             foreach (var player in room.Players) {
-                qManager.SendMessage(player, player.Gateway, message, val);
+                qManager.SendMessage(player.Gateway, message, player, val);
             }
         }
 
-        public void SendRoomInfo(GameRoom room)
-        {
-            SendMessageToAll(room, "Area.Game.RoomInfo", new GameRoomModel() {GameServer = room.GameServer, RoomID = room.RoomID});
-        }
+      
 
         public void SendGameStarted(GameRoom room)
         {
-            SendMessageToAll(room, "Area.Game.Started", new GameRoomModel() {GameServer = room.GameServer, RoomID = room.RoomID});
+            SendMessageToAll(room, "Area.Game.Started", new GameRoomModel() { RoomID = room.RoomID});
         }
 
         public void SendGameOver(GameRoom room)
@@ -82,7 +68,7 @@ namespace GameServer
             SendMessageToAll(room, "Area.Game.GameOver", "a");
 
             if (room.DebuggingSender != null)
-                qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.GameOver", new object());
+                qManager.SendMessage(room.DebuggingSender.Gateway, "Area.Debug.GameOver", room.DebuggingSender, new object());
         }
 
         public void SendUpdateState(GameRoom room)
@@ -92,17 +78,27 @@ namespace GameServer
 
         public void SendDebugLog(GameRoom room, GameAnswerModel ganswer)
         {
-            qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Log", ganswer);
+            qManager.SendMessage(room.DebuggingSender.Gateway, "Area.Debug.Log", room.DebuggingSender, ganswer);
         }
 
         public void SendDebugBreak(GameRoom room, GameAnswerModel ganswer)
         {
-            qManager.SendMessage(room.DebuggingSender, room.DebuggingSender.Gateway, "Area.Debug.Break", ganswer);
+            qManager.SendMessage(room.DebuggingSender.Gateway, "Area.Debug.Break", room.DebuggingSender, ganswer);
         }
 
         public void SendAskQuestion(UserLogicModel user, GameSendAnswerModel gameAnswer)
         {
-            qManager.SendMessage(user, user.Gateway, "Area.Game.AskQuestion", gameAnswer.CleanUp());
+            qManager.SendMessage(user.Gateway, "Area.Game.AskQuestion", user, gameAnswer.CleanUp());
+        }
+
+        public void RegisterGameServer(UserLogicModel user)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Game.RegisterServer", user, new RegisterServerModel(GameServerIndex));
+        }
+
+        public void UnregisterGameServer(UserLogicModel user)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Game.UnregisterServer", user, new RegisterServerModel(GameServerIndex));
         }
     }
 }

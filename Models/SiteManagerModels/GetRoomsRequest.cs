@@ -13,4 +13,14 @@ namespace Models.SiteManagerModels
             GameType = gameType;
         }
     }
+    [Serializable]
+    public class StartGameRequest
+    { 
+
+        [ObjectLiteral]
+        public StartGameRequest()
+        { 
+        }
+    }
+    
 }

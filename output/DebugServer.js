@@ -8,7 +8,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		queueManager.addChannel('Area.Debug2.GetGameSource.Request', function(sender, data) {
 			var sourceRequest = data;
 			fs.readFile('/usr/local/src/new/Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
-				queueManager.sendMessage(sender, sender.gateway, 'Area.Debug.GetGameSource.Response', { content: data2 });
+				queueManager.sendMessage(sender.gateway, 'Area.Debug.GetGameSource.Response', sender, { content: data2 });
 			});
 		});
 	};

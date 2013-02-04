@@ -12,17 +12,13 @@ namespace Client.UIWindow
         [IntrinsicProperty]
         public ShuffWindow UIWindow { get; set; }
         [IntrinsicProperty]
-        public ShuffTextbox txtNumOfPlayers { get; set; }
-        [IntrinsicProperty]
-        public Action<GameRoomModel> loadRoomInfo { get; set; }
+        public ShuffTextbox txtNumOfPlayers { get; set; } 
         [IntrinsicProperty]
         public ShuffTextbox varText { get; set; }
         [IntrinsicProperty]
         public ShuffLabel lblAnother { get; set; }
         [IntrinsicProperty]
-        public ShuffLabel lblHowFast { get; set; }
-        [IntrinsicProperty]
-        public string gameServer { get; set; }
+        public ShuffLabel lblHowFast { get; set; } 
         [IntrinsicProperty]
         public Action beginGame { get; set; }
         [IntrinsicProperty]
@@ -40,23 +36,12 @@ namespace Client.UIWindow
                                                                              Height = 450,
                                                                              AllowClose = true,
                                                                              AllowMinimize = true,
-                                                                             Visible = true
+                                                                             Visible = false
                                                                      });
 
             beginGame = ( () => {
-                              jQuery.Select("#dvGame").Empty();
-                              // pageHandler.ClearCache();
-                              pageHandler.gameDrawer.ClearCache();
 
-                              jQuery.Select("#dvGame").Width("100%");
-                              jQuery.Select("#dvGame").Height("100%");
 
-                              //clearLevel();
-                              Created = false;
-                              Joined = 0;
-                              pageHandler.StartGameServer();
-
-                              pageHandler.ClientGameManager.CreateDebuggedGame(new DebugCreateGameRequestModel("main room", selectedGame, /*codeArea.Data.codeEditor.Information.editor.GetValue(), codeArea.Data.breakPoints*/null, null));
                           } );
 
             UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => beginGame()));
@@ -125,24 +110,7 @@ namespace Client.UIWindow
                            devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                    }
                });*/
-
-            loadRoomInfo = ( (room) => {
-                                 gameServer = room.GameServer;
-                                 lblAnother.Text = ( room.GameServer );
-
-                                 var count = int.Parse(txtNumOfPlayers.Text);
-                                 if (!Created) {
-                                     pageHandler.ClientGameManager.JoinDebugger(new DebuggerJoinRequestModel(room.RoomID));
-
-                                     for (var i = 0; i < count; i++) {
-                                         pageHandler.ClientGameManager.JoinPlayer(new JoinGameRequestModel(room.RoomID, new UserLogicModel {UserName = "player " + ( i + 1 )}));
-                                     }
-                                     Created = true;
-                                 } else {
-                                     if (( ++Joined ) == count)
-                                         pageHandler.ClientGameManager.StartGame(new StartGameRequestModel(room.RoomID));
-                                 }
-                             } );
+             
 
             txtNumOfPlayers = UIWindow.AddElement(new ShuffTextbox(130, 43, 130, 20, "6", "Number of players=", "font-size:13px"));
         }

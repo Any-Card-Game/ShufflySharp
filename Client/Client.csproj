@@ -47,6 +47,7 @@
     <Compile Include="Managers\ClientSiteManager.cs" />
     <Compile Include="PageHandler.cs" />
     <Compile Include="ShufflyGame\GameDrawer.cs" />
+    <Compile Include="ShufflyGame\GameManager.cs" />
     <Compile Include="UIWindow\CodeEditorUI.cs" />
     <Compile Include="UIWindow\ActiveLobbyUI.cs" />
     <Compile Include="UIWindow\Controls\ChatBox.cs" />

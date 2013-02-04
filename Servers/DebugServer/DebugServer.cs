@@ -22,7 +22,7 @@ namespace DebugServer
                                         var sourceRequest = (GameSourceRequestModel) data;
                                         fs.ReadFile("/usr/local/src/new/Games/" + sourceRequest.GameName + "/app.js",
                                                     "ascii",
-                                                    (err, data2) => { queueManager.SendMessage(sender, sender.Gateway, "Area.Debug.GetGameSource.Response", new GameSourceResponseModel(data2)); });
+                                                    (err, data2) => { queueManager.SendMessage(sender.Gateway, "Area.Debug.GetGameSource.Response", sender, new GameSourceResponseModel(data2)); });
                                     });
         }
 

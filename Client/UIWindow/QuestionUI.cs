@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using Models.GameManagerModels;
 using ShuffUI;
 namespace Client.UIWindow
 {
     public class QuestionUI
     {
+        public PageHandler PageHandler { get; set; }
         [IntrinsicProperty]
         public ShuffLabel Question { get; set; }
         [IntrinsicProperty]
@@ -18,6 +20,7 @@ namespace Client.UIWindow
 
         public QuestionUI(ShuffUIManager shuffUIManager, PageHandler pageHandler)
         {
+            PageHandler = pageHandler;
             UIWindow = shuffUIManager.CreateWindow(new ShuffWindow() {
                                                                              Title = "Question",
                                                                              X = 600,
@@ -26,38 +29,37 @@ namespace Client.UIWindow
                                                                              Height = 275,
                                                                              AllowClose = true,
                                                                              AllowMinimize = true,
-                                                                             Visible = false
+                                                                             Visible = true
                                                                      });
+            UIWindow.SwingAway(SwingDirection.TopLeft,true);
 
             Question = UIWindow.AddElement(new ShuffLabel(20, 40, ""));
 
             Load = (question) => {
-                       UIWindow.Visible = true;
-                       Question.Text = ( question.Question );
-                       AnswerBox.Parent.RemoveElement(AnswerBox);
+                UIWindow.SwingBack();
 
-                       var answers = new List<ShuffListItem>();
+                       Question.Text = ( question.Question );
+                       AnswerBox.ClearItems();
+
                        for (var i = 0; i < question.Answers.Length; i++) {
-                           answers.Add(new ShuffListItem(question.Answers[i], i));
+                           AnswerBox.AddItem(new ShuffListItem(question.Answers[i], i));
                        }
 
-                       AnswerBox = UIWindow.AddElement(new ShuffListBox(30, 95, 215, 25 * 5) {
-                                                                                                     Items = answers,
-                                                                                                     /*OnClick = (e) =>
-{
-pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
-questionArea.Visible = false;
-}*/
-                                                                                             });
                    };
+            ExtensionMethods.debugger();
 
             AnswerBox = UIWindow.AddElement(new ShuffListBox(30, 65, 215, 25 * 5) {
-                                                                                          /*OnClick = (e) =>
-{
-pageHandler.gateway.Emit("Area.Game.AnswerQuestion", new GameAnswerQuestionModel(pageHandler.gameStuff.RoomID, e.Item.Value), devArea.Data.gameServer);
-questionArea.Visible = false;
-}*/
+                                                                                          OnClick = e => selectAnswer( e)
                                                                                   });
+        }
+
+        private void selectAnswer( ShuffListItem e)
+        { 
+
+            PageHandler.ClientGameManager.AnswerQuestion(new GameAnswerQuestionModel((int) e.Value));
+
+            UIWindow.SwingAway(SwingDirection.TopLeft);
+            PageHandler.TimeTracker.StartTime = new DateTime();
         }
     }
 }

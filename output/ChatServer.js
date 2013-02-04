@@ -69,16 +69,16 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			}));
 		},
 		sendChatLines: function(user, response) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.ChatLines.Response', response);
+			this.$qManager.sendMessage(user.gateway, 'Area.Chat.ChatLines.Response', user, response);
 		},
 		sendChatInfo: function(user, response) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.ChatInfo.Response', { info: response });
+			this.$qManager.sendMessage(user.gateway, 'Area.Chat.ChatInfo.Response', user, { info: response });
 		},
 		registerChatServer: function(user) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.RegisterChatServer', { chatServer: this.get_chatServerIndex() });
+			this.$qManager.sendMessage(user.gateway, 'Area.Chat.RegisterServer', user, { server: this.get_chatServerIndex() });
 		},
 		unregisterChatServer: function(user) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Chat.UnregisterChatServer', { chatServer: this.get_chatServerIndex() });
+			this.$qManager.sendMessage(user.gateway, 'Area.Chat.UnregisterServer', user, { server: this.get_chatServerIndex() });
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

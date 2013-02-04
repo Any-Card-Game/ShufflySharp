@@ -48,17 +48,28 @@ namespace Client.UIWindow
 
             myRoomPlayers = UIWindow.AddElement(new ShuffListBox(600, 200, 175, 300) {Visible = true});
 
+            UIWindow.AddElement(new ShuffButton(600, 510, 175, 23, "Start Game!", (a) =>
+            { 
+                pageHandler.GameManager.StartGame( );
+
+                UIWindow.Height = 200;
+            }));
+
+
+
             myChatBox = UIWindow.AddElement(new ChatBox(50, 50, 550, 500) {Visible = true});
 
-            myChatText = UIWindow.AddElement(new ShuffTextbox(50, 560, 500, 30, "", "") {
-                                                                                                OnEnter = () => {
-                                                                                                              if (myChatText.Text.Trim() == string.Empty)
-                                                                                                                  return;
+            myChatText = UIWindow.AddElement(new ShuffTextbox(50, 560, 500, 30, "", "")
+            {
+                OnEnter = () =>
+                {
+                    if (myChatText.Text.Trim() == string.Empty)
+                        return;
 
-                                                                                                              pageHandler.ClientChatManager.SendChatMessage(new SendChatMessageModel(myChatText.Text));
-                                                                                                              myChatText.Text = "";
-                                                                                                          }
-                                                                                        });
+                    pageHandler.ClientChatManager.SendChatMessage(new SendChatMessageModel(myChatText.Text));
+                    myChatText.Text = "";
+                }
+            });
 
             UIWindow.AddElement(new ShuffButton(560,
                                                 560,

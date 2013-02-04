@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace Models.GameManagerModels
 {
@@ -15,6 +16,21 @@ namespace Models.GameManagerModels
             GameName = gameName;
         }
 
-        private CreateGameRequestModel() {}
+        private CreateGameRequestModel() { }
+    }
+    [Serializable]
+    public class GameCreateRequestModel
+    { 
+        public string GameType { get; set; }
+        public List<UserLogicModel> Players { get; set; }
+
+        [ObjectLiteral]
+        public GameCreateRequestModel(string gameType,List<UserLogicModel> players)
+        { 
+            GameType = gameType;
+            Players = players;
+        }
+
+        private GameCreateRequestModel() { }
     }
 }

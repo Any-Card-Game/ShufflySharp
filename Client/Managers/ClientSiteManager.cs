@@ -31,12 +31,7 @@ namespace Client.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Main.Login.Response",
-                         (user, data) => {
-                             UserLoginResponse userLoginResponse = (UserLoginResponse) data;
-                             if (userLoginResponse.Successful)
-                                 SiteLogin(user.Hash);
-                         });
+     
 
             myGateway.On("Area.Site.Login.Response", (user, data) => { OnLogin(user, ( (UserLoginResponse) data )); });
             myGateway.On("Area.Site.GetGameTypes.Response", (user, data) => { OnGetGameTypesReceived(user, ( (GetGameTypesReceivedResponse) data )); });
@@ -45,10 +40,7 @@ namespace Client.Managers
             myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { OnRoomJoined(user, ( (RoomJoinResponse) data )); });
         }
 
-        private void SiteLogin(string hash)
-        {
-            myGateway.Emit("Area.Site.Login", new SiteLoginRequest(hash));
-        }
+        
 
         public void Login(string userName, string password)
         {
@@ -83,6 +75,12 @@ namespace Client.Managers
         public void LeaveRoom(LeaveRoomRequest leaveRoom)
         {
             myGateway.Emit("Area.Site.LeaveRoom", leaveRoom);
+        }
+
+        public void StartGame(StartGameRequest startGameRequest)
+        {
+            myGateway.Emit("Area.Site.StartGame", startGameRequest);
+
         }
     }
 }

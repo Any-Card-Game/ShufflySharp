@@ -13,6 +13,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$1$OnLeaveRoomField = null;
 		this.$1$OnCreateRoomField = null;
 		this.$1$OnJoinRoomField = null;
+		this.$1$OnStartGameField = null;
 		this.set_siteServerIndex(siteServerIndex);
 		this.$setup();
 	};
@@ -71,8 +72,14 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		remove_onJoinRoom: function(value) {
 			this.$1$OnJoinRoomField = Function.remove(this.$1$OnJoinRoomField, value);
 		},
+		add_onStartGame: function(value) {
+			this.$1$OnStartGameField = Function.combine(this.$1$OnStartGameField, value);
+		},
+		remove_onStartGame: function(value) {
+			this.$1$OnStartGameField = Function.remove(this.$1$OnStartGameField, value);
+		},
 		$setup: function() {
-			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_siteServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('SiteServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_siteServerIndex(), null)], ['ChatServer', 'SiteServer', 'GatewayServer', 'Gateway*']));
+			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_siteServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('SiteServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_siteServerIndex(), null)], ['ChatServer', 'GameServer', 'SiteServer', 'GatewayServer', 'Gateway*']));
 			this.$qManager.addChannel('Area.Site.Login', Function.mkdel(this, function(user, data) {
 				this.$1$OnUserLoginField(user, data);
 			}));
@@ -94,33 +101,42 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			this.$qManager.addChannel('Area.Site.JoinRoom', Function.mkdel(this, function(user6, data6) {
 				this.$1$OnJoinRoomField(user6, data6);
 			}));
-			this.$qManager.addChannel('Area.Site.UserDisconnect', Function.mkdel(this, function(user7, data7) {
-				this.$1$OnUserDisconnectField(user7, data7);
+			this.$qManager.addChannel('Area.Site.StartGame', Function.mkdel(this, function(user7, data7) {
+				this.$1$OnStartGameField(user7, data7);
+			}));
+			this.$qManager.addChannel('Area.Site.UserDisconnect', Function.mkdel(this, function(user8, data8) {
+				this.$1$OnUserDisconnectField(user8, data8);
 			}));
 		},
 		sendLoginResponse: function(user) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.Login.Response', { successful: true });
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.Login.Response', user, { successful: true });
 		},
 		sendGameTypes: function(user, gameTypes) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.GetGameTypes.Response', gameTypes);
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.GetGameTypes.Response', user, gameTypes);
 		},
 		createChatRoom: function(user, roomRequest) {
-			this.$qManager.sendMessage(user, 'ChatServer', 'Area.Chat.CreateChatRoom', roomRequest);
+			this.$qManager.sendMessage('ChatServer', 'Area.Chat.CreateChatRoom', user, roomRequest);
 		},
 		joinChatRoom: function(user, joinChatRoomRequest) {
-			this.$qManager.sendMessage(user, 'ChatServer', 'Area.Chat.JoinChatRoom', joinChatRoomRequest);
+			this.$qManager.sendMessage('ChatServer', 'Area.Chat.JoinChatRoom', user, joinChatRoomRequest);
 		},
 		sendRooms: function(user, response) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.GetRooms.Response', response);
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.GetRooms.Response', user, response);
 		},
 		sendRoomInfo: function(user, response) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.GetRoomInfo.Response', response);
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.GetRoomInfo.Response', user, response);
 		},
 		roomJoined: function(user, roomJoinResponse) {
-			this.$qManager.sendMessage(user, user.gateway, 'Area.Site.JoinRoom.Response', roomJoinResponse);
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.JoinRoom.Response', user, roomJoinResponse);
 		},
 		leaveChatRoom: function(user) {
-			this.$qManager.sendMessage(user, user.currentChatServer, 'Area.Chat.LeaveChatRoom', null);
+			this.$qManager.sendMessage(user.currentChatServer, 'Area.Chat.LeaveChatRoom', user, null);
+		},
+		leaveGameRoom: function(user) {
+			this.$qManager.sendMessage(user.currentGameServer, 'Area.Game.LeaveGameRoom', user, null);
+		},
+		createGame: function(gameCreateRequestModel) {
+			this.$qManager.sendMessage('GameServer', 'Area.Game.Create', null, gameCreateRequestModel);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -137,6 +153,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$mySiteClientManager.add_onCreateRoom(Function.mkdel(this, this.$onCreateRoom));
 		this.$mySiteClientManager.add_onJoinRoom(Function.mkdel(this, this.$onJoinRoom));
 		this.$mySiteClientManager.add_onLeaveRoom(Function.mkdel(this, this.$onLeaveRoom));
+		this.$mySiteClientManager.add_onStartGame(Function.mkdel(this, this.$onStartGame));
 		this.$mySiteClientManager.add_onUserDisconnect(Function.mkdel(this, this.$onUserDisconnect));
 	};
 	$SiteServer_SiteManager.prototype = {
@@ -156,6 +173,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 					return;
 				}
 				this.$mySiteClientManager.leaveChatRoom(user);
+				this.$mySiteClientManager.leaveGameRoom(user);
 				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 					var player = room.players[$t1];
 					if (ss.referenceEquals(player.userName, user.userName)) {
@@ -178,6 +196,15 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		$onGetRooms: function(user, data) {
 			this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, Function.mkdel(this, function(a) {
 				this.$mySiteClientManager.sendRooms(user, { rooms: a });
+			}));
+		},
+		$onStartGame: function(user, data) {
+			this.$myDataManager.siteData.room_GetRoomByUser(user, Function.mkdel(this, function(room) {
+				if (ss.isNullOrUndefined(room)) {
+					throw new ss.Exception('idk');
+					return;
+				}
+				this.$mySiteClientManager.createGame({ gameType: room.gameType, players: room.players });
 			}));
 		},
 		$onGetRoomInfo: function(user, data) {

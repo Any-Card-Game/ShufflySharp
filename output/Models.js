@@ -26,6 +26,10 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.RegisterServerModel
+	var $Models_RegisterServerModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SocketClientMessageModel
 	var $Models_SocketClientMessageModel = function(user, channel, content) {
 		this.channel = null;
@@ -142,10 +146,6 @@
 	var $Models_ChatManagerModels_RegisterChatChannelModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Models.ChatManagerModels.RegisterChatServerModel
-	var $Models_ChatManagerModels_RegisterChatServerModel = function() {
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// Models.ChatManagerModels.SendChatMessageModel
 	var $Models_ChatManagerModels_SendChatMessageModel = function() {
 	};
@@ -197,17 +197,16 @@
 	$Models_GameManagerModels_GameAnswerQuestionModel.$ctor = function() {
 		var $this = {};
 		$this.answer = 0;
-		$this.roomID = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Models.GameManagerModels.GameAnswerRequestModel
-	var $Models_GameManagerModels_GameAnswerRequestModel = function() {
+	// Models.GameManagerModels.GameCreateRequestModel
+	var $Models_GameManagerModels_GameCreateRequestModel = function() {
 	};
-	$Models_GameManagerModels_GameAnswerRequestModel.$ctor = function() {
+	$Models_GameManagerModels_GameCreateRequestModel.$ctor = function() {
 		var $this = {};
-		$this.answer = 0;
-		$this.roomID = null;
+		$this.gameType = null;
+		$this.players = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +219,6 @@
 	$Models_GameManagerModels_GameRoomModel.$ctor = function() {
 		var $this = {};
 		$this.roomID = null;
-		$this.gameServer = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -318,8 +316,16 @@
 	// Models.SiteManagerModels.SiteLoginRequest
 	var $Models_SiteManagerModels_SiteLoginRequest = function() {
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.StartGameRequest
+	var $Models_SiteManagerModels_StartGameRequest = function() {
+	};
+	$Models_SiteManagerModels_StartGameRequest.createInstance = function() {
+		return {};
+	};
 	Type.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel, Object);
 	Type.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel, Object);
+	Type.registerClass(global, 'Models.RegisterServerModel', $Models_RegisterServerModel, Object);
 	Type.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel, Object);
 	Type.registerClass(global, 'Models.UserDisconnectModel', $Models_UserDisconnectModel, Object);
 	Type.registerClass(global, 'Models.UserLogicModel', $Models_UserLogicModel, Object);
@@ -333,14 +339,13 @@
 	Type.registerClass(global, 'Models.ChatManagerModels.CreateChatRoomRequest', $Models_ChatManagerModels_CreateChatRoomRequest, Object);
 	Type.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest, Object);
 	Type.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.RegisterChatServerModel', $Models_ChatManagerModels_RegisterChatServerModel, Object);
 	Type.registerClass(global, 'Models.ChatManagerModels.SendChatMessageModel', $Models_ChatManagerModels_SendChatMessageModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.CreateGameRequestModel', $Models_GameManagerModels_CreateGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.DebugCreateGameRequestModel', $Models_GameManagerModels_DebugCreateGameRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.DebuggerJoinRequestModel', $Models_GameManagerModels_DebuggerJoinRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.GameAnswerModel', $Models_GameManagerModels_GameAnswerModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.GameAnswerQuestionModel', $Models_GameManagerModels_GameAnswerQuestionModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameAnswerRequestModel', $Models_GameManagerModels_GameAnswerRequestModel, Object);
+	Type.registerClass(global, 'Models.GameManagerModels.GameCreateRequestModel', $Models_GameManagerModels_GameCreateRequestModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.GameRoomModel', $Models_GameManagerModels_GameRoomModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.GameSendAnswerModel', $Models_GameManagerModels_GameSendAnswerModel, Object);
 	Type.registerClass(global, 'Models.GameManagerModels.GameSourceRequestModel', $Models_GameManagerModels_GameSourceRequestModel, Object);
@@ -359,4 +364,5 @@
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse, Object);
 	Type.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest, Object);
+	Type.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest, Object);
 })();

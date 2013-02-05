@@ -23,6 +23,9 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$util = null;
 		var fs = require('fs');
 		console.log('Shuffly Admin V0.48');
+		console.log('Shuffly Admin V0.48');
+		console.log('Shuffly Admin V0.48');
+		console.log('Shuffly Admin V0.48');
 		this.$util = require('util');
 		this.$exec = require('child_process').exec;
 		this.$__dirname = '/usr/local/src/new/';
@@ -156,12 +159,12 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			if (this.$nonDebuggable.indexOf(process) === -1) {
 				dummy.stdout.on('data', Function.mkdel(this, function(data) {
 					if (data.indexOf('debug: ') === -1) {
-						this.$util.print('--' + name + '   ' + (new Date()).toString().substring(17, 24) + '   ' + data);
+						this.$util.print(String.format('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substring(17, 24), data));
 						this.$util.print('?: ');
 					}
 				}));
 				dummy.stderr.on('data', Function.mkdel(this, function(data1) {
-					this.$util.print('--' + name + '   ' + (new Date()).toString().substring(17, 24) + '   ' + data1);
+					this.$util.print(String.format('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substring(17, 24), data1));
 					this.$util.print('?: ');
 				}));
 			}

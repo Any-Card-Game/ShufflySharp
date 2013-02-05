@@ -85,7 +85,7 @@ namespace SiteServer
 
         public void JoinChatRoom(UserLogicModel user, JoinChatRoomRequest joinChatRoomRequest)
         {
-            qManager.SendMessage("ChatServer", "Area.Chat.JoinChatRoom", user, joinChatRoomRequest);
+            qManager.SendMessage(joinChatRoomRequest.Room.ChatServer, "Area.Chat.JoinChatRoom", user, joinChatRoomRequest);
         }
 
         public void SendRooms(UserLogicModel user, GetRoomsResponse response)

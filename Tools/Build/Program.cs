@@ -17,6 +17,7 @@ namespace Build
                                       shufSharp + @"\Libraries\CommonLibraries\",
                                       shufSharp + @"\Libraries\CommonShuffleLibrary\",
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
+                                      shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\",
                                       shufSharp + @"\Libraries\ShuffUI\",
                                       shufSharp + @"\Servers\AdminServer\",
                                       shufSharp + @"\Servers\ChatServer\",
@@ -55,6 +56,7 @@ namespace Build
                                                                                  shufSharp + @"\Servers\ChatServer\", new Application(true,
                                                                                                                                       "new ChatServer.ChatServer();",
                                                                                                                                       new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",
                                                                                                                                                                @"./CommonLibraries.js",
                                                                                                                                                                @"./CommonShuffleLibrary.js",
                                                                                                                                                                @"./ShuffleGameLibrary.js",
@@ -65,6 +67,7 @@ namespace Build
                                                                                     shufSharp + @"\Servers\DebugServer\", new Application(true,
                                                                                                                                           "new DebugServer.DebugServer();",
                                                                                                                                           new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",
                                                                                                                                                                    @"./CommonLibraries.js",
                                                                                                                                                                    @"./CommonShuffleLibrary.js",
                                                                                                                                                                    @"./Models.js",
@@ -73,6 +76,7 @@ namespace Build
                                                                                        shufSharp + @"\Servers\GameServer\", new Application(true,
                                                                                                                                             "new GameServer.GameServer();",
                                                                                                                                             new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",
                                                                                                                                                                      @"./CommonLibraries.js",
                                                                                                                                                                      @"./CommonShuffleLibrary.js",
                                                                                                                                                                      @"./ShuffleGameLibrary.js",
@@ -83,6 +87,7 @@ namespace Build
                                                                                           shufSharp + @"\Servers\GatewayServer\", new Application(true,
                                                                                                                                                   "new GatewayServer.GatewayServer();",
                                                                                                                                                   new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",
                                                                                                                                                                            @"./CommonLibraries.js",
                                                                                                                                                                            @"./CommonShuffleLibrary.js",
                                                                                                                                                                            @"./Models.js",
@@ -91,6 +96,7 @@ namespace Build
                                                                                              shufSharp + @"\Servers\HeadServer\", new Application(true,
                                                                                                                                                   "new HeadServer.HeadServer();",
                                                                                                                                                   new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",
                                                                                                                                                                            @"./CommonShuffleLibrary.js",
                                                                                                                                                                            @"./Models.js",
                                                                                                                                                                    })
@@ -98,6 +104,7 @@ namespace Build
                                                                                                 shufSharp + @"\Servers\SiteServer\", new Application(true,
                                                                                                                                                      "",
                                                                                                                                                      new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",
                                                                                                                                                                               @"./CommonLibraries.js",
                                                                                                                                                                               @"./CommonShuffleLibrary.js",
                                                                                                                                                                               @"./ShuffleGameLibrary.js",
@@ -106,6 +113,7 @@ namespace Build
                                                                                                                                                                       })
                                                                                         },
                                                                       {shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false, "", new List<string> {})},
+                                                                      {shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Models\", new Application(false, "", new List<string> {})},

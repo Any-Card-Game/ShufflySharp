@@ -41,9 +41,13 @@ namespace CommonShuffleLibrary
         private void messageReceived(string name, UserLogicModel user, string eventChannel, object content)
         {
             //todo?        user.Gateway = name;
+            try {
+                if (channels[eventChannel] != null)
+                    channels[eventChannel](user, content);
 
-            if (channels[eventChannel] != null)
-                channels[eventChannel](user, content);
+            } catch (Exception ex) {
+                Console.Error(ex);
+            }
         }
 
         public void SendMessage(string channel, string eventChannel, UserLogicModel user , object content)

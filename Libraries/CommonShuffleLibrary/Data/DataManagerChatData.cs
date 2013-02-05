@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CommonLibraries;
 using Models;
 using Models.ChatManagerModels;
+using MongoDBLibrary;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerChatData
@@ -19,7 +20,7 @@ namespace CommonShuffleLibrary.Data
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
                                           ChatRoomModel chatRoomModel = new ChatRoomModel(roomName, new List<UserLogicModel>() {user}, new List<ChatMessageRoomModel>());
-                                          collection.Insert(chatRoomModel);
+                                        collection.Insert(chatRoomModel);
                                           complete(chatRoomModel);
                                       });
         }
@@ -34,7 +35,7 @@ namespace CommonShuffleLibrary.Data
 
                                           query["$push"] = new {messages = messageModel};
 
-                                          collection.Update(new {_id = room.ID},
+                                          collection.Update(new { _id = MongoDocument.GetID(room.ID )},
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null)
@@ -53,7 +54,7 @@ namespace CommonShuffleLibrary.Data
 
                                           query["$push"] = new {users = user};
 
-                                          collection.Update(new {_id = room.ID},
+                                          collection.Update(new { _id = MongoDocument.GetID(room.ID) },
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null) Console.Log("Data Error: " + err2);
@@ -72,7 +73,7 @@ namespace CommonShuffleLibrary.Data
 
                                           query["$pop"] = new {users = user};
 
-                                          collection.Update(new {_id = room.ID},
+                                          collection.Update(new { _id = MongoDocument.GetID(room.ID) },
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null) Console.Log("Data Error: " + err2);

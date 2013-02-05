@@ -718,6 +718,11 @@
 					this.get_$outer().css('display', (e.visible ? 'block' : 'none'));
 				}
 			}));
+			//            SizeChanged += (e) => {
+			//            
+			//            outer.CSS("width", this.Width);
+			//            outer.CSS("height", this.Height);
+			//            };
 		},
 		swingBack: function() {
 			var js = {};

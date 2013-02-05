@@ -1,16 +1,17 @@
 using System;
 using System.Runtime.CompilerServices;
+using Models.SiteManagerModels;
 namespace Models.ChatManagerModels
 {
     [Serializable]
     public sealed class JoinChatRoomRequest
     {
-        public string RoomName { get; set; }
+        public RoomData Room { get; set; }
 
         [ObjectLiteral]
-        public JoinChatRoomRequest(string roomName)
+        public JoinChatRoomRequest(RoomData room)
         {
-            RoomName = roomName;
+            Room = room;
         }
     }
 }

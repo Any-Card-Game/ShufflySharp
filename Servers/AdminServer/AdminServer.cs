@@ -19,16 +19,19 @@ namespace AdminServer
         private int indexPageData = 0;
         private Process nodeInspector;
         private string[] nonDebuggable;
-        private int numOfChatServers = 1;
-        private int numOfGameServers = 1;
-        private int numOfGateways = 1;
-        private int numOfSiteServers = 1;
+        private int numOfChatServers = 5;
+        private int numOfGameServers = 5;
+        private int numOfGateways = 5; 
+        private int numOfSiteServers = 5;
         private List<ProcessInformation> sites;
         private Util util;
 
         public AdminServer()
         {
             var fs = Global.Require<FS>("fs");
+            Console.Log("Shuffly Admin V0.48");
+            Console.Log("Shuffly Admin V0.48");
+            Console.Log("Shuffly Admin V0.48");
             Console.Log("Shuffly Admin V0.48");
 
             util = Global.Require<Util>("util");
@@ -202,13 +205,13 @@ namespace AdminServer
                 dummy.STDOut.On<string>("data",
                                         (data) => {
                                             if (data.IndexOf("debug: ") == -1) {
-                                                util.Print("--" + name + "   " + new DateTime().ToString().Substring(17, 24) + "   " + data);
+                                                util.Print(string.Format("--{0}: {1}   {2}   {3}", name, debugPort, new DateTime().ToString().Substring(17, 24), data));
                                                 util.Print("?: ");
                                             }
                                         });
                 dummy.STDError.On<string>("data",
                                           (data) => {
-                                              util.Print("--" + name + "   " + new DateTime().ToString().Substring(17, 24) + "   " + data);
+                                              util.Print(string.Format("--{0}: {1}   {2}   {3}", name, debugPort, new DateTime().ToString().Substring(17, 24), data));
                                               util.Print("?: ");
                                           });
             }

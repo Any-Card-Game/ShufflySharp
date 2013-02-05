@@ -98,7 +98,7 @@
 		if (typeof(value) == 'function') {
 			return null;
 		}
-		if (name.indexOf(String.fromCharCode(95)) !== 0 && name.toLowerCase() !== 'socket' && name.toLowerCase() !== 'fiber' && name.toLowerCase() !== 'debuggingsocket') {
+		if ((name.indexOf(String.fromCharCode(95)) !== 0 || name === '_id') && name.toLowerCase() !== 'socket' && name.toLowerCase() !== 'fiber' && name.toLowerCase() !== 'debuggingsocket') {
 			return value;
 		}
 		return null;

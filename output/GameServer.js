@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// GameServer.GameClientManager
@@ -129,6 +129,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			//todo does
 		},
 		createGame: function(data) {
+			console.log('--game created ');
 			var room;
 			this.$rooms.add(room = $GameServer_Models_GameRoom.$ctor());
 			room.maxUsers = data.players.length;
@@ -166,6 +167,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		$flushQueue: function() {
 			var ind = 0;
 			for (ind = 0; this.$answerQueue.length > 0 && ind < this.$QUEUEPERTICK; ind++) {
+				console.log('-- w pop');
 				var arg2 = this.$answerQueue[0];
 				this.$answerQueue.removeAt(0);
 				var data = arg2;

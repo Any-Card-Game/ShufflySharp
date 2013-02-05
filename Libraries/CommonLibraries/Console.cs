@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 namespace CommonLibraries
 {
@@ -6,10 +7,8 @@ namespace CommonLibraries
     [ScriptName("console")]
     public static class Console
     {
-        [ScriptName("log")]
-        public static void Log(object val) {}
-
-        [ScriptName("log")]
+        public static void Log(object val) { }
+        public static void Error(Exception val) { }
         public static void Log() {}
     }
 }

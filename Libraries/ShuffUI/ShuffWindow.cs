@@ -52,6 +52,11 @@ namespace ShuffUI
                                   if (Outer != null)
                                       Outer.CSS("display", e.Visible ? "block" : "none");
                               };
+/*            SizeChanged += (e) => {
+
+                               outer.CSS("width", this.Width);
+                               outer.CSS("height", this.Height);
+                           };*/
         }
 
         public void SwingBack()

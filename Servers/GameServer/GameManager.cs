@@ -49,6 +49,7 @@ namespace GameServer
 
         public void CreateGame(GameCreateRequestModel data)
         {
+            Console.Log("--game created ");
             GameRoom room;
             rooms.Add(room = new GameRoom());
             room.MaxUsers = data.Players.Count;//todo idk
@@ -95,11 +96,14 @@ namespace GameServer
 
 
         private void flushQueue()
-        {
+        { 
+
             var ind = 0;
 
             for (ind = 0; answerQueue.Count > 0 && ind < QUEUEPERTICK; ind++)
             {
+                Console.Log("-- w pop");
+
                 var arg2 = answerQueue[0];
                 answerQueue.RemoveAt(0);
                 var data = arg2;

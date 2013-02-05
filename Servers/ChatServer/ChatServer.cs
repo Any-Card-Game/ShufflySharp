@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonLibraries;
+using MongoDBLibrary;
 using NodeJSLibrary;
 using global;
 namespace ChatServer
@@ -13,7 +14,6 @@ namespace ChatServer
             new ArrayUtils();
             chatServerIndex = "ChatServer" + Guid.NewGuid();
             Global.Process.On("exit", () => Console.Log("exi ChatServer"));
-
             ChatManager chatManager = new ChatManager(chatServerIndex);
         }
 

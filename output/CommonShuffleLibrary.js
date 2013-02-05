@@ -160,8 +160,14 @@
 		},
 		$messageReceived: function(name, user, eventChannel, content) {
 			//todo?        user.Gateway = name;
-			if (ss.isValue(this.channels.get_item(eventChannel))) {
-				this.channels.get_item(eventChannel)(user, content);
+			try {
+				if (ss.isValue(this.channels.get_item(eventChannel))) {
+					this.channels.get_item(eventChannel)(user, content);
+				}
+			}
+			catch ($t1) {
+				var ex = ss.Exception.wrap($t1);
+				console.error(ex);
 			}
 		},
 		sendMessage: function(channel, eventChannel, user, content) {
@@ -263,7 +269,7 @@
 				var messageModel = { user: user, content: message, time: Date.get_now() };
 				var query = {};
 				query['$push'] = { messages: messageModel };
-				collection.update({ _id: room._id }, query, function(err2) {
+				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						console.log('Data Error: ' + err2);
 					}
@@ -276,7 +282,7 @@
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var query = {};
 				query['$push'] = { users: user };
-				collection.update({ _id: room._id }, query, function(err2) {
+				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						console.log('Data Error: ' + err2);
 					}
@@ -289,7 +295,7 @@
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var query = {};
 				query['$pop'] = { users: user };
-				collection.update({ _id: room._id }, query, function(err2) {
+				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						console.log('Data Error: ' + err2);
 					}
@@ -350,9 +356,10 @@
 			});
 		},
 		room_CreateRoom: function(gameType, roomName, user, onRoomCreated) {
+			debugger;
 			var $t1 = [];
 			$t1.add(user);
-			var rd = { gameType: gameType, roomName: roomName, chatChannel: roomName + 'RoomName', players: $t1 };
+			var rd = { gameType: gameType, roomName: roomName, chatChannel: roomName + 'RoomName', gameChannel: roomName + 'GameRoom', players: $t1, chatServer: null, gameServer: null };
 			this.$manager.client.collection('Room', function(err, collection) {
 				collection.insert(rd);
 				onRoomCreated(rd);
@@ -368,8 +375,9 @@
 					else {
 						var roomData = b[0];
 						roomData.players.add(user);
-						this.room_UpdateRoom(roomData);
-						onRoomJoined(roomData);
+						this.room_AddPlayer(roomData, user, function(ro) {
+							onRoomJoined(roomData);
+						});
 					}
 				}));
 			}));
@@ -382,14 +390,54 @@
 				});
 			});
 		},
-		room_UpdateRoom: function(room) {
+		room_AddPlayer: function(room, user, complete) {
 			this.$manager.client.collection('Room', function(err, collection) {
-				collection.save(room);
+				var query = {};
+				query['$push'] = { players: user };
+				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+					if (ss.isValue(err2)) {
+						console.log('Data Error: ' + err2);
+					}
+					room.players.add(user);
+					complete(room);
+				});
+			});
+		},
+		room_RemovePlayer: function(room, user, complete) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				var query = {};
+				query['$pop'] = { players: user };
+				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+					if (ss.isValue(err2)) {
+						console.log('Data Error: ' + err2);
+					}
+					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
+						var userLogicModel = room.players[$t1];
+						if (ss.referenceEquals(userLogicModel.userName, user.userName)) {
+							room.players.remove(userLogicModel);
+							break;
+						}
+					}
+					complete(room);
+				});
 			});
 		},
 		room_DeleteRoom: function(room) {
 			this.$manager.client.collection('Room', function(err, collection) {
-				collection.remove({ _id: room._id });
+				collection.remove({ _id: MongoDBLibrary.MongoDocument.getID(room._id) });
+			});
+		},
+		room_SetChatServer: function(room, chatServerIndex, complete) {
+			this.$manager.client.collection('Room', function(err, collection) {
+				var query = {};
+				query['$set'] = { chatServer: chatServerIndex };
+				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+					if (ss.isValue(err2)) {
+						console.log('Data Error: ' + err2);
+					}
+					room.chatServer = chatServerIndex;
+					complete(room);
+				});
 			});
 		}
 	};

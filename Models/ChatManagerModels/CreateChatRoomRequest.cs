@@ -1,16 +1,18 @@
 using System;
 using System.Runtime.CompilerServices;
+using Models.SiteManagerModels;
 namespace Models.ChatManagerModels
 {
     [Serializable]
     public class CreateChatRoomRequest
     {
-        public string RoomName { get; set; }
+        public RoomData Room { get; set; }
+
 
         [ObjectLiteral]
-        public CreateChatRoomRequest(string roomName)
+        public CreateChatRoomRequest(RoomData room)
         {
-            RoomName = roomName;
+            Room = room;
         }
     }
 }

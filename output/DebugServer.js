@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// DebugServer.DebugServer

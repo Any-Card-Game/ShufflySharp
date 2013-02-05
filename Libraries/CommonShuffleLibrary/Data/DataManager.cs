@@ -1,4 +1,7 @@
+using System;
 using CommonShuffleLibrary.Data;
+using MongoDBLibrary;
+using NodeJSLibrary;
 namespace CommonShuffleLibrary
 {
     public partial class DataManager
@@ -6,9 +9,11 @@ namespace CommonShuffleLibrary
         public DataManagerChatData ChatData;
         public DataManagerGameData GameData;
         public DataManagerSiteData SiteData;
+        
 
         private void InitData()
         {
+
             GameData = new DataManagerGameData(this);
             ChatData = new DataManagerChatData(this);
             SiteData = new DataManagerSiteData(this);

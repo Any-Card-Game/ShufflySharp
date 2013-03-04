@@ -4,9 +4,9 @@ using NodeJSLibrary;
 namespace FibersLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     [ScriptName("Fiber")]
-    [IgnoreGenericArguments]
+    
     public class Fiber<T> : NodeModule
     {
         public Fiber(Func<T, bool> action) {}
@@ -16,13 +16,16 @@ namespace FibersLibrary
             return default( T );
         }
 
-        [IgnoreGenericArguments]
+        
         public T2 Run<T2>(object obj)
         {
-            return default( T2 );
+            return default(T2);
+        }
+       public void Reset()
+        {
         }
 
-        [IgnoreGenericArguments]
+        
         public T2 Run<T2>()
         {
             return default( T2 );

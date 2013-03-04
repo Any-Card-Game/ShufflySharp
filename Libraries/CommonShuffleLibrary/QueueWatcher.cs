@@ -1,5 +1,6 @@
 using System;
 using CommonLibraries;
+using CommonServerLibraries;
 using Models;
 using NodeJSLibrary;
 using RedisLibrary;
@@ -28,6 +29,9 @@ namespace CommonShuffleLibrary
                           (caller, dtj) => {
                               var data = (string[]) dtj;
                               if (dtj != null) {
+
+                                  if (CommonLibraries.Help.Verbose) Logger.Log(data[1],LogLevel.Information);
+
                                   var dt = Json.ParseData<QueueMessage>(data[1]);
                                   Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);
                               }

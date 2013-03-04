@@ -3,7 +3,7 @@ using NodeJSLibrary;
 namespace global
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class GameObject : NodeModule
     {
         public GameCardGame CardGame;

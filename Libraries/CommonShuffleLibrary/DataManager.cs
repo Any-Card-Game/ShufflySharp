@@ -5,7 +5,7 @@ namespace CommonShuffleLibrary
 {
     public partial class DataManager
     {
-        private const string ConnectionAddress = "50.116.28.16";
+        private const string ConnectionAddress = IPs.MongoIP;
         private const string ConnectionPort = "27017";
         private MongoConnection Connection;
         private MongoServer Server;
@@ -27,7 +27,7 @@ namespace CommonShuffleLibrary
             InitData();
         }
 
-        [InlineCode("new Db('test', new server('" + ConnectionAddress + "', " + ConnectionPort + ", {}))")]
+        [InlineCode("new Db('test', new server('" + ConnectionAddress + "', " + ConnectionPort + "), {{safe:false}})")]
         private MongoDB getMongo()
         {
             return null;

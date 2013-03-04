@@ -54,7 +54,11 @@ namespace Client.UIWindow
                                                                                              OnClick = (item) => { myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string) item.Value)); }
                                                                                      });
 
-            myCreateGameType = UIWindow.AddElement(new ShuffButton(45, 410, 100, 40, "Create New Game!", c => { Window.Alert("Insert Developer UI Here"); }));
+            myCreateGameType = UIWindow.AddElement(new ShuffButton(45, 410, 100, 40, "Create New Game!", c => {
+
+                                                                                                             CodeEditorUI ui = new CodeEditorUI(shuffUIManager, pageHandler);
+
+                                                                                                         }));
 
             UIWindow.AddElement(new ShuffLabel(210, 80, "Rooms"));
 

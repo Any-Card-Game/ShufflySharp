@@ -3,7 +3,7 @@ using NodeJSLibrary;
 namespace SocketIONodeLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class SocketIO : NodeModule
     {
         public SocketIOClient Listen(HttpServer app)

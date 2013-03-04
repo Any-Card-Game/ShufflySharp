@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models;
 using Models.ChatManagerModels;
@@ -135,7 +136,7 @@ namespace ChatServer
 
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            Console.Log("Awww, dat " + user.UserName + " disconnected");
+            Logger.Log("Awww, dat " + user.UserName + " disconnected", LogLevel.DebugInformation);
             myServerManager.UnregisterChatServer(user);
             leaveChatRoom(user);
 

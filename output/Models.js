@@ -44,6 +44,10 @@
 	var $Models_UserDisconnectModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.UserLeaveModel
+	var $Models_UserLeaveModel = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserLogicModel
 	var $Models_UserLogicModel = function() {
 	};
@@ -323,46 +327,47 @@
 	$Models_SiteManagerModels_StartGameRequest.createInstance = function() {
 		return {};
 	};
-	Type.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel, Object);
-	Type.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel, Object);
-	Type.registerClass(global, 'Models.RegisterServerModel', $Models_RegisterServerModel, Object);
-	Type.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel, Object);
-	Type.registerClass(global, 'Models.UserDisconnectModel', $Models_UserDisconnectModel, Object);
-	Type.registerClass(global, 'Models.UserLogicModel', $Models_UserLogicModel, Object);
-	Type.registerClass(global, 'Models.UserLoginResponse', $Models_UserLoginResponse, Object);
-	Type.registerClass(global, 'Models.UserModel', $Models_UserModel, Object);
-	Type.registerClass(global, 'Models.UserSocketModel', $Models_UserSocketModel, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.ChatMessageRoomModel', $Models_ChatManagerModels_ChatMessageRoomModel, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.ChatMessagesModel', $Models_ChatManagerModels_ChatMessagesModel, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.ChatRoomInfoModel', $Models_ChatManagerModels_ChatRoomInfoModel, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.ChatRoomModel', $Models_ChatManagerModels_ChatRoomModel);
-	Type.registerClass(global, 'Models.ChatManagerModels.CreateChatRoomRequest', $Models_ChatManagerModels_CreateChatRoomRequest, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel, Object);
-	Type.registerClass(global, 'Models.ChatManagerModels.SendChatMessageModel', $Models_ChatManagerModels_SendChatMessageModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.CreateGameRequestModel', $Models_GameManagerModels_CreateGameRequestModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.DebugCreateGameRequestModel', $Models_GameManagerModels_DebugCreateGameRequestModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.DebuggerJoinRequestModel', $Models_GameManagerModels_DebuggerJoinRequestModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameAnswerModel', $Models_GameManagerModels_GameAnswerModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameAnswerQuestionModel', $Models_GameManagerModels_GameAnswerQuestionModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameCreateRequestModel', $Models_GameManagerModels_GameCreateRequestModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameRoomModel', $Models_GameManagerModels_GameRoomModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameSendAnswerModel', $Models_GameManagerModels_GameSendAnswerModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameSourceRequestModel', $Models_GameManagerModels_GameSourceRequestModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.GameSourceResponseModel', $Models_GameManagerModels_GameSourceResponseModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.JoinGameRequestModel', $Models_GameManagerModels_JoinGameRequestModel, Object);
-	Type.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.CreateRoomRequest', $Models_SiteManagerModels_CreateRoomRequest, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.GameTypeModel', $Models_SiteManagerModels_GameTypeModel, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.GetGameTypesReceivedResponse', $Models_SiteManagerModels_GetGameTypesReceivedResponse, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoRequest', $Models_SiteManagerModels_GetRoomInfoRequest, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoResponse', $Models_SiteManagerModels_GetRoomInfoResponse, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.LeaveRoomRequest', $Models_SiteManagerModels_LeaveRoomRequest, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData);
-	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest, Object);
-	Type.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest, Object);
+	ss.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel);
+	ss.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel);
+	ss.registerClass(global, 'Models.RegisterServerModel', $Models_RegisterServerModel);
+	ss.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel);
+	ss.registerClass(global, 'Models.UserDisconnectModel', $Models_UserDisconnectModel);
+	ss.registerClass(global, 'Models.UserLeaveModel', $Models_UserLeaveModel);
+	ss.registerClass(global, 'Models.UserLogicModel', $Models_UserLogicModel);
+	ss.registerClass(global, 'Models.UserLoginResponse', $Models_UserLoginResponse);
+	ss.registerClass(global, 'Models.UserModel', $Models_UserModel);
+	ss.registerClass(global, 'Models.UserSocketModel', $Models_UserSocketModel);
+	ss.registerClass(global, 'Models.ChatManagerModels.ChatMessageRoomModel', $Models_ChatManagerModels_ChatMessageRoomModel);
+	ss.registerClass(global, 'Models.ChatManagerModels.ChatMessagesModel', $Models_ChatManagerModels_ChatMessagesModel);
+	ss.registerClass(global, 'Models.ChatManagerModels.ChatRoomInfoModel', $Models_ChatManagerModels_ChatRoomInfoModel);
+	ss.registerClass(global, 'Models.ChatManagerModels.ChatRoomModel', $Models_ChatManagerModels_ChatRoomModel, MongoDBLibrary.MongoDocument);
+	ss.registerClass(global, 'Models.ChatManagerModels.CreateChatRoomRequest', $Models_ChatManagerModels_CreateChatRoomRequest);
+	ss.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest);
+	ss.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel);
+	ss.registerClass(global, 'Models.ChatManagerModels.SendChatMessageModel', $Models_ChatManagerModels_SendChatMessageModel);
+	ss.registerClass(global, 'Models.GameManagerModels.CreateGameRequestModel', $Models_GameManagerModels_CreateGameRequestModel);
+	ss.registerClass(global, 'Models.GameManagerModels.DebugCreateGameRequestModel', $Models_GameManagerModels_DebugCreateGameRequestModel);
+	ss.registerClass(global, 'Models.GameManagerModels.DebuggerJoinRequestModel', $Models_GameManagerModels_DebuggerJoinRequestModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameAnswerModel', $Models_GameManagerModels_GameAnswerModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameAnswerQuestionModel', $Models_GameManagerModels_GameAnswerQuestionModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameCreateRequestModel', $Models_GameManagerModels_GameCreateRequestModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameRoomModel', $Models_GameManagerModels_GameRoomModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameSendAnswerModel', $Models_GameManagerModels_GameSendAnswerModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameSourceRequestModel', $Models_GameManagerModels_GameSourceRequestModel);
+	ss.registerClass(global, 'Models.GameManagerModels.GameSourceResponseModel', $Models_GameManagerModels_GameSourceResponseModel);
+	ss.registerClass(global, 'Models.GameManagerModels.JoinGameRequestModel', $Models_GameManagerModels_JoinGameRequestModel);
+	ss.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.CreateRoomRequest', $Models_SiteManagerModels_CreateRoomRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.GameTypeModel', $Models_SiteManagerModels_GameTypeModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetGameTypesReceivedResponse', $Models_SiteManagerModels_GetGameTypesReceivedResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoRequest', $Models_SiteManagerModels_GetRoomInfoRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoResponse', $Models_SiteManagerModels_GetRoomInfoResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.LeaveRoomRequest', $Models_SiteManagerModels_LeaveRoomRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData, MongoDBLibrary.MongoDocument);
+	ss.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest);
 })();

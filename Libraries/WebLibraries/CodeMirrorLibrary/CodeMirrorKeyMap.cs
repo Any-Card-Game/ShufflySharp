@@ -2,6 +2,6 @@ using System.Runtime.CompilerServices;
 namespace CodeMirrorLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class CodeMirrorKeyMap {}
 }

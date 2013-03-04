@@ -3,15 +3,16 @@ using System.Runtime.CompilerServices;
 namespace NodeJSLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
-    [IgnoreGenericArguments]
+    [Imported]
+    
     public static class Global
     {
         [IntrinsicProperty]
         [ScriptAlias("process")]
         public static Process Process { get; set; }
+        [ScriptAlias("global")]
+        public static dynamic Scope { get; set; }
 
-        [IgnoreGenericArguments]
         [ScriptAlias("require")]
         public static TModule Require<TModule>(string name) where TModule : NodeModule
         {

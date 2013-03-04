@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonServerLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// SiteServer.SiteClientManager
@@ -25,86 +25,86 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			this.$1$SiteServerIndexField = value;
 		},
 		add_onUserLogin: function(value) {
-			this.$1$OnUserLoginField = Function.combine(this.$1$OnUserLoginField, value);
+			this.$1$OnUserLoginField = ss.delegateCombine(this.$1$OnUserLoginField, value);
 		},
 		remove_onUserLogin: function(value) {
-			this.$1$OnUserLoginField = Function.remove(this.$1$OnUserLoginField, value);
+			this.$1$OnUserLoginField = ss.delegateRemove(this.$1$OnUserLoginField, value);
 		},
 		add_onGetGameTypes: function(value) {
-			this.$1$OnGetGameTypesField = Function.combine(this.$1$OnGetGameTypesField, value);
+			this.$1$OnGetGameTypesField = ss.delegateCombine(this.$1$OnGetGameTypesField, value);
 		},
 		remove_onGetGameTypes: function(value) {
-			this.$1$OnGetGameTypesField = Function.remove(this.$1$OnGetGameTypesField, value);
+			this.$1$OnGetGameTypesField = ss.delegateRemove(this.$1$OnGetGameTypesField, value);
 		},
 		add_onGetRooms: function(value) {
-			this.$1$OnGetRoomsField = Function.combine(this.$1$OnGetRoomsField, value);
+			this.$1$OnGetRoomsField = ss.delegateCombine(this.$1$OnGetRoomsField, value);
 		},
 		remove_onGetRooms: function(value) {
-			this.$1$OnGetRoomsField = Function.remove(this.$1$OnGetRoomsField, value);
+			this.$1$OnGetRoomsField = ss.delegateRemove(this.$1$OnGetRoomsField, value);
 		},
 		add_onGetRoomInfo: function(value) {
-			this.$1$OnGetRoomInfoField = Function.combine(this.$1$OnGetRoomInfoField, value);
+			this.$1$OnGetRoomInfoField = ss.delegateCombine(this.$1$OnGetRoomInfoField, value);
 		},
 		remove_onGetRoomInfo: function(value) {
-			this.$1$OnGetRoomInfoField = Function.remove(this.$1$OnGetRoomInfoField, value);
+			this.$1$OnGetRoomInfoField = ss.delegateRemove(this.$1$OnGetRoomInfoField, value);
 		},
 		add_onUserDisconnect: function(value) {
-			this.$1$OnUserDisconnectField = Function.combine(this.$1$OnUserDisconnectField, value);
+			this.$1$OnUserDisconnectField = ss.delegateCombine(this.$1$OnUserDisconnectField, value);
 		},
 		remove_onUserDisconnect: function(value) {
-			this.$1$OnUserDisconnectField = Function.remove(this.$1$OnUserDisconnectField, value);
+			this.$1$OnUserDisconnectField = ss.delegateRemove(this.$1$OnUserDisconnectField, value);
 		},
 		add_onLeaveRoom: function(value) {
-			this.$1$OnLeaveRoomField = Function.combine(this.$1$OnLeaveRoomField, value);
+			this.$1$OnLeaveRoomField = ss.delegateCombine(this.$1$OnLeaveRoomField, value);
 		},
 		remove_onLeaveRoom: function(value) {
-			this.$1$OnLeaveRoomField = Function.remove(this.$1$OnLeaveRoomField, value);
+			this.$1$OnLeaveRoomField = ss.delegateRemove(this.$1$OnLeaveRoomField, value);
 		},
 		add_onCreateRoom: function(value) {
-			this.$1$OnCreateRoomField = Function.combine(this.$1$OnCreateRoomField, value);
+			this.$1$OnCreateRoomField = ss.delegateCombine(this.$1$OnCreateRoomField, value);
 		},
 		remove_onCreateRoom: function(value) {
-			this.$1$OnCreateRoomField = Function.remove(this.$1$OnCreateRoomField, value);
+			this.$1$OnCreateRoomField = ss.delegateRemove(this.$1$OnCreateRoomField, value);
 		},
 		add_onJoinRoom: function(value) {
-			this.$1$OnJoinRoomField = Function.combine(this.$1$OnJoinRoomField, value);
+			this.$1$OnJoinRoomField = ss.delegateCombine(this.$1$OnJoinRoomField, value);
 		},
 		remove_onJoinRoom: function(value) {
-			this.$1$OnJoinRoomField = Function.remove(this.$1$OnJoinRoomField, value);
+			this.$1$OnJoinRoomField = ss.delegateRemove(this.$1$OnJoinRoomField, value);
 		},
 		add_onStartGame: function(value) {
-			this.$1$OnStartGameField = Function.combine(this.$1$OnStartGameField, value);
+			this.$1$OnStartGameField = ss.delegateCombine(this.$1$OnStartGameField, value);
 		},
 		remove_onStartGame: function(value) {
-			this.$1$OnStartGameField = Function.remove(this.$1$OnStartGameField, value);
+			this.$1$OnStartGameField = ss.delegateRemove(this.$1$OnStartGameField, value);
 		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_siteServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('SiteServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_siteServerIndex(), null)], ['ChatServer', 'GameServer', 'SiteServer', 'GatewayServer', 'Gateway*']));
-			this.$qManager.addChannel('Area.Site.Login', Function.mkdel(this, function(user, data) {
+			this.$qManager.addChannel('Area.Site.Login', ss.mkdel(this, function(user, data) {
 				this.$1$OnUserLoginField(user, data);
 			}));
-			this.$qManager.addChannel('Area.Site.GetGameTypes', Function.mkdel(this, function(user1, data1) {
+			this.$qManager.addChannel('Area.Site.GetGameTypes', ss.mkdel(this, function(user1, data1) {
 				this.$1$OnGetGameTypesField(user1);
 			}));
-			this.$qManager.addChannel('Area.Site.GetRooms', Function.mkdel(this, function(user2, data2) {
+			this.$qManager.addChannel('Area.Site.GetRooms', ss.mkdel(this, function(user2, data2) {
 				this.$1$OnGetRoomsField(user2, data2);
 			}));
-			this.$qManager.addChannel('Area.Site.GetRoomInfo', Function.mkdel(this, function(user3, data3) {
+			this.$qManager.addChannel('Area.Site.GetRoomInfo', ss.mkdel(this, function(user3, data3) {
 				this.$1$OnGetRoomInfoField(user3, data3);
 			}));
-			this.$qManager.addChannel('Area.Site.CreateRoom', Function.mkdel(this, function(user4, data4) {
+			this.$qManager.addChannel('Area.Site.CreateRoom', ss.mkdel(this, function(user4, data4) {
 				this.$1$OnCreateRoomField(user4, data4);
 			}));
-			this.$qManager.addChannel('Area.Site.LeaveRoom', Function.mkdel(this, function(user5, data5) {
+			this.$qManager.addChannel('Area.Site.LeaveRoom', ss.mkdel(this, function(user5, data5) {
 				this.$1$OnLeaveRoomField(user5, data5);
 			}));
-			this.$qManager.addChannel('Area.Site.JoinRoom', Function.mkdel(this, function(user6, data6) {
+			this.$qManager.addChannel('Area.Site.JoinRoom', ss.mkdel(this, function(user6, data6) {
 				this.$1$OnJoinRoomField(user6, data6);
 			}));
-			this.$qManager.addChannel('Area.Site.StartGame', Function.mkdel(this, function(user7, data7) {
+			this.$qManager.addChannel('Area.Site.StartGame', ss.mkdel(this, function(user7, data7) {
 				this.$1$OnStartGameField(user7, data7);
 			}));
-			this.$qManager.addChannel('Area.Site.UserDisconnect', Function.mkdel(this, function(user8, data8) {
+			this.$qManager.addChannel('Area.Site.UserDisconnect', ss.mkdel(this, function(user8, data8) {
 				this.$1$OnUserDisconnectField(user8, data8);
 			}));
 		},
@@ -146,15 +146,15 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		this.$mySiteClientManager = null;
 		this.$myDataManager = new CommonShuffleLibrary.DataManager();
 		this.$mySiteClientManager = new $SiteServer_SiteClientManager(siteServerIndex);
-		this.$mySiteClientManager.add_onUserLogin(Function.mkdel(this, this.$onUserLogin));
-		this.$mySiteClientManager.add_onGetGameTypes(Function.mkdel(this, this.$onGetGameTypes));
-		this.$mySiteClientManager.add_onGetRoomInfo(Function.mkdel(this, this.$onGetRoomInfo));
-		this.$mySiteClientManager.add_onGetRooms(Function.mkdel(this, this.$onGetRooms));
-		this.$mySiteClientManager.add_onCreateRoom(Function.mkdel(this, this.$onCreateRoom));
-		this.$mySiteClientManager.add_onJoinRoom(Function.mkdel(this, this.$onJoinRoom));
-		this.$mySiteClientManager.add_onLeaveRoom(Function.mkdel(this, this.$onLeaveRoom));
-		this.$mySiteClientManager.add_onStartGame(Function.mkdel(this, this.$onStartGame));
-		this.$mySiteClientManager.add_onUserDisconnect(Function.mkdel(this, this.$onUserDisconnect));
+		this.$mySiteClientManager.add_onUserLogin(ss.mkdel(this, this.$onUserLogin));
+		this.$mySiteClientManager.add_onGetGameTypes(ss.mkdel(this, this.$onGetGameTypes));
+		this.$mySiteClientManager.add_onGetRoomInfo(ss.mkdel(this, this.$onGetRoomInfo));
+		this.$mySiteClientManager.add_onGetRooms(ss.mkdel(this, this.$onGetRooms));
+		this.$mySiteClientManager.add_onCreateRoom(ss.mkdel(this, this.$onCreateRoom));
+		this.$mySiteClientManager.add_onJoinRoom(ss.mkdel(this, this.$onJoinRoom));
+		this.$mySiteClientManager.add_onLeaveRoom(ss.mkdel(this, this.$onLeaveRoom));
+		this.$mySiteClientManager.add_onStartGame(ss.mkdel(this, this.$onStartGame));
+		this.$mySiteClientManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
 	};
 	$SiteServer_SiteManager.prototype = {
 		$onLeaveRoom: function(user, data) {
@@ -162,29 +162,33 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			});
 		},
 		$onUserDisconnect: function(user, data) {
-			console.log(user.userName + ' disconnected');
+			CommonServerLibraries.Logger.log(user.userName + ' disconnected', 2);
 			this.$removeUserFromRoom(data.user, function(room) {
 			});
 		},
 		$removeUserFromRoom: function(user, result) {
-			this.$myDataManager.siteData.room_GetRoomByUser(user, Function.mkdel(this, function(room) {
+			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					result(null);
 					return;
 				}
-				this.$mySiteClientManager.leaveChatRoom(user);
-				this.$mySiteClientManager.leaveGameRoom(user);
+				if (ss.isValue(user.currentChatServer)) {
+					this.$mySiteClientManager.leaveChatRoom(user);
+				}
+				if (ss.isValue(user.currentGameServer)) {
+					this.$mySiteClientManager.leaveGameRoom(user);
+				}
 				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 					var player = room.players[$t1];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						room.players.remove(player);
+						ss.remove(room.players, player);
 					}
 				}
 				if (room.players.length === 0) {
 					this.$myDataManager.siteData.room_DeleteRoom(room);
 				}
 				else {
-					this.$myDataManager.siteData.room_RemovePlayer(room, user, Function.mkdel(this, function(ro) {
+					this.$myDataManager.siteData.room_RemovePlayer(room, user, ss.mkdel(this, function(ro) {
 						for (var $t2 = 0; $t2 < room.players.length; $t2++) {
 							var userLogicModel = room.players[$t2];
 							this.$mySiteClientManager.sendRoomInfo(userLogicModel, { room: room });
@@ -195,40 +199,40 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			}));
 		},
 		$onGetRooms: function(user, data) {
-			this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, Function.mkdel(this, function(a) {
+			this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, ss.mkdel(this, function(a) {
 				this.$mySiteClientManager.sendRooms(user, { rooms: a });
 			}));
 		},
 		$onStartGame: function(user, data) {
-			console.log('--game started 1 ');
-			this.$myDataManager.siteData.room_GetRoomByUser(user, Function.mkdel(this, function(room) {
+			CommonServerLibraries.Logger.log('--game started 1 ', 1);
+			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					throw new ss.Exception('idk');
 					return;
 				}
-				console.log('--game started 2');
+				CommonServerLibraries.Logger.log('--game started 2', 1);
 				this.$mySiteClientManager.createGame({ gameType: room.gameType, players: room.players });
 			}));
 		},
 		$onGetRoomInfo: function(user, data) {
-			this.$myDataManager.siteData.room_GetByRoomName(data.gameType, data.roomName, Function.mkdel(this, function(a) {
+			this.$myDataManager.siteData.room_GetByRoomName(data.gameType, data.roomName, ss.mkdel(this, function(a) {
 				this.$mySiteClientManager.sendRoomInfo(user, { room: a });
 			}));
 		},
 		$onCreateRoom: function(user, data) {
-			this.$removeUserFromRoom(user, Function.mkdel(this, function(disconnectedRoom) {
-				this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, Function.mkdel(this, function(room) {
+			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
+				this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
 					this.$mySiteClientManager.createChatRoom(user, { room: room });
 					this.$mySiteClientManager.roomJoined(user, { room: room });
-					this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, Function.mkdel(this, function(a) {
+					this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, ss.mkdel(this, function(a) {
 						this.$mySiteClientManager.sendRooms(user, { rooms: a });
 					}));
 				}));
 			}));
 		},
 		$onJoinRoom: function(user, data) {
-			this.$removeUserFromRoom(user, Function.mkdel(this, function(disconnectedRoom) {
-				this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, Function.mkdel(this, function(room) {
+			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
+				this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
 					this.$mySiteClientManager.roomJoined(user, { room: room });
 					this.$mySiteClientManager.joinChatRoom(user, { room: room });
 					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
@@ -240,8 +244,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		},
 		$onGetGameTypes: function(user) {
 			var $t1 = [];
-			$t1.add({ name: 'Blackjack' });
-			$t1.add({ name: 'Sevens' });
+			ss.add($t1, { name: 'Blackjack' });
+			ss.add($t1, { name: 'Sevens' });
 			var types = $t1;
 			this.$mySiteClientManager.sendGameTypes(user, { gameTypes: types });
 		},
@@ -255,8 +259,9 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		this.$siteServerIndex = null;
 		new global.ArrayUtils();
 		this.$siteServerIndex = 'SiteServer' + CommonLibraries.Guid.newGuid();
+		CommonServerLibraries.Logger.start(this.$siteServerIndex);
 		process.on('exit', function() {
-			console.log('exi SiteServer');
+			CommonServerLibraries.Logger.log('exi SiteServer', 2);
 		});
 		var siteManager = new $SiteServer_SiteManager(this.$siteServerIndex);
 	};
@@ -266,11 +271,11 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		}
 		catch ($t1) {
 			var exc = ss.Exception.wrap($t1);
-			console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
+			CommonServerLibraries.Logger.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc), 0);
 		}
 	};
-	Type.registerClass(global, 'SiteServer.SiteClientManager', $SiteServer_SiteClientManager, Object);
-	Type.registerClass(global, 'SiteServer.SiteManager', $SiteServer_SiteManager, Object);
-	Type.registerClass(global, 'SiteServer.SiteServer', $SiteServer_SiteServer, Object);
+	ss.registerClass(global, 'SiteServer.SiteClientManager', $SiteServer_SiteClientManager);
+	ss.registerClass(global, 'SiteServer.SiteManager', $SiteServer_SiteManager);
+	ss.registerClass(global, 'SiteServer.SiteServer', $SiteServer_SiteServer);
 	$SiteServer_SiteServer.main();
 })();

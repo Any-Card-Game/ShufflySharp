@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using Models;
 using Models.ChatManagerModels;
 using MongoDBLibrary;
@@ -39,7 +40,7 @@ namespace CommonShuffleLibrary.Data
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null)
-                                                                    Console.Log("Data Error: " + err2);
+                                                                    Logger.Log("Data Error: " + err2,LogLevel.Error);
                                                                 room.Messages.Add(messageModel);
                                                                 complete(messageModel);
                                                             });
@@ -57,7 +58,7 @@ namespace CommonShuffleLibrary.Data
                                           collection.Update(new { _id = MongoDocument.GetID(room.ID) },
                                                             query,
                                                             (err2) => {
-                                                                if (err2 != null) Console.Log("Data Error: " + err2);
+                                                                if (err2 != null) Logger.Log("Data Error: " + err2,LogLevel.Error);
                                                                 room.Users.Add(user);
 
                                                                 complete(room);
@@ -76,7 +77,7 @@ namespace CommonShuffleLibrary.Data
                                           collection.Update(new { _id = MongoDocument.GetID(room.ID) },
                                                             query,
                                                             (err2) => {
-                                                                if (err2 != null) Console.Log("Data Error: " + err2);
+                                                                if (err2 != null) Logger.Log("Data Error: " + err2, LogLevel.Error);
                                                                 room.Users.Remove(user);
 
                                                                 complete(room);

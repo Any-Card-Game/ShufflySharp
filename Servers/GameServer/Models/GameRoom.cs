@@ -20,6 +20,8 @@ namespace GameServer.Models
         public string RoomID { get; set; }
         public bool Started { get; set; }
         public Action<List<UserLogicModel>> Unwind { get; set; }
+        public Action<UserLogicModel> PlayerLeave { get; set; }
+        public List<UserLogicModel> PlayersLeft { get; set; }
 
         public GameRoom()
         {

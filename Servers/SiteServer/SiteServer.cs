@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonLibraries;
+using CommonServerLibraries;
 using NodeJSLibrary;
 using global;
 namespace SiteServer
@@ -12,7 +13,10 @@ namespace SiteServer
         {
             new ArrayUtils();
             siteServerIndex = "SiteServer" + Guid.NewGuid();
-            Global.Process.On("exit", () => Console.Log("exi SiteServer"));
+            Logger.Start(siteServerIndex);
+
+
+            Global.Process.On("exit", () => Logger.Log("exi SiteServer",LogLevel.Information));
 
             SiteManager siteManager = new SiteManager(siteServerIndex);
         }
@@ -22,7 +26,7 @@ namespace SiteServer
             try {
                 new SiteServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
+                Logger.Log("CRITICAL FAILURE: " + exc.GoodMessage(),LogLevel.Error);
             }
         }
     }

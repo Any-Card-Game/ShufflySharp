@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// GatewayServer.GatewayServer
@@ -6,6 +6,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		this.$myGatewayName = null;
 		this.$ps = null;
 		this.users = {};
+		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
+		CommonServerLibraries.Logger.start(this.$myGatewayName);
 		//ExtensionMethods.debugger("");
 		var http = require('http');
 		var app = http.createServer(function(req, res) {
@@ -17,15 +19,14 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
 		app.listen(port);
 		io.set('log level', 0);
-		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
-		this.$ps = new CommonShuffleLibrary.PubSub(Function.mkdel(this, function() {
-			this.$ps.subscribe('PUBSUB.GatewayServers.Ping', Function.mkdel(this, function(message) {
-				this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibrary.IPs.get_gatewayIP(), port));
+		this.$ps = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
+			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
+				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', CommonShuffleLibrary.IPs.gatewayIP, port));
 			}));
-			this.$ps.publish('PUBSUB.GatewayServers', String.format('http://{0}:{1}', CommonShuffleLibrary.IPs.get_gatewayIP(), port));
+			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', CommonShuffleLibrary.IPs.gatewayIP, port));
 		}));
-		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', Function.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, Function.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
-		io.sockets.on('connection', Function.mkdel(this, function(socket) {
+		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
+		io.sockets.on('connection', ss.mkdel(this, function(socket) {
 			var user = null;
 			socket.on('Gateway.Message', function(data) {
 				if (ss.isNullOrUndefined(user)) {
@@ -56,7 +57,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				}
 				queueManager.sendMessage(channel, data.channel, Models.UserSocketModel.toLogicModel(user), data.content);
 			});
-			socket.on('Gateway.Login', Function.mkdel(this, function(data1) {
+			socket.on('Gateway.Login', ss.mkdel(this, function(data1) {
 				debugger;
 				user = Models.UserSocketModel.$ctor();
 				user.password = data1.password;
@@ -67,7 +68,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				this.users[data1.userName] = user;
 				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
 			}));
-			socket.on('disconnect', Function.mkdel(this, function(data2) {
+			socket.on('disconnect', ss.mkdel(this, function(data2) {
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
@@ -84,7 +85,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 	};
 	$GatewayServer_GatewayServer.prototype = {
 		$messageReceived: function(gateway, user, eventChannel, content) {
-			if (Object.keyExists(this.users, user.userName)) {
+			if (ss.keyExists(this.users, user.userName)) {
 				var u = this.users[user.userName];
 				this.$sendMessage(u, eventChannel, content);
 			}
@@ -96,22 +97,22 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		},
 		$specialHandle: function(user, eventChannel, content) {
 			if (eventChannel === 'Area.Chat.RegisterServer') {
-				console.log(String.format('Chat Server {0} Registered to {1}', content.server, user.hash));
+				CommonServerLibraries.Logger.log(ss.formatString('Chat Server {0} Registered to {1}', content.server, user.hash), 2);
 				user.currentChatServer = content.server;
 				return false;
 			}
 			if (eventChannel === 'Area.Chat.UnregisterServer') {
-				console.log('Chat Server UnRegistered');
+				CommonServerLibraries.Logger.log('Chat Server UnRegistered', 2);
 				user.currentChatServer = null;
 				return false;
 			}
 			if (eventChannel === 'Area.Game.RegisterServer') {
-				console.log(String.format('Game Server {0} Registered to {1}', content.server, user.hash));
+				CommonServerLibraries.Logger.log(ss.formatString('Game Server {0} Registered to {1}', content.server, user.hash), 2);
 				user.currentGameServer = content.server;
 				return false;
 			}
 			if (eventChannel === 'Area.Game.UnregisterServer') {
-				console.log('Game Server UnRegistered');
+				CommonServerLibraries.Logger.log('Game Server UnRegistered', 2);
 				user.currentGameServer = null;
 				return false;
 			}
@@ -124,9 +125,9 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		}
 		catch ($t1) {
 			var exc = ss.Exception.wrap($t1);
-			console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
+			CommonServerLibraries.Logger.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc), 0);
 		}
 	};
-	Type.registerClass(global, 'GatewayServer.GatewayServer', $GatewayServer_GatewayServer, Object);
+	ss.registerClass(global, 'GatewayServer.GatewayServer', $GatewayServer_GatewayServer);
 	$GatewayServer_GatewayServer.main();
 })();

@@ -16,6 +16,7 @@ namespace Build
             var projs = new[] {
                                       shufSharp + @"\Libraries\CommonLibraries\",
                                       shufSharp + @"\Libraries\CommonShuffleLibrary\",
+                                      shufSharp + @"\Libraries\CommonServerLibraries\",
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
                                       shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\",
                                       shufSharp + @"\Libraries\ShuffUI\",
@@ -28,6 +29,8 @@ namespace Build
                                       shufSharp + @"\Servers\SiteServer\",
                                       shufSharp + @"\Models\",
                                       shufSharp + @"\Client\",
+                                      shufSharp + @"\ClientLibs\",
+                                      shufSharp + @"\ServerSlammer\",
                               };
             var pre = Directory.GetCurrentDirectory() + @"\..\..\..\..\..\";
 
@@ -38,8 +41,9 @@ namespace Build
                 var from = pre + proj + @"\bin\release\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #endif
                 var to = pre + shufSharp + @"\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
-                if (File.Exists(to)) File.Delete(to);
-                File.Copy(from, to);
+
+                if (File.Exists(to)) tryDelete(to);
+                tryCopy(from, to);
             }
 
             //client happens in buildsite.cs
@@ -49,6 +53,7 @@ namespace Build
                                                                                                                                     "new AdminServer.AdminServer();",
                                                                                                                                     new List<string> {
                                                                                                                                                              @"./CommonLibraries.js",
+                                                                                                                                                             @"./CommonServerLibraries.js",
                                                                                                                                                              @"./CommonShuffleLibrary.js",
                                                                                                                                                              @"./Models.js",
                                                                                                                                                      })
@@ -56,10 +61,11 @@ namespace Build
                                                                                  shufSharp + @"\Servers\ChatServer\", new Application(true,
                                                                                                                                       "new ChatServer.ChatServer();",
                                                                                                                                       new List<string> {
-                                                                                                                                                                              @"./MongoDBLibrary.js",
+                                                                                                                                                               @"./MongoDBLibrary.js",
                                                                                                                                                                @"./CommonLibraries.js",
                                                                                                                                                                @"./CommonShuffleLibrary.js",
                                                                                                                                                                @"./ShuffleGameLibrary.js",
+                                                                                                                                                               @"./CommonServerLibraries.js",
                                                                                                                                                                @"./Models.js",
                                                                                                                                                                @"./RawDeflate.js",
                                                                                                                                                        })
@@ -67,7 +73,8 @@ namespace Build
                                                                                     shufSharp + @"\Servers\DebugServer\", new Application(true,
                                                                                                                                           "new DebugServer.DebugServer();",
                                                                                                                                           new List<string> {
-                                                                                                                                                                              @"./MongoDBLibrary.js",
+                                                                                                                                                                   @"./MongoDBLibrary.js",
+                                                                                                                                                                   @"./CommonServerLibraries.js",
                                                                                                                                                                    @"./CommonLibraries.js",
                                                                                                                                                                    @"./CommonShuffleLibrary.js",
                                                                                                                                                                    @"./Models.js",
@@ -76,8 +83,9 @@ namespace Build
                                                                                        shufSharp + @"\Servers\GameServer\", new Application(true,
                                                                                                                                             "new GameServer.GameServer();",
                                                                                                                                             new List<string> {
-                                                                                                                                                                              @"./MongoDBLibrary.js",
+                                                                                                                                                                     @"./MongoDBLibrary.js",
                                                                                                                                                                      @"./CommonLibraries.js",
+                                                                                                                                                                     @"./CommonServerLibraries.js",
                                                                                                                                                                      @"./CommonShuffleLibrary.js",
                                                                                                                                                                      @"./ShuffleGameLibrary.js",
                                                                                                                                                                      @"./Models.js",
@@ -87,7 +95,8 @@ namespace Build
                                                                                           shufSharp + @"\Servers\GatewayServer\", new Application(true,
                                                                                                                                                   "new GatewayServer.GatewayServer();",
                                                                                                                                                   new List<string> {
-                                                                                                                                                                              @"./MongoDBLibrary.js",
+                                                                                                                                                                           @"./MongoDBLibrary.js",
+                                                                                                                                                                           @"./CommonServerLibraries.js",
                                                                                                                                                                            @"./CommonLibraries.js",
                                                                                                                                                                            @"./CommonShuffleLibrary.js",
                                                                                                                                                                            @"./Models.js",
@@ -96,7 +105,9 @@ namespace Build
                                                                                              shufSharp + @"\Servers\HeadServer\", new Application(true,
                                                                                                                                                   "new HeadServer.HeadServer();",
                                                                                                                                                   new List<string> {
-                                                                                                                                                                              @"./MongoDBLibrary.js",
+                                                                                                                                                                           @"./MongoDBLibrary.js",
+                                                                                                                                                                           @"./CommonServerLibraries.js",
+                                                                                                                                                                           @"./CommonLibraries.js",
                                                                                                                                                                            @"./CommonShuffleLibrary.js",
                                                                                                                                                                            @"./Models.js",
                                                                                                                                                                    })
@@ -106,16 +117,31 @@ namespace Build
                                                                                                                                                      new List<string> {
                                                                                                                                                                               @"./MongoDBLibrary.js",
                                                                                                                                                                               @"./CommonLibraries.js",
+                                                                                                                                                                              @"./CommonServerLibraries.js",
                                                                                                                                                                               @"./CommonShuffleLibrary.js",
                                                                                                                                                                               @"./ShuffleGameLibrary.js",
                                                                                                                                                                               @"./Models.js",
                                                                                                                                                                               @"./RawDeflate.js",
                                                                                                                                                                       })
-                                                                                        },
-                                                                      {shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false, "", new List<string> {})},
+                                                                                        }, {
+                                                                                                   shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false,
+                                                                                                                                                                    "",
+                                                                                                                                                                    new List<string> {
+                                                                                                                                                                                             @"./MongoDBLibrary.js",
+                                                                                                                                                                                     })
+                                                                                           }, {
+                                                                                                      shufSharp + @"\Libraries\CommonServerLibraries\", new Application(false, "", new List<string> {})
+                                                                                              },
                                                                       {shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {})},
+                                                                      {shufSharp + @"\ClientLibs\", new Application(false, "", new List<string> {})}, {
+                                                                                                                                                              shufSharp + @"\ServerSlammer\", new Application(true,
+                                                                                                                                                                                                              "",
+                                                                                                                                                                                                              new List<string> {
+                                                                                                                                                                                                                                       @"./ClientLibs.js",
+                                                                                                                                                                                                                               })
+                                                                                                                                                      },
                                                                       {shufSharp + @"\Models\", new Application(false, "", new List<string> {})},
                                                                       {shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, "", new List<string> {})}, {
                                                                                                                                                                                 shufSharp + @"\Client\", new Application(false,
@@ -190,9 +216,9 @@ namespace Build
                 //      lines.Add(application.After);
 
                 File.WriteAllLines(to, lines);
+                var name = to.Split(new char[] {'\\'}, StringSplitOptions.RemoveEmptyEntries).Last();
 
 #if FTP
-                var name = to.Split(new char[] {'\\'}, StringSplitOptions.RemoveEmptyEntries).Last();
 
                 long length = new FileInfo(to).Length;
                 /*       if (!webftp.FileExists(loc + name) || webftp.GetFileSize(loc + name) != length)
@@ -202,14 +228,14 @@ namespace Build
                     Console.WriteLine("ftp complete " + to);
                 }
 */
-                if (!client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length) {
+                if (true || !client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length) {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
                     var fileStream = new FileInfo(to).OpenRead();
                     client.UploadFile(fileStream, serverloc + name, true);
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
-                if (!client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length) {
+                if (true || !client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length) {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
                     var fileStream = new FileInfo(to).OpenRead();
                     client.UploadFile(fileStream, serverloc2 + name, true);
@@ -217,6 +243,10 @@ namespace Build
                     Console.WriteLine("server ftp complete " + to);
                 }
 #endif
+                if (File.Exists(@"C:\code\node\" + name) && /*new FileInfo(@"C:\code\node\" + name).Length != new FileInfo(to).Length*/ true) {
+                    tryDelete(@"C:\code\node\" + name);
+                    tryCopy(to, @"C:\code\node\" + name);
+                }
             }
 
             foreach (var d in Directory.GetDirectories(pre + shufSharp + @"\ShuffleGames\")) {
@@ -241,6 +271,26 @@ namespace Build
 
                 Console.WriteLine("server ftp complete " + to);
 #endif
+            }
+        }
+
+        private static void tryDelete(string to)
+        {
+            top:
+            try {
+                File.Delete(to);
+            } catch (Exception) {
+                goto top;
+            }
+        }
+
+        private static void tryCopy(string from, string to)
+        {
+            top:
+            try {
+                File.Copy(from, to);
+            } catch (Exception) {
+                goto top;
             }
         }
 

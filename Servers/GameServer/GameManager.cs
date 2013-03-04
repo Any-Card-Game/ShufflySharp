@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using CommonShuffleLibrary;
 using CommonShuffleLibrary.Data;
 using FibersLibrary;
@@ -32,6 +33,7 @@ namespace GameServer
             myServerManager.OnGameCreate += CreateGame;
             myServerManager.OnUserAnswerQuestion += UserAnswerQuestion;
             myServerManager.OnUserDisconnect += UserDisconnect;
+            myServerManager.OnUserLeave += UserLeave;
 
             rooms = new List<GameRoom>();
             cachedGames = new JsDictionary<string, GameObject>();
@@ -42,14 +44,38 @@ namespace GameServer
 
         private void UserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            //todo does
+            foreach (var gameRoom in rooms)
+            {
+                foreach (var player in gameRoom.Players)
+                {
+                    if (player.UserName == user.UserName)
+                    {  
+                        gameRoom.PlayerLeave(player); 
+                        break;
+                    }
+                }
+            } 
+        }
+        private void UserLeave(UserLogicModel user, UserLeaveModel data)
+        {
+            foreach (var gameRoom in rooms)
+            {
+                foreach (var player in gameRoom.Players)
+                {
+                    if (player.UserName == user.UserName)
+                    { 
+                        gameRoom.PlayerLeave(player); 
+                        break;
+                    }
+                }
+            } 
         }
 
 
 
         public void CreateGame(GameCreateRequestModel data)
         {
-            Console.Log("--game created ");
+            Logger.Log("--game created ", LogLevel.Information);
             GameRoom room;
             rooms.Add(room = new GameRoom());
             room.MaxUsers = data.Players.Count;//todo idk
@@ -67,13 +93,23 @@ namespace GameServer
             room.Unwind = players =>
             {
                 gameData.FinishedGames++;
-                Console.Log("--game closed");
+                Logger.Log("--game closed", LogLevel.Information);
             };
+            room.PlayerLeave += (player) =>
+            {
+                //todo laeve player api in the game
+                ////i think an action that it calls
+
+                room.Players.Remove(player);
+                room.PlayersLeft.Add(player);
+            };
+
+
 
             foreach (var userLogicModel in room.Players)
             {
                 myServerManager.RegisterGameServer(userLogicModel);
-            } 
+            }
 
             startGame(room);
         }
@@ -91,25 +127,26 @@ namespace GameServer
 
         public void UserAnswerQuestion(UserLogicModel user, GameAnswerQuestionModel data)
         {
-            answerQueue.Add(Tuple.Create(user,data));
+            answerQueue.Add(Tuple.Create(user, data));
         }
 
 
         private void flushQueue()
-        { 
+        {
 
             var ind = 0;
 
             for (ind = 0; answerQueue.Count > 0 && ind < QUEUEPERTICK; ind++)
             {
-                Console.Log("-- w pop");
+                Logger.Log("-- w pop", LogLevel.Information);
 
                 var arg2 = answerQueue[0];
                 answerQueue.RemoveAt(0);
                 var data = arg2;
 
-                var room=getRoomByPlayer(arg2.Item1.UserName);
-                if (room == null) {
+                var room = getRoomByPlayer(arg2.Item1.UserName);
+                if (room == null)
+                {
                     throw new Exception("idk");
                 }
 
@@ -128,7 +165,7 @@ namespace GameServer
             {
                 total__ += ind;
                 if ((total__ + skipped__) % 20 == 0)
-                    Console.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}", myServerManager.GameServerIndex.Substring(0, 19), (total__ + skipped__), ind, total__, skipped__, answerQueue.Count, rooms.Count));
+                    Logger.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}", myServerManager.GameServerIndex.Substring(0, 19), (total__ + skipped__), ind, total__, skipped__, answerQueue.Count, rooms.Count), LogLevel.DebugInformation);
             }
         }
 
@@ -138,11 +175,11 @@ namespace GameServer
             {
                 if (players == null || players.Count == 0) return true;
                 room.Players = players;
-                Console.Log("game started");
+                Logger.Log("game started", LogLevel.Information);
                 GameObject sev = null;
 
                 Script.Eval("sev= new gameObject();");
-
+                room.PlayersLeft=new List<UserLogicModel>();
                 sev.CardGame.Emulating = emulating;
                 room.Game = sev;
                 sev.CardGame.SetAnswers(room.Answers);
@@ -162,7 +199,7 @@ namespace GameServer
         {
             if (response == null)
             {
-                Console.Log("game request over");
+                Logger.Log("game request over", LogLevel.Information);
 
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
@@ -177,6 +214,10 @@ namespace GameServer
                 case FiberYieldResponseType.AskQuestion:
                     askPlayerQuestion(room, response);
                     break;
+
+                case FiberYieldResponseType.PlayersLeft:
+                    didPlayersLeave(room, response);
+                    break;
                 case FiberYieldResponseType.GameOver:
                     gameOver(room);
                     break;
@@ -187,6 +228,14 @@ namespace GameServer
                     breakGameExecution(room, response);
                     break;
             }
+        }
+
+        private void didPlayersLeave(GameRoom room, FiberYieldResponse response)
+        {
+            room.Fiber.Run<FiberYieldResponse>(room.PlayersLeft);
+
+            room.PlayersLeft.Clear();
+            
         }
 
         private void breakGameExecution(GameRoom room, FiberYieldResponse response)
@@ -212,7 +261,7 @@ namespace GameServer
 
             if (!room.Game.CardGame.Emulating && room.Debuggable)
             {
-                //console.log(gameData.toString());
+                //Logger.Log(gameData.toString());
                 var ganswer = new GameAnswerModel(0, answer.Contents);
 
                 myServerManager.SendDebugLog(room, ganswer);
@@ -221,7 +270,9 @@ namespace GameServer
 
         private void gameOver(GameRoom room)
         {
-            Console.Log("game real over");
+            room.Fiber.Reset();
+            Logger.Log("game real over", LogLevel.Information);
+
 
             myServerManager.SendUpdateState(room);
 
@@ -236,19 +287,19 @@ namespace GameServer
 
             if (answ == null)
             {
-                Console.Log("game question over");
+                Logger.Log("game question over", LogLevel.Information);
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
                 //     profiler.takeSnapshot('game over ' + room.roomID);
                 return;
             }
             askQuestion(answ, room);
-            //console.log(gameData.toString());
+            //Logger.Log(gameData.toString());
 
             var dt = new DateTime();
             var then = dt.GetMilliseconds();
-            //Console.Log(then - now + " Milliseconds");
-            Console.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds");
+            //Logger.Log(then - now + " Milliseconds");
+            Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds", LogLevel.DebugInformation);
         }
 
         private void askQuestion(GameQuestionAnswerModel answ, GameRoom room)
@@ -259,11 +310,11 @@ namespace GameServer
 
             if (verbose)
             {
-                Console.Log(answ.User.UserName + ": " + answ.Question + "   ");
+                Logger.Log(answ.User.UserName + ": " + answ.Question + "   ", LogLevel.Information);
                 var ind = 0;
                 foreach (var answer in answ.Answers)
                 {
-                    Console.Log("     " + ind++ + ": " + answer);
+                    Logger.Log("     " + ind++ + ": " + answer, LogLevel.Information);
                 }
             }
         }
@@ -277,10 +328,12 @@ namespace GameServer
             }
             return null;
         }
-        private GameRoom getRoomByPlayer( string userName)
+        private GameRoom getRoomByPlayer(string userName)
         {
-            foreach (var gameRoom in rooms) {
-                foreach (var userLogicModel in gameRoom.Players) {
+            foreach (var gameRoom in rooms)
+            {
+                foreach (var userLogicModel in gameRoom.Players)
+                {
                     if (userLogicModel.UserName == userName)
                         return gameRoom;
                 }

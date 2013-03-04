@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonServerLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// AdminServer.AdminServer
@@ -22,21 +22,25 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$sites = null;
 		this.$util = null;
 		var fs = require('fs');
-		console.log('Shuffly Admin V0.48');
-		console.log('Shuffly Admin V0.48');
-		console.log('Shuffly Admin V0.48');
-		console.log('Shuffly Admin V0.48');
+		CommonServerLibraries.Logger.start('Admin');
+		CommonServerLibraries.Logger.log('Shuffly Admin V0.49', 1);
+		CommonServerLibraries.Logger.log('Shuffly Admin V0.49', 2);
+		var redis = require('redis');
+		var client = redis.createClient(6379, CommonShuffleLibrary.IPs.redisIP);
+		// client.On<string,object>("monitor",(time, args) => {
+		// Logger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation);
+		// });
 		this.$util = require('util');
 		this.$exec = require('child_process').exec;
-		this.$__dirname = '/usr/local/src/new/';
+		this.$__dirname = CommonLibraries.ExtensionMethods.HARDLOCATION;
 		this.$nonDebuggable = ['node-inspector', 'pkill'];
-		require('http').createServer(Function.mkdel(this, this.$handler)).listen(8090);
+		require('http').createServer(ss.mkdel(this, this.$handler)).listen(8090);
 		this.$debug = true;
 		setInterval(function() {
-			console.log('keep alive ' + (new Date()).toString().substring(17, 24));
+			console.log('keep alive ' + (new Date()).toString().substr(17, 24));
 		}, 10000);
-		process.on('exit', Function.mkdel(this, function() {
-			console.log('Exiting ');
+		process.on('exit', ss.mkdel(this, function() {
+			CommonServerLibraries.Logger.log('Exiting ', 1);
 			this.$onAsk('k', false);
 			this.$runProcess('pkill', ['node'], 0, null);
 		}));
@@ -46,15 +50,15 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.$onAsk('d', true);
 		if (this.$debug) {
 			this.$nodeInspector = this.$runProcess('node-inspector', [], 0, null);
-			console.log('node-inspector Started');
+			CommonServerLibraries.Logger.log('node-inspector Started', 1);
 		}
 		this.$onAsk('s', false);
 	};
 	$AdminServer_AdminServer.prototype = {
 		$handler: function(request, response) {
-			this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', Function.mkdel(this, function(err, content) {
+			this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', ss.mkdel(this, function(err, content) {
 				var fieldSets = '';
-				fieldSets += String.format('<span>Main Site: {0}</span>', '<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://50.116.28.16","MainSite");\'>Launch</a>');
+				fieldSets += ss.formatString('<span>Main Site: {0}</span>', '<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://50.116.28.16","MainSite");\'>Launch</a>');
 				fieldSets += this.$buildFieldset(this.$sites, 'Site Servers');
 				fieldSets += this.$buildFieldset(this.$gateways, 'Gateway Servers');
 				fieldSets += this.$buildFieldset(this.$games, 'Game Servers');
@@ -63,18 +67,18 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				var dict = {};
 				dict['Content-Type'] = 'text/html';
 				response.writeHead(200, dict);
-				response.end(content.replaceAll('{0}', fieldSets));
+				response.end(ss.replaceAllString(content, '{0}', fieldSets));
 			}));
 		},
 		$buildFieldset: function(items, name) {
 			var str = '<fieldset>';
 			str += '<ul style=\'list-style-type:none;\'>';
-			str += String.format('<li >{0}</li>', name);
-			str += String.format('<li ></li>');
+			str += ss.formatString('<li >{0}</li>', name);
+			str += ss.formatString('<li ></li>');
 			for (var $t1 = 0; $t1 < items.length; $t1++) {
 				var process = items[$t1];
 				str += '<li>';
-				str += String.format('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? String.format('<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://50.116.28.16:8080/debug?port={0}","' + name + '(' + (process.index + 1) + ')' + '");\'>Debug</a>', process.debugPort + '&foo=' + parseInt((Math.random() * 5000000).toString())) : 'Debug'));
+				str += ss.formatString('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? ss.formatString('<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://50.116.28.16:8080/debug?port={0}","' + name + '(' + (process.index + 1) + ')' + '");\'>Debug</a>', process.debugPort + '&foo=' + parseInt((Math.random() * 5000000).toString())) : 'Debug'));
 				str += '</li>';
 				//document.frames["test"].location.reload();
 			}
@@ -83,16 +87,16 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			return str;
 		},
 		$loop: function() {
-			this.$ask('?: ', '', Function.mkdel(this, function(a) {
+			this.$ask('?: ', '', ss.mkdel(this, function(a) {
 				this.$onAsk(a, false);
 			}));
 		},
 		$onAsk: function(data, ignore) {
-			var rest = data.substring(0, 2);
+			var rest = data.substr(0, 2);
 			switch (data.charAt(0)) {
 				case 'd': {
 					this.$debug = !this.$debug;
-					console.log('Debug ' + (this.$debug ? 'Enabled' : 'Disabled'));
+					CommonServerLibraries.Logger.log('Debug ' + (this.$debug ? 'Enabled' : 'Disabled'), 1);
 					break;
 				}
 				case 's': {
@@ -102,25 +106,25 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 					this.$debugs = [];
 					this.$gateways = [];
 					this.$head = new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'HeadServer.js'], 4000, null), 'Head Server', 0, 4000);
-					console.log('Head Server Started');
+					CommonServerLibraries.Logger.log('Head Server Started', 1);
 					for (var j = 0; j < this.$numOfSiteServers; j++) {
-						this.$sites.add(new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'SiteServer.js'], 4100 + j, null), 'Site Server', j, 4100 + j));
+						ss.add(this.$sites, new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'SiteServer.js'], 4100 + j, null), 'Site Server', j, 4100 + j));
 					}
-					console.log(this.$sites.length + ' Site Servers Started');
+					CommonServerLibraries.Logger.log(this.$sites.length + ' Site Servers Started', 1);
 					for (var j1 = 0; j1 < this.$numOfGateways; j1++) {
-						this.$gateways.add(new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GatewayServer.js'], 4400 + j1, null), 'Gateway Server', j1, 4400 + j1));
+						ss.add(this.$gateways, new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GatewayServer.js'], 4400 + j1, null), 'Gateway Server', j1, 4400 + j1));
 					}
-					console.log(this.$gateways.length + ' Gateway Servers Started');
+					CommonServerLibraries.Logger.log(this.$gateways.length + ' Gateway Servers Started', 1);
 					for (var j2 = 0; j2 < this.$numOfGameServers; j2++) {
-						this.$games.add(new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GameServer.js'], 4200 + j2, null), 'Game Server', j2, 4200 + j2));
+						ss.add(this.$games, new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'GameServer.js'], 4200 + j2, null), 'Game Server', j2, 4200 + j2));
 					}
-					console.log(this.$games.length + ' Game Servers Started');
+					CommonServerLibraries.Logger.log(this.$games.length + ' Game Servers Started', 1);
 					for (var j3 = 0; j3 < this.$numOfChatServers; j3++) {
-						this.$chats.add(new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ChatServer.js'], 4500 + j3, null), 'Chat Server', j3, 4500 + j3));
+						ss.add(this.$chats, new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ChatServer.js'], 4500 + j3, null), 'Chat Server', j3, 4500 + j3));
 					}
-					console.log(this.$chats.length + ' Chat Servers Started');
-					this.$debugs.add(new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'DebugServer.js'], 4300, null), 'Debug Server', 0, 4300));
-					console.log(this.$debugs.length + ' Debug Servers Started');
+					CommonServerLibraries.Logger.log(this.$chats.length + ' Chat Servers Started', 1);
+					ss.add(this.$debugs, new $AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'DebugServer.js'], 4300, null), 'Debug Server', 0, 4300));
+					CommonServerLibraries.Logger.log(this.$debugs.length + ' Debug Servers Started', 1);
 					break;
 				}
 				case 'q': {
@@ -148,7 +152,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 			if (args.length > 0) {
 				name = (al = args[0].split('/'))[al.length - 1].split('.')[0];
 			}
-			if (this.$nonDebuggable.indexOf(process) === -1 && this.$debug) {
+			if (ss.indexOf(this.$nonDebuggable, process) === -1 && this.$debug) {
 				var jf = ' --debug=';
 				if (name.indexOf('Gatewa-') > -1) {
 					jf = ' --debug-brk=';
@@ -156,15 +160,15 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 				args[0] = jf + debugPort + ' ' + args[0];
 			}
 			var dummy = this.$exec(process + ' ' + args.join() + ' ' + ss.coalesce(appArgs, ''));
-			if (this.$nonDebuggable.indexOf(process) === -1) {
-				dummy.stdout.on('data', Function.mkdel(this, function(data) {
+			if (ss.indexOf(this.$nonDebuggable, process) === -1) {
+				dummy.stdout.on('data', ss.mkdel(this, function(data) {
 					if (data.indexOf('debug: ') === -1) {
-						this.$util.print(String.format('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substring(17, 24), data));
+						this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substr(17, 24), data));
 						this.$util.print('?: ');
 					}
 				}));
-				dummy.stderr.on('data', Function.mkdel(this, function(data1) {
-					this.$util.print(String.format('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substring(17, 24), data1));
+				dummy.stderr.on('data', ss.mkdel(this, function(data1) {
+					this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substr(17, 24), data1));
 					this.$util.print('?: ');
 				}));
 			}
@@ -186,7 +190,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonShuffl
 		this.index = index;
 		this.debugPort = debugPort;
 	};
-	Type.registerClass(global, 'AdminServer.AdminServer', $AdminServer_AdminServer, Object);
-	Type.registerClass(global, 'AdminServer.ProcessInformation', $AdminServer_ProcessInformation, Object);
+	ss.registerClass(global, 'AdminServer.AdminServer', $AdminServer_AdminServer);
+	ss.registerClass(global, 'AdminServer.ProcessInformation', $AdminServer_ProcessInformation);
 	$AdminServer_AdminServer.main();
 })();

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace MongoDBLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class MongoCollectionResult<T>
     {
         public void ToArray(Action<string, List<T>> result) {}

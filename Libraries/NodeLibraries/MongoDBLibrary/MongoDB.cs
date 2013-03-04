@@ -4,14 +4,14 @@ using NodeJSLibrary;
 namespace MongoDBLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class MongoDB : NodeModule
     {
         public void Open(Action<object, object> action) { }
         public void Collection(string collectionName, Action<string, MongoCollection> onConnect) { }
     }
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class BSON : NodeModule
     {
         [IntrinsicProperty]

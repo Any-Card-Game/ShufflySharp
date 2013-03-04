@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models;
 using Models.ChatManagerModels;
@@ -37,7 +38,7 @@ namespace SiteServer
 
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            Console.Log(user.UserName + " disconnected");
+            Logger.Log(user.UserName + " disconnected",LogLevel.Information);
             removeUserFromRoom(data.User, (room) => { });
         }
 
@@ -49,8 +50,10 @@ namespace SiteServer
                                                               result(null);
                                                               return;
                                                           }
+                                                          if (user.CurrentChatServer!=null)
                                                           mySiteClientManager.LeaveChatRoom(user);
-                                                          mySiteClientManager.LeaveGameRoom(user);
+                                                          if (user.CurrentGameServer != null)
+                                                              mySiteClientManager.LeaveGameRoom(user);
                                                           foreach (var player in room.Players) {
                                                               if (player.UserName == user.UserName) room.Players.Remove(player);
                                                           }
@@ -75,7 +78,7 @@ namespace SiteServer
         }
         private void OnStartGame(UserLogicModel user, StartGameRequest data)
         {
-            Console.Log("--game started 1 ");
+            Logger.Log("--game started 1 ", LogLevel.DebugInformation);
 
             myDataManager.SiteData.Room_GetRoomByUser(user,
                                           room =>
@@ -85,7 +88,7 @@ namespace SiteServer
                                                   throw new Exception("idk");
                                                   return;
                                               }
-                                              Console.Log("--game started 2");
+                                              Logger.Log("--game started 2", LogLevel.DebugInformation);
                                               
                                               mySiteClientManager.CreateGame(new GameCreateRequestModel(room.GameType,room.Players));
                                           });

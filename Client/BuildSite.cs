@@ -2,6 +2,7 @@
 using System.Html;
 using System.Runtime.CompilerServices;
 using Client.Libs;
+using CommonShuffleLibrary;
 using CommonWebLibraries;
 using ShuffUI;
 using jQueryApi;
@@ -9,7 +10,7 @@ namespace Client
 {
     public class BuildSite
     {
-        public static string TopLevelURL = "http://50.116.22.241:8881/";
+        public const string TopLevelURL = "http://50.116.22.241:8881/";
         private string gatewayServerAddress;
         public ShuffUIManager shuffUIManager;
         [IntrinsicProperty]
@@ -39,6 +40,7 @@ namespace Client
                                                       ready);
 
             Action stepThree = () => scriptLoader.Load(new[] {
+                                                                     url + "ClientLibs.js",
                                                                      url + "CommonLibraries.js",
                                                                      url + "ShuffleGameLibrary.js",
                                                                      url + "Models.js",
@@ -77,6 +79,7 @@ namespace Client
 
         private void ready()
         {
+          
             var elem = Document.GetElementById("loading");
             elem.ParentNode.RemoveChild(elem);
 
@@ -89,6 +92,17 @@ namespace Client
                                   jQuery.Select(".xstats").Children().CSS("z-index", "9998!important");
                               },
                               1000);
+            Window.Instance.AddEventListener("scroll", (e) =>
+            { 
+                Window.ScrollTo(0, 0);
+                e.StopImmediatePropagation();
+            });
+            Document.Body.AddEventListener("scroll", (e) => {
+                                                           
+
+         Window.ScrollTo(0,0);
+                                                           e.StopImmediatePropagation();
+                                                       }, true);
 
             Element dvGame = Document.CreateElement("div");
             jQuery.Select("body").Append(dvGame);
@@ -103,7 +117,7 @@ namespace Client
 
             Document.Body.AddEventListener("contextmenu",
                                            e => {
-                                               e.PreventDefault();
+                                             //  e.PreventDefault();
                                                //todo: Special right click menu;
                                            },
                                            false);

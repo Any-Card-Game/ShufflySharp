@@ -1,9 +1,8 @@
 using System.Runtime.CompilerServices;
-using CommonsLibraries;
 namespace NodeJSLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     [ScriptName("process")]
     public class Process : EventEmitter
     {

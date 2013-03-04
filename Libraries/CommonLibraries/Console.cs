@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace CommonLibraries
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     [ScriptName("console")]
     public static class Console
     {

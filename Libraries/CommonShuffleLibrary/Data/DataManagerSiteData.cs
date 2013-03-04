@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using Models;
 using Models.SiteManagerModels;
 using MongoDBLibrary;
@@ -117,7 +118,7 @@ namespace CommonShuffleLibrary.Data
                                                 (err2) =>
                                                 {
                                                     if (err2 != null)
-                                                        Console.Log("Data Error: " + err2);
+                                                        Logger.Log("Data Error: " + err2, LogLevel.Error);
                                                     room.Players.Add(user);
 
                                                     complete(room);
@@ -140,7 +141,7 @@ namespace CommonShuffleLibrary.Data
                                                 (err2) =>
                                                 {
                                                     if (err2 != null)
-                                                        Console.Log("Data Error: " + err2);
+                                                        Logger.Log("Data Error: " + err2,LogLevel.Error);
                                                     foreach (var userLogicModel in room.Players)
                                                     {
                                                         if (userLogicModel.UserName == user.UserName)
@@ -174,7 +175,7 @@ namespace CommonShuffleLibrary.Data
                                        (err2) =>
                                        {
                                            if (err2 != null)
-                                               Console.Log("Data Error: " + err2);
+                                               Logger.Log("Data Error: " + err2, LogLevel.Error);
                                            room.ChatServer = chatServerIndex;
 
                                            complete(room);

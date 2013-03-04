@@ -1,9 +1,9 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// HeadServer.HeadServer
 	var $HeadServer_HeadServer = function() {
-		this.$__dirname = '/usr/local/src/new';
+		this.$__dirname = CommonLibraries.ExtensionMethods.HARDLOCATION;
 		this.$fs = require('fs');
 		this.$gateways = [];
 		this.$indexForSites = [];
@@ -13,16 +13,18 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonShuffle
 		this.$pubsub = null;
 		this.$qManager = null;
 		this.$siteIndex = 0;
-		this.$qManager = new CommonShuffleLibrary.QueueManager('Head1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher('Head1', null)], ['GatewayServer']));
-		this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', Function.mkdel(this, this.ready));
-		this.$pubsub = new CommonShuffleLibrary.PubSub(Function.mkdel(this, function() {
-			this.$pubsub.subscribe('PUBSUB.GatewayServers', Function.mkdel(this, function(message) {
-				this.$indexForSites.add(this.$indexPageData.replaceAll('{{gateway}}', message));
-				this.$gateways.add(message);
+		var name = 'Head1';
+		CommonServerLibraries.Logger.start(name);
+		this.$qManager = new CommonShuffleLibrary.QueueManager(name, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher(name, null)], ['GatewayServer']));
+		this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', ss.mkdel(this, this.ready));
+		this.$pubsub = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
+			this.$pubsub.subscribe(String).call(this.$pubsub, 'PUBSUB.GatewayServers', ss.mkdel(this, function(message) {
+				ss.add(this.$indexForSites, ss.replaceAllString(this.$indexPageData, '{{gateway}}', message));
+				ss.add(this.$gateways, message);
 			}));
 		}));
-		require('http').createServer(Function.mkdel(this, this.$handlerWS)).listen(8844);
-		setInterval(Function.mkdel(this, this.$pollGateways), 1000);
+		require('http').createServer(ss.mkdel(this, this.$handlerWS)).listen(8844);
+		setInterval(ss.mkdel(this, this.$pollGateways), 5000);
 		this.$pollGateways();
 	};
 	$HeadServer_HeadServer.prototype = {
@@ -61,7 +63,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonShuffle
 		},
 		ready: function(error, content) {
 			this.$indexPageData = content.toString();
-			require('http').createServer(Function.mkdel(this, this.$handler)).listen(80);
+			this.$indexPageData = content.toString();
+			require('http').createServer(ss.mkdel(this, this.$handler)).listen(80);
 		}
 	};
 	$HeadServer_HeadServer.main = function() {
@@ -70,9 +73,9 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonShuffle
 		}
 		catch ($t1) {
 			var exc = ss.Exception.wrap($t1);
-			console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
+			CommonServerLibraries.Logger.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc), 0);
 		}
 	};
-	Type.registerClass(global, 'HeadServer.HeadServer', $HeadServer_HeadServer, Object);
+	ss.registerClass(global, 'HeadServer.HeadServer', $HeadServer_HeadServer);
 	$HeadServer_HeadServer.main();
 })();

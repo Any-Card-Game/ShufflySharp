@@ -17,7 +17,7 @@
 		if (ss.isNullOrUndefined(id)) {
 			return null;
 		}
-		if (ss.referenceEquals(Type.getInstanceType(id), String)) {
+		if (ss.referenceEquals(ss.getInstanceType(id), String)) {
 			return $MongoDBLibrary_MongoDocument.get_objectID()(id);
 		}
 		return id;
@@ -27,7 +27,7 @@
 		$this._id = null;
 		return $this;
 	};
-	Type.registerClass(global, 'MongoDBLibrary.MongoDocument', $MongoDBLibrary_MongoDocument, Object);
+	ss.registerClass(global, 'MongoDBLibrary.MongoDocument', $MongoDBLibrary_MongoDocument);
 	$MongoDBLibrary_MongoDocument.$1$ObjectIDField = null;
 	$MongoDBLibrary_MongoDocument.set_objectID(require('bson').ObjectID);
 })();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models; 
 using Models.SiteManagerModels;
@@ -16,6 +17,9 @@ namespace GatewayServer
 
         public GatewayServer()
         {
+            myGatewayName = "Gateway " + Guid.NewGuid();
+            Logger.Start(myGatewayName);
+
             //ExtensionMethods.debugger("");
             var http = Global.Require<Http>("http");
             var app = http.CreateServer((req, res) => res.End());
@@ -27,7 +31,6 @@ namespace GatewayServer
 
             app.Listen(port);
             io.Set("log level", 0);
-            myGatewayName = "Gateway " + Guid.NewGuid();
 
             ps = new PubSub(() => {
                                 ps.Subscribe<string>("PUBSUB.GatewayServers.Ping",
@@ -113,7 +116,7 @@ namespace GatewayServer
             try {
                 new GatewayServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
+                Logger.Log("CRITICAL FAILURE: " + exc.GoodMessage(), LogLevel.Error);
             }
         }
 
@@ -136,23 +139,23 @@ namespace GatewayServer
         {
           
             if (eventChannel == "Area.Chat.RegisterServer") {
-                Console.Log(string.Format("Chat Server {0} Registered to {1}", ( (RegisterServerModel) content ).Server, user.Hash));
+                Logger.Log(string.Format("Chat Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
                 user.CurrentChatServer = ( (RegisterServerModel) content ).Server;
                 return false;
             }
             if (eventChannel == "Area.Chat.UnregisterServer") {
-                Console.Log("Chat Server UnRegistered");
+                Logger.Log("Chat Server UnRegistered", LogLevel.Information);
 
                 user.CurrentChatServer = null;
                 return false;
             }
             if (eventChannel == "Area.Game.RegisterServer") {
-                Console.Log(string.Format("Game Server {0} Registered to {1}", ( (RegisterServerModel) content ).Server, user.Hash));
+                Logger.Log(string.Format("Game Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
                 user.CurrentGameServer = ( (RegisterServerModel) content ).Server;
                 return false;
             }
             if (eventChannel == "Area.Game.UnregisterServer") {
-                Console.Log("Game Server UnRegistered");
+                Logger.Log("Game Server UnRegistered",LogLevel.Information);
                 user.CurrentGameServer = null;
                 return false;
             }

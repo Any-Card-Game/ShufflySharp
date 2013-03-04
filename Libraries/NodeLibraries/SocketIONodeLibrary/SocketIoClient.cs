@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 namespace SocketIONodeLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class SocketIOClient
     {
         [IntrinsicProperty]

@@ -34,8 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ftp">
-      <HintPath>..\..\packages\Ftp.dll.2.0.12260.2251\lib\Ftp.dll</HintPath>
+    <Reference Include="Ftp, Version=2.0.13041.1517, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Ftp.dll.2.0.13041.1517\lib\Ftp.dll</HintPath>
     </Reference>
     <Reference Include="Renci.SshNet, Version=2013.1.27.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

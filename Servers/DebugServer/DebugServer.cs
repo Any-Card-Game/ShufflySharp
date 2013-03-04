@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonLibraries;
+using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models.GameManagerModels;
 using NodeJSLibrary;
@@ -9,6 +10,8 @@ namespace DebugServer
     {
         public DebugServer()
         {
+            Logger.Start("Debug1");
+
             var fs = Global.Require<FS>("fs");
 
             var queueManager = new QueueManager("Debug1",
@@ -20,7 +23,7 @@ namespace DebugServer
             queueManager.AddChannel("Area.Debug2.GetGameSource.Request",
                                     (sender, data) => {
                                         var sourceRequest = (GameSourceRequestModel) data;
-                                        fs.ReadFile("/usr/local/src/new/Games/" + sourceRequest.GameName + "/app.js",
+                                        fs.ReadFile(ExtensionMethods.HARDLOCATION+"Games/" + sourceRequest.GameName + "/app.js",
                                                     "ascii",
                                                     (err, data2) => { queueManager.SendMessage(sender.Gateway, "Area.Debug.GetGameSource.Response", sender, new GameSourceResponseModel(data2)); });
                                     });
@@ -31,7 +34,7 @@ namespace DebugServer
             try {
                 new DebugServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
+                Logger.Log("CRITICAL FAILURE: " + exc.GoodMessage(), LogLevel.Error);
             }
         }
     }

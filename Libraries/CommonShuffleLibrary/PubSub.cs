@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
+using CommonServerLibraries;
 using NodeJSLibrary;
 using RedisLibrary;
 namespace CommonShuffleLibrary
@@ -22,8 +23,8 @@ namespace CommonShuffleLibrary
             redis.DebugMode = false;
             subClient = redis.CreateClient(6379, IPs.RedisIP);
             pubClient = redis.CreateClient(6379, IPs.RedisIP);
-            subClient.On("subscribe", (string channel, int count) => Console.Log("subscribed: " + channel + " " + count));
-            subClient.On("unsubscribe", (string channel, int count) => Console.Log("unsubscribed: " + channel + " " + count));
+            subClient.On("subscribe", (string channel, int count) => Logger.Log("subscribed: " + channel + " " + count,LogLevel.Information));
+            subClient.On("unsubscribe", (string channel, int count) => Logger.Log("unsubscribed: " + channel + " " + count, LogLevel.Information));
 
             subClient.On("message",
                          (string channel, object message) => {
@@ -49,7 +50,7 @@ namespace CommonShuffleLibrary
             pubClient.Publish(channel, content);
         }
 
-        [IgnoreGenericArguments]
+        
         public void Subscribe<T>(string channel, Action<T> callback)
         {
             subClient.Subscribe(channel);

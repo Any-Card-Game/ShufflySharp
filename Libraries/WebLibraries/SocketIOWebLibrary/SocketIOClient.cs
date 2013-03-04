@@ -1,9 +1,9 @@
 using System.Runtime.CompilerServices;
-using CommonsLibraries;
+using NodeJSLibrary;
 namespace SocketIOWebLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     [ScriptName("io")]
     public class SocketIOClient : EventEmitter
     {

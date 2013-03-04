@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using FibersLibrary;
 using Models;
@@ -26,6 +27,22 @@ namespace global
         public static void DeclareWinner(UserLogicModel user)
         {
             Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.GameOver));
+        }
+        [ScriptName("gameOver")]
+        public static void GameOver()
+        {
+            Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.GameOver));
+        }
+        [ScriptName("playersLeave")]
+        public static void PlayersLeave(Action<List<UserLogicModel>> usersLeft)
+        {
+
+            var users= Fiber<List<UserLogicModel>>.Yield(new FiberYieldResponse(FiberYieldResponseType.PlayersLeft));
+
+            if (users.Count > 0) {
+                usersLeft(users);
+            }
+        
         }
 
         [ScriptName("log")]

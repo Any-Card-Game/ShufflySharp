@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
+using CommonShuffleLibrary;
 using NodeJSLibrary;
+using RedisLibrary;
 namespace AdminServer
 {
     public class AdminServer
@@ -19,24 +22,30 @@ namespace AdminServer
         private int indexPageData = 0;
         private Process nodeInspector;
         private string[] nonDebuggable;
-        private int numOfChatServers = 5;
-        private int numOfGameServers = 5;
-        private int numOfGateways = 5; 
-        private int numOfSiteServers = 5;
+        private int numOfChatServers = 1;
+        private int numOfGameServers = 1;
+        private int numOfGateways = 1;
+        private int numOfSiteServers = 1;
         private List<ProcessInformation> sites;
         private Util util;
 
         public AdminServer()
         {
             var fs = Global.Require<FS>("fs");
-            Console.Log("Shuffly Admin V0.48");
-            Console.Log("Shuffly Admin V0.48");
-            Console.Log("Shuffly Admin V0.48");
-            Console.Log("Shuffly Admin V0.48");
+            Logger.Start("Admin");
 
+            Logger.Log("Shuffly Admin V0.49",LogLevel.DebugInformation);
+            Logger.Log("Shuffly Admin V0.49", LogLevel.Information);
+
+            var redis = Global.Require<Redis>("redis");
+            var client = redis.CreateClient(6379, IPs.RedisIP);
+           /* client.On<string,object>("monitor",(time, args) => {
+                                   Logger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation); 
+                                });*/
+             
             util = Global.Require<Util>("util");
             exec = Global.Require<ChildProcess>("child_process").Exec;
-            __dirname = "/usr/local/src/new/";
+            __dirname = ExtensionMethods.HARDLOCATION;
             nonDebuggable = new[] {"node-inspector", "pkill"};
 
             Global.Require<Http>("http").CreateServer(handler).Listen(8090);
@@ -46,17 +55,17 @@ namespace AdminServer
 
             Global.Process.On("exit",
                               () => {
-                                  Console.Log("Exiting ");
+                                  Logger.Log("Exiting ", LogLevel.DebugInformation);
                                   onAsk("k");
                                   runProcess("pkill", new[] {"node"});
                               });
 
             if (debug)
                 onAsk("d", true);
-            onAsk("d", true);
+           onAsk("d", true);
             if (debug) {
                 nodeInspector = runProcess("node-inspector", new string[0]);
-                Console.Log("node-inspector Started");
+                Logger.Log("node-inspector Started", LogLevel.DebugInformation);
             }
 
             onAsk("s");
@@ -129,7 +138,7 @@ namespace AdminServer
                 case "d":
 
                     debug = !debug;
-                    Console.Log("Debug " + ( debug ? "Enabled" : "Disabled" ));
+                    Logger.Log("Debug " + (debug ? "Enabled" : "Disabled"), LogLevel.DebugInformation);
                     break;
                 case "s":
 
@@ -139,29 +148,29 @@ namespace AdminServer
                     debugs = new List<ProcessInformation>();
                     gateways = new List<ProcessInformation>();
                     head = new ProcessInformation(runProcess("node", new[] {__dirname + "HeadServer.js"}, 4000), "Head Server", 0, 4000);
-                    Console.Log("Head Server Started");
+                    Logger.Log("Head Server Started", LogLevel.DebugInformation);
                     for (var j = 0; j < numOfSiteServers; j++) {
                         sites.Add(new ProcessInformation(runProcess("node", new string[] {__dirname + "SiteServer.js"}, 4100 + j), "Site Server", j, 4100 + j));
                     }
 
-                    Console.Log(sites.Count + " Site Servers Started");
+                    Logger.Log(sites.Count + " Site Servers Started", LogLevel.DebugInformation);
                     for (var j = 0; j < numOfGateways; j++) {
                         gateways.Add(new ProcessInformation(runProcess("node", new[] {__dirname + "GatewayServer.js"}, 4400 + j), "Gateway Server", j, 4400 + j));
                     }
-                    Console.Log(gateways.Count + " Gateway Servers Started");
+                    Logger.Log(gateways.Count + " Gateway Servers Started", LogLevel.DebugInformation);
 
                     for (var j = 0; j < numOfGameServers; j++) {
                         games.Add(new ProcessInformation(runProcess("node", new[] {__dirname + "GameServer.js"}, 4200 + j), "Game Server", j, 4200 + j));
                     }
-                    Console.Log(games.Count + " Game Servers Started");
+                    Logger.Log(games.Count + " Game Servers Started", LogLevel.DebugInformation);
 
                     for (var j = 0; j < numOfChatServers; j++) {
                         chats.Add(new ProcessInformation(runProcess("node", new[] {__dirname + "ChatServer.js"}, 4500 + j), "Chat Server", j, 4500 + j));
                     }
-                    Console.Log(chats.Count + " Chat Servers Started");
+                    Logger.Log(chats.Count + " Chat Servers Started", LogLevel.DebugInformation);
 
                     debugs.Add(new ProcessInformation(runProcess("node", new[] {__dirname + "DebugServer.js"}, 4300), "Debug Server", 0, 4300));
-                    Console.Log(debugs.Count + " Debug Servers Started");
+                    Logger.Log(debugs.Count + " Debug Servers Started", LogLevel.DebugInformation);
 
                     break;
                 case "q":

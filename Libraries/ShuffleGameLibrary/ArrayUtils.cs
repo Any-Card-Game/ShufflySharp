@@ -13,19 +13,22 @@ namespace global
             "Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};".eval();
             "Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};".eval();
             "Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};".eval();
+            "Array.prototype.remove=function(does){ this.splice(this.indexOf(does),1); };".eval();
         }
 
-        [IgnoreGenericArguments]
+
+        [IncludeGenericArguments(false)]
         public static bool ForEach<T>(T[] ts, Func<T, int, bool> does)
         {
-            for (var i = 0; i < ts.Length; i++) {
+            for (var i = 0; i < ts.Length; i++)
+            {
                 var df = does(ts[i], i);
                 if (df)
                     return df;
             }
             return false;
         }
-
+        [IncludeGenericArguments]
         public static T2[] Select<T, T2>(T[] ts, Func<T, T2> does)
         {
             T2[] ts2 = new T2[ts.Length];
@@ -54,6 +57,7 @@ namespace global
             setArrayData(ts, items);
             return ts;
         }
+        [IncludeGenericArguments]
 
         private static void setArrayData<T>(T[] ts, T[] items)
         {
@@ -62,6 +66,7 @@ namespace global
             }
         }
 
+        [IncludeGenericArguments]
         public static GroupByKey<T, T2>[] GroupBy<T, T2>(T[] ts, Func<T, T2> does)
         {
             List<GroupByKey<T, T2>> items = new List<GroupByKey<T, T2>>();
@@ -83,19 +88,21 @@ namespace global
             return items.me();
         }
 
-        [IgnoreGenericArguments]
+        [IncludeGenericArguments(false)]
         public static T[] Where<T>(T[] ts, Func<T, int, bool> does)
         {
             var jf = new List<T>();
 
-            for (var i = 0; i < ts.Length; i++) {
+            for (var i = 0; i < ts.Length; i++)
+            {
                 if (does(ts[i], i))
                     jf.Add(ts[i]);
             }
             return Script.Reinterpret<T[]>(jf);
         }
 
-        [IgnoreGenericArguments]
+
+        [IncludeGenericArguments(false)]
         public static bool Any<T>(T[] ts, Func<T, int, bool> does)
         {
             var jf = new List<T>();
@@ -108,6 +115,7 @@ namespace global
         }
 
         #region Nested type: GroupByKey
+        [IncludeGenericArguments]
 
         public class GroupByKey<T, T2>
         {

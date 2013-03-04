@@ -6,6 +6,7 @@ namespace global
         Log,
         GameOver,
         Break,
-        VariableLookup
+        VariableLookup,
+        PlayersLeft
     }
 }

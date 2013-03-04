@@ -1,10 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
-using CommonsLibraries;
 namespace NodeJSLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class STDIn : EventEmitter
     {
         public void Resume() {}

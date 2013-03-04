@@ -1,8 +1,8 @@
 using System.Runtime.CompilerServices;
-using CommonsLibraries;
+using NodeJSLibrary;
 namespace SocketIONodeLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     public class SocketNamespace : EventEmitter {}
 }

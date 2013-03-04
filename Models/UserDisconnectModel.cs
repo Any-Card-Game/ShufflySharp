@@ -13,4 +13,15 @@ namespace Models
             User = user;
         }
     }
+    [Serializable]
+    public class UserLeaveModel
+    {
+        public UserLogicModel User { get; set; }
+
+        [ObjectLiteral]
+        public UserLeaveModel(UserLogicModel user)
+        {
+            User = user;
+        }
+    }
 }

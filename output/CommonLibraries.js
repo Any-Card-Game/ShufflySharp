@@ -6,8 +6,8 @@
 		var $type = function(d) {
 			this.isValue = false;
 			this.$method = null;
-			this.$oldValue = T.getDefaultValue();
-			this.$value = T.getDefaultValue();
+			this.$oldValue = ss.getDefaultValue(T);
+			this.$value = ss.getDefaultValue(T);
 			this.$1$StaticValueChangesField = null;
 			this.$method = d;
 			this.isValue = false;
@@ -32,36 +32,36 @@
 					this.$oldValue = val;
 					return val;
 				}
-				return T.getDefaultValue();
+				return ss.getDefaultValue(T);
 			}
 		};
 		$type.$ctor1 = function(d) {
 			this.isValue = false;
 			this.$method = null;
-			this.$oldValue = T.getDefaultValue();
-			this.$value = T.getDefaultValue();
+			this.$oldValue = ss.getDefaultValue(T);
+			this.$value = ss.getDefaultValue(T);
 			this.$1$StaticValueChangesField = null;
 			this.$value = d;
 			this.isValue = true;
 		};
 		$type.$ctor1.prototype = $type.prototype;
 		$type.op_Implicit$2 = function(d) {
-			return new (Type.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]).$ctor1)(d);
+			return new (ss.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]).$ctor1)(d);
 		};
 		$type.op_Implicit$1 = function(d) {
-			return new (Type.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]))(d);
+			return new (ss.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]))(d);
 		};
 		$type.op_Implicit = function(d) {
 			return d.$evaluate();
 		};
-		Type.registerGenericClassInstance($type, $CommonLibraries_DelegateOrValue$1, [T], function() {
+		ss.registerGenericClassInstance($type, $CommonLibraries_DelegateOrValue$1, [T], function() {
 			return Object;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'CommonLibraries.DelegateOrValue$1', $CommonLibraries_DelegateOrValue$1, 1);
+	ss.registerGenericClass(global, 'CommonLibraries.DelegateOrValue$1', $CommonLibraries_DelegateOrValue$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.ExtensionMethods
 	var $CommonLibraries_ExtensionMethods = function() {
@@ -161,7 +161,7 @@
 		var $type = function(type) {
 			this.$1$FuncSetField = null;
 			this.$1$FuncGetField = null;
-			this.$1$TypeValueField = T.getDefaultValue();
+			this.$1$TypeValueField = ss.getDefaultValue(T);
 			this.set_typeValue(type);
 		};
 		$type.prototype = {
@@ -184,10 +184,10 @@
 				this.$1$TypeValueField = value;
 			},
 			getValue: function() {
-				if (ss.isNullOrUndefined(this.get_typeValue()) && (ss.isNullOrUndefined(this.get_funcGet()) && ss.isNullOrUndefined(this.get_funcSet()))) {
-					return T.getDefaultValue();
+				if (ss.isNullOrUndefined(this.get_typeValue()) && (ss.staticEquals(this.get_funcGet(), null) && ss.staticEquals(this.get_funcSet(), null))) {
+					return ss.getDefaultValue(T);
 				}
-				if (ss.isNullOrUndefined(this.get_typeValue()) && ss.isValue(this.get_funcGet())) {
+				if (ss.isNullOrUndefined(this.get_typeValue()) && !ss.staticEquals(this.get_funcGet(), null)) {
 					return this.get_funcGet()();
 				}
 				return this.get_typeValue();
@@ -196,23 +196,25 @@
 		$type.$ctor1 = function(_get, _set) {
 			this.$1$FuncSetField = null;
 			this.$1$FuncGetField = null;
-			this.$1$TypeValueField = T.getDefaultValue();
+			this.$1$TypeValueField = ss.getDefaultValue(T);
 			this.set_funcGet(_get);
 			this.set_funcSet(_set);
 		};
 		$type.$ctor1.prototype = $type.prototype;
-		Type.registerGenericClassInstance($type, $CommonLibraries_TypeOrFunction$1, [T], function() {
+		ss.registerGenericClassInstance($type, $CommonLibraries_TypeOrFunction$1, [T], function() {
 			return Object;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'CommonLibraries.TypeOrFunction$1', $CommonLibraries_TypeOrFunction$1, 1);
-	Type.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods, Object);
-	Type.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid, Object);
-	Type.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help, Object);
-	Type.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number, Object);
-	Type.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point, Object);
-	Type.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size, Object);
+	ss.registerGenericClass(global, 'CommonLibraries.TypeOrFunction$1', $CommonLibraries_TypeOrFunction$1, 1);
+	ss.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods);
+	ss.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid);
+	ss.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help);
+	ss.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number);
+	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
+	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
+	$CommonLibraries_Help.verbose = true;
+	$CommonLibraries_ExtensionMethods.HARDLOCATION = '/usr/local/src/new/';
 })();

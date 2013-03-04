@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonLibraries;
+using CommonServerLibraries;
 using MongoDBLibrary;
 using NodeJSLibrary;
 using global;
@@ -11,9 +12,11 @@ namespace ChatServer
 
         public ChatServer()
         {
-            new ArrayUtils();
             chatServerIndex = "ChatServer" + Guid.NewGuid();
-            Global.Process.On("exit", () => Console.Log("exi ChatServer"));
+            Logger.Start(chatServerIndex);
+
+            new ArrayUtils();
+            Global.Process.On("exit", () => Logger.Log("exi ChatServer", LogLevel.Information));
             ChatManager chatManager = new ChatManager(chatServerIndex);
         }
 
@@ -22,7 +25,7 @@ namespace ChatServer
             try {
                 new ChatServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
+                Logger.Log("CRITICAL FAILURE: " + exc.GoodMessage(),LogLevel.Error);
             }
         }
     }

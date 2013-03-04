@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using CommonShuffleLibrary;
 using NodeJSLibrary;
 namespace HeadServer
 {
     public class HeadServer
     {
-        private string __dirname = "/usr/local/src/new";
+        private string __dirname = ExtensionMethods.HARDLOCATION;
         private FS fs = Global.Require<FS>("fs");
         private List<string> gateways = new List<string>();
         private List<string> indexForSites = new List<string>();
@@ -21,10 +22,13 @@ namespace HeadServer
 
         public HeadServer()
         {
-            qManager = new QueueManager("Head1",
+            var name = "Head1";
+            Logger.Start(name);
+
+            qManager = new QueueManager(name,
                                         new QueueManagerOptions(new[] {
                                                                               new QueueWatcher("HeadServer", null),
-                                                                              new QueueWatcher("Head1", null),
+                                                                              new QueueWatcher(name, null),
                                                                       },
                                                                 new[] {
                                                                               "GatewayServer"
@@ -40,7 +44,7 @@ namespace HeadServer
 
             Global.Require<Http>("http").CreateServer(handlerWS).Listen(8844);
 
-            Global.SetInterval(pollGateways, 1000);
+            Global.SetInterval(pollGateways, 5000);
             pollGateways();
         }
 
@@ -84,6 +88,7 @@ namespace HeadServer
         public void ready(FileSystemError error, object content)
         {
             indexPageData = content.ToString();
+            indexPageData = content.ToString();
             Global.Require<Http>("http").CreateServer(handler).Listen(80);
         }
 
@@ -92,7 +97,7 @@ namespace HeadServer
             try {
                 new HeadServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
+                Logger.Log("CRITICAL FAILURE: " + exc.GoodMessage(), LogLevel.Error);
             }
         }
     }

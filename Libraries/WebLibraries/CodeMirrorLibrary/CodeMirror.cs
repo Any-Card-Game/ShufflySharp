@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace CodeMirrorLibrary
 {
     [IgnoreNamespace]
-    [Imported(IsRealType = true)]
+    [Imported]
     [ScriptName("CodeMirror")]
     public class CodeMirror
     {

@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using NodeJSLibrary;
 namespace RedisLibrary
 {
-    [Imported(IsRealType = true)]
+    [Imported]
     [IgnoreNamespace]
     public class Redis : NodeModule
     {

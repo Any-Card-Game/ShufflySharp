@@ -2,9 +2,10 @@
 using System.Html;
 using System.Runtime.CompilerServices;
 using Client.Libs;
-using Client.Managers;
 using Client.ShufflyGame;
 using Client.UIWindow;
+using ClientLibs;
+using ClientLibs.Managers;
 using CommonLibraries;
 using CommonWebLibraries;
 using Models.GameManagerModels;
@@ -56,13 +57,11 @@ namespace Client
             this.GameManager = new GameManager(this);
 
             LoginUI = new LoginUI(shuffUIManager, this);
-            HomeUI = new HomeUI(shuffUIManager, this);
-            DebugUI = new DebugUI(shuffUIManager, this);
+            HomeUI = new HomeUI(shuffUIManager, this); 
             QuestionUI = new QuestionUI(shuffUIManager, this);
-            CodeEditorUI = new CodeEditorUI(shuffUIManager, this);
 
             /*gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
-            gateway.On("Area.Lobby.ListRooms.Response", (data) => { Console.Log(data); });*/
+            gateway.On("Area.Lobby.ListRooms.Response", (data) => { Logger.Log });*/
 
             //ie8
             /*   {

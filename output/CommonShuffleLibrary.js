@@ -1,13 +1,13 @@
-
+require('./MongoDBLibrary.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Consumer
 	var $CommonShuffleLibrary_Consumer = function(obj) {
 		var tf = this;
-		var $t1 = Object.keys(obj).getEnumerator();
+		var $t1 = ss.getEnumerator(Object.keys(obj));
 		try {
 			while ($t1.moveNext()) {
-				var v = $t1.get_current();
+				var v = $t1.current();
 				tf[v] = obj[v];
 			}
 		}
@@ -28,7 +28,7 @@
 		var Db = mongo.Db;
 		this.$connection = mongo.Connection;
 		var server = this.$server = mongo.Server;
-		this.client = new Db('test', new server('50.116.28.16', 27017, {}));
+		this.client = new Db('test', new server('50.116.28.16', 27017), { safe: false });
 		this.client.open(function(arg1, arg2) {
 			//client.Collection("test_insert", "test");
 		});
@@ -45,12 +45,6 @@
 	// CommonShuffleLibrary.IPs
 	var $CommonShuffleLibrary_IPs = function() {
 	};
-	$CommonShuffleLibrary_IPs.get_gatewayIP = function() {
-		return '50.116.22.241';
-	};
-	$CommonShuffleLibrary_IPs.get_redisIP = function() {
-		return '50.116.28.16';
-	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.PubSub
 	var $CommonShuffleLibrary_PubSub = function(ready) {
@@ -63,26 +57,26 @@
 		var someSubbed = this.$subbed;
 		var redis = require('redis');
 		redis.debug_mode = false;
-		this.$subClient = redis.createClient(6379, $CommonShuffleLibrary_IPs.get_redisIP());
-		this.$pubClient = redis.createClient(6379, $CommonShuffleLibrary_IPs.get_redisIP());
+		this.$subClient = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
+		this.$pubClient = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
 		this.$subClient.on('subscribe', function(channel, count) {
-			console.log('subscribed: ' + channel + ' ' + count);
+			CommonServerLibraries.Logger.log('subscribed: ' + channel + ' ' + count, 2);
 		});
 		this.$subClient.on('unsubscribe', function(channel1, count1) {
-			console.log('unsubscribed: ' + channel1 + ' ' + count1);
+			CommonServerLibraries.Logger.log('unsubscribed: ' + channel1 + ' ' + count1, 2);
 		});
 		this.$subClient.on('message', function(channel2, message) {
 			if (!!ss.isValue(someSubbed[channel2])) {
 				someSubbed[channel2](message);
 			}
 		});
-		this.$subClient.on('ready', Function.mkdel(this, function() {
+		this.$subClient.on('ready', ss.mkdel(this, function() {
 			this.$sready = true;
 			if (this.$sready && this.$pready) {
 				ready();
 			}
 		}));
-		this.$pubClient.on('ready', Function.mkdel(this, function() {
+		this.$pubClient.on('ready', ss.mkdel(this, function() {
 			this.$pready = true;
 			if (this.$sready && this.$pready) {
 				ready();
@@ -93,9 +87,11 @@
 		publish: function(channel, content) {
 			this.$pubClient.publish(channel, content);
 		},
-		subscribe: function(channel, callback) {
-			this.$subClient.subscribe(channel);
-			this.$subbed[channel] = callback;
+		subscribe: function(T) {
+			return function(channel, callback) {
+				this.$subClient.subscribe(channel);
+				this.$subbed[channel] = callback;
+			};
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -111,11 +107,11 @@
 	};
 	$CommonShuffleLibrary_QueueItemCollection.prototype = {
 		getByChannel: function(channel) {
-			var $t1 = this.$queueItems.getEnumerator();
+			var $t1 = ss.getEnumerator(this.$queueItems);
 			try {
 				while ($t1.moveNext()) {
-					var queueWatcher = $t1.get_current();
-					if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(queueWatcher.channel.replaceAll('*', '')) === 0) {
+					var queueWatcher = $t1.current();
+					if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(ss.replaceAllString(queueWatcher.channel, '*', '')) === 0) {
 						return queueWatcher;
 					}
 				}
@@ -136,20 +132,20 @@
 		this.qw = null;
 		this.$qwCollection = null;
 		this.name = name;
-		this.channels = new (Type.makeGenericType(ss.Dictionary$2, [String, Function]))();
+		this.channels = new (ss.makeGenericType(ss.Dictionary$2, [String, Function]))();
 		this.qw = [];
 		this.qp = [];
 		for (var $t1 = 0; $t1 < options.watchers.length; $t1++) {
 			var queueWatcher = options.watchers[$t1];
-			if (ss.isNullOrUndefined(queueWatcher.get_callback())) {
-				queueWatcher.set_callback(Function.mkdel(this, this.$messageReceived));
+			if (ss.staticEquals(queueWatcher.get_callback(), null)) {
+				queueWatcher.set_callback(ss.mkdel(this, this.$messageReceived));
 			}
-			this.qw.add(queueWatcher);
+			ss.add(this.qw, queueWatcher);
 		}
-		this.qw.addRange(options.watchers);
+		ss.arrayAddRange(this.qw, options.watchers);
 		for (var $t2 = 0; $t2 < options.pushers.length; $t2++) {
 			var pusher = options.pushers[$t2];
-			this.qp.add(new $CommonShuffleLibrary_QueuePusher(pusher));
+			ss.add(this.qp, new $CommonShuffleLibrary_QueuePusher(pusher));
 		}
 		this.$qwCollection = new $CommonShuffleLibrary_QueueItemCollection(this.qw);
 		this.$qpCollection = new $CommonShuffleLibrary_QueueItemCollection(this.qp);
@@ -161,7 +157,7 @@
 		$messageReceived: function(name, user, eventChannel, content) {
 			//todo?        user.Gateway = name;
 			try {
-				if (ss.isValue(this.channels.get_item(eventChannel))) {
+				if (!ss.staticEquals(this.channels.get_item(eventChannel), null)) {
 					this.channels.get_item(eventChannel)(user, content);
 				}
 			}
@@ -172,12 +168,12 @@
 		},
 		sendMessage: function(channel, eventChannel, user, content) {
 			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
-				console.log('Cannot send message:' + channel + ' No Existy');
-				console.log('       ' + eventChannel + ' ' + JSON.stringify(content));
+				CommonServerLibraries.Logger.log('Cannot send message:' + channel + ' No Existy', 0);
+				CommonServerLibraries.Logger.log('       ' + eventChannel + ' ' + JSON.stringify(content), 0);
 				return;
 			}
-			var pusher = Type.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			// Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
+			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
+			// Logger.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
 			pusher.message(channel, this.name, user, eventChannel, content);
 		}
 	};
@@ -208,12 +204,15 @@
 		$CommonShuffleLibrary_QueueItem.call(this);
 		var redis = require('redis');
 		this.channel = pusher;
-		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.get_redisIP());
+		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
 	};
 	$CommonShuffleLibrary_QueuePusher.prototype = {
 		message: function(channel, name, user, eventChannel, content) {
 			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
 			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
+			if (CommonLibraries.Help.verbose) {
+				CommonServerLibraries.Logger.log(channel + '  \n ' + value, 2);
+			}
 			this.$client1.rpush(channel, value);
 			//todo:maybe sanitize
 		}
@@ -227,7 +226,7 @@
 		this.channel = queue;
 		this.set_callback(callback);
 		var redis = require('redis');
-		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.get_redisIP());
+		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
 		this.cycle(queue);
 	};
 	$CommonShuffleLibrary_QueueWatcher.prototype = {
@@ -238,9 +237,12 @@
 			this.$2$CallbackField = value;
 		},
 		cycle: function(channel) {
-			this.$client1.blpop([channel, 0], Function.mkdel(this, function(caller, dtj) {
-				var data = Type.cast(dtj, Array);
+			this.$client1.blpop([channel, 0], ss.mkdel(this, function(caller, dtj) {
+				var data = ss.cast(dtj, Array);
 				if (ss.isValue(dtj)) {
+					if (CommonLibraries.Help.verbose) {
+						CommonServerLibraries.Logger.log(data[1], 2);
+					}
 					var dt = JSON.parse(data[1]);
 					this.get_callback()(dt.name, dt.user, dt.eventChannel, dt.content);
 				}
@@ -258,7 +260,7 @@
 		createChatChannel: function(roomName, user, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var $t1 = [];
-				$t1.add(user);
+				ss.add($t1, user);
 				var chatRoomModel = { roomName: roomName, users: $t1, messages: [] };
 				collection.insert(chatRoomModel);
 				complete(chatRoomModel);
@@ -266,14 +268,14 @@
 		},
 		addChatLine: function(user, room, message, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
-				var messageModel = { user: user, content: message, time: Date.get_now() };
+				var messageModel = { user: user, content: message, time: new Date() };
 				var query = {};
 				query['$push'] = { messages: messageModel };
 				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						console.log('Data Error: ' + err2);
+						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
-					room.messages.add(messageModel);
+					ss.add(room.messages, messageModel);
 					complete(messageModel);
 				});
 			});
@@ -284,9 +286,9 @@
 				query['$push'] = { users: user };
 				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						console.log('Data Error: ' + err2);
+						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
-					room.users.add(user);
+					ss.add(room.users, user);
 					complete(room);
 				});
 			});
@@ -297,9 +299,9 @@
 				query['$pop'] = { users: user };
 				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						console.log('Data Error: ' + err2);
+						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
-					room.users.remove(user);
+					ss.remove(room.users, user);
 					complete(room);
 				});
 			});
@@ -358,7 +360,7 @@
 		room_CreateRoom: function(gameType, roomName, user, onRoomCreated) {
 			debugger;
 			var $t1 = [];
-			$t1.add(user);
+			ss.add($t1, user);
 			var rd = { gameType: gameType, roomName: roomName, chatChannel: roomName + 'RoomName', gameChannel: roomName + 'GameRoom', players: $t1, chatServer: null, gameServer: null };
 			this.$manager.client.collection('Room', function(err, collection) {
 				collection.insert(rd);
@@ -366,15 +368,15 @@
 			});
 		},
 		room_JoinRoom: function(gameType, roomName, user, onRoomJoined) {
-			this.$manager.client.collection('Room', Function.mkdel(this, function(err, collection) {
+			this.$manager.client.collection('Room', ss.mkdel(this, function(err, collection) {
 				var j = { gameType: gameType, roomName: roomName };
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, Function.mkdel(this, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, ss.mkdel(this, function(a, b) {
 					if (b.length === 0) {
 						onRoomJoined(null);
 					}
 					else {
 						var roomData = b[0];
-						roomData.players.add(user);
+						ss.add(roomData.players, user);
 						this.room_AddPlayer(roomData, user, function(ro) {
 							onRoomJoined(roomData);
 						});
@@ -396,9 +398,9 @@
 				query['$push'] = { players: user };
 				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						console.log('Data Error: ' + err2);
+						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
-					room.players.add(user);
+					ss.add(room.players, user);
 					complete(room);
 				});
 			});
@@ -409,12 +411,12 @@
 				query['$pop'] = { players: user };
 				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						console.log('Data Error: ' + err2);
+						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
 					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 						var userLogicModel = room.players[$t1];
 						if (ss.referenceEquals(userLogicModel.userName, user.userName)) {
-							room.players.remove(userLogicModel);
+							ss.remove(room.players, userLogicModel);
 							break;
 						}
 					}
@@ -433,7 +435,7 @@
 				query['$set'] = { chatServer: chatServerIndex };
 				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						console.log('Data Error: ' + err2);
+						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
 					room.chatServer = chatServerIndex;
 					complete(room);
@@ -480,23 +482,27 @@
 		$this.password = null;
 		return $this;
 	};
-	Type.registerClass(global, 'CommonShuffleLibrary.Consumer', $CommonShuffleLibrary_Consumer, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.DataManager', $CommonShuffleLibrary_DataManager, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.IPs', $CommonShuffleLibrary_IPs, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.PubSub', $CommonShuffleLibrary_PubSub, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueueItem', $CommonShuffleLibrary_QueueItem, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueueItemCollection', $CommonShuffleLibrary_QueueItemCollection, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueueManager', $CommonShuffleLibrary_QueueManager, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueueManagerOptions', $CommonShuffleLibrary_QueueManagerOptions, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueueMessage', $CommonShuffleLibrary_QueueMessage, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueuePusher', $CommonShuffleLibrary_QueuePusher, $CommonShuffleLibrary_QueueItem);
-	Type.registerClass(global, 'CommonShuffleLibrary.QueueWatcher', $CommonShuffleLibrary_QueueWatcher, $CommonShuffleLibrary_QueueItem);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerChatData', $CommonShuffleLibrary_Data_DataManagerChatData, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper, Object);
-	Type.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData);
-	$CommonShuffleLibrary_DataManager.$connectionAddress = '50.116.28.16';
+	ss.registerClass(global, 'CommonShuffleLibrary.Consumer', $CommonShuffleLibrary_Consumer);
+	ss.registerClass(global, 'CommonShuffleLibrary.DataManager', $CommonShuffleLibrary_DataManager);
+	ss.registerClass(global, 'CommonShuffleLibrary.IPs', $CommonShuffleLibrary_IPs);
+	ss.registerClass(global, 'CommonShuffleLibrary.PubSub', $CommonShuffleLibrary_PubSub);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueueItem', $CommonShuffleLibrary_QueueItem);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueueItemCollection', $CommonShuffleLibrary_QueueItemCollection);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueueManager', $CommonShuffleLibrary_QueueManager);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueueManagerOptions', $CommonShuffleLibrary_QueueManagerOptions);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueueMessage', $CommonShuffleLibrary_QueueMessage);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueuePusher', $CommonShuffleLibrary_QueuePusher, $CommonShuffleLibrary_QueueItem);
+	ss.registerClass(global, 'CommonShuffleLibrary.QueueWatcher', $CommonShuffleLibrary_QueueWatcher, $CommonShuffleLibrary_QueueItem);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerChatData', $CommonShuffleLibrary_Data_DataManagerChatData);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, MongoDBLibrary.MongoDocument);
+	$CommonShuffleLibrary_IPs.gatewayIP = '50.116.22.241';
+	$CommonShuffleLibrary_IPs.webIP = 'http://50.116.22.241:8881/';
+	$CommonShuffleLibrary_IPs.redisIP = '50.116.28.16';
+	$CommonShuffleLibrary_IPs.mongoIP = '50.116.28.16';
+	$CommonShuffleLibrary_DataManager.$connectionAddress = $CommonShuffleLibrary_IPs.mongoIP;
 	$CommonShuffleLibrary_DataManager.$connectionPort = '27017';
 })();

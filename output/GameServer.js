@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonServerLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// GameServer.GameClientManager
@@ -8,6 +8,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		this.$1$OnGameCreateField = null;
 		this.$1$OnUserAnswerQuestionField = null;
 		this.$1$OnUserDisconnectField = null;
+		this.$1$OnUserLeaveField = null;
 		this.set_gameServerIndex(gameServerIndex);
 		this.$setup();
 	};
@@ -19,33 +20,42 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			this.$1$GameServerIndexField = value;
 		},
 		add_onGameCreate: function(value) {
-			this.$1$OnGameCreateField = Function.combine(this.$1$OnGameCreateField, value);
+			this.$1$OnGameCreateField = ss.delegateCombine(this.$1$OnGameCreateField, value);
 		},
 		remove_onGameCreate: function(value) {
-			this.$1$OnGameCreateField = Function.remove(this.$1$OnGameCreateField, value);
+			this.$1$OnGameCreateField = ss.delegateRemove(this.$1$OnGameCreateField, value);
 		},
 		add_onUserAnswerQuestion: function(value) {
-			this.$1$OnUserAnswerQuestionField = Function.combine(this.$1$OnUserAnswerQuestionField, value);
+			this.$1$OnUserAnswerQuestionField = ss.delegateCombine(this.$1$OnUserAnswerQuestionField, value);
 		},
 		remove_onUserAnswerQuestion: function(value) {
-			this.$1$OnUserAnswerQuestionField = Function.remove(this.$1$OnUserAnswerQuestionField, value);
+			this.$1$OnUserAnswerQuestionField = ss.delegateRemove(this.$1$OnUserAnswerQuestionField, value);
 		},
 		add_onUserDisconnect: function(value) {
-			this.$1$OnUserDisconnectField = Function.combine(this.$1$OnUserDisconnectField, value);
+			this.$1$OnUserDisconnectField = ss.delegateCombine(this.$1$OnUserDisconnectField, value);
 		},
 		remove_onUserDisconnect: function(value) {
-			this.$1$OnUserDisconnectField = Function.remove(this.$1$OnUserDisconnectField, value);
+			this.$1$OnUserDisconnectField = ss.delegateRemove(this.$1$OnUserDisconnectField, value);
+		},
+		add_onUserLeave: function(value) {
+			this.$1$OnUserLeaveField = ss.delegateCombine(this.$1$OnUserLeaveField, value);
+		},
+		remove_onUserLeave: function(value) {
+			this.$1$OnUserLeaveField = ss.delegateRemove(this.$1$OnUserLeaveField, value);
 		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_gameServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GameServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_gameServerIndex(), null)], ['GameServer', 'GatewayServer', 'Gateway*']));
-			this.$qManager.addChannel('Area.Game.Create', Function.mkdel(this, function(user, data) {
+			this.$qManager.addChannel('Area.Game.Create', ss.mkdel(this, function(user, data) {
 				this.$1$OnGameCreateField(data);
 			}));
-			this.$qManager.addChannel('Area.Game.AnswerQuestion', Function.mkdel(this, function(user1, data1) {
+			this.$qManager.addChannel('Area.Game.AnswerQuestion', ss.mkdel(this, function(user1, data1) {
 				this.$1$OnUserAnswerQuestionField(user1, data1);
 			}));
-			this.$qManager.addChannel('Area.Game.UserDisconnect', Function.mkdel(this, function(user2, data2) {
+			this.$qManager.addChannel('Area.Game.UserDisconnect', ss.mkdel(this, function(user2, data2) {
 				this.$1$OnUserDisconnectField(user2, data2);
+			}));
+			this.$qManager.addChannel('Area.Game.LeaveGameRoom', ss.mkdel(this, function(user3, data3) {
+				this.$1$OnUserLeaveField(user3, data3);
 			}));
 		},
 		$sendMessageToAll: function(room, message, val) {
@@ -115,39 +125,66 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		this.$total__ = 0;
 		this.$verbose = false;
 		this.$myServerManager = new $GameServer_GameClientManager(gameServerIndex);
-		this.$myServerManager.add_onGameCreate(Function.mkdel(this, this.createGame));
-		this.$myServerManager.add_onUserAnswerQuestion(Function.mkdel(this, this.userAnswerQuestion));
-		this.$myServerManager.add_onUserDisconnect(Function.mkdel(this, this.$userDisconnect));
+		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
+		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
+		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
+		this.$myServerManager.add_onUserLeave(ss.mkdel(this, this.$userLeave));
 		this.$rooms = [];
 		this.$cachedGames = {};
 		this.$gameData = new $GameServer_GameData();
 		this.$dataManager = new CommonShuffleLibrary.DataManager();
-		setInterval(Function.mkdel(this, this.$flushQueue), 50);
+		setInterval(ss.mkdel(this, this.$flushQueue), 50);
 	};
 	$GameServer_GameManager.prototype = {
 		$userDisconnect: function(user, data) {
-			//todo does
+			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
+				var gameRoom = this.$rooms[$t1];
+				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
+					var player = gameRoom.players[$t2];
+					if (ss.referenceEquals(player.userName, user.userName)) {
+						gameRoom.playerLeave(player);
+						break;
+					}
+				}
+			}
+		},
+		$userLeave: function(user, data) {
+			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
+				var gameRoom = this.$rooms[$t1];
+				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
+					var player = gameRoom.players[$t2];
+					if (ss.referenceEquals(player.userName, user.userName)) {
+						gameRoom.playerLeave(player);
+						break;
+					}
+				}
+			}
 		},
 		createGame: function(data) {
-			console.log('--game created ');
+			CommonServerLibraries.Logger.log('--game created ', 2);
 			var room;
-			this.$rooms.add(room = $GameServer_Models_GameRoom.$ctor());
+			ss.add(this.$rooms, room = $GameServer_Models_GameRoom.$ctor());
 			room.maxUsers = data.players.length;
 			//todo idk
 			room.gameType = data.gameType;
 			room.started = false;
-			room.players.addRange(data.players);
+			ss.arrayAddRange(room.players, data.players);
 			var gameObject;
-			if (Object.keyExists(this.$cachedGames, room.gameType)) {
+			if (ss.keyExists(this.$cachedGames, room.gameType)) {
 				gameObject = this.$cachedGames[room.gameType];
 			}
 			else {
-				gameObject = this.$cachedGames[room.gameType] = require(String.format('./Games/{0}/app.js', room.gameType));
+				gameObject = this.$cachedGames[room.gameType] = require(ss.formatString('./Games/{0}/app.js', room.gameType));
 			}
 			room.fiber = this.$createFiber(room, gameObject, true);
-			room.unwind = Function.mkdel(this, function(players) {
+			room.unwind = ss.mkdel(this, function(players) {
 				this.$gameData.finishedGames++;
-				console.log('--game closed');
+				CommonServerLibraries.Logger.log('--game closed', 2);
+			});
+			room.playerLeave = ss.delegateCombine(room.playerLeave, function(player) {
+				//todo laeve player api in the game
+				ss.remove(room.players, player);
+				ss.add(room.playersLeft, player);
 			});
 			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 				var userLogicModel = room.players[$t1];
@@ -162,14 +199,14 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			this.$processGameResponse(room, answer);
 		},
 		userAnswerQuestion: function(user, data) {
-			this.$answerQueue.add({ item1: user, item2: data });
+			ss.add(this.$answerQueue, { item1: user, item2: data });
 		},
 		$flushQueue: function() {
 			var ind = 0;
 			for (ind = 0; this.$answerQueue.length > 0 && ind < this.$QUEUEPERTICK; ind++) {
-				console.log('-- w pop');
+				CommonServerLibraries.Logger.log('-- w pop', 2);
 				var arg2 = this.$answerQueue[0];
-				this.$answerQueue.removeAt(0);
+				ss.removeAt(this.$answerQueue, 0);
 				var data = arg2;
 				var room = this.$getRoomByPlayer(arg2.item1.userName);
 				if (ss.isNullOrUndefined(room)) {
@@ -177,7 +214,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				}
 				var dict = global.CardGameAnswer.$ctor();
 				dict.value = data.item2.answer;
-				room.answers.add(dict);
+				ss.add(room.answers, dict);
 				var answ = room.fiber.run(dict);
 				//dataManager.GameData.Insert(new GameInfoModel() {GameName = room.Name, AnswerIndex = answ.Contents});
 				this.$processGameResponse(room, answ);
@@ -188,19 +225,20 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			else {
 				this.$total__ += ind;
 				if ((this.$total__ + this.$skipped__) % 20 === 0) {
-					console.log(String.format('{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}', this.$myServerManager.get_gameServerIndex().substring(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$skipped__, this.$answerQueue.length, this.$rooms.length));
+					CommonServerLibraries.Logger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}', this.$myServerManager.get_gameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$skipped__, this.$answerQueue.length, this.$rooms.length), 1);
 				}
 			}
 		},
 		$createFiber: function(room, gameObject, emulating) {
-			return new Fiber(Function.mkdel(this, function(players) {
+			return new Fiber(ss.mkdel(this, function(players) {
 				if (ss.isNullOrUndefined(players) || players.length === 0) {
 					return true;
 				}
 				room.players = players;
-				console.log('game started');
+				CommonServerLibraries.Logger.log('game started', 2);
 				var sev = null;
 				eval('sev= new gameObject();');
+				room.playersLeft = [];
 				sev.cardGame.emulating = emulating;
 				room.game = sev;
 				sev.cardGame.setAnswers(room.answers);
@@ -216,16 +254,20 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		},
 		$processGameResponse: function(room, response) {
 			if (ss.isNullOrUndefined(response)) {
-				console.log('game request over');
+				CommonServerLibraries.Logger.log('game request over', 2);
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
-				this.$rooms.remove(room);
+				ss.remove(this.$rooms, room);
 				room.unwind(room.players);
 				return;
 			}
 			switch (response.type) {
 				case 0: {
 					this.$askPlayerQuestion(room, response);
+					break;
+				}
+				case 5: {
+					this.$didPlayersLeave(room, response);
 					break;
 				}
 				case 2: {
@@ -242,6 +284,10 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				}
 			}
 		},
+		$didPlayersLeave: function(room, response) {
+			room.fiber.run(room.playersLeft);
+			ss.clear(room.playersLeft);
+		},
 		$breakGameExecution: function(room, response) {
 			if (!room.debuggable) {
 				var answ3 = room.fiber.run();
@@ -257,13 +303,14 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			var answ2 = room.fiber.run();
 			this.$processGameResponse(room, answ2);
 			if (!room.game.cardGame.emulating && room.debuggable) {
-				//console.log(gameData.toString());
+				//Logger.Log(gameData.toString());
 				var ganswer = { lineNumber: 0, value: answer.contents };
 				this.$myServerManager.sendDebugLog(room, ganswer);
 			}
 		},
 		$gameOver: function(room) {
-			console.log('game real over');
+			room.fiber.reset();
+			CommonServerLibraries.Logger.log('game real over', 2);
 			this.$myServerManager.sendUpdateState(room);
 			this.$myServerManager.sendGameOver(room);
 		},
@@ -271,29 +318,29 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			this.$gameData.totalQuestionsAnswered++;
 			var answ = answer.question;
 			if (ss.isNullOrUndefined(answ)) {
-				console.log('game question over');
+				CommonServerLibraries.Logger.log('game question over', 2);
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				//     profiler.takeSnapshot('game over ' + room.roomID);
 				return;
 			}
 			this.$askQuestion(answ, room);
-			//console.log(gameData.toString());
+			//Logger.Log(gameData.toString());
 			var dt = new Date();
 			var then = dt.getMilliseconds();
-			//Console.Log(then - now + " Milliseconds");
-			console.log(ss.Int32.div(this.$gameData.totalQuestionsAnswered, ss.Int32.div(dt.getTime() - this.$startTime.getTime(), 1000)) + ' Answers per seconds');
+			//Logger.Log(then - now + " Milliseconds");
+			CommonServerLibraries.Logger.log(ss.Int32.div(this.$gameData.totalQuestionsAnswered, ss.Int32.div(dt.getTime() - this.$startTime.getTime(), 1000)) + ' Answers per seconds', 1);
 		},
 		$askQuestion: function(answ, room) {
 			var user = this.$getPlayerByUsername(room, answ.user.userName);
 			this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
 			this.$myServerManager.sendUpdateState(room);
 			if (this.$verbose) {
-				console.log(answ.user.userName + ': ' + answ.question + '   ');
+				CommonServerLibraries.Logger.log(answ.user.userName + ': ' + answ.question + '   ', 2);
 				var ind = 0;
 				for (var $t1 = 0; $t1 < answ.answers.length; $t1++) {
 					var answer = answ.answers[$t1];
-					console.log('     ' + ind++ + ': ' + answer);
+					CommonServerLibraries.Logger.log('     ' + ind++ + ': ' + answer, 2);
 				}
 			}
 		},
@@ -324,12 +371,13 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 	var $GameServer_GameServer = function() {
 		this.$childProcess = null;
 		this.$gameServerIndex = null;
+		this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
+		CommonServerLibraries.Logger.start(this.$gameServerIndex);
 		new global.ArrayUtils();
 		this.$childProcess = require('child_process');
-		this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
-		require('fibers');
+		global.Fiber = require('fibers');
 		process.on('exit', function() {
-			console.log('exi');
+			CommonServerLibraries.Logger.log('exi', 2);
 		});
 		var gameManager = new $GameServer_GameManager(this.$gameServerIndex);
 	};
@@ -339,7 +387,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		}
 		catch ($t1) {
 			var exc = ss.Exception.wrap($t1);
-			console.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc));
+			CommonServerLibraries.Logger.log('CRITICAL FAILURE: ' + CommonLibraries.ExtensionMethods.goodMessage(exc), 0);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -392,17 +440,19 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 		$this.roomID = null;
 		$this.started = false;
 		$this.unwind = null;
+		$this.playerLeave = null;
+		$this.playersLeft = null;
 		$this.players = [];
 		$this.roomID = CommonLibraries.Guid.newGuid();
 		$this.answers = [];
 		return $this;
 	};
-	Type.registerClass(global, 'GameServer.GameClientManager', $GameServer_GameClientManager, Object);
-	Type.registerClass(global, 'GameServer.GameData', $GameServer_GameData, Object);
-	Type.registerClass(global, 'GameServer.GameManager', $GameServer_GameManager, Object);
-	Type.registerClass(global, 'GameServer.GameServer', $GameServer_GameServer, Object);
-	Type.registerClass(global, 'GameServer.Models.FiberYieldResponse', $GameServer_Models_FiberYieldResponse, Object);
-	Type.registerClass(global, 'GameServer.Models.GameQuestionAnswerModel', $GameServer_Models_GameQuestionAnswerModel, Object);
-	Type.registerClass(global, 'GameServer.Models.GameRoom', $GameServer_Models_GameRoom, Object);
+	ss.registerClass(global, 'GameServer.GameClientManager', $GameServer_GameClientManager);
+	ss.registerClass(global, 'GameServer.GameData', $GameServer_GameData);
+	ss.registerClass(global, 'GameServer.GameManager', $GameServer_GameManager);
+	ss.registerClass(global, 'GameServer.GameServer', $GameServer_GameServer);
+	ss.registerClass(global, 'GameServer.Models.FiberYieldResponse', $GameServer_Models_FiberYieldResponse);
+	ss.registerClass(global, 'GameServer.Models.GameQuestionAnswerModel', $GameServer_Models_GameQuestionAnswerModel);
+	ss.registerClass(global, 'GameServer.Models.GameRoom', $GameServer_Models_GameRoom);
 	$GameServer_GameServer.main();
 })();

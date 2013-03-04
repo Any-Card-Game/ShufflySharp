@@ -18,9 +18,7 @@ namespace Client.UIWindow
         [IntrinsicProperty]
         public ShuffLabel lblAnother { get; set; }
         [IntrinsicProperty]
-        public ShuffLabel lblHowFast { get; set; } 
-        [IntrinsicProperty]
-        public Action beginGame { get; set; }
+        public ShuffLabel lblHowFast { get; set; }  
         [IntrinsicProperty]
         public int Joined { get; set; }
         [IntrinsicProperty]
@@ -38,13 +36,8 @@ namespace Client.UIWindow
                                                                              AllowMinimize = true,
                                                                              Visible = false
                                                                      });
-
-            beginGame = ( () => {
-
-
-                          } );
-
-            UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Begin Game", (e) => beginGame()));
+             
+             
 
             ShuffButton but = null;
             UIWindow.AddElement(but = new ShuffButton(280,
@@ -77,11 +70,7 @@ namespace Client.UIWindow
                      pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                  }
              });*/
-
-            ShuffListBox pop;
-            UIWindow.AddElement(pop = new ShuffListBox(25, 200, 250, 250));
-
-            pop.AddItem(new ShuffListItem("foos", 99));
+             
 
             varText = UIWindow.AddElement(new ShuffTextbox(150, 134, 100, 25, "Var Lookup"));
             /*  devArea.AddButton(new ShuffButton()

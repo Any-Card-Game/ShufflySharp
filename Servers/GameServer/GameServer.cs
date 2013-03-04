@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonLibraries;
+using CommonServerLibraries;
 using NodeJSLibrary;
 using global;
 namespace GameServer
@@ -11,11 +12,13 @@ namespace GameServer
 
         public GameServer()
         {
+            gameServerIndex = "GameServer" + Guid.NewGuid();
+            Logger.Start(gameServerIndex);
+            
             new ArrayUtils();
             childProcess = Global.Require<ChildProcess>("child_process");
-            gameServerIndex = "GameServer" + Guid.NewGuid();
-            Global.Require<NodeModule>("fibers");
-            Global.Process.On("exit", () => Console.Log("exi"));
+            Global.Scope.Fiber= Global.Require<NodeModule>("fibers");
+            Global.Process.On("exit", () => Logger.Log("exi", LogLevel.Information));
 
             GameManager gameManager = new GameManager(gameServerIndex);
         }
@@ -25,7 +28,7 @@ namespace GameServer
             try {
                 new GameServer();
             } catch (Exception exc) {
-                Console.Log("CRITICAL FAILURE: " + exc.GoodMessage());
+                Logger.Log("CRITICAL FAILURE: " + exc.GoodMessage(), LogLevel.Error);
             }
         }
     }

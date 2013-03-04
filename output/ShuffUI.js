@@ -29,7 +29,7 @@
 	var $ShuffUI_DockStyle = function() {
 	};
 	$ShuffUI_DockStyle.prototype = { none: 0, fill: 1, fillWidth: 2, fillHeight: 3 };
-	Type.registerEnum(global, 'ShuffUI.DockStyle', $ShuffUI_DockStyle, false);
+	ss.registerEnum(global, 'ShuffUI.DockStyle', $ShuffUI_DockStyle, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ParentChangedEvent
 	var $ShuffUI_ParentChangedEvent = function() {
@@ -60,10 +60,10 @@
 		this.element = $('<div></div>');
 		this.element.css('position', 'absolute');
 		this.text = text;
-		this.text.set_staticValueChanges(Function.combine(this.text.get_staticValueChanges(), Function.mkdel(this, function(value) {
+		this.text.set_staticValueChanges(ss.delegateCombine(this.text.get_staticValueChanges(), ss.mkdel(this, function(value) {
 			this.element.text(value);
 		})));
-		this.element.text(Type.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(this.text));
+		this.element.text(ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(this.text));
 		this.set_x(x);
 		this.set_y(y);
 		this.set_width(width);
@@ -83,18 +83,18 @@
 	// ShuffUI.ShuffButton
 	var $ShuffUI_ShuffButton$1 = function(T) {
 		var $type = function(data, x, y, width, height, text, click) {
-			this.data = T.getDefaultValue();
+			this.data = ss.getDefaultValue(T);
 			$ShuffUI_ShuffButton.call(this, x, y, width, height, text, click);
 			this.data = data;
 		};
-		Type.registerGenericClassInstance($type, $ShuffUI_ShuffButton$1, [T], function() {
+		ss.registerGenericClassInstance($type, $ShuffUI_ShuffButton$1, [T], function() {
 			return $ShuffUI_ShuffButton;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'ShuffUI.ShuffButton$1', $ShuffUI_ShuffButton$1, 1);
+	ss.registerGenericClass(global, 'ShuffUI.ShuffButton$1', $ShuffUI_ShuffButton$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffCodeEditor
 	var $ShuffUI_ShuffCodeEditor = function() {
@@ -115,10 +115,10 @@
 			this.$2$TextChangedField = value;
 		},
 		bindCustomEvents: function() {
-			this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
+			this.set_textChanged(ss.delegateCombine(this.get_textChanged(), ss.mkdel(this, function(e) {
 				this.element.text(e.text);
 			})));
-			this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(ev) {
+			this.parentChanged = ss.delegateCombine(this.parentChanged, ss.mkdel(this, function(ev) {
 				if (ss.isValue(ev.parent)) {
 					var hlLine = null;
 					this.$codeMirror.editor = CodeMirror.fromTextArea(this.$codeMirror.element, {
@@ -187,7 +187,7 @@
 		this.set_width(width);
 		this.set_height(height);
 		this.set_visible(true);
-		this.sizeChanged = Function.combine(this.sizeChanged, Function.mkdel(this, function(e) {
+		this.sizeChanged = ss.delegateCombine(this.sizeChanged, ss.mkdel(this, function(e) {
 			window.alert(CommonLibraries.Number.op_Implicit$1(e.width) + ' ' + CommonLibraries.Number.op_Implicit$1(e.height));
 			$(this.$codeMirror.element).width(CommonLibraries.Number.op_Implicit$1(e.width));
 			$(this.$codeMirror.element).height(CommonLibraries.Number.op_Implicit$1(e.height));
@@ -198,18 +198,18 @@
 	// ShuffUI.ShuffCodeEditor
 	var $ShuffUI_ShuffCodeEditor$1 = function(T) {
 		var $type = function(data, x, y, width, height, text) {
-			this.data = T.getDefaultValue();
+			this.data = ss.getDefaultValue(T);
 			$ShuffUI_ShuffCodeEditor.$ctor1.call(this, x, y, width, height, text);
 			this.data = data;
 		};
-		Type.registerGenericClassInstance($type, $ShuffUI_ShuffCodeEditor$1, [T], function() {
+		ss.registerGenericClassInstance($type, $ShuffUI_ShuffCodeEditor$1, [T], function() {
 			return $ShuffUI_ShuffCodeEditor;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'ShuffUI.ShuffCodeEditor$1', $ShuffUI_ShuffCodeEditor$1, 1);
+	ss.registerGenericClass(global, 'ShuffUI.ShuffCodeEditor$1', $ShuffUI_ShuffCodeEditor$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffElement
 	var $ShuffUI_ShuffElement = function() {
@@ -279,7 +279,7 @@
 			this.visibleChanged($ShuffUI_VisibleChangedEvent.$ctor(this.$myVisible));
 		},
 		$bindEvents: function() {
-			this.sizeChanged = Function.combine(this.sizeChanged, Function.mkdel(this, function(e) {
+			this.sizeChanged = ss.delegateCombine(this.sizeChanged, ss.mkdel(this, function(e) {
 				if (!!e.width) {
 					this.$myWidth = e.width;
 					this.element.css('width', CommonLibraries.Number.op_Implicit$1(e.width));
@@ -289,7 +289,7 @@
 					this.element.css('height', CommonLibraries.Number.op_Implicit$1(e.height));
 				}
 			}));
-			this.parentSizeChanged = Function.combine(this.parentSizeChanged, Function.mkdel(this, function(e1) {
+			this.parentSizeChanged = ss.delegateCombine(this.parentSizeChanged, ss.mkdel(this, function(e1) {
 				switch (this.get_dock()) {
 					case 0: {
 						break;
@@ -309,14 +309,14 @@
 					}
 				}
 			}));
-			this.positionChanged = Function.combine(this.positionChanged, Function.mkdel(this, function(e2) {
+			this.positionChanged = ss.delegateCombine(this.positionChanged, ss.mkdel(this, function(e2) {
 				this.element.css('left', e2.x + 'px');
 				this.element.css('top', e2.y + 'px');
 			}));
-			this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e3) {
+			this.visibleChanged = ss.delegateCombine(this.visibleChanged, ss.mkdel(this, function(e3) {
 				this.element.css('display', (e3.visible ? 'block' : 'none'));
 			}));
-			this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e4) {
+			this.parentChanged = ss.delegateCombine(this.parentChanged, ss.mkdel(this, function(e4) {
 				this.set_parent(e4.parent);
 				if (ss.isNullOrUndefined(this.get_parent())) {
 					this.element.remove();
@@ -360,7 +360,7 @@
 			this.$2$TextChangedField = value;
 		},
 		bindCustomEvents: function() {
-			this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
+			this.set_textChanged(ss.delegateCombine(this.get_textChanged(), ss.mkdel(this, function(e) {
 				this.element.text(e.text);
 			})));
 		}
@@ -369,18 +369,18 @@
 	// ShuffUI.ShuffLabel
 	var $ShuffUI_ShuffLabel$1 = function(T) {
 		var $type = function(data, x, y, text) {
-			this.data = T.getDefaultValue();
+			this.data = ss.getDefaultValue(T);
 			$ShuffUI_ShuffLabel.call(this, x, y, text);
 			this.data = data;
 		};
-		Type.registerGenericClassInstance($type, $ShuffUI_ShuffLabel$1, [T], function() {
+		ss.registerGenericClassInstance($type, $ShuffUI_ShuffLabel$1, [T], function() {
 			return $ShuffUI_ShuffLabel;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'ShuffUI.ShuffLabel$1', $ShuffUI_ShuffLabel$1, 1);
+	ss.registerGenericClass(global, 'ShuffUI.ShuffLabel$1', $ShuffUI_ShuffLabel$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffListBox
 	var $ShuffUI_ShuffListBox = function(x, y, width, height, items) {
@@ -398,14 +398,14 @@
 		this.items = items || [];
 		var theme = eval('getTheme()');
 		but.jqxListBox({ source: this.items, width: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(width)), height: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(height)), theme: theme });
-		window.setTimeout(Function.mkdel(this, function() {
+		window.setTimeout(ss.mkdel(this, function() {
 			but.get(0).style.left = this.get_x() + 'px';
 			but.get(0).style.top = this.get_y() + 'px';
 		}), 2000);
-		but.bind('select', Function.mkdel(this, function(e) {
+		but.bind('select', ss.mkdel(this, function(e) {
 			var item = e.args.item;
 			this.selectedItem = item;
-			if (ss.isValue(this.onClick)) {
+			if (!ss.staticEquals(this.onClick, null)) {
 				this.onClick(item);
 			}
 		}));
@@ -418,7 +418,7 @@
 			if (this.items.length === 0) {
 				this.selectedItem = item;
 			}
-			this.items.add(item);
+			ss.add(this.items, item);
 			this.update();
 		},
 		update: function() {
@@ -426,7 +426,7 @@
 			this.element.jqxListBox({ source: this.items, width: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(this.get_width())), height: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(this.get_height())), theme: theme });
 		},
 		clearItems: function() {
-			this.items.clear();
+			ss.clear(this.items);
 			this.update();
 		}
 	};
@@ -434,18 +434,18 @@
 	// ShuffUI.ShuffListBox
 	var $ShuffUI_ShuffListBox$1 = function(T) {
 		var $type = function(data, x, y, width, height) {
-			this.data = T.getDefaultValue();
+			this.data = ss.getDefaultValue(T);
 			$ShuffUI_ShuffListBox.call(this, x, y, width, height, null);
 			this.data = data;
 		};
-		Type.registerGenericClassInstance($type, $ShuffUI_ShuffListBox$1, [T], function() {
+		ss.registerGenericClassInstance($type, $ShuffUI_ShuffListBox$1, [T], function() {
 			return $ShuffUI_ShuffListBox;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'ShuffUI.ShuffListBox$1', $ShuffUI_ShuffListBox$1, 1);
+	ss.registerGenericClass(global, 'ShuffUI.ShuffListBox$1', $ShuffUI_ShuffListBox$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffListItem
 	var $ShuffUI_ShuffListItem = function(label, value) {
@@ -473,7 +473,7 @@
 		addElement: function(T) {
 			return function(element) {
 				this.element.append(element.element);
-				this.elements.add(element);
+				ss.add(this.elements, element);
 				element.parentChanged($ShuffUI_ParentChangedEvent.$ctor(this));
 				return element;
 			};
@@ -481,7 +481,7 @@
 		removeElement: function(T) {
 			return function(element) {
 				element.element.remove();
-				this.elements.remove(element);
+				ss.remove(this.elements, element);
 				element.parentChanged($ShuffUI_ParentChangedEvent.$ctor(null));
 				return element;
 			};
@@ -503,15 +503,15 @@
 		this.set_width(width);
 		this.set_height(height);
 		this.set_visible(true);
-		but.keyup(Function.mkdel(this, function(a) {
+		but.keyup(ss.mkdel(this, function(a) {
 			if (a.which === 13) {
-				if (ss.isValue(this.get_onEnter())) {
+				if (!ss.staticEquals(this.get_onEnter(), null)) {
 					this.get_onEnter()();
 				}
 			}
 		}));
 		if (ss.isValue(label)) {
-			this.parentChanged = Function.combine(this.parentChanged, Function.mkdel(this, function(e) {
+			this.parentChanged = ss.delegateCombine(this.parentChanged, ss.mkdel(this, function(e) {
 				if (ss.isNullOrUndefined(e.parent)) {
 					this.get_labelElement().remove();
 					this.set_labelElement(null);
@@ -556,7 +556,7 @@
 			this.$2$OnEnterField = value;
 		},
 		bindCustomEvents: function() {
-			this.set_textChanged(Function.combine(this.get_textChanged(), Function.mkdel(this, function(e) {
+			this.set_textChanged(ss.delegateCombine(this.get_textChanged(), ss.mkdel(this, function(e) {
 				if (!e.live) {
 					this.element.val(e.text);
 				}
@@ -570,18 +570,18 @@
 	// ShuffUI.ShuffTextbox
 	var $ShuffUI_ShuffTextbox$1 = function(T) {
 		var $type = function(data, x, y, width, height, text, label, labelStyle) {
-			this.data = T.getDefaultValue();
+			this.data = ss.getDefaultValue(T);
 			$ShuffUI_ShuffTextbox.call(this, x, y, width, height, text, label, labelStyle);
 			this.data = data;
 		};
-		Type.registerGenericClassInstance($type, $ShuffUI_ShuffTextbox$1, [T], function() {
+		ss.registerGenericClassInstance($type, $ShuffUI_ShuffTextbox$1, [T], function() {
 			return $ShuffUI_ShuffTextbox;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'ShuffUI.ShuffTextbox$1', $ShuffUI_ShuffTextbox$1, 1);
+	ss.registerGenericClass(global, 'ShuffUI.ShuffTextbox$1', $ShuffUI_ShuffTextbox$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.ShuffUIManager
 	var $ShuffUI_ShuffUIManager = function() {
@@ -622,7 +622,7 @@
 			outer.append(inner);
 			ui.window = $('#window' + windowID);
 			var info;
-			this.$uiAreas.add(info = new $ShuffUI_UIAreaInformation(outer, inner));
+			ss.add(this.$uiAreas, info = new $ShuffUI_UIAreaInformation(outer, inner));
 			ui.information = info;
 			x.click(function(evt) {
 				outer.css('display', 'none');
@@ -653,7 +653,7 @@
 					//                    outer.CSS("height", "100%");
 				}
 			});
-			outer.mousedown(Function.mkdel(this, function(evt3) {
+			outer.mousedown(ss.mkdel(this, function(evt3) {
 				this.focus(ui);
 			}));
 			$('.window-header-button').button();
@@ -701,7 +701,7 @@
 		},
 		set_$outer: function(value) {
 			this.outer = value;
-			this.outer.resizable({ handles: 'n, e, s, w, ne, se, sw, nw', resize: Function.mkdel(this, this.onResize) });
+			this.outer.resizable({ handles: 'n, e, s, w, ne, se, sw, nw', resize: ss.mkdel(this, this.onResize) });
 		},
 		onResize: function(e, uievent) {
 			this.set_width(CommonLibraries.Number.op_Implicit$3(uievent.size.width + 'px'));
@@ -713,7 +713,7 @@
 		},
 		bindCustomEvents: function() {
 			$ShuffUI_ShuffElement.prototype.bindCustomEvents.call(this);
-			this.visibleChanged = Function.combine(this.visibleChanged, Function.mkdel(this, function(e) {
+			this.visibleChanged = ss.delegateCombine(this.visibleChanged, ss.mkdel(this, function(e) {
 				if (ss.isValue(this.get_$outer())) {
 					this.get_$outer().css('display', (e.visible ? 'block' : 'none'));
 				}
@@ -783,17 +783,17 @@
 	// ShuffUI.ShuffWindow
 	var $ShuffUI_ShuffWindow$1 = function(T) {
 		var $type = function(data) {
-			this.data = T.getDefaultValue();
+			this.data = ss.getDefaultValue(T);
 			$ShuffUI_ShuffWindow.call(this);
 		};
-		Type.registerGenericClassInstance($type, $ShuffUI_ShuffWindow$1, [T], function() {
+		ss.registerGenericClassInstance($type, $ShuffUI_ShuffWindow$1, [T], function() {
 			return $ShuffUI_ShuffWindow;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	Type.registerGenericClass(global, 'ShuffUI.ShuffWindow$1', $ShuffUI_ShuffWindow$1, 1);
+	ss.registerGenericClass(global, 'ShuffUI.ShuffWindow$1', $ShuffUI_ShuffWindow$1, 1);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.SizeChangedEvent
 	var $ShuffUI_SizeChangedEvent = function() {
@@ -811,7 +811,7 @@
 	var $ShuffUI_SwingDirection = function() {
 	};
 	$ShuffUI_SwingDirection.prototype = { topLeft: 0, top: 1, topRight: 2, right: 3, bottomRight: 4, bottom: 5, bottomLeft: 6, left: 7 };
-	Type.registerEnum(global, 'ShuffUI.SwingDirection', $ShuffUI_SwingDirection, false);
+	ss.registerEnum(global, 'ShuffUI.SwingDirection', $ShuffUI_SwingDirection, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// ShuffUI.TextChangedEvent
 	var $ShuffUI_TextChangedEvent = function() {
@@ -856,23 +856,23 @@
 		$this.visible = visible;
 		return $this;
 	};
-	Type.registerClass(global, 'ShuffUI.ButtonClickedEvent', $ShuffUI_ButtonClickedEvent, Object);
-	Type.registerClass(global, 'ShuffUI.CodeMirrorInformation', $ShuffUI_CodeMirrorInformation, Object);
-	Type.registerClass(global, 'ShuffUI.CodeMirrorInformationData', $ShuffUI_CodeMirrorInformationData, Object);
-	Type.registerClass(global, 'ShuffUI.ParentChangedEvent', $ShuffUI_ParentChangedEvent, Object);
-	Type.registerClass(global, 'ShuffUI.PositionChangedEvent', $ShuffUI_PositionChangedEvent, Object);
-	Type.registerClass(global, 'ShuffUI.ShuffElement', $ShuffUI_ShuffElement, Object);
-	Type.registerClass(global, 'ShuffUI.ShuffButton', $ShuffUI_ShuffButton, $ShuffUI_ShuffElement);
-	Type.registerClass(global, 'ShuffUI.ShuffCodeEditor', $ShuffUI_ShuffCodeEditor, $ShuffUI_ShuffElement);
-	Type.registerClass(global, 'ShuffUI.ShuffLabel', $ShuffUI_ShuffLabel, $ShuffUI_ShuffElement);
-	Type.registerClass(global, 'ShuffUI.ShuffListBox', $ShuffUI_ShuffListBox, $ShuffUI_ShuffElement);
-	Type.registerClass(global, 'ShuffUI.ShuffListItem', $ShuffUI_ShuffListItem, Object);
-	Type.registerClass(global, 'ShuffUI.ShuffPanel', $ShuffUI_ShuffPanel, $ShuffUI_ShuffElement);
-	Type.registerClass(global, 'ShuffUI.ShuffTextbox', $ShuffUI_ShuffTextbox, $ShuffUI_ShuffElement);
-	Type.registerClass(global, 'ShuffUI.ShuffUIManager', $ShuffUI_ShuffUIManager, Object);
-	Type.registerClass(global, 'ShuffUI.ShuffWindow', $ShuffUI_ShuffWindow, $ShuffUI_ShuffPanel);
-	Type.registerClass(global, 'ShuffUI.SizeChangedEvent', $ShuffUI_SizeChangedEvent, Object);
-	Type.registerClass(global, 'ShuffUI.TextChangedEvent', $ShuffUI_TextChangedEvent, Object);
-	Type.registerClass(global, 'ShuffUI.UIAreaInformation', $ShuffUI_UIAreaInformation, Object);
-	Type.registerClass(global, 'ShuffUI.VisibleChangedEvent', $ShuffUI_VisibleChangedEvent, Object);
+	ss.registerClass(global, 'ShuffUI.ButtonClickedEvent', $ShuffUI_ButtonClickedEvent);
+	ss.registerClass(global, 'ShuffUI.CodeMirrorInformation', $ShuffUI_CodeMirrorInformation);
+	ss.registerClass(global, 'ShuffUI.CodeMirrorInformationData', $ShuffUI_CodeMirrorInformationData);
+	ss.registerClass(global, 'ShuffUI.ParentChangedEvent', $ShuffUI_ParentChangedEvent);
+	ss.registerClass(global, 'ShuffUI.PositionChangedEvent', $ShuffUI_PositionChangedEvent);
+	ss.registerClass(global, 'ShuffUI.ShuffElement', $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffButton', $ShuffUI_ShuffButton, $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffCodeEditor', $ShuffUI_ShuffCodeEditor, $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffLabel', $ShuffUI_ShuffLabel, $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffListBox', $ShuffUI_ShuffListBox, $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffListItem', $ShuffUI_ShuffListItem);
+	ss.registerClass(global, 'ShuffUI.ShuffPanel', $ShuffUI_ShuffPanel, $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffTextbox', $ShuffUI_ShuffTextbox, $ShuffUI_ShuffElement);
+	ss.registerClass(global, 'ShuffUI.ShuffUIManager', $ShuffUI_ShuffUIManager);
+	ss.registerClass(global, 'ShuffUI.ShuffWindow', $ShuffUI_ShuffWindow, $ShuffUI_ShuffPanel);
+	ss.registerClass(global, 'ShuffUI.SizeChangedEvent', $ShuffUI_SizeChangedEvent);
+	ss.registerClass(global, 'ShuffUI.TextChangedEvent', $ShuffUI_TextChangedEvent);
+	ss.registerClass(global, 'ShuffUI.UIAreaInformation', $ShuffUI_UIAreaInformation);
+	ss.registerClass(global, 'ShuffUI.VisibleChangedEvent', $ShuffUI_VisibleChangedEvent);
 })();

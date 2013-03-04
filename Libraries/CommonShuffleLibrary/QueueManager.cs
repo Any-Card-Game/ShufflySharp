@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonServerLibraries;
 using Models;
 namespace CommonShuffleLibrary
 {
@@ -53,13 +54,13 @@ namespace CommonShuffleLibrary
         public void SendMessage(string channel, string eventChannel, UserLogicModel user , object content)
         {
             if (qpCollection.GetByChannel(channel) == null) {
-                Console.Log("Cannot send message:" + channel + " No Existy");
-                Console.Log("       " + eventChannel + " " + Json.Stringify(content));
+                Logger.Log("Cannot send message:" + channel + " No Existy",LogLevel.Error);
+                Logger.Log("       " + eventChannel + " " + Json.Stringify(content),LogLevel.Error);
                 return;
             }
 
             var pusher = ( (QueuePusher) qpCollection.GetByChannel(channel) );
-            // Console.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
+            // Logger.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
             pusher.Message(channel, Name, user, eventChannel, content);
         }
     }

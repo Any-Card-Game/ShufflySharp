@@ -1,4 +1,5 @@
 using CommonLibraries;
+using CommonServerLibraries;
 using Models;
 using NodeJSLibrary;
 using RedisLibrary;
@@ -19,6 +20,8 @@ namespace CommonShuffleLibrary
         {
             var message = new QueueMessage(name, user, eventChannel, content);
             var value = Json.Stringify(message, Help.Sanitize);
+            if (CommonLibraries.Help.Verbose)
+                Logger.Log(channel + "  \n " + value, LogLevel.Information);
             client1.RPush(channel, value); //todo:maybe sanitize
         }
     }

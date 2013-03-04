@@ -14,6 +14,7 @@ namespace GameServer
         public delegate void GameCreate(GameCreateRequestModel data);
         public delegate void UserAnswerQuestion(UserLogicModel user, GameAnswerQuestionModel data);
         public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
+        public delegate void UserLeave(UserLogicModel user, UserLeaveModel data);
 
         #endregion
 
@@ -30,6 +31,7 @@ namespace GameServer
         public event GameCreate OnGameCreate; 
         public event UserAnswerQuestion OnUserAnswerQuestion;
         public event UserDisconnect OnUserDisconnect;
+        public event UserLeave OnUserLeave;
 
         private void Setup()
         {
@@ -46,7 +48,8 @@ namespace GameServer
              
             qManager.AddChannel("Area.Game.Create", (user, data) => OnGameCreate((GameCreateRequestModel) data)); 
             qManager.AddChannel("Area.Game.AnswerQuestion", (user, data) => OnUserAnswerQuestion(user, (GameAnswerQuestionModel) data));
-            qManager.AddChannel("Area.Game.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel) data));
+            qManager.AddChannel("Area.Game.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
+            qManager.AddChannel("Area.Game.LeaveGameRoom", (user, data) => OnUserLeave(user, (UserLeaveModel)data));
         }
 
         private void SendMessageToAll(GameRoom room, string message, object val)

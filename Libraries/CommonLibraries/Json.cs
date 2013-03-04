@@ -2,7 +2,7 @@
 using System.Serialization;
 namespace CommonLibraries
 {
-    [Imported(IsRealType = true)]
+    [Imported]
     [IgnoreNamespace]
     [ScriptName("JSON")]
     public static class Json
@@ -12,17 +12,17 @@ namespace CommonLibraries
             return null;
         }
 
-        [IgnoreGenericArguments]
+        
         public static T Parse<T>(string json)
         {
-            return default( T );
+            return default(T);
         }
 
         [ScriptName("parse")]
-        [IgnoreGenericArguments]
+        
         public static TData ParseData<TData>(string json)
         {
-            return default( TData );
+            return default(TData);
         }
 
         public static object Parse(string json, JsonParseCallback parseCallback)
@@ -31,10 +31,10 @@ namespace CommonLibraries
         }
 
         [ScriptName("parse")]
-        [IgnoreGenericArguments]
+        
         public static TData ParseData<TData>(string json, JsonParseCallback parseCallback)
         {
-            return default( TData );
+            return default(TData);
         }
 
         public static string Stringify(object o)
@@ -73,3 +73,6 @@ namespace CommonLibraries
         }
     }
 }
+
+
+

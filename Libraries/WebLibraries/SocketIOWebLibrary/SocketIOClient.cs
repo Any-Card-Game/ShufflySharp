@@ -12,5 +12,10 @@ namespace SocketIOWebLibrary
         {
             return null;
         }
+        [ScriptName("connect")]
+        public   SocketIOClient AConnect(string server)
+        {
+            return null;
+        }
     }
 }

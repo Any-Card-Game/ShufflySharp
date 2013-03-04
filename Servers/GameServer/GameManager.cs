@@ -49,7 +49,8 @@ namespace GameServer
                 foreach (var player in gameRoom.Players)
                 {
                     if (player.UserName == user.UserName)
-                    {  
+                    {
+                        Console.Log("User Left: " + player.UserName);
                         gameRoom.PlayerLeave(player); 
                         break;
                     }
@@ -63,7 +64,9 @@ namespace GameServer
                 foreach (var player in gameRoom.Players)
                 {
                     if (player.UserName == user.UserName)
-                    { 
+                    {
+                        Console.Log("User Left: " + player.UserName);
+
                         gameRoom.PlayerLeave(player); 
                         break;
                     }
@@ -147,6 +150,8 @@ namespace GameServer
                 var room = getRoomByPlayer(arg2.Item1.UserName);
                 if (room == null)
                 {
+                    Console.Log("Room not found for user: " + arg2.Item1.UserName);
+                    continue;
                     throw new Exception("idk");
                 }
 

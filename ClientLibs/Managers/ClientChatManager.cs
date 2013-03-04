@@ -24,8 +24,8 @@ namespace ClientLibs.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Chat.ChatLines.Response", (user, data) => OnGetChatLines(user, (ChatMessagesModel) data));
-            myGateway.On("Area.Chat.ChatInfo.Response", (user, data) => OnGetChatInfo(user, (ChatRoomInfoModel) data));
+            myGateway.On("Area.Chat.ChatLines.Response", (user, data) => { if (OnGetChatLines != null) OnGetChatLines(user, (ChatMessagesModel) data); });
+            myGateway.On("Area.Chat.ChatInfo.Response", (user, data) => { if (OnGetChatInfo != null) OnGetChatInfo(user, (ChatRoomInfoModel) data); });
         }
 
         public void SendChatMessage(SendChatMessageModel sendChatMessageModel)

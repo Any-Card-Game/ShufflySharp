@@ -30,9 +30,9 @@ namespace ClientLibs.Managers
         {
             myGateway.On("Area.Debug.GetGameSource.Response", (user, data) => OnGetGameSource(user, (GameSourceResponseModel) data));
             
-            myGateway.On("Area.Debug.Log", (user, data) => OnGetDebugLog(user, (GameAnswerModel)data));
-            myGateway.On("Area.Debug.Break", (user, data) => OnGetDebugBreak(user, (GameAnswerModel)data));
-            myGateway.On("Area.Debug.GameOver", (user, data) => OnDebugGameOver(user, (string)data));
+            myGateway.On("Area.Debug.Log", (user, data) => { if (OnGetDebugLog != null) OnGetDebugLog(user, (GameAnswerModel) data); });
+            myGateway.On("Area.Debug.Break", (user, data) => { if (OnGetDebugBreak != null) OnGetDebugBreak(user, (GameAnswerModel) data); });
+            myGateway.On("Area.Debug.GameOver", (user, data) => { if (OnDebugGameOver != null) OnDebugGameOver(user, (string) data); });
         }
 
         public void RequestGameSource(GameSourceRequestModel gameSourceRequestModel)

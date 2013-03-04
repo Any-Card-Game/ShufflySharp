@@ -165,7 +165,7 @@
 		this.$shuffUIManager = new ShuffUI.ShuffUIManager();
 		this.gameDrawer = new $Client_ShufflyGame_GameDrawer();
 		this.timeTracker = $Client_Libs_TimeTracker.$ctor();
-		var gateway = new ClientLibs.Gateway(gatewayServerAddress);
+		var gateway = new ClientLibs.Gateway(gatewayServerAddress, false);
 		this.clientGameManager = new ClientLibs.Managers.ClientGameManager(gateway);
 		this.clientSiteManager = new ClientLibs.Managers.ClientSiteManager(gateway);
 		this.clientDebugManager = new ClientLibs.Managers.ClientDebugManager(gateway);

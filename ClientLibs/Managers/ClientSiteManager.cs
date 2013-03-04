@@ -32,11 +32,11 @@ namespace ClientLibs.Managers
         {
      
 
-            myGateway.On("Area.Site.Login.Response", (user, data) => { OnLogin(user, ( (UserLoginResponse) data )); });
-            myGateway.On("Area.Site.GetGameTypes.Response", (user, data) => { OnGetGameTypesReceived(user, ( (GetGameTypesReceivedResponse) data )); });
-            myGateway.On("Area.Site.GetRooms.Response", (user, data) => { OnGetRoomsReceived(user, ( (GetRoomsResponse) data )); });
-            myGateway.On("Area.Site.GetRoomInfo.Response", (user, data) => { OnGetRoomInfoReceived(user, ( (GetRoomInfoResponse) data )); });
-            myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { OnRoomJoined(user, ( (RoomJoinResponse) data )); });
+            myGateway.On("Area.Site.Login.Response", (user, data) => { if (OnLogin != null) OnLogin(user, ( (UserLoginResponse) data )); });
+            myGateway.On("Area.Site.GetGameTypes.Response", (user, data) => { if (OnGetGameTypesReceived != null) OnGetGameTypesReceived(user, ( (GetGameTypesReceivedResponse) data )); });
+            myGateway.On("Area.Site.GetRooms.Response", (user, data) => { if (OnGetRoomsReceived != null) OnGetRoomsReceived(user, ( (GetRoomsResponse) data )); });
+            myGateway.On("Area.Site.GetRoomInfo.Response", (user, data) => { if (OnGetRoomInfoReceived != null) OnGetRoomInfoReceived(user, ( (GetRoomInfoResponse) data )); });
+            myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { if (OnRoomJoined != null) OnRoomJoined(user, ( (RoomJoinResponse) data )); });
         }
 
         

@@ -2,11 +2,16 @@
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ClientLibs.Gateway
-	var $ClientLibs_Gateway = function(gatewayServer) {
+	var $ClientLibs_Gateway = function(gatewayServer, server) {
 		this.$channels = null;
 		this.gatewaySocket = null;
 		this.$channels = new (ss.makeGenericType(ss.Dictionary$2, [String, Function]))();
-		this.gatewaySocket = io.connect(gatewayServer);
+		if (server) {
+			this.gatewaySocket = require('socket.io-client').connect(gatewayServer);
+		}
+		else {
+			this.gatewaySocket = io.connect(gatewayServer);
+		}
 		this.gatewaySocket.on('Client.Message', ss.mkdel(this, function(data) {
 			this.$channels.get_item(data.channel)(data.user, data.content);
 		}));
@@ -50,10 +55,14 @@
 		},
 		$setup: function() {
 			this.$myGateway.on('Area.Chat.ChatLines.Response', ss.mkdel(this, function(user, data) {
-				this.$1$OnGetChatLinesField(user, data);
+				if (!ss.staticEquals(this.$1$OnGetChatLinesField, null)) {
+					this.$1$OnGetChatLinesField(user, data);
+				}
 			}));
 			this.$myGateway.on('Area.Chat.ChatInfo.Response', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnGetChatInfoField(user1, data1);
+				if (!ss.staticEquals(this.$1$OnGetChatInfoField, null)) {
+					this.$1$OnGetChatInfoField(user1, data1);
+				}
 			}));
 		},
 		sendChatMessage: function(sendChatMessageModel) {
@@ -101,13 +110,19 @@
 				this.$1$OnGetGameSourceField(user, data);
 			}));
 			this.$myGateway.on('Area.Debug.Log', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnGetDebugLogField(user1, data1);
+				if (!ss.staticEquals(this.$1$OnGetDebugLogField, null)) {
+					this.$1$OnGetDebugLogField(user1, data1);
+				}
 			}));
 			this.$myGateway.on('Area.Debug.Break', ss.mkdel(this, function(user2, data2) {
-				this.$1$OnGetDebugBreakField(user2, data2);
+				if (!ss.staticEquals(this.$1$OnGetDebugBreakField, null)) {
+					this.$1$OnGetDebugBreakField(user2, data2);
+				}
 			}));
 			this.$myGateway.on('Area.Debug.GameOver', ss.mkdel(this, function(user3, data3) {
-				this.$1$OnDebugGameOverField(user3, ss.cast(data3, String));
+				if (!ss.staticEquals(this.$1$OnDebugGameOverField, null)) {
+					this.$1$OnDebugGameOverField(user3, ss.cast(data3, String));
+				}
 			}));
 		},
 		requestGameSource: function(gameSourceRequestModel) {
@@ -152,16 +167,24 @@
 		},
 		$setup: function() {
 			this.$myGateway.on('Area.Game.AskQuestion', ss.mkdel(this, function(user, data) {
-				this.$1$OnAskQuestionField(user, data);
+				if (!ss.staticEquals(this.$1$OnAskQuestionField, null)) {
+					this.$1$OnAskQuestionField(user, data);
+				}
 			}));
 			this.$myGateway.on('Area.Game.UpdateState', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnUpdateStateField(user1, ss.cast(data1, String));
+				if (!ss.staticEquals(this.$1$OnUpdateStateField, null)) {
+					this.$1$OnUpdateStateField(user1, ss.cast(data1, String));
+				}
 			}));
 			this.$myGateway.on('Area.Game.Started', ss.mkdel(this, function(user2, data2) {
-				this.$1$OnGameStartedField(user2, data2);
+				if (!ss.staticEquals(this.$1$OnGameStartedField, null)) {
+					this.$1$OnGameStartedField(user2, data2);
+				}
 			}));
 			this.$myGateway.on('Area.Game.GameOver', ss.mkdel(this, function(user3, data3) {
-				this.$1$OnGameOverField(user3, ss.cast(data3, String));
+				if (!ss.staticEquals(this.$1$OnGameOverField, null)) {
+					this.$1$OnGameOverField(user3, ss.cast(data3, String));
+				}
 			}));
 		},
 		answerQuestion: function(gameAnswerQuestionModel) {
@@ -213,19 +236,29 @@
 		},
 		$setup: function() {
 			this.$myGateway.on('Area.Site.Login.Response', ss.mkdel(this, function(user, data) {
-				this.$1$OnLoginField(user, data);
+				if (!ss.staticEquals(this.$1$OnLoginField, null)) {
+					this.$1$OnLoginField(user, data);
+				}
 			}));
 			this.$myGateway.on('Area.Site.GetGameTypes.Response', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnGetGameTypesReceivedField(user1, data1);
+				if (!ss.staticEquals(this.$1$OnGetGameTypesReceivedField, null)) {
+					this.$1$OnGetGameTypesReceivedField(user1, data1);
+				}
 			}));
 			this.$myGateway.on('Area.Site.GetRooms.Response', ss.mkdel(this, function(user2, data2) {
-				this.$1$OnGetRoomsReceivedField(user2, data2);
+				if (!ss.staticEquals(this.$1$OnGetRoomsReceivedField, null)) {
+					this.$1$OnGetRoomsReceivedField(user2, data2);
+				}
 			}));
 			this.$myGateway.on('Area.Site.GetRoomInfo.Response', ss.mkdel(this, function(user3, data3) {
-				this.$1$OnGetRoomInfoReceivedField(user3, data3);
+				if (!ss.staticEquals(this.$1$OnGetRoomInfoReceivedField, null)) {
+					this.$1$OnGetRoomInfoReceivedField(user3, data3);
+				}
 			}));
 			this.$myGateway.on('Area.Site.JoinRoom.Response', ss.mkdel(this, function(user4, data4) {
-				this.$1$OnRoomJoinedField(user4, data4);
+				if (!ss.staticEquals(this.$1$OnRoomJoinedField, null)) {
+					this.$1$OnRoomJoinedField(user4, data4);
+				}
 			}));
 		},
 		login: function(userName, password) {

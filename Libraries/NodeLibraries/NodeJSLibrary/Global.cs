@@ -14,9 +14,9 @@ namespace NodeJSLibrary
         public static dynamic Scope { get; set; }
 
         [ScriptAlias("require")]
-        public static TModule Require<TModule>(string name) where TModule : NodeModule
+        public static TModule Require<TModule>(string name)
         {
-            return null;
+            return default(TModule);
         }
 
         [ScriptAlias("require")]

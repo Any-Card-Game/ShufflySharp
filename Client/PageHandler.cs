@@ -47,7 +47,7 @@ namespace Client
             gameDrawer = new GameDrawer();
             TimeTracker = new TimeTracker();
 
-            var gateway = new Gateway(gatewayServerAddress);
+            var gateway = new Gateway(gatewayServerAddress,false);
             ClientGameManager = new ClientGameManager(gateway);
             ClientSiteManager = new ClientSiteManager(gateway);
             ClientDebugManager = new ClientDebugManager(gateway);

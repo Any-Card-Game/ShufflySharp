@@ -142,6 +142,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
+						console.log('User Left: ' + player.userName);
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -154,6 +155,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
+						console.log('User Left: ' + player.userName);
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -210,6 +212,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				var data = arg2;
 				var room = this.$getRoomByPlayer(arg2.item1.userName);
 				if (ss.isNullOrUndefined(room)) {
+					console.log('Room not found for user: ' + arg2.item1.userName);
+					continue;
 					throw new ss.Exception('idk');
 				}
 				var dict = global.CardGameAnswer.$ctor();

@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Models;
+using NodeJSLibrary;
 using SocketIOWebLibrary;
 namespace ClientLibs
 {
@@ -9,12 +11,16 @@ namespace ClientLibs
     {
         private Dictionary<string, GatewayMessage> channels;
         [IntrinsicProperty]
-        protected SocketIOClient GatewaySocket { get; set; }
+        private SocketIOClient GatewaySocket { get; set; }
 
-        public Gateway(string gatewayServer)
+        public Gateway(string gatewayServer,bool server)
         {
             channels = new Dictionary<string, GatewayMessage>();
-            GatewaySocket = SocketIOClient.Connect(gatewayServer);
+            if (server) {
+                GatewaySocket = Global.Require<SocketIOClient>("socket.io-client").AConnect(gatewayServer);
+            } else {
+                GatewaySocket = SocketIOClient.Connect(gatewayServer);
+            }
             GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.User, data.Content));
         }
          

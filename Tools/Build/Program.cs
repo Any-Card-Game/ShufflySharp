@@ -139,6 +139,9 @@ namespace Build
                                                                                                                                                               shufSharp + @"\ServerSlammer\", new Application(true,
                                                                                                                                                                                                               "",
                                                                                                                                                                                                               new List<string> {
+                                                                                                                                                                              @"./MongoDBLibrary.js",     @"./Models.js",
+                                                                                                                                                                   
+                                                                                                                                                                           
                                                                                                                                                                                                                                        @"./ClientLibs.js",
                                                                                                                                                                                                                                })
                                                                                                                                                       },

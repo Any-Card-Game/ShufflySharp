@@ -28,10 +28,10 @@ namespace ClientLibs.Managers
 
         private void Setup()
         {
-            myGateway.On("Area.Game.AskQuestion", (user, data) => OnAskQuestion(user, (GameSendAnswerModel)data));
-            myGateway.On("Area.Game.UpdateState", (user, data) => OnUpdateState(user, (string)data));
-            myGateway.On("Area.Game.Started", (user, data) => OnGameStarted(user, (GameRoomModel)data));
-            myGateway.On("Area.Game.GameOver", (user, data) => OnGameOver(user, (string)data));
+            myGateway.On("Area.Game.AskQuestion", (user, data) => { if (OnAskQuestion != null) OnAskQuestion(user, (GameSendAnswerModel) data); });
+            myGateway.On("Area.Game.UpdateState", (user, data) => { if (OnUpdateState != null) OnUpdateState(user, (string) data); });
+            myGateway.On("Area.Game.Started", (user, data) => { if (OnGameStarted != null) OnGameStarted(user, (GameRoomModel) data); });
+            myGateway.On("Area.Game.GameOver", (user, data) => { if (OnGameOver != null) OnGameOver(user, (string) data); });
         }
 
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)

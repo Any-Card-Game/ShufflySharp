@@ -15,6 +15,9 @@
 		this.gatewaySocket.on('Client.Message', ss.mkdel(this, function(data) {
 			this.$channels.get_item(data.channel)(data.user, data.content);
 		}));
+		this.gatewaySocket.on('disconnect', function(data1) {
+			console.log('Disconnected');
+		});
 	};
 	$ClientLibs_Gateway.prototype = {
 		emit: function(channel, content) {

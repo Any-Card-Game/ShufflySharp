@@ -23,9 +23,14 @@ namespace NodeJSLibrary
         public static void Require(string name) {}
 
         [ScriptAlias("setInterval")]
-        public static void SetInterval(Action pollGateways, int poll) {}
+        public static int SetInterval(Action pollGateways, int poll)
+        {
+            return 0;
+        }
+        [ScriptAlias("clearTimeout")]
+        public static void ClearTimeout(int poll) { }
 
         [ScriptAlias("setTimeout")]
-        public static void SetTimeout(Action pollGateways, int poll) {}
+        public static int SetTimeout(Action pollGateways, int poll) { return 0; }
     }
 }

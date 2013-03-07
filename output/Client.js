@@ -279,7 +279,7 @@
 		this.$cardImages = {};
 		for (var i = 101; i < 153; i++) {
 			var img = new Image();
-			var domain = 'http://50.116.22.241:8881/assets';
+			var domain = 'http://198.211.107.101:8881/assets';
 			var src = domain + '/cards/' + i;
 			var jm;
 			img.src = jm = src + '.gif';
@@ -551,7 +551,7 @@
 		},
 		drawCard: function(card) {
 			var src = '';
-			var domain = 'http://50.116.22.241:8881/assets';
+			var domain = 'http://198.211.107.101:8881/assets';
 			src = domain + '/cards/' + (100 + (card.value + 1) + card.type * 13);
 			return src + '.gif';
 		},
@@ -1145,6 +1145,6 @@
 	ss.registerClass(global, 'Client.UIWindow.LoginUI', $Client_UIWindow_LoginUI);
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
 	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, ShuffUI.ShuffElement);
-	$Client_BuildSite.topLevelURL = 'http://50.116.22.241:8881/';
+	$Client_BuildSite.topLevelURL = 'http://198.211.107.101:8881/';
 	$Client_BuildSite.instance = null;
 })();

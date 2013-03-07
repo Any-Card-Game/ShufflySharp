@@ -16,7 +16,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonServer
 		this.$nodeInspector = null;
 		this.$nonDebuggable = null;
 		this.$numOfChatServers = 1;
-		this.$numOfGameServers = 1;
+		this.$numOfGameServers = 0;
 		this.$numOfGateways = 1;
 		this.$numOfSiteServers = 1;
 		this.$sites = null;
@@ -58,7 +58,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonServer
 		$handler: function(request, response) {
 			this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', ss.mkdel(this, function(err, content) {
 				var fieldSets = '';
-				fieldSets += ss.formatString('<span>Main Site: {0}</span>', '<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://50.116.28.16","MainSite");\'>Launch</a>');
+				fieldSets += ss.formatString('<span>Main Site: {0}</span>', '<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://198.211.107.101","MainSite");\'>Launch</a>');
 				fieldSets += this.$buildFieldset(this.$sites, 'Site Servers');
 				fieldSets += this.$buildFieldset(this.$gateways, 'Gateway Servers');
 				fieldSets += this.$buildFieldset(this.$games, 'Game Servers');
@@ -78,7 +78,7 @@ require('./mscorlib.js');require('./CommonLibraries.js');require('./CommonServer
 			for (var $t1 = 0; $t1 < items.length; $t1++) {
 				var process = items[$t1];
 				str += '<li>';
-				str += ss.formatString('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? ss.formatString('<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://50.116.28.16:8080/debug?port={0}","' + name + '(' + (process.index + 1) + ')' + '");\'>Debug</a>', process.debugPort + '&foo=' + parseInt((Math.random() * 5000000).toString())) : 'Debug'));
+				str += ss.formatString('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? ss.formatString('<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://198.211.107.101:8080/debug?port={0}","' + name + '(' + (process.index + 1) + ')' + '");\'>Debug</a>', process.debugPort + '&foo=' + parseInt((Math.random() * 5000000).toString())) : 'Debug'));
 				str += '</li>';
 				//document.frames["test"].location.reload();
 			}

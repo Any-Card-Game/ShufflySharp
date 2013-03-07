@@ -22,6 +22,7 @@ namespace GatewayServer
 
             //ExtensionMethods.debugger("");
             var http = Global.Require<Http>("http");
+            
             var app = http.CreateServer((req, res) => res.End());
 
             var io = Global.Require<SocketIO>("socket.io").Listen(app);
@@ -29,14 +30,18 @@ namespace GatewayServer
             QueueManager queueManager;
             var port = 1800 + Math.Truncate((int) ( Math.Random() * 4000 ));
 
+            string currentIP=ServerHelper.GetNetworkIPs( )[0];
+            Console.Log(currentIP);
             app.Listen(port);
             io.Set("log level", 0);
 
             ps = new PubSub(() => {
                                 ps.Subscribe<string>("PUBSUB.GatewayServers.Ping",
-                                                     message =>
-                                                     ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port)));
-                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", IPs.GatewayIP, port));
+                                                     message => {
+                                                         
+                                                         ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+                                                     });
+                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
                             });
 
             queueManager = new QueueManager(myGatewayName,

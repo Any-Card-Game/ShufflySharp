@@ -158,15 +158,17 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 	};
 	$SiteServer_SiteManager.prototype = {
 		$onLeaveRoom: function(user, data) {
+			CommonServerLibraries.Logger.log(user.userName + ' manual leave', 1);
 			this.$removeUserFromRoom(user, function(room) {
 			});
 		},
 		$onUserDisconnect: function(user, data) {
-			CommonServerLibraries.Logger.log(user.userName + ' disconnected', 2);
+			CommonServerLibraries.Logger.log(user.userName + ' disconnected', 1);
 			this.$removeUserFromRoom(data.user, function(room) {
 			});
 		},
 		$removeUserFromRoom: function(user, result) {
+			CommonServerLibraries.Logger.log(user.userName + ' removing', 1);
 			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					result(null);
@@ -177,6 +179,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				}
 				if (ss.isValue(user.currentGameServer)) {
 					this.$mySiteClientManager.leaveGameRoom(user);
+					CommonServerLibraries.Logger.log(user.userName + ' left Game room', 1);
+					user.currentGameServer = null;
 				}
 				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 					var player = room.players[$t1];
@@ -204,13 +208,13 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			}));
 		},
 		$onStartGame: function(user, data) {
-			CommonServerLibraries.Logger.log('--game started 1 ', 1);
+			//   Logger.Log("--game started 1 ", LogLevel.DebugInformation);
 			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					throw new ss.Exception('idk');
 					return;
 				}
-				CommonServerLibraries.Logger.log('--game started 2', 1);
+				//       Logger.Log("--game started 2", LogLevel.DebugInformation);
 				this.$mySiteClientManager.createGame({ gameType: room.gameType, players: room.players });
 			}));
 		},
@@ -220,6 +224,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			}));
 		},
 		$onCreateRoom: function(user, data) {
+			CommonServerLibraries.Logger.log(user.userName + ' create room', 1);
 			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
 				this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
 					this.$mySiteClientManager.createChatRoom(user, { room: room });
@@ -231,6 +236,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			}));
 		},
 		$onJoinRoom: function(user, data) {
+			CommonServerLibraries.Logger.log(user.userName + ' join room', 1);
 			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
 				this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
 					this.$mySiteClientManager.roomJoined(user, { room: room });

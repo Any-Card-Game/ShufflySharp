@@ -50,7 +50,7 @@ namespace GameServer
                 {
                     if (player.UserName == user.UserName)
                     {
-                        Console.Log("User Left: " + player.UserName);
+                        Console.Log("22User Left: " + player.UserName);
                         gameRoom.PlayerLeave(player); 
                         break;
                     }
@@ -65,7 +65,7 @@ namespace GameServer
                 {
                     if (player.UserName == user.UserName)
                     {
-                        Console.Log("User Left: " + player.UserName);
+                        Console.Log("11User Left: " + player.UserName);
 
                         gameRoom.PlayerLeave(player); 
                         break;
@@ -78,7 +78,7 @@ namespace GameServer
 
         public void CreateGame(GameCreateRequestModel data)
         {
-            Logger.Log("--game created ", LogLevel.Information);
+            Logger.Log("--game created ", LogLevel.DebugInformation);
             GameRoom room;
             rooms.Add(room = new GameRoom());
             room.MaxUsers = data.Players.Count;//todo idk
@@ -96,7 +96,7 @@ namespace GameServer
             room.Unwind = players =>
             {
                 gameData.FinishedGames++;
-                Logger.Log("--game closed", LogLevel.Information);
+                Logger.Log("--game closed", LogLevel.DebugInformation);
             };
             room.PlayerLeave += (player) =>
             {
@@ -169,8 +169,20 @@ namespace GameServer
             else
             {
                 total__ += ind;
-                if ((total__ + skipped__) % 20 == 0)
-                    Logger.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}", myServerManager.GameServerIndex.Substring(0, 19), (total__ + skipped__), ind, total__, skipped__, answerQueue.Count, rooms.Count), LogLevel.DebugInformation);
+                if (( total__ + skipped__ ) % 20 == 0)
+
+                {
+
+                    var dt = new DateTime();
+
+                    Logger.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}",
+                                             myServerManager.GameServerIndex.Substring(0, 19),
+                                             ( total__ + skipped__ ),
+                                             ind,
+                                             total__,
+                                             answerQueue.Count,
+                                             rooms.Count, (gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d))),
+                               LogLevel.DebugInformation);}
             }
         }
 
@@ -194,6 +206,7 @@ namespace GameServer
                 sev.CardGame.AnswerIndex = 0;
                 sev.Constructor();
                 sev.RunGame();
+                Logger.Log("Doneski", LogLevel.DebugInformation);
 
                 room.Unwind(players);
                 return true;
@@ -204,7 +217,7 @@ namespace GameServer
         {
             if (response == null)
             {
-                Logger.Log("game request over", LogLevel.Information);
+                Logger.Log("game request over", LogLevel.DebugInformation);
 
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
@@ -275,14 +288,18 @@ namespace GameServer
 
         private void gameOver(GameRoom room)
         {
-            room.Fiber.Reset();
-            Logger.Log("game real over", LogLevel.Information);
+            Logger.Log("game real over", LogLevel.DebugInformation);
 
 
             myServerManager.SendUpdateState(room);
 
             myServerManager.SendGameOver(room);
+            room.Fiber.Reset();
+            
+            rooms.Remove(room);
+
         }
+
 
         private void askPlayerQuestion(GameRoom room, FiberYieldResponse answer)
         {
@@ -292,7 +309,7 @@ namespace GameServer
 
             if (answ == null)
             {
-                Logger.Log("game question over", LogLevel.Information);
+                Logger.Log("game question over", LogLevel.DebugInformation);
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
                 //     profiler.takeSnapshot('game over ' + room.roomID);
@@ -304,7 +321,7 @@ namespace GameServer
             var dt = new DateTime();
             var then = dt.GetMilliseconds();
             //Logger.Log(then - now + " Milliseconds");
-            Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000) + " Answers per seconds", LogLevel.DebugInformation);
+          //  Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
         }
 
         private void askQuestion(GameQuestionAnswerModel answ, GameRoom room)

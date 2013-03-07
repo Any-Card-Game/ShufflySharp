@@ -23,7 +23,7 @@ namespace AdminServer
         private Process nodeInspector;
         private string[] nonDebuggable;
         private int numOfChatServers = 1;
-        private int numOfGameServers = 1;
+        private int numOfGameServers = 0;
         private int numOfGateways = 1;
         private int numOfSiteServers = 1;
         private List<ProcessInformation> sites;
@@ -82,7 +82,7 @@ namespace AdminServer
                         "ascii",
                         (err, content) => {
                             var fieldSets = "";
-                            fieldSets += string.Format("<span>Main Site: {0}</span>", "<a href='#" + ( int.Parse(( Math.Random() * 20000 ).ToString()) ) + "' onclick='goHere(\"http://50.116.28.16\",\"MainSite\");'>Launch</a>");
+                            fieldSets += string.Format("<span>Main Site: {0}</span>", "<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://198.211.107.101\",\"MainSite\");'>Launch</a>");
 
                             fieldSets += buildFieldset(sites, "Site Servers");
                             fieldSets += buildFieldset(gateways, "Gateway Servers");
@@ -112,7 +112,7 @@ namespace AdminServer
                                      process.Index + 1,
                                      debug
                                              ? string.Format(
-                                                     "<a href='#" + ( int.Parse(( Math.Random() * 20000 ).ToString()) ) + "' onclick='goHere(\"http://50.116.28.16:8080/debug?port={0}\",\"" + name + "(" + ( process.Index + 1 ) + ")" +
+                                                     "<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://198.211.107.101:8080/debug?port={0}\",\"" + name + "(" + (process.Index + 1) + ")" +
                                                      "\");'>Debug</a>",
                                                      process.DebugPort + "&foo=" + int.Parse(( Math.Random() * 5000000 ).ToString()))
                                              : "Debug");

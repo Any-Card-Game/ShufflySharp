@@ -33,28 +33,34 @@ namespace SiteServer
 
         private void OnLeaveRoom(UserLogicModel user, LeaveRoomRequest data)
         {
+            Logger.Log(user.UserName + " manual leave", LogLevel.DebugInformation);
             removeUserFromRoom(user, (room) => { });
         }
 
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            Logger.Log(user.UserName + " disconnected",LogLevel.Information);
+            Logger.Log(user.UserName + " disconnected",LogLevel.DebugInformation);
             removeUserFromRoom(data.User, (room) => { });
         }
 
         private void removeUserFromRoom(UserLogicModel user, Action<RoomData> result)
         {
+            Logger.Log(user.UserName + " removing", LogLevel.DebugInformation);
             myDataManager.SiteData.Room_GetRoomByUser(user,
                                                       room => {
                                                           if (room == null) {
                                                               result(null);
                                                               return;
                                                           }
-                                                          if (user.CurrentChatServer!=null)
+                                                           if (user.CurrentChatServer!=null)
                                                           mySiteClientManager.LeaveChatRoom(user);
-                                                          if (user.CurrentGameServer != null)
+                                                          if (user.CurrentGameServer != null) {
                                                               mySiteClientManager.LeaveGameRoom(user);
-                                                          foreach (var player in room.Players) {
+                                                              Logger.Log(user.UserName + " left Game room", LogLevel.DebugInformation);
+                                                              user.CurrentGameServer = null;
+                                                          }
+                                                          foreach (var player in room.Players)
+                                                          {
                                                               if (player.UserName == user.UserName) room.Players.Remove(player);
                                                           }
                                                           if (room.Players.Count == 0)
@@ -78,7 +84,7 @@ namespace SiteServer
         }
         private void OnStartGame(UserLogicModel user, StartGameRequest data)
         {
-            Logger.Log("--game started 1 ", LogLevel.DebugInformation);
+         //   Logger.Log("--game started 1 ", LogLevel.DebugInformation);
 
             myDataManager.SiteData.Room_GetRoomByUser(user,
                                           room =>
@@ -88,7 +94,7 @@ namespace SiteServer
                                                   throw new Exception("idk");
                                                   return;
                                               }
-                                              Logger.Log("--game started 2", LogLevel.DebugInformation);
+                                       //       Logger.Log("--game started 2", LogLevel.DebugInformation);
                                               
                                               mySiteClientManager.CreateGame(new GameCreateRequestModel(room.GameType,room.Players));
                                           });
@@ -105,6 +111,7 @@ namespace SiteServer
         private void OnCreateRoom(UserLogicModel user, CreateRoomRequest data)
         {
 
+            Logger.Log(user.UserName + " create room", LogLevel.DebugInformation);
             removeUserFromRoom(user,
                                disconnectedRoom => {
                                    myDataManager.SiteData.Room_CreateRoom(data.GameType,
@@ -121,6 +128,8 @@ namespace SiteServer
 
         private void OnJoinRoom(UserLogicModel user, RoomJoinRequest data)
         {
+            Logger.Log(user.UserName + " join room", LogLevel.DebugInformation);
+
             removeUserFromRoom(user,
                                disconnectedRoom => {
                                    myDataManager.SiteData.Room_JoinRoom(data.GameType,

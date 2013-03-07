@@ -421,7 +421,5 @@ module.exports = Sevens = function() {
 
         return arbs;
     };
-
-    console.log('thiaas(');
     return self;
 };

@@ -9,20 +9,30 @@ namespace ServerSlammer
 {
     internal class Program
     {
+        private string userName;
+
         public Program()
         {
-            Global.SetInterval(() =>
-            {
-                Console.Log("timer "+DateTime.Now);
-            }, 2000);
-            
-
+            Global.SetInterval(() => {
+                                   //Console.Log("timer " + DateTime.Now);
+                               }, 2000);
 
             var http = Global.Require<Http>("http");
-            http.Get("http://50.116.22.241:8844",
+            http.Get("http://198.211.107.101:8844",
                      (r) => {
                          r.SetEncoding(Encoding.Utf8);
-                         r.On<string>("data", (data) => { start(data); });
+                         r.On<string>("data", (data) => {
+
+                                                  var gameName=randomString(20);
+
+                                                  start(data, gameName, true);
+                                                  start(data, gameName, false);
+                                                  start(data, gameName, false);
+                                                  start(data, gameName, false);
+                                                  start(data, gameName, false);
+                                                  start(data, gameName, false);
+                             
+                         });
                      });
         }
 
@@ -31,20 +41,34 @@ namespace ServerSlammer
             new Program();
         }
 
-        private void start(string gatewayAddress)
+        private void start(string gatewayAddress,string gameName,bool create)
         {
             var gateway = new Gateway(gatewayAddress, true);
             ClientSiteManager clientManager = new ClientSiteManager(gateway);
             ClientGameManager gameManager = new ClientGameManager(gateway);
             ClientChatManager chatManager = new ClientChatManager(gateway);
             ClientDebugManager debugManager = new ClientDebugManager(gateway);
-            clientManager.Login(randomString(10), "");
+            clientManager.Login(userName=randomString(10), "");
             clientManager.OnLogin += (user, response) => {
-                                         Console.Log("Success: " + response.Successful);
-                                         clientManager.GetRooms(new GetRoomsRequest("Sevens"));
+                Console.Log("Success: " + response.Successful + "    " + user.UserName);
+                                         if (create)
+                                         {
+                                             clientManager.CreateRoom(new CreateRoomRequest("Sevens", gameName));
+                                         }
+                                         else
+                                         {
+                                             Global.SetTimeout(() =>
+                                             {
+                                                 clientManager.JoinRoom(new RoomJoinRequest("Sevens", gameName));
+
+                                             },
+                                                               3000);
+                                         }
+
+
                                      };
             clientManager.OnGetRoomsReceived += (user, response) => {
-                                               /*     foreach (var room in response.Rooms) {
+                                                    /*     foreach (var room in response.Rooms) {
                                                         if (room.Players.Count < 6) {
                                                             clientManager.JoinRoom(new RoomJoinRequest("Sevens", room.RoomName));
                                                             return;
@@ -52,51 +76,47 @@ namespace ServerSlammer
                                                     }*/
                                                 };
 
-            clientManager.CreateRoom(new CreateRoomRequest("Sevens", randomString(10)));
-
+   
             bool created = false;
             bool joined = false;
-            clientManager.OnRoomJoined += (user, response) =>
-            {
+            clientManager.OnRoomJoined += (user, response) => {
+                Console.Log("jj " + response.Room.Players.Count);
                 if (!joined)
-                { 
-                    joined = true;
-                    clientManager.StartGame(new StartGameRequest());
-                }
-
-            };
-            clientManager.OnGetRoomInfoReceived += (user, response) =>
-            {
-                if (!created) {
-                    clientManager.JoinRoom(new RoomJoinRequest("Sevens", response.Room.RoomName));
-
-                    created = true; 
-                }
-            };
-            gameManager.OnGameStarted += (user, model) =>
-            {
-                Console.Log("Game Started: " + model.RoomID);
-            };
-
-            gameManager.OnGameOver += (user, model) =>
-            {
-                Global.SetTimeout(() =>
                 {
-                    created = false;
-                    joined = false;
-                    clientManager.CreateRoom(new CreateRoomRequest("Sevens", randomString(10)));
-                },2000);                 
-            };
-            
-            gameManager.OnAskQuestion += (user, model) =>
-            {
-                Console.Log(model.Question);
-                                             Console.Log(model.Answers.Join(","));
-                gameManager.AnswerQuestion(new GameAnswerQuestionModel(1));
+                                                  Console.Log("joined " + response.Room.Players.Count);
+                                                  joined = true;
+                                                  if (response.Room.Players.Count == 6) {
+                                                      clientManager.StartGame(new StartGameRequest());
+                                                  }
+                                              }
+                                          };
+            clientManager.OnGetRoomInfoReceived += (user, response) => {
+                Console.Log("cc " + response.Room.Players.Count);
+                
+                                                       if (!created) {
+                                                           Console.Log("ccccc " + response.Room.Players.Count);
+                                                           clientManager.JoinRoom(new RoomJoinRequest("Sevens", response.Room.RoomName));
+
+                                                           created = true;
+                                                       }
+                                                   };
+            gameManager.OnGameStarted += (user, model) => {
+                                             Console.Log("Game Started: " + model.RoomID+"  "+userName);
+                                         };
+
+            gameManager.OnGameOver += (user, model) => { 
+                                                                created = false;
+                                                                joined = false;
+                                                                clientManager.CreateRoom(new CreateRoomRequest("Sevens", randomString(10)));
+                                                          
+                                      };
+
+            gameManager.OnAskQuestion += (user, model) => {
+                                             Console.Log(model.Answers.Join(", "));
+                                             gameManager.AnswerQuestion(new GameAnswerQuestionModel(1));
                                          };
             gameManager.OnUpdateState += (user, s) => {
-               // Console.Log("state updated "+s);
-                
+                                             //Console.Log("state updated ");
                                          };
         }
 
@@ -104,7 +124,7 @@ namespace ServerSlammer
         {
             string sb = "";
             for (int j = 0; j < i; j++) {
-                sb += (string)(char)(int)(Math.Random() * 26+65);
+                sb += (string) (char) (int) ( Math.Random() * 26 + 65 );
             }
             return sb;
         }

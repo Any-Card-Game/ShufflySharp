@@ -17,13 +17,15 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerL
 		var fs = require('fs');
 		var queueManager;
 		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
+		var currentIP = CommonServerLibraries.ServerHelper.getNetworkIPs()[0];
+		console.log(currentIP);
 		app.listen(port);
 		io.set('log level', 0);
 		this.$ps = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
 			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
-				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', CommonShuffleLibrary.IPs.gatewayIP, port));
+				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', currentIP, port));
 			}));
-			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', CommonShuffleLibrary.IPs.gatewayIP, port));
+			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', currentIP, port));
 		}));
 		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
 		io.sockets.on('connection', ss.mkdel(this, function(socket) {

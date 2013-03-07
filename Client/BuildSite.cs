@@ -10,7 +10,7 @@ namespace Client
 {
     public class BuildSite
     {
-        public const string TopLevelURL = "http://50.116.22.241:8881/";
+        public const string TopLevelURL = "http://198.211.107.101:8881/";
         private string gatewayServerAddress;
         public ShuffUIManager shuffUIManager;
         [IntrinsicProperty]

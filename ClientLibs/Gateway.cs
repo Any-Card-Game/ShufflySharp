@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using Models;
 using NodeJSLibrary;
 using SocketIOWebLibrary;
@@ -22,6 +23,10 @@ namespace ClientLibs
                 GatewaySocket = SocketIOClient.Connect(gatewayServer);
             }
             GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.User, data.Content));
+            GatewaySocket.On<string>("disconnect", data => {
+                                                       Console.Log("Disconnected");
+
+                                                   });
         }
          
         public void Emit(string channel, object content = null)

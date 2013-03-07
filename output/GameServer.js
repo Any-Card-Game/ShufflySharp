@@ -142,7 +142,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						console.log('User Left: ' + player.userName);
+						console.log('22User Left: ' + player.userName);
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -155,7 +155,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						console.log('User Left: ' + player.userName);
+						console.log('11User Left: ' + player.userName);
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -163,7 +163,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			}
 		},
 		createGame: function(data) {
-			CommonServerLibraries.Logger.log('--game created ', 2);
+			CommonServerLibraries.Logger.log('--game created ', 1);
 			var room;
 			ss.add(this.$rooms, room = $GameServer_Models_GameRoom.$ctor());
 			room.maxUsers = data.players.length;
@@ -181,7 +181,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			room.fiber = this.$createFiber(room, gameObject, true);
 			room.unwind = ss.mkdel(this, function(players) {
 				this.$gameData.finishedGames++;
-				CommonServerLibraries.Logger.log('--game closed', 2);
+				CommonServerLibraries.Logger.log('--game closed', 1);
 			});
 			room.playerLeave = ss.delegateCombine(room.playerLeave, function(player) {
 				//todo laeve player api in the game
@@ -229,7 +229,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			else {
 				this.$total__ += ind;
 				if ((this.$total__ + this.$skipped__) % 20 === 0) {
-					CommonServerLibraries.Logger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + skip: {4} + QSize: {5} + T Rooms: {6}', this.$myServerManager.get_gameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$skipped__, this.$answerQueue.length, this.$rooms.length), 1);
+					var dt = new Date();
+					CommonServerLibraries.Logger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}', this.$myServerManager.get_gameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$answerQueue.length, this.$rooms.length, this.$gameData.totalQuestionsAnswered / ((dt.getTime() - this.$startTime.getTime()) / 1000)), 1);
 				}
 			}
 		},
@@ -252,13 +253,14 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				sev.cardGame.answerIndex = 0;
 				sev.constructor();
 				sev.runGame();
+				CommonServerLibraries.Logger.log('Doneski', 1);
 				room.unwind(players);
 				return true;
 			}));
 		},
 		$processGameResponse: function(room, response) {
 			if (ss.isNullOrUndefined(response)) {
-				CommonServerLibraries.Logger.log('game request over', 2);
+				CommonServerLibraries.Logger.log('game request over', 1);
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				ss.remove(this.$rooms, room);
@@ -313,16 +315,17 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			}
 		},
 		$gameOver: function(room) {
-			room.fiber.reset();
-			CommonServerLibraries.Logger.log('game real over', 2);
+			CommonServerLibraries.Logger.log('game real over', 1);
 			this.$myServerManager.sendUpdateState(room);
 			this.$myServerManager.sendGameOver(room);
+			room.fiber.reset();
+			ss.remove(this.$rooms, room);
 		},
 		$askPlayerQuestion: function(room, answer) {
 			this.$gameData.totalQuestionsAnswered++;
 			var answ = answer.question;
 			if (ss.isNullOrUndefined(answ)) {
-				CommonServerLibraries.Logger.log('game question over', 2);
+				CommonServerLibraries.Logger.log('game question over', 1);
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				//     profiler.takeSnapshot('game over ' + room.roomID);
@@ -333,7 +336,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 			var dt = new Date();
 			var then = dt.getMilliseconds();
 			//Logger.Log(then - now + " Milliseconds");
-			CommonServerLibraries.Logger.log(ss.Int32.div(this.$gameData.totalQuestionsAnswered, ss.Int32.div(dt.getTime() - this.$startTime.getTime(), 1000)) + ' Answers per seconds', 1);
+			//  Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
 		},
 		$askQuestion: function(answ, room) {
 			var user = this.$getPlayerByUsername(room, answ.user.userName);

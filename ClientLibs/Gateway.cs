@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
@@ -16,10 +17,13 @@ namespace ClientLibs
 
         public Gateway(string gatewayServer,bool server)
         {
+            Console.Log("did " + gatewayServer);
             channels = new Dictionary<string, GatewayMessage>();
             if (server) {
-                GatewaySocket = Global.Require<SocketIOClient>("socket.io-client").AConnect(gatewayServer);
-            } else {
+                var jv = new JsDictionary<string, bool>();
+                jv["force new connection"] = true;
+                GatewaySocket = Global.Require<SocketIOClient>("socket.io-client").AConnect(gatewayServer, jv);
+            } else {        
                 GatewaySocket = SocketIOClient.Connect(gatewayServer);
             }
             GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.User, data.Content));
@@ -28,10 +32,16 @@ namespace ClientLibs
 
                                                    });
         }
-         
+
         public void Emit(string channel, object content = null)
         {
             GatewaySocket.Emit("Gateway.Message", new GatewayMessageModel(channel, content));
+        }
+
+        public void Close()
+        {
+            GatewaySocket.Disconnect(true);
+
         }
          
         public void On(string channel, GatewayMessage callback)

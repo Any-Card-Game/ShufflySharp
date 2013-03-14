@@ -376,7 +376,6 @@ require('./MongoDBLibrary.js');
 					}
 					else {
 						var roomData = b[0];
-						ss.add(roomData.players, user);
 						this.room_AddPlayer(roomData, user, function(ro) {
 							onRoomJoined(roomData);
 						});

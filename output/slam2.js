@@ -3,35 +3,20 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./Models.js');r
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerSlammer.Program
 	var $ServerSlammer_$Program = function() {
-		this.$count = 0;
-		this.$myHttp = null;
 		this.$userName = null;
 		setInterval(function() {
 			//Console.Log("timer " + DateTime.Now);
 		}, 2000);
-		this.$myHttp = require('http');
-		this.$runGame();
+		var http = require('http');
+		http.get('http://50.116.22.241:8844', ss.mkdel(this, function(r) {
+			r.setEncoding('utf8');
+			r.on('data', ss.mkdel(this, function(data) {
+				this.$start(data);
+			}));
+		}));
 	};
 	$ServerSlammer_$Program.prototype = {
-		$runGame: function() {
-			var gameName = this.$randomString(20);
-			this.$grabIP(ss.mkdel(this, function(data) {
-				this.$start(data, gameName, true);
-			}));
-			for (var i = 0; i < 5; i++) {
-				this.$grabIP(ss.mkdel(this, function(data1) {
-					this.$start(data1, gameName, false);
-				}));
-			}
-		},
-		$grabIP: function(ip) {
-			this.$myHttp.get('http://198.211.107.235:8844', function(r) {
-				r.setEncoding('utf8');
-				r.on('data', ip);
-			});
-		},
-		$start: function(gatewayAddress, gameName, create) {
-			var myCount = this.$count++;
+		$start: function(gatewayAddress) {
 			var gateway = new ClientLibs.Gateway(gatewayAddress, true);
 			var clientManager = new ClientLibs.Managers.ClientSiteManager(gateway);
 			var gameManager = new ClientLibs.Managers.ClientGameManager(gateway);
@@ -39,15 +24,8 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./Models.js');r
 			var debugManager = new ClientLibs.Managers.ClientDebugManager(gateway);
 			clientManager.login(this.$userName = this.$randomString(10), '');
 			clientManager.add_onLogin(function(user, response) {
-				console.log('Success: ' + response.successful + '    ' + user.userName + myCount);
-				if (create) {
-					clientManager.createRoom({ gameType: 'Sevens', roomName: gameName });
-				}
-				else {
-					setTimeout(function() {
-						clientManager.joinRoom({ gameType: 'Sevens', roomName: gameName });
-					}, 3000);
-				}
+				console.log('Success: ' + response.successful);
+				clientManager.getRooms({ gameType: 'Sevens' });
 			});
 			clientManager.add_onGetRoomsReceived(function(user1, response1) {
 				//     foreach (var room in response.Rooms) {
@@ -57,25 +35,31 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./Models.js');r
 				//     }
 				//     }
 			});
+			clientManager.createRoom({ gameType: 'Sevens', roomName: this.$randomString(10) });
+			var created = false;
+			var joined = false;
 			clientManager.add_onRoomJoined(function(user2, response2) {
-				console.log('joined ' + response2.room.players.length + ' Players');
-				if (response2.room.players.length === 6) {
+				if (!joined) {
+					joined = true;
 					clientManager.startGame({});
 				}
 			});
 			clientManager.add_onGetRoomInfoReceived(function(user3, response3) {
+				if (!created) {
+					clientManager.joinRoom({ gameType: 'Sevens', roomName: response3.room.roomName });
+					created = true;
+				}
 			});
 			gameManager.add_onGameStarted(ss.mkdel(this, function(user4, model) {
 				console.log('Game Started: ' + model.roomID + '  ' + this.$userName);
 			}));
 			gameManager.add_onGameOver(ss.mkdel(this, function(user5, model1) {
-				gateway.close();
-				if (create) {
-					this.$runGame();
-				}
+				created = false;
+				joined = false;
+				clientManager.createRoom({ gameType: 'Sevens', roomName: this.$randomString(10) });
 			}));
 			gameManager.add_onAskQuestion(function(user6, model2) {
-				console.log('Question Asked: ' + user6.userName + '   Num Of Answers: ' + model2.answers.length);
+				console.log(model2.answers.join(', '));
 				gameManager.answerQuestion({ answer: 1 });
 			});
 			gameManager.add_onUpdateState(function(user7, s) {
@@ -91,7 +75,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./Models.js');r
 		}
 	};
 	$ServerSlammer_$Program.$main = function() {
-		new $ServerSlammer_$Program();
+		new $ServerSlammer_Program2();
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerSlammer.Program2
@@ -106,31 +90,46 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./Models.js');r
 		for (var i = 0; i < 100; i++) {
 			setTimeout(ss.mkdel(this, function() {
 				this.$runProcess('node ServerSlammer.js');
-			}), i * 1000);
+			}), i * 2000);
 		}
 	};
+			var dtata=0;
+			var startTime=new Date();
 	$ServerSlammer_Program2.prototype = {
+
+			
 		$runProcess: function(process) {
 			var al;
 			var name = '';
 			var dummy = this.$exec(process);
 			var file = 'abcdefg' + this.$ind++;
 			var pollGateways = ss.mkdel(this, function() {
-				this.$fs.appendFile('C:\\bbbbbb' + file + '.txt', 'BAD BAD BAD BAD BAD BAD BAD', null, null);
-				process.exit();
+				this.$fs.appendFile('C:\\gmz\\bbbbbb' + file + '.txt', 'BAD BAD BAD BAD BAD BAD BAD', null, null);
+		 
+				cl = setTimeout(pollGateways, 10000);
 			});
 			var cl = setTimeout(pollGateways, 10000);
+			
+		
 			dummy.stdout.on('data', ss.mkdel(this, function(data) {
-				this.$fs.appendFile('C:\\bbbbbb' + file + '.txt', data + '\n', null, null);
+			
+			dtata++;
+			if(dtata%50==0){
+			var dt=new Date();
+			console.log(dtata / ((dt.getTime() - startTime.getTime()) / 1000)+ " messages a second");
+			}
+			
+			
+				this.$fs.appendFile('C:\\gmz\\bbbbbb' + file + '.txt', data + '\n', null, null);
 				clearTimeout(cl);
 				cl = setTimeout(pollGateways, 10000);
 				if (data.indexOf('debug: ') === -1) {
-					this.$util.print(ss.formatString('--{0}: {1}   {2}', name, (new Date()).toString().substr(17, 24), data));
-					this.$util.print('?: ');
+					//this.$util.print(ss.formatString('--{0}: {1}   {2}', name, (new Date()).toString().substr(17, 24), data));
+					//this.$util.print('?: ');
 				}
 			}));
 			dummy.stderr.on('data', ss.mkdel(this, function(data1) {
-				this.$fs.appendFile('C:\\bbbbbb' + file + '.txt', data1 + '\n', null, null);
+				this.$fs.appendFile('C:\\gmz\\bbbbbb' + file + '.txt', data1 + '\n', null, null);
 				this.$util.print(ss.formatString('--{0}: {1}   {2}', name, (new Date()).toString().substr(17, 24), data1));
 				this.$util.print('?: ');
 			}));

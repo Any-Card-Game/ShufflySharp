@@ -17,6 +17,7 @@ namespace CommonServerLibraries
         }
         public static void Start(string key)
         {
+            Console.Log(key + " - " + new DateTime().ToDateString() + "  " + new DateTime().ToTimeString());
             Key = key + " - " + new DateTime().ToDateString() + "  " + new DateTime().ToTimeString() + ".txt";
         }
         public static void Log(string item,LogLevel level)

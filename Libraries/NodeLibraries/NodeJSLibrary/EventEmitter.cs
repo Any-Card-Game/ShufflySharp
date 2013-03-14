@@ -21,7 +21,9 @@ namespace NodeJSLibrary
         public void On<T, T2>(string channel, Action<T, T2> callback) {}
 
         [ScriptName("on")]
-        
         public void On<T, T2, T3>(string channel, Action<T, T2, T3> callback) {}
+        [ScriptName("removeAllListeners")]
+        public void RemoveAllListeners() { }
+        
     }
 }

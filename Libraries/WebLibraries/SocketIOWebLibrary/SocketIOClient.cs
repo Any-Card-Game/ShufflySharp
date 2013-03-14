@@ -13,9 +13,18 @@ namespace SocketIOWebLibrary
             return null;
         }
         [ScriptName("connect")]
-        public   SocketIOClient AConnect(string server)
+        public SocketIOClient AConnect(string server)
         {
             return null;
         }
+        [ScriptName("connect")]
+        public SocketIOClient AConnect(string server,dynamic options)
+        {
+            return null;
+        }
+        public void Disconnect(bool close)
+        {
+        }
+
     }
 }

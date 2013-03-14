@@ -3,5 +3,5 @@ namespace NodeJSLibrary
 {
     [IgnoreNamespace]
     [Imported]
-    public abstract class NodeModule {}
+    public interface   NodeModule {}
 }

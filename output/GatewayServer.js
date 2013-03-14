@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');require('./CommonNodeLibraries.js');require('./MongoDBLibrary.js');require('./CommonServerLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// GatewayServer.GatewayServer
@@ -6,7 +6,28 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerL
 		this.$myGatewayName = null;
 		this.$ps = null;
 		this.users = {};
+		this.$curc = 0;
 		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
+		var charm = CommonNodeLibraries.Charmer.setup();
+		var radius = 10;
+		var theta = 0;
+		var points = [];
+charm.cursor(false);
+		var iv = setInterval(function() {
+			var x = 2 + (radius + Math.cos(theta) * radius) * 2;
+			var y = 2 + radius + Math.sin(theta) * radius;
+			ss.insert(points, 0, new CommonLibraries.Point(x, y));
+			var colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
+			for (var i = 0; i < points.length; i++) {
+				var p = points[i];
+				charm.position(ss.Int32.trunc(p.x), ss.Int32.trunc(p.y));
+				var c = colors[ss.Int32.trunc(Math.floor(i / 12))];
+				charm.background(c).write(' ');
+			}
+			points = ss.arrayClone(points.slice(0, 12 * colors.length - 1));
+			theta += Math.PI / 40;
+		}, 50);
+		return;
 		CommonServerLibraries.Logger.start(this.$myGatewayName);
 		//ExtensionMethods.debugger("");
 		var http = require('http');
@@ -29,11 +50,14 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerL
 		}));
 		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
 		io.sockets.on('connection', ss.mkdel(this, function(socket) {
+			var j = ++this.$curc;
+			console.log('Socket Connected ' + j);
 			var user = null;
 			socket.on('Gateway.Message', function(data) {
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
+				console.log('Socket message ' + j + '  ' + user.userName);
 				var channel = 'Bad';
 				switch (data.channel.split(String.fromCharCode(46))[1]) {
 					case 'Game': {
@@ -67,6 +91,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerL
 				user.userName = data1.userName;
 				user.hash = data1.userName;
 				user.gateway = this.$myGatewayName;
+				console.log('Socket login ' + j + '  ' + data1.userName);
 				this.users[data1.userName] = user;
 				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
 			}));
@@ -74,6 +99,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerL
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
+				console.log('Socket left ' + j + '  ' + user.userName);
 				queueManager.sendMessage('SiteServer', 'Area.Site.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
 				//disconnecting from the room in site server disconencts from chat..
 				// if (user.CurrentChatServer != null)
@@ -82,6 +108,10 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonServerL
 					queueManager.sendMessage(user.currentGameServer, 'Area.Game.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
 				}
 				delete this.users[user.userName];
+				socket.removeAllListeners();
+				//socket.Delete();
+				delete io.sockets.sockets[socket.id];
+				this.$curc--;
 			}));
 		}));
 	};

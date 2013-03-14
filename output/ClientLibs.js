@@ -5,9 +5,12 @@
 	var $ClientLibs_Gateway = function(gatewayServer, server) {
 		this.$channels = null;
 		this.gatewaySocket = null;
+		console.log('did ' + gatewayServer);
 		this.$channels = new (ss.makeGenericType(ss.Dictionary$2, [String, Function]))();
 		if (server) {
-			this.gatewaySocket = require('socket.io-client').connect(gatewayServer);
+			var jv = {};
+			jv['force new connection'] = true;
+			this.gatewaySocket = require('socket.io-client').connect(gatewayServer, jv);
 		}
 		else {
 			this.gatewaySocket = io.connect(gatewayServer);
@@ -22,6 +25,9 @@
 	$ClientLibs_Gateway.prototype = {
 		emit: function(channel, content) {
 			this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content));
+		},
+		close: function() {
+			this.gatewaySocket.disconnect(true);
 		},
 		on: function(channel, callback) {
 			this.$channels.set_item(channel, callback);

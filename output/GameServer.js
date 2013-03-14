@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonServerLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.js');require('./CommonNodeLibraries.js');require('./MongoDBLibrary.js');require('./CommonLibraries.js');require('./CommonServerLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// GameServer.GameClientManager
@@ -212,7 +212,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				var data = arg2;
 				var room = this.$getRoomByPlayer(arg2.item1.userName);
 				if (ss.isNullOrUndefined(room)) {
-					console.log('Room not found for user: ' + arg2.item1.userName);
+					CommonServerLibraries.Logger.log('Room not found for user: ' + arg2.item1.userName, 0);
 					continue;
 					throw new ss.Exception('idk');
 				}
@@ -242,7 +242,7 @@ require('./mscorlib.js');require('./MongoDBLibrary.js');require('./CommonLibrari
 				room.players = players;
 				CommonServerLibraries.Logger.log('game started', 2);
 				var sev = null;
-				eval('sev= new gameObject();');
+				eval('sev = new gameObject();');
 				room.playersLeft = [];
 				sev.cardGame.emulating = emulating;
 				room.game = sev;

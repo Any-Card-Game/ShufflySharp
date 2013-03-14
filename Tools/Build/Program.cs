@@ -19,6 +19,7 @@ namespace Build
                                       shufSharp + @"\Libraries\CommonServerLibraries\",
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
                                       shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\",
+                                      shufSharp + @"\Libraries\NodeLibraries\CommonNodeLibraries\",
                                       shufSharp + @"\Libraries\ShuffUI\",
                                       shufSharp + @"\Servers\AdminServer\",
                                       shufSharp + @"\Servers\ChatServer\",
@@ -52,6 +53,7 @@ namespace Build
                                                                               shufSharp + @"\Servers\AdminServer\", new Application(true,
                                                                                                                                     "new AdminServer.AdminServer();",
                                                                                                                                     new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                              @"./CommonLibraries.js",
                                                                                                                                                              @"./CommonServerLibraries.js",
                                                                                                                                                              @"./CommonShuffleLibrary.js",
@@ -61,6 +63,7 @@ namespace Build
                                                                                  shufSharp + @"\Servers\ChatServer\", new Application(true,
                                                                                                                                       "new ChatServer.ChatServer();",
                                                                                                                                       new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                                @"./MongoDBLibrary.js",
                                                                                                                                                                @"./CommonLibraries.js",
                                                                                                                                                                @"./CommonShuffleLibrary.js",
@@ -73,6 +76,7 @@ namespace Build
                                                                                     shufSharp + @"\Servers\DebugServer\", new Application(true,
                                                                                                                                           "new DebugServer.DebugServer();",
                                                                                                                                           new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                                    @"./MongoDBLibrary.js",
                                                                                                                                                                    @"./CommonServerLibraries.js",
                                                                                                                                                                    @"./CommonLibraries.js",
@@ -83,6 +87,7 @@ namespace Build
                                                                                        shufSharp + @"\Servers\GameServer\", new Application(true,
                                                                                                                                             "new GameServer.GameServer();",
                                                                                                                                             new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                                      @"./MongoDBLibrary.js",
                                                                                                                                                                      @"./CommonLibraries.js",
                                                                                                                                                                      @"./CommonServerLibraries.js",
@@ -95,6 +100,7 @@ namespace Build
                                                                                           shufSharp + @"\Servers\GatewayServer\", new Application(true,
                                                                                                                                                   "new GatewayServer.GatewayServer();",
                                                                                                                                                   new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                                            @"./MongoDBLibrary.js",
                                                                                                                                                                            @"./CommonServerLibraries.js",
                                                                                                                                                                            @"./CommonLibraries.js",
@@ -105,6 +111,7 @@ namespace Build
                                                                                              shufSharp + @"\Servers\HeadServer\", new Application(true,
                                                                                                                                                   "new HeadServer.HeadServer();",
                                                                                                                                                   new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                                            @"./MongoDBLibrary.js",
                                                                                                                                                                            @"./CommonServerLibraries.js",
                                                                                                                                                                            @"./CommonLibraries.js",
@@ -115,6 +122,7 @@ namespace Build
                                                                                                 shufSharp + @"\Servers\SiteServer\", new Application(true,
                                                                                                                                                      "",
                                                                                                                                                      new List<string> {
+                                                                                                                                                             @"./CommonNodeLibraries.js",
                                                                                                                                                                               @"./MongoDBLibrary.js",
                                                                                                                                                                               @"./CommonLibraries.js",
                                                                                                                                                                               @"./CommonServerLibraries.js",

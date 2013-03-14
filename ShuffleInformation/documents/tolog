@@ -1,0 +1,16 @@
+things to monitor
+  gateway server
+    users currently connected
+    on socket message received
+    on redis message received 
+       
+  site server
+    message processed 
+    
+  game server
+    games currently open
+      users in game
+      question asked
+      question answered
+      
+  chat server

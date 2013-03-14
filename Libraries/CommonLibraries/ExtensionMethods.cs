@@ -18,7 +18,10 @@ namespace CommonLibraries
         }
 
         [InlineCode("debugger")]
-        public static void debugger() {}
+        public static void debugger() { }
+        
+        [InlineCode("delete {m}")]
+        public static void Delete(this object m) { }
 
         [InlineCode("eval({script})")]
         public static dynamic eval(this object script) //::dynamic okay

@@ -5,6 +5,7 @@
 	var $CommonServerLibraries_Logger = function() {
 	};
 	$CommonServerLibraries_Logger.start = function(key) {
+		console.log(key + ' - ' + (new Date()).toDateString() + '  ' + (new Date()).toTimeString());
 		$CommonServerLibraries_Logger.$key = key + ' - ' + (new Date()).toDateString() + '  ' + (new Date()).toTimeString() + '.txt';
 	};
 	$CommonServerLibraries_Logger.log = function(item, level) {
@@ -35,17 +36,29 @@
 	};
 	$CommonServerLibraries_ServerHelper.getNetworkIPs = function() {
 		var os = require('os');
-		var interfaces = ss.cast(os.networkInterfaces(), Array);
+		var interfaces = os.networkInterfaces();
 		var addresses = [];
-		for (var $t1 = 0; $t1 < interfaces.length; $t1++) {
-			var k = interfaces[$t1];
-			for (var $t2 = 0; $t2 < k.length; $t2++) {
-				var k2 = k[$t2];
-				var address = k2;
-				if (!!(address.family === 'IPv4' && !address.internal)) {
-					ss.add(addresses, ss.cast(address.address, String));
+		var $t1 = new ss.ObjectEnumerator(interfaces);
+		try {
+			while ($t1.moveNext()) {
+				var k = $t1.current();
+				var $t2 = new ss.ObjectEnumerator(k.value);
+				try {
+					while ($t2.moveNext()) {
+						var k2 = $t2.current();
+						var address = k2.value;
+						if (!!(address.family === 'IPv4' && !address.internal)) {
+							ss.add(addresses, ss.cast(address.address, String));
+						}
+					}
+				}
+				finally {
+					$t2.dispose();
 				}
 			}
+		}
+		finally {
+			$t1.dispose();
 		}
 		return addresses;
 	};

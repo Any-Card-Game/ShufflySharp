@@ -81,8 +81,7 @@ namespace CommonShuffleLibrary.Data
                                                                              onRoomJoined(null);
                                                                          else
                                                                          {
-                                                                             var roomData = b[0];
-                                                                             roomData.Players.Add(user);
+                                                                             var roomData = b[0]; 
                                                                              Room_AddPlayer(roomData, user, (ro) =>
                                                                              {
                                                                                  onRoomJoined(roomData);

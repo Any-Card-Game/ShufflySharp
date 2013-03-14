@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using CommonNodeLibraries;
 using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models; 
@@ -14,10 +15,18 @@ namespace GatewayServer
         private string myGatewayName;
         private PubSub ps;
         public JsDictionary<string, UserSocketModel> users = new JsDictionary<string, UserSocketModel>();
+        int curc = 0;
 
         public GatewayServer()
         {
             myGatewayName = "Gateway " + Guid.NewGuid();
+
+            var charm = Charmer.Setup();
+             
+
+
+
+
             Logger.Start(myGatewayName);
 
             //ExtensionMethods.debugger("");
@@ -60,11 +69,15 @@ namespace GatewayServer
                                                                           }));
             io.Sockets.On("connection",
                           (SocketIOConnection socket) => {
+                              var j = ++curc;
+                              Console.Log("Socket Connected "+j);
                               UserSocketModel user = null;
                               socket.On("Gateway.Message",
                                         (GatewayMessageModel data) => {
                                             if (user == null)
                                                 return;
+                                            Console.Log("Socket message " + j + "  " + user.UserName);
+
                                             var channel = "Bad";
                                             switch (data.Channel.Split('.')[1]) {
                                                 case "Game":
@@ -83,8 +96,7 @@ namespace GatewayServer
                                                     channel = user.CurrentChatServer ?? "ChatServer";
                                                     break;
                                             }
-                                            queueManager.SendMessage(channel,
-                                                                     data.Channel, user.ToLogicModel(), data.Content);
+                                            queueManager.SendMessage(channel, data.Channel, user.ToLogicModel(), data.Content);
                                         });
 
                               socket.On("Gateway.Login",
@@ -96,6 +108,9 @@ namespace GatewayServer
                                             user.UserName = data.UserName;
                                             user.Hash = data.UserName;
                                             user.Gateway = myGatewayName;
+
+                                            Console.Log("Socket login " + j + "  " + data.UserName);
+
                                             users[data.UserName] = user;
                                             queueManager.SendMessage("SiteServer",
                                                                      "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
@@ -104,6 +119,8 @@ namespace GatewayServer
                                         (string data) => {
                                             if (user == null)
                                                 return;
+                                            Console.Log("Socket left " + j + "  " + user.UserName);
+
                                             queueManager.SendMessage("SiteServer", "Area.Site.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
                                             //disconnecting from the room in site server disconencts from chat..
                                             // if (user.CurrentChatServer != null)
@@ -112,6 +129,10 @@ namespace GatewayServer
                                                 queueManager.SendMessage(user.CurrentGameServer, "Area.Game.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
 
                                             users.Remove(user.UserName);
+                                            socket.RemoveAllListeners();
+                                            //socket.Delete();
+                                            io.Sockets.Sockets.Remove(socket.ID);
+                                            curc--;
                                         });
                           });
         }

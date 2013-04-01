@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MongoDBLibrary;
+using NodeLibraries.MongoDB;
 namespace CommonShuffleLibrary.Data
 {
     public static class MongoHelper

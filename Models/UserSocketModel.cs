@@ -1,5 +1,5 @@
 using System;
-using SocketIONodeLibrary;
+using NodeLibraries.SocketIONode;
 namespace Models
 {
     [Serializable]

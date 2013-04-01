@@ -1,5 +1,5 @@
 ﻿using System;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 namespace ServerSlammer
 {
     public class Program2

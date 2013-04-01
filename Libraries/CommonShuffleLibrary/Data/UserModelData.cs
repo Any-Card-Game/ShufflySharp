@@ -1,5 +1,5 @@
 using System;
-using MongoDBLibrary;
+using NodeLibraries.MongoDB;
 namespace CommonShuffleLibrary.Data
 {
     [Serializable]

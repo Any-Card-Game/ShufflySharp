@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 namespace global
 {
     [IgnoreNamespace]

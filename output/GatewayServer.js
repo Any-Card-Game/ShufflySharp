@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./CommonNodeLibraries.js');require('./MongoDBLibrary.js');require('./CommonServerLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
+require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require('./NodeLibraries.js');require('./CommonServerLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./Models.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// GatewayServer.GatewayServer
@@ -8,26 +8,13 @@ require('./mscorlib.js');require('./CommonNodeLibraries.js');require('./MongoDBL
 		this.users = {};
 		this.$curc = 0;
 		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
-		var charm = CommonNodeLibraries.Charmer.setup();
-		var radius = 10;
-		var theta = 0;
-		var points = [];
-charm.cursor(false);
-		var iv = setInterval(function() {
-			var x = 2 + (radius + Math.cos(theta) * radius) * 2;
-			var y = 2 + radius + Math.sin(theta) * radius;
-			ss.insert(points, 0, new CommonLibraries.Point(x, y));
-			var colors = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
-			for (var i = 0; i < points.length; i++) {
-				var p = points[i];
-				charm.position(ss.Int32.trunc(p.x), ss.Int32.trunc(p.y));
-				var c = colors[ss.Int32.trunc(Math.floor(i / 12))];
-				charm.background(c).write(' ');
-			}
-			points = ss.arrayClone(points.slice(0, 12 * colors.length - 1));
-			theta += Math.PI / 40;
-		}, 50);
-		return;
+		// var charm = Charmer.Setup();
+		// 
+		// var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
+		// 
+		// Global.SetInterval(() => {
+		// prog.CurValue++;
+		// },200);
 		CommonServerLibraries.Logger.start(this.$myGatewayName);
 		//ExtensionMethods.debugger("");
 		var http = require('http');

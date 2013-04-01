@@ -1,6 +1,6 @@
 using System.Html;
 using System.Runtime.CompilerServices;
-using CodeMirrorLibrary;
+using WebLibraries.CodeMirror;
 namespace ShuffUI
 {
     public class CodeMirrorInformation

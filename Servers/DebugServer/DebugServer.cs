@@ -3,7 +3,7 @@ using CommonLibraries;
 using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models.GameManagerModels;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 namespace DebugServer
 {
     public class DebugServer

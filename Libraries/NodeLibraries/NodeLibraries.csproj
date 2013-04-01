@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{06E82003-D11E-4482-9DC8-9AD109B537A0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NodeLibraries</RootNamespace>
+    <AssemblyName>NodeLibraries</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>True</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Common\Charm\Charm.cs" />
+    <Compile Include="Common\Charm\CharmColors.cs" />
+    <Compile Include="Common\Charm\Charmer.cs" />
+    <Compile Include="Common\Charm\DisplayType.cs" />
+    <Compile Include="Common\Charm\EraseType.cs" />
+    <Compile Include="Fibers\Fiber.cs" />
+    <Compile Include="MongoDB\BSON.cs" />
+    <Compile Include="MongoDB\Mongo.cs" />
+    <Compile Include="MongoDB\MongoCollection.cs" />
+    <Compile Include="MongoDB\MongoCollectionResult.cs" />
+    <Compile Include="MongoDB\MongoConnection.cs" />
+    <Compile Include="MongoDB\MongoDB.cs" />
+    <Compile Include="MongoDB\MongoDocument.cs" />
+    <Compile Include="MongoDB\MongoServer.cs" />
+    <Compile Include="NodeJS\Agent.cs" />
+    <Compile Include="NodeJS\Buffer.cs" />
+    <Compile Include="NodeJS\ChildProcess.cs" />
+    <Compile Include="NodeJS\ClientRequest.cs" />
+    <Compile Include="NodeJS\ClientResponse.cs" />
+    <Compile Include="NodeJS\Encoding.cs" />
+    <Compile Include="NodeJS\EventEmitter.cs" />
+    <Compile Include="NodeJS\FileSystemError.cs" />
+    <Compile Include="NodeJS\FS.cs" />
+    <Compile Include="NodeJS\Global.cs" />
+    <Compile Include="NodeJS\Http.cs" />
+    <Compile Include="NodeJS\HttpRequest.cs" />
+    <Compile Include="NodeJS\HttpResponse.cs" />
+    <Compile Include="NodeJS\HttpServer.cs" />
+    <Compile Include="NodeJS\NodeModule.cs" />
+    <Compile Include="NodeJS\PipeOptions.cs" />
+    <Compile Include="NodeJS\Process.cs" />
+    <Compile Include="NodeJS\ReadableStream.cs" />
+    <Compile Include="NodeJS\ReadWriteStream.cs" />
+    <Compile Include="NodeJS\RequestOptions.cs" />
+    <Compile Include="NodeJS\Socket.cs" />
+    <Compile Include="NodeJS\SocketAddress.cs" />
+    <Compile Include="NodeJS\SocketOptions.cs" />
+    <Compile Include="NodeJS\SocketType.cs" />
+    <Compile Include="NodeJS\STDError.cs" />
+    <Compile Include="NodeJS\STDIn.cs" />
+    <Compile Include="NodeJS\STDOut.cs" />
+    <Compile Include="NodeJS\Util.cs" />
+    <Compile Include="NodeJS\WritableStream.cs" />
+    <Compile Include="Redis\Redis.cs" />
+    <Compile Include="Redis\RedisClient.cs" />
+    <Compile Include="SocketIONode\SocketIO.cs" />
+    <Compile Include="SocketIONode\SocketIoClient.cs" />
+    <Compile Include="SocketIONode\SocketIOConnection.cs" />
+    <Compile Include="SocketIONode\SocketNamespace.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonLibraries\CommonLibraries.csproj">
+      <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
+      <Name>CommonLibraries</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.2.0.4\tools\Assemblies\mscorlib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
+  <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

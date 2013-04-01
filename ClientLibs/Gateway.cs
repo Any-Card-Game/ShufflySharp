@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using Models;
-using NodeJSLibrary;
-using SocketIOWebLibrary;
+using NodeLibraries.NodeJS;
+using WebLibraries.SocketIOClient;
 namespace ClientLibs
 {
     public delegate void GatewayMessage(UserModel user, object obj);

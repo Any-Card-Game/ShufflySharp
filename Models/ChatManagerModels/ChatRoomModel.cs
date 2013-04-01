@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using MongoDBLibrary;
+using NodeLibraries.MongoDB;
 namespace Models.ChatManagerModels
 {
     [Serializable]

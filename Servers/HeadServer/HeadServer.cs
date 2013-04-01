@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonServerLibraries;
 using CommonShuffleLibrary;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 namespace HeadServer
 {
     public class HeadServer

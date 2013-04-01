@@ -1,4 +1,4 @@
-require('./mscorlib.js');require('./MongoDBLibrary.js');require('./Models.js');require('./ClientLibs.js');
+require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require('./NodeLibraries.js');require('./Models.js');require('./ClientLibs.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerSlammer.Program

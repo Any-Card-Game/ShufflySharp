@@ -1,8 +1,7 @@
 ﻿using System;
 using CommonLibraries;
 using CommonServerLibraries;
-using MongoDBLibrary;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 using global;
 namespace ChatServer
 {

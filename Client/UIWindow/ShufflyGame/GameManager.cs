@@ -5,10 +5,10 @@ using System.Text;
 using Client.UIWindow;
 using ClientLibs.Managers;
 using CommonLibraries;
-using CommonWebLibraries;
 using Models;
 using Models.GameManagerModels;
 using Models.SiteManagerModels;
+using WebLibraries.Common;
 using global;
 namespace Client.ShufflyGame
 {

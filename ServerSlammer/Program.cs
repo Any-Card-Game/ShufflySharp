@@ -4,7 +4,7 @@ using ClientLibs.Managers;
 using CommonLibraries;
 using Models.GameManagerModels;
 using Models.SiteManagerModels;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 namespace ServerSlammer
 {
     internal class Program

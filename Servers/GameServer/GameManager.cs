@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonServerLibraries;
 using CommonShuffleLibrary;
-using FibersLibrary;
 using GameServer.Models;
 using Models;
 using Models.GameManagerModels;
-using NodeJSLibrary;
+using NodeLibraries.Fibers;
+using NodeLibraries.NodeJS;
 using global;
 using FiberYieldResponse = GameServer.Models.FiberYieldResponse;
 namespace GameServer

@@ -1,4 +1,4 @@
-﻿//#define FTP
+﻿#define FTP
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,8 +18,7 @@ namespace Build
                                       shufSharp + @"\Libraries\CommonShuffleLibrary\",
                                       shufSharp + @"\Libraries\CommonServerLibraries\",
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
-                                      shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\",
-                                      shufSharp + @"\Libraries\NodeLibraries\CommonNodeLibraries\",
+                                      shufSharp + @"\Libraries\NodeLibraries\",
                                       shufSharp + @"\Libraries\ShuffUI\",
                                       shufSharp + @"\Servers\AdminServer\",
                                       shufSharp + @"\Servers\ChatServer\",
@@ -48,119 +47,108 @@ namespace Build
             }
 
             //client happens in buildsite.cs
-            var depends = new Dictionary<string, Application> {
-                                                                      {
-                                                                              shufSharp + @"\Servers\AdminServer\", new Application(true,
-                                                                                                                                    "new AdminServer.AdminServer();",
-                                                                                                                                    new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                             @"./CommonLibraries.js",
-                                                                                                                                                             @"./CommonServerLibraries.js",
-                                                                                                                                                             @"./CommonShuffleLibrary.js",
-                                                                                                                                                             @"./Models.js",
-                                                                                                                                                     })
-                                                                      }, {
-                                                                                 shufSharp + @"\Servers\ChatServer\", new Application(true,
-                                                                                                                                      "new ChatServer.ChatServer();",
-                                                                                                                                      new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                               @"./MongoDBLibrary.js",
-                                                                                                                                                               @"./CommonLibraries.js",
-                                                                                                                                                               @"./CommonShuffleLibrary.js",
-                                                                                                                                                               @"./ShuffleGameLibrary.js",
-                                                                                                                                                               @"./CommonServerLibraries.js",
-                                                                                                                                                               @"./Models.js",
-                                                                                                                                                               @"./RawDeflate.js",
-                                                                                                                                                       })
-                                                                         }, {
-                                                                                    shufSharp + @"\Servers\DebugServer\", new Application(true,
-                                                                                                                                          "new DebugServer.DebugServer();",
-                                                                                                                                          new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                                   @"./MongoDBLibrary.js",
-                                                                                                                                                                   @"./CommonServerLibraries.js",
-                                                                                                                                                                   @"./CommonLibraries.js",
-                                                                                                                                                                   @"./CommonShuffleLibrary.js",
-                                                                                                                                                                   @"./Models.js",
-                                                                                                                                                           })
-                                                                            }, {
-                                                                                       shufSharp + @"\Servers\GameServer\", new Application(true,
-                                                                                                                                            "new GameServer.GameServer();",
-                                                                                                                                            new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                                     @"./MongoDBLibrary.js",
-                                                                                                                                                                     @"./CommonLibraries.js",
-                                                                                                                                                                     @"./CommonServerLibraries.js",
-                                                                                                                                                                     @"./CommonShuffleLibrary.js",
-                                                                                                                                                                     @"./ShuffleGameLibrary.js",
-                                                                                                                                                                     @"./Models.js",
-                                                                                                                                                                     @"./RawDeflate.js",
-                                                                                                                                                             })
-                                                                               }, {
-                                                                                          shufSharp + @"\Servers\GatewayServer\", new Application(true,
-                                                                                                                                                  "new GatewayServer.GatewayServer();",
-                                                                                                                                                  new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                                           @"./MongoDBLibrary.js",
-                                                                                                                                                                           @"./CommonServerLibraries.js",
-                                                                                                                                                                           @"./CommonLibraries.js",
-                                                                                                                                                                           @"./CommonShuffleLibrary.js",
-                                                                                                                                                                           @"./Models.js",
-                                                                                                                                                                   })
-                                                                                  }, {
-                                                                                             shufSharp + @"\Servers\HeadServer\", new Application(true,
-                                                                                                                                                  "new HeadServer.HeadServer();",
-                                                                                                                                                  new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                                           @"./MongoDBLibrary.js",
-                                                                                                                                                                           @"./CommonServerLibraries.js",
-                                                                                                                                                                           @"./CommonLibraries.js",
-                                                                                                                                                                           @"./CommonShuffleLibrary.js",
-                                                                                                                                                                           @"./Models.js",
-                                                                                                                                                                   })
-                                                                                     }, {
-                                                                                                shufSharp + @"\Servers\SiteServer\", new Application(true,
-                                                                                                                                                     "",
-                                                                                                                                                     new List<string> {
-                                                                                                                                                             @"./CommonNodeLibraries.js",
-                                                                                                                                                                              @"./MongoDBLibrary.js",
-                                                                                                                                                                              @"./CommonLibraries.js",
-                                                                                                                                                                              @"./CommonServerLibraries.js",
-                                                                                                                                                                              @"./CommonShuffleLibrary.js",
-                                                                                                                                                                              @"./ShuffleGameLibrary.js",
-                                                                                                                                                                              @"./Models.js",
-                                                                                                                                                                              @"./RawDeflate.js",
-                                                                                                                                                                      })
-                                                                                        }, {
-                                                                                                   shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false,
-                                                                                                                                                                    "",
-                                                                                                                                                                    new List<string> {
-                                                                                                                                                                                             @"./MongoDBLibrary.js",
-                                                                                                                                                                                     })
-                                                                                           }, {
-                                                                                                      shufSharp + @"\Libraries\CommonServerLibraries\", new Application(false, "", new List<string> {})
-                                                                                              },
-                                                                      {shufSharp + @"\Libraries\NodeLibraries\MongoDBLibrary\", new Application(false, "", new List<string> {})},
-                                                                      {shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {})},
-                                                                      {shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {})},
-                                                                      {shufSharp + @"\ClientLibs\", new Application(false, "", new List<string> {})}, {
-                                                                                                                                                              shufSharp + @"\ServerSlammer\", new Application(true,
-                                                                                                                                                                                                              "",
-                                                                                                                                                                                                              new List<string> {
-                                                                                                                                                                              @"./MongoDBLibrary.js",     @"./Models.js",
-                                                                                                                                                                   
-                                                                                                                                                                           
-                                                                                                                                                                                                                                       @"./ClientLibs.js",
-                                                                                                                                                                                                                               })
-                                                                                                                                                      },
-                                                                      {shufSharp + @"\Models\", new Application(false, "", new List<string> {})},
-                                                                      {shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, "", new List<string> {})}, {
-                                                                                                                                                                                shufSharp + @"\Client\", new Application(false,
-                                                                                                                                                                                                                         "",
-                                                                                                                                                                                                                         new List<string>
-                                                                                                                                                                                                                         {})
-                                                                                                                                                                        },
-                                                              };
+            var depends = new Dictionary<string, Application>();
+            depends.Add(shufSharp + @"\Servers\AdminServer\",
+                        new Application(true,
+                                        "new AdminServer.AdminServer();",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./Models.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Servers\ChatServer\",
+                        new Application(true,
+                                        "new ChatServer.ChatServer();",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./ShuffleGameLibrary.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./Models.js",
+                                                                 @"./RawDeflate.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Servers\DebugServer\",
+                        new Application(true,
+                                        "new DebugServer.DebugServer();",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./Models.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Servers\GameServer\",
+                        new Application(true,
+                                        "new GameServer.GameServer();",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./ShuffleGameLibrary.js",
+                                                                 @"./Models.js",
+                                                                 @"./RawDeflate.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Servers\GatewayServer\",
+                        new Application(true,
+                                        "new GatewayServer.GatewayServer();",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./Models.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Servers\HeadServer\",
+                        new Application(true,
+                                        "new HeadServer.HeadServer();",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./Models.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Servers\SiteServer\",
+                        new Application(true,
+                                        "",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./CommonLibraries.js",
+                                                                 @"./CommonServerLibraries.js",
+                                                                 @"./CommonShuffleLibrary.js",
+                                                                 @"./ShuffleGameLibrary.js",
+                                                                 @"./Models.js",
+                                                                 @"./RawDeflate.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Libraries\CommonShuffleLibrary\",
+                        new Application(false,
+                                        "",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Libraries\Libraries\CommonNodeLibraries\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\NodeLibraries\", new Application(true, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\ClientLibs\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\ServerSlammer\",
+                        new Application(true,
+                                        "",
+                                        new List<string> {
+                                                                 @"./NodeLibraries.js",
+                                                                 @"./Models.js",
+                                                                 @"./ClientLibs.js",
+                                                         }));
+            depends.Add(shufSharp + @"\Models\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Client\",
+                        new Application(false,
+                                        "",
+                                        new List<string> {}));
 
 #if FTP
             string loc = ConfigurationSettings.AppSettings["web-ftpdir"];
@@ -210,9 +198,10 @@ namespace Build
 
                 Application application = depend.Value;
 
-                if (application.Node)
+                if (application.Node) {
                     output += "require('./mscorlib.js');";
-                else {
+                    output += "EventEmitter= require('events.js').EventEmitter;";
+                } else {
                     //output += "require('./mscorlib.debug.js');";
                 }
 
@@ -301,6 +290,7 @@ namespace Build
             try {
                 File.Copy(from, to);
             } catch (Exception) {
+                Console.WriteLine("Copy Failed");
                 goto top;
             }
         }

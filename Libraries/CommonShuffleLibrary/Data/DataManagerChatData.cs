@@ -4,7 +4,7 @@ using CommonLibraries;
 using CommonServerLibraries;
 using Models;
 using Models.ChatManagerModels;
-using MongoDBLibrary;
+using NodeLibraries.MongoDB;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerChatData

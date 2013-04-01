@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using CommonLibraries;
 using CommonServerLibraries;
 using CommonShuffleLibrary;
-using NodeJSLibrary;
-using RedisLibrary;
+using NodeLibraries.NodeJS;
+using NodeLibraries.Redis;
 namespace AdminServer
 {
     public class AdminServer

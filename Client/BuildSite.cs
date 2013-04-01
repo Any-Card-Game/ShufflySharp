@@ -3,8 +3,8 @@ using System.Html;
 using System.Runtime.CompilerServices;
 using Client.Libs;
 using CommonShuffleLibrary;
-using CommonWebLibraries;
 using ShuffUI;
+using WebLibraries.Common;
 using jQueryApi;
 namespace Client
 {

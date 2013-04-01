@@ -52,12 +52,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
-      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
-      <Name>NodeJSLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.2.0.4\tools\Assemblies\mscorlib.dll</HintPath>
     </Reference>

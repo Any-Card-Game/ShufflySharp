@@ -69,13 +69,9 @@
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WebLibraries\CodeMirrorLibrary\CodeMirrorLibrary.csproj">
+    <ProjectReference Include="..\WebLibraries\WebLibraries.csproj">
       <Project>{BBF1829B-3446-4C0D-A75A-9BC713D2A6A1}</Project>
-      <Name>CodeMirrorLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebLibraries\CommonWebLibraries\CommonWebLibraries.csproj">
-      <Project>{6DA30112-FDBD-4E48-9F52-7268FCE19D25}</Project>
-      <Name>CommonWebLibraries</Name>
+      <Name>WebLibraries</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using CommonLibraries;
-using NodeJSLibrary;
+using NodeLibraries.NodeJS;
 namespace CommonServerLibraries
 {
     public static class Logger

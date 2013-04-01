@@ -1,4 +1,4 @@
-require('./MongoDBLibrary.js');
+require('./NodeLibraries.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Consumer
@@ -271,7 +271,7 @@ require('./MongoDBLibrary.js');
 				var messageModel = { user: user, content: message, time: new Date() };
 				var query = {};
 				query['$push'] = { messages: messageModel };
-				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -284,7 +284,7 @@ require('./MongoDBLibrary.js');
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var query = {};
 				query['$push'] = { users: user };
-				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -297,7 +297,7 @@ require('./MongoDBLibrary.js');
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var query = {};
 				query['$pop'] = { users: user };
-				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -395,7 +395,7 @@ require('./MongoDBLibrary.js');
 			this.$manager.client.collection('Room', function(err, collection) {
 				var query = {};
 				query['$push'] = { players: user };
-				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -408,7 +408,7 @@ require('./MongoDBLibrary.js');
 			this.$manager.client.collection('Room', function(err, collection) {
 				var query = {};
 				query['$pop'] = { players: user };
-				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -425,14 +425,14 @@ require('./MongoDBLibrary.js');
 		},
 		room_DeleteRoom: function(room) {
 			this.$manager.client.collection('Room', function(err, collection) {
-				collection.remove({ _id: MongoDBLibrary.MongoDocument.getID(room._id) });
+				collection.remove({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) });
 			});
 		},
 		room_SetChatServer: function(room, chatServerIndex, complete) {
 			this.$manager.client.collection('Room', function(err, collection) {
 				var query = {};
 				query['$set'] = { chatServer: chatServerIndex };
-				collection.update({ _id: MongoDBLibrary.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						CommonServerLibraries.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -476,7 +476,7 @@ require('./MongoDBLibrary.js');
 		return $CommonShuffleLibrary_Data_UserModelData.$ctor();
 	};
 	$CommonShuffleLibrary_Data_UserModelData.$ctor = function() {
-		var $this = MongoDBLibrary.MongoDocument.$ctor();
+		var $this = NodeLibraries.MongoDB.MongoDocument.$ctor();
 		$this.username = null;
 		$this.password = null;
 		return $this;
@@ -497,7 +497,7 @@ require('./MongoDBLibrary.js');
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, MongoDBLibrary.MongoDocument);
+	ss.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, NodeLibraries.MongoDB.MongoDocument);
 	$CommonShuffleLibrary_IPs.webIP = 'http://198.211.107.101:8881/';
 	$CommonShuffleLibrary_IPs.redisIP = '198.211.107.101';
 	$CommonShuffleLibrary_IPs.mongoIP = '198.211.107.101';

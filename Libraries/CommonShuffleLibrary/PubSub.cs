@@ -2,8 +2,8 @@ using System;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using CommonServerLibraries;
-using NodeJSLibrary;
-using RedisLibrary;
+using NodeLibraries.NodeJS;
+using NodeLibraries.Redis;
 namespace CommonShuffleLibrary
 {
     public class PubSub

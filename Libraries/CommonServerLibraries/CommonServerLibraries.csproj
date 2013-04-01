@@ -51,12 +51,13 @@
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
-      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
-      <Name>NodeJSLibrary</Name>
+    <ProjectReference Include="..\NodeLibraries\NodeLibraries.csproj">
+      <Project>{06E82003-D11E-4482-9DC8-9AD109B537A0}</Project>
+      <Name>NodeLibraries</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProgressBar.cs" />
     <Compile Include="Logger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />

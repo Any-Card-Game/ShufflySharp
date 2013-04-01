@@ -61,13 +61,9 @@
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\MongoDBLibrary\MongoDBLibrary.csproj">
-      <Project>{2C02E0B6-3542-4CA5-AA18-6435BDFD714E}</Project>
-      <Name>MongoDBLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
-      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
-      <Name>NodeJSLibrary</Name>
+    <ProjectReference Include="..\Libraries\NodeLibraries\NodeLibraries.csproj">
+      <Project>{06E82003-D11E-4482-9DC8-9AD109B537A0}</Project>
+      <Name>NodeLibraries</Name>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>

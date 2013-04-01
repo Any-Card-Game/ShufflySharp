@@ -1,5 +1,4 @@
-
-(function() {
+﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// MongoDBLibrary.MongoDocument
 	var $MongoDBLibrary_MongoDocument = function() {

@@ -1,7 +1,7 @@
 ﻿using System.Html;
 using System.Runtime.CompilerServices;
-using CodeMirrorLibrary;
 using CommonLibraries;
+using WebLibraries.CodeMirror;
 using jQueryApi;
 namespace ShuffUI
 {

@@ -1,10 +1,10 @@
 ﻿using CommonLibraries;
 using CommonShuffleLibrary;
-using CommonWebLibraries;
 using GameServer.Models;
 using Models;
 using Models.ChatManagerModels;
 using Models.GameManagerModels;
+using WebLibraries.Common;
 namespace GameServer
 {
     public class GameClientManager

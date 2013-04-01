@@ -5,8 +5,8 @@ using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models;
 using Models.SiteManagerModels;
-using NodeJSLibrary;
-using SocketIONodeLibrary;
+using NodeLibraries.NodeJS;
+using NodeLibraries.SocketIONode;
 namespace MonitorServer
 {
     public class MonitorServer

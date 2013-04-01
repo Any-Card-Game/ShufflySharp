@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
-using MongoDBLibrary;
-using NodeJSLibrary;
+using NodeLibraries.MongoDB;
+using NodeLibraries.NodeJS;
 namespace CommonShuffleLibrary
 {
     public partial class DataManager

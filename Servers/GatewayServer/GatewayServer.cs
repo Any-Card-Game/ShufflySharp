@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
-using CommonNodeLibraries;
 using CommonServerLibraries;
 using CommonShuffleLibrary;
 using Models; 
 using Models.SiteManagerModels;
-using NodeJSLibrary;
-using SocketIONodeLibrary;
+using NodeLibraries.Common.Charm;
+using NodeLibraries.NodeJS;
+using NodeLibraries.SocketIONode;
 namespace GatewayServer
 {
     public class GatewayServer
@@ -21,12 +21,15 @@ namespace GatewayServer
         {
             myGatewayName = "Gateway " + Guid.NewGuid();
 
-            var charm = Charmer.Setup();
+           /* var charm = Charmer.Setup();
+
+            var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
+
+            Global.SetInterval(() => {
+                                   prog.CurValue++;1
+                               },200);*/
+
              
-
-
-
-
             Logger.Start(myGatewayName);
 
             //ExtensionMethods.debugger("");

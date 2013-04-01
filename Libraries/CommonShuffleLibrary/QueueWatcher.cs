@@ -2,8 +2,8 @@ using System;
 using CommonLibraries;
 using CommonServerLibraries;
 using Models;
-using NodeJSLibrary;
-using RedisLibrary;
+using NodeLibraries.NodeJS;
+using NodeLibraries.Redis;
 namespace CommonShuffleLibrary
 {
     public class QueueWatcher : QueueItem //todo generisize

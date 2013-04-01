@@ -61,45 +61,21 @@
       <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>
       <Name>CommonShuffleLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\FibersLibrary\FibersLibrary.csproj">
-      <Project>{1136A53A-3853-4F65-B9ED-176290942582}</Project>
-      <Name>FibersLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\MongoDBLibrary\MongoDBLibrary.csproj">
-      <Project>{2C02E0B6-3542-4CA5-AA18-6435BDFD714E}</Project>
-      <Name>MongoDBLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\NodeJSLibrary\NodeJSLibrary.csproj">
-      <Project>{C4E105FB-745E-4C08-9058-2061BBB8751C}</Project>
-      <Name>NodeJSLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\RedisLibrary\RedisLibrary.csproj">
-      <Project>{69A683EE-60CB-459C-BAF2-822518D0ED8D}</Project>
-      <Name>RedisLibrary</Name>
+    <ProjectReference Include="..\Libraries\NodeLibraries\NodeLibraries.csproj">
+      <Project>{06E82003-D11E-4482-9DC8-9AD109B537A0}</Project>
+      <Name>NodeLibraries</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj">
       <Project>{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}</Project>
       <Name>ShuffleGameLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Libraries\NodeLibraries\SocketIONodeLibrary\SocketIONodeLibrary.csproj">
-      <Project>{45DF83B6-2FD4-4419-9504-5F50BC83A85F}</Project>
-      <Name>SocketIONodeLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\WebLibraries\CodeMirrorLibrary\CodeMirrorLibrary.csproj">
+    <ProjectReference Include="..\Libraries\WebLibraries\WebLibraries.csproj">
       <Project>{BBF1829B-3446-4C0D-A75A-9BC713D2A6A1}</Project>
-      <Name>CodeMirrorLibrary</Name>
+      <Name>WebLibraries</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\CommonLibraries\CommonLibraries.csproj">
       <Project>{406ACA25-7441-4944-A0F8-E66C025890CA}</Project>
       <Name>CommonLibraries</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\WebLibraries\CommonWebLibraries\CommonWebLibraries.csproj">
-      <Project>{6DA30112-FDBD-4E48-9F52-7268FCE19D25}</Project>
-      <Name>CommonWebLibraries</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\WebLibraries\SocketIOWebLibrary\SocketIOWebLibrary.csproj">
-      <Project>{108D8A37-0782-4FFA-9A53-934E07B9B28A}</Project>
-      <Name>SocketIOWebLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
@@ -111,7 +87,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Libraries\ShuffUI\ShuffUI.csproj">
       <Project>{B874741A-A80A-41ED-9F4C-72ECA778C59F}</Project>
-      <Name>WebUI</Name>
+      <Name>ShuffUI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

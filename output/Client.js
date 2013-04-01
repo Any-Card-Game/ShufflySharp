@@ -162,7 +162,7 @@
 		this.loginUI = null;
 		this.clientInfo = null;
 		this.$1$GameManagerField = null;
-		this.$shuffUIManager = new ShuffUI.ShuffUIManager();
+		this.$shuffUIManager = new WebLibraries.Common.ShuffUI.ShuffUIManager();
 		this.gameDrawer = new $Client_ShufflyGame_GameDrawer();
 		this.timeTracker = $Client_Libs_TimeTracker.$ctor();
 		var gateway = new ClientLibs.Gateway(gatewayServerAddress, false);
@@ -636,7 +636,7 @@
 		this.$myShuffUIManager = shuffUIManager;
 		this.$myPageHandler = pageHandler;
 		this.$myRoom = room;
-		var $t1 = new ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
 		$t1.title = ss.formatString('{0} Lobby', this.$myRoom.roomName);
 		$t1.set_x(250);
 		$t1.set_y(100);
@@ -654,10 +654,10 @@
 		}));
 		this.uiWindow.swingAway(4, true);
 		var $t3 = this.uiWindow;
-		var $t2 = new ShuffUI.ShuffListBox(600, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
+		var $t2 = new WebLibraries.Common.ShuffUI.ShuffListBox(600, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t2.set_visible(true);
-		this.$myRoomPlayers = $t3.addElement(ShuffUI.ShuffListBox).call($t3, $t2);
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(600, 510, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(23), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game!'), ss.mkdel(this, function(a) {
+		this.$myRoomPlayers = $t3.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t3, $t2);
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(600, 510, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(23), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game!'), ss.mkdel(this, function(a) {
 			pageHandler.get_gameManager().startGame();
 			this.uiWindow.set_height(CommonLibraries.Number.op_Implicit$2(200));
 		})));
@@ -666,7 +666,7 @@
 		$t4.set_visible(true);
 		this.$myChatBox = $t5.addElement($Client_UIWindow_Controls_ChatBox).call($t5, $t4);
 		var $t7 = this.uiWindow;
-		var $t6 = new ShuffUI.ShuffTextbox(50, 560, CommonLibraries.Number.op_Implicit$2(500), CommonLibraries.Number.op_Implicit$2(30), '', '', null);
+		var $t6 = new WebLibraries.Common.ShuffUI.ShuffTextbox(50, 560, CommonLibraries.Number.op_Implicit$2(500), CommonLibraries.Number.op_Implicit$2(30), '', '', null);
 		$t6.set_onEnter(ss.mkdel(this, function() {
 			if (this.$myChatText.get_text().trim() === '') {
 				return;
@@ -674,8 +674,8 @@
 			pageHandler.clientChatManager.sendChatMessage({ message: this.$myChatText.get_text() });
 			this.$myChatText.set_text('');
 		}));
-		this.$myChatText = $t7.addElement(ShuffUI.ShuffTextbox).call($t7, $t6);
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(560, 560, CommonLibraries.Number.op_Implicit$2(50), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Send'), ss.mkdel(this, function(e) {
+		this.$myChatText = $t7.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call($t7, $t6);
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(560, 560, CommonLibraries.Number.op_Implicit$2(50), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Send'), ss.mkdel(this, function(e) {
 			if (this.$myChatText.get_text().trim() === '') {
 				return;
 			}
@@ -699,7 +699,7 @@
 			this.$myRoomPlayers.clearItems();
 			for (var $t1 = 0; $t1 < roomData.users.length; $t1++) {
 				var userModel = roomData.users[$t1];
-				this.$myRoomPlayers.addItem(new ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
+				this.$myRoomPlayers.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
 			}
 			if (ss.isValue(roomData.messages)) {
 				this.$myChatBox.addChatMessages(roomData.messages);
@@ -720,14 +720,14 @@
 		this.set_shuffUIManager(shuffUIManager);
 		this.breakPoints = [];
 		var $t2 = this.uiWindow;
-		var $t1 = new ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
 		$t1.set_dock(2);
-		this.codeEditor = $t2.addElement(ShuffUI.ShuffCodeEditor).call($t2, $t1);
+		this.codeEditor = $t2.addElement(WebLibraries.Common.ShuffUI.ShuffCodeEditor).call($t2, $t1);
 		var $t4 = this.uiWindow;
-		var $t3 = new ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
+		var $t3 = new WebLibraries.Common.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
 		$t3.lineNumbers = false;
 		$t3.set_dock(2);
-		this.console = $t4.addElement(ShuffUI.ShuffCodeEditor).call($t4, $t3);
+		this.console = $t4.addElement(WebLibraries.Common.ShuffUI.ShuffCodeEditor).call($t4, $t3);
 		pageHandler.clientDebugManager.add_onGetGameSource(ss.mkdel(this, this.$populateGameSource));
 		pageHandler.clientDebugManager.requestGameSource({ gameName: 'Sevens' });
 	};
@@ -761,7 +761,7 @@
 	// Client.UIWindow.CreateRoomUI
 	var $Client_UIWindow_CreateRoomUI = function(shuffUIManager, pageHandler, gameType) {
 		this.uiWindow = null;
-		var $t1 = new ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
 		$t1.title = 'Create Room';
 		$t1.set_x(ss.Int32.div($('body').innerWidth(), 2) - 140);
 		$t1.set_y(ss.Int32.div($('body').innerHeight(), 2) - 62);
@@ -775,12 +775,12 @@
 		this.uiWindow.swingBack();
 		var roomName = null;
 		var $t3 = this.uiWindow;
-		var $t2 = new ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null);
+		var $t2 = new WebLibraries.Common.ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null);
 		$t2.set_onEnter(ss.mkdel(this, function() {
 			this.$createRoom(pageHandler, gameType, roomName);
 		}));
-		$t3.addElement(ShuffUI.ShuffTextbox).call($t3, roomName = $t2);
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(55, 100, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), ss.mkdel(this, function(e) {
+		$t3.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call($t3, roomName = $t2);
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(55, 100, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), ss.mkdel(this, function(e) {
 			this.$createRoom(pageHandler, gameType, roomName);
 		})));
 		roomName.focus();
@@ -802,7 +802,7 @@
 		this.lblHowFast = null;
 		this.joined = 0;
 		this.created = false;
-		var $t1 = new ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
 		$t1.title = 'Developer';
 		$t1.set_x(500);
 		$t1.set_y(100);
@@ -813,7 +813,7 @@
 		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		var but = null;
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, but = new ShuffUI.ShuffButton(280, 84, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$1(ss.mkdel(this, function() {
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, but = new WebLibraries.Common.ShuffUI.ShuffButton(280, 84, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$1(ss.mkdel(this, function() {
 			return 'Game: ' + this.selectedGame;
 		})), ss.mkdel(this, function(e) {
 			if (this.selectedGame === 'Sevens') {
@@ -825,8 +825,8 @@
 			pageHandler.clientDebugManager.requestGameSource({ gameName: this.selectedGame });
 			var m = ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(but.text);
 		})));
-		this.lblHowFast = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(80, 80, 'Time Taken:'));
-		this.lblAnother = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(80, 100, 'Another: '));
+		this.lblHowFast = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(80, 80, 'Time Taken:'));
+		this.lblAnother = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(80, 100, 'Another: '));
 		// devArea.AddButton(new ShuffButton()
 		// {
 		// X = 280,
@@ -839,7 +839,7 @@
 		// pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 		// }
 		// });
-		this.varText = this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, new ShuffUI.ShuffTextbox(150, 134, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(25), 'Var Lookup', null, null));
+		this.varText = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffTextbox(150, 134, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(25), 'Var Lookup', null, null));
 		//  devArea.AddButton(new ShuffButton()
 		//  {
 		//  X = 280,
@@ -865,7 +865,7 @@
 		//   devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 		//   }
 		//   });
-		this.txtNumOfPlayers = this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, new ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size:13px'));
+		this.txtNumOfPlayers = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size:13px'));
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.HomeUI
@@ -891,7 +891,7 @@
 		pageHandler.clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
 		pageHandler.clientSiteManager.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
 		pageHandler.clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
-		var $t1 = new ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
 		$t1.title = 'CardGame';
 		$t1.set_x(400);
 		$t1.set_y(100);
@@ -901,63 +901,63 @@
 		$t1.allowMinimize = true;
 		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
-		this.$lblHeader = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(40, 44, 'Please Login!'));
-		this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(30, 80, 'Game Types'));
+		this.$lblHeader = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(40, 44, 'Please Login!'));
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(30, 80, 'Game Types'));
 		var $t3 = this.uiWindow;
-		var $t2 = new ShuffUI.ShuffListBox(25, 100, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(300), null);
+		var $t2 = new WebLibraries.Common.ShuffUI.ShuffListBox(25, 100, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t2.onClick = ss.mkdel(this, function(item) {
 			this.$myPageHandler.clientSiteManager.getRooms({ gameType: ss.cast(item.value, String) });
 		});
-		this.$myGameTypeList = $t3.addElement(ShuffUI.ShuffListBox).call($t3, $t2);
-		this.$myCreateGameType = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(45, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Game!'), function(c) {
+		this.$myGameTypeList = $t3.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t3, $t2);
+		this.$myCreateGameType = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(45, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Game!'), function(c) {
 			var ui = new $Client_UIWindow_CodeEditorUI(shuffUIManager, pageHandler);
 		}));
-		this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(210, 80, 'Rooms'));
-		this.$myCreateRoom = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(260, 70, CommonLibraries.Number.op_Implicit$2(70), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c1) {
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(210, 80, 'Rooms'));
+		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(260, 70, CommonLibraries.Number.op_Implicit$2(70), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c1) {
 			this.$myPageHandler.clientSiteManager.getRooms({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String) });
 		})));
 		var $t5 = this.uiWindow;
-		var $t4 = new ShuffUI.ShuffListBox(200, 100, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
+		var $t4 = new WebLibraries.Common.ShuffUI.ShuffListBox(200, 100, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t4.onClick = ss.mkdel(this, function(item1) {
 			var room = Enumerable.from(this.$myLoadedRooms).first(function(a) {
 				return ss.referenceEquals(a.roomName, ss.cast(item1.value, String));
 			});
 			this.$populateRoom(room);
 		});
-		this.$myRoomsList = $t5.addElement(ShuffUI.ShuffListBox).call($t5, $t4);
-		this.$myCreateRoom = this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), ss.mkdel(this, function(c2) {
+		this.$myRoomsList = $t5.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t5, $t4);
+		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), ss.mkdel(this, function(c2) {
 			var create = new $Client_UIWindow_CreateRoomUI(shuffUIManager, pageHandler, ss.cast(this.$myGameTypeList.selectedItem.value, String));
 			shuffUIManager.focus(create.uiWindow);
 		})));
 		var $t7 = this.uiWindow;
-		var $t6 = new ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(200), null);
+		var $t6 = new WebLibraries.Common.ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(200), null);
 		$t6.set_visible(false);
-		this.$myRoomPlayers = $t7.addElement(ShuffUI.ShuffListBox).call($t7, $t6);
+		this.$myRoomPlayers = $t7.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t7, $t6);
 		var $t9 = this.uiWindow;
-		var $t8 = new ShuffUI.ShuffLabel(400, 100, '');
+		var $t8 = new WebLibraries.Common.ShuffUI.ShuffLabel(400, 100, '');
 		$t8.set_visible(false);
-		this.$myRoomGameType = $t9.addElement(ShuffUI.ShuffLabel).call($t9, $t8);
+		this.$myRoomGameType = $t9.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call($t9, $t8);
 		var $t11 = this.uiWindow;
-		var $t10 = new ShuffUI.ShuffLabel(400, 130, '');
+		var $t10 = new WebLibraries.Common.ShuffUI.ShuffLabel(400, 130, '');
 		$t10.set_visible(false);
-		this.$myRoomName = $t11.addElement(ShuffUI.ShuffLabel).call($t11, $t10);
+		this.$myRoomName = $t11.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call($t11, $t10);
 		var $t13 = this.uiWindow;
-		var $t12 = new ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), ss.mkdel(this, function(c3) {
+		var $t12 = new WebLibraries.Common.ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), ss.mkdel(this, function(c3) {
 			pageHandler.clientSiteManager.joinRoom({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String), roomName: ss.cast(this.$myRoomsList.selectedItem.value, String) });
 		}));
 		$t12.set_visible(false);
-		this.$myJoinRoom = $t13.addElement(ShuffUI.ShuffButton).call($t13, $t12);
+		this.$myJoinRoom = $t13.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call($t13, $t12);
 		var $t15 = this.uiWindow;
-		var $t14 = new ShuffUI.ShuffButton(490, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Spectate!'), function(c4) {
+		var $t14 = new WebLibraries.Common.ShuffUI.ShuffButton(490, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Spectate!'), function(c4) {
 		});
 		$t14.set_visible(false);
-		this.$mySpectateRoom = $t15.addElement(ShuffUI.ShuffButton).call($t15, $t14);
+		this.$mySpectateRoom = $t15.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call($t15, $t14);
 		var $t17 = this.uiWindow;
-		var $t16 = new ShuffUI.ShuffButton(420, 410, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c5) {
+		var $t16 = new WebLibraries.Common.ShuffUI.ShuffButton(420, 410, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c5) {
 			pageHandler.clientSiteManager.getRoomInfo({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String), roomName: ss.cast(this.$myRoomsList.selectedItem.value, String) });
 		}));
 		$t16.set_visible(false);
-		this.$myRefreshRoom = $t17.addElement(ShuffUI.ShuffButton).call($t17, $t16);
+		this.$myRefreshRoom = $t17.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call($t17, $t16);
 		//UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
 	};
 	$Client_UIWindow_HomeUI.prototype = {
@@ -987,7 +987,7 @@
 			this.$myGameTypeList.clearItems();
 			for (var $t1 = 0; $t1 < o.gameTypes.length; $t1++) {
 				var gameType = o.gameTypes[$t1];
-				this.$myGameTypeList.addItem(new ShuffUI.ShuffListItem(gameType.name, gameType.name));
+				this.$myGameTypeList.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(gameType.name, gameType.name));
 			}
 			this.$myPageHandler.clientSiteManager.getRooms({ gameType: o.gameTypes[0].name });
 		},
@@ -999,7 +999,7 @@
 			}
 			for (var $t1 = 0; $t1 < o.rooms.length; $t1++) {
 				var room = o.rooms[$t1];
-				this.$myRoomsList.addItem(new ShuffUI.ShuffListItem(room.roomName, room.roomName));
+				this.$myRoomsList.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(room.roomName, room.roomName));
 			}
 			this.$populateRoom(o.rooms[0]);
 		},
@@ -1013,7 +1013,7 @@
 			this.$myRoomPlayers.clearItems();
 			for (var $t1 = 0; $t1 < roomData.players.length; $t1++) {
 				var userModel = roomData.players[$t1];
-				this.$myRoomPlayers.addItem(new ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
+				this.$myRoomPlayers.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
 			}
 			this.$myRoomName.set_text(ss.formatString('Room: {0}', roomData.roomName));
 			this.$myRoomGameType.set_text(ss.formatString('Game Type: {0}', roomData.gameType));
@@ -1023,7 +1023,7 @@
 	// Client.UIWindow.LoginUI
 	var $Client_UIWindow_LoginUI = function(shuffUIManager, pageHandler) {
 		this.uiWindow = null;
-		var $t1 = new ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
 		$t1.title = 'Login';
 		$t1.set_x($('body').innerWidth() - 500);
 		$t1.set_y(100);
@@ -1035,12 +1035,12 @@
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		var loginName;
 		var password;
-		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, loginName = new ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
-		this.uiWindow.addElement(ShuffUI.ShuffTextbox).call(this.uiWindow, password = new ShuffUI.ShuffTextbox(115, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(55, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), function(e) {
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, loginName = new WebLibraries.Common.ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, password = new WebLibraries.Common.ShuffUI.ShuffTextbox(115, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(55, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), function(e) {
 			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 		}));
-		this.uiWindow.addElement(ShuffUI.ShuffButton).call(this.uiWindow, new ShuffUI.ShuffButton(155, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e1) {
+		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(155, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e1) {
 			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 		}));
 		pageHandler.clientSiteManager.add_onLogin(ss.mkdel(this, function(user, data) {
@@ -1058,7 +1058,7 @@
 		this.load = null;
 		this.uiWindow = null;
 		this.set_pageHandler(pageHandler);
-		var $t1 = new ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
 		$t1.title = 'Question';
 		$t1.set_x(600);
 		$t1.set_y(100);
@@ -1069,22 +1069,22 @@
 		$t1.set_visible(true);
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		this.uiWindow.swingAway(0, true);
-		this.question = this.uiWindow.addElement(ShuffUI.ShuffLabel).call(this.uiWindow, new ShuffUI.ShuffLabel(20, 40, ''));
+		this.question = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(20, 40, ''));
 		this.load = ss.mkdel(this, function(question) {
 			this.uiWindow.swingBack();
 			this.question.set_text(question.question);
 			this.answerBox.clearItems();
 			for (var i = 0; i < question.answers.length; i++) {
-				this.answerBox.addItem(new ShuffUI.ShuffListItem(question.answers[i], i));
+				this.answerBox.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(question.answers[i], i));
 			}
 		});
 		debugger;
 		var $t3 = this.uiWindow;
-		var $t2 = new ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125), null);
+		var $t2 = new WebLibraries.Common.ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125), null);
 		$t2.onClick = ss.mkdel(this, function(e) {
 			this.$selectAnswer(e);
 		});
-		this.answerBox = $t3.addElement(ShuffUI.ShuffListBox).call($t3, $t2);
+		this.answerBox = $t3.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t3, $t2);
 	};
 	$Client_UIWindow_QuestionUI.prototype = {
 		get_pageHandler: function() {
@@ -1102,7 +1102,7 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.Controls.ChatBox
 	var $Client_UIWindow_Controls_ChatBox = function(x, y, width, height) {
-		ShuffUI.ShuffElement.call(this);
+		WebLibraries.Common.ShuffUI.ShuffElement.call(this);
 		this.element = $('<div></div>');
 		this.element.css('position', 'absolute');
 		this.element.css('background-color', 'grey');
@@ -1144,7 +1144,7 @@
 	ss.registerClass(global, 'Client.UIWindow.HomeUI', $Client_UIWindow_HomeUI);
 	ss.registerClass(global, 'Client.UIWindow.LoginUI', $Client_UIWindow_LoginUI);
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
-	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, ShuffUI.ShuffElement);
+	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.Common.ShuffUI.ShuffElement);
 	$Client_BuildSite.topLevelURL = 'http://198.211.107.101:8881/';
 	$Client_BuildSite.instance = null;
 })();

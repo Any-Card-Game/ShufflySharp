@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using ShuffUI;
+using WebLibraries.Common.ShuffUI;
 using jQueryApi;
 namespace Client.UIWindow
 {

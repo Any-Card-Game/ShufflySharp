@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Models;
 using Models.GameManagerModels;
-using ShuffUI;
+using WebLibraries.Common.ShuffUI;
 using jQueryApi;
 namespace Client.UIWindow
 {

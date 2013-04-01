@@ -37,6 +37,8 @@
     <Compile Include="Common\Charm\Charmer.cs" />
     <Compile Include="Common\Charm\DisplayType.cs" />
     <Compile Include="Common\Charm\EraseType.cs" />
+    <Compile Include="Common\Logging\Logger.cs" />
+    <Compile Include="Common\Logging\ProgressBar.cs" />
     <Compile Include="Fibers\Fiber.cs" />
     <Compile Include="MongoDB\BSON.cs" />
     <Compile Include="MongoDB\Mongo.cs" />

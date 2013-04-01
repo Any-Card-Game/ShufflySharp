@@ -16,17 +16,9 @@ namespace Build
             var projs = new[] {
                                       shufSharp + @"\Libraries\CommonLibraries\",
                                       shufSharp + @"\Libraries\CommonShuffleLibrary\",
-                                      shufSharp + @"\Libraries\CommonServerLibraries\",
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
                                       shufSharp + @"\Libraries\NodeLibraries\",
-                                      shufSharp + @"\Libraries\ShuffUI\",
-                                      shufSharp + @"\Servers\AdminServer\",
-                                      shufSharp + @"\Servers\ChatServer\",
-                                      shufSharp + @"\Servers\DebugServer\",
-                                      shufSharp + @"\Servers\GameServer\",
-                                      shufSharp + @"\Servers\GatewayServer\",
-                                      shufSharp + @"\Servers\HeadServer\",
-                                      shufSharp + @"\Servers\SiteServer\",
+                                      shufSharp + @"\Servers\ServerManager\", 
                                       shufSharp + @"\Models\",
                                       shufSharp + @"\Client\",
                                       shufSharp + @"\ClientLibs\",
@@ -47,107 +39,38 @@ namespace Build
             }
 
             //client happens in buildsite.cs
-            var depends = new Dictionary<string, Application>();
-            depends.Add(shufSharp + @"\Servers\AdminServer\",
+            var depends = new Dictionary<string, Application>(); 
+            depends.Add(shufSharp + @"\Servers\ServerManager\",
                         new Application(true,
-                                        "new AdminServer.AdminServer();",
-                                        new List<string> {
-                                                                 @"./NodeLibraries.js",
-                                                                 @"./CommonLibraries.js",
-                                                                 @"./CommonServerLibraries.js",
-                                                                 @"./CommonShuffleLibrary.js",
-                                                                 @"./Models.js",
-                                                         }));
-            depends.Add(shufSharp + @"\Servers\ChatServer\",
-                        new Application(true,
-                                        "new ChatServer.ChatServer();",
                                         new List<string> {
                                                                  @"./NodeLibraries.js",
                                                                  @"./CommonLibraries.js",
                                                                  @"./CommonShuffleLibrary.js",
                                                                  @"./ShuffleGameLibrary.js",
-                                                                 @"./CommonServerLibraries.js",
                                                                  @"./Models.js",
                                                                  @"./RawDeflate.js",
-                                                         }));
-            depends.Add(shufSharp + @"\Servers\DebugServer\",
-                        new Application(true,
-                                        "new DebugServer.DebugServer();",
-                                        new List<string> {
-                                                                 @"./NodeLibraries.js",
-                                                                 @"./CommonServerLibraries.js",
-                                                                 @"./CommonLibraries.js",
-                                                                 @"./CommonShuffleLibrary.js",
-                                                                 @"./Models.js",
-                                                         }));
-            depends.Add(shufSharp + @"\Servers\GameServer\",
-                        new Application(true,
-                                        "new GameServer.GameServer();",
-                                        new List<string> {
-                                                                 @"./NodeLibraries.js",
-                                                                 @"./CommonLibraries.js",
-                                                                 @"./CommonServerLibraries.js",
-                                                                 @"./CommonShuffleLibrary.js",
-                                                                 @"./ShuffleGameLibrary.js",
-                                                                 @"./Models.js",
-                                                                 @"./RawDeflate.js",
-                                                         }));
-            depends.Add(shufSharp + @"\Servers\GatewayServer\",
-                        new Application(true,
-                                        "new GatewayServer.GatewayServer();",
-                                        new List<string> {
-                                                                 @"./NodeLibraries.js",
-                                                                 @"./CommonServerLibraries.js",
-                                                                 @"./CommonLibraries.js",
-                                                                 @"./CommonShuffleLibrary.js",
-                                                                 @"./Models.js",
-                                                         }));
-            depends.Add(shufSharp + @"\Servers\HeadServer\",
-                        new Application(true,
-                                        "new HeadServer.HeadServer();",
-                                        new List<string> {
-                                                                 @"./NodeLibraries.js",
-                                                                 @"./CommonServerLibraries.js",
-                                                                 @"./CommonLibraries.js",
-                                                                 @"./CommonShuffleLibrary.js",
-                                                                 @"./Models.js",
-                                                         }));
-            depends.Add(shufSharp + @"\Servers\SiteServer\",
-                        new Application(true,
-                                        "",
-                                        new List<string> {
-                                                                 @"./NodeLibraries.js",
-                                                                 @"./CommonLibraries.js",
-                                                                 @"./CommonServerLibraries.js",
-                                                                 @"./CommonShuffleLibrary.js",
-                                                                 @"./ShuffleGameLibrary.js",
-                                                                 @"./Models.js",
-                                                                 @"./RawDeflate.js",
-                                                         }));
+                                                         })); 
+
+
             depends.Add(shufSharp + @"\Libraries\CommonShuffleLibrary\",
                         new Application(false,
-                                        "",
                                         new List<string> {
                                                                  @"./NodeLibraries.js",
                                                          }));
-            depends.Add(shufSharp + @"\Libraries\Libraries\CommonNodeLibraries\", new Application(false, "", new List<string> {}));
-            depends.Add(shufSharp + @"\Libraries\NodeLibraries\", new Application(true, "", new List<string> {}));
-            depends.Add(shufSharp + @"\Libraries\CommonLibraries\", new Application(false, "", new List<string> {}));
-            depends.Add(shufSharp + @"\Libraries\ShuffUI\", new Application(false, "", new List<string> {}));
-            depends.Add(shufSharp + @"\ClientLibs\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\NodeLibraries\", new Application(true, new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\CommonLibraries\", new Application(false, new List<string> {}));
+            depends.Add(shufSharp + @"\ClientLibs\", new Application(false, new List<string> {}));
             depends.Add(shufSharp + @"\ServerSlammer\",
                         new Application(true,
-                                        "",
                                         new List<string> {
                                                                  @"./NodeLibraries.js",
                                                                  @"./Models.js",
                                                                  @"./ClientLibs.js",
                                                          }));
-            depends.Add(shufSharp + @"\Models\", new Application(false, "", new List<string> {}));
-            depends.Add(shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, "", new List<string> {}));
+            depends.Add(shufSharp + @"\Models\", new Application(false, new List<string> {}));
+            depends.Add(shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false, new List<string> {}));
             depends.Add(shufSharp + @"\Client\",
                         new Application(false,
-                                        "",
                                         new List<string> {}));
 
 #if FTP
@@ -290,7 +213,7 @@ namespace Build
             try {
                 File.Copy(from, to);
             } catch (Exception) {
-                Console.WriteLine("Copy Failed");
+                Console.WriteLine("Copy Failed   " + from);
                 goto top;
             }
         }
@@ -298,14 +221,12 @@ namespace Build
         #region Nested type: Application
 
         public class Application
-        {
-            public string After { get; set; }
+        { 
             public bool Node { get; set; }
             public List<string> IncludesAfter { get; set; }
 
-            public Application(bool node, string prepend, List<string> includesAfter)
-            {
-                After = prepend;
+            public Application(bool node, List<string> includesAfter)
+            { 
                 Node = node;
                 IncludesAfter = includesAfter;
             }

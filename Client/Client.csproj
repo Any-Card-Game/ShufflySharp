@@ -81,14 +81,6 @@
       <Project>{A0F30F5B-8FAB-4F80-ADAF-80F66766693C}</Project>
       <Name>Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Servers\GatewayServer\GatewayServer.csproj">
-      <Project>{DF31877E-A85A-4FE1-AB8D-5025011F4EAA}</Project>
-      <Name>GatewayServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Libraries\ShuffUI\ShuffUI.csproj">
-      <Project>{B874741A-A80A-41ED-9F4C-72ECA778C59F}</Project>
-      <Name>ShuffUI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

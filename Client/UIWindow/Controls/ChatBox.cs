@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Models.ChatManagerModels;
-using ShuffUI;
+using WebLibraries.Common.ShuffUI;
 using jQueryApi;
 namespace Client.UIWindow.Controls
 {

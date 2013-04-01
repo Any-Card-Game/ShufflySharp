@@ -38,12 +38,41 @@
     <Compile Include="CodeMirror\CodeMirrorLine.cs" />
     <Compile Include="CodeMirror\CodeMirrorOptions.cs" />
     <Compile Include="Common\Compressor.cs" />
+    <Compile Include="Common\ShuffUI\ButtonClickedEvent.cs" />
+    <Compile Include="Common\ShuffUI\CodeMirrorInformation.cs" />
+    <Compile Include="Common\ShuffUI\CodeMirrorInformationData.cs" />
+    <Compile Include="Common\ShuffUI\DockStyle.cs" />
+    <Compile Include="Common\ShuffUI\ImportedExtensionMethods.cs" />
+    <Compile Include="Common\ShuffUI\ParentChangedEvent.cs" />
+    <Compile Include="Common\ShuffUI\PositionChangedEvent.cs" />
+    <Compile Include="Common\ShuffUI\ShuffButton.cs" />
+    <Compile Include="Common\ShuffUI\ShuffCodeEditor.cs" />
+    <Compile Include="Common\ShuffUI\ShuffElement.cs" />
+    <Compile Include="Common\ShuffUI\ShuffLabel.cs" />
+    <Compile Include="Common\ShuffUI\ShuffListBox.cs" />
+    <Compile Include="Common\ShuffUI\ShuffListItem.cs" />
+    <Compile Include="Common\ShuffUI\ShuffPanel.cs" />
+    <Compile Include="Common\ShuffUI\ShuffTextbox.cs" />
+    <Compile Include="Common\ShuffUI\ShuffUIEvents.cs" />
+    <Compile Include="Common\ShuffUI\ShuffUIManager.cs" />
+    <Compile Include="Common\ShuffUI\ShuffWindow.cs" />
+    <Compile Include="Common\ShuffUI\SizeChangedEvent.cs" />
+    <Compile Include="Common\ShuffUI\SwingDirection.cs" />
+    <Compile Include="Common\ShuffUI\TextChangedEvent.cs" />
+    <Compile Include="Common\ShuffUI\UIAreaInformation.cs" />
+    <Compile Include="Common\ShuffUI\VisibleChangedEvent.cs" />
     <Compile Include="Common\XStats.cs" />
     <Compile Include="SocketIOClient\SocketIOClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
       <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.2.0.4\tools\Assemblies\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="Saltarelle.jQuery">
+      <HintPath>..\..\packages\Saltarelle.jQuery.1.9.0\lib\Saltarelle.jQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="Saltarelle.jQuery.UI">
+      <HintPath>..\..\packages\Saltarelle.jQuery.UI.1.9.2\lib\Saltarelle.jQuery.UI.dll</HintPath>
     </Reference>
     <Reference Include="Saltarelle.Web">
       <HintPath>..\..\..\packages\Saltarelle.Web.2.0.0\lib\Saltarelle.Web.dll</HintPath>
@@ -61,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="ShuffUI\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

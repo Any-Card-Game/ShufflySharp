@@ -15,6 +15,9 @@ namespace NodeLibraries.NodeJS
         [ScriptName("stderr")]
         [IntrinsicProperty]
         public STDError STDError { get; set; }
+        [ScriptName("argv")]
+        [IntrinsicProperty]
+        public string[] Arguments { get; set; }
         public void Exit() {}
     }
 }

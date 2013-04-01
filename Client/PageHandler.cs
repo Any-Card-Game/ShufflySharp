@@ -8,7 +8,7 @@ using ClientLibs;
 using ClientLibs.Managers;
 using CommonLibraries;
 using Models.GameManagerModels;
-using ShuffUI;
+using WebLibraries.Common.ShuffUI;
 using global;
 namespace Client
 {

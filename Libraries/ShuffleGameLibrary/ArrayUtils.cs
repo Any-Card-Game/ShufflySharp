@@ -7,7 +7,7 @@ namespace global
     [ScriptName("ArrayUtils")]
     public class ArrayUtils
     {
-        public ArrayUtils()
+        static ArrayUtils()
         {
             "Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};".eval();
             "Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};".eval();

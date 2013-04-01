@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
-using CommonServerLibraries;
 using Models;
+using NodeLibraries.Common.Logging;
 namespace CommonShuffleLibrary
 {
     public class QueueManager

@@ -245,11 +245,6 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// global.ArrayUtils
 	var $global_ArrayUtils = function() {
-		eval('Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};');
-		eval('Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};');
-		eval('Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};');
-		eval('Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};');
-		eval('Array.prototype.remove=function(does){ this.splice(this.indexOf(does),1); };');
 	};
 	$global_ArrayUtils.forEach = function(ts, does) {
 		for (var i = 0; i < ts.length; i++) {
@@ -2331,4 +2326,9 @@
 	ss.registerClass(global, 'global.TableSpace', $global_TableSpace);
 	ss.registerClass(global, 'global.TableTextArea', $global_TableTextArea);
 	ss.registerClass(global, 'global.User', $global_User);
+	eval('Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};');
+	eval('Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};');
+	eval('Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};');
+	eval('Array.prototype.any=function(does){return global.ArrayUtils.any(this,does);};');
+	eval('Array.prototype.remove=function(does){ this.splice(this.indexOf(does),1); };');
 })();

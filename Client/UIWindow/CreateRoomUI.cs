@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 using Models.SiteManagerModels;
-using ShuffUI;
+using WebLibraries.Common.ShuffUI;
 using jQueryApi;
 namespace Client.UIWindow
 {

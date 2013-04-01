@@ -3,7 +3,7 @@ using Client.UIWindow.Controls;
 using Models;
 using Models.ChatManagerModels;
 using Models.SiteManagerModels;
-using ShuffUI;
+using WebLibraries.Common.ShuffUI;
 namespace Client.UIWindow
 {
     public class ActiveLobbyUI

@@ -45,7 +45,7 @@ namespace ServerManager.AdminServer
              
             util = Global.Require<Util>("util");
             exec = Global.Require<ChildProcess>("child_process").Exec;
-            __dirname = ExtensionMethods.HARDLOCATION;
+            __dirname = IPs.HARDLOCATION;
             nonDebuggable = new[] {"node-inspector", "pkill"};
 
             Global.Require<Http>("http").CreateServer(handler).Listen(8090);

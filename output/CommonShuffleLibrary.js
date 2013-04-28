@@ -1,5 +1,4 @@
-require('./NodeLibraries.js');
-(function() {
+﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Consumer
 	var $CommonShuffleLibrary_Consumer = function(obj) {
@@ -501,6 +500,7 @@ require('./NodeLibraries.js');
 	$CommonShuffleLibrary_IPs.webIP = 'http://198.211.107.101:8881/';
 	$CommonShuffleLibrary_IPs.redisIP = '198.211.107.101';
 	$CommonShuffleLibrary_IPs.mongoIP = '198.211.107.101';
+	$CommonShuffleLibrary_IPs.HARDLOCATION = '/usr/local/src/new/';
 	$CommonShuffleLibrary_DataManager.$connectionAddress = $CommonShuffleLibrary_IPs.mongoIP;
 	$CommonShuffleLibrary_DataManager.$connectionPort = '27017';
 })();

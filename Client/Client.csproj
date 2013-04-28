@@ -36,6 +36,14 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Angular\App.cs" />
+    <Compile Include="Angular\controllers\TodoCtrl.cs" />
+    <Compile Include="Angular\directives\TodoBlur.cs" />
+    <Compile Include="Angular\directives\TodoFocus.cs" />
+    <Compile Include="Angular\interfaces\ITodoScope.cs" />
+    <Compile Include="Angular\interfaces\ITodoStorage.cs" />
+    <Compile Include="Angular\models\TodoItem.cs" />
+    <Compile Include="Angular\services\TodoStorage.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="ClientInformation.cs" />
     <Compile Include="Libs\ScriptLoader.cs" />
@@ -56,6 +64,10 @@
     <ProjectReference Include="..\ClientLibs\ClientLibs.csproj">
       <Project>{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}</Project>
       <Name>ClientLibs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\AngularJS\AngularJS.csproj">
+      <Project>{815CC797-F742-4C48-8C98-BD7DE050D95A}</Project>
+      <Name>AngularJS</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\CommonShuffleLibrary\CommonShuffleLibrary.csproj">
       <Project>{1FD90B1D-8502-4F1A-AA96-0F859D0748AD}</Project>

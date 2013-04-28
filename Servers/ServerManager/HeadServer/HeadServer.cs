@@ -9,7 +9,7 @@ namespace ServerManager.HeadServer
 {
     public class HeadServer
     {
-        private string __dirname = ExtensionMethods.HARDLOCATION;
+        private string __dirname = IPs.HARDLOCATION;
         private FS fs = Global.Require<FS>("fs");
         private List<string> gateways = new List<string>();
         private List<string> indexForSites = new List<string>();

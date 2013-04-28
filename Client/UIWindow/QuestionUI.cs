@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using Models.GameManagerModels;
-using WebLibraries.Common.ShuffUI;
+using WebLibraries.ShuffUI.ShuffUI;
 namespace Client.UIWindow
 {
     public class QuestionUI

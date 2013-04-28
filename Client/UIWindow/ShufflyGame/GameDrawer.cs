@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Html;
 using CommonLibraries;
+using CommonShuffleLibrary;
 using global;
 using jQueryApi;
 namespace Client.ShufflyGame
@@ -30,7 +31,7 @@ namespace Client.ShufflyGame
             cardImages = new JsDictionary<string, ImageElement>();
             for (var i = 101; i < 153; i++) {
                 var img = new ImageElement();
-                var domain = BuildSite.TopLevelURL + "assets";
+                var domain = IPs.WebIP + "assets";
                 var src = domain + "/cards/" + i;
                 string jm;
                 img.Src = jm = src + ".gif";
@@ -331,7 +332,7 @@ namespace Client.ShufflyGame
         public string drawCard(CardGameCard card)
         {
             var src = "";
-            var domain = BuildSite.TopLevelURL + "assets";
+            var domain = IPs.WebIP + "assets";
             src = domain + "/cards/" + ( 100 + ( card.Value + 1 ) + ( card.Type ) * 13 );
             return src + ".gif";
         }

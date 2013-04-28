@@ -4,13 +4,12 @@ using System.Runtime.CompilerServices;
 using Client.Libs;
 using CommonShuffleLibrary;
 using WebLibraries.Common;
-using WebLibraries.Common.ShuffUI;
+using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
 namespace Client
 {
     public class BuildSite
     {
-        public const string TopLevelURL = "http://198.211.107.101:8881/";
         private string gatewayServerAddress;
         public ShuffUIManager shuffUIManager;
         [IntrinsicProperty]
@@ -20,7 +19,7 @@ namespace Client
         {
             Instance = this;
             this.gatewayServerAddress = gatewayServerAddress;
-            loadJunk(TopLevelURL, ready);
+            loadJunk(IPs.WebIP, ready);
         }
 
         private static void loadJunk(string url, Action ready)
@@ -96,13 +95,7 @@ namespace Client
             { 
                 Window.ScrollTo(0, 0);
                 e.StopImmediatePropagation();
-            });
-            Document.Body.AddEventListener("scroll", (e) => {
-                                                           
-
-         Window.ScrollTo(0,0);
-                                                           e.StopImmediatePropagation();
-                                                       }, true);
+            }); 
 
             Element dvGame = Document.CreateElement("div");
             jQuery.Select("body").Append(dvGame);

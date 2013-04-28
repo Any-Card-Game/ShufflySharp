@@ -1,5 +1,4 @@
-
-(function() {
+﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.BuildSite
 	var $Client_BuildSite = function(gatewayServerAddress) {
@@ -7,7 +6,7 @@
 		this.shuffUIManager = null;
 		$Client_BuildSite.instance = this;
 		this.$gatewayServerAddress = gatewayServerAddress;
-		$Client_BuildSite.$loadJunk($Client_BuildSite.topLevelURL, ss.mkdel(this, this.$ready));
+		$Client_BuildSite.$loadJunk(CommonShuffleLibrary.IPs.webIP, ss.mkdel(this, this.$ready));
 	};
 	$Client_BuildSite.prototype = {
 		$ready: function() {
@@ -25,10 +24,6 @@
 				window.scrollTo(0, 0);
 				e.stopImmediatePropagation();
 			});
-			document.body.addEventListener('scroll', function(e1) {
-				window.scrollTo(0, 0);
-				e1.stopImmediatePropagation();
-			}, true);
 			var dvGame = document.createElement('div');
 			$('body').append(dvGame);
 			dvGame.id = 'dvGame';
@@ -39,7 +34,7 @@
 			dvGame.style.bottom = '0';
 			dvGame.style['-webkit-transform'] = 'scale(1.2)';
 			document.body.style['overflow'] = 'hidden';
-			document.body.addEventListener('contextmenu', function(e2) {
+			document.body.addEventListener('contextmenu', function(e1) {
 				//  e.PreventDefault();
 				//todo: Special right click menu;
 			}, false);
@@ -162,7 +157,7 @@
 		this.loginUI = null;
 		this.clientInfo = null;
 		this.$1$GameManagerField = null;
-		this.$shuffUIManager = new WebLibraries.Common.ShuffUI.ShuffUIManager();
+		this.$shuffUIManager = new WebLibraries.ShuffUI.ShuffUI.ShuffUIManager();
 		this.gameDrawer = new $Client_ShufflyGame_GameDrawer();
 		this.timeTracker = $Client_Libs_TimeTracker.$ctor();
 		var gateway = new ClientLibs.Gateway(gatewayServerAddress, false);
@@ -197,6 +192,199 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.App
+	var $Client_Angular_App = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.controllers.TodoCtrl
+	var $Client_Angular_controllers_TodoCtrl = function(scope, location, todoStorage, filterFilter, log) {
+		this.$todos = null;
+		this.$scope = null;
+		this.$todoStorage = null;
+		this.$filterFilter = null;
+		this.$log = null;
+		this.$scope = scope;
+		this.$todoStorage = todoStorage;
+		this.$filterFilter = filterFilter;
+		this.$log = log;
+		this.$todos = scope.todos = todoStorage.get_todos();
+		scope.newTodo = '';
+		scope.editedTodo = null;
+		scope.addTodo = ss.mkdel(this, this.$addTodo);
+		scope.editTodo = ss.mkdel(this, this.$editTodo);
+		scope.doneEditing = ss.mkdel(this, this.$doneEditing);
+		scope.removeTodo = ss.mkdel(this, this.$removeTodo);
+		scope.clearDoneTodos = ss.mkdel(this, this.$clearDoneTodos);
+		scope.markAll = ss.mkdel(this, this.$markAll);
+		scope.$watch('todos', ss.mkdel(this, this.$onTodos), true);
+		scope.$watch('location.path()', ss.mkdel(this, this.$onPath));
+		if (location.path() === '') {
+			location.path('/');
+		}
+		scope.location = location;
+		log.log(['TodoCtrl created']);
+	};
+	$Client_Angular_controllers_TodoCtrl.prototype = {
+		$onPath: function(p) {
+			this.$log.log(['TodoCtrl onPath']);
+			var path = ss.safeCast(p, String);
+			this.$scope.statusFilter = ((path === '/active') ? { completed: false } : ((path === '/completed') ? { completed: true } : null));
+		},
+		$onTodos: function() {
+			this.$log.log(['TodoCtrl onTodos']);
+			//log.log(filterFilter);
+			//scope.remainingCount = filterFilter(this.todos, new StatusFilter { completed = false }).length;
+			this.$scope.doneCount = this.$todos.length - this.$scope.remainingCount;
+			this.$scope.allChecked = this.$scope.remainingCount > 0;
+			this.$todoStorage.set_todos(this.$todos);
+		},
+		$addTodo: function() {
+			this.$log.log(['TodoCtrl addTodo']);
+			if (this.$scope.newTodo.length === 0) {
+				return;
+			}
+			var $t2 = this.$todos;
+			var $t1 = new $Client_Angular_models_TodoItem();
+			$t1.title = this.$scope.newTodo;
+			$t1.completed = false;
+			ss.add($t2, $t1);
+			this.$scope.newTodo = '';
+		},
+		$editTodo: function(todo) {
+			this.$log.log(['TodoCtrl editTodo']);
+			this.$scope.editedTodo = todo;
+		},
+		$doneEditing: function(todo) {
+			this.$log.log(['TodoCtrl doneEditing']);
+			this.$scope.editedTodo = null;
+			if (ss.isNullOrEmptyString(todo.title)) {
+				this.$scope.removeTodo(todo);
+			}
+		},
+		$removeTodo: function(todo) {
+			this.$log.log(['TodoCtrl removeTodo']);
+			ss.remove(this.$todos, todo);
+		},
+		$clearDoneTodos: function() {
+			this.$log.log(['TodoCtrl clearDoneTodos']);
+			this.$scope.todos = this.$todos = this.$todos.filter(function(val) {
+				return !val.completed;
+			});
+		},
+		$markAll: function(done) {
+			this.$log.log(['TodoCtrl markAll']);
+			for (var $t1 = 0; $t1 < this.$todos.length; $t1++) {
+				var todo = this.$todos[$t1];
+				todo.completed = done;
+			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.directives.TodoAttrs
+	var $Client_Angular_directives_TodoAttrs = function() {
+		this.todoFocus = null;
+		this.todoBlur = null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.directives.TodoBlur
+	var $Client_Angular_directives_TodoBlur = function(log) {
+		this.link = null;
+		this.$log = null;
+		this.$log = log;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Angular_directives_TodoBlur.prototype = {
+		$linkFn: function(scope, elem, attrs) {
+			this.$log.log(['TodoBlur link']);
+			elem.bind('blur', ss.mkdel(this, function(e) {
+				this.$log.log(['TodoBlur bind']);
+				scope.$apply(attrs.todoBlur);
+			}));
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.directives.TodoFocus
+	var $Client_Angular_directives_TodoFocus = function(timeout, log) {
+		this.link = null;
+		this.$timeout = null;
+		this.$log = null;
+		this.$log = log;
+		this.$timeout = timeout;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Angular_directives_TodoFocus.prototype = {
+		$linkFn: function(scope, elem, attrs) {
+			this.$log.log(['TodoFocus link']);
+			scope.$watch(attrs.todoFocus, ss.mkdel(this, function(newval) {
+				this.$log.log(['TodoFocus watch']);
+				if (newval) {
+					this.$timeout(ss.mkdel(this, function() {
+						this.$log.log(['TodoFocus timeout']);
+						elem[0].focus();
+					}), 0, false);
+				}
+			}));
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.interfaces.ITodoStorage
+	var $Client_Angular_interfaces_ITodoStorage = function() {
+	};
+	$Client_Angular_interfaces_ITodoStorage.prototype = { get_todos: null, set_todos: null };
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.interfaces.StatusFilter
+	var $Client_Angular_interfaces_StatusFilter = function() {
+	};
+	$Client_Angular_interfaces_StatusFilter.createInstance = function() {
+		return {};
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.interfaces.TodoScope
+	var $Client_Angular_interfaces_TodoScope = function() {
+		this.todos = null;
+		this.newTodo = null;
+		this.editedTodo = null;
+		this.remainingCount = 0;
+		this.doneCount = 0;
+		this.allChecked = false;
+		this.statusFilter = null;
+		this.location = null;
+		this.addTodo = null;
+		this.clearDoneTodos = null;
+		this.editTodo = null;
+		this.doneEditing = null;
+		this.removeTodo = null;
+		this.markAll = null;
+	};
+	$Client_Angular_interfaces_TodoScope.prototype = {
+		$watch: function(watchExpression) {
+			return null;
+		},
+		$apply: function(exp) {
+			return null;
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.models.TodoItem
+	var $Client_Angular_models_TodoItem = function() {
+		this.completed = false;
+		this.title = null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.services.TodoStorage
+	var $Client_Angular_services_TodoStorage = function() {
+	};
+	$Client_Angular_services_TodoStorage.prototype = {
+		get_todos: function() {
+			var json = window.localStorage.getItem($Client_Angular_services_TodoStorage.$storagE_ID);
+			return JSON.parse(ss.coalesce(json, '[]'));
+		},
+		set_todos: function(value) {
+			var json = JSON.stringify(this.get_todos());
+			window.localStorage.setItem($Client_Angular_services_TodoStorage.$storagE_ID, json);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Libs.ScriptLoader
 	var $Client_Libs_ScriptLoader = function() {
 	};
@@ -210,7 +398,7 @@
 			//caching
 			if (!ss.staticEquals(callback, null)) {
 				script.onreadystatechange = function(a) {
-					if (!!(script.readyState === 'loaded' || script.readyState === 'complete')) {
+					if (script.readyState === 'loaded' || script.readyState === 'complete') {
 						callback();
 					}
 				};
@@ -499,7 +687,7 @@
 				//   cardGameAppearanceEffect.Build(element.Item1);
 				switch (cardGameAppearanceEffect.type) {
 					case 2: {
-						var bEffect = ss.cast(cardGameAppearanceEffect, global.Effect$Bend);
+						var bEffect = cardGameAppearanceEffect;
 						//rotate
 						var trans = element.outerElementStyle.get_transform();
 						if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
@@ -636,7 +824,7 @@
 		this.$myShuffUIManager = shuffUIManager;
 		this.$myPageHandler = pageHandler;
 		this.$myRoom = room;
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
 		$t1.title = ss.formatString('{0} Lobby', this.$myRoom.roomName);
 		$t1.set_x(250);
 		$t1.set_y(100);
@@ -654,10 +842,10 @@
 		}));
 		this.uiWindow.swingAway(4, true);
 		var $t3 = this.uiWindow;
-		var $t2 = new WebLibraries.Common.ShuffUI.ShuffListBox(600, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
+		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(600, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t2.set_visible(true);
-		this.$myRoomPlayers = $t3.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t3, $t2);
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(600, 510, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(23), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game!'), ss.mkdel(this, function(a) {
+		this.$myRoomPlayers = $t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t3, $t2);
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(600, 510, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(23), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game!'), ss.mkdel(this, function(a) {
 			pageHandler.get_gameManager().startGame();
 			this.uiWindow.set_height(CommonLibraries.Number.op_Implicit$2(200));
 		})));
@@ -666,7 +854,7 @@
 		$t4.set_visible(true);
 		this.$myChatBox = $t5.addElement($Client_UIWindow_Controls_ChatBox).call($t5, $t4);
 		var $t7 = this.uiWindow;
-		var $t6 = new WebLibraries.Common.ShuffUI.ShuffTextbox(50, 560, CommonLibraries.Number.op_Implicit$2(500), CommonLibraries.Number.op_Implicit$2(30), '', '', null);
+		var $t6 = new WebLibraries.ShuffUI.ShuffUI.ShuffTextbox(50, 560, CommonLibraries.Number.op_Implicit$2(500), CommonLibraries.Number.op_Implicit$2(30), '', '', null);
 		$t6.set_onEnter(ss.mkdel(this, function() {
 			if (this.$myChatText.get_text().trim() === '') {
 				return;
@@ -674,8 +862,8 @@
 			pageHandler.clientChatManager.sendChatMessage({ message: this.$myChatText.get_text() });
 			this.$myChatText.set_text('');
 		}));
-		this.$myChatText = $t7.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call($t7, $t6);
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(560, 560, CommonLibraries.Number.op_Implicit$2(50), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Send'), ss.mkdel(this, function(e) {
+		this.$myChatText = $t7.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffTextbox).call($t7, $t6);
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(560, 560, CommonLibraries.Number.op_Implicit$2(50), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Send'), ss.mkdel(this, function(e) {
 			if (this.$myChatText.get_text().trim() === '') {
 				return;
 			}
@@ -699,7 +887,7 @@
 			this.$myRoomPlayers.clearItems();
 			for (var $t1 = 0; $t1 < roomData.users.length; $t1++) {
 				var userModel = roomData.users[$t1];
-				this.$myRoomPlayers.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
+				this.$myRoomPlayers.addItem(new WebLibraries.ShuffUI.ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
 			}
 			if (ss.isValue(roomData.messages)) {
 				this.$myChatBox.addChatMessages(roomData.messages);
@@ -720,14 +908,14 @@
 		this.set_shuffUIManager(shuffUIManager);
 		this.breakPoints = [];
 		var $t2 = this.uiWindow;
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
 		$t1.set_dock(2);
-		this.codeEditor = $t2.addElement(WebLibraries.Common.ShuffUI.ShuffCodeEditor).call($t2, $t1);
+		this.codeEditor = $t2.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor).call($t2, $t1);
 		var $t4 = this.uiWindow;
-		var $t3 = new WebLibraries.Common.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
+		var $t3 = new WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
 		$t3.lineNumbers = false;
 		$t3.set_dock(2);
-		this.console = $t4.addElement(WebLibraries.Common.ShuffUI.ShuffCodeEditor).call($t4, $t3);
+		this.console = $t4.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor).call($t4, $t3);
 		pageHandler.clientDebugManager.add_onGetGameSource(ss.mkdel(this, this.$populateGameSource));
 		pageHandler.clientDebugManager.requestGameSource({ gameName: 'Sevens' });
 	};
@@ -761,7 +949,7 @@
 	// Client.UIWindow.CreateRoomUI
 	var $Client_UIWindow_CreateRoomUI = function(shuffUIManager, pageHandler, gameType) {
 		this.uiWindow = null;
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
 		$t1.title = 'Create Room';
 		$t1.set_x(ss.Int32.div($('body').innerWidth(), 2) - 140);
 		$t1.set_y(ss.Int32.div($('body').innerHeight(), 2) - 62);
@@ -775,12 +963,12 @@
 		this.uiWindow.swingBack();
 		var roomName = null;
 		var $t3 = this.uiWindow;
-		var $t2 = new WebLibraries.Common.ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null);
+		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Room Name', null);
 		$t2.set_onEnter(ss.mkdel(this, function() {
 			this.$createRoom(pageHandler, gameType, roomName);
 		}));
-		$t3.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call($t3, roomName = $t2);
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(55, 100, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), ss.mkdel(this, function(e) {
+		$t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffTextbox).call($t3, roomName = $t2);
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(55, 100, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), ss.mkdel(this, function(e) {
 			this.$createRoom(pageHandler, gameType, roomName);
 		})));
 		roomName.focus();
@@ -802,7 +990,7 @@
 		this.lblHowFast = null;
 		this.joined = 0;
 		this.created = false;
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
 		$t1.title = 'Developer';
 		$t1.set_x(500);
 		$t1.set_y(100);
@@ -813,7 +1001,7 @@
 		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		var but = null;
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, but = new WebLibraries.Common.ShuffUI.ShuffButton(280, 84, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$1(ss.mkdel(this, function() {
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, but = new WebLibraries.ShuffUI.ShuffUI.ShuffButton(280, 84, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$1(ss.mkdel(this, function() {
 			return 'Game: ' + this.selectedGame;
 		})), ss.mkdel(this, function(e) {
 			if (this.selectedGame === 'Sevens') {
@@ -825,8 +1013,8 @@
 			pageHandler.clientDebugManager.requestGameSource({ gameName: this.selectedGame });
 			var m = ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit(but.text);
 		})));
-		this.lblHowFast = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(80, 80, 'Time Taken:'));
-		this.lblAnother = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(80, 100, 'Another: '));
+		this.lblHowFast = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(80, 80, 'Time Taken:'));
+		this.lblAnother = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(80, 100, 'Another: '));
 		// devArea.AddButton(new ShuffButton()
 		// {
 		// X = 280,
@@ -839,7 +1027,7 @@
 		// pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 		// }
 		// });
-		this.varText = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffTextbox(150, 134, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(25), 'Var Lookup', null, null));
+		this.varText = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffTextbox).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffTextbox(150, 134, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(25), 'Var Lookup', null, null));
 		//  devArea.AddButton(new ShuffButton()
 		//  {
 		//  X = 280,
@@ -865,7 +1053,7 @@
 		//   devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
 		//   }
 		//   });
-		this.txtNumOfPlayers = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size:13px'));
+		this.txtNumOfPlayers = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffTextbox).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffTextbox(130, 43, CommonLibraries.Number.op_Implicit$2(130), CommonLibraries.Number.op_Implicit$2(20), '6', 'Number of players=', 'font-size:13px'));
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.HomeUI
@@ -891,7 +1079,7 @@
 		pageHandler.clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
 		pageHandler.clientSiteManager.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
 		pageHandler.clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
 		$t1.title = 'CardGame';
 		$t1.set_x(400);
 		$t1.set_y(100);
@@ -901,63 +1089,63 @@
 		$t1.allowMinimize = true;
 		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
-		this.$lblHeader = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(40, 44, 'Please Login!'));
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(30, 80, 'Game Types'));
+		this.$lblHeader = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(40, 44, 'Please Login!'));
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(30, 80, 'Game Types'));
 		var $t3 = this.uiWindow;
-		var $t2 = new WebLibraries.Common.ShuffUI.ShuffListBox(25, 100, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(300), null);
+		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(25, 100, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t2.onClick = ss.mkdel(this, function(item) {
-			this.$myPageHandler.clientSiteManager.getRooms({ gameType: ss.cast(item.value, String) });
+			this.$myPageHandler.clientSiteManager.getRooms({ gameType: item.value });
 		});
-		this.$myGameTypeList = $t3.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t3, $t2);
-		this.$myCreateGameType = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(45, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Game!'), function(c) {
+		this.$myGameTypeList = $t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t3, $t2);
+		this.$myCreateGameType = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(45, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Game!'), function(c) {
 			var ui = new $Client_UIWindow_CodeEditorUI(shuffUIManager, pageHandler);
 		}));
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(210, 80, 'Rooms'));
-		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(260, 70, CommonLibraries.Number.op_Implicit$2(70), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c1) {
-			this.$myPageHandler.clientSiteManager.getRooms({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String) });
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(210, 80, 'Rooms'));
+		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(260, 70, CommonLibraries.Number.op_Implicit$2(70), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c1) {
+			this.$myPageHandler.clientSiteManager.getRooms({ gameType: this.$myGameTypeList.selectedItem.value });
 		})));
 		var $t5 = this.uiWindow;
-		var $t4 = new WebLibraries.Common.ShuffUI.ShuffListBox(200, 100, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
+		var $t4 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(200, 100, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t4.onClick = ss.mkdel(this, function(item1) {
 			var room = Enumerable.from(this.$myLoadedRooms).first(function(a) {
-				return ss.referenceEquals(a.roomName, ss.cast(item1.value, String));
+				return ss.referenceEquals(a.roomName, item1.value);
 			});
 			this.$populateRoom(room);
 		});
-		this.$myRoomsList = $t5.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t5, $t4);
-		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), ss.mkdel(this, function(c2) {
-			var create = new $Client_UIWindow_CreateRoomUI(shuffUIManager, pageHandler, ss.cast(this.$myGameTypeList.selectedItem.value, String));
+		this.$myRoomsList = $t5.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t5, $t4);
+		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), ss.mkdel(this, function(c2) {
+			var create = new $Client_UIWindow_CreateRoomUI(shuffUIManager, pageHandler, this.$myGameTypeList.selectedItem.value);
 			shuffUIManager.focus(create.uiWindow);
 		})));
 		var $t7 = this.uiWindow;
-		var $t6 = new WebLibraries.Common.ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(200), null);
+		var $t6 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(400, 200, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(200), null);
 		$t6.set_visible(false);
-		this.$myRoomPlayers = $t7.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t7, $t6);
+		this.$myRoomPlayers = $t7.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t7, $t6);
 		var $t9 = this.uiWindow;
-		var $t8 = new WebLibraries.Common.ShuffUI.ShuffLabel(400, 100, '');
+		var $t8 = new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(400, 100, '');
 		$t8.set_visible(false);
-		this.$myRoomGameType = $t9.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call($t9, $t8);
+		this.$myRoomGameType = $t9.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call($t9, $t8);
 		var $t11 = this.uiWindow;
-		var $t10 = new WebLibraries.Common.ShuffUI.ShuffLabel(400, 130, '');
+		var $t10 = new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(400, 130, '');
 		$t10.set_visible(false);
-		this.$myRoomName = $t11.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call($t11, $t10);
+		this.$myRoomName = $t11.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call($t11, $t10);
 		var $t13 = this.uiWindow;
-		var $t12 = new WebLibraries.Common.ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), ss.mkdel(this, function(c3) {
-			pageHandler.clientSiteManager.joinRoom({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String), roomName: ss.cast(this.$myRoomsList.selectedItem.value, String) });
+		var $t12 = new WebLibraries.ShuffUI.ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), ss.mkdel(this, function(c3) {
+			pageHandler.clientSiteManager.joinRoom({ gameType: this.$myGameTypeList.selectedItem.value, roomName: this.$myRoomsList.selectedItem.value });
 		}));
 		$t12.set_visible(false);
-		this.$myJoinRoom = $t13.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call($t13, $t12);
+		this.$myJoinRoom = $t13.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call($t13, $t12);
 		var $t15 = this.uiWindow;
-		var $t14 = new WebLibraries.Common.ShuffUI.ShuffButton(490, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Spectate!'), function(c4) {
+		var $t14 = new WebLibraries.ShuffUI.ShuffUI.ShuffButton(490, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Spectate!'), function(c4) {
 		});
 		$t14.set_visible(false);
-		this.$mySpectateRoom = $t15.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call($t15, $t14);
+		this.$mySpectateRoom = $t15.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call($t15, $t14);
 		var $t17 = this.uiWindow;
-		var $t16 = new WebLibraries.Common.ShuffUI.ShuffButton(420, 410, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c5) {
-			pageHandler.clientSiteManager.getRoomInfo({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String), roomName: ss.cast(this.$myRoomsList.selectedItem.value, String) });
+		var $t16 = new WebLibraries.ShuffUI.ShuffUI.ShuffButton(420, 410, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c5) {
+			pageHandler.clientSiteManager.getRoomInfo({ gameType: this.$myGameTypeList.selectedItem.value, roomName: this.$myRoomsList.selectedItem.value });
 		}));
 		$t16.set_visible(false);
-		this.$myRefreshRoom = $t17.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call($t17, $t16);
+		this.$myRefreshRoom = $t17.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call($t17, $t16);
 		//UIWindow.AddElement(new ShuffButton(280, 54, 150, 25, "Update game list", (e) => { pageHandler.ClientSiteManager.GetGameList(); }));
 	};
 	$Client_UIWindow_HomeUI.prototype = {
@@ -987,7 +1175,7 @@
 			this.$myGameTypeList.clearItems();
 			for (var $t1 = 0; $t1 < o.gameTypes.length; $t1++) {
 				var gameType = o.gameTypes[$t1];
-				this.$myGameTypeList.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(gameType.name, gameType.name));
+				this.$myGameTypeList.addItem(new WebLibraries.ShuffUI.ShuffUI.ShuffListItem(gameType.name, gameType.name));
 			}
 			this.$myPageHandler.clientSiteManager.getRooms({ gameType: o.gameTypes[0].name });
 		},
@@ -999,7 +1187,7 @@
 			}
 			for (var $t1 = 0; $t1 < o.rooms.length; $t1++) {
 				var room = o.rooms[$t1];
-				this.$myRoomsList.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(room.roomName, room.roomName));
+				this.$myRoomsList.addItem(new WebLibraries.ShuffUI.ShuffUI.ShuffListItem(room.roomName, room.roomName));
 			}
 			this.$populateRoom(o.rooms[0]);
 		},
@@ -1013,7 +1201,7 @@
 			this.$myRoomPlayers.clearItems();
 			for (var $t1 = 0; $t1 < roomData.players.length; $t1++) {
 				var userModel = roomData.players[$t1];
-				this.$myRoomPlayers.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
+				this.$myRoomPlayers.addItem(new WebLibraries.ShuffUI.ShuffUI.ShuffListItem(userModel.userName, userModel.userName));
 			}
 			this.$myRoomName.set_text(ss.formatString('Room: {0}', roomData.roomName));
 			this.$myRoomGameType.set_text(ss.formatString('Game Type: {0}', roomData.gameType));
@@ -1023,7 +1211,7 @@
 	// Client.UIWindow.LoginUI
 	var $Client_UIWindow_LoginUI = function(shuffUIManager, pageHandler) {
 		this.uiWindow = null;
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
 		$t1.title = 'Login';
 		$t1.set_x($('body').innerWidth() - 500);
 		$t1.set_y(100);
@@ -1035,12 +1223,12 @@
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		var loginName;
 		var password;
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, loginName = new WebLibraries.Common.ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffTextbox).call(this.uiWindow, password = new WebLibraries.Common.ShuffUI.ShuffTextbox(115, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(55, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), function(e) {
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffTextbox).call(this.uiWindow, loginName = new WebLibraries.ShuffUI.ShuffUI.ShuffTextbox(115, 40, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Username', null));
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffTextbox).call(this.uiWindow, password = new WebLibraries.ShuffUI.ShuffUI.ShuffTextbox(115, 75, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(30), '', 'Password', null));
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(55, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create'), function(e) {
 			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 		}));
-		this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffButton(155, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e1) {
+		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(155, 150, CommonLibraries.Number.op_Implicit$2(90), CommonLibraries.Number.op_Implicit$2(30), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Login'), function(e1) {
 			pageHandler.clientSiteManager.login(loginName.get_text(), password.get_text());
 		}));
 		pageHandler.clientSiteManager.add_onLogin(ss.mkdel(this, function(user, data) {
@@ -1058,7 +1246,7 @@
 		this.load = null;
 		this.uiWindow = null;
 		this.set_pageHandler(pageHandler);
-		var $t1 = new WebLibraries.Common.ShuffUI.ShuffWindow();
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
 		$t1.title = 'Question';
 		$t1.set_x(600);
 		$t1.set_y(100);
@@ -1069,22 +1257,22 @@
 		$t1.set_visible(true);
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		this.uiWindow.swingAway(0, true);
-		this.question = this.uiWindow.addElement(WebLibraries.Common.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.Common.ShuffUI.ShuffLabel(20, 40, ''));
+		this.question = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(20, 40, ''));
 		this.load = ss.mkdel(this, function(question) {
 			this.uiWindow.swingBack();
 			this.question.set_text(question.question);
 			this.answerBox.clearItems();
 			for (var i = 0; i < question.answers.length; i++) {
-				this.answerBox.addItem(new WebLibraries.Common.ShuffUI.ShuffListItem(question.answers[i], i));
+				this.answerBox.addItem(new WebLibraries.ShuffUI.ShuffUI.ShuffListItem(question.answers[i], i));
 			}
 		});
 		debugger;
 		var $t3 = this.uiWindow;
-		var $t2 = new WebLibraries.Common.ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125), null);
+		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125), null);
 		$t2.onClick = ss.mkdel(this, function(e) {
 			this.$selectAnswer(e);
 		});
-		this.answerBox = $t3.addElement(WebLibraries.Common.ShuffUI.ShuffListBox).call($t3, $t2);
+		this.answerBox = $t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t3, $t2);
 	};
 	$Client_UIWindow_QuestionUI.prototype = {
 		get_pageHandler: function() {
@@ -1094,7 +1282,7 @@
 			this.$1$PageHandlerField = value;
 		},
 		$selectAnswer: function(e) {
-			this.get_pageHandler().clientGameManager.answerQuestion({ answer: ss.Nullable.unbox(ss.cast(e.value, ss.Int32)) });
+			this.get_pageHandler().clientGameManager.answerQuestion({ answer: e.value });
 			this.uiWindow.swingAway(0, false);
 			this.get_pageHandler().timeTracker.startTime = new Date();
 		}
@@ -1102,7 +1290,7 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.UIWindow.Controls.ChatBox
 	var $Client_UIWindow_Controls_ChatBox = function(x, y, width, height) {
-		WebLibraries.Common.ShuffUI.ShuffElement.call(this);
+		WebLibraries.ShuffUI.ShuffUI.ShuffElement.call(this);
 		this.element = $('<div></div>');
 		this.element.css('position', 'absolute');
 		this.element.css('background-color', 'grey');
@@ -1133,6 +1321,16 @@
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
 	ss.registerClass(global, 'Client.ClientInformation', $Client_ClientInformation);
 	ss.registerClass(global, 'Client.PageHandler', $Client_PageHandler);
+	ss.registerClass(global, 'Client.Angular.App', $Client_Angular_App);
+	ss.registerClass(global, 'Client.Angular.controllers.TodoCtrl', $Client_Angular_controllers_TodoCtrl);
+	ss.registerClass(global, 'Client.Angular.directives.TodoAttrs', $Client_Angular_directives_TodoAttrs);
+	ss.registerClass(global, 'Client.Angular.directives.TodoBlur', $Client_Angular_directives_TodoBlur);
+	ss.registerClass(global, 'Client.Angular.directives.TodoFocus', $Client_Angular_directives_TodoFocus);
+	ss.registerInterface(global, 'Client.Angular.interfaces.ITodoStorage', $Client_Angular_interfaces_ITodoStorage, []);
+	ss.registerClass(global, 'Client.Angular.interfaces.StatusFilter', $Client_Angular_interfaces_StatusFilter);
+	ss.registerClass(global, 'Client.Angular.interfaces.TodoScope', $Client_Angular_interfaces_TodoScope);
+	ss.registerClass(global, 'Client.Angular.models.TodoItem', $Client_Angular_models_TodoItem);
+	ss.registerClass(global, 'Client.Angular.services.TodoStorage', $Client_Angular_services_TodoStorage, null, $Client_Angular_interfaces_ITodoStorage);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
 	ss.registerClass(global, 'Client.Libs.TimeTracker', $Client_Libs_TimeTracker);
 	ss.registerClass(global, 'Client.ShufflyGame.GameDrawer', $Client_ShufflyGame_GameDrawer);
@@ -1144,7 +1342,16 @@
 	ss.registerClass(global, 'Client.UIWindow.HomeUI', $Client_UIWindow_HomeUI);
 	ss.registerClass(global, 'Client.UIWindow.LoginUI', $Client_UIWindow_LoginUI);
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
-	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.Common.ShuffUI.ShuffElement);
-	$Client_BuildSite.topLevelURL = 'http://198.211.107.101:8881/';
+	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.ShuffUI.ShuffUI.ShuffElement);
 	$Client_BuildSite.instance = null;
+	$Client_Angular_services_TodoStorage.$storagE_ID = 'todos-angularjs-requirejs';
+	angular.module('todomvc', []).controller('todoCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter', '$log', function(scope, location, todoStorage, filterFilter, log) {
+		return new $Client_Angular_controllers_TodoCtrl(scope, location, todoStorage, filterFilter, log);
+	}]).directive('todoBlur', ['$log', function(log1) {
+		return new $Client_Angular_directives_TodoBlur(log1);
+	}]).directive('todoFocus', ['$timeout', '$log', function(timeout, log2) {
+		return new $Client_Angular_directives_TodoFocus(timeout, log2);
+	}]).service('todoStorage', function() {
+		return new $Client_Angular_services_TodoStorage();
+	});
 })();

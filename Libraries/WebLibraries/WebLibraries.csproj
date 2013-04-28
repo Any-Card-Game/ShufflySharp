@@ -38,30 +38,31 @@
     <Compile Include="CodeMirror\CodeMirrorLine.cs" />
     <Compile Include="CodeMirror\CodeMirrorOptions.cs" />
     <Compile Include="Common\Compressor.cs" />
-    <Compile Include="Common\ShuffUI\ButtonClickedEvent.cs" />
-    <Compile Include="Common\ShuffUI\CodeMirrorInformation.cs" />
-    <Compile Include="Common\ShuffUI\CodeMirrorInformationData.cs" />
-    <Compile Include="Common\ShuffUI\DockStyle.cs" />
-    <Compile Include="Common\ShuffUI\ImportedExtensionMethods.cs" />
-    <Compile Include="Common\ShuffUI\ParentChangedEvent.cs" />
-    <Compile Include="Common\ShuffUI\PositionChangedEvent.cs" />
-    <Compile Include="Common\ShuffUI\ShuffButton.cs" />
-    <Compile Include="Common\ShuffUI\ShuffCodeEditor.cs" />
-    <Compile Include="Common\ShuffUI\ShuffElement.cs" />
-    <Compile Include="Common\ShuffUI\ShuffLabel.cs" />
-    <Compile Include="Common\ShuffUI\ShuffListBox.cs" />
-    <Compile Include="Common\ShuffUI\ShuffListItem.cs" />
-    <Compile Include="Common\ShuffUI\ShuffPanel.cs" />
-    <Compile Include="Common\ShuffUI\ShuffTextbox.cs" />
-    <Compile Include="Common\ShuffUI\ShuffUIEvents.cs" />
-    <Compile Include="Common\ShuffUI\ShuffUIManager.cs" />
-    <Compile Include="Common\ShuffUI\ShuffWindow.cs" />
-    <Compile Include="Common\ShuffUI\SizeChangedEvent.cs" />
-    <Compile Include="Common\ShuffUI\SwingDirection.cs" />
-    <Compile Include="Common\ShuffUI\TextChangedEvent.cs" />
-    <Compile Include="Common\ShuffUI\UIAreaInformation.cs" />
-    <Compile Include="Common\ShuffUI\VisibleChangedEvent.cs" />
+    <Compile Include="Common\KeyboardJS.cs" />
     <Compile Include="Common\XStats.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ButtonClickedEvent.cs" />
+    <Compile Include="ShuffUI\ShuffUI\CodeMirrorInformation.cs" />
+    <Compile Include="ShuffUI\ShuffUI\CodeMirrorInformationData.cs" />
+    <Compile Include="ShuffUI\ShuffUI\DockStyle.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ImportedExtensionMethods.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ParentChangedEvent.cs" />
+    <Compile Include="ShuffUI\ShuffUI\PositionChangedEvent.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffButton.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffCodeEditor.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffElement.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffLabel.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffListBox.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffListItem.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffPanel.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffTextbox.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffUIEvents.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffUIManager.cs" />
+    <Compile Include="ShuffUI\ShuffUI\ShuffWindow.cs" />
+    <Compile Include="ShuffUI\ShuffUI\SizeChangedEvent.cs" />
+    <Compile Include="ShuffUI\ShuffUI\SwingDirection.cs" />
+    <Compile Include="ShuffUI\ShuffUI\TextChangedEvent.cs" />
+    <Compile Include="ShuffUI\ShuffUI\UIAreaInformation.cs" />
+    <Compile Include="ShuffUI\ShuffUI\VisibleChangedEvent.cs" />
     <Compile Include="SocketIOClient\SocketIOClient.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -90,7 +91,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="ShuffUI\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

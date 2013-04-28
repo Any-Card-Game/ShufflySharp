@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Models;
 using Models.SiteManagerModels;
-using WebLibraries.Common.ShuffUI;
+using WebLibraries.ShuffUI.ShuffUI;
 namespace Client.UIWindow
 {
     public class HomeUI

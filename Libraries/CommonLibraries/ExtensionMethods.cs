@@ -4,8 +4,7 @@ namespace CommonLibraries
 {
     public static class ExtensionMethods
     {
-        public const string HARDLOCATION = "/usr/local/src/new/";
-//        public const string HARDLOCATION = @"c:\code\node\";
+//        public const string HARDLOCATION = "/usr/local/src/new/";
         [InlineCode("{script}")]
         public static dynamic me(this object script) //::dynamic okay
         {

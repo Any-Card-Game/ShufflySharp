@@ -1,5 +1,4 @@
-require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;
-(function() {
+﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.CharmColors
 	var $NodeLibraries_Common_Charm_CharmColors = function() {

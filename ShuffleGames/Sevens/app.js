@@ -23,6 +23,7 @@ module.exports = Sevens = function() {
             numberOfCardsHorizontal: 1,
             numberOfCardsVertical: -1,
             resizeType: 1//todo:::'static'
+            
         }));
         self.cardGame.spaces.push(new TableSpace({
             visible: true,

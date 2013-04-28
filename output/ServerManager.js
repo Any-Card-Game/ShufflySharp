@@ -1,5 +1,4 @@
-require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require('./NodeLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
-(function() {
+﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.ServerManager
 	var $ServerManager_$ServerManager = function() {
@@ -90,7 +89,7 @@ require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require
 		// });
 		this.$util = require('util');
 		this.$exec = require('child_process').exec;
-		this.$__dirname = CommonLibraries.ExtensionMethods.HARDLOCATION;
+		this.$__dirname = CommonShuffleLibrary.IPs.HARDLOCATION;
 		this.$nonDebuggable = ['node-inspector', 'pkill'];
 		require('http').createServer(ss.mkdel(this, this.$handler)).listen(8090);
 		this.$debug = true;
@@ -846,7 +845,6 @@ require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require
 		this.$gameServerIndex = null;
 		this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
 		NodeLibraries.Common.Logging.Logger.start(this.$gameServerIndex);
-		new global.ArrayUtils();
 		this.$childProcess = require('child_process');
 		global.Fiber = require('fibers');
 		process.on('exit', function() {
@@ -1052,7 +1050,7 @@ require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.HeadServer.HeadServer
 	var $ServerManager_HeadServer_HeadServer = function() {
-		this.$__dirname = CommonLibraries.ExtensionMethods.HARDLOCATION;
+		this.$__dirname = CommonShuffleLibrary.IPs.HARDLOCATION;
 		this.$fs = require('fs');
 		this.$gateways = [];
 		this.$indexForSites = [];
@@ -1448,7 +1446,6 @@ require('./mscorlib.js');EventEmitter= require('events.js').EventEmitter;require
 			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					throw new ss.Exception('idk');
-					return;
 				}
 				//       Logger.Log("--game started 2", LogLevel.DebugInformation);
 				this.$mySiteClientManager.createGame({ gameType: room.gameType, players: room.players });

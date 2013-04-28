@@ -42,7 +42,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "output", "output\", "{695D0
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "57991"
+		VWDPort = "58533"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientLibs", "ClientLibs\ClientLibs.csproj", "{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}"
@@ -52,6 +52,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeLibraries", "Libraries\NodeLibraries\NodeLibraries.csproj", "{06E82003-D11E-4482-9DC8-9AD109B537A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "Servers\ServerManager\ServerManager.csproj", "{E5F0F569-B645-4A02-93A2-DB646BE99A44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularJS", "Libraries\AngularJS\AngularJS.csproj", "{815CC797-F742-4C48-8C98-BD7DE050D95A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,6 +202,16 @@ Global
 		{E5F0F569-B645-4A02-93A2-DB646BE99A44}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E5F0F569-B645-4A02-93A2-DB646BE99A44}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E5F0F569-B645-4A02-93A2-DB646BE99A44}.Release|x86.ActiveCfg = Release|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,6 +222,7 @@ Global
 		{1FD90B1D-8502-4F1A-AA96-0F859D0748AD} = {0D9CEDF5-ADDD-451B-9631-7C46B2CDF78B}
 		{BBF1829B-3446-4C0D-A75A-9BC713D2A6A1} = {0D9CEDF5-ADDD-451B-9631-7C46B2CDF78B}
 		{06E82003-D11E-4482-9DC8-9AD109B537A0} = {0D9CEDF5-ADDD-451B-9631-7C46B2CDF78B}
+		{815CC797-F742-4C48-8C98-BD7DE050D95A} = {0D9CEDF5-ADDD-451B-9631-7C46B2CDF78B}
 		{E5F0F569-B645-4A02-93A2-DB646BE99A44} = {FDAB866B-D8B1-40E3-8F17-2145E51373E0}
 		{8018E746-9ADD-47D9-BB75-1089D098F0A1} = {791CD16C-D09C-43D9-9E54-60BCB54C2764}
 	EndGlobalSection

@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Models;
 using Models.GameManagerModels;
-using WebLibraries.Common.ShuffUI;
+using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
 namespace Client.UIWindow
 {

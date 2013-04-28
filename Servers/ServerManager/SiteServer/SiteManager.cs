@@ -96,7 +96,6 @@ namespace ServerManager.SiteServer
                                               if (room == null)
                                               {
                                                   throw new Exception("idk");
-                                                  return;
                                               }
                                               //       Logger.Log("--game started 2", LogLevel.DebugInformation);
 

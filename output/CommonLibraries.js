@@ -1,5 +1,4 @@
-
-(function() {
+﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.DelegateOrValue
 	var $CommonLibraries_DelegateOrValue$1 = function(T) {
@@ -102,6 +101,14 @@
 			return value;
 		}
 		return null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CommonLibraries.IntPoint
+	var $CommonLibraries_IntPoint = function(x, y) {
+		this.x = 0;
+		this.y = 0;
+		this.x = x;
+		this.y = y;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Number
@@ -212,9 +219,9 @@
 	ss.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods);
 	ss.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid);
 	ss.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help);
+	ss.registerClass(global, 'CommonLibraries.IntPoint', $CommonLibraries_IntPoint);
 	ss.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number);
 	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
 	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
 	$CommonLibraries_Help.verbose = true;
-	$CommonLibraries_ExtensionMethods.HARDLOCATION = '/usr/local/src/new/';
 })();

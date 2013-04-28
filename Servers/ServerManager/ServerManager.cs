@@ -25,17 +25,14 @@ namespace ServerManager
                     case "d":
                     case "debug":
                         new DebugServer.DebugServer();
-
                         break;
                     case "c":
                     case "chat":
                         new ChatServer.ChatServer();
-
                         break;
                     case "h":
                     case "head":
                         new HeadServer.HeadServer();
-
                         break;
                     case "m":
                     case "monitor":
@@ -44,11 +41,9 @@ namespace ServerManager
                     case "s":
                     case "site":
                         new SiteServer.SiteServer();
-
                         break;
                     default:
                         Logger.Log("Failed to load: " + Global.Process.Arguments[2], LogLevel.Error);
-
                         break;
                 }
             } catch (Exception exc) {

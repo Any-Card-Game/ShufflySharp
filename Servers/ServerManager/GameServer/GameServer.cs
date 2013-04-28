@@ -15,7 +15,6 @@ namespace ServerManager.GameServer
             gameServerIndex = "GameServer" + Guid.NewGuid();
             Logger.Start(gameServerIndex);
             
-            new ArrayUtils();
             childProcess = Global.Require<ChildProcess>("child_process");
             Global.Scope.Fiber= Global.Require<NodeModule>("fibers");
             Global.Process.On("exit", () => Logger.Log("exi", LogLevel.Information));

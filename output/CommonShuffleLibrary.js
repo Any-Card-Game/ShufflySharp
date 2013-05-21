@@ -1,4 +1,5 @@
-﻿(function() {
+require('./NodeLibraries.js');
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Consumer
 	var $CommonShuffleLibrary_Consumer = function(obj) {
@@ -41,10 +42,6 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// CommonShuffleLibrary.IPs
-	var $CommonShuffleLibrary_IPs = function() {
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.PubSub
 	var $CommonShuffleLibrary_PubSub = function(ready) {
 		this.$pready = false;
@@ -56,8 +53,8 @@
 		var someSubbed = this.$subbed;
 		var redis = require('redis');
 		redis.debug_mode = false;
-		this.$subClient = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
-		this.$pubClient = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
+		this.$subClient = redis.createClient(6379, CommonLibraries.IPs.redisIP);
+		this.$pubClient = redis.createClient(6379, CommonLibraries.IPs.redisIP);
 		this.$subClient.on('subscribe', function(channel, count) {
 			NodeLibraries.Common.Logging.Logger.log('subscribed: ' + channel + ' ' + count, 2);
 		});
@@ -203,7 +200,7 @@
 		$CommonShuffleLibrary_QueueItem.call(this);
 		var redis = require('redis');
 		this.channel = pusher;
-		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
+		this.$client1 = redis.createClient(6379, CommonLibraries.IPs.redisIP);
 	};
 	$CommonShuffleLibrary_QueuePusher.prototype = {
 		message: function(channel, name, user, eventChannel, content) {
@@ -225,7 +222,7 @@
 		this.channel = queue;
 		this.set_callback(callback);
 		var redis = require('redis');
-		this.$client1 = redis.createClient(6379, $CommonShuffleLibrary_IPs.redisIP);
+		this.$client1 = redis.createClient(6379, CommonLibraries.IPs.redisIP);
 		this.cycle(queue);
 	};
 	$CommonShuffleLibrary_QueueWatcher.prototype = {
@@ -482,7 +479,6 @@
 	};
 	ss.registerClass(global, 'CommonShuffleLibrary.Consumer', $CommonShuffleLibrary_Consumer);
 	ss.registerClass(global, 'CommonShuffleLibrary.DataManager', $CommonShuffleLibrary_DataManager);
-	ss.registerClass(global, 'CommonShuffleLibrary.IPs', $CommonShuffleLibrary_IPs);
 	ss.registerClass(global, 'CommonShuffleLibrary.PubSub', $CommonShuffleLibrary_PubSub);
 	ss.registerClass(global, 'CommonShuffleLibrary.QueueItem', $CommonShuffleLibrary_QueueItem);
 	ss.registerClass(global, 'CommonShuffleLibrary.QueueItemCollection', $CommonShuffleLibrary_QueueItemCollection);
@@ -497,10 +493,6 @@
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, NodeLibraries.MongoDB.MongoDocument);
-	$CommonShuffleLibrary_IPs.webIP = 'http://198.211.107.101:8881/';
-	$CommonShuffleLibrary_IPs.redisIP = '198.211.107.101';
-	$CommonShuffleLibrary_IPs.mongoIP = '198.211.107.101';
-	$CommonShuffleLibrary_IPs.HARDLOCATION = '/usr/local/src/new/';
-	$CommonShuffleLibrary_DataManager.$connectionAddress = $CommonShuffleLibrary_IPs.mongoIP;
+	$CommonShuffleLibrary_DataManager.$connectionAddress = CommonLibraries.IPs.mongoIP;
 	$CommonShuffleLibrary_DataManager.$connectionPort = '27017';
 })();

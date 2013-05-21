@@ -1,4 +1,5 @@
-﻿(function() {
+
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.GatewayLoginMessageModel
 	var $Models_GatewayLoginMessageModel = function() {

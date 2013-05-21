@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 using CommonLibraries;
 using NodeLibraries.Common.Logging;
 using NodeLibraries.NodeJS;
@@ -19,7 +18,7 @@ namespace CommonShuffleLibrary
             subbed = new object();
             var someSubbed = subbed;
 
-            var redis = Global.Require<Redis>("redis");
+            var redis = Global.Require<NodeLibraries.Redis.Redis>("redis");
             redis.DebugMode = false;
             subClient = redis.CreateClient(6379, IPs.RedisIP);
             pubClient = redis.CreateClient(6379, IPs.RedisIP);

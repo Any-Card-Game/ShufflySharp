@@ -5,6 +5,7 @@ using CommonShuffleLibrary;
 using Models;
 using Models.ChatManagerModels;
 using NodeLibraries.Common.Logging;
+using DataManager = CommonShuffleLibrary.DataManager;
 namespace ServerManager.ChatServer
 {
     public class ChatManager

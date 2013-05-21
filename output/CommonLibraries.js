@@ -1,4 +1,5 @@
-﻿(function() {
+
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.DelegateOrValue
 	var $CommonLibraries_DelegateOrValue$1 = function(T) {
@@ -111,6 +112,10 @@
 		this.y = y;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CommonLibraries.IPs
+	var $CommonLibraries_IPs = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Number
 	var $CommonLibraries_Number = function(s) {
 		this.$value = null;
@@ -220,8 +225,13 @@
 	ss.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid);
 	ss.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help);
 	ss.registerClass(global, 'CommonLibraries.IntPoint', $CommonLibraries_IntPoint);
+	ss.registerClass(global, 'CommonLibraries.IPs', $CommonLibraries_IPs);
 	ss.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number);
 	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
 	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
 	$CommonLibraries_Help.verbose = true;
+	$CommonLibraries_IPs.webIP = 'http://198.211.107.101:8881/';
+	$CommonLibraries_IPs.redisIP = '198.211.107.101';
+	$CommonLibraries_IPs.mongoIP = '198.211.107.101';
+	$CommonLibraries_IPs.HARDLOCATION = '/usr/local/src/new/';
 })();

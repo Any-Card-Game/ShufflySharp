@@ -1,0 +1,13 @@
+<div ng-repeat="space in MainArea.spaces">
+
+    <ul>
+        <li>{{space.name}}</li>
+        <li>
+            <ul>
+                <li ng-repeat="card in space.pile.cards" style="display: inline; list-style-type: none;">
+                    <img acg-draw-card>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

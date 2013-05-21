@@ -92,8 +92,15 @@ namespace Build
 
             Console.WriteLine("server connected");
 
+            Console.WriteLine("connecting web ftp");
+            SftpClient webclient = new SftpClient(ConfigurationSettings.AppSettings["web-ftpurl"], ConfigurationSettings.AppSettings["server-ftpusername"], ConfigurationSettings.AppSettings["server-ftppassword"]);
+            webclient.Connect();
+
+            Console.WriteLine("server connected");
+
 #endif
 
+            FileStream fileStream;
             foreach (var depend in depends) {
                 var to = pre + shufSharp + @"\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 var output = "";
@@ -132,15 +139,15 @@ namespace Build
 */
                 if (true || !client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length) {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
-                    var fileStream = new FileInfo(to).OpenRead();
+                    fileStream = new FileInfo(to).OpenRead();
                     client.UploadFile(fileStream, serverloc + name, true);
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
                 if (true || !client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length) {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
-                    var fileStream = new FileInfo(to).OpenRead();
-                    client.UploadFile(fileStream, serverloc2 + name, true);
+                    fileStream = new FileInfo(to).OpenRead();
+                    webclient.UploadFile(fileStream, serverloc2 + name, true);
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
@@ -150,6 +157,14 @@ namespace Build
                     tryCopy(to, @"C:\code\node\" + name);
                 }
             }
+
+            var send = pre + shufSharp + @"\output\index.html";
+
+            Console.WriteLine("server ftp html start " );
+            fileStream = new FileInfo(send).OpenRead();
+            webclient.UploadFile(fileStream, serverloc2 + "index.html", true);
+            fileStream.Close();
+            Console.WriteLine("server ftp html complete " + send);
 
             foreach (var d in Directory.GetDirectories(pre + shufSharp + @"\ShuffleGames\")) {
                 string game = d.Split('\\').Last();
@@ -165,7 +180,7 @@ namespace Build
 
                 Console.WriteLine("server ftp start ");
 
-                var fileStream = new FileInfo(to + @"\app.js").OpenRead();
+                fileStream = new FileInfo(to + @"\app.js").OpenRead();
                 if (!client.Exists(serverloc + string.Format("Games/{0}", game)))
                     client.CreateDirectory(serverloc + string.Format("Games/{0}", game));
                 client.UploadFile(fileStream, serverloc + string.Format("Games/{0}/app.js", game), true);

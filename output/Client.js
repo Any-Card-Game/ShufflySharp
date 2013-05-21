@@ -1,4 +1,5 @@
-﻿(function() {
+
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.BuildSite
 	var $Client_BuildSite = function(gatewayServerAddress) {
@@ -6,7 +7,7 @@
 		this.shuffUIManager = null;
 		$Client_BuildSite.instance = this;
 		this.$gatewayServerAddress = gatewayServerAddress;
-		$Client_BuildSite.$loadJunk(CommonShuffleLibrary.IPs.webIP, ss.mkdel(this, this.$ready));
+		$Client_BuildSite.$loadJunk(CommonLibraries.IPs.webIP, ss.mkdel(this, this.$ready));
 	};
 	$Client_BuildSite.prototype = {
 		$ready: function() {
@@ -118,7 +119,7 @@
 			scriptLoader.load([url + 'lib/RawDeflate.js'], true, ready);
 		};
 		var stepThree = function() {
-			scriptLoader.load([url + 'ClientLibs.js', url + 'CommonLibraries.js', url + 'ShuffleGameLibrary.js', url + 'Models.js'], true, stepFour);
+			scriptLoader.load([url + 'ClientLibs.js', url + 'ShuffleGameLibrary.js', url + 'Models.js'], true, stepFour);
 		};
 		var stepTwo = function() {
 			scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'lib/Dialog.js'], false, stepThree);
@@ -192,199 +193,6 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.App
-	var $Client_Angular_App = function() {
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.controllers.TodoCtrl
-	var $Client_Angular_controllers_TodoCtrl = function(scope, location, todoStorage, filterFilter, log) {
-		this.$todos = null;
-		this.$scope = null;
-		this.$todoStorage = null;
-		this.$filterFilter = null;
-		this.$log = null;
-		this.$scope = scope;
-		this.$todoStorage = todoStorage;
-		this.$filterFilter = filterFilter;
-		this.$log = log;
-		this.$todos = scope.todos = todoStorage.get_todos();
-		scope.newTodo = '';
-		scope.editedTodo = null;
-		scope.addTodo = ss.mkdel(this, this.$addTodo);
-		scope.editTodo = ss.mkdel(this, this.$editTodo);
-		scope.doneEditing = ss.mkdel(this, this.$doneEditing);
-		scope.removeTodo = ss.mkdel(this, this.$removeTodo);
-		scope.clearDoneTodos = ss.mkdel(this, this.$clearDoneTodos);
-		scope.markAll = ss.mkdel(this, this.$markAll);
-		scope.$watch('todos', ss.mkdel(this, this.$onTodos), true);
-		scope.$watch('location.path()', ss.mkdel(this, this.$onPath));
-		if (location.path() === '') {
-			location.path('/');
-		}
-		scope.location = location;
-		log.log(['TodoCtrl created']);
-	};
-	$Client_Angular_controllers_TodoCtrl.prototype = {
-		$onPath: function(p) {
-			this.$log.log(['TodoCtrl onPath']);
-			var path = ss.safeCast(p, String);
-			this.$scope.statusFilter = ((path === '/active') ? { completed: false } : ((path === '/completed') ? { completed: true } : null));
-		},
-		$onTodos: function() {
-			this.$log.log(['TodoCtrl onTodos']);
-			//log.log(filterFilter);
-			//scope.remainingCount = filterFilter(this.todos, new StatusFilter { completed = false }).length;
-			this.$scope.doneCount = this.$todos.length - this.$scope.remainingCount;
-			this.$scope.allChecked = this.$scope.remainingCount > 0;
-			this.$todoStorage.set_todos(this.$todos);
-		},
-		$addTodo: function() {
-			this.$log.log(['TodoCtrl addTodo']);
-			if (this.$scope.newTodo.length === 0) {
-				return;
-			}
-			var $t2 = this.$todos;
-			var $t1 = new $Client_Angular_models_TodoItem();
-			$t1.title = this.$scope.newTodo;
-			$t1.completed = false;
-			ss.add($t2, $t1);
-			this.$scope.newTodo = '';
-		},
-		$editTodo: function(todo) {
-			this.$log.log(['TodoCtrl editTodo']);
-			this.$scope.editedTodo = todo;
-		},
-		$doneEditing: function(todo) {
-			this.$log.log(['TodoCtrl doneEditing']);
-			this.$scope.editedTodo = null;
-			if (ss.isNullOrEmptyString(todo.title)) {
-				this.$scope.removeTodo(todo);
-			}
-		},
-		$removeTodo: function(todo) {
-			this.$log.log(['TodoCtrl removeTodo']);
-			ss.remove(this.$todos, todo);
-		},
-		$clearDoneTodos: function() {
-			this.$log.log(['TodoCtrl clearDoneTodos']);
-			this.$scope.todos = this.$todos = this.$todos.filter(function(val) {
-				return !val.completed;
-			});
-		},
-		$markAll: function(done) {
-			this.$log.log(['TodoCtrl markAll']);
-			for (var $t1 = 0; $t1 < this.$todos.length; $t1++) {
-				var todo = this.$todos[$t1];
-				todo.completed = done;
-			}
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.directives.TodoAttrs
-	var $Client_Angular_directives_TodoAttrs = function() {
-		this.todoFocus = null;
-		this.todoBlur = null;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.directives.TodoBlur
-	var $Client_Angular_directives_TodoBlur = function(log) {
-		this.link = null;
-		this.$log = null;
-		this.$log = log;
-		this.link = ss.mkdel(this, this.$linkFn);
-	};
-	$Client_Angular_directives_TodoBlur.prototype = {
-		$linkFn: function(scope, elem, attrs) {
-			this.$log.log(['TodoBlur link']);
-			elem.bind('blur', ss.mkdel(this, function(e) {
-				this.$log.log(['TodoBlur bind']);
-				scope.$apply(attrs.todoBlur);
-			}));
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.directives.TodoFocus
-	var $Client_Angular_directives_TodoFocus = function(timeout, log) {
-		this.link = null;
-		this.$timeout = null;
-		this.$log = null;
-		this.$log = log;
-		this.$timeout = timeout;
-		this.link = ss.mkdel(this, this.$linkFn);
-	};
-	$Client_Angular_directives_TodoFocus.prototype = {
-		$linkFn: function(scope, elem, attrs) {
-			this.$log.log(['TodoFocus link']);
-			scope.$watch(attrs.todoFocus, ss.mkdel(this, function(newval) {
-				this.$log.log(['TodoFocus watch']);
-				if (newval) {
-					this.$timeout(ss.mkdel(this, function() {
-						this.$log.log(['TodoFocus timeout']);
-						elem[0].focus();
-					}), 0, false);
-				}
-			}));
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.interfaces.ITodoStorage
-	var $Client_Angular_interfaces_ITodoStorage = function() {
-	};
-	$Client_Angular_interfaces_ITodoStorage.prototype = { get_todos: null, set_todos: null };
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.interfaces.StatusFilter
-	var $Client_Angular_interfaces_StatusFilter = function() {
-	};
-	$Client_Angular_interfaces_StatusFilter.createInstance = function() {
-		return {};
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.interfaces.TodoScope
-	var $Client_Angular_interfaces_TodoScope = function() {
-		this.todos = null;
-		this.newTodo = null;
-		this.editedTodo = null;
-		this.remainingCount = 0;
-		this.doneCount = 0;
-		this.allChecked = false;
-		this.statusFilter = null;
-		this.location = null;
-		this.addTodo = null;
-		this.clearDoneTodos = null;
-		this.editTodo = null;
-		this.doneEditing = null;
-		this.removeTodo = null;
-		this.markAll = null;
-	};
-	$Client_Angular_interfaces_TodoScope.prototype = {
-		$watch: function(watchExpression) {
-			return null;
-		},
-		$apply: function(exp) {
-			return null;
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.models.TodoItem
-	var $Client_Angular_models_TodoItem = function() {
-		this.completed = false;
-		this.title = null;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Angular.services.TodoStorage
-	var $Client_Angular_services_TodoStorage = function() {
-	};
-	$Client_Angular_services_TodoStorage.prototype = {
-		get_todos: function() {
-			var json = window.localStorage.getItem($Client_Angular_services_TodoStorage.$storagE_ID);
-			return JSON.parse(ss.coalesce(json, '[]'));
-		},
-		set_todos: function(value) {
-			var json = JSON.stringify(this.get_todos());
-			window.localStorage.setItem($Client_Angular_services_TodoStorage.$storagE_ID, json);
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// Client.Libs.ScriptLoader
 	var $Client_Libs_ScriptLoader = function() {
 	};
@@ -398,7 +206,7 @@
 			//caching
 			if (!ss.staticEquals(callback, null)) {
 				script.onreadystatechange = function(a) {
-					if (script.readyState === 'loaded' || script.readyState === 'complete') {
+					if (!!(script.readyState === 'loaded' || script.readyState === 'complete')) {
 						callback();
 					}
 				};
@@ -687,7 +495,7 @@
 				//   cardGameAppearanceEffect.Build(element.Item1);
 				switch (cardGameAppearanceEffect.type) {
 					case 2: {
-						var bEffect = cardGameAppearanceEffect;
+						var bEffect = ss.cast(cardGameAppearanceEffect, global.Effect$Bend);
 						//rotate
 						var trans = element.outerElementStyle.get_transform();
 						if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
@@ -906,16 +714,27 @@
 		this.breakPoints = null;
 		this.uiWindow = null;
 		this.set_shuffUIManager(shuffUIManager);
+		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffWindow();
+		$t1.title = 'Code';
+		$t1.set_x(0);
+		$t1.set_y(0);
+		$t1.staticPositioning = false;
+		$t1.set_width(CommonLibraries.Number.op_Implicit$2($(window).width() * 0.5));
+		$t1.set_height(CommonLibraries.Number.op_Implicit$2($(window).height() * 0.9));
+		$t1.allowClose = true;
+		$t1.allowMinimize = true;
+		$t1.set_visible(true);
+		this.uiWindow = shuffUIManager.createWindow($t1);
 		this.breakPoints = [];
-		var $t2 = this.uiWindow;
-		var $t1 = new WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
-		$t1.set_dock(2);
-		this.codeEditor = $t2.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor).call($t2, $t1);
-		var $t4 = this.uiWindow;
-		var $t3 = new WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
-		$t3.lineNumbers = false;
-		$t3.set_dock(2);
-		this.console = $t4.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor).call($t4, $t3);
+		var $t3 = this.uiWindow;
+		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('80%'), '');
+		$t2.set_dock(2);
+		this.codeEditor = $t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor).call($t3, $t2);
+		var $t5 = this.uiWindow;
+		var $t4 = new WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor.$ctor1(0, 0, CommonLibraries.Number.op_Implicit$3('100%'), CommonLibraries.Number.op_Implicit$3('20%'), '');
+		$t4.lineNumbers = false;
+		$t4.set_dock(2);
+		this.console = $t5.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffCodeEditor).call($t5, $t4);
 		pageHandler.clientDebugManager.add_onGetGameSource(ss.mkdel(this, this.$populateGameSource));
 		pageHandler.clientDebugManager.requestGameSource({ gameName: 'Sevens' });
 	};
@@ -1094,7 +913,7 @@
 		var $t3 = this.uiWindow;
 		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(25, 100, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t2.onClick = ss.mkdel(this, function(item) {
-			this.$myPageHandler.clientSiteManager.getRooms({ gameType: item.value });
+			this.$myPageHandler.clientSiteManager.getRooms({ gameType: ss.cast(item.value, String) });
 		});
 		this.$myGameTypeList = $t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t3, $t2);
 		this.$myCreateGameType = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(45, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Game!'), function(c) {
@@ -1102,19 +921,19 @@
 		}));
 		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffLabel(210, 80, 'Rooms'));
 		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(260, 70, CommonLibraries.Number.op_Implicit$2(70), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c1) {
-			this.$myPageHandler.clientSiteManager.getRooms({ gameType: this.$myGameTypeList.selectedItem.value });
+			this.$myPageHandler.clientSiteManager.getRooms({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String) });
 		})));
 		var $t5 = this.uiWindow;
 		var $t4 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(200, 100, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(300), null);
 		$t4.onClick = ss.mkdel(this, function(item1) {
 			var room = Enumerable.from(this.$myLoadedRooms).first(function(a) {
-				return ss.referenceEquals(a.roomName, item1.value);
+				return ss.referenceEquals(a.roomName, ss.cast(item1.value, String));
 			});
 			this.$populateRoom(room);
 		});
 		this.$myRoomsList = $t5.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t5, $t4);
 		this.$myCreateRoom = this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(225, 410, CommonLibraries.Number.op_Implicit$2(100), CommonLibraries.Number.op_Implicit$2(40), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Create New Room!'), ss.mkdel(this, function(c2) {
-			var create = new $Client_UIWindow_CreateRoomUI(shuffUIManager, pageHandler, this.$myGameTypeList.selectedItem.value);
+			var create = new $Client_UIWindow_CreateRoomUI(shuffUIManager, pageHandler, ss.cast(this.$myGameTypeList.selectedItem.value, String));
 			shuffUIManager.focus(create.uiWindow);
 		})));
 		var $t7 = this.uiWindow;
@@ -1131,7 +950,7 @@
 		this.$myRoomName = $t11.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffLabel).call($t11, $t10);
 		var $t13 = this.uiWindow;
 		var $t12 = new WebLibraries.ShuffUI.ShuffUI.ShuffButton(410, 160, CommonLibraries.Number.op_Implicit$2(75), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Join!'), ss.mkdel(this, function(c3) {
-			pageHandler.clientSiteManager.joinRoom({ gameType: this.$myGameTypeList.selectedItem.value, roomName: this.$myRoomsList.selectedItem.value });
+			pageHandler.clientSiteManager.joinRoom({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String), roomName: ss.cast(this.$myRoomsList.selectedItem.value, String) });
 		}));
 		$t12.set_visible(false);
 		this.$myJoinRoom = $t13.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call($t13, $t12);
@@ -1142,7 +961,7 @@
 		this.$mySpectateRoom = $t15.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call($t15, $t14);
 		var $t17 = this.uiWindow;
 		var $t16 = new WebLibraries.ShuffUI.ShuffUI.ShuffButton(420, 410, CommonLibraries.Number.op_Implicit$2(150), CommonLibraries.Number.op_Implicit$2(25), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Refresh!'), ss.mkdel(this, function(c5) {
-			pageHandler.clientSiteManager.getRoomInfo({ gameType: this.$myGameTypeList.selectedItem.value, roomName: this.$myRoomsList.selectedItem.value });
+			pageHandler.clientSiteManager.getRoomInfo({ gameType: ss.cast(this.$myGameTypeList.selectedItem.value, String), roomName: ss.cast(this.$myRoomsList.selectedItem.value, String) });
 		}));
 		$t16.set_visible(false);
 		this.$myRefreshRoom = $t17.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call($t17, $t16);
@@ -1282,7 +1101,7 @@
 			this.$1$PageHandlerField = value;
 		},
 		$selectAnswer: function(e) {
-			this.get_pageHandler().clientGameManager.answerQuestion({ answer: e.value });
+			this.get_pageHandler().clientGameManager.answerQuestion({ answer: ss.Nullable.unbox(ss.cast(e.value, ss.Int32)) });
 			this.uiWindow.swingAway(0, false);
 			this.get_pageHandler().timeTracker.startTime = new Date();
 		}
@@ -1321,16 +1140,6 @@
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
 	ss.registerClass(global, 'Client.ClientInformation', $Client_ClientInformation);
 	ss.registerClass(global, 'Client.PageHandler', $Client_PageHandler);
-	ss.registerClass(global, 'Client.Angular.App', $Client_Angular_App);
-	ss.registerClass(global, 'Client.Angular.controllers.TodoCtrl', $Client_Angular_controllers_TodoCtrl);
-	ss.registerClass(global, 'Client.Angular.directives.TodoAttrs', $Client_Angular_directives_TodoAttrs);
-	ss.registerClass(global, 'Client.Angular.directives.TodoBlur', $Client_Angular_directives_TodoBlur);
-	ss.registerClass(global, 'Client.Angular.directives.TodoFocus', $Client_Angular_directives_TodoFocus);
-	ss.registerInterface(global, 'Client.Angular.interfaces.ITodoStorage', $Client_Angular_interfaces_ITodoStorage, []);
-	ss.registerClass(global, 'Client.Angular.interfaces.StatusFilter', $Client_Angular_interfaces_StatusFilter);
-	ss.registerClass(global, 'Client.Angular.interfaces.TodoScope', $Client_Angular_interfaces_TodoScope);
-	ss.registerClass(global, 'Client.Angular.models.TodoItem', $Client_Angular_models_TodoItem);
-	ss.registerClass(global, 'Client.Angular.services.TodoStorage', $Client_Angular_services_TodoStorage, null, $Client_Angular_interfaces_ITodoStorage);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
 	ss.registerClass(global, 'Client.Libs.TimeTracker', $Client_Libs_TimeTracker);
 	ss.registerClass(global, 'Client.ShufflyGame.GameDrawer', $Client_ShufflyGame_GameDrawer);
@@ -1344,14 +1153,4 @@
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
 	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.ShuffUI.ShuffUI.ShuffElement);
 	$Client_BuildSite.instance = null;
-	$Client_Angular_services_TodoStorage.$storagE_ID = 'todos-angularjs-requirejs';
-	angular.module('todomvc', []).controller('todoCtrl', ['$scope', '$location', 'todoStorage', 'filterFilter', '$log', function(scope, location, todoStorage, filterFilter, log) {
-		return new $Client_Angular_controllers_TodoCtrl(scope, location, todoStorage, filterFilter, log);
-	}]).directive('todoBlur', ['$log', function(log1) {
-		return new $Client_Angular_directives_TodoBlur(log1);
-	}]).directive('todoFocus', ['$timeout', '$log', function(timeout, log2) {
-		return new $Client_Angular_directives_TodoFocus(timeout, log2);
-	}]).service('todoStorage', function() {
-		return new $Client_Angular_services_TodoStorage();
-	});
 })();

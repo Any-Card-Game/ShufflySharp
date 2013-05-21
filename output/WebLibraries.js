@@ -1,4 +1,5 @@
-﻿(function() {
+
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// WebLibraries.ShuffUI.ShuffUI.ButtonClickedEvent
 	var $WebLibraries_ShuffUI_ShuffUI_ButtonClickedEvent = function() {

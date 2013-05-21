@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using NodeLibraries.MongoDB;
 using NodeLibraries.NodeJS;
 namespace CommonShuffleLibrary
@@ -9,7 +10,7 @@ namespace CommonShuffleLibrary
         private const string ConnectionPort = "27017";
         private MongoConnection Connection;
         private MongoServer Server;
-        public MongoDB client;
+        public NodeLibraries.MongoDB.MongoDB client;
 
         public DataManager()
         {
@@ -28,7 +29,7 @@ namespace CommonShuffleLibrary
         }
 
         [InlineCode("new Db('test', new server('" + ConnectionAddress + "', " + ConnectionPort + "), {{safe:false}})")]
-        private MongoDB getMongo()
+        private NodeLibraries.MongoDB.MongoDB getMongo()
         {
             return null;
         }

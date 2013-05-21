@@ -1,4 +1,5 @@
-﻿(function() {
+
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ClientLibs.Gateway
 	var $ClientLibs_Gateway = function(gatewayServer, server) {

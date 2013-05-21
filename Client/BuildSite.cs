@@ -2,7 +2,7 @@
 using System.Html;
 using System.Runtime.CompilerServices;
 using Client.Libs;
-using CommonShuffleLibrary;
+using CommonLibraries;
 using WebLibraries.Common;
 using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
@@ -40,7 +40,6 @@ namespace Client
 
             Action stepThree = () => scriptLoader.Load(new[] {
                                                                      url + "ClientLibs.js",
-                                                                     url + "CommonLibraries.js",
                                                                      url + "ShuffleGameLibrary.js",
                                                                      url + "Models.js",
                                                              },

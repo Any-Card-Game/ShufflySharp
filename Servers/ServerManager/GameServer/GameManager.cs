@@ -9,6 +9,7 @@ using NodeLibraries.Fibers;
 using NodeLibraries.NodeJS;
 using ServerManager.GameServer.Models;
 using global;
+using DataManager = CommonShuffleLibrary.DataManager;
 using FiberYieldResponse = ServerManager.GameServer.Models.FiberYieldResponse;
 namespace ServerManager.GameServer
 {

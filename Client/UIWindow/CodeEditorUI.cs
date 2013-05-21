@@ -22,7 +22,22 @@ namespace Client.UIWindow
 
         public CodeEditorUI(ShuffUIManager shuffUIManager, PageHandler pageHandler)
         {
-            ShuffUIManager = shuffUIManager; 
+            ShuffUIManager = shuffUIManager;
+
+            UIWindow = shuffUIManager.CreateWindow(new ShuffWindow()
+            {
+                Title = "Code",
+                X = 0,
+                Y = 0,
+                StaticPositioning = false,
+                Width = jQuery.Window.GetWidth() * .50,
+                Height = jQuery.Window.GetHeight() * .90,
+                AllowClose = true,
+                AllowMinimize = true,
+                Visible = true
+            });
+
+
             breakPoints = new List<int>();
 
             codeEditor = UIWindow.AddElement(new ShuffCodeEditor(0, 0, "100%", "80%", "") {Dock = DockStyle.FillWidth});

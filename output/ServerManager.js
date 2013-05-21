@@ -1,4 +1,5 @@
-﻿(function() {
+require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('./NodeLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.ServerManager
 	var $ServerManager_$ServerManager = function() {
@@ -83,13 +84,13 @@
 		NodeLibraries.Common.Logging.Logger.log('Shuffly Admin V0.49', 1);
 		NodeLibraries.Common.Logging.Logger.log('Shuffly Admin V0.49', 2);
 		var redis = require('redis');
-		var client = redis.createClient(6379, CommonShuffleLibrary.IPs.redisIP);
+		var client = redis.createClient(6379, CommonLibraries.IPs.redisIP);
 		// client.On<string,object>("monitor",(time, args) => {
 		// Logger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation);
 		// });
 		this.$util = require('util');
 		this.$exec = require('child_process').exec;
-		this.$__dirname = CommonShuffleLibrary.IPs.HARDLOCATION;
+		this.$__dirname = CommonLibraries.IPs.HARDLOCATION;
 		this.$nonDebuggable = ['node-inspector', 'pkill'];
 		require('http').createServer(ss.mkdel(this, this.$handler)).listen(8090);
 		this.$debug = true;
@@ -1050,7 +1051,7 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.HeadServer.HeadServer
 	var $ServerManager_HeadServer_HeadServer = function() {
-		this.$__dirname = CommonShuffleLibrary.IPs.HARDLOCATION;
+		this.$__dirname = CommonLibraries.IPs.HARDLOCATION;
 		this.$fs = require('fs');
 		this.$gateways = [];
 		this.$indexForSites = [];

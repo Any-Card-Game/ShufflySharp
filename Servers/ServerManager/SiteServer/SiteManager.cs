@@ -6,6 +6,7 @@ using Models.ChatManagerModels;
 using Models.GameManagerModels;
 using Models.SiteManagerModels;
 using NodeLibraries.Common.Logging;
+using DataManager = CommonShuffleLibrary.DataManager;
 namespace ServerManager.SiteServer
 {
     public class SiteManager

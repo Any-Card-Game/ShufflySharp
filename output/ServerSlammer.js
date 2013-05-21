@@ -1,4 +1,5 @@
-﻿(function() {
+require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('./NodeLibraries.js');require('./Models.js');require('./ClientLibs.js');
+(function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerSlammer.Program
 	var $ServerSlammer_$Program = function() {

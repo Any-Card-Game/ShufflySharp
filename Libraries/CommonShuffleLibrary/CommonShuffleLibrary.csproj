@@ -41,7 +41,6 @@
     <Compile Include="Data\GameInfoModel.cs" />
     <Compile Include="Data\MongoHelper.cs" />
     <Compile Include="Data\UserModelData.cs" />
-    <Compile Include="IPs.cs" />
     <Compile Include="PubSub.cs" />
     <Compile Include="QueueItem.cs" />
     <Compile Include="QueueManager.cs" />

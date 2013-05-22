@@ -1,10 +1,7 @@
 'use strict';
-
-/* App Module */
-
 angular.module('acg', ['acgFilters', 'acgServices']).
-  config(['$routeProvider', function($routeProvider) {
-  $routeProvider.
-      when('/gameUI', {templateUrl: 'partials/gameUI.html',   controller: GameCtrl}).
-      otherwise({redirectTo: '/gameUI'});
-}]);
+    config(['$routeProvider', function($routeProvider) {
+        $routeProvider.
+            when('/gameUI', {templateUrl: 'partials/gameUI.html',   controller: GameCtrl}).
+            otherwise({redirectTo: '/gameUI'});
+    }]);

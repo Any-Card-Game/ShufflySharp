@@ -5,15 +5,15 @@
 Array.prototype.randomElement = function () {
     return this[Math.floor(Math.random() * this.length)]
 };
-Array.prototype.remove = function(from, to) {
+Array.prototype.remove = function (from, to) {
     var rest = this.slice((to || from) + 1 || this.length);
     this.length = from < 0 ? this.length + from : from;
     return this.push.apply(this, rest);
 };
 if (!String.prototype.format) {
-    String.prototype.format = function() {
+    String.prototype.format = function () {
         var args = arguments;
-        return this.replace(/{(\d+)}/g, function(match, number) {
+        return this.replace(/{(\d+)}/g, function (match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
@@ -21,10 +21,63 @@ if (!String.prototype.format) {
         });
     };
 }
+window.AddRule = (function (style) {
+    var sheet = document.head.appendChild(style).sheet;
+    return function (selector, css) {
+        var propText = Object.keys(css).map(function (p) {
+            return p + ":" + css[p]
+        }).join(";");
+        sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+    }
+})(document.createElement("style"));
+
+window.ChangeCSS = function (myClass, values) {
+    myClass = '.' + myClass;
+    var CSSRules;
+    if (document.all)
+        CSSRules = 'rules';
+    else if (document.getElementById)
+        CSSRules = 'cssRules';
+    for (var a = 0; a < document.styleSheets.length; a++) {
+        for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+            if (document.styleSheets[a][CSSRules][i].selectorText == myClass) {
+                for (var m in values) {
+                    document.styleSheets[a][CSSRules][i].style[m] = values[m];
+                }
+            }
+        }
+    }
+};
 
 
 function GameCtrl($scope) {
     $scope.MainArea = loadMainArea();
+    var c=0;
+    for (var i = 0; i < $scope.MainArea.spaces.length; i++) {
+        var space = $scope.MainArea.spaces[i];
+        space.class = {};
+        space.class.main = 'space' + i;
+        AddRule('.' + space.class.main, {});
+        space.class.before = 'space' + i + '::before';
+        AddRule('.' + space.class.before, {});
+        space.class.after = 'space' + i + '::after';
+        AddRule('.' + space.class.after, {});
+
+
+        for (var a = 0; a < space.pile.cards.length; a++) {
+            var card = space.pile.cards[a];
+            card.class = {};
+            card.class.main = 'card' + c;
+            AddRule('.' + card.class.main, {});
+            card.class.before = 'card' + c + '::before';
+            AddRule('.' + card.class.before, {});
+            card.class.after = 'card' + c + '::after';
+            AddRule('.' + card.class.after, {});
+            c++;
+        }
+
+    }
+
     $scope.scale = {x: $(window).width() / $scope.MainArea.size.width * .9, y: (($(window).height() - 250) / $scope.MainArea.size.height) * .9};
 
     $scope.moveCard = function () {
@@ -37,7 +90,7 @@ function GameCtrl($scope) {
                 var _pile = $scope.MainArea.spaces.randomElement();
 
                 if (card && _pile) {
-                    pile.cards.splice(pile.cards.indexOf(card),1);
+                    pile.cards.splice(pile.cards.indexOf(card), 1);
                     _pile.pile.cards.push(card);
                 }
             }

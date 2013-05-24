@@ -9,9 +9,43 @@ angular.module('acg')
         return {
             link: function (scope, element, attrs, model) {
 
-                element.attr('src', 'assets/cards/' + ( 100 + ( scope.card.value + 1 ) + ( scope.card.type ) * 13 ) + '.gif')
+                element.attr('style', 'width:71px; height:96px;')
+                element.attr('class', scope.card.class.main);
 
                 scope.$watch('space.pile.cards', redrawCard, true);
+
+                var beforeStyle;
+                if (Math.random() * 200 < 50) {
+                    beforeStyle = {
+                        'display': 'block',
+                        'position': 'relative',
+                        'z-index': '-1',
+                        'width': '100%',
+                        'height': '100%',
+                        'left': '-5px',
+                        'top': '-5px',
+                        'padding': '5px',
+                        'border-radius': '5px',
+                        'box-shadow': 'rgb(44, 44, 44) 3px 3px 2px',
+                        'content': '""',
+                        'background': 'rgba(0, 12, 58, 0.231373)'
+                    };
+                    window.ChangeCSS(scope.card.class.before, beforeStyle);
+                }
+
+                var afterStyle = {
+                    'display': 'block',
+                    'position': 'relative',
+                    'width': '100%',
+                    'height': '100%',
+                    'content': 'url("assets/cards/' + ( 100 + ( scope.card.value + 1 ) + ( scope.card.type ) * 13 ) + '.gif")',
+                };
+
+                if (beforeStyle) {
+                    afterStyle.border = '2px solid black';
+
+                }
+                window.ChangeCSS(scope.card.class.before, afterStyle);
 
 
                 function redrawCard() {
@@ -52,25 +86,17 @@ angular.module('acg')
                     scope.cardStyle.position = "absolute";
                     scope.cardStyle.zIndex = cardIndex;
                     scope.cardStyle.borderRadius = "5px";
-                    scope.cardStyle.boxShadow = "3px 3px 2px #2c2c2c";
                     scope.cardStyle.left = ( xx + ( vertical ? scope.space.width * scope.scale.x / 2 : 0 ) );
                     scope.cardStyle.top = ( yy + ( !vertical ? scope.space.height * scope.scale.y / 2 : 0 ) );
                     scope.cardStyle.transform = "rotate(" + scope.space.appearance.innerStyle.rotate + "deg)";
 
-
+                    scope.cardStyle.content = 'hi';
 
 
                     for (var i = 0; i < scope.card.appearance.effects.length; i++) {
                         var effect = scope.card.appearance.effects[i];
                         switch (effect.type) {
                             case 0:
-                                scope.cardStyle.padding = "{0} {0} {0} {0}".format(effect.radius);
-                                scope.cardStyle.backgroundColor = effect.color;
-                                scope.cardStyle.border = "solid 2px black";
-                                //scope.cardStyle.left -= effect.radius;
-                                //scope.cardStyle.top -= effect.radius;
-                                scope.cardStyle.borderRadius = 15.0;
-                                scope.cardStyle.boxShadow = "4px 4px 2px #333";
                                 break;
 
                             case 1:
@@ -100,6 +126,25 @@ angular.module('acg')
         return {
             link: function (scope, element, attrs, model) {
 
+                element.attr('class', scope.space.class.main);
+
+
+                var beforeStyle = {
+                    'display': 'block',
+                    'position': 'relative',
+                    'z-index': '-1',
+                    'width': '100%',
+                    'height': '100%',
+                    'left': '-50px',
+                    'top': '-50px',
+                    'padding': '50px',
+                    'border-radius': '15px',
+                    'box-shadow': 'rgb(51, 51, 51) 4px 4px 2px',
+                    'content': '""',
+                    'background': 'rgba(112, 12, 58, 0.231373)'
+                };
+                window.ChangeCSS(scope.space.class.before, beforeStyle);
+
 
                 scope.spaceStyle = {};
 
@@ -110,7 +155,6 @@ angular.module('acg')
                 scope.spaceStyle.width = scope.space.width * scope.scale.x;
                 scope.spaceStyle.height = scope.space.height * scope.scale.y;
                 scope.spaceStyle.backgroundColor = "red";
-
 
 
                 for (var i = 0; i < scope.space.appearance.effects.length; i++) {

@@ -30,9 +30,9 @@ namespace global
         [IntrinsicProperty]
         public CardGameOrder SortOrder { get; set; }
         [IntrinsicProperty]
-        public int NumerOfCardsHorizontal { get; set; }
+        public int NumberOfCardsHorizontal { get; set; }
         [IntrinsicProperty]
-        public int NumerOfCardsVertical { get; set; }
+        public int NumberOfCardsVertical { get; set; }
         [IntrinsicProperty]
         public TableSpaceResizeType ResizeType { get; set; }
 
@@ -50,8 +50,8 @@ namespace global
             DrawCardsBent = !options.DrawCardsBent ? true : options.DrawCardsBent;
             Name = options.Name ?? "TableSpace";
             SortOrder = options.SortOrder;
-            NumerOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
-            NumerOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
+            NumberOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
+            NumberOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
             ResizeType = options.ResizeType;
             //Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
             Appearance = new CardGameAppearance();

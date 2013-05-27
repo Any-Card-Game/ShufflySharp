@@ -112,8 +112,7 @@ namespace Client.ShufflyGame
             //jQuery.Select("#dvGame").Children().Remove();
 
             var scale = new Point(Document.DocumentElement.ClientWidth / mainArea.Size.Width * .9, ( Document.DocumentElement.ClientHeight - 250 ) / mainArea.Size.Height * .9);
-            //ExtensionMethods.debugger(null);
-            var sl = mainArea.Spaces.Count;
+            //ExtensionMethods.debugger(null); 
             /*
                         for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++)
                         {
@@ -140,8 +139,7 @@ namespace Client.ShufflyGame
                         }
             */
 
-            for (int index = 0; index < sl; index++) {
-                var space = mainArea.Spaces[index];
+            foreach (var space in mainArea.Spaces) {
                 var vertical = space.Vertical;
 
                 var spaceDiv = findSpace(space);
@@ -226,7 +224,8 @@ namespace Client.ShufflyGame
                 findSpace(space).OuterElementStyle.SetStyle(findSpace(space).OuterElement);
 
                 foreach (var card in space.Pile.Cards) {
-                    //                    var m = findCard(space, card);
+                    //   
+                    var m = findCard(space, card);
                     findSpace(space).OuterElementStyle.SetStyle(findSpace(space).OuterElement);
 
                     /*

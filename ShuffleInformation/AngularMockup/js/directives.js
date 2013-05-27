@@ -10,7 +10,7 @@ angular.module('acg')
             link: function (scope, element, attrs, model) {
 
                 element.attr('style', 'width:71px; height:96px;')
-                element.attr('class', scope.card.class.main);
+                element.attr('class', "card "+scope.card.class.main);
 
                 scope.$watch('space.pile.cards', redrawCard, true);
 
@@ -27,25 +27,16 @@ angular.module('acg')
                         'padding': '5px',
                         'border-radius': '5px',
                         'box-shadow': 'rgb(44, 44, 44) 3px 3px 2px',
-                        'content': '""',
-                        'background': 'rgba(0, 12, 58, 0.231373)'
+                        'background': 'rgba(0, 12, 58, 0.231373)',
+                        'border':'2px solid black'
                     };
                     window.ChangeCSS(scope.card.class.before, beforeStyle);
                 }
 
-                var afterStyle = {
-                    'display': 'block',
-                    'position': 'relative',
-                    'width': '100%',
-                    'height': '100%',
-                    'content': 'url("assets/cards/' + ( 100 + ( scope.card.value + 1 ) + ( scope.card.type ) * 13 ) + '.gif")',
-                };
 
-                if (beforeStyle) {
-                    afterStyle.border = '2px solid black';
-
-                }
-                window.ChangeCSS(scope.card.class.before, afterStyle);
+                window.ChangeCSS(scope.card.class.before, {
+                    'content': 'url("assets/cards/' + ( 100 + ( scope.card.value + 1 ) + ( scope.card.type ) * 13 ) + '.gif")'
+                });
 
 
                 function redrawCard() {

@@ -1,7 +1,5 @@
 'use strict';
 
-/* Controllers */
-
 Array.prototype.randomElement = function () {
     return this[Math.floor(Math.random() * this.length)]
 };
@@ -82,7 +80,7 @@ function GameCtrl($scope) {
 
     $scope.moveCard = function () {
 
-        for (var i = 0; i < 15; i++) {
+        for (var i = 0; i < 1; i++) {
             var card = null;
             while (!card) {
                 var pile = $scope.MainArea.spaces.randomElement().pile;
@@ -96,8 +94,6 @@ function GameCtrl($scope) {
             }
         }
     };
-
-
 }
 
 var Area = {

@@ -1,0 +1,36 @@
+﻿
+<style type="text/css">
+    .highlighter {
+        list-style-type: none;
+        background-color: antiquewhite;
+     border: solid 2px antiquewhite;
+        
+ }
+ .highlighter:hover {
+        background-color: coral;
+     border: solid 2px black;
+     
+ }
+</style>
+<div ng-controller="EffectEditorController">
+    <div draggable style="background-color: aqua; z-index: 10000; position: absolute;
+                                      display: block; width: 300px; height: 400px;" ng-style="windowVisible()">
+        <h1>
+            Editor</h1>
+        <section>
+            <ul>
+                <li ng-repeat="effect in effects" class="highlighter">
+                    {{effect}}
+                </li>
+            </ul>
+        </section>
+        <section>
+            <form id="neweffectform"  ng-submit="addEffect()">
+            Add new effect:
+                
+        <input type="text" ng-model="newEffect"/>
+            </form>
+        
+        </section>
+    </div>
+</div>

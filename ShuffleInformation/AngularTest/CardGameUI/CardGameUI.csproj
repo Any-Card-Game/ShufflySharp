@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C37EDF85-274D-42D9-ABD7-C6E41D221A2E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CardGameUI</RootNamespace>
+    <AssemblyName>CardGameUI</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <NoStdLib>True</NoStdLib>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="controllers\EffectEditorController.cs" />
+    <Compile Include="controllers\GameCtrl.cs" />
+    <Compile Include="directives\AcgDrawCardDirective.cs" />
+    <Compile Include="directives\AcgDrawSpaceDirective.cs" />
+    <Compile Include="directives\DraggableDirective.cs" />
+    <Compile Include="interfaces\BaseScope.cs" />
+    <Compile Include="scope\CardScope.cs" />
+    <Compile Include="scope\Effect.cs" />
+    <Compile Include="scope\EffectEditorScope.cs" />
+    <Compile Include="scope\GameCtrlScope.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="scope\ListEffectsScope.cs" />
+    <Compile Include="scope\Point.cs" />
+    <Compile Include="scope\SpaceScope.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="CommonLibraries, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\CommonLibraries.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonShuffleLibrary">
+      <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\CommonShuffleLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Models, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\Models.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>$(SolutionDir)packages\Saltarelle.Runtime.2.2.0\tools\Assemblies\mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="Saltarelle.jQuery">
+      <HintPath>..\packages\Saltarelle.jQuery.1.9.0\lib\Saltarelle.jQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="Saltarelle.jQuery.UI">
+      <HintPath>..\packages\Saltarelle.jQuery.UI.1.9.3\lib\Saltarelle.jQuery.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Saltarelle.Linq">
+      <HintPath>..\packages\Saltarelle.Linq.2.1.0\lib\Saltarelle.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Saltarelle.Web">
+      <HintPath>..\packages\Saltarelle.Web.2.2.0\lib\Saltarelle.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="ShuffleGameLibrary">
+      <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\ShuffleGameLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AngularJS\AngularJS.csproj">
+      <Project>{815CC797-F742-4C48-8C98-BD7DE050D95A}</Project>
+      <Name>AngularJS</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.2.0\tools\Saltarelle.Compiler.targets')" />
+  <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.2.0\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.2.0\tools\Saltarelle.Compiler.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>Copy "$(TargetDir)*.js" "$(SolutionDir)CardGameUIOutput\lib"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

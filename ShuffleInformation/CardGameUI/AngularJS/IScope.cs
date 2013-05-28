@@ -28,6 +28,34 @@ namespace ng
         Function watch(string watchExpression, Action<object, object> listener, bool objectEquality);
         [AlternateSignature]
         Function watch(string watchExpression, Action<object, object, IScope> listener, bool objectEquality);
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action listener)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action<object> listener)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action listener, bool objectEquality)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action<object> listener, bool objectEquality)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener, bool objectEquality)where T:IScope;
+
+        [AlternateSignature]
+        Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener, bool objectEquality)where T:IScope;
+
+
         /*
         Function watch(string watchExpression, Func<object, object> listener);
         Function watch(string watchExpression, Func<object, object, object> listener);

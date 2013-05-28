@@ -8,20 +8,22 @@
 			provider.when('/gameUI', { controller: 'GameCtrl', templateUrl: 'partials/gameUI.html' }).otherwise({ redirectTo: '/gameUI' });
 		}]).controller('GameCtrl', ['$scope', 'effectWatcher', function(scope, effectWatcher) {
 			return new $CardGameUI_Controllers_GameCtrl(scope, effectWatcher);
-		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', function(scope1, editEffects, effectWatcher1) {
-			return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1);
+		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope1, editEffects, effectWatcher1, effectmanager) {
+			return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1, effectmanager);
 		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
 			return new $CardGameUI_Controllers_$EffectEditorController(scope2, editEffects1);
 		}]).service('editEffects', [function() {
 			return new $CardGameUI_Services_$EditEffectService();
 		}]).service('effectWatcher', [function() {
 			return new $CardGameUI_Services_EffectWatcherService();
+		}]).service('effectManager', [function() {
+			return new $CardGameUI_Services_EffectManagerService();
 		}]).directive('draggable', [function() {
 			return new $CardGameUI_Directives_DraggableDirective();
 		}]).directive('property', [function() {
 			return new $CardGameUI_Directives_PropertyDirective();
-		}]).directive('acgDrawCard', [function() {
-			return new $CardGameUI_Directives_AcgDrawCardDirective();
+		}]).directive('acgDrawCard', ['effectManager', function(effectManager) {
+			return new $CardGameUI_Directives_AcgDrawCardDirective(effectManager);
 		}]).directive('acgDrawSpace', [function() {
 			return new $CardGameUI_Directives_AcgDrawSpaceDirective();
 		}]);
@@ -42,14 +44,14 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.ListEffectsController
-	var $CardGameUI_Controllers_$ListEffectsController = function(scope, editEffects, effectWatcher) {
+	var $CardGameUI_Controllers_$ListEffectsController = function(scope, editEffects, effectWatcher, effectManager) {
 		this.$myScope = null;
 		this.$myEditEffects = null;
 		this.$myEffectWatcher = null;
 		this.$myScope = scope;
 		this.$myEditEffects = editEffects;
 		this.$myEffectWatcher = effectWatcher;
-		scope.effects = [];
+		scope.effects = effectManager.effects = [];
 		var effectTypes = [];
 		ss.add(effectTypes, 'bend');
 		ss.add(effectTypes, 'highlight');
@@ -61,100 +63,110 @@
 		scope.addEffect = ss.mkdel(this, this.$addEffectFn);
 		scope.effectClick = ss.mkdel(this, this.$effectClickFn);
 		scope.enableEffect = ss.mkdel(this, this.$enableEffectFn);
+		ss.add(this.$myScope.effects, $CardGameUI_Controllers_$ListEffectsController.$makeEffect('bend', 'bend'));
 	};
 	$CardGameUI_Controllers_$ListEffectsController.prototype = {
 		$enableEffectFn: function(effect) {
 			this.$myEffectWatcher.applyEffect(effect);
 		},
 		$addEffectFn: function() {
-			var $t1 = new $CardGameUI_Util_Effect();
-			$t1.name = this.$myScope.newEffect;
-			var effect = $t1;
-			effect.type = this.$myScope.selectedEffectType;
-			switch (effect.type) {
-				case 'highlight': {
-					var $t3 = effect.properties;
-					var $t2 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t2.name = 'Radius';
-					$t2.value = 5;
-					$t2.type = 'number';
-					ss.add($t3, $t2);
-					var $t5 = effect.properties;
-					var $t4 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t4.name = 'Color';
-					$t4.value = '#242444';
-					$t4.type = 'color';
-					ss.add($t5, $t4);
-					var $t7 = effect.properties;
-					var $t6 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t6.name = 'Opacity';
-					$t6.value = 0.5;
-					$t6.type = 'number';
-					ss.add($t7, $t6);
-					var $t9 = effect.properties;
-					var $t8 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t8.name = 'Rotate';
-					$t8.value = 0;
-					$t8.type = 'number';
-					ss.add($t9, $t8);
-					var $t11 = effect.properties;
-					var $t10 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t10.name = 'OffsetX';
-					$t10.value = 0;
-					$t10.type = 'number';
-					ss.add($t11, $t10);
-					var $t13 = effect.properties;
-					var $t12 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t12.name = 'OffsetY';
-					$t12.value = 0;
-					$t12.type = 'number';
-					ss.add($t13, $t12);
-					break;
-				}
-				case 'rotate': {
-					var $t15 = effect.properties;
-					var $t14 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t14.name = 'Degrees';
-					$t14.value = 90;
-					$t14.type = 'number';
-					ss.add($t15, $t14);
-					break;
-				}
-				case 'bend': {
-					break;
-				}
-				case 'styleProperty': {
-					var $t17 = effect.properties;
-					var $t16 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t16.name = 'Property Name';
-					$t16.value = 'background-color';
-					$t16.type = 'text';
-					ss.add($t17, $t16);
-					var $t19 = effect.properties;
-					var $t18 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t18.name = 'Property Value';
-					$t18.value = 'red';
-					$t18.type = 'text';
-					ss.add($t19, $t18);
-					break;
-				}
-				case 'animated': {
-					var $t21 = effect.properties;
-					var $t20 = $CardGameUI_Util_EffectProperty.$ctor();
-					$t20.name = 'idk';
-					$t20.value = 'rite?';
-					$t20.type = 'text';
-					ss.add($t21, $t20);
-					break;
-				}
-			}
-			ss.add(this.$myScope.effects, effect);
+			ss.add(this.$myScope.effects, $CardGameUI_Controllers_$ListEffectsController.$makeEffect(this.$myScope.newEffect, this.$myScope.selectedEffectType));
 			this.$myScope.selectedEffectType = 'bend';
 			this.$myScope.newEffect = '';
 		},
 		$effectClickFn: function(effect) {
 			this.$myEditEffects.popOpenEffect(effect);
 		}
+	};
+	$CardGameUI_Controllers_$ListEffectsController.$makeEffect = function(effectName, type) {
+		var $t1 = new $CardGameUI_Util_Effect();
+		$t1.name = effectName;
+		var effect = $t1;
+		effect.type = type;
+		switch (effect.type) {
+			case 'highlight': {
+				var $t3 = effect.properties;
+				var $t2 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t2.name = 'Radius';
+				$t2.value = 5;
+				$t2.type = 'number';
+				ss.add($t3, $t2);
+				var $t5 = effect.properties;
+				var $t4 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t4.name = 'Color';
+				$t4.value = '#242444';
+				$t4.type = 'color';
+				ss.add($t5, $t4);
+				var $t7 = effect.properties;
+				var $t6 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t6.name = 'Opacity';
+				$t6.value = 0.5;
+				$t6.type = 'number';
+				ss.add($t7, $t6);
+				var $t9 = effect.properties;
+				var $t8 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t8.name = 'Rotate';
+				$t8.value = 0;
+				$t8.type = 'number';
+				ss.add($t9, $t8);
+				var $t11 = effect.properties;
+				var $t10 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t10.name = 'OffsetX';
+				$t10.value = 0;
+				$t10.type = 'number';
+				ss.add($t11, $t10);
+				var $t13 = effect.properties;
+				var $t12 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t12.name = 'OffsetY';
+				$t12.value = 0;
+				$t12.type = 'number';
+				ss.add($t13, $t12);
+				break;
+			}
+			case 'rotate': {
+				var $t15 = effect.properties;
+				var $t14 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t14.name = 'Degrees';
+				$t14.value = 90;
+				$t14.type = 'number';
+				ss.add($t15, $t14);
+				break;
+			}
+			case 'bend': {
+				var $t17 = effect.properties;
+				var $t16 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t16.name = 'Degrees';
+				$t16.value = 15;
+				$t16.type = 'number';
+				ss.add($t17, $t16);
+				break;
+			}
+			case 'styleProperty': {
+				var $t19 = effect.properties;
+				var $t18 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t18.name = 'Property Name';
+				$t18.value = 'background-color';
+				$t18.type = 'text';
+				ss.add($t19, $t18);
+				var $t21 = effect.properties;
+				var $t20 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t20.name = 'Property Value';
+				$t20.value = 'red';
+				$t20.type = 'text';
+				ss.add($t21, $t20);
+				break;
+			}
+			case 'animated': {
+				var $t23 = effect.properties;
+				var $t22 = $CardGameUI_Util_EffectProperty.$ctor();
+				$t22.name = 'idk';
+				$t22.value = 'rite?';
+				$t22.type = 'text';
+				ss.add($t23, $t22);
+				break;
+			}
+		}
+		return effect;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.GameCtrl
@@ -183,6 +195,8 @@
 			addRule('.space' + space.name + '::after', {});
 			for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
 				var card = space.pile.cards[$t2];
+				card.appearance.effectNames = [];
+				ss.add(card.appearance.effectNames, 'bend');
 				addRule('.card' + card.type + '-' + card.value + '', {});
 				addRule('.card' + card.type + '-' + card.value + '::before', {});
 				addRule('.card' + card.type + '-' + card.value + '::after', {});
@@ -210,35 +224,15 @@
 			if (ss.isNullOrUndefined(scope.selectedCard)) {
 				return;
 			}
-			var _effect;
-			switch (effect.type) {
-				case 'highlight': {
-					var $t4 = global.CardGameEffectHighlightOptions.$ctor();
-					$t4.color = effect.getPropertyByName(String).call(effect, 'color');
-					$t4.radius = effect.getPropertyByName(Number).call(effect, 'radius');
-					$t4.rotate = effect.getPropertyByName(Number).call(effect, 'rotate');
-					$t4.offsetX = effect.getPropertyByName(Number).call(effect, 'offsetx');
-					$t4.offsetY = effect.getPropertyByName(Number).call(effect, 'offsety');
-					$t4.opacity = effect.getPropertyByName(Number).call(effect, 'opacity');
-					_effect = new global.Effect$Highlight($t4);
-					break;
-				}
-				case 'rotate':
-				case 'bend':
-				case 'styleProperty':
-				case 'animated':
-				default: {
-					return;
-					break;
-				}
-			}
-			ss.add(scope.selectedCard.appearance.effects, _effect);
+			ss.add(scope.selectedCard.appearance.effectNames, effect.name);
 		});
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Directives.AcgDrawCardDirective
-	var $CardGameUI_Directives_AcgDrawCardDirective = function() {
+	var $CardGameUI_Directives_AcgDrawCardDirective = function(effectManager) {
+		this.$myEffectManager = null;
 		this.link = null;
+		this.$myEffectManager = effectManager;
 		this.link = ss.mkdel(this, this.$linkFn);
 	};
 	$CardGameUI_Directives_AcgDrawCardDirective.prototype = {
@@ -261,7 +255,7 @@
 					scope.$parent.$parent.selectedCard = scope.card;
 				}
 			};
-			var redrawCard = function() {
+			var redrawCard = ss.mkdel(this, function() {
 				var spaceScale = { width: scope.$parent.space.width / scope.$parent.space.pile.cards.length, height: scope.$parent.space.height / scope.$parent.space.pile.cards.length };
 				var vertical = scope.$parent.space.vertical;
 				var cardIndex = ss.indexOf(scope.$parent.space.pile.cards, scope.card);
@@ -314,34 +308,46 @@
 						}
 					}
 				}
-				for (var $t3 = 0; $t3 < scope.card.appearance.effects.length; $t3++) {
-					var effect = scope.card.appearance.effects[$t3];
-					switch (effect.type) {
-						case 0: {
-							var hEffect = effect;
+				for (var $t3 = 0; $t3 < scope.card.appearance.effectNames.length; $t3++) {
+					var effect = scope.card.appearance.effectNames[$t3];
+					var grabbedEffect = this.$myEffectManager.getEffectByName(effect);
+					if (ss.isNullOrUndefined(grabbedEffect)) {
+						continue;
+					}
+					switch (grabbedEffect.type) {
+						case 'highlight': {
+							var $t4 = global.CardGameEffectHighlightOptions.$ctor();
+							$t4.color = grabbedEffect.getPropertyByName(String).call(grabbedEffect, 'color');
+							$t4.radius = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'radius');
+							$t4.rotate = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'rotate');
+							$t4.offsetX = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'offsetx');
+							$t4.offsetY = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'offsety');
+							$t4.opacity = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'opacity');
+							var _effect = new global.Effect$Highlight($t4);
 							var beforeStyle = {};
 							beforeStyle['display'] = 'block';
 							beforeStyle['position'] = 'relative';
 							beforeStyle['z-index'] = '-1';
 							beforeStyle['width'] = '100%';
 							beforeStyle['height'] = '100%';
-							beforeStyle['left'] = -hEffect.radius + hEffect.offsetX + 'px';
-							beforeStyle['top'] = -hEffect.radius + hEffect.offsetY + 'px';
-							beforeStyle['padding'] = hEffect.radius + 'px';
+							beforeStyle['left'] = -_effect.radius + _effect.offsetX + 'px';
+							beforeStyle['top'] = -_effect.radius + _effect.offsetY + 'px';
+							beforeStyle['padding'] = _effect.radius + 'px';
 							beforeStyle['border-radius'] = '5px';
 							beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-							var color = $CardGameUI_Directives_AcgDrawCardDirective.hextorgb(hEffect.color);
-							beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', color.R, color.G, color.B, hEffect.opacity);
+							var color = $CardGameUI_Directives_AcgDrawCardDirective.hextorgb(_effect.color);
+							beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', color.R, color.G, color.B, _effect.opacity);
 							beforeStyle['border'] = '2px solid black';
 							$CardGameUI_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', beforeStyle);
 							break;
 						}
-						case 1: {
-							window.alert('type ' + effect.type.toString());
+						case 'rotate': {
 							break;
 						}
-						case 2: {
-							var bEffect = effect;
+						case 'bend': {
+							var $t5 = global.CardGameEffectBendOptions.$ctor();
+							$t5.degrees = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'degrees');
+							var bEffect = new global.Effect$Bend($t5);
 							var trans = scope.cardStyle['-webkit-transform'];
 							if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
 								scope.cardStyle['-webkit-transform'] = $CardGameUI_Directives_AcgDrawCardDirective.transformRotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.$parent.space.pile.cards.length - 1) * cardIndex + $CardGameUI_Directives_AcgDrawCardDirective.noTransformRotate(trans));
@@ -349,28 +355,96 @@
 							else {
 								scope.cardStyle['-webkit-transform'] = $CardGameUI_Directives_AcgDrawCardDirective.transformRotate(scope.$parent.space.appearance.innerStyle.rotate);
 							}
-							console.log('bending ' + scope.$parent.space.name + ' ' + scope.cardStyle['-webkit-transform']);
 							break;
 						}
-						case 3: {
-							window.alert('type ' + effect.type.toString());
+						case 'styleProperty': {
 							break;
 						}
-						case 4: {
-							window.alert('type ' + effect.type.toString());
-							break;
-						}
-						default: {
-							window.alert('type ' + effect.type.toString());
+						case 'animated': {
 							break;
 						}
 					}
 				}
-				var keys = {};
-				keys['content'] = 'url(\'assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
-				$CardGameUI_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
-			};
-			scope.$watch('$parent.space.pile.cards', redrawCard, true);
+				//                foreach (var effect in scope.Card.Appearance.Effects)
+				//                {
+				//                switch (effect.Type)
+				//                {
+				//                case EffectType.Highlight:
+				//                
+				//                var hEffect = ((CardGameAppearanceEffectHighlight)effect);
+				//                
+				//                
+				//                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
+				//                beforeStyle["display"] = "block";
+				//                beforeStyle["position"] = "relative";
+				//                beforeStyle["z-index"] = "-1";
+				//                beforeStyle["width"] = "100%";
+				//                beforeStyle["height"] = "100%";
+				//                beforeStyle["left"] = (-hEffect.Radius+hEffect.OffsetX)+"px";
+				//                beforeStyle["top"] = (-hEffect.Radius + hEffect.OffsetY) + "px";
+				//                beforeStyle["padding"] = (hEffect.Radius) + "px";
+				//                beforeStyle["border-radius"] = "5px";
+				//                beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
+				//                var color = hextorgb(hEffect.Color);
+				//                
+				//                beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", color.R, color.G, color.B, hEffect.Opacity);
+				//                beforeStyle["border"] = "2px solid black";
+				//                
+				//                ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
+				//                
+				//                
+				//                
+				//                break;
+				//                case EffectType.Rotate:
+				//                Window.Alert("type " + effect.Type.ToString());
+				//                break;
+				//                case EffectType.Bend:
+				//                var bEffect = ((CardGameAppearanceEffectBend)effect);
+				//                
+				//                var trans = (string)scope.CardStyle["-webkit-transform"];
+				//                if ((trans ?? "").StartsWith("rotate("))
+				//                scope.CardStyle["-webkit-transform"] = TransformRotate(((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Parent.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(trans)));
+				//                else
+				//                scope.CardStyle["-webkit-transform"] = TransformRotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
+				//                Console.Log("bending " + scope.Parent.Space.Name + " " + scope.CardStyle["-webkit-transform"]);
+				//                
+				//                
+				//                break;
+				//                case EffectType.StyleProperty:
+				//                Window.Alert("type " + effect.Type.ToString());
+				//                break;
+				//                case EffectType.Animated:
+				//                Window.Alert("type " + effect.Type.ToString());
+				//                break;
+				//                default:
+				//                Window.Alert("type " + effect.Type.ToString());
+				//                break;
+				//                }
+				//                }
+			});
+			var keys = {};
+			keys['content'] = 'url(\'assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
+			$CardGameUI_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+			scope.$watch('$parent.space.pile.cards', function() {
+				console.log('a');
+				redrawCard();
+			}, true);
+			scope.$watch('card.appearance.effectNames', function() {
+				console.log('b');
+				redrawCard();
+			}, true);
+			scope.$watch(ss.mkdel(this, function(_scope) {
+				var effects = [];
+				for (var $t6 = 0; $t6 < _scope.card.appearance.effectNames.length; $t6++) {
+					var ef = _scope.card.appearance.effectNames[$t6];
+					var _ef = this.$myEffectManager.getEffectByName(ef);
+					ss.add(effects, _ef);
+				}
+				return effects;
+			}), function() {
+				console.log('c');
+				redrawCard();
+			}, true);
 			redrawCard();
 		}
 	};
@@ -598,6 +672,22 @@
 		this.popOpenEffect = null;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.EffectManagerService
+	var $CardGameUI_Services_EffectManagerService = function() {
+		this.effects = null;
+	};
+	$CardGameUI_Services_EffectManagerService.prototype = {
+		getEffectByName: function(effect) {
+			for (var $t1 = 0; $t1 < this.effects.length; $t1++) {
+				var eff = this.effects[$t1];
+				if (ss.referenceEquals(eff.name.toLowerCase(), effect.toLowerCase())) {
+					return eff;
+				}
+			}
+			return null;
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Services.EffectWatcherService
 	var $CardGameUI_Services_EffectWatcherService = function() {
 		this.applyEffect = null;
@@ -684,6 +774,7 @@
 	ss.registerClass(global, 'CardGameUI.Scope.ListEffectsScope', $CardGameUI_Scope_ListEffectsScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.SpaceScope', $CardGameUI_Scope_SpaceScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(null, 'CardGameUI.Services.$EditEffectService', $CardGameUI_Services_$EditEffectService);
+	ss.registerClass(global, 'CardGameUI.Services.EffectManagerService', $CardGameUI_Services_EffectManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectWatcherService', $CardGameUI_Services_EffectWatcherService);
 	ss.registerClass(global, 'CardGameUI.Util.Effect', $CardGameUI_Util_Effect);
 	ss.registerClass(global, 'CardGameUI.Util.EffectProperty', $CardGameUI_Util_EffectProperty);

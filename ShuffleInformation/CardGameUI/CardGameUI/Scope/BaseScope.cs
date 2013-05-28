@@ -67,6 +67,56 @@ namespace CardGameUI.Scope
             return null;
         }
 
+
+
+        public Function watch<T>(Func<T, object> watchExpression) where T:IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action listener) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action<object> listener) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action listener, bool objectEquality) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action<object> listener, bool objectEquality) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener, bool objectEquality) where T : IScope
+        {
+            return null;
+        }
+
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener, bool objectEquality) where T : IScope
+        {
+            return null;
+        }
+
+
+
+
         public object Apply(Func<IScope, object> exp)
         {
             return null;

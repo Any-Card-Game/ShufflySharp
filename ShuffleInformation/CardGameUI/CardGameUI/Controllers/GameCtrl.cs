@@ -45,8 +45,10 @@ namespace CardGameUI.Controllers
                 addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
 
 
-                foreach (var card in space.Pile.Cards)
-                {
+                foreach (var card in space.Pile.Cards) {
+                    card.Appearance.EffectNames = new List<string>();
+                    card.Appearance.EffectNames.Add("bend");
+
                     addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
                     addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
                     addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
@@ -86,31 +88,8 @@ namespace CardGameUI.Controllers
             {
                 if (scope.SelectedCard == null)
                     return;
-                CardGameAppearanceEffect _effect;
-
-                switch (effect.Type)
-                {
-                    case EffectType2.Highlight:
-                        _effect = new CardGameAppearanceEffectHighlight(new CardGameEffectHighlightOptions()
-                        {
-                            Color = effect.GetPropertyByName<string>("color"),
-                            Radius = effect.GetPropertyByName<double>("radius"),
-                            Rotate = effect.GetPropertyByName<double>("rotate"),
-                            OffsetX = effect.GetPropertyByName<double>("offsetx"),
-                            OffsetY = effect.GetPropertyByName<double>("offsety"),
-                            Opacity = effect.GetPropertyByName<double>("opacity"),
-                        });
-
-                        break;
-                    case EffectType2.Rotate:
-                    case EffectType2.Bend:
-                    case EffectType2.StyleProperty:
-                    case EffectType2.Animated:
-                    default:
-                        return;
-                        break;
-                }
-                scope.SelectedCard.Appearance.Effects.Add(_effect);
+               
+                scope.SelectedCard.Appearance.EffectNames.Add(effect.Name);
             };
 
 

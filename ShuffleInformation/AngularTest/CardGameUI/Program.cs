@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using AngularTest.scope;
-using Client.Angular.controllers;
-using Client.Angular.directives;
-using Client.Angular.interfaces;
+using CardGameUI.Controllers;
+using CardGameUI.Directives;
+using CardGameUI.Scope;
+using CardGameUI.Services;
 using ng;
 [assembly: ScriptSharpCompatibility(OmitDowncasts = true, OmitNullableChecks = true)]
 
-namespace AngularTest
+namespace CardGameUI
 {
     internal class Program
     {
@@ -24,20 +21,16 @@ namespace AngularTest
                                                                                                 Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
                                                                                    })
                                         })
-                   .controller("GameCtrl", new object[] { "$scope", new Func<GameCtrlScope, object>((scope) => new GameCtrl(scope)) })
-                   .controller("ListEffectsController", new object[] { "$scope", "editEffects", new Func<ListEffectsScope, EditEffectService, object>((scope, editEffects) => new ListEffectsController(scope, editEffects)) })
+                   .controller("GameCtrl", new object[] { "$scope", "effectWatcher", new Func<GameCtrlScope, EffectWatcherService, object>((scope, effectWatcher) => new GameCtrl(scope, effectWatcher)) })
+                   .controller("ListEffectsController", new object[] { "$scope", "editEffects", "effectWatcher", new Func<ListEffectsScope, EditEffectService, EffectWatcherService, object>((scope, editEffects, effectWatcher) => new ListEffectsController(scope, editEffects, effectWatcher)) })
                    .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
                    .service("editEffects", new object[] { new Func<object>(() => new EditEffectService()) })
+                   .service("effectWatcher", new object[] { new Func<object>(() => new EffectWatcherService()) })
                    .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
+                   .directive("property", new object[] { new Func<object>(() => new PropertyDirective()) })
                    .directive("acgDrawCard", new object[] { new Func<object>(() => new AcgDrawCardDirective()) })
                    .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) });
 
         }
-    }
-    internal class EditEffectService
-    {
-        [IntrinsicProperty]
-
-        public Action<Effect> PopOpenEffect { get; set; }
     }
 }

@@ -1,37 +1,49 @@
 ﻿<style type="text/css">
-    .highlighter {
+    .highlighter
+    {
         list-style-type: none;
         background-color: antiquewhite;
         border: solid 2px antiquewhite;
     }
-
-    .highlighter:hover {
+    
+    .highlighter:hover
+    {
         background-color: coral;
         border: solid 2px black;
     }
+    .button {
+        border: 2px solid black;
+        background-color: white;
+    }
+    .button:hover {
+        background-color: grey;
+    }
 </style>
 <div ng-controller="ListEffectsController">
-    <div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block; width: 300px; height: 400px;" ng-style="windowVisible()">
+    <div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block; width: 300px; height: 400px;">
         <h1>
             Editor</h1>
-        <section>
-            <ul>
-                <li ng-repeat="effect in effects" class="highlighter" ng-click="effectClick(effect)">
-                    {{effect.name}} - {{effect.type}}
-                </li>
-            </ul>
+        <section style="height:200px; background-color:wheat; overflow:scroll;">
+            <div ng-repeat="effect in effects" class="highlighter" ng-click="effectClick(effect)" style="width:100%; display:block;">
+                {{effect.name}} - {{effect.type}}  
+                <button ng-model="effect" style="position:relative; right:0px; " class="button" ng-click="effects.splice(effects.indexOf(effect),1)" >delete</button>
+                <button ng-model="effect" style="position:relative; right:0px; " class="button" ng-click="enableEffect(effect)" >enable effect</button>
+            </div>
+             <div ng-hide="effects.length">
+                No effects
+            </div>
         </section>
         <section>
-            <form id="neweffectform"  ng-submit="addEffect()">
+            <form id="neweffectform"  ng-submit="newEffect.length && addEffect() ">
                 Add new effect:
                 
                 <input type="text" ng-model="newEffect"/>
                 
                 <section>
-                    <label ng-repeat="effectType in effectTypesNames">
-                        <input name="effecttypes" type="radio" value="{{effectType.name}}" ng-checked="effectType.checked" ng-model="effectType.checked">
+                    <label ng-repeat="effectType in effectTypes">
+                        <input name="effecttypes" type="radio" value="{{effectType}}"   ng-model="$parent.selectedEffectType">
 
-                        <span>{{effectType.name}}</span>
+                        <span>{{effectType}}</span>
                     </label>
                 </section>
             </form>
@@ -41,10 +53,13 @@
 </div>
 
 <div ng-controller="EffectEditorController">
-    <div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block; width: 300px; height: 400px;" ng-style="windowVisible()">
-        <h1>
-            Effect Edit</h1>
-        hjjio
-        {{effect.name}}
+    <div draggable style="background-color: aqua; z-index: 10000; position: absolute;
+        display: block; width: 300px; height: 400px; left:600px; top:200px;" ng-show="effect" >
+        <h1> Effect Edit</h1> <button ng-click="effect=null" style="position:absolute; right:0px; top:0px;" class="button"> close </button>
+        <input type="text" ng-model="effect.name" />
+        {{effect.type}}
+        <div ng-repeat="prop in effect.properties">
+            {{prop.name}}:<input ng-model="prop.value" property="prop" />{{prop.value}}
+        </div>
     </div>
 </div>

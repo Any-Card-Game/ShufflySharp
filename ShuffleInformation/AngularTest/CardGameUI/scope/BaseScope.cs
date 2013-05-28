@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using ng;
-namespace Client.Angular.interfaces
+namespace CardGameUI.Scope
 {
-    public class _Foo
+    public class _KeepBaseScopeAlive
     {
-        
+
     }
+
     [Imported]
     public class BaseScope:IScope
     {

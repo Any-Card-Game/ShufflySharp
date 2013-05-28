@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
-using Client.Angular.interfaces;
-namespace AngularTest.scope
+using CardGameUI.Util;
+namespace CardGameUI.Scope
 {
     public class EffectEditorScope : BaseScope
     {

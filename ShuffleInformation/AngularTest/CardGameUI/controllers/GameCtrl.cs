@@ -1,48 +1,52 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Html;
-using System.Runtime.CompilerServices;
-using AngularTest.scope;
-using Client.Angular.interfaces;
+using CardGameUI.Scope;
+using CardGameUI.Services;
+using CardGameUI.Util;
 using global;
-namespace Client.Angular.controllers
+namespace CardGameUI.Controllers
 {
     public class GameCtrl
     {
         private readonly GameCtrlScope scope;
+        private readonly EffectWatcherService myEffectWatcher;
 
-        public GameCtrl(GameCtrlScope scope)
+        public GameCtrl(GameCtrlScope scope, EffectWatcherService effectWatcher)
         {
             this.scope = scope;
+            myEffectWatcher = effectWatcher;
 
             scope.MainArea = (GameCardGame)Script.Eval("loadMainArea()");
             scope.SelectedCard = null;
 
-            var addRule = ( new Func<Element, Action<string, JsDictionary<string, object>>>(style => {
+            var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
+            {
                 var document = (dynamic)Script.Eval("window.document");
 
                 var sheet = document.head.appendChild(style).sheet;
-                                                                                                return (selector, css) =>
-                                                                                                {
-                                                                                                    var propText = Object.Keys(css).Map((p) =>
-                                                                                                    {
-                                                                                                        return p + ":" + css[p];
-                                                                                                    }).Join(";");
-                                                                                                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+                return (selector, css) =>
+                {
+                    var propText = Object.Keys(css).Map((p) =>
+                    {
+                        return p + ":" + css[p];
+                    }).Join(";");
+                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
 
-                                                                                                };
-                                                                                            }) )(Document.CreateElement("style"));
+                };
+            }))(Document.CreateElement("style"));
 
-                //new Action<string,JsDictionary<string,object>>()
+            //new Action<string,JsDictionary<string,object>>()
 
-            foreach (var space in scope.MainArea.Spaces) {
+            foreach (var space in scope.MainArea.Spaces)
+            {
                 addRule(".space" + space.Name, new JsDictionary<string, object>());
                 addRule(".space" + space.Name + "::before", new JsDictionary<string, object>());
                 addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
 
 
-                foreach (var card in space.Pile.Cards) {
+                foreach (var card in space.Pile.Cards)
+                {
                     addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
                     addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
                     addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
@@ -78,26 +82,40 @@ namespace Client.Angular.controllers
                 }
             };
 
+            effectWatcher.ApplyEffect += (effect) =>
+            {
+                if (scope.SelectedCard == null)
+                    return;
+                CardGameAppearanceEffect _effect;
+
+                switch (effect.Type)
+                {
+                    case EffectType2.Highlight:
+                        _effect = new CardGameAppearanceEffectHighlight(new CardGameEffectHighlightOptions()
+                        {
+                            Color = effect.GetPropertyByName<string>("color"),
+                            Radius = effect.GetPropertyByName<double>("radius"),
+                            Rotate = effect.GetPropertyByName<double>("rotate"),
+                            OffsetX = effect.GetPropertyByName<double>("offsetx"),
+                            OffsetY = effect.GetPropertyByName<double>("offsety"),
+                            Opacity = effect.GetPropertyByName<double>("opacity"),
+                        });
+
+                        break;
+                    case EffectType2.Rotate:
+                    case EffectType2.Bend:
+                    case EffectType2.StyleProperty:
+                    case EffectType2.Animated:
+                    default:
+                        return;
+                        break;
+                }
+                scope.SelectedCard.Appearance.Effects.Add(_effect);
+            };
+
 
         }
 
-
-    }
-    public static class Extensions
-    {
-        public static T RandomElement<T>(this List<T> arr)
-        {
-            return arr[(int)Math.Floor(Math.Random() * arr.Count)];
-
-        }
-
-        [InlineCode("{script}")]
-        [InstanceMethodOnFirstArgument]
-        public static dynamic Me(this object script)
-        {
-            return script;
-
-        }
 
     }
 }

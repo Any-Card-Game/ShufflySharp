@@ -1,5 +1,5 @@
 using System;
-namespace AngularTest.scope
+namespace CardGameUI.Util
 {
     [Serializable]
     public class Point

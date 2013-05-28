@@ -36,20 +36,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="controllers\EffectEditorController.cs" />
-    <Compile Include="controllers\GameCtrl.cs" />
-    <Compile Include="directives\AcgDrawCardDirective.cs" />
-    <Compile Include="directives\AcgDrawSpaceDirective.cs" />
-    <Compile Include="directives\DraggableDirective.cs" />
-    <Compile Include="interfaces\BaseScope.cs" />
-    <Compile Include="scope\CardScope.cs" />
-    <Compile Include="scope\Effect.cs" />
-    <Compile Include="scope\EffectEditorScope.cs" />
-    <Compile Include="scope\GameCtrlScope.cs" />
+    <Compile Include="Services\EditEffectService.cs" />
+    <Compile Include="Controllers\EffectEditorController.cs" />
+    <Compile Include="Util\EffectType2.cs" />
+    <Compile Include="Util\Extensions.cs" />
+    <Compile Include="Controllers\GameCtrl.cs" />
+    <Compile Include="Controllers\ListEffectsController.cs" />
+    <Compile Include="Directives\AcgDrawCardDirective.cs" />
+    <Compile Include="Directives\AcgDrawSpaceDirective.cs" />
+    <Compile Include="Directives\DraggableDirective.cs" />
+    <Compile Include="Scope\BaseScope.cs" />
+    <Compile Include="Scope\CardScope.cs" />
+    <Compile Include="Util\Effect.cs" />
+    <Compile Include="Scope\EffectEditorScope.cs" />
+    <Compile Include="Scope\GameCtrlScope.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="scope\ListEffectsScope.cs" />
-    <Compile Include="scope\Point.cs" />
-    <Compile Include="scope\SpaceScope.cs" />
+    <Compile Include="Scope\ListEffectsScope.cs" />
+    <Compile Include="Util\Point.cs" />
+    <Compile Include="Scope\SpaceScope.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -60,9 +64,6 @@
   <ItemGroup>
     <Reference Include="CommonLibraries, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\CommonLibraries.dll</HintPath>
-    </Reference>
-    <Reference Include="CommonShuffleLibrary">
-      <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\CommonShuffleLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Models, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\Models.dll</HintPath>
@@ -82,8 +83,8 @@
     <Reference Include="Saltarelle.Web">
       <HintPath>..\packages\Saltarelle.Web.2.2.0\lib\Saltarelle.Web.dll</HintPath>
     </Reference>
-    <Reference Include="ShuffleGameLibrary">
-      <HintPath>..\..\anothershuff\ShufflySharp\Libraries\ShuffleGameLibrary\bin\Debug\ShuffleGameLibrary.dll</HintPath>
+    <Reference Include="ShuffleGameLibrary, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Libraries\ShuffleGameLibrary\bin\Debug\ShuffleGameLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

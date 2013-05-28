@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
-using Client.Angular.interfaces;
+using CardGameUI.Util;
 using global;
-namespace AngularTest.scope
+namespace CardGameUI.Scope
 {
     public class CardScope : BaseScope
     {

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Client.Angular.controllers;
-using Client.Angular.interfaces;
-namespace AngularTest.scope
+using CardGameUI.Util;
+namespace CardGameUI.Scope
 {
     public class ListEffectsScope : BaseScope
     {
@@ -16,8 +15,10 @@ namespace AngularTest.scope
         [IntrinsicProperty]
         public List<EffectType2> EffectTypes { get; set; }
         [IntrinsicProperty]
-        public List<CheckboxListItem> EffectTypesNames { get; set; }
+        public EffectType2 SelectedEffectType { get; set; }
         [IntrinsicProperty]
         public Action<Effect> EffectClick { get; set; }
+        [IntrinsicProperty]
+        public Action<Effect> EnableEffect { get; set; }
     }
 }

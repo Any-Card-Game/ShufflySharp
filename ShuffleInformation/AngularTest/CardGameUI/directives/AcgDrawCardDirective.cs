@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Html;
-using AngularTest.scope;
-using Client.Angular.controllers;
-using Client.Angular.interfaces;
+using System.Text.RegularExpressions;
+using CardGameUI.Scope;
 using CommonLibraries;
 using global;
 using jQueryApi;
-using ng;
-namespace Client.Angular.directives
+namespace CardGameUI.Directives
 {
   
 
@@ -38,10 +36,9 @@ namespace Client.Angular.directives
 
                                 scope.CardStyle.border = "solid 4px green";
                             }
-                        },true);
+                        });
             
             scope.CardClick = () => {
-                ExtensionMethods.debugger();
                 if (scope.Parent.Parent.SelectedCard == scope.Card)
                 {
                     scope.Parent.Parent.SelectedCard = null;
@@ -115,7 +112,30 @@ namespace Client.Angular.directives
                     switch (effect.Type)
                     {
                         case EffectType.Highlight:
-                            Window.Alert("type " + effect.Type.ToString());
+                            
+                            var hEffect = ((CardGameAppearanceEffectHighlight)effect);
+
+                            
+                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
+                beforeStyle["display"] = "block";
+                beforeStyle["position"] = "relative";
+                beforeStyle["z-index"] = "-1";
+                beforeStyle["width"] = "100%";
+                beforeStyle["height"] = "100%";
+                beforeStyle["left"] = (-hEffect.Radius+hEffect.OffsetX)+"px";
+                beforeStyle["top"] = (-hEffect.Radius + hEffect.OffsetY) + "px";
+                beforeStyle["padding"] = (hEffect.Radius) + "px";
+                beforeStyle["border-radius"] = "5px";
+                beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
+                            var color = hextorgb(hEffect.Color);
+
+                            beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", color.R, color.G, color.B, hEffect.Opacity);
+                beforeStyle["border"] = "2px solid black";
+
+                ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
+
+
+
                             break;
                         case EffectType.Rotate:
                             Window.Alert("type " + effect.Type.ToString());
@@ -146,26 +166,6 @@ namespace Client.Angular.directives
 
 
 
-                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
-                if (Math.Random() * 200 < 50)
-                {
-
-                    beforeStyle["display"] = "block";
-                    beforeStyle["position"] = "relative";
-                    beforeStyle["z-index"] = "-1";
-                    beforeStyle["width"] = "100%";
-                    beforeStyle["height"] = "100%";
-                    beforeStyle["left"] = "-5px";
-                    beforeStyle["top"] = "-5px";
-                    beforeStyle["padding"] = "5px";
-                    beforeStyle["border-radius"] = "5px";
-                    beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
-                    beforeStyle["background"] = "rgba(0, 12, 58, 0.231373)";
-                    beforeStyle["border"] = "2px solid black";
-
-                    ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
-                }
-
                 JsDictionary<string, string> keys = new JsDictionary<string, string>() { };
                 keys["content"] = "url('assets/cards/" + (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13) + ".gif')";
                 ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
@@ -174,8 +174,21 @@ namespace Client.Angular.directives
             };
 
             scope.watch("$parent.space.pile.cards", redrawCard, true);
+ 
 
             redrawCard();
+        }
+        public static dynamic hextorgb(string hex)
+        {
+
+            var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
+    return result!=null ? new {
+        R= int.Parse(result[1], 16),
+        G = int.Parse(result[2], 16),
+        B = int.Parse(result[3], 16)
+    } : null;
+
+
         }
         public static string TransformRotate(double ar)
         {

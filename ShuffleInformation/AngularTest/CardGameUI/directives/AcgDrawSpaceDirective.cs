@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Html;
-using AngularTest.scope;
-using Client.Angular.interfaces;
+using CardGameUI.Scope;
 using global;
 using jQueryApi;
-namespace Client.Angular.directives
+namespace CardGameUI.Directives
 {
     public class AcgDrawSpaceDirective
     {

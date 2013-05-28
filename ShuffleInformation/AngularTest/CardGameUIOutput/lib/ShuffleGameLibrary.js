@@ -492,6 +492,7 @@
 		$this.radius = 0;
 		$this.color = null;
 		$this.rotate = 0;
+		$this.opacity = 0;
 		$this.offsetX = 0;
 		$this.offsetY = 0;
 		return $this;
@@ -657,10 +658,12 @@
 		this.rotate = 0;
 		this.offsetX = 0;
 		this.offsetY = 0;
+		this.opacity = 0;
 		$global_Effect.call(this, 0);
 		this.radius = ((options.radius === 0) ? 0 : options.radius);
 		this.color = (ss.isNullOrUndefined(options.color) ? 'yellow' : options.color);
 		this.rotate = ((options.rotate === 0) ? 0 : options.rotate);
+		this.opacity = ((options.opacity === 0) ? 0 : options.opacity);
 		this.offsetX = ((options.offsetX === 0) ? 0 : options.offsetX);
 		this.offsetY = ((options.offsetY === 0) ? 0 : options.offsetY);
 		this.drawTime = 0;
@@ -2238,8 +2241,8 @@
 		this.drawCardsBent = false;
 		this.name = null;
 		this.sortOrder = 0;
-		this.numerOfCardsHorizontal = 0;
-		this.numerOfCardsVertical = 0;
+		this.numberOfCardsHorizontal = 0;
+		this.numberOfCardsVertical = 0;
 		this.resizeType = 0;
 		this.vertical = (!options.vertical ? false : options.vertical);
 		this.x = ((options.x === 0) ? 0 : options.x);
@@ -2253,8 +2256,8 @@
 		this.drawCardsBent = (!options.drawCardsBent ? true : options.drawCardsBent);
 		this.name = ss.coalesce(options.name, 'TableSpace');
 		this.sortOrder = options.sortOrder;
-		this.numerOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
-		this.numerOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
+		this.numberOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
+		this.numberOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
 		this.resizeType = options.resizeType;
 		//Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
 		this.appearance = new $global_Appearance();

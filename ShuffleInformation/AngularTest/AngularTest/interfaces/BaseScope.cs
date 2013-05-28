@@ -71,6 +71,11 @@ namespace Client.Angular.interfaces
             return null;
         }
 
+        public object Apply()
+        {
+            return null;
+        }
+
         public object Apply(string exp)
         {
             return null;

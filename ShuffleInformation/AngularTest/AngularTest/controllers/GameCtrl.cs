@@ -16,7 +16,7 @@ namespace Client.Angular.controllers
             this.scope = scope;
 
             scope.MainArea = (GameCardGame)Script.Eval("loadMainArea()");
-
+            scope.SelectedCard = null;
 
             var addRule = ( new Func<Element, Action<string, JsDictionary<string, object>>>(style => {
                 var document = (dynamic)Script.Eval("window.document");

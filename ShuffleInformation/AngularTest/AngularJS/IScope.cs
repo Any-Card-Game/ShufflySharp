@@ -41,6 +41,8 @@ namespace ng
         object Apply(Func<IScope, object> exp);
         [AlternateSignature]
         object Apply(string exp);
+        [AlternateSignature]
+        object Apply();
 
 #if TODO
     // Documentation says exp is optional, but actual implementaton counts on it

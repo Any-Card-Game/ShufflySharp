@@ -1,36 +1,50 @@
-﻿
-<style type="text/css">
+﻿<style type="text/css">
     .highlighter {
         list-style-type: none;
         background-color: antiquewhite;
-     border: solid 2px antiquewhite;
-        
- }
- .highlighter:hover {
+        border: solid 2px antiquewhite;
+    }
+
+    .highlighter:hover {
         background-color: coral;
-     border: solid 2px black;
-     
- }
+        border: solid 2px black;
+    }
 </style>
-<div ng-controller="EffectEditorController">
-    <div draggable style="background-color: aqua; z-index: 10000; position: absolute;
-                                      display: block; width: 300px; height: 400px;" ng-style="windowVisible()">
+<div ng-controller="ListEffectsController">
+    <div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block; width: 300px; height: 400px;" ng-style="windowVisible()">
         <h1>
             Editor</h1>
         <section>
             <ul>
-                <li ng-repeat="effect in effects" class="highlighter">
-                    {{effect}}
+                <li ng-repeat="effect in effects" class="highlighter" ng-click="effectClick(effect)">
+                    {{effect.name}} - {{effect.type}}
                 </li>
             </ul>
         </section>
         <section>
             <form id="neweffectform"  ng-submit="addEffect()">
-            Add new effect:
+                Add new effect:
                 
-        <input type="text" ng-model="newEffect"/>
+                <input type="text" ng-model="newEffect"/>
+                
+                <section>
+                    <label ng-repeat="effectType in effectTypesNames">
+                        <input name="effecttypes" type="radio" value="{{effectType.name}}" ng-checked="effectType.checked" ng-model="effectType.checked">
+
+                        <span>{{effectType.name}}</span>
+                    </label>
+                </section>
             </form>
         
         </section>
+    </div>
+</div>
+
+<div ng-controller="EffectEditorController">
+    <div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block; width: 300px; height: 400px;" ng-style="windowVisible()">
+        <h1>
+            Effect Edit</h1>
+        hjjio
+        {{effect.name}}
     </div>
 </div>

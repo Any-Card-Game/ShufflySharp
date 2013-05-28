@@ -1,5 +1,10 @@
 ﻿(function() {
 	////////////////////////////////////////////////////////////////////////////////
+	// AngularTest.EditEffectService
+	var $AngularTest_$EditEffectService = function() {
+		this.popOpenEffect = null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// AngularTest.Program
 	var $AngularTest_$Program = function() {
 	};
@@ -8,8 +13,12 @@
 			provider.when('/gameUI', { controller: 'GameCtrl', templateUrl: 'partials/gameUI.html' }).otherwise({ redirectTo: '/gameUI' });
 		}]).controller('GameCtrl', ['$scope', function(scope) {
 			return new $Client_Angular_controllers_GameCtrl(scope);
-		}]).controller('EffectEditorController', ['$scope', function(scope1) {
-			return new $Client_Angular_controllers_$EffectEditorController(scope1);
+		}]).controller('ListEffectsController', ['$scope', 'editEffects', function(scope1, editEffects) {
+			return new $Client_Angular_controllers_$ListEffectsController(scope1, editEffects);
+		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
+			return new $Client_Angular_controllers_$EffectEditorController(scope2, editEffects1);
+		}]).service('editEffects', [function() {
+			return new $AngularTest_$EditEffectService();
 		}]).directive('draggable', [function() {
 			return new $Client_Angular_directives_DraggableDirective();
 		}]).directive('acgDrawCard', [function() {
@@ -20,20 +29,83 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Angular.controllers.EffectEditorController
-	var $Client_Angular_controllers_$EffectEditorController = function(scope) {
+	var $Client_Angular_controllers_$EffectEditorController = function(scope, editEffects) {
 		this.$myScope = null;
+		this.$myEditEffects = null;
 		this.$myScope = scope;
-		scope.effects = [];
-		ss.add(scope.effects, 'Highlight');
-		scope.newEffect = 'hi';
-		scope.addEffect = ss.mkdel(this, this.$addEffectFn);
+		this.$myEditEffects = editEffects;
+		editEffects.popOpenEffect = ss.delegateCombine(editEffects.popOpenEffect, ss.mkdel(this, this.$popOpenEffectFn));
 	};
 	$Client_Angular_controllers_$EffectEditorController.prototype = {
-		$addEffectFn: function() {
-			ss.add(this.$myScope.effects, this.$myScope.newEffect);
-			this.$myScope.newEffect = 'Hi!';
+		$popOpenEffectFn: function(effect) {
+			this.$myScope.effect = effect;
 		}
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.controllers.ListEffectsController
+	var $Client_Angular_controllers_$ListEffectsController = function(scope, editEffects) {
+		this.$myScope = null;
+		this.$myEditEffects = null;
+		this.$myScope = scope;
+		this.$myEditEffects = editEffects;
+		scope.effects = [];
+		scope.effectTypes = [];
+		ss.add(scope.effectTypes, 'bend');
+		ss.add(scope.effectTypes, 'highlight');
+		ss.add(scope.effectTypes, 'rotate');
+		ss.add(scope.effectTypes, 'styleProperty');
+		scope.effectTypesNames = scope.effectTypes.map(function(a) {
+			var $t1 = $Client_Angular_controllers_CheckboxListItem.$ctor();
+			$t1.name = a.toString();
+			$t1.checked = false;
+			return $t1;
+		});
+		var $t3 = scope.effects;
+		var $t2 = $Client_Angular_interfaces_Effect.$ctor();
+		$t2.name = 'Some Highlighter';
+		$t2.type = 'highlight';
+		ss.add($t3, $t2);
+		scope.newEffect = 'hi';
+		scope.addEffect = ss.mkdel(this, this.$addEffectFn);
+		scope.effectClick = ss.mkdel(this, this.$effectClickFn);
+	};
+	$Client_Angular_controllers_$ListEffectsController.prototype = {
+		$addEffectFn: function() {
+			var $t1 = $Client_Angular_interfaces_Effect.$ctor();
+			$t1.name = this.$myScope.newEffect;
+			var effect = $t1;
+			for (var $t2 = 0; $t2 < this.$myScope.effectTypesNames.length; $t2++) {
+				var checkboxListItem = this.$myScope.effectTypesNames[$t2];
+				if (checkboxListItem.checked) {
+					effect.type = ss.Enum.parse($Client_Angular_controllers_EffectType2, checkboxListItem.name);
+				}
+				checkboxListItem.checked = false;
+			}
+			ss.add(this.$myScope.effects, effect);
+			this.$myScope.newEffect = 'Hi!';
+		},
+		$effectClickFn: function(effect) {
+			this.$myEditEffects.popOpenEffect(effect);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.controllers.CheckboxListItem
+	var $Client_Angular_controllers_CheckboxListItem = function() {
+	};
+	$Client_Angular_controllers_CheckboxListItem.createInstance = function() {
+		return $Client_Angular_controllers_CheckboxListItem.$ctor();
+	};
+	$Client_Angular_controllers_CheckboxListItem.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.checked = false;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.controllers.EffectType2
+	var $Client_Angular_controllers_EffectType2 = function() {
+	};
+	$Client_Angular_controllers_EffectType2.prototype = { highlight: 'highlight', rotate: 'rotate', bend: 'bend', styleProperty: 'styleProperty', animated: 'animated' };
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Angular.controllers.Extensions
 	var $Client_Angular_controllers_Extensions = function() {
@@ -49,6 +121,7 @@
 		this.$scope = null;
 		this.$scope = scope;
 		scope.mainArea = eval('loadMainArea()');
+		scope.selectedCard = null;
 		var addRule = (function(style) {
 			var document = eval('window.document');
 			var sheet = document.head.appendChild(style).sheet;
@@ -100,33 +173,49 @@
 	$Client_Angular_directives_AcgDrawCardDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
 			element.attr('style', 'width:71px; height:96px;');
-			element.attr('class', 'card' + scope.card.type + '-' + scope.card.value + '');
+			element.attr('class', 'card card' + scope.card.type + '-' + scope.card.value + '');
+			scope.$watch('$parent.$parent.selectedCard', function() {
+				if (ss.isNullOrUndefined(scope.$parent.$parent.selectedCard) || !ss.referenceEquals(scope.$parent.$parent.selectedCard, scope.card)) {
+					scope.cardStyle.border = undefined;
+				}
+				else {
+					scope.cardStyle.border = 'solid 4px green';
+				}
+			}, true);
+			scope.cardClick = function() {
+				debugger;
+				if (ss.referenceEquals(scope.$parent.$parent.selectedCard, scope.card)) {
+					scope.$parent.$parent.selectedCard = null;
+				}
+				else {
+					scope.$parent.$parent.selectedCard = scope.card;
+				}
+			};
 			var redrawCard = function() {
-				var spaceScale = { width: scope.space.width / scope.space.pile.cards.length, height: scope.space.height / scope.space.pile.cards.length };
-				var vertical = scope.space.vertical;
-				var cardIndex = ss.indexOf(scope.space.pile.cards, scope.card);
-				//console.log("watched", scope.space.name, cardIndex);
+				var spaceScale = { width: scope.$parent.space.width / scope.$parent.space.pile.cards.length, height: scope.$parent.space.height / scope.$parent.space.pile.cards.length };
+				var vertical = scope.$parent.space.vertical;
+				var cardIndex = ss.indexOf(scope.$parent.space.pile.cards, scope.card);
 				scope.cardStyle = {};
 				var xx = 0;
 				var yy = 0;
-				switch (scope.space.resizeType) {
+				switch (scope.$parent.space.resizeType) {
 					case 1: {
 						if (vertical) {
-							yy = scope.card.value * scope.scale.y / 2;
+							yy = scope.card.value * scope.$parent.$parent.scale.y / 2;
 						}
 						else {
-							xx = scope.card.value * scope.scale.x / 2;
+							xx = scope.card.value * scope.$parent.$parent.scale.x / 2;
 						}
 						break;
 					}
 					case 0: {
-						xx = (!vertical ? (cardIndex * spaceScale.width * scope.scale.x) : 0);
-						yy = (vertical ? (cardIndex * spaceScale.height * scope.scale.y) : 0);
+						xx = (!vertical ? (cardIndex * spaceScale.width * scope.$parent.$parent.scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scope.$parent.$parent.scale.y) : 0);
 						break;
 					}
 					default: {
-						xx = (!vertical ? (cardIndex * spaceScale.width * scope.scale.x) : 0);
-						yy = (vertical ? (cardIndex * spaceScale.height * scope.scale.y) : 0);
+						xx = (!vertical ? (cardIndex * spaceScale.width * scope.$parent.$parent.scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scope.$parent.$parent.scale.y) : 0);
 						break;
 					}
 				}
@@ -135,16 +224,24 @@
 				scope.cardStyle.position = 'absolute';
 				scope.cardStyle.zIndex = cardIndex;
 				scope.cardStyle.borderRadius = '5px';
-				scope.cardStyle.left = xx + (vertical ? (scope.space.width * scope.scale.x / 2) : 0);
-				scope.cardStyle.top = yy + (!vertical ? (scope.space.height * scope.scale.y / 2) : 0);
-				scope.cardStyle.transform = 'rotate(' + scope.space.appearance.innerStyle.rotate + 'deg)';
+				scope.cardStyle.left = xx + (vertical ? (scope.$parent.space.width * scope.$parent.$parent.scale.x / 2) : 0);
+				scope.cardStyle.top = yy + (!vertical ? (scope.$parent.space.height * scope.$parent.$parent.scale.y / 2) : 0);
+				scope.cardStyle['-webkit-transform'] = 'rotate(' + scope.$parent.space.appearance.innerStyle.rotate + 'deg)';
 				scope.cardStyle.content = '""';
-				if (ss.startsWithString(scope.space.name, 'User')) {
+				if (ss.startsWithString(scope.$parent.space.name, 'User')) {
 					if (scope.card.appearance.effects.length === 0) {
 						var $t2 = scope.card.appearance.effects;
 						var $t1 = global.CardGameEffectBendOptions.$ctor();
 						$t1.degrees = 15;
 						ss.add($t2, new global.Effect$Bend($t1));
+					}
+				}
+				else {
+					for (var index = scope.card.appearance.effects.length - 1; index >= 0; index--) {
+						var cardGameAppearanceEffect = scope.card.appearance.effects[index];
+						if (cardGameAppearanceEffect.type === 2) {
+							ss.remove(scope.card.appearance.effects, cardGameAppearanceEffect);
+						}
 					}
 				}
 				for (var $t3 = 0; $t3 < scope.card.appearance.effects.length; $t3++) {
@@ -160,13 +257,14 @@
 						}
 						case 2: {
 							var bEffect = effect;
-							var trans = scope.cardStyle.transform;
+							var trans = scope.cardStyle['-webkit-transform'];
 							if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
-								scope.cardStyle.transform = $Client_Angular_directives_AcgDrawCardDirective.transformRotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.space.pile.cards.length - 1) * cardIndex + $Client_Angular_directives_AcgDrawCardDirective.noTransformRotate(trans));
+								scope.cardStyle['-webkit-transform'] = $Client_Angular_directives_AcgDrawCardDirective.transformRotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.$parent.space.pile.cards.length - 1) * cardIndex + $Client_Angular_directives_AcgDrawCardDirective.noTransformRotate(trans));
 							}
 							else {
-								scope.cardStyle.transform = $Client_Angular_directives_AcgDrawCardDirective.transformRotate(scope.space.appearance.innerStyle.rotate);
+								scope.cardStyle['-webkit-transform'] = $Client_Angular_directives_AcgDrawCardDirective.transformRotate(scope.$parent.space.appearance.innerStyle.rotate);
 							}
+							console.log('bending ' + scope.$parent.space.name + ' ' + scope.cardStyle['-webkit-transform']);
 							break;
 						}
 						case 3: {
@@ -203,7 +301,7 @@
 				keys['content'] = 'url(\'assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
 				$Client_Angular_directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			};
-			scope.$watch('space.pile.cards', redrawCard, true);
+			scope.$watch('$parent.space.pile.cards', redrawCard, true);
 			redrawCard();
 		}
 	};
@@ -249,7 +347,7 @@
 	};
 	$Client_Angular_directives_AcgDrawSpaceDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
-			element.attr('class', 'space' + scope.space.name);
+			element.attr('class', 'space space' + scope.space.name);
 			var beforeStyle = {};
 			beforeStyle['display'] = 'block';
 			beforeStyle['position'] = 'relative';
@@ -266,10 +364,10 @@
 			$Client_Angular_directives_AcgDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
 			scope.spaceStyle = {};
 			scope.spaceStyle.position = 'absolute';
-			scope.spaceStyle.left = scope.space.x * scope.scale.x;
-			scope.spaceStyle.top = scope.space.y * scope.scale.y;
-			scope.spaceStyle.width = scope.space.width * scope.scale.x;
-			scope.spaceStyle.height = scope.space.height * scope.scale.y;
+			scope.spaceStyle.left = scope.space.x * scope.$parent.scale.x;
+			scope.spaceStyle.top = scope.space.y * scope.$parent.scale.y;
+			scope.spaceStyle.width = scope.space.width * scope.$parent.scale.x;
+			scope.spaceStyle.height = scope.space.height * scope.$parent.scale.y;
 			scope.spaceStyle.backgroundColor = 'red';
 			for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
 				var effect = scope.space.appearance.effects[$t1];
@@ -356,17 +454,30 @@
 	// Client.Angular.interfaces.CardScope
 	var $Client_Angular_interfaces_CardScope = function() {
 		this.card = null;
-		this.space = null;
 		this.cardStyle = null;
-		this.scale = null;
+		this.cardClick = null;
+		this.$parent = null;
 		Client.Angular.interfaces.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.interfaces.Effect
+	var $Client_Angular_interfaces_Effect = function() {
+	};
+	$Client_Angular_interfaces_Effect.createInstance = function() {
+		return $Client_Angular_interfaces_Effect.$ctor();
+	};
+	$Client_Angular_interfaces_Effect.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.type = 0;
+		$this.properties = null;
+		$this.properties = {};
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Angular.interfaces.EffectEditorScope
 	var $Client_Angular_interfaces_EffectEditorScope = function() {
-		this.newEffect = null;
-		this.addEffect = null;
-		this.effects = null;
+		this.effect = null;
 		Client.Angular.interfaces.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -375,6 +486,18 @@
 		this.mainArea = null;
 		this.scale = null;
 		this.moveCard = null;
+		this.selectedCard = null;
+		Client.Angular.interfaces.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Angular.interfaces.ListEffectsScope
+	var $Client_Angular_interfaces_ListEffectsScope = function() {
+		this.newEffect = null;
+		this.addEffect = null;
+		this.effects = null;
+		this.effectTypes = null;
+		this.effectTypesNames = null;
+		this.effectClick = null;
 		Client.Angular.interfaces.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -394,12 +517,16 @@
 	// Client.Angular.interfaces.SpaceScope
 	var $Client_Angular_interfaces_SpaceScope = function() {
 		this.space = null;
+		this.$parent = null;
 		this.spaceStyle = null;
-		this.scale = null;
 		Client.Angular.interfaces.BaseScope.call(this);
 	};
+	ss.registerClass(null, 'AngularTest.$EditEffectService', $AngularTest_$EditEffectService);
 	ss.registerClass(null, 'AngularTest.$Program', $AngularTest_$Program);
 	ss.registerClass(null, 'Client.Angular.controllers.$EffectEditorController', $Client_Angular_controllers_$EffectEditorController);
+	ss.registerClass(null, 'Client.Angular.controllers.$ListEffectsController', $Client_Angular_controllers_$ListEffectsController);
+	ss.registerClass(global, 'Client.Angular.controllers.CheckboxListItem', $Client_Angular_controllers_CheckboxListItem);
+	ss.registerEnum(global, 'Client.Angular.controllers.EffectType2', $Client_Angular_controllers_EffectType2);
 	ss.registerClass(global, 'Client.Angular.controllers.Extensions', $Client_Angular_controllers_Extensions);
 	ss.registerClass(global, 'Client.Angular.controllers.GameCtrl', $Client_Angular_controllers_GameCtrl);
 	ss.registerClass(global, 'Client.Angular.directives.AcgDrawCardDirective', $Client_Angular_directives_AcgDrawCardDirective);
@@ -407,8 +534,10 @@
 	ss.registerClass(global, 'Client.Angular.directives.DraggableDirective', $Client_Angular_directives_DraggableDirective);
 	ss.registerClass(global, 'Client.Angular.interfaces._Foo', $Client_Angular_interfaces__Foo);
 	ss.registerClass(global, 'Client.Angular.interfaces.CardScope', $Client_Angular_interfaces_CardScope, Client.Angular.interfaces.BaseScope);
+	ss.registerClass(global, 'Client.Angular.interfaces.Effect', $Client_Angular_interfaces_Effect);
 	ss.registerClass(global, 'Client.Angular.interfaces.EffectEditorScope', $Client_Angular_interfaces_EffectEditorScope, Client.Angular.interfaces.BaseScope);
 	ss.registerClass(global, 'Client.Angular.interfaces.GameCtrlScope', $Client_Angular_interfaces_GameCtrlScope, Client.Angular.interfaces.BaseScope);
+	ss.registerClass(global, 'Client.Angular.interfaces.ListEffectsScope', $Client_Angular_interfaces_ListEffectsScope, Client.Angular.interfaces.BaseScope);
 	ss.registerClass(global, 'Client.Angular.interfaces.Point', $Client_Angular_interfaces_Point);
 	ss.registerClass(global, 'Client.Angular.interfaces.SpaceScope', $Client_Angular_interfaces_SpaceScope, Client.Angular.interfaces.BaseScope);
 	$AngularTest_$Program.$main();

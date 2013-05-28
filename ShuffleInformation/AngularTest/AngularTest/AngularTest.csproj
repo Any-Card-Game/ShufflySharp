@@ -39,6 +39,7 @@
     <Compile Include="controllers\EffectEditorController.cs" />
     <Compile Include="controllers\GameCtrl.cs" />
     <Compile Include="directives\AcgDrawCardDirective.cs" />
+    <Compile Include="directives\AcgDrawSpaceDirective.cs" />
     <Compile Include="directives\DraggableDirective.cs" />
     <Compile Include="interfaces\BaseScope.cs" />
     <Compile Include="interfaces\GameCtrlScope.cs" />

@@ -82,6 +82,8 @@ namespace ng
 
         
         IModule service<TR>(string name, Func<TR> serviceConstructor);
+        [AlternateSignature]
+        IModule service(string name, object[] injectionArgs);
 
 
 #if TODO

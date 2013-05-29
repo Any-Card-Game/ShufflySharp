@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Html;
 using CardGameUI.Scope;
 using CardGameUI.Services;
 using CardGameUI.Util;
 using global;
+using jQueryApi;
 namespace CardGameUI.Controllers
 {
     public class GameCtrl
@@ -45,9 +47,15 @@ namespace CardGameUI.Controllers
                 addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
 
 
-                foreach (var card in space.Pile.Cards) {
+                foreach (var card in space.Pile.Cards)
+                {
                     card.Appearance.EffectNames = new List<string>();
-                    card.Appearance.EffectNames.Add("bend");
+
+                    if (space.Name.StartsWith("User"))
+                    {
+                        card.Appearance.EffectNames.Add("bend");
+
+                    }
 
                     addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
                     addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
@@ -77,8 +85,71 @@ namespace CardGameUI.Controllers
 
                         if (card != null && _pile != null)
                         {
+                            card.Appearance.EffectNames.Remove("bend");
+                            if (_pile.Name.StartsWith("User"))
+                            {
+
+                                card.Appearance.EffectNames.Add("bend");
+
+                            }
+
+
                             pile.Cards.Remove(card);
                             _pile.Pile.Cards.Add(card);
+                        }
+                    }
+                }
+            };
+
+            scope.AnimateCard = () =>
+            {
+
+                for (var i = 0; i < 1; i++)
+                {
+                    CardGameCard card = null;
+                    while (card == null)
+                    {
+                        var pile = scope.MainArea.Spaces.RandomElement().Pile;
+                        card = pile.Cards.RandomElement();
+                        var _pile = scope.MainArea.Spaces.RandomElement();
+
+                        if (card != null && _pile != null)
+                        {
+
+                            var css = string.Format(".card{0}-{1}", card.Type, card.Value);
+                            var clone = jQueryApi.jQuery.Select(css).FuckingClone();
+
+
+                            var space=jQuery.Select(string.Format(".space{0}", _pile.Name));
+                            var off = space.GetOffset();
+
+                            clone.CSS("z-index", 1000);
+
+                            JsDictionary ops = new JsDictionary();
+                            ops["left"] = off.Left + space.GetWidth() / 2 - 71 / 2;
+                            ops["top"] = off.Top + space.GetHeight() / 2 - 96 / 2;
+                            ops["rotate"] = "0deg";
+                            
+
+                            pile.Cards.Remove(card);
+                            clone.Animate(ops, 6000, (EffectEasing)(dynamic)("easeInOutQuart"), () =>
+                            {
+                                card.Appearance.EffectNames.Remove("bend");
+                                if (_pile.Name.StartsWith("User"))
+                                {
+
+                                    card.Appearance.EffectNames.Add("bend");
+
+                                }
+
+                                clone.Remove();
+                                _pile.Pile.Cards.Add(card);
+                                scope.Apply();
+
+                            });
+                             
+
+
                         }
                     }
                 }
@@ -88,7 +159,7 @@ namespace CardGameUI.Controllers
             {
                 if (scope.SelectedCard == null)
                     return;
-               
+
                 scope.SelectedCard.Appearance.EffectNames.Add(effect.Name);
             };
 

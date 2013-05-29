@@ -196,7 +196,9 @@
 			for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
 				var card = space.pile.cards[$t2];
 				card.appearance.effectNames = [];
-				ss.add(card.appearance.effectNames, 'bend');
+				if (ss.startsWithString(space.name, 'User')) {
+					ss.add(card.appearance.effectNames, 'bend');
+				}
 				addRule('.card' + card.type + '-' + card.value + '', {});
 				addRule('.card' + card.type + '-' + card.value + '::before', {});
 				addRule('.card' + card.type + '-' + card.value + '::after', {});
@@ -214,8 +216,43 @@
 					card1 = $CardGameUI_Util_Extensions.randomElement(global.Card).call(null, pile.cards);
 					var _pile = $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces);
 					if (ss.isValue(card1) && ss.isValue(_pile)) {
+						ss.remove(card1.appearance.effectNames, 'bend');
+						if (ss.startsWithString(_pile.name, 'User')) {
+							ss.add(card1.appearance.effectNames, 'bend');
+						}
 						ss.remove(pile.cards, card1);
 						ss.add(_pile.pile.cards, card1);
+					}
+				}
+			}
+		};
+		scope.animateCard = function() {
+			for (var i1 = 0; i1 < 1; i1++) {
+				var card2 = { $: null };
+				while (ss.isNullOrUndefined(card2.$)) {
+					var pile1 = $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces).pile;
+					card2.$ = $CardGameUI_Util_Extensions.randomElement(global.Card).call(null, pile1.cards);
+					var _pile1 = { $: $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces) };
+					if (ss.isValue(card2.$) && ss.isValue(_pile1.$)) {
+						var css1 = ss.formatString('.card{0}-{1}', card2.$.type, card2.$.value);
+						var clone = { $: $CardGameUI_Util_Extensions.fuckingClone($(css1)) };
+						var space1 = $(ss.formatString('.space{0}', _pile1.$.name));
+						var off = space1.offset();
+						clone.$.css('z-index', 1000);
+						var ops = {};
+						ops['left'] = off.left + ss.Int32.div(space1.width(), 2) - 35;
+						ops['top'] = off.top + ss.Int32.div(space1.height(), 2) - 48;
+						ops['rotate'] = '0deg';
+						ss.remove(pile1.cards, card2.$);
+						clone.$.animate(ops, 6000, 'easeInOutQuart', ss.mkdel({ card2: card2, _pile1: _pile1, clone: clone }, function() {
+							ss.remove(this.card2.$.appearance.effectNames, 'bend');
+							if (ss.startsWithString(this._pile1.$.name, 'User')) {
+								ss.add(this.card2.$.appearance.effectNames, 'bend');
+							}
+							this.clone.$.remove();
+							ss.add(this._pile1.$.pile.cards, this.card2.$);
+							scope.$apply();
+						}));
 					}
 				}
 			}
@@ -238,7 +275,7 @@
 	$CardGameUI_Directives_AcgDrawCardDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
 			element.attr('style', 'width:71px; height:96px;');
-			element.attr('class', 'card card' + scope.card.type + '-' + scope.card.value + '');
+			element.attr('class', 'card ' + ss.formatString('card{0}-{1}', scope.card.type, scope.card.value));
 			scope.$watch('$parent.$parent.selectedCard', function() {
 				if (ss.isNullOrUndefined(scope.$parent.$parent.selectedCard) || !ss.referenceEquals(scope.$parent.$parent.selectedCard, scope.card)) {
 					scope.cardStyle.border = undefined;
@@ -265,10 +302,10 @@
 				switch (scope.$parent.space.resizeType) {
 					case 1: {
 						if (vertical) {
-							yy = scope.card.value * scope.$parent.$parent.scale.y / 2;
+							yy = (scope.card.value + 1) / 13 * scope.$parent.space.height * scope.$parent.$parent.scale.y;
 						}
 						else {
-							xx = scope.card.value * scope.$parent.$parent.scale.x / 2;
+							xx = (scope.card.value + 1) / 13 * scope.$parent.space.width * scope.$parent.$parent.scale.x;
 						}
 						break;
 					}
@@ -290,7 +327,8 @@
 				scope.cardStyle.borderRadius = '5px';
 				scope.cardStyle.left = xx + (vertical ? (scope.$parent.space.width * scope.$parent.$parent.scale.x / 2) : 0);
 				scope.cardStyle.top = yy + (!vertical ? (scope.$parent.space.height * scope.$parent.$parent.scale.y / 2) : 0);
-				scope.cardStyle['-webkit-transform'] = 'rotate(' + scope.$parent.space.appearance.innerStyle.rotate + 'deg)';
+				//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
+				element.rotate(scope.$parent.space.appearance.innerStyle.rotate + 'deg');
 				scope.cardStyle.content = '""';
 				if (ss.startsWithString(scope.$parent.space.name, 'User')) {
 					if (scope.card.appearance.effects.length === 0) {
@@ -348,13 +386,7 @@
 							var $t5 = global.CardGameEffectBendOptions.$ctor();
 							$t5.degrees = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'degrees');
 							var bEffect = new global.Effect$Bend($t5);
-							var trans = scope.cardStyle['-webkit-transform'];
-							if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
-								scope.cardStyle['-webkit-transform'] = $CardGameUI_Directives_AcgDrawCardDirective.transformRotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.$parent.space.pile.cards.length - 1) * cardIndex + $CardGameUI_Directives_AcgDrawCardDirective.noTransformRotate(trans));
-							}
-							else {
-								scope.cardStyle['-webkit-transform'] = $CardGameUI_Directives_AcgDrawCardDirective.transformRotate(scope.$parent.space.appearance.innerStyle.rotate);
-							}
+							element.rotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.$parent.space.pile.cards.length - 1) * cardIndex + $CardGameUI_Directives_AcgDrawCardDirective.noTransformRotate(element.rotate()) + 'deg');
 							break;
 						}
 						case 'styleProperty': {
@@ -365,68 +397,12 @@
 						}
 					}
 				}
-				//                foreach (var effect in scope.Card.Appearance.Effects)
-				//                {
-				//                switch (effect.Type)
-				//                {
-				//                case EffectType.Highlight:
-				//                
-				//                var hEffect = ((CardGameAppearanceEffectHighlight)effect);
-				//                
-				//                
-				//                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
-				//                beforeStyle["display"] = "block";
-				//                beforeStyle["position"] = "relative";
-				//                beforeStyle["z-index"] = "-1";
-				//                beforeStyle["width"] = "100%";
-				//                beforeStyle["height"] = "100%";
-				//                beforeStyle["left"] = (-hEffect.Radius+hEffect.OffsetX)+"px";
-				//                beforeStyle["top"] = (-hEffect.Radius + hEffect.OffsetY) + "px";
-				//                beforeStyle["padding"] = (hEffect.Radius) + "px";
-				//                beforeStyle["border-radius"] = "5px";
-				//                beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
-				//                var color = hextorgb(hEffect.Color);
-				//                
-				//                beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", color.R, color.G, color.B, hEffect.Opacity);
-				//                beforeStyle["border"] = "2px solid black";
-				//                
-				//                ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
-				//                
-				//                
-				//                
-				//                break;
-				//                case EffectType.Rotate:
-				//                Window.Alert("type " + effect.Type.ToString());
-				//                break;
-				//                case EffectType.Bend:
-				//                var bEffect = ((CardGameAppearanceEffectBend)effect);
-				//                
-				//                var trans = (string)scope.CardStyle["-webkit-transform"];
-				//                if ((trans ?? "").StartsWith("rotate("))
-				//                scope.CardStyle["-webkit-transform"] = TransformRotate(((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Parent.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(trans)));
-				//                else
-				//                scope.CardStyle["-webkit-transform"] = TransformRotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
-				//                Console.Log("bending " + scope.Parent.Space.Name + " " + scope.CardStyle["-webkit-transform"]);
-				//                
-				//                
-				//                break;
-				//                case EffectType.StyleProperty:
-				//                Window.Alert("type " + effect.Type.ToString());
-				//                break;
-				//                case EffectType.Animated:
-				//                Window.Alert("type " + effect.Type.ToString());
-				//                break;
-				//                default:
-				//                Window.Alert("type " + effect.Type.ToString());
-				//                break;
-				//                }
-				//                }
 			});
 			var keys = {};
 			keys['content'] = 'url(\'assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
 			$CardGameUI_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
-			scope.$watch('$parent.space.pile.cards', function() {
-				console.log('a');
+			scope.$watch('$parent.space', function() {
+				console.log('ac');
 				redrawCard();
 			}, true);
 			scope.$watch('card.appearance.effectNames', function() {
@@ -494,7 +470,27 @@
 	};
 	$CardGameUI_Directives_AcgDrawSpaceDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
-			element.attr('class', 'space space' + scope.space.name);
+			element.attr('class', 'space ' + ss.formatString('space{0}', scope.space.name));
+			element.resizable({
+				grid: [scope.$parent.scale.x, scope.$parent.scale.y],
+				minHeight: -1,
+				minWidth: -1,
+				handles: 'n, e, s, w,nw,sw,ne,se',
+				resize: function(ev, ele) {
+					scope.space.width = ele.size.width / scope.$parent.scale.x;
+					scope.space.height = ele.size.height / scope.$parent.scale.y;
+					scope.$apply();
+				}
+			});
+			element.draggable({
+				cursor: 'crosshair',
+				grid: [scope.$parent.scale.x, scope.$parent.scale.y],
+				drag: function(ev1, ele1) {
+					scope.space.x = ele1.position.left / scope.$parent.scale.x;
+					scope.space.y = ele1.position.top / scope.$parent.scale.y;
+					scope.$apply();
+				}
+			});
 			var beforeStyle = {};
 			beforeStyle['display'] = 'block';
 			beforeStyle['position'] = 'relative';
@@ -643,6 +639,7 @@
 		this.mainArea = null;
 		this.scale = null;
 		this.moveCard = null;
+		this.animateCard = null;
 		this.selectedCard = null;
 		CardGameUI.Scope.BaseScope.call(this);
 	};
@@ -745,6 +742,23 @@
 		return function(arr) {
 			return arr[ss.Int32.trunc(Math.floor(Math.random() * arr.length))];
 		};
+	};
+	$CardGameUI_Util_Extensions.fuckingClone = function(elem) {
+		var pos = elem.offset();
+		var m = elem.clone();
+		m.css('left', -999999);
+		m.css('top', -999999);
+		$('body').append(m);
+		var curTransformX = m.position().left;
+		var curTransformY = m.position().top;
+		var oldRot = m.css('-webkit-transform');
+		m.css('-webkit-transform', '');
+		curTransformX = m.position().left - curTransformX;
+		curTransformY = m.position().top - curTransformY;
+		m.css('-webkit-transform', oldRot);
+		m.css('left', pos.left + curTransformX);
+		m.css('top', pos.top + curTransformY);
+		return m;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Util.Point

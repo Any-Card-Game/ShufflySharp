@@ -26,7 +26,7 @@ namespace CardGameUI.Directives
         private void linkFn(CardScope scope, jQueryObject element, object attrs)
         {
             element.Attribute("style", "width:71px; height:96px;");
-            element.Attribute("class", "card card" + scope.Card.Type + "-" + scope.Card.Value + "");
+            element.Attribute("class", "card "+string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
 
 
             scope.watch("$parent.$parent.selectedCard",
@@ -60,7 +60,6 @@ namespace CardGameUI.Directives
             {
 
                 var spaceScale = new { width = scope.Parent.Space.Width / scope.Parent.Space.Pile.Cards.Count, height = scope.Parent.Space.Height / scope.Parent.Space.Pile.Cards.Count };
-
                 var vertical = scope.Parent.Space.Vertical;
                 var cardIndex = scope.Parent.Space.Pile.Cards.IndexOf(scope.Card);
 
@@ -73,10 +72,9 @@ namespace CardGameUI.Directives
                 {
                     case TableSpaceResizeType.Static:
                         if (vertical)
-                            yy = scope.Card.Value * scope.Parent.Parent.Scale.Y / 2;
+                            yy = ((scope.Card.Value + 1) / 13.0) * scope.Parent.Space.Height * scope.Parent.Parent.Scale.Y;
                         else
-                            xx = scope.Card.Value * scope.Parent.Parent.Scale.X / 2;
-
+                            xx = ((scope.Card.Value + 1) / 13.0) * scope.Parent.Space.Width * scope.Parent.Parent.Scale.X;
                         break;
                     case TableSpaceResizeType.Grow:
                         xx = (!vertical ? (cardIndex * spaceScale.width * scope.Parent.Parent.Scale.X) : 0);
@@ -96,8 +94,8 @@ namespace CardGameUI.Directives
                 scope.CardStyle.borderRadius = "5px";
                 scope.CardStyle.left = (xx + (vertical ? scope.Parent.Space.Width * scope.Parent.Parent.Scale.X / 2 : 0));
                 scope.CardStyle.top = (yy + (!vertical ? scope.Parent.Space.Height * scope.Parent.Parent.Scale.Y / 2 : 0));
-                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-
+//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
+                element.Me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg");
                 scope.CardStyle.content = "\"\"";
 
 
@@ -174,11 +172,8 @@ namespace CardGameUI.Directives
                                 Degrees = grabbedEffect.GetPropertyByName<double>("degrees"),
                             }));
 
-                            var trans = (string)scope.CardStyle["-webkit-transform"];
-                            if ((trans ?? "").StartsWith("rotate("))
-                                scope.CardStyle["-webkit-transform"] = TransformRotate(((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Parent.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(trans)));
-                            else
-                                scope.CardStyle["-webkit-transform"] = TransformRotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
+                            element.Me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Parent.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(element.Me().rotate()))) + "deg");
+
                             break;
                         case EffectType2.StyleProperty:
                             break;
@@ -190,64 +185,7 @@ namespace CardGameUI.Directives
 
 
 
-                /*                foreach (var effect in scope.Card.Appearance.Effects)
-                                {
-                                    switch (effect.Type)
-                                    {
-                                        case EffectType.Highlight:
-                            
-                                            var hEffect = ((CardGameAppearanceEffectHighlight)effect);
-
-                            
-                                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
-                                beforeStyle["display"] = "block";
-                                beforeStyle["position"] = "relative";
-                                beforeStyle["z-index"] = "-1";
-                                beforeStyle["width"] = "100%";
-                                beforeStyle["height"] = "100%";
-                                beforeStyle["left"] = (-hEffect.Radius+hEffect.OffsetX)+"px";
-                                beforeStyle["top"] = (-hEffect.Radius + hEffect.OffsetY) + "px";
-                                beforeStyle["padding"] = (hEffect.Radius) + "px";
-                                beforeStyle["border-radius"] = "5px";
-                                beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
-                                            var color = hextorgb(hEffect.Color);
-
-                                            beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", color.R, color.G, color.B, hEffect.Opacity);
-                                beforeStyle["border"] = "2px solid black";
-
-                                ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
-
-
-
-                                            break;
-                                        case EffectType.Rotate:
-                                            Window.Alert("type " + effect.Type.ToString());
-                                            break;
-                                        case EffectType.Bend:
-                                            var bEffect = ((CardGameAppearanceEffectBend)effect);
-
-                                            var trans = (string)scope.CardStyle["-webkit-transform"];
-                                            if ((trans ?? "").StartsWith("rotate("))
-                                                scope.CardStyle["-webkit-transform"] = TransformRotate(((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Parent.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(trans)));
-                                            else
-                                                scope.CardStyle["-webkit-transform"] = TransformRotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
-                                            Console.Log("bending " + scope.Parent.Space.Name + " " + scope.CardStyle["-webkit-transform"]);
-
-
-                                            break;
-                                        case EffectType.StyleProperty:
-                                            Window.Alert("type " + effect.Type.ToString());
-                                            break;
-                                        case EffectType.Animated:
-                                            Window.Alert("type " + effect.Type.ToString());
-                                            break;
-                                        default:
-                                            Window.Alert("type " + effect.Type.ToString());
-                                            break;
-                                    }
-                                }
-                */
-
+ 
 
            
             };
@@ -256,10 +194,10 @@ namespace CardGameUI.Directives
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 
-
-            scope.watch("$parent.space.pile.cards", () =>
+ 
+            scope.watch("$parent.space", () =>
             {
-                Console.Log("a");
+                Console.Log("ac");
                 redrawCard();
             }, true);
             scope.watch("card.appearance.effectNames", () =>

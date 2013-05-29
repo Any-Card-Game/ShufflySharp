@@ -4,6 +4,7 @@ using System.Html;
 using CardGameUI.Scope;
 using global;
 using jQueryApi;
+using jQueryApi.UI.Interactions;
 namespace CardGameUI.Directives
 {
     public class AcgDrawSpaceDirective
@@ -17,7 +18,33 @@ namespace CardGameUI.Directives
 
         private void linkFn(SpaceScope scope, jQueryObject element, object attrs)
         {
-            element.Attribute("class", "space space" + scope.Space.Name);
+            element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
+            element.Resizable(new ResizableOptions()
+            {
+                Grid = new[] { scope.Parent.Scale.X, scope.Parent.Scale.Y },
+                MinHeight = -1,
+                MinWidth = -1,
+                Handles = "n, e, s, w,nw,sw,ne,se",
+                OnResize = (ev, ele) =>
+                {
+                    scope.Space.Width = ele.Size.Width / scope.Parent.Scale.X;
+                    scope.Space.Height = ele.Size.Height / scope.Parent.Scale.Y;
+                    scope.Apply();
+
+                }
+            });
+            element.Draggable(new DraggableOptions()
+            {
+                Cursor = "crosshair",
+                Grid = new[] { scope.Parent.Scale.X, scope.Parent.Scale.Y }, 
+                OnDrag = (ev, ele) =>
+                {
+                    scope.Space.X = ele.Position.Left / scope.Parent.Scale.X;
+                    scope.Space.Y = ele.Position.Top/ scope.Parent.Scale.Y;
+                    scope.Apply();
+
+                }
+            });
 
             JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
             beforeStyle["display"] = "block";

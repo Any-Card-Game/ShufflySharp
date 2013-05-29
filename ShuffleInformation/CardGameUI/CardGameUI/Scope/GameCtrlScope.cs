@@ -14,6 +14,8 @@ namespace CardGameUI.Scope
         [IntrinsicProperty]
         public Action MoveCard { get; set; }
         [IntrinsicProperty]
+        public Action AnimateCard { get; set; }
+        [IntrinsicProperty]
         public CardGameCard SelectedCard { get; set; }
 
     }

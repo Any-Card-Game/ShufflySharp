@@ -78,8 +78,8 @@ namespace ng
     public interface IAngularEvent
     {
 #if TODO
-        targetScope: Scope;
-        currentScope: Scope;
+        targetScope: IScope;
+        currentScope: IScope;
         name: string;        
         preventDefault: Function;
         defaultPrevented: bool;

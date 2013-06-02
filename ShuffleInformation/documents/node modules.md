@@ -1,14 +1,14 @@
 ﻿Nodejs Modules
 --------------
 
-npm install fibers
-npm install memcached
-npm install hiredis redis
-npm install socket.io
-npm install webkit-devtools-agent
-npm install v8-profiler
-npm install mongodb --mongodb:native
-npm install charm
+* npm install fibers
+* npm install memcached
+* npm install hiredis redis
+* npm install socket.io
+* npm install webkit-devtools-agent
+* npm install v8-profiler
+* npm install mongodb --mongodb:native
+* npm install charm
 
 
 

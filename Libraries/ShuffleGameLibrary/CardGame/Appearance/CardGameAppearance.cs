@@ -7,6 +7,8 @@ namespace global
     {
         [IntrinsicProperty]
         public List<CardGameAppearanceEffect> Effects { get; set; }
+        [IntrinsicProperty]
+        public List<string> EffectNames { get; set; }
 
         public CardGameAppearance()
         {

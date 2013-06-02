@@ -1,27 +1,37 @@
 ﻿<!DOCTYPE html>
-<html>
-    <head>
-        <title>Shuffly</title>
-        <script type="text/javascript" src="http://198.211.107.101:8881/lib/requirejs.js"></script>
-
-        <script type="text/javascript" src="http://198.211.107.101:8881/mscorlib.js"></script>
-        <script type="text/javascript" src="http://198.211.107.101:8881/WebLibraries.js"></script>
-        <script type="text/javascript" src="http://198.211.107.101:8881/CommonLibraries.js"></script>
-        <script type="text/javascript" src="http://198.211.107.101:8881/Client.js"></script>
-        <script type="text/javascript">
-            String.prototype.toString = function() { return this; };
-
-            new Client.BuildSite('{{gateway}}');
-        </script>
-        <style type="text/css">
-            #dvGame {
-                -moz-box-sizing: border-box;
-                -webkit-box-sizing: border-box; 
+<html ng-app="acg">
+<head>
+    <title>Shuffly</title>
+        <script type="text/javascript" src="http://198.211.107.101:8881/lib/loadData.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/lib/jquery.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/lib/jquery-ui.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/lib/jquery-animate-css-rotate-scale.js"></script>
+    
+    <script type="text/javascript" src="http://198.211.107.101:8881/lib/angular.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/lib/requirejs.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/mscorlib.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/WebLibraries.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/CommonLibraries.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/Client.js"></script> 
+    <script type="text/javascript" src="http://198.211.107.101:8881/ClientLibs.js"></script> 
+    <script type="text/javascript" src="http://198.211.107.101:8881/ShuffleGameLibrary.js"></script> 
+    <script type="text/javascript" src="http://198.211.107.101:8881/Models.js"></script> 
+    
      
-                box-sizing: border-box;
-            }
+    <script type="text/javascript">
+        String.prototype.toString = function () { return this; };
 
-/*
+        new Client.BuildSite('{{gateway}}');
+    </script>
+    <style type="text/css">
+        #dvGame
+        {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        
+        /*
 #dv_space_User5{    -webkit-transform-style: preserve-3d;     -webkit-transition:1.2s;       -webkit-transform:scale(0.74);   }
 #dv_space_User5:hover{         -webkit-transform:rotateY(20deg)  rotateX(30deg) rotateZ(20deg) scale(1.3);    }
 #dv_space_User4{    -webkit-transform-style: preserve-3d;   -webkit-transition:1.2s;         -webkit-transform:scale(0.74);   }
@@ -47,26 +57,36 @@
 #dv_space_Spades{    -webkit-transform-style: preserve-3d;    -webkit-transition:1.2s;          }
 #dv_space_Spades:hover{       -webkit-transform:rotateY(-210deg)  rotateX(110deg) rotateZ(-70deg);       }
 */
-
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-
-            body {
-                height: 100%;
-                position: relative;
-                width: 100%;
-            }
-
-            body { background-color: cadetblue; }
-
-
-        </style>
-    </head>
-    <body>
-        <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder; position: absolute; text-align: center; top: 50%; width: 100%;" id="loading">Its loading...</div>
-    </body>
+        
+        html, body
+        {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        
+        body
+        {
+            height: 100%;
+            position: relative;
+            width: 100%;
+        }
+        
+        body
+        {
+            background-color: cadetblue;
+        }
+    </style>
+</head>
+<body>
+    <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder;
+        position: absolute; text-align: center; top: 50%; width: 100%;" id="loading">
+        Its loading...
+    </div>
+    <div ng-view>
+    </div>
+    <div ng-include src="'http://198.211.107.101:8881/partials/edit.html'">
+    </div>
+</body>
 </html>

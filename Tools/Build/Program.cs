@@ -26,18 +26,25 @@ namespace Build
                                       shufSharp + @"\ServerSlammer\",
                               };
             var pre = Directory.GetCurrentDirectory() + @"\..\..\..\..\..\";
-
+            string to;
+            string from;
             foreach (var proj in projs) {
 #if DEBUG
-                var from = pre + proj + @"\bin\debug\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                from = pre + proj + @"\bin\debug\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #else
                 var from = pre + proj + @"\bin\release\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #endif
-                var to = pre + shufSharp + @"\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                to = pre + shufSharp + @"\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 
                 if (File.Exists(to)) tryDelete(to);
                 tryCopy(from, to);
             }
+            from = pre + shufSharp + @"\Client\CardGameUI\partials\"  ;
+            to = pre + shufSharp + @"\output\partials\";
+
+
+            tryCopyDir(from, to);
+
 
             //client happens in buildsite.cs
             var depends = new Dictionary<string, Application>();
@@ -102,7 +109,7 @@ namespace Build
 
             FileStream fileStream;
             foreach (var depend in depends) {
-                var to = pre + shufSharp + @"\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                to = pre + shufSharp + @"\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 var output = "";
 
                 Application application = depend.Value;
@@ -160,15 +167,35 @@ namespace Build
 
             var send = pre + shufSharp + @"\output\index.html";
 
-            Console.WriteLine("server ftp html start " );
+            Console.WriteLine("server ftp html start ");
             fileStream = new FileInfo(send).OpenRead();
-            webclient.UploadFile(fileStream, serverloc2 + "index.html", true);
+            client.UploadFile(fileStream, serverloc + "index.html", true);
             fileStream.Close();
             Console.WriteLine("server ftp html complete " + send);
 
+            Console.WriteLine("web ftp html start ");
+            fileStream = new FileInfo(send).OpenRead();
+            webclient.UploadFile(fileStream, serverloc2 + "index.html", true);
+            fileStream.Close();
+            Console.WriteLine("web ftp html complete " + send);
+
+
+            foreach (var file in new DirectoryInfo(pre + shufSharp + @"\output\partials\").GetFiles()) {
+                fileStream = new FileInfo(file.FullName).OpenRead();
+                webclient.UploadFile(fileStream, serverloc2 + "partials/"+file.Name, true);
+                fileStream.Close();
+                Console.WriteLine("web ftp html complete " + file.FullName);
+
+            }
+
+
+            
+
+
+
             foreach (var d in Directory.GetDirectories(pre + shufSharp + @"\ShuffleGames\")) {
                 string game = d.Split('\\').Last();
-                var to = pre + shufSharp + @"\output\Games\" + game;
+                to = pre + shufSharp + @"\output\Games\" + game;
                 if (!Directory.Exists(to))
 
                     Directory.CreateDirectory(to);
@@ -203,10 +230,30 @@ namespace Build
 
         private static void tryCopy(string from, string to)
         {
-            top:
-            try {
+        top:
+            try
+            {
                 File.Copy(from, to);
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Copy Failed   " + from);
+                goto top;
+            }
+        }
+        private static void tryCopyDir(string from, string to)
+        {
+        top:
+            try
+            {
+                foreach (var file in new DirectoryInfo(from).GetFiles())
+                {
+                    File.Copy(from + file.Name, to + file.Name,true);
+                    
+                }
+            }
+            catch (Exception)
+            {
                 Console.WriteLine("Copy Failed   " + from);
                 goto top;
             }

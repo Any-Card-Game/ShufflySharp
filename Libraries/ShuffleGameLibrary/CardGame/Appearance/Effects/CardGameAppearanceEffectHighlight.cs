@@ -14,6 +14,8 @@ namespace global
         public double OffsetX { get; set; }
         [IntrinsicProperty]
         public double OffsetY { get; set; }
+        [IntrinsicProperty]
+        public double Opacity { get; set; }
 
         public CardGameAppearanceEffectHighlight(CardGameEffectHighlightOptions options)
                 : base(EffectType.Highlight)
@@ -21,6 +23,7 @@ namespace global
             Radius = options.Radius == 0 ? 0 : options.Radius;
             Color = options.Color == null ? "yellow" : options.Color;
             Rotate = options.Rotate == 0 ? 0 : options.Rotate;
+            Opacity = options.Opacity == 0 ? 0 : options.Opacity;
             OffsetX = options.OffsetX == 0 ? 0 : options.OffsetX;
             OffsetY = options.OffsetY == 0 ? 0 : options.OffsetY;
             DrawTime = CardGameAppearanceEffectDrawTime.Pre;

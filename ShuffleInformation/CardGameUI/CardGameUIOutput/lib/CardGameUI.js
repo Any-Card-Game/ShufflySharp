@@ -244,7 +244,7 @@
 						ops['top'] = off.top + ss.Int32.div(space1.height(), 2) - 48;
 						ops['rotate'] = '0deg';
 						ss.remove(pile1.cards, card2.$);
-						clone.$.animate(ops, 6000, 'easeInOutQuart', ss.mkdel({ card2: card2, _pile1: _pile1, clone: clone }, function() {
+						clone.$.animate(ops, 700, 'easeInOutQuart', ss.mkdel({ card2: card2, _pile1: _pile1, clone: clone }, function() {
 							ss.remove(this.card2.$.appearance.effectNames, 'bend');
 							if (ss.startsWithString(this._pile1.$.name, 'User')) {
 								ss.add(this.card2.$.appearance.effectNames, 'bend');

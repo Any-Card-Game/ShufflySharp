@@ -11,29 +11,59 @@ namespace ng
     {
         IModule controller(string name, object[] injectionArgs);
 
-        
+
         [AlternateSignature]
         IModule controller<TR>(string name, Func<TR> controllerConstructor);
-        
+
         [AlternateSignature]
-        
+
         IModule controller<T1, TR>(string name, Func<T1, TR> directiveFactory);
 
         [AlternateSignature]
-        
+
         IModule controller<T1, T2, TR>(string name, Func<T1, T2, TR> directiveFactory);
-        
+
         [AlternateSignature]
-        
+
         IModule controller<T1, T2, T3, TR>(string name, Func<T1, T2, T3, TR> directiveFactory);
-        
+
         [AlternateSignature]
-        
+
         IModule controller<T1, T2, T3, T4, TR>(string name, Func<T1, T2, T3, T4, TR> directiveFactory);
-        
+
         [AlternateSignature]
-        
+
         IModule controller<T1, T2, T3, T4, T5, TR>(string name, Func<T1, T2, T3, T4, T5, TR> directiveFactory);
+
+
+        IModule config( object[] injectionArgs);
+
+
+        [AlternateSignature]
+        IModule config( Action controllerConstructor);
+
+        [AlternateSignature]
+
+        IModule config<T1>(  Action<T1> directiveFactory);
+
+        [AlternateSignature]
+
+        IModule config<T1, T2>( Action<T1, T2> directiveFactory);
+
+        [AlternateSignature]
+
+        IModule config<T1, T2, T3>( Action<T1, T2, T3> directiveFactory);
+
+        [AlternateSignature]
+
+        IModule config<T1, T2, T3, T4>(Action<T1, T2, T3, T4> directiveFactory);
+
+        [AlternateSignature]
+
+        IModule config<T1, T2, T3, T4, T5>( Action<T1, T2, T3, T4, T5> directiveFactory);
+
+
+
 
 
         IModule directive(string name, object[] injectionArgs);
@@ -52,6 +82,8 @@ namespace ng
 
         
         IModule service<TR>(string name, Func<TR> serviceConstructor);
+        [AlternateSignature]
+        IModule service(string name, object[] injectionArgs);
 
 
 #if TODO

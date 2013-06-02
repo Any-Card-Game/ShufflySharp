@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Html;
 using System.Runtime.CompilerServices;
+using CardGameUI.Controllers;
+using CardGameUI.Directives;
+using CardGameUI.Scope;
+using CardGameUI.Services;
 using Client.Libs;
 using CommonLibraries;
 using WebLibraries.Common;
 using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
+using ng;
+[assembly: ScriptSharpCompatibility(OmitDowncasts = true, OmitNullableChecks = true)]
 namespace Client
 {
     public class BuildSite
@@ -26,25 +32,17 @@ namespace Client
         {
             ScriptLoader scriptLoader = new ScriptLoader();
 
-            ScriptLoader.LoadCss(url + "lib/jquery-ui-1.8.20.custom.css");
+            ScriptLoader.LoadCss(url + "lib/jquery-ui.css");
             ScriptLoader.LoadCss(url + "lib/codemirror/lib/codemirror.css");
             ScriptLoader.LoadCss(url + "lib/codemirror/theme/night.css");
             ScriptLoader.LoadCss(url + "lib/jqwidgets/styles/jqx.base.css");
             ScriptLoader.LoadCss(url + "lib/site.css");
 
-            Action stepFour = () => scriptLoader.Load(new[] {
+            Action stepThree = () => scriptLoader.Load(new[] {
                                                                     url + "lib/RawDeflate.js",
                                                             },
                                                       true,
-                                                      ready);
-
-            Action stepThree = () => scriptLoader.Load(new[] {
-                                                                     url + "ClientLibs.js",
-                                                                     url + "ShuffleGameLibrary.js",
-                                                                     url + "Models.js",
-                                                             },
-                                                       true,
-                                                       stepFour);
+                                                      ready); 
             Action stepTwo = () => scriptLoader.Load(new[] {
                                                                    url + "lib/codemirror/mode/javascript/javascript.js",
                                                                    url + "lib/WorkerConsole.js",
@@ -66,14 +64,52 @@ namespace Client
                                                            },
                                                      false,
                                                      stepTwo);
-            scriptLoader.LoadSync(new[] {
-                                                url + "lib/jquery-1.7.2.min.js",
-                                                url + "lib/jquery-ui-1.8.20.custom.min.js",
+            scriptLoader.LoadSync(new[] { 
                                                 url + "lib/jqwidgets/scripts/gettheme.js",
-                                                url + "lib/jqwidgets/jqxcore.js"
+                                                url + "lib/jqwidgets/jqxcore.js",
                                         },
                                   stepOne);
         }
+
+
+                static  BuildSite  ()
+        {
+            angular.module("acg", new string[] { })
+                .config(new object[] {
+                                                                                     "$routeProvider",
+                                                                                     new Action<IRouteProviderProvider>(provider => {
+                                                                                                                            provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://198.211.107.101:8881/partials/gameUI.html"}).
+                                                                                                                                     Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
+                                                                                                                        })
+                                                                             })
+                .config(new object[] {
+                                                                                     "$httpProvider", new Action<dynamic>((httpProvider) => {
+                                                                                                                              httpProvider.defaults.useXDomain = true;
+                                                                                                                              Delete(httpProvider.defaults.headers.common["X-Requested-With"]);
+                                                                                                                          })
+                                                                             })
+                .controller("GameCtrl", new object[] { "$scope", "effectWatcher", new Func<GameCtrlScope, EffectWatcherService, object>((scope, effectWatcher) => new GameCtrl(scope, effectWatcher)) })
+                .controller("ListEffectsController",
+                      new object[] {
+                                                                                         "$scope", "editEffects", "effectWatcher", "effectManager",
+                                                                                         new Func<ListEffectsScope, EditEffectService, EffectWatcherService, EffectManagerService, object>((scope, editEffects, effectWatcher, effectmanager) => new ListEffectsController(scope, editEffects, effectWatcher, effectmanager))
+                                                                                 })
+                .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
+                .service("editEffects", new object[] { new Func<object>(() => new EditEffectService()) })
+                .service("effectWatcher", new object[] { new Func<object>(() => new EffectWatcherService()) })
+                .service("effectManager", new object[] { new Func<object>(() => new EffectManagerService()) })
+                .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
+                .directive("property", new object[] { new Func<object>(() => new PropertyDirective()) })
+                .directive("acgDrawCard", new object[] { "effectManager", new Func<EffectManagerService, object>((effectManager) => new AcgDrawCardDirective(effectManager)) })
+                .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) });
+
+        }
+         
+        [InlineCode("delete {o};")]
+        private static void Delete(object o)
+        { 
+        }
+
 
         private void ready()
         {

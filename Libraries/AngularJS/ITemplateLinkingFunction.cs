@@ -7,7 +7,7 @@ namespace ng
     {
 #if TODO
     // Let's hint but not force cloneAttachFn's signature
-        (scope: Scope, cloneAttachFn?: (clonedElement?: IJQLiteOrBetter, scope?: Scope) => any): IJQLiteOrBetter;
+        (scope: IScope, cloneAttachFn?: (clonedElement?: IJQLiteOrBetter, scope?: IScope) => any): IJQLiteOrBetter;
 #endif
     }
 }

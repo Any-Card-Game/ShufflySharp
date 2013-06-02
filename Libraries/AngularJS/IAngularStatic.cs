@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-[Imported( )]
+[Imported()]
 public static class angular
 {
     public static ng.IAngularStatic _;

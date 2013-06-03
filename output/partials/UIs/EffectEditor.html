@@ -1,0 +1,17 @@
+﻿
+<div ng-controller="EffectEditorController">
+    <div draggable style="background-color: aqua; z-index: 10000; position: absolute;
+        display: block; width: 300px; height: 400px; left: 600px; top: 200px;" ng-show="effect">
+        <h1>
+            Effect Edit</h1>
+        <button ng-click="effect=null" style="position: absolute; right: 0px; top: 0px;"
+            class="button">
+            close
+        </button>
+        <input type="text" ng-model="effect.name" />
+        {{effect.type}}
+        <div ng-repeat="prop in effect.properties">
+            {{prop.name}}:<input ng-model="prop.value" property="prop" />{{prop.value}}
+        </div>
+    </div>
+</div>

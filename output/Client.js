@@ -15,6 +15,85 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Controllers.HomeController
+	var $CardGameUI_Controllers_$HomeController = function(scope, uiManager) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
+		this.$myUIManager = uiManager;
+		this.$myScope.model = $CardGameUI_Scope_HomeModel.$ctor();
+		this.$myUIManager.userLoggedIn = ss.delegateCombine(this.$myUIManager.userLoggedIn, ss.mkdel(this, this.$myUIManager_UserLoggedIn));
+		this.$myScope.visible = false;
+		scope.model.gameTypeSelected = ss.delegateCombine(scope.model.gameTypeSelected, ss.mkdel(this, this.$gameTypeSelectedFn));
+		scope.model.roomSelected = ss.delegateCombine(scope.model.roomSelected, ss.mkdel(this, this.$roomSelectedFn));
+		scope.model.createRoom = ss.delegateCombine(scope.model.createRoom, ss.mkdel(this, this.$createRoomFn));
+		scope.$watch(ss.mkdel(this, function(_scope) {
+			return this.$myScope.model.selectedGameType;
+		}), function() {
+			scope.model.gameTypeSelected();
+		});
+		scope.$watch(ss.mkdel(this, function(_scope1) {
+			return this.$myScope.model.selectedRoom;
+		}), function() {
+			scope.model.roomSelected();
+		});
+		uiManager.get_$pageHandler().clientSiteManager.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
+		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
+		uiManager.get_$pageHandler().clientSiteManager.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
+		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
+	};
+	$CardGameUI_Controllers_$HomeController.prototype = {
+		$createRoomFn: function() {
+			this.$myUIManager.get_$pageHandler().clientSiteManager.createRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: 'Some Game ' + Math.random() });
+		},
+		$roomSelectedFn: function() {
+		},
+		$gameTypeSelectedFn: function() {
+			this.$myUIManager.get_$pageHandler().clientSiteManager.getRooms({ gameType: this.$myScope.model.selectedGameType.name });
+		},
+		$getRoomInfo: function(user, o) {
+			for (var i = 0; i < this.$myScope.model.rooms.length; i++) {
+				if (ss.referenceEquals(this.$myScope.model.rooms[i]._id, o.room._id)) {
+					ss.removeAt(this.$myScope.model.rooms, i);
+					ss.insert(this.$myScope.model.rooms, i, o.room);
+					break;
+				}
+			}
+			this.$populateRoom(o.room);
+		},
+		$roomJoined: function(user, o) {
+			this.$populateRoom(o.room);
+			this.$myScope.swingAway(0, false);
+			//    new ActiveLobbyUI(myShuffUIManager, myPageHandler, o.Room);
+		},
+		$populateGames: function(user, o) {
+			this.$myScope.model.gameTypes = o.gameTypes;
+			this.$myScope.model.selectedGameType = this.$myScope.model.gameTypes[0];
+			this.$myScope.$apply();
+			this.$myUIManager.get_$pageHandler().clientSiteManager.getRooms({ gameType: o.gameTypes[0].name });
+		},
+		$populateRooms: function(user, o) {
+			this.$myScope.model.rooms = o.rooms;
+			this.$myScope.model.selectedRoom = null;
+			this.$myScope.$apply();
+			if (this.$myScope.model.rooms.length === 0) {
+				return;
+			}
+			this.$populateRoom(this.$myScope.model.rooms[0]);
+		},
+		$populateRoom: function(roomData) {
+			this.$myScope.model.selectedRoom = roomData;
+			this.$myScope.$apply();
+		},
+		$myUIManager_UserLoggedIn: function() {
+			this.$myScope.visible = true;
+			this.$myScope.swingAway(6, true);
+			this.$myScope.swingBack();
+			this.$myScope.$apply();
+			this.$myUIManager.get_$pageHandler().clientSiteManager.getGameTypes();
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.ListEffectsController
 	var $CardGameUI_Controllers_$ListEffectsController = function(scope, editEffects, effectWatcher, effectManager) {
 		this.$myScope = null;
@@ -141,6 +220,34 @@
 		return effect;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Controllers.LoginController
+	var $CardGameUI_Controllers_$LoginController = function(scope, uiManager) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
+		this.$myScope.visible = true;
+		this.$myUIManager = uiManager;
+		this.$myScope.model = $CardGameUI_Scope_LoginModel.$ctor();
+		this.$myScope.model.windowClosed = function() {
+			window.alert('woooo');
+		};
+		this.$myScope.model.loginAccount = ss.mkdel(this, this.$loginAccountFn);
+		this.$myScope.model.createAccount = ss.mkdel(this, this.$createAccountFn);
+		$Client_PageHandler.handler.clientSiteManager.add_onLogin(ss.mkdel(this, function(user, data) {
+			$Client_PageHandler.handler.clientInfo.loggedInUser = user;
+			this.$myUIManager.userLoggedIn();
+			scope.swingAway(7, false);
+		}));
+	};
+	$CardGameUI_Controllers_$LoginController.prototype = {
+		$createAccountFn: function() {
+			window.alert('Created! hahahJK');
+		},
+		$loginAccountFn: function() {
+			$Client_PageHandler.handler.clientSiteManager.login(this.$myScope.model.username, this.$myScope.model.password);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.GameCtrl
 	var $CardGameUI_Controllers_GameCtrl = function(scope, effectWatcher) {
 		this.$scope = null;
@@ -265,7 +372,7 @@
 				}
 			};
 			var redrawCard = ss.mkdel(this, function() {
-				var spaceScale = { width: scope.$parent.space.width / scope.$parent.space.pile.cards.length, height: scope.$parent.space.height / scope.$parent.space.pile.cards.length };
+				var spaceScale = { width: scope.$parent.space.width / (scope.$parent.space.pile.cards.length - 1), height: scope.$parent.space.height / (scope.$parent.space.pile.cards.length - 1) };
 				var vertical = scope.$parent.space.vertical;
 				var cardIndex = ss.indexOf(scope.$parent.space.pile.cards, scope.card);
 				scope.cardStyle = {};
@@ -569,6 +676,194 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.FancyListDirective
+	var $CardGameUI_Directives_FancyListDirective = function() {
+		this.link = null;
+		this.templateUrl = null;
+		this.restrict = null;
+		this.replace = false;
+		this.transclude = false;
+		this.scope = null;
+		this.restrict = 'EA';
+		this.templateUrl = 'http://198.211.107.101:8881/partials/fancyList.html';
+		this.replace = true;
+		this.transclude = true;
+		this.scope = { items: '=', bind: '=' };
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$CardGameUI_Directives_FancyListDirective.prototype = {
+		$linkFn: function(scope, element, attr) {
+			scope.itemClick = function(item) {
+				scope.bind = item;
+			};
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.FloatingWindowDirective
+	var $CardGameUI_Directives_FloatingWindowDirective = function() {
+		this.link = null;
+		this.templateUrl = null;
+		this.restrict = null;
+		this.replace = false;
+		this.transclude = false;
+		this.scope = null;
+		this.restrict = 'EA';
+		this.templateUrl = 'http://198.211.107.101:8881/partials/floatingWindow.html';
+		this.replace = true;
+		this.transclude = true;
+		this.scope = { width: '=', height: '=', left: '=', top: '=', title: '=', visible: '=', onclose: '&' };
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$CardGameUI_Directives_FloatingWindowDirective.prototype = {
+		swingBack: function(scope, element) {
+			var js = {};
+			js['left'] = scope.left;
+			js['top'] = scope.top;
+			element.animate(js, 'fast', 'swing');
+		},
+		swingAway: function(direction, simulate, element) {
+			var js = {};
+			var distance = '2000';
+			switch (direction) {
+				case 0: {
+					js['left'] = '-' + distance + 'px';
+					js['top'] = '-' + distance + 'px';
+					break;
+				}
+				case 1: {
+					js['top'] = '-' + distance + 'px';
+					break;
+				}
+				case 2: {
+					js['left'] = distance + 'px';
+					js['top'] = '-' + distance + 'px';
+					break;
+				}
+				case 3: {
+					js['left'] = distance + 'px';
+					break;
+				}
+				case 4: {
+					js['left'] = distance + 'px';
+					js['top'] = distance + 'px';
+					break;
+				}
+				case 5: {
+					js['top'] = distance + 'px';
+					break;
+				}
+				case 6: {
+					js['left'] = '-' + distance + 'px';
+					js['top'] = distance + 'px';
+					break;
+				}
+				case 7: {
+					js['left'] = distance + 'px';
+					break;
+				}
+			}
+			if (simulate) {
+				element.css(js);
+			}
+			else {
+				element.animate(js, 'slow', 'swing');
+			}
+		},
+		$linkFn: function(scope, element, attr) {
+			scope.$parent.swingAway = ss.mkdel(this, function(a, b) {
+				this.swingAway(a, b, element);
+			});
+			scope.$parent.swingBack = ss.mkdel(this, function() {
+				this.swingBack(scope, element);
+			});
+			var $t1 = $CardGameUI_Directives_FloatingWindowStyle.$ctor();
+			$t1.width = scope.width;
+			$t1.height = scope.height;
+			$t1.left = scope.left;
+			$t1.top = scope.top;
+			$t1.display = 'block';
+			scope.positionStyles = $t1;
+			scope.maximize = function() {
+				if (!scope.isMaximized) {
+					scope.lastFullSize = scope.positionStyles;
+					var $t2 = $CardGameUI_Directives_FloatingWindowStyle.$ctor();
+					$t2.width = '100%';
+					$t2.height = '100%';
+					$t2.left = 0;
+					$t2.top = 0;
+					$t2.display = 'block';
+					scope.positionStyles = $t2;
+				}
+				else {
+					scope.positionStyles = scope.lastFullSize;
+					scope.lastFullSize = null;
+				}
+				scope.isMaximized = !scope.isMaximized;
+			};
+			scope.close = function() {
+				if (!ss.staticEquals(scope.onclose, null)) {
+					scope.onclose();
+				}
+				scope.positionStyles.display = 'none';
+			};
+			scope.minimize = function() {
+				scope.positionStyles.display = 'none';
+			};
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.FloatingWindowScope
+	var $CardGameUI_Directives_FloatingWindowScope = function() {
+	};
+	$CardGameUI_Directives_FloatingWindowScope.createInstance = function() {
+		return $CardGameUI_Directives_FloatingWindowScope.$ctor();
+	};
+	$CardGameUI_Directives_FloatingWindowScope.$ctor = function() {
+		var $this = {};
+		$this.$parent = null;
+		$this.visible = false;
+		$this.width = null;
+		$this.height = null;
+		$this.left = null;
+		$this.top = null;
+		$this.positionStyles = null;
+		$this.lastFullSize = null;
+		$this.title = null;
+		$this.onclose = null;
+		$this.close = null;
+		$this.minimize = null;
+		$this.maximize = null;
+		$this.isMaximized = false;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.FloatingWindowStyle
+	var $CardGameUI_Directives_FloatingWindowStyle = function() {
+	};
+	$CardGameUI_Directives_FloatingWindowStyle.createInstance = function() {
+		return $CardGameUI_Directives_FloatingWindowStyle.$ctor();
+	};
+	$CardGameUI_Directives_FloatingWindowStyle.$ctor = function() {
+		var $this = $CardGameUI_Directives_FullSize.$ctor();
+		$this.display = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.FullSize
+	var $CardGameUI_Directives_FullSize = function() {
+	};
+	$CardGameUI_Directives_FullSize.createInstance = function() {
+		return $CardGameUI_Directives_FullSize.$ctor();
+	};
+	$CardGameUI_Directives_FullSize.$ctor = function() {
+		var $this = {};
+		$this.width = null;
+		$this.height = null;
+		$this.left = null;
+		$this.top = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Directives.PropertyDirective
 	var $CardGameUI_Directives_PropertyDirective = function() {
 		this.link = null;
@@ -613,6 +908,14 @@
 		CardGameUI.Scope.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.FloatingWindowBaseScope
+	var $CardGameUI_Scope_FloatingWindowBaseScope = function() {
+		this.swingAway = null;
+		this.swingBack = null;
+		this.visible = false;
+		CardGameUI.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.GameCtrlScope
 	var $CardGameUI_Scope_GameCtrlScope = function() {
 		this.mainArea = null;
@@ -621,6 +924,31 @@
 		this.animateCard = null;
 		this.selectedCard = null;
 		CardGameUI.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.HomeModel
+	var $CardGameUI_Scope_HomeModel = function() {
+	};
+	$CardGameUI_Scope_HomeModel.createInstance = function() {
+		return $CardGameUI_Scope_HomeModel.$ctor();
+	};
+	$CardGameUI_Scope_HomeModel.$ctor = function() {
+		var $this = {};
+		$this.username = null;
+		$this.gameTypes = null;
+		$this.selectedGameType = null;
+		$this.rooms = null;
+		$this.selectedRoom = null;
+		$this.gameTypeSelected = null;
+		$this.roomSelected = null;
+		$this.createRoom = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.HomeScope
+	var $CardGameUI_Scope_HomeScope = function() {
+		this.model = null;
+		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.ListEffectsScope
@@ -635,6 +963,28 @@
 		CardGameUI.Scope.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.LoginModel
+	var $CardGameUI_Scope_LoginModel = function() {
+	};
+	$CardGameUI_Scope_LoginModel.createInstance = function() {
+		return $CardGameUI_Scope_LoginModel.$ctor();
+	};
+	$CardGameUI_Scope_LoginModel.$ctor = function() {
+		var $this = {};
+		$this.windowClosed = null;
+		$this.username = null;
+		$this.password = null;
+		$this.createAccount = null;
+		$this.loginAccount = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.LoginScope
+	var $CardGameUI_Scope_LoginScope = function() {
+		this.model = null;
+		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.SpaceScope
 	var $CardGameUI_Scope_SpaceScope = function() {
 		this.space = null;
@@ -646,6 +996,16 @@
 	// CardGameUI.Services.EditEffectService
 	var $CardGameUI_Services_$EditEffectService = function() {
 		this.popOpenEffect = null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.UIManagerService
+	var $CardGameUI_Services_$UIManagerService = function() {
+		this.userLoggedIn = null;
+	};
+	$CardGameUI_Services_$UIManagerService.prototype = {
+		get_$pageHandler: function() {
+			return $Client_PageHandler.handler;
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Services.EffectManagerService
@@ -794,6 +1154,7 @@
 				//todo: Special right click menu;
 			}, false);
 			var pageHandler = new $Client_PageHandler(this.$gatewayServerAddress);
+			angular.bootstrap(window.document, ['acg']);
 			//
 			//
 			//
@@ -867,7 +1228,6 @@
 		$Client_Libs_ScriptLoader.loadCss(url + 'lib/jquery-ui.css');
 		$Client_Libs_ScriptLoader.loadCss(url + 'lib/codemirror/lib/codemirror.css');
 		$Client_Libs_ScriptLoader.loadCss(url + 'lib/codemirror/theme/night.css');
-		$Client_Libs_ScriptLoader.loadCss(url + 'lib/jqwidgets/styles/jqx.base.css');
 		$Client_Libs_ScriptLoader.loadCss(url + 'lib/site.css');
 		var stepThree = function() {
 			scriptLoader.load([url + 'lib/RawDeflate.js'], true, ready);
@@ -875,10 +1235,7 @@
 		var stepTwo = function() {
 			scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js', url + 'lib/Dialog.js'], false, stepThree);
 		};
-		var stepOne = function() {
-			scriptLoader.load([url + 'lib/jqwidgets/jqxbuttons.js', url + 'lib/jqwidgets/jqxscrollbar.js', url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/lib/codemirror.js', url + 'lib/jqwidgets/jqxlistbox.js'], false, stepTwo);
-		};
-		scriptLoader.loadSync([url + 'lib/jqwidgets/scripts/gettheme.js', url + 'lib/jqwidgets/jqxcore.js'], stepOne);
+		scriptLoader.load([url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/lib/codemirror.js'], false, stepTwo);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.ClientInformation
@@ -909,6 +1266,7 @@
 		this.loginUI = null;
 		this.clientInfo = null;
 		this.$1$GameManagerField = null;
+		$Client_PageHandler.handler = this;
 		this.$shuffUIManager = new WebLibraries.ShuffUI.ShuffUI.ShuffUIManager();
 		this.gameDrawer = new $Client_ShufflyGame_GameDrawer();
 		this.timeTracker = $Client_Libs_TimeTracker.$ctor();
@@ -1789,7 +2147,7 @@
 		$t1.set_height(CommonLibraries.Number.op_Implicit$2(165));
 		$t1.allowClose = true;
 		$t1.allowMinimize = true;
-		$t1.set_visible(true);
+		$t1.set_visible(false);
 		this.uiWindow = shuffUIManager.createWindow($t1);
 		var loginName;
 		var password;
@@ -1836,7 +2194,7 @@
 				this.answerBox.addItem(new WebLibraries.ShuffUI.ShuffUI.ShuffListItem(question.answers[i], i));
 			}
 		});
-		debugger;
+		//ExtensionMethods.debugger();
 		var $t3 = this.uiWindow;
 		var $t2 = new WebLibraries.ShuffUI.ShuffUI.ShuffListBox(30, 65, CommonLibraries.Number.op_Implicit$2(215), CommonLibraries.Number.op_Implicit$2(125), null);
 		$t2.onClick = ss.mkdel(this, function(e) {
@@ -1889,19 +2247,32 @@
 		}
 	};
 	ss.registerClass(null, 'CardGameUI.Controllers.$EffectEditorController', $CardGameUI_Controllers_$EffectEditorController);
+	ss.registerClass(null, 'CardGameUI.Controllers.$HomeController', $CardGameUI_Controllers_$HomeController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$ListEffectsController', $CardGameUI_Controllers_$ListEffectsController);
+	ss.registerClass(null, 'CardGameUI.Controllers.$LoginController', $CardGameUI_Controllers_$LoginController);
 	ss.registerClass(global, 'CardGameUI.Controllers.GameCtrl', $CardGameUI_Controllers_GameCtrl);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawCardDirective', $CardGameUI_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawSpaceDirective', $CardGameUI_Directives_AcgDrawSpaceDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.DraggableDirective', $CardGameUI_Directives_DraggableDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.FancyListDirective', $CardGameUI_Directives_FancyListDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowDirective', $CardGameUI_Directives_FloatingWindowDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowScope', $CardGameUI_Directives_FloatingWindowScope);
+	ss.registerClass(global, 'CardGameUI.Directives.FullSize', $CardGameUI_Directives_FullSize);
+	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowStyle', $CardGameUI_Directives_FloatingWindowStyle, $CardGameUI_Directives_FullSize);
 	ss.registerClass(global, 'CardGameUI.Directives.PropertyDirective', $CardGameUI_Directives_PropertyDirective);
 	ss.registerClass(global, 'CardGameUI.Scope._KeepBaseScopeAlive', $CardGameUI_Scope__KeepBaseScopeAlive);
 	ss.registerClass(global, 'CardGameUI.Scope.CardScope', $CardGameUI_Scope_CardScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.EffectEditorScope', $CardGameUI_Scope_EffectEditorScope, CardGameUI.Scope.BaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.FloatingWindowBaseScope', $CardGameUI_Scope_FloatingWindowBaseScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.GameCtrlScope', $CardGameUI_Scope_GameCtrlScope, CardGameUI.Scope.BaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.HomeModel', $CardGameUI_Scope_HomeModel);
+	ss.registerClass(global, 'CardGameUI.Scope.HomeScope', $CardGameUI_Scope_HomeScope, $CardGameUI_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.ListEffectsScope', $CardGameUI_Scope_ListEffectsScope, CardGameUI.Scope.BaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.LoginModel', $CardGameUI_Scope_LoginModel);
+	ss.registerClass(global, 'CardGameUI.Scope.LoginScope', $CardGameUI_Scope_LoginScope, $CardGameUI_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.SpaceScope', $CardGameUI_Scope_SpaceScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(null, 'CardGameUI.Services.$EditEffectService', $CardGameUI_Services_$EditEffectService);
+	ss.registerClass(null, 'CardGameUI.Services.$UIManagerService', $CardGameUI_Services_$UIManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectManagerService', $CardGameUI_Services_EffectManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectWatcherService', $CardGameUI_Services_EffectWatcherService);
 	ss.registerClass(global, 'CardGameUI.Util.Effect', $CardGameUI_Util_Effect);
@@ -1923,6 +2294,7 @@
 	ss.registerClass(global, 'Client.UIWindow.LoginUI', $Client_UIWindow_LoginUI);
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
 	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.ShuffUI.ShuffUI.ShuffElement);
+	$Client_PageHandler.handler = null;
 	$Client_BuildSite.instance = null;
 	angular.module('acg', []).config(['$routeProvider', function(provider) {
 		provider.when('/gameUI', { controller: 'GameCtrl', templateUrl: 'http://198.211.107.101:8881/partials/gameUI.html' }).otherwise({ redirectTo: '/gameUI' });
@@ -1935,6 +2307,12 @@
 		return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1, effectmanager);
 	}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
 		return new $CardGameUI_Controllers_$EffectEditorController(scope2, editEffects1);
+	}]).controller('LoginController', ['$scope', 'UIManager', function(scope3, uiManager) {
+		return new $CardGameUI_Controllers_$LoginController(scope3, uiManager);
+	}]).controller('HomeController', ['$scope', 'UIManager', function(scope4, uiManager1) {
+		return new $CardGameUI_Controllers_$HomeController(scope4, uiManager1);
+	}]).service('UIManager', [function() {
+		return new $CardGameUI_Services_$UIManagerService();
 	}]).service('editEffects', [function() {
 		return new $CardGameUI_Services_$EditEffectService();
 	}]).service('effectWatcher', [function() {
@@ -1943,6 +2321,10 @@
 		return new $CardGameUI_Services_EffectManagerService();
 	}]).directive('draggable', [function() {
 		return new $CardGameUI_Directives_DraggableDirective();
+	}]).directive('floatingWindow', [function() {
+		return new $CardGameUI_Directives_FloatingWindowDirective();
+	}]).directive('fancyList', [function() {
+		return new $CardGameUI_Directives_FancyListDirective();
 	}]).directive('property', [function() {
 		return new $CardGameUI_Directives_PropertyDirective();
 	}]).directive('acgDrawCard', ['effectManager', function(effectManager) {

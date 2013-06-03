@@ -14,6 +14,8 @@ namespace Client
 {
     public class PageHandler
     {
+        [IntrinsicProperty]
+        public static PageHandler Handler { get; set; }
         public readonly GameDrawer gameDrawer;
         private readonly ShuffUIManager shuffUIManager; 
         [IntrinsicProperty]
@@ -41,6 +43,7 @@ namespace Client
 
         public PageHandler(string gatewayServerAddress)
         {
+            Handler = this;
             shuffUIManager = new ShuffUIManager();
 
             gameDrawer = new GameDrawer();

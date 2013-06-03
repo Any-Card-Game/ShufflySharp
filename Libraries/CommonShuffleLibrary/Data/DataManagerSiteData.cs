@@ -55,7 +55,7 @@ namespace CommonShuffleLibrary.Data
 
         public void Room_CreateRoom(string gameType, string roomName, UserLogicModel user, Action<RoomData> onRoomCreated)
         {
-            ExtensionMethods.debugger();
+            //ExtensionMethods.debugger();
 
             RoomData rd = new RoomData(gameType, roomName, roomName + "RoomName", roomName + "GameRoom", new List<UserLogicModel>() { user });
             manager.client.Collection("Room",

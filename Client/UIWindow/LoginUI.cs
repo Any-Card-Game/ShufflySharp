@@ -18,7 +18,7 @@ namespace Client.UIWindow
                                                                              Height = 165,
                                                                              AllowClose = true,
                                                                              AllowMinimize = true,
-                                                                             Visible = true
+                                                                             Visible = false
                                                                      });
 
             ShuffTextbox loginName;

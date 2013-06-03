@@ -40,7 +40,7 @@ namespace ServerManager.GatewayServer
             var fs = Global.Require<FS>("fs");
             QueueManager queueManager;
             var port = 1800 + Math.Truncate((int) ( Math.Random() * 4000 ));
-
+            port = 3389;
             string currentIP=ServerHelper.GetNetworkIPs( )[0];
             Console.Log(currentIP);
             app.Listen(port);
@@ -103,7 +103,7 @@ namespace ServerManager.GatewayServer
 
                               socket.On("Gateway.Login",
                                         (GatewayLoginMessageModel data) => {
-                                            ExtensionMethods.debugger();
+                                            //ExtensionMethods.debugger();
                                             user = new UserSocketModel();
                                             user.Password = data.Password;
                                             user.Socket = socket;

@@ -26,8 +26,7 @@ namespace WebLibraries.ShuffUI.ShuffUI
             Visible = true;
             Items =items?? new List<ShuffListItem>();
 
-            var theme = "getTheme()".eval();
-            ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height, theme = theme});
+          //  ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height,  });
 
             Window.SetTimeout(() => {
                                   but.GetElement(0).Style.Left = X + "px";
@@ -59,8 +58,7 @@ namespace WebLibraries.ShuffUI.ShuffUI
 
         public void Update()
         {
-            var theme = "getTheme()".me();
-            ExtensionMethods.me(Element).jqxListBox(new {source = Items, width = (int) Width, height = (int) Height, theme = theme});
+          //  ExtensionMethods.me(Element).jqxListBox(new {source = Items, width = (int) Width, height = (int) Height,  });
         }
 
         public void ClearItems()

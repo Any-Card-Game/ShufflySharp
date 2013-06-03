@@ -354,7 +354,7 @@ require('./NodeLibraries.js');
 			});
 		},
 		room_CreateRoom: function(gameType, roomName, user, onRoomCreated) {
-			debugger;
+			//ExtensionMethods.debugger();
 			var $t1 = [];
 			ss.add($t1, user);
 			var rd = { gameType: gameType, roomName: roomName, chatChannel: roomName + 'RoomName', gameChannel: roomName + 'GameRoom', players: $t1, chatServer: null, gameServer: null };

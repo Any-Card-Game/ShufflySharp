@@ -1,0 +1,11 @@
+﻿
+<div ng-controller="LoginController" >
+    <div floating-window  left="'400px'" top="'300px'" height="'300px'" width="'300px'" title="'Login'" onclose=" model.windowClosed()" visible="visible">
+    <section>
+        <label>Username:</label><input type="text" ng-model="model.username" /> <br/>
+        <label>Password:</label><input type="password" ng-model="model.password" />
+    </section>
+    <button ng-click="model.createAccount()">Cr34te</button>
+        <button ng-click="model.loginAccount()">L0gin</button>
+        </div>
+</div>

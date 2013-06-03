@@ -39,11 +39,10 @@ namespace Build
                 if (File.Exists(to)) tryDelete(to);
                 tryCopy(from, to);
             }
-            from = pre + shufSharp + @"\Client\CardGameUI\partials\"  ;
-            to = pre + shufSharp + @"\output\partials\";
 
 
-            tryCopyDir(from, to);
+            tryCopyDir(pre + shufSharp + @"\Client\CardGameUI\partials\", pre + shufSharp + @"\output\partials\");
+            tryCopyDir(pre + shufSharp + @"\Client\CardGameUI\partials\UIs\", pre + shufSharp + @"\output\partials\UIs\");
 
 
             //client happens in buildsite.cs
@@ -180,9 +179,19 @@ namespace Build
             Console.WriteLine("web ftp html complete " + send);
 
 
-            foreach (var file in new DirectoryInfo(pre + shufSharp + @"\output\partials\").GetFiles()) {
+            foreach (var file in new DirectoryInfo(pre + shufSharp + @"\output\partials\").GetFiles())
+            {
                 fileStream = new FileInfo(file.FullName).OpenRead();
-                webclient.UploadFile(fileStream, serverloc2 + "partials/"+file.Name, true);
+                webclient.UploadFile(fileStream, serverloc2 + "partials/" + file.Name, true);
+                fileStream.Close();
+                Console.WriteLine("web ftp html complete " + file.FullName);
+
+            }
+
+            foreach (var file in new DirectoryInfo(pre + shufSharp + @"\output\partials\UIs").GetFiles())
+            {
+                fileStream = new FileInfo(file.FullName).OpenRead();
+                webclient.UploadFile(fileStream, serverloc2 + "partials/UIs/" + file.Name, true);
                 fileStream.Close();
                 Console.WriteLine("web ftp html complete " + file.FullName);
 
@@ -246,6 +255,7 @@ namespace Build
         top:
             try
             {
+                
                 foreach (var file in new DirectoryInfo(from).GetFiles())
                 {
                     File.Copy(from + file.Name, to + file.Name,true);

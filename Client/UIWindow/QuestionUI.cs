@@ -46,7 +46,7 @@ namespace Client.UIWindow
                        }
 
                    };
-            ExtensionMethods.debugger();
+            //ExtensionMethods.debugger();
 
             AnswerBox = UIWindow.AddElement(new ShuffListBox(30, 65, 215, 25 * 5) {
                                                                                           OnClick = e => selectAnswer( e)

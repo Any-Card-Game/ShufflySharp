@@ -37,19 +37,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildSite.cs" />
+    <Compile Include="CardGameUI\Controllers\HomeController.cs" />
+    <Compile Include="CardGameUI\Controllers\LoginController.cs" />
     <Compile Include="CardGameUI\Controllers\EffectEditorController.cs" />
     <Compile Include="CardGameUI\Controllers\GameCtrl.cs" />
     <Compile Include="CardGameUI\Controllers\ListEffectsController.cs" />
     <Compile Include="CardGameUI\Directives\AcgDrawCardDirective.cs" />
     <Compile Include="CardGameUI\Directives\AcgDrawSpaceDirective.cs" />
+    <Compile Include="CardGameUI\Directives\FancyListDirective.cs" />
+    <Compile Include="CardGameUI\Directives\FloatingWindowDirective.cs" />
     <Compile Include="CardGameUI\Directives\DraggableDirective.cs" />
     <Compile Include="CardGameUI\Scope\BaseScope.cs" />
     <Compile Include="CardGameUI\Scope\CardScope.cs" />
+    <Compile Include="CardGameUI\Scope\FloatingWindowBaseScope.cs" />
+    <Compile Include="CardGameUI\Scope\HomeScope.cs" />
     <Compile Include="CardGameUI\Scope\EffectEditorScope.cs" />
     <Compile Include="CardGameUI\Scope\GameCtrlScope.cs" />
     <Compile Include="CardGameUI\Scope\ListEffectsScope.cs" />
+    <Compile Include="CardGameUI\Scope\LoginScope.cs" />
     <Compile Include="CardGameUI\Scope\SpaceScope.cs" />
     <Compile Include="CardGameUI\Services\EditEffectService.cs" />
+    <Compile Include="CardGameUI\Services\EffectManagerService.cs" />
+    <Compile Include="CardGameUI\Services\EffectWatcherService.cs" />
+    <Compile Include="CardGameUI\Services\UIManagerService.cs" />
     <Compile Include="CardGameUI\Util\Effect.cs" />
     <Compile Include="CardGameUI\Util\EffectType2.cs" />
     <Compile Include="CardGameUI\Util\Extensions.cs" />
@@ -120,8 +130,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CardGameUI\partials\edit.html" />
+    <Content Include="CardGameUI\partials\fancyList.html" />
+    <Content Include="CardGameUI\partials\floatingWindow.html" />
+    <Content Include="CardGameUI\partials\UIs.html" />
     <Content Include="CardGameUI\partials\gameUI.html" />
+    <Content Include="CardGameUI\partials\UIs\Home.html" />
+    <Content Include="CardGameUI\partials\UIs\EffectEditor.html" />
+    <Content Include="CardGameUI\partials\UIs\Login.html" />
+    <Content Include="CardGameUI\partials\UIs\ListEffects.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />

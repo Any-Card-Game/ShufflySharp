@@ -396,8 +396,7 @@
 		this.set_height(height);
 		this.set_visible(true);
 		this.items = items || [];
-		var theme = eval('getTheme()');
-		but.jqxListBox({ source: this.items, width: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(width)), height: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(height)), theme: theme });
+		//  ExtensionMethods.me(but).jqxListBox(new {source = Items, width = (int) width, height = (int) height,  });
 		window.setTimeout(ss.mkdel(this, function() {
 			but.get(0).style.left = this.get_x() + 'px';
 			but.get(0).style.top = this.get_y() + 'px';
@@ -422,8 +421,7 @@
 			this.update();
 		},
 		update: function() {
-			var theme = 'getTheme()';
-			this.element.jqxListBox({ source: this.items, width: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(this.get_width())), height: ss.Int32.trunc(CommonLibraries.Number.op_Implicit(this.get_height())), theme: theme });
+			//  ExtensionMethods.me(Element).jqxListBox(new {source = Items, width = (int) Width, height = (int) Height,  });
 		},
 		clearItems: function() {
 			ss.clear(this.items);

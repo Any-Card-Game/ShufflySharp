@@ -51,7 +51,9 @@ namespace Client.UIWindow
 
             UIWindow.AddElement(new ShuffLabel(30, 80, "Game Types"));
             myGameTypeList = UIWindow.AddElement(new ShuffListBox(25, 100, 150, 300) {
-                                                                                             OnClick = (item) => { myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string) item.Value)); }
+                                                                                             OnClick = (item) => {
+                                                                                                           myPageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest((string) item.Value));
+                                                                                                       }
                                                                                      });
 
             myCreateGameType = UIWindow.AddElement(new ShuffButton(45, 410, 100, 40, "Create New Game!", c => {

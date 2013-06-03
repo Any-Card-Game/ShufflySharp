@@ -3,10 +3,10 @@ using System.Runtime.CompilerServices;
 using CardGameUI.Util;
 namespace CardGameUI.Services
 {
-    internal class EditEffectService
+    public class EffectWatcherService
     {
         [IntrinsicProperty]
 
-        public Action<Effect> PopOpenEffect { get; set; }
+        public Action<Effect> ApplyEffect { get; set; }
     }
 }

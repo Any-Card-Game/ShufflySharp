@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Html;
 using System.Runtime.CompilerServices;
 
 [Imported()]
@@ -14,8 +15,22 @@ public static class angular
     {
         return null;
     }
-}
 
+    public static void Bootstrap(DocumentInstance document, params string[] parms) { }
+
+    public static AngularElement Element(DocumentInstance document)
+    {
+        return null;
+    }
+}
+[Imported]
+public class AngularElement
+{
+    public void Ready(Action ready)
+    {
+        
+    }
+}
 namespace ng
 {
 

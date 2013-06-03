@@ -34,7 +34,7 @@ namespace ServerManager.ChatServer
 
         private void leaveChatRoom(UserLogicModel user)
         {
-            ExtensionMethods.debugger();
+            //ExtensionMethods.debugger();
             var room = getRoomFromUser(user);
             if (room == null) throw new Exception("idk");
 

@@ -345,7 +345,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$leaveChatRoom(user);
 		},
 		$leaveChatRoom: function(user) {
-			debugger;
+			//ExtensionMethods.debugger();
 			var room = this.$getRoomFromUser(user);
 			if (ss.isNullOrUndefined(room)) {
 				throw new ss.Exception('idk');
@@ -935,6 +935,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var fs = require('fs');
 		var queueManager;
 		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
+		port = 3389;
 		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
 		console.log(currentIP);
 		app.listen(port);
@@ -981,7 +982,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				queueManager.sendMessage(channel, data.channel, Models.UserSocketModel.toLogicModel(user), data.content);
 			});
 			socket.on('Gateway.Login', ss.mkdel(this, function(data1) {
-				debugger;
+				//ExtensionMethods.debugger();
 				user = Models.UserSocketModel.$ctor();
 				user.password = data1.password;
 				user.socket = socket;

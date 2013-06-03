@@ -1,0 +1,22 @@
+﻿<div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block;" ng-style="positionStyles" ng-show="visible">
+    <h1>
+        {{title}}</h1>
+    <div style="position: absolute; top: 0; right: 0">
+        <button ng-click="minimize()" style="position: relative; right: 0px; top: 0px;" class="button">
+            minimize
+        </button>
+        <button ng-click="maximize()" style="position: relative; right: 0px; top: 0px;" class="button">
+            maximize
+        </button>
+        <button ng-click="close()" style="position: relative; right: 0px; top: 0px;" class="button">
+            close
+        </button>
+    </div>
+    <div  >
+        <div style="margin: 20px;  background-color: burlywood;   ">
+            <section ng-transclude>
+        
+            </section>
+        </div>
+    </div>
+</div>

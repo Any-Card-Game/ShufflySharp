@@ -59,7 +59,7 @@ namespace CardGameUI.Directives
             Action redrawCard = () =>
             {
 
-                var spaceScale = new { width = scope.Parent.Space.Width / scope.Parent.Space.Pile.Cards.Count, height = scope.Parent.Space.Height / scope.Parent.Space.Pile.Cards.Count };
+                var spaceScale = new { width = scope.Parent.Space.Width / (scope.Parent.Space.Pile.Cards.Count - 1), height = scope.Parent.Space.Height / (scope.Parent.Space.Pile.Cards.Count-1) };
                 var vertical = scope.Parent.Space.Vertical;
                 var cardIndex = scope.Parent.Space.Pile.Cards.IndexOf(scope.Card);
 

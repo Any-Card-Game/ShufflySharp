@@ -9,7 +9,7 @@ namespace CardGameUI.Directives
 {
 
 
-    public class FancyListDirective
+    public class ChatBoxDirective
     {
         public Action<dynamic, jQueryObject, dynamic> link;
         public string templateUrl;
@@ -17,16 +17,14 @@ namespace CardGameUI.Directives
         public bool replace;
         public bool transclude;
         public dynamic scope;
-        public FancyListDirective()
+        public ChatBoxDirective()
         {
             restrict = "EA";
-            templateUrl = "http://198.211.107.101:8881/partials/fancyList.html";
+            templateUrl = "http://198.211.107.101:8881/partials/chatBox.html";
             replace = true;
-            transclude = true;
             scope = new
             {
-                items = "=",
-                bind = "=",
+                contents = "=", 
             };
             link = LinkFn;
 
@@ -35,15 +33,7 @@ namespace CardGameUI.Directives
         private void LinkFn(dynamic scope, jQueryObject element, dynamic attr)
         {
          
-            scope.itemClick = new Action<dynamic>((item) =>
-            {
-                scope.bind = item;
-            });
 
-            scope.currentStyle = new Func<dynamic,dynamic>((item) =>
-            {
-                return new { backgroundColor = (item == scope.bind) ? "white" : "red" };
-            });
         }
     }
 

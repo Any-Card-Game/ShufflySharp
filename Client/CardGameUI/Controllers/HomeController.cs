@@ -36,6 +36,10 @@ namespace CardGameUI.Controllers
                                        scope.Model.RoomSelected();
                                    });
 
+            myUIManager.RoomLeft += () => {
+                                        myScope.SwingBack();
+                                    };
+
             uiManager.PageHandler.ClientSiteManager.OnGetGameTypesReceived += PopulateGames;
             uiManager.PageHandler.ClientSiteManager.OnGetRoomsReceived += PopulateRooms;
             uiManager.PageHandler.ClientSiteManager.OnRoomJoined += RoomJoined;
@@ -45,7 +49,13 @@ namespace CardGameUI.Controllers
 
         private void CreateRoomFn()
         {
-            myUIManager.PageHandler.ClientSiteManager.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, "Some Game "+Math.Random()));
+            Action<string> action=null;
+            action = (roomName) => {
+                         myUIManager.PageHandler.ClientSiteManager.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, roomName));
+                         myUIManager.CreateRoom -= action;
+                     };
+            myUIManager.CreateRoom += action;
+            myUIManager.OpenCreateRoomDialog();
         }
 
         private void RoomSelectedFn()
@@ -56,6 +66,7 @@ namespace CardGameUI.Controllers
         private void GameTypeSelectedFn()
         {
             myUIManager.PageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest(myScope.Model.SelectedGameType.Name));
+            myScope.Model.SelectedRoom = null;
         }
 
         private void GetRoomInfo(UserModel user, GetRoomInfoResponse o)
@@ -78,6 +89,8 @@ namespace CardGameUI.Controllers
             PopulateRoom(o.Room);
 
             myScope.SwingAway(SwingDirection.TopLeft,false);
+            myUIManager.OnRoomJoined(o.Room);
+
         //    new ActiveLobbyUI(myShuffUIManager, myPageHandler, o.Room);
         }
          

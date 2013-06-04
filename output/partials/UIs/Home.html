@@ -4,34 +4,30 @@
         <span>Welcome {{username}}!</span>
         <div style="width: 100%; height: 100%;">
             <div style="width: 33%; float: left;">
-                <span>Game Types:</span>
-                {{model.selectedGameType}}
-                <div fancy-list items="model.gameTypes" bind="model.selectedGameType">
+                <span>Game Types:</span> 
+                <div fancy-list items="model.gameTypes" bind="model.selectedGameType" style="height:300px;">
                     <div style="width:100%;height:40px">hi {{item.name}}</div>
-                </div>
-                <select size="15" style="width: 100%;" ng-model="model.selectedGameType" ng-options="game.name for game in model.gameTypes">
-                </select>
+                </div> 
                 <button style="width: 100%;">Create Game!</button>
             </div>
             <div style="width: 33%; float: left;">
                 <span>Rooms:</span>
                 <button ng-click="model.gameTypeSelected()">Refresh!</button>
-                <div fancy-list items="model.rooms" bind="model.selectedRoom">
-                    <div style="width:100%;height:40px">Room: {{item.name}}</div>
-                </div>
-                <select size="15" style="width: 100%;" ng-model="model.selectedRoom" ng-options="room.roomName for room in model.rooms">
-                    <option value="" style="display: none;">-- Nothing Selected</option>
-                </select>
+                <div fancy-list items="model.rooms" bind="model.selectedRoom" style="height:300px;">
+                    <div style="width:100%;height:40px">Room: {{item.roomName}}</div>
+                </div> 
                 <button style="width: 100%;" ng-click="model.createRoom()">Create Room!</button>
             </div>
             <div style="width: 34%; float: left;">
                 <div ng-show="model.selectedRoom">
                     <span>Game Type: {{model.selectedGameType.name}}</span> <span>Room Name: {{model.selectedRoom.roomName}}</span>
                     <div>
-                        <button style="width: 49%;" ng-click="model.joinRoom()">Join!</button>
-                        <button style="width: 49%;" ng-click="">Spectate!</button></div>
-                    <select size="10" style="width: 100%;" ng-model="model.highlightedPlayer" ng-options="player.userName for player in model.selectedRoom.players">
-                    </select>
+                        <button style="width: 46%;" ng-click="model.joinRoom()">Join!</button>
+                        <button style="width: 46%;" ng-click="">Spectate!</button>
+                    </div>
+                    <div fancy-list items="model.selectedRoom.players" bind="model.highlightedPlayer" style="height:300px;">
+                        <div style="width:100%;height:40px">User: {{item.userName}}</div>
+                    </div>
                     <button style="width: 100%;" ng-click="model.roomSelected()">Refresh!</button>
                 </div>
             </div>

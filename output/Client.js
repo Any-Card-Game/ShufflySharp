@@ -1,6 +1,84 @@
 
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Controllers.ActiveLobbyController
+	var $CardGameUI_Controllers_$ActiveLobbyController = function(scope, uiManager) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
+		this.$myUIManager = uiManager;
+		this.$myScope.model = $CardGameUI_Scope_ActiveLobbyModel.$ctor();
+		this.$myScope.model.chatLines = [];
+		this.$myScope.visible = false;
+		this.$myScope.model.windowClosed = ss.delegateCombine(this.$myScope.model.windowClosed, ss.mkdel(this, function() {
+			this.$myScope.swingAway(4, false);
+			uiManager.get_$pageHandler().clientSiteManager.leaveRoom({ room: this.$myScope.model.room });
+			uiManager.roomLeft();
+		}));
+		uiManager.onRoomJoined = ss.mkdel(this, function(room) {
+			this.$myScope.visible = true;
+			this.$myScope.swingAway(4, true);
+			this.$myScope.model.room = room;
+			this.$populateGameRoom(room);
+			this.$myScope.swingBack();
+			this.$myScope.$apply();
+		});
+		this.$myScope.model.sendChatMessage = ss.delegateCombine(this.$myScope.model.sendChatMessage, ss.mkdel(this, function() {
+			if (this.$myScope.model.currentChatMessage.trim() === '') {
+				return;
+			}
+			uiManager.get_$pageHandler().clientChatManager.sendChatMessage({ message: this.$myScope.model.currentChatMessage.trim() });
+			this.$myScope.model.currentChatMessage = '';
+		}));
+		this.$myUIManager.get_$pageHandler().clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
+		this.$myUIManager.get_$pageHandler().clientChatManager.add_onGetChatLines(ss.mkdel(this, this.$getChatLines));
+		this.$myUIManager.get_$pageHandler().clientChatManager.add_onGetChatInfo(ss.mkdel(this, this.$getChatInfo));
+	};
+	$CardGameUI_Controllers_$ActiveLobbyController.prototype = {
+		$getChatLines: function(user, o) {
+			ss.arrayAddRange(this.$myScope.model.chatLines, o.messages);
+			this.$myScope.$apply();
+		},
+		$getChatInfo: function(user, o) {
+			this.$populateChatRoom(o.info);
+		},
+		$getRoomInfo: function(user, o) {
+			this.$populateGameRoom(o.room);
+		},
+		$populateChatRoom: function(roomData) {
+			this.$myScope.model.users = roomData.users;
+			ss.arrayAddRange(this.$myScope.model.chatLines, roomData.messages);
+		},
+		$populateGameRoom: function(roomData) {
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Controllers.CreateRoomController
+	var $CardGameUI_Controllers_$CreateRoomController = function(scope, uiManager) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
+		this.$myScope.visible = false;
+		this.$myUIManager = uiManager;
+		this.$myScope.model = $CardGameUI_Scope_CreateRoomModel.$ctor();
+		this.$myScope.model.windowClosed = ss.mkdel(this, function() {
+			this.$myScope.swingAway(2, false);
+			this.$myScope.visible = false;
+		});
+		this.$myScope.model.createRoom = ss.mkdel(this, this.$createRoomFn);
+		uiManager.openCreateRoomDialog = ss.delegateCombine(uiManager.openCreateRoomDialog, ss.mkdel(this, function() {
+			this.$myScope.visible = true;
+			this.$myScope.swingAway(6, true);
+			this.$myScope.swingBack();
+		}));
+	};
+	$CardGameUI_Controllers_$CreateRoomController.prototype = {
+		$createRoomFn: function() {
+			this.$myScope.swingAway(2, false);
+			this.$myUIManager.createRoom(this.$myScope.model.roomName);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.EffectEditorController
 	var $CardGameUI_Controllers_$EffectEditorController = function(scope, editEffects) {
 		this.$myScope = null;
@@ -37,6 +115,9 @@
 		}), function() {
 			scope.model.roomSelected();
 		});
+		this.$myUIManager.roomLeft = ss.delegateCombine(this.$myUIManager.roomLeft, ss.mkdel(this, function() {
+			this.$myScope.swingBack();
+		}));
 		uiManager.get_$pageHandler().clientSiteManager.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
 		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
 		uiManager.get_$pageHandler().clientSiteManager.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
@@ -44,12 +125,19 @@
 	};
 	$CardGameUI_Controllers_$HomeController.prototype = {
 		$createRoomFn: function() {
-			this.$myUIManager.get_$pageHandler().clientSiteManager.createRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: 'Some Game ' + Math.random() });
+			var action = null;
+			action = ss.mkdel(this, function(roomName) {
+				this.$myUIManager.get_$pageHandler().clientSiteManager.createRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: roomName });
+				this.$myUIManager.createRoom = ss.delegateRemove(this.$myUIManager.createRoom, action);
+			});
+			this.$myUIManager.createRoom = ss.delegateCombine(this.$myUIManager.createRoom, action);
+			this.$myUIManager.openCreateRoomDialog();
 		},
 		$roomSelectedFn: function() {
 		},
 		$gameTypeSelectedFn: function() {
 			this.$myUIManager.get_$pageHandler().clientSiteManager.getRooms({ gameType: this.$myScope.model.selectedGameType.name });
+			this.$myScope.model.selectedRoom = null;
 		},
 		$getRoomInfo: function(user, o) {
 			for (var i = 0; i < this.$myScope.model.rooms.length; i++) {
@@ -64,6 +152,7 @@
 		$roomJoined: function(user, o) {
 			this.$populateRoom(o.room);
 			this.$myScope.swingAway(0, false);
+			this.$myUIManager.onRoomJoined(o.room);
 			//    new ActiveLobbyUI(myShuffUIManager, myPageHandler, o.Room);
 		},
 		$populateGames: function(user, o) {
@@ -665,6 +754,25 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.ChatBoxDirective
+	var $CardGameUI_Directives_ChatBoxDirective = function() {
+		this.link = null;
+		this.templateUrl = null;
+		this.restrict = null;
+		this.replace = false;
+		this.transclude = false;
+		this.scope = null;
+		this.restrict = 'EA';
+		this.templateUrl = 'http://198.211.107.101:8881/partials/chatBox.html';
+		this.replace = true;
+		this.scope = { contents: '=' };
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$CardGameUI_Directives_ChatBoxDirective.prototype = {
+		$linkFn: function(scope, element, attr) {
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Directives.DraggableDirective
 	var $CardGameUI_Directives_DraggableDirective = function() {
 		this.link = null;
@@ -695,6 +803,9 @@
 		$linkFn: function(scope, element, attr) {
 			scope.itemClick = function(item) {
 				scope.bind = item;
+			};
+			scope.currentStyle = function(item1) {
+				return { backgroundColor: (ss.referenceEquals(item1, scope.bind) ? 'white' : 'red') };
 			};
 		}
 	};
@@ -893,6 +1004,29 @@
 	var $CardGameUI_Scope__KeepBaseScopeAlive = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.ActiveLobbyModel
+	var $CardGameUI_Scope_ActiveLobbyModel = function() {
+	};
+	$CardGameUI_Scope_ActiveLobbyModel.createInstance = function() {
+		return $CardGameUI_Scope_ActiveLobbyModel.$ctor();
+	};
+	$CardGameUI_Scope_ActiveLobbyModel.$ctor = function() {
+		var $this = {};
+		$this.windowClosed = null;
+		$this.room = null;
+		$this.chatLines = null;
+		$this.users = null;
+		$this.sendChatMessage = null;
+		$this.currentChatMessage = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.ActiveLobbyScope
+	var $CardGameUI_Scope_ActiveLobbyScope = function() {
+		this.model = null;
+		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.CardScope
 	var $CardGameUI_Scope_CardScope = function() {
 		this.card = null;
@@ -900,6 +1034,26 @@
 		this.cardClick = null;
 		this.$parent = null;
 		CardGameUI.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.CreateRoomModel
+	var $CardGameUI_Scope_CreateRoomModel = function() {
+	};
+	$CardGameUI_Scope_CreateRoomModel.createInstance = function() {
+		return $CardGameUI_Scope_CreateRoomModel.$ctor();
+	};
+	$CardGameUI_Scope_CreateRoomModel.$ctor = function() {
+		var $this = {};
+		$this.windowClosed = null;
+		$this.roomName = null;
+		$this.createRoom = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.CreateRoomScope
+	var $CardGameUI_Scope_CreateRoomScope = function() {
+		this.model = null;
+		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.EffectEditorScope
@@ -1001,6 +1155,10 @@
 	// CardGameUI.Services.UIManagerService
 	var $CardGameUI_Services_$UIManagerService = function() {
 		this.userLoggedIn = null;
+		this.createRoom = null;
+		this.openCreateRoomDialog = null;
+		this.onRoomJoined = null;
+		this.roomLeft = null;
 	};
 	$CardGameUI_Services_$UIManagerService.prototype = {
 		get_$pageHandler: function() {
@@ -1113,6 +1271,10 @@
 		$this.x = 0;
 		$this.y = 0;
 		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.BuildAngular
+	var $Client_BuildAngular = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.BuildSite
@@ -1277,9 +1439,9 @@
 		this.clientChatManager = new ClientLibs.Managers.ClientChatManager(gateway);
 		this.clientInfo = $Client_ClientInformation.$ctor();
 		this.set_gameManager(new $Client_ShufflyGame_GameManager(this));
-		this.loginUI = new $Client_UIWindow_LoginUI(this.$shuffUIManager, this);
-		this.homeUI = new $Client_UIWindow_HomeUI(this.$shuffUIManager, this);
-		this.questionUI = new $Client_UIWindow_QuestionUI(this.$shuffUIManager, this);
+		//            LoginUI = new LoginUI(shuffUIManager, this);
+		//            HomeUI = new HomeUI(shuffUIManager, this); 
+		//            QuestionUI = new QuestionUI(shuffUIManager, this);
 		//gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
 		//gateway.On("Area.Lobby.ListRooms.Response", (data) => { Logger.Log });
 		//ie8
@@ -2246,6 +2408,8 @@
 			}
 		}
 	};
+	ss.registerClass(null, 'CardGameUI.Controllers.$ActiveLobbyController', $CardGameUI_Controllers_$ActiveLobbyController);
+	ss.registerClass(null, 'CardGameUI.Controllers.$CreateRoomController', $CardGameUI_Controllers_$CreateRoomController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$EffectEditorController', $CardGameUI_Controllers_$EffectEditorController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$HomeController', $CardGameUI_Controllers_$HomeController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$ListEffectsController', $CardGameUI_Controllers_$ListEffectsController);
@@ -2253,6 +2417,7 @@
 	ss.registerClass(global, 'CardGameUI.Controllers.GameCtrl', $CardGameUI_Controllers_GameCtrl);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawCardDirective', $CardGameUI_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawSpaceDirective', $CardGameUI_Directives_AcgDrawSpaceDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.ChatBoxDirective', $CardGameUI_Directives_ChatBoxDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.DraggableDirective', $CardGameUI_Directives_DraggableDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.FancyListDirective', $CardGameUI_Directives_FancyListDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowDirective', $CardGameUI_Directives_FloatingWindowDirective);
@@ -2261,9 +2426,13 @@
 	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowStyle', $CardGameUI_Directives_FloatingWindowStyle, $CardGameUI_Directives_FullSize);
 	ss.registerClass(global, 'CardGameUI.Directives.PropertyDirective', $CardGameUI_Directives_PropertyDirective);
 	ss.registerClass(global, 'CardGameUI.Scope._KeepBaseScopeAlive', $CardGameUI_Scope__KeepBaseScopeAlive);
-	ss.registerClass(global, 'CardGameUI.Scope.CardScope', $CardGameUI_Scope_CardScope, CardGameUI.Scope.BaseScope);
-	ss.registerClass(global, 'CardGameUI.Scope.EffectEditorScope', $CardGameUI_Scope_EffectEditorScope, CardGameUI.Scope.BaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.ActiveLobbyModel', $CardGameUI_Scope_ActiveLobbyModel);
 	ss.registerClass(global, 'CardGameUI.Scope.FloatingWindowBaseScope', $CardGameUI_Scope_FloatingWindowBaseScope, CardGameUI.Scope.BaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.ActiveLobbyScope', $CardGameUI_Scope_ActiveLobbyScope, $CardGameUI_Scope_FloatingWindowBaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.CardScope', $CardGameUI_Scope_CardScope, CardGameUI.Scope.BaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.CreateRoomModel', $CardGameUI_Scope_CreateRoomModel);
+	ss.registerClass(global, 'CardGameUI.Scope.CreateRoomScope', $CardGameUI_Scope_CreateRoomScope, $CardGameUI_Scope_FloatingWindowBaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.EffectEditorScope', $CardGameUI_Scope_EffectEditorScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.GameCtrlScope', $CardGameUI_Scope_GameCtrlScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.HomeModel', $CardGameUI_Scope_HomeModel);
 	ss.registerClass(global, 'CardGameUI.Scope.HomeScope', $CardGameUI_Scope_HomeScope, $CardGameUI_Scope_FloatingWindowBaseScope);
@@ -2279,6 +2448,7 @@
 	ss.registerClass(global, 'CardGameUI.Util.EffectProperty', $CardGameUI_Util_EffectProperty);
 	ss.registerClass(global, 'CardGameUI.Util.Extensions', $CardGameUI_Util_Extensions);
 	ss.registerClass(global, 'CardGameUI.Util.Point', $CardGameUI_Util_Point);
+	ss.registerClass(global, 'Client.BuildAngular', $Client_BuildAngular);
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
 	ss.registerClass(global, 'Client.ClientInformation', $Client_ClientInformation);
 	ss.registerClass(global, 'Client.PageHandler', $Client_PageHandler);
@@ -2295,9 +2465,8 @@
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
 	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.ShuffUI.ShuffUI.ShuffElement);
 	$Client_PageHandler.handler = null;
-	$Client_BuildSite.instance = null;
-	angular.module('acg', []).config(['$routeProvider', function(provider) {
-		provider.when('/gameUI', { controller: 'GameCtrl', templateUrl: 'http://198.211.107.101:8881/partials/gameUI.html' }).otherwise({ redirectTo: '/gameUI' });
+	angular.module('acg', ['ui.utils']).config(['$routeProvider', function(provider) {
+		// provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://198.211.107.101:8881/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
 	}]).config(['$httpProvider', function(httpProvider) {
 		httpProvider.defaults.useXDomain = true;
 		delete httpProvider.defaults.headers.common['X-Requested-With'];
@@ -2311,6 +2480,10 @@
 		return new $CardGameUI_Controllers_$LoginController(scope3, uiManager);
 	}]).controller('HomeController', ['$scope', 'UIManager', function(scope4, uiManager1) {
 		return new $CardGameUI_Controllers_$HomeController(scope4, uiManager1);
+	}]).controller('ActiveLobbyController', ['$scope', 'UIManager', function(scope5, uiManager2) {
+		return new $CardGameUI_Controllers_$ActiveLobbyController(scope5, uiManager2);
+	}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope6, uiManager3) {
+		return new $CardGameUI_Controllers_$CreateRoomController(scope6, uiManager3);
 	}]).service('UIManager', [function() {
 		return new $CardGameUI_Services_$UIManagerService();
 	}]).service('editEffects', [function() {
@@ -2325,6 +2498,8 @@
 		return new $CardGameUI_Directives_FloatingWindowDirective();
 	}]).directive('fancyList', [function() {
 		return new $CardGameUI_Directives_FancyListDirective();
+	}]).directive('chatBox', [function() {
+		return new $CardGameUI_Directives_ChatBoxDirective();
 	}]).directive('property', [function() {
 		return new $CardGameUI_Directives_PropertyDirective();
 	}]).directive('acgDrawCard', ['effectManager', function(effectManager) {
@@ -2332,4 +2507,5 @@
 	}]).directive('acgDrawSpace', [function() {
 		return new $CardGameUI_Directives_AcgDrawSpaceDirective();
 	}]);
+	$Client_BuildSite.instance = null;
 })();

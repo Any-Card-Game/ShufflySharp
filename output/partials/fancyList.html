@@ -1,6 +1,6 @@
-﻿<div style="background-color: green; ">
-    <div  ng-transclude ng-repeat="item in items" ng-click="itemClick(item)" ng-style="{backgroundColor:((item==bind) && ('yellow') || ('green'))}" >
-    
-</div>
-
+﻿<div style="background-color: white; padding: 2px;">
+    <div ng-repeat="item in items">
+        <div class="listItem" ng-click="itemClick(item)" ng-transclude ng-style="currentStyle(item)">
+        </div>
+    </div>
 </div>

@@ -58,9 +58,9 @@ namespace Client
             ClientInfo = new ClientInformation();
             this.GameManager = new GameManager(this);
 
-            LoginUI = new LoginUI(shuffUIManager, this);
-            HomeUI = new HomeUI(shuffUIManager, this); 
-            QuestionUI = new QuestionUI(shuffUIManager, this);
+//            LoginUI = new LoginUI(shuffUIManager, this);
+//            HomeUI = new HomeUI(shuffUIManager, this); 
+//            QuestionUI = new QuestionUI(shuffUIManager, this);
 
             /*gateway.On("Area.Lobby.ListCardGames.Response", (data) => { });
             gateway.On("Area.Lobby.ListRooms.Response", (data) => { Logger.Log });*/

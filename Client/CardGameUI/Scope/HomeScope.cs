@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CardGameUI.Scope;
 using Models.SiteManagerModels;
 using WebLibraries.ShuffUI.ShuffUI;
 namespace CardGameUI.Scope
 {
+
+    
+    
+
     public class HomeScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]

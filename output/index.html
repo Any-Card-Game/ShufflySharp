@@ -8,6 +8,7 @@
     <script type="text/javascript" src="http://198.211.107.101:8881/lib/jquery-animate-css-rotate-scale.js"></script>
     
     <script type="text/javascript" src="http://198.211.107.101:8881/lib/angular.js"></script>
+    <script type="text/javascript" src="http://198.211.107.101:8881/lib/ui-utils.js"></script>
     <script type="text/javascript" src="http://198.211.107.101:8881/lib/requirejs.js"></script>
     <script type="text/javascript" src="http://198.211.107.101:8881/mscorlib.js"></script>
     <script type="text/javascript" src="http://198.211.107.101:8881/WebLibraries.js"></script>
@@ -24,6 +25,10 @@
         new Client.BuildSite('{{gateway}}');
     </script>
     <style type="text/css">
+            .listItem:hover {
+        background-color: yellow;
+            }
+
         #dvGame
         {
             -moz-box-sizing: border-box;
@@ -81,7 +86,7 @@
 </head>
 <body>
     <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder;
-        position: absolute; text-align: center; top: 50%; width: 100%;" id="loading">
+                                          position: absolute; text-align: center; top: 50%; width: 100%;" id="loading">
         Its loading...
     </div>
     <div ng-view>

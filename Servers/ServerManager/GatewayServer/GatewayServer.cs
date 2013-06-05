@@ -40,7 +40,8 @@ namespace ServerManager.GatewayServer
             var fs = Global.Require<FS>("fs");
             QueueManager queueManager;
             var port = 1800 + Math.Truncate((int) ( Math.Random() * 4000 ));
-            port = 3389;
+            port = 1800;
+            string currentSubdomain = "gateway1";
             string currentIP=ServerHelper.GetNetworkIPs( )[0];
             Console.Log(currentIP);
             app.Listen(port);
@@ -49,10 +50,12 @@ namespace ServerManager.GatewayServer
             ps = new PubSub(() => {
                                 ps.Subscribe<string>("PUBSUB.GatewayServers.Ping",
                                                      message => {
+                                                         ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com"));
                                                          
-                                                         ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+                               //                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
                                                      });
-                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com"));
                             });
 
             queueManager = new QueueManager(myGatewayName,

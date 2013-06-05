@@ -230,7 +230,7 @@
 	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
 	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
 	$CommonLibraries_Help.verbose = true;
-	$CommonLibraries_IPs.webIP = 'http://198.211.107.101:8881/';
+	$CommonLibraries_IPs.webIP = 'http://content.anycardgame.com/';
 	$CommonLibraries_IPs.redisIP = '198.211.107.101';
 	$CommonLibraries_IPs.mongoIP = '198.211.107.101';
 	$CommonLibraries_IPs.HARDLOCATION = '/usr/local/src/new/';

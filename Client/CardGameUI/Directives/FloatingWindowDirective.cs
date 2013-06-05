@@ -20,7 +20,7 @@ namespace CardGameUI.Directives
         public FloatingWindowDirective()
         {
             restrict = "EA";
-            templateUrl = "http://198.211.107.101:8881/partials/floatingWindow.html";
+            templateUrl = "http://content.anycardgame.com/partials/floatingWindow.html";
             replace = true;
             transclude = true;
             scope = new

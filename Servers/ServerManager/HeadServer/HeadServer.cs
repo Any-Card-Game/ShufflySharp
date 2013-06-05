@@ -89,7 +89,7 @@ namespace ServerManager.HeadServer
         {
             indexPageData = content.ToString();
             indexPageData = content.ToString();
-            Global.Require<Http>("http").CreateServer(handler).Listen(80);
+            Global.Require<Http>("http").CreateServer(handler).Listen(1700);
         }
 
      }

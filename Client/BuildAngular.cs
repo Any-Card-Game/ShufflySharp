@@ -15,7 +15,7 @@ namespace Client
                  .config(new object[] {
                                                 "$routeProvider",
                                                 new Action<IRouteProviderProvider>(provider => {
-                                                                                       // provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://198.211.107.101:8881/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
+                                                                                       // provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://content.anycardgame.com/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
                                                                                    })
                                         })
                  .config(new object[] {
@@ -28,6 +28,7 @@ namespace Client
                  .controller("ListEffectsController", new object[] { "$scope", "editEffects", "effectWatcher", "effectManager", new Func<ListEffectsScope, EditEffectService, EffectWatcherService, EffectManagerService, object>((scope, editEffects, effectWatcher, effectmanager) => new ListEffectsController(scope, editEffects, effectWatcher, effectmanager)) })
                  .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
                  .controller("LoginController", new object[] { "$scope", "UIManager", new Func<LoginScope, UIManagerService, object>((scope, uiManager) => new LoginController(scope, uiManager)) })
+                 .controller("QuestionController", new object[] { "$scope", "UIManager", new Func<QuestionScope, UIManagerService, object>((scope, uiManager) => new QuestionController(scope, uiManager)) })
                  .controller("HomeController", new object[] { "$scope", "UIManager", new Func<HomeScope, UIManagerService, object>((scope, uiManager) => new HomeController(scope, uiManager)) })
                  .controller("ActiveLobbyController", new object[] { "$scope", "UIManager", new Func<ActiveLobbyScope, UIManagerService, object>((scope, uiManager) => new ActiveLobbyController(scope, uiManager)) })
                  .controller("CreateRoomController", new object[] { "$scope", "UIManager", new Func<CreateRoomScope, UIManagerService, object>((scope, uiManager) => new CreateRoomController(scope, uiManager)) })

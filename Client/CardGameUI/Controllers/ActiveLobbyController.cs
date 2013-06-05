@@ -43,6 +43,12 @@ namespace CardGameUI.Controllers
                 myScope.Apply();
             };
 
+            myScope.Model.StartGame += () => {
+
+                                           uiManager.PageHandler.GameManager.StartGame();
+
+                                           //UIWindow.Height = 200;
+                                       };
             myScope.Model.SendChatMessage += () =>
             {
                 if (myScope.Model.CurrentChatMessage.Trim() == string.Empty)
@@ -78,9 +84,13 @@ namespace CardGameUI.Controllers
         {
             myScope.Model.Users = roomData.Users;
             myScope.Model.ChatLines.AddRange(roomData.Messages);
+            myScope.Apply();
         }
 
-        private void PopulateGameRoom(RoomData roomData) { }
+        private void PopulateGameRoom(RoomData roomData)
+        {
+            
+        }
 
     }
 }

@@ -20,7 +20,7 @@ namespace CardGameUI.Directives
         public ChatBoxDirective()
         {
             restrict = "EA";
-            templateUrl = "http://198.211.107.101:8881/partials/chatBox.html";
+            templateUrl = "http://content.anycardgame.com/partials/chatBox.html";
             replace = true;
             scope = new
             {

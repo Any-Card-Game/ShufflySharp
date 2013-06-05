@@ -25,16 +25,17 @@ namespace CardGameUI.Controllers
             scope.Model.GameTypeSelected += GameTypeSelectedFn;
             scope.Model.RoomSelected += RoomSelectedFn;
             scope.Model.CreateRoom += CreateRoomFn;
+            scope.Model.JoinRoom += JoinRoomFn;
             scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedGameType; },
                                    () =>
                                    {
                                        scope.Model.GameTypeSelected();
                                    });
-            scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedRoom; },
-                                   () =>
+            /*  scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedRoom; },
+                                 () =>
                                    {
                                        scope.Model.RoomSelected();
-                                   });
+                                   });*/
 
             myUIManager.RoomLeft += () => {
                                         myScope.SwingBack();
@@ -43,8 +44,13 @@ namespace CardGameUI.Controllers
             uiManager.PageHandler.ClientSiteManager.OnGetGameTypesReceived += PopulateGames;
             uiManager.PageHandler.ClientSiteManager.OnGetRoomsReceived += PopulateRooms;
             uiManager.PageHandler.ClientSiteManager.OnRoomJoined += RoomJoined;
-            uiManager.PageHandler.ClientSiteManager.OnGetRoomInfoReceived += GetRoomInfo;
+            uiManager.PageHandler.ClientSiteManager.OnGetRoomInfoReceived += GetRoomInfoReceived;
 
+        }
+
+        private void JoinRoomFn()
+        {
+            myUIManager.PageHandler.ClientSiteManager.JoinRoom(new RoomJoinRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
         }
 
         private void CreateRoomFn()
@@ -60,7 +66,7 @@ namespace CardGameUI.Controllers
 
         private void RoomSelectedFn()
         {
-            
+            myUIManager.PageHandler.ClientSiteManager.GetRoomInfo(new GetRoomInfoRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
         }
 
         private void GameTypeSelectedFn()
@@ -69,7 +75,7 @@ namespace CardGameUI.Controllers
             myScope.Model.SelectedRoom = null;
         }
 
-        private void GetRoomInfo(UserModel user, GetRoomInfoResponse o)
+        private void GetRoomInfoReceived(UserModel user, GetRoomInfoResponse o)
         {
             for (int i = 0; i < myScope.Model.Rooms.Count; i++)
             {

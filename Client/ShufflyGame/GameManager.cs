@@ -23,13 +23,13 @@ namespace Client.ShufflyGame
         {
  
 
-            ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) => {
+       /*     ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) => {
                                                    PageHandler.QuestionUI.Load(gameSendAnswerModel);
                                                    //alert(JSON.stringify(data));
                                                    PageHandler.TimeTracker.EndTime = new DateTime();
                                                    var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
                                                  PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
-                                               };
+                                               };*/
 
             ClientGameManager.OnUpdateState += (user, update) => {
                                                    var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));

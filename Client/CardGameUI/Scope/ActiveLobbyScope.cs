@@ -23,5 +23,6 @@ namespace CardGameUI.Scope
         public List<UserLogicModel> Users { get; set; }
         public Action SendChatMessage { get; set; }
         public string CurrentChatMessage { get; set; }
+        public Action StartGame { get; set; }
     }
 }

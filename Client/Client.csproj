@@ -39,6 +39,7 @@
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="CardGameUI\Controllers\ActiveLobbyController.cs" />
+    <Compile Include="CardGameUI\Controllers\QuestionController.cs" />
     <Compile Include="CardGameUI\Controllers\CreateRoomController.cs" />
     <Compile Include="CardGameUI\Controllers\HomeController.cs" />
     <Compile Include="CardGameUI\Controllers\LoginController.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="CardGameUI\Scope\ActiveLobbyScope.cs" />
     <Compile Include="CardGameUI\Scope\BaseScope.cs" />
     <Compile Include="CardGameUI\Scope\CardScope.cs" />
+    <Compile Include="CardGameUI\Scope\QuestionScope.cs" />
     <Compile Include="CardGameUI\Scope\CreateRoomScope.cs" />
     <Compile Include="CardGameUI\Scope\FloatingWindowBaseScope.cs" />
     <Compile Include="CardGameUI\Scope\HomeScope.cs" />
@@ -142,6 +144,7 @@
     <Content Include="CardGameUI\partials\UIs.html" />
     <Content Include="CardGameUI\partials\gameUI.html" />
     <Content Include="CardGameUI\partials\UIs\ActiveLobby.html" />
+    <Content Include="CardGameUI\partials\UIs\Question.html" />
     <Content Include="CardGameUI\partials\UIs\CreateRoomDialog.html" />
     <Content Include="CardGameUI\partials\UIs\Home.html" />
     <Content Include="CardGameUI\partials\UIs\EffectEditor.html" />

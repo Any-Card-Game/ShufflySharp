@@ -76,10 +76,22 @@ sudo ./install_server.sh
 redis-cli
 
 NodeJS
-------------
+-----------
 
 apt-get install python-software-properties python g++ make
 add-apt-repository ppa:chris-lea/node.js
 apt-get update
 apt-get install nodejs npm
+
+
+
+Nginx
+---------
+apt-get install nginx
+y
+service nginx start
+/etc/init.d/nginx reload
+
+/etc/nginx
+
 

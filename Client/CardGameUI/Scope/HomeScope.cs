@@ -28,5 +28,6 @@ namespace CardGameUI.Scope
         public Action GameTypeSelected { get; set; }
         public Action RoomSelected { get; set; }
         public Action CreateRoom { get; set; }
+        public Action JoinRoom { get; set; }
     }
 }

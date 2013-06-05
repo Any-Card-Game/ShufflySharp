@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using CardGameUI.Util;
 using Client;
+using Models.GameManagerModels;
 using Models.SiteManagerModels;
 namespace CardGameUI.Services
 {
@@ -20,7 +21,7 @@ namespace CardGameUI.Services
 
         [IntrinsicProperty]
         public Action RoomLeft { get; set; }
-
+        public Action<GameSendAnswerModel> OnQuestionAsked { get; set; }
     }
 }
             

@@ -20,7 +20,7 @@ namespace CardGameUI.Directives
         public FancyListDirective()
         {
             restrict = "EA";
-            templateUrl = "http://198.211.107.101:8881/partials/fancyList.html";
+            templateUrl = "http://content.anycardgame.com/partials/fancyList.html";
             replace = true;
             transclude = true;
             scope = new

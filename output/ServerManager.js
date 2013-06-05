@@ -935,7 +935,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var fs = require('fs');
 		var queueManager;
 		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
-		port = 3389;
+		port = 1800;
+		var currentSubdomain = 'gateway1';
 		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
 		console.log(currentIP);
 		app.listen(port);
@@ -944,7 +945,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
 				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', currentIP, port));
 			}));
-			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', currentIP, port));
+			//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com'));
 		}));
 		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
 		io.sockets.on('connection', ss.mkdel(this, function(socket) {
@@ -1113,7 +1115,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		ready: function(error, content) {
 			this.$indexPageData = content.toString();
 			this.$indexPageData = content.toString();
-			require('http').createServer(ss.mkdel(this, this.$handler)).listen(80);
+			require('http').createServer(ss.mkdel(this, this.$handler)).listen(1700);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

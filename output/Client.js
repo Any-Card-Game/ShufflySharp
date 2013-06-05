@@ -23,6 +23,10 @@
 			this.$myScope.swingBack();
 			this.$myScope.$apply();
 		});
+		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, function() {
+			uiManager.get_$pageHandler().get_gameManager().startGame();
+			//UIWindow.Height = 200;
+		});
 		this.$myScope.model.sendChatMessage = ss.delegateCombine(this.$myScope.model.sendChatMessage, ss.mkdel(this, function() {
 			if (this.$myScope.model.currentChatMessage.trim() === '') {
 				return;
@@ -48,6 +52,7 @@
 		$populateChatRoom: function(roomData) {
 			this.$myScope.model.users = roomData.users;
 			ss.arrayAddRange(this.$myScope.model.chatLines, roomData.messages);
+			this.$myScope.$apply();
 		},
 		$populateGameRoom: function(roomData) {
 		}
@@ -105,25 +110,29 @@
 		scope.model.gameTypeSelected = ss.delegateCombine(scope.model.gameTypeSelected, ss.mkdel(this, this.$gameTypeSelectedFn));
 		scope.model.roomSelected = ss.delegateCombine(scope.model.roomSelected, ss.mkdel(this, this.$roomSelectedFn));
 		scope.model.createRoom = ss.delegateCombine(scope.model.createRoom, ss.mkdel(this, this.$createRoomFn));
+		scope.model.joinRoom = ss.delegateCombine(scope.model.joinRoom, ss.mkdel(this, this.$joinRoomFn));
 		scope.$watch(ss.mkdel(this, function(_scope) {
 			return this.$myScope.model.selectedGameType;
 		}), function() {
 			scope.model.gameTypeSelected();
 		});
-		scope.$watch(ss.mkdel(this, function(_scope1) {
-			return this.$myScope.model.selectedRoom;
-		}), function() {
-			scope.model.roomSelected();
-		});
+		//  scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedRoom; },
+		//  () =>
+		//  {
+		//  scope.Model.RoomSelected();
+		//  });
 		this.$myUIManager.roomLeft = ss.delegateCombine(this.$myUIManager.roomLeft, ss.mkdel(this, function() {
 			this.$myScope.swingBack();
 		}));
 		uiManager.get_$pageHandler().clientSiteManager.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
 		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
 		uiManager.get_$pageHandler().clientSiteManager.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
-		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
+		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfoReceived));
 	};
 	$CardGameUI_Controllers_$HomeController.prototype = {
+		$joinRoomFn: function() {
+			this.$myUIManager.get_$pageHandler().clientSiteManager.joinRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
+		},
 		$createRoomFn: function() {
 			var action = null;
 			action = ss.mkdel(this, function(roomName) {
@@ -134,12 +143,13 @@
 			this.$myUIManager.openCreateRoomDialog();
 		},
 		$roomSelectedFn: function() {
+			this.$myUIManager.get_$pageHandler().clientSiteManager.getRoomInfo({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
 		},
 		$gameTypeSelectedFn: function() {
 			this.$myUIManager.get_$pageHandler().clientSiteManager.getRooms({ gameType: this.$myScope.model.selectedGameType.name });
 			this.$myScope.model.selectedRoom = null;
 		},
-		$getRoomInfo: function(user, o) {
+		$getRoomInfoReceived: function(user, o) {
 			for (var i = 0; i < this.$myScope.model.rooms.length; i++) {
 				if (ss.referenceEquals(this.$myScope.model.rooms[i]._id, o.room._id)) {
 					ss.removeAt(this.$myScope.model.rooms, i);
@@ -334,6 +344,40 @@
 		},
 		$loginAccountFn: function() {
 			$Client_PageHandler.handler.clientSiteManager.login(this.$myScope.model.username, this.$myScope.model.password);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Controllers.QuestionController
+	var $CardGameUI_Controllers_$QuestionController = function(scope, uiManager) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
+		this.$myUIManager = uiManager;
+		this.$myScope.model = $CardGameUI_Scope_QuestionModel.$ctor();
+		this.$myScope.model.windowClosed = function() {
+			window.alert('woooo');
+		};
+		this.$myScope.model.answerQuestion = ss.mkdel(this, this.$answerQuestionFn);
+		this.$myScope.visible = false;
+		this.$myUIManager.set_$onQuestionAsked(ss.delegateCombine(this.$myUIManager.get_$onQuestionAsked(), ss.mkdel(this, this.$onQuestionAskedFn)));
+		uiManager.get_$pageHandler().clientGameManager.add_onAskQuestion(ss.mkdel(this, function(user, gameSendAnswerModel) {
+			this.$myScope.visible = true;
+			this.$myScope.swingAway(0, true);
+			this.$myScope.swingBack();
+			this.$myUIManager.get_$onQuestionAsked()(gameSendAnswerModel);
+		}));
+	};
+	$CardGameUI_Controllers_$QuestionController.prototype = {
+		$onQuestionAskedFn: function(arg) {
+			this.$myScope.model.question = arg.question;
+			this.$myScope.model.answers = arg.answers;
+			this.$myScope.model.selectedAnswer = arg.answers[0];
+			this.$myScope.swingBack();
+			this.$myScope.$apply();
+		},
+		$answerQuestionFn: function() {
+			this.$myUIManager.get_$pageHandler().clientGameManager.answerQuestion({ answer: ss.indexOf(this.$myScope.model.answers, this.$myScope.model.selectedAnswer) });
+			this.$myScope.swingAway(0, false);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -568,7 +612,7 @@
 				}
 			});
 			var keys = {};
-			keys['content'] = 'url(\'http://198.211.107.101:8881/assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
+			keys['content'] = 'url(\'http://content.anycardgame.com/assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
 			$CardGameUI_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$watch('$parent.space', function() {
 				console.log('ac');
@@ -763,7 +807,7 @@
 		this.transclude = false;
 		this.scope = null;
 		this.restrict = 'EA';
-		this.templateUrl = 'http://198.211.107.101:8881/partials/chatBox.html';
+		this.templateUrl = 'http://content.anycardgame.com/partials/chatBox.html';
 		this.replace = true;
 		this.scope = { contents: '=' };
 		this.link = ss.mkdel(this, this.$linkFn);
@@ -793,7 +837,7 @@
 		this.transclude = false;
 		this.scope = null;
 		this.restrict = 'EA';
-		this.templateUrl = 'http://198.211.107.101:8881/partials/fancyList.html';
+		this.templateUrl = 'http://content.anycardgame.com/partials/fancyList.html';
 		this.replace = true;
 		this.transclude = true;
 		this.scope = { items: '=', bind: '=' };
@@ -819,7 +863,7 @@
 		this.transclude = false;
 		this.scope = null;
 		this.restrict = 'EA';
-		this.templateUrl = 'http://198.211.107.101:8881/partials/floatingWindow.html';
+		this.templateUrl = 'http://content.anycardgame.com/partials/floatingWindow.html';
 		this.replace = true;
 		this.transclude = true;
 		this.scope = { width: '=', height: '=', left: '=', top: '=', title: '=', visible: '=', onclose: '&' };
@@ -1018,6 +1062,7 @@
 		$this.users = null;
 		$this.sendChatMessage = null;
 		$this.currentChatMessage = null;
+		$this.startGame = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1096,6 +1141,7 @@
 		$this.gameTypeSelected = null;
 		$this.roomSelected = null;
 		$this.createRoom = null;
+		$this.joinRoom = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1139,6 +1185,28 @@
 		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.QuestionModel
+	var $CardGameUI_Scope_QuestionModel = function() {
+	};
+	$CardGameUI_Scope_QuestionModel.createInstance = function() {
+		return $CardGameUI_Scope_QuestionModel.$ctor();
+	};
+	$CardGameUI_Scope_QuestionModel.$ctor = function() {
+		var $this = {};
+		$this.windowClosed = null;
+		$this.question = null;
+		$this.answers = null;
+		$this.selectedAnswer = null;
+		$this.answerQuestion = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.QuestionScope
+	var $CardGameUI_Scope_QuestionScope = function() {
+		this.model = null;
+		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.SpaceScope
 	var $CardGameUI_Scope_SpaceScope = function() {
 		this.space = null;
@@ -1159,10 +1227,17 @@
 		this.openCreateRoomDialog = null;
 		this.onRoomJoined = null;
 		this.roomLeft = null;
+		this.$1$OnQuestionAskedField = null;
 	};
 	$CardGameUI_Services_$UIManagerService.prototype = {
 		get_$pageHandler: function() {
 			return $Client_PageHandler.handler;
+		},
+		get_$onQuestionAsked: function() {
+			return this.$1$OnQuestionAskedField;
+		},
+		set_$onQuestionAsked: function(value) {
+			this.$1$OnQuestionAskedField = value;
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1546,7 +1621,7 @@
 		this.$cardImages = {};
 		for (var i = 101; i < 153; i++) {
 			var img = new Image();
-			var domain = 'http://198.211.107.101:8881/assets';
+			var domain = 'http://content.anycardgame.com/assets';
 			var src = domain + '/cards/' + i;
 			var jm;
 			img.src = jm = src + '.gif';
@@ -1818,7 +1893,7 @@
 		},
 		drawCard: function(card) {
 			var src = '';
-			var domain = 'http://198.211.107.101:8881/assets';
+			var domain = 'http://content.anycardgame.com/assets';
 			src = domain + '/cards/' + (100 + (card.value + 1) + card.type * 13);
 			return src + '.gif';
 		},
@@ -1863,22 +1938,22 @@
 			this.$1$PageHandlerField = value;
 		},
 		$init: function() {
-			this.clientGameManager.add_onAskQuestion(ss.mkdel(this, function(user, gameSendAnswerModel) {
-				this.get_pageHandler().questionUI.load(gameSendAnswerModel);
-				//alert(JSON.stringify(data));
-				this.get_pageHandler().timeTracker.endTime = new Date();
-				var time = this.get_pageHandler().timeTracker.endTime - this.get_pageHandler().timeTracker.startTime;
-				this.get_pageHandler().debugUI.lblHowFast.set_text('how long: ' + time);
-			}));
-			this.clientGameManager.add_onUpdateState(ss.mkdel(this, function(user1, update) {
+			//     ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) => {
+			//     PageHandler.QuestionUI.Load(gameSendAnswerModel);
+			//     //alert(JSON.stringify(data));
+			//     PageHandler.TimeTracker.EndTime = new DateTime();
+			//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
+			//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
+			//     };
+			this.clientGameManager.add_onUpdateState(ss.mkdel(this, function(user, update) {
 				var data = JSON.parse((new Compressor()).DecompressText(update));
 				//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 				this.get_pageHandler().gameDrawer.draw(data);
 			}));
-			this.clientGameManager.add_onGameStarted(function(user2, room) {
+			this.clientGameManager.add_onGameStarted(function(user1, room) {
 				//alert(JSON.stringify(data));
 			});
-			this.clientGameManager.add_onGameOver(function(user3, room1) {
+			this.clientGameManager.add_onGameOver(function(user2, room1) {
 				//alert(JSON.stringify(data));
 			});
 		},
@@ -2414,6 +2489,7 @@
 	ss.registerClass(null, 'CardGameUI.Controllers.$HomeController', $CardGameUI_Controllers_$HomeController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$ListEffectsController', $CardGameUI_Controllers_$ListEffectsController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$LoginController', $CardGameUI_Controllers_$LoginController);
+	ss.registerClass(null, 'CardGameUI.Controllers.$QuestionController', $CardGameUI_Controllers_$QuestionController);
 	ss.registerClass(global, 'CardGameUI.Controllers.GameCtrl', $CardGameUI_Controllers_GameCtrl);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawCardDirective', $CardGameUI_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawSpaceDirective', $CardGameUI_Directives_AcgDrawSpaceDirective);
@@ -2439,6 +2515,8 @@
 	ss.registerClass(global, 'CardGameUI.Scope.ListEffectsScope', $CardGameUI_Scope_ListEffectsScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.LoginModel', $CardGameUI_Scope_LoginModel);
 	ss.registerClass(global, 'CardGameUI.Scope.LoginScope', $CardGameUI_Scope_LoginScope, $CardGameUI_Scope_FloatingWindowBaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.QuestionModel', $CardGameUI_Scope_QuestionModel);
+	ss.registerClass(global, 'CardGameUI.Scope.QuestionScope', $CardGameUI_Scope_QuestionScope, $CardGameUI_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.SpaceScope', $CardGameUI_Scope_SpaceScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(null, 'CardGameUI.Services.$EditEffectService', $CardGameUI_Services_$EditEffectService);
 	ss.registerClass(null, 'CardGameUI.Services.$UIManagerService', $CardGameUI_Services_$UIManagerService);
@@ -2466,7 +2544,7 @@
 	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.ShuffUI.ShuffUI.ShuffElement);
 	$Client_PageHandler.handler = null;
 	angular.module('acg', ['ui.utils']).config(['$routeProvider', function(provider) {
-		// provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://198.211.107.101:8881/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
+		// provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://content.anycardgame.com/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
 	}]).config(['$httpProvider', function(httpProvider) {
 		httpProvider.defaults.useXDomain = true;
 		delete httpProvider.defaults.headers.common['X-Requested-With'];
@@ -2478,12 +2556,14 @@
 		return new $CardGameUI_Controllers_$EffectEditorController(scope2, editEffects1);
 	}]).controller('LoginController', ['$scope', 'UIManager', function(scope3, uiManager) {
 		return new $CardGameUI_Controllers_$LoginController(scope3, uiManager);
-	}]).controller('HomeController', ['$scope', 'UIManager', function(scope4, uiManager1) {
-		return new $CardGameUI_Controllers_$HomeController(scope4, uiManager1);
-	}]).controller('ActiveLobbyController', ['$scope', 'UIManager', function(scope5, uiManager2) {
-		return new $CardGameUI_Controllers_$ActiveLobbyController(scope5, uiManager2);
-	}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope6, uiManager3) {
-		return new $CardGameUI_Controllers_$CreateRoomController(scope6, uiManager3);
+	}]).controller('QuestionController', ['$scope', 'UIManager', function(scope4, uiManager1) {
+		return new $CardGameUI_Controllers_$QuestionController(scope4, uiManager1);
+	}]).controller('HomeController', ['$scope', 'UIManager', function(scope5, uiManager2) {
+		return new $CardGameUI_Controllers_$HomeController(scope5, uiManager2);
+	}]).controller('ActiveLobbyController', ['$scope', 'UIManager', function(scope6, uiManager3) {
+		return new $CardGameUI_Controllers_$ActiveLobbyController(scope6, uiManager3);
+	}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope7, uiManager4) {
+		return new $CardGameUI_Controllers_$CreateRoomController(scope7, uiManager4);
 	}]).service('UIManager', [function() {
 		return new $CardGameUI_Services_$UIManagerService();
 	}]).service('editEffects', [function() {

@@ -193,7 +193,7 @@ namespace CardGameUI.Directives
            
             };
             JsDictionary<string, string> keys = new JsDictionary<string, string>() { };
-            keys["content"] = "url('http://198.211.107.101:8881/assets/cards/" + (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13) + ".gif')";
+            keys["content"] = "url('http://content.anycardgame.com/assets/cards/" + (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13) + ".gif')";
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 

@@ -14,11 +14,13 @@ namespace CardGameUI.Controllers
     {
         private readonly HomeScope myScope;
         private readonly UIManagerService myUIManager;
+        private readonly ClientSiteManagerService myClientSiteManagerService;
 
-        public HomeController(HomeScope scope, UIManagerService uiManager)
+        public HomeController(HomeScope scope, UIManagerService uiManager,ClientSiteManagerService clientSiteManagerService)
         {
             myScope = scope;
             myUIManager = uiManager;
+            myClientSiteManagerService = clientSiteManagerService;
             myScope .Model= new HomeModel();
             myUIManager.UserLoggedIn += myUIManager_UserLoggedIn;
             myScope.Visible = false;
@@ -41,23 +43,23 @@ namespace CardGameUI.Controllers
                                         myScope.SwingBack();
                                     };
 
-            uiManager.PageHandler.ClientSiteManager.OnGetGameTypesReceived += PopulateGames;
-            uiManager.PageHandler.ClientSiteManager.OnGetRoomsReceived += PopulateRooms;
-            uiManager.PageHandler.ClientSiteManager.OnRoomJoined += RoomJoined;
-            uiManager.PageHandler.ClientSiteManager.OnGetRoomInfoReceived += GetRoomInfoReceived;
+            myClientSiteManagerService.OnGetGameTypesReceived += PopulateGames;
+            myClientSiteManagerService.OnGetRoomsReceived += PopulateRooms;
+            myClientSiteManagerService.OnRoomJoined += RoomJoined;
+            myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfoReceived;
 
         }
 
         private void JoinRoomFn()
         {
-            myUIManager.PageHandler.ClientSiteManager.JoinRoom(new RoomJoinRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
+            myClientSiteManagerService.JoinRoom(new RoomJoinRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
         }
 
         private void CreateRoomFn()
         {
             Action<string> action=null;
             action = (roomName) => {
-                         myUIManager.PageHandler.ClientSiteManager.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, roomName));
+                myClientSiteManagerService.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, roomName));
                          myUIManager.CreateRoom -= action;
                      };
             myUIManager.CreateRoom += action;
@@ -66,12 +68,12 @@ namespace CardGameUI.Controllers
 
         private void RoomSelectedFn()
         {
-            myUIManager.PageHandler.ClientSiteManager.GetRoomInfo(new GetRoomInfoRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
+            myClientSiteManagerService.GetRoomInfo(new GetRoomInfoRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
         }
 
         private void GameTypeSelectedFn()
         {
-            myUIManager.PageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest(myScope.Model.SelectedGameType.Name));
+            myClientSiteManagerService.GetRooms(new GetRoomsRequest(myScope.Model.SelectedGameType.Name));
             myScope.Model.SelectedRoom = null;
         }
 
@@ -97,7 +99,6 @@ namespace CardGameUI.Controllers
             myScope.SwingAway(SwingDirection.TopLeft,false);
             myUIManager.OnRoomJoined(o.Room);
 
-        //    new ActiveLobbyUI(myShuffUIManager, myPageHandler, o.Room);
         }
          
 
@@ -107,7 +108,7 @@ namespace CardGameUI.Controllers
             myScope.Model.SelectedGameType = myScope.Model.GameTypes[0];
             myScope.Apply();
 
-            myUIManager.PageHandler.ClientSiteManager.GetRooms(new GetRoomsRequest(o.GameTypes[0].Name));
+            myClientSiteManagerService.GetRooms(new GetRoomsRequest(o.GameTypes[0].Name));
         }
 
         private void PopulateRooms(UserModel user, GetRoomsResponse o)
@@ -132,8 +133,8 @@ namespace CardGameUI.Controllers
             myScope.SwingAway(SwingDirection.BottomLeft, true);
             myScope.SwingBack();
             myScope.Apply();
-
-            myUIManager.PageHandler.ClientSiteManager.GetGameTypes();
+            myScope.Model.User= myUIManager.ClientInfo.LoggedInUser;
+            myClientSiteManagerService.GetGameTypes();
 
         } 
     } 

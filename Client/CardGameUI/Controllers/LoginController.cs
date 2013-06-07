@@ -10,12 +10,14 @@ namespace CardGameUI.Controllers
     {
         private readonly LoginScope myScope;
         private readonly UIManagerService myUIManager;
+        private readonly ClientSiteManagerService myclientSiteManagerService;
 
-        public LoginController(LoginScope scope, UIManagerService uiManager)
+        public LoginController(LoginScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService)
         {
             myScope = scope;
             myScope.Visible = true;
             myUIManager = uiManager;
+            myclientSiteManagerService = clientSiteManagerService;
             myScope.Model = new LoginModel();
 
             myScope.Model.WindowClosed = () =>
@@ -24,9 +26,9 @@ namespace CardGameUI.Controllers
             };
             myScope.Model.LoginAccount = LoginAccountFn;
             myScope.Model.CreateAccount = CreateAccountFn;
-            PageHandler.Handler.ClientSiteManager.OnLogin += (user, data) =>
+            myclientSiteManagerService.OnLogin += (user, data) =>
             {
-                PageHandler.Handler.ClientInfo.LoggedInUser = user;
+                uiManager.ClientInfo.LoggedInUser = user;
                 myUIManager.UserLoggedIn();
                 scope.SwingAway(SwingDirection.Left, false);
             };
@@ -43,7 +45,7 @@ namespace CardGameUI.Controllers
         private void LoginAccountFn()
         {
 
-            PageHandler.Handler.ClientSiteManager.Login(myScope.Model.Username, myScope.Model.Password);
+            myclientSiteManagerService.Login(myScope.Model.Username, myScope.Model.Password);
 
         }
     }

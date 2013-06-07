@@ -1,4 +1,5 @@
 ﻿using System;
+using CardGameUI.Services;
 using ClientLibs.Managers;
 using CommonLibraries;
 using Models.SiteManagerModels;
@@ -8,41 +9,43 @@ namespace Client.ShufflyGame
 {
     public class GameManager
     {
-        public PageHandler PageHandler { get; set; }
-        public ClientGameManager ClientGameManager;
-        public GameManager(PageHandler pageHandler)
+        private readonly ClientGameManagerService myClientGameManagerService;
+        private readonly UIManagerService myUIManagerService;
+        public GameManager(ClientGameManagerService clientGameManagerService,UIManagerService uiManagerService)
         {
-
-            PageHandler = pageHandler;
-            ClientGameManager = pageHandler.ClientGameManager; 
+            myClientGameManagerService = clientGameManagerService;
+            myUIManagerService = uiManagerService;
             Init( );
 
         }
 
         private void Init( )
         {
- 
 
-       /*     ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) => {
-                                                   PageHandler.QuestionUI.Load(gameSendAnswerModel);
-                                                   //alert(JSON.stringify(data));
-                                                   PageHandler.TimeTracker.EndTime = new DateTime();
-                                                   var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
-                                                 PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
-                                               };*/
 
-            ClientGameManager.OnUpdateState += (user, update) => {
+            /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
+                                                        PageHandler.QuestionUI.Load(gameSendAnswerModel);
+                                                        //alert(JSON.stringify(data));
+                                                        PageHandler.TimeTracker.EndTime = new DateTime();
+                                                        var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
+                                                      PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
+                                                    }; */
+
+            myClientGameManagerService.OnUpdateState += (user, update) =>
+            {
                                                    var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
                                                    //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
 
-                                                   PageHandler.gameDrawer.Draw(data);
+                                                   myUIManagerService.gameDrawer.Draw(data);
                                                };
 
-            ClientGameManager.OnGameStarted += (user, room) => {
+            myClientGameManagerService.OnGameStarted += (user, room) =>
+            {
                                                    //alert(JSON.stringify(data));
                                                };
 
-            ClientGameManager.OnGameOver += (user, room) => {
+            myClientGameManagerService.OnGameOver += (user, room) =>
+            {
                                                 //alert(JSON.stringify(data));
                                             };
 
@@ -53,10 +56,8 @@ namespace Client.ShufflyGame
  
         public void StartGame()
         {
-            PageHandler.gameDrawer.Init();
+            myUIManagerService.gameDrawer.Init();
 
-
-            PageHandler.ClientSiteManager.StartGame(new StartGameRequest());  
         }
 
 

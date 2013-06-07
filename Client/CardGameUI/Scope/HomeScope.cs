@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CardGameUI.Scope;
+using Models;
 using Models.SiteManagerModels;
 using WebLibraries.ShuffUI.ShuffUI;
 namespace CardGameUI.Scope
@@ -20,7 +21,6 @@ namespace CardGameUI.Scope
     [Serializable]
     public class HomeModel
     {
-        public string Username { get; set; }
         public List<GameTypeModel> GameTypes { get; set; }
         public GameTypeModel SelectedGameType { get; set; }
         public List<RoomData> Rooms { get; set; }
@@ -29,5 +29,6 @@ namespace CardGameUI.Scope
         public Action RoomSelected { get; set; }
         public Action CreateRoom { get; set; }
         public Action JoinRoom { get; set; }
+        public UserModel User { get; set; }
     }
 }

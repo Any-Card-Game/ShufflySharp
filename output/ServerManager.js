@@ -943,7 +943,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		io.set('log level', 0);
 		this.$ps = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
 			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
-				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}:{1}', currentIP, port));
+				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com'));
+				//                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
 			}));
 			//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
 			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com'));

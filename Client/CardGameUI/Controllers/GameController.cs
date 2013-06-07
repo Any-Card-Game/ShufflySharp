@@ -5,19 +5,53 @@ using System.Html;
 using CardGameUI.Scope;
 using CardGameUI.Services;
 using CardGameUI.Util;
+using CommonLibraries;
+using WebLibraries.Common;
 using global;
 using jQueryApi;
+using Point = CardGameUI.Util.Point;
 namespace CardGameUI.Controllers
 {
-    public class GameCtrl
+    public class GameController
     {
         private readonly GameCtrlScope scope;
         private readonly EffectWatcherService myEffectWatcher;
+        private readonly ClientGameManagerService myClientGameManagerService;
 
-        public GameCtrl(GameCtrlScope scope, EffectWatcherService effectWatcher)
+        public GameController(GameCtrlScope scope, EffectWatcherService effectWatcher, ClientGameManagerService clientGameManagerService)
         {
             this.scope = scope;
             myEffectWatcher = effectWatcher;
+            myClientGameManagerService = clientGameManagerService;
+
+            /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
+                                                        PageHandler.QuestionUI.Load(gameSendAnswerModel);
+                                                        //alert(JSON.stringify(data));
+                                                        PageHandler.TimeTracker.EndTime = new DateTime();
+                                                        var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
+                                                      PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
+                                                    }; */
+
+            myClientGameManagerService.OnUpdateState += (user, update) =>
+            {
+                var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
+
+                scope.MainArea = data;
+                scope.Apply();
+
+            };
+
+            myClientGameManagerService.OnGameStarted += (user, room) =>
+            {
+                //alert(JSON.stringify(data));
+            };
+
+            myClientGameManagerService.OnGameOver += (user, room) =>
+            {
+                //alert(JSON.stringify(data));
+            };
+
+
 
             scope.MainArea = (GameCardGame)Script.Eval("loadMainArea()");
             scope.SelectedCard = null;
@@ -120,7 +154,7 @@ namespace CardGameUI.Controllers
                             var clone = jQueryApi.jQuery.Select(css).FuckingClone();
 
 
-                            var space=jQuery.Select(string.Format(".space{0}", _pile.Name));
+                            var space = jQuery.Select(string.Format(".space{0}", _pile.Name));
                             var off = space.GetOffset();
 
                             clone.CSS("z-index", 1000);
@@ -129,7 +163,7 @@ namespace CardGameUI.Controllers
                             ops["left"] = off.Left + space.GetWidth() / 2 - 71 / 2;
                             ops["top"] = off.Top + space.GetHeight() / 2 - 96 / 2;
                             ops["rotate"] = "0deg";
-                            
+
 
                             pile.Cards.Remove(card);
                             clone.Animate(ops, 700, (EffectEasing)(dynamic)("easeInOutQuart"), () =>
@@ -147,7 +181,7 @@ namespace CardGameUI.Controllers
                                 scope.Apply();
 
                             });
-                             
+
 
 
                         }

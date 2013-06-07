@@ -83,6 +83,7 @@
 		this.effectNames = null;
 		$global_AppearanceStyle.call(this);
 		this.effects = [];
+		this.effectNames = [];
 	};
 	$global_Appearance.fromJson = function(json) {
 		var ap = new $global_Appearance();

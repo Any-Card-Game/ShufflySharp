@@ -13,6 +13,7 @@ namespace global
         public CardGameAppearance()
         {
             Effects = new List<CardGameAppearanceEffect>();
+            EffectNames = new List<string>();
         }
 
         public static CardGameAppearance FromJson(CardGameAppearance json)

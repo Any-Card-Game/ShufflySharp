@@ -79,7 +79,6 @@ namespace ClientLibs.Managers
         public void StartGame(StartGameRequest startGameRequest)
         {
             myGateway.Emit("Area.Site.StartGame", startGameRequest);
-
         }
     }
 }

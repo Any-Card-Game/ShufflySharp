@@ -88,10 +88,10 @@ apt-get install nodejs npm
 Nginx
 ---------
 apt-get install nginx
-y
 service nginx start
+
 /etc/init.d/nginx reload
 
+http://usefulmix.com/install-upgrade-to-latest-nginx-without-compiling-from-source/
 /etc/nginx
-
-
+http://nginx.org/en/docs/http/websocket.html

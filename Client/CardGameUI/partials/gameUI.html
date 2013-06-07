@@ -1,9 +1,12 @@
-﻿<div ng-repeat="space in mainArea.spaces">
-    <div acg-draw-space ng-style="spaceStyle">
-        <div ng-repeat="card in space.pile.cards"  >
-            <div acg-draw-card ng-style="cardStyle" ng-click="cardClick()"></div>
+﻿<div ng-controller="GameController">
+    <div ng-repeat="space in mainArea.spaces">
+        <div acg-draw-space ng-style="spaceStyle">
+            <div ng-repeat="card in space.pile.cards">
+                <div acg-draw-card ng-style="cardStyle" ng-click="cardClick()">
+                </div>
+            </div>
         </div>
     </div>
+    <button ng-click="moveCard()">move card</button>
+    <button ng-click="animateCard()">animate card</button>
 </div>
-<button ng-click="moveCard()">move card</button>
-<button ng-click="animateCard()">animate card</button>

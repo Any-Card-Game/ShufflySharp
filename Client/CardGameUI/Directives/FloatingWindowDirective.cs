@@ -98,15 +98,21 @@ namespace CardGameUI.Directives
              {
                  SwingBack(scope, element);
              };
-             scope.PositionStyles = new FloatingWindowStyle() { Width = scope.Width, Height = scope.Height, Left = scope.Left, Top = scope.Top, Display = "block" };
-             
+             scope.PositionStyles = new FloatingWindowPosition() {  Left = scope.Left, Top = scope.Top, Display = "block" };
+             scope.SizeStyle = new Size() { Width = scope.Width, Height = scope.Height, };
              scope.Maximize = () => {
                                   if (!scope.IsMaximized) {
-                                      scope.LastFullSize = scope.PositionStyles;
-                                      scope.PositionStyles = new FloatingWindowStyle() { Width = "100%", Height = "100%", Left = 0, Top = 0 ,Display="block"};
-                                  } else {
-                                      scope.PositionStyles = scope.LastFullSize;
-                                      scope.LastFullSize = null;
+                                      scope.LastPositionStyles = scope.PositionStyles;
+                                      scope.LastSizeStyle = scope.SizeStyle;
+                                      scope.PositionStyles = new FloatingWindowPosition() {Left = 0, Top = 0, Display = "block" };
+                                      scope.SizeStyle = new Size() { Width = "100%", Height = "100%", };
+                                  }
+                                  else
+                                  {
+                                      scope.PositionStyles = scope.LastPositionStyles;
+                                      scope.SizeStyle = scope.LastSizeStyle;
+                                      scope.LastPositionStyles = null;
+                                      scope.LastSizeStyle = null;
 
                                   }
 
@@ -141,8 +147,10 @@ namespace CardGameUI.Directives
         public object Height { get; set; }
         public object Left { get; set; }
         public object Top { get; set; }
-        public FloatingWindowStyle PositionStyles { get; set; }
-        public FloatingWindowStyle LastFullSize { get; set; }
+        public Size SizeStyle { get; set; }
+        public Size LastSizeStyle { get; set; }
+        public FloatingWindowPosition PositionStyles { get; set; }
+        public FloatingWindowPosition LastPositionStyles{ get; set; }
         public string Title { get; set; }
 
         [ScriptName("onclose")]
@@ -155,18 +163,23 @@ namespace CardGameUI.Directives
 
 
     [Serializable]
-    public class FloatingWindowStyle:FullSize
+    public class FloatingWindowPosition:Position
     {
         public string Display { get; set; }
 
     }
     [Serializable]
-    public class FullSize
+    public class Position
+    {
+         public object Left { get; set; }
+        public object Top { get; set; }
+
+    }
+    [Serializable]
+    public class Size
     {
         public object Width { get; set; }
         public object Height { get; set; }
-        public object Left { get; set; }
-        public object Top { get; set; }
 
     }
 }

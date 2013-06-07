@@ -1,0 +1,15 @@
+﻿$TTL	600
+@		IN	SOA	NS1.DIGITALOCEAN.COM.	hostmaster.anycardgame.com. (
+			1370404812 ; last update: 2013-06-05 04:00:12 UTC
+			3600 ; refresh
+			900 ; retry
+			1209600 ; expire
+			10800 ; ttl
+			)
+             IN      NS      NS1.DIGITALOCEAN.COM.
+                     NS      NS2.DIGITALOCEAN.COM.
+                     NS      NS3.DIGITALOCEAN.COM.
+content	CNAME	@
+www	CNAME	@
+@	IN A	198.211.107.235
+gateway1	CNAME	@

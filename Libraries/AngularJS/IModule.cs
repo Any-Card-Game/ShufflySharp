@@ -9,9 +9,10 @@ namespace ng
     [Imported]
     public interface IModule
     {
+        IModule value(string name, object value);
+
         IModule controller(string name, object[] injectionArgs);
-
-
+        
         [AlternateSignature]
         IModule controller<TR>(string name, Func<TR> controllerConstructor);
 

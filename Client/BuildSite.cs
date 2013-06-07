@@ -103,12 +103,14 @@ namespace Client
                                                //  e.PreventDefault();
                                                //todo: Special right click menu;
                                            },
-                                           false);
+                                           false); 
 
-            var pageHandler = new PageHandler(gatewayServerAddress);
-            
+            BuildAngular.Setup(gatewayServerAddress);
+
+
              angular.Bootstrap(Window.Document, "acg");
 
+            
             /*
 
 

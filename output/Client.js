@@ -2,17 +2,21 @@
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.ActiveLobbyController
-	var $CardGameUI_Controllers_$ActiveLobbyController = function(scope, uiManager) {
+	var $CardGameUI_Controllers_$ActiveLobbyController = function(scope, uiManager, clientSiteManagerService, clientChatManagerService, compile) {
 		this.$myScope = null;
 		this.$myUIManager = null;
+		this.$myClientSiteManagerService = null;
+		this.$myClientChatManagerService = null;
 		this.$myScope = scope;
 		this.$myUIManager = uiManager;
+		this.$myClientSiteManagerService = clientSiteManagerService;
+		this.$myClientChatManagerService = clientChatManagerService;
 		this.$myScope.model = $CardGameUI_Scope_ActiveLobbyModel.$ctor();
 		this.$myScope.model.chatLines = [];
 		this.$myScope.visible = false;
 		this.$myScope.model.windowClosed = ss.delegateCombine(this.$myScope.model.windowClosed, ss.mkdel(this, function() {
 			this.$myScope.swingAway(4, false);
-			uiManager.get_$pageHandler().clientSiteManager.leaveRoom({ room: this.$myScope.model.room });
+			this.$myClientSiteManagerService.leaveRoom({ room: this.$myScope.model.room });
 			uiManager.roomLeft();
 		}));
 		uiManager.onRoomJoined = ss.mkdel(this, function(room) {
@@ -23,20 +27,23 @@
 			this.$myScope.swingBack();
 			this.$myScope.$apply();
 		});
-		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, function() {
-			uiManager.get_$pageHandler().get_gameManager().startGame();
+		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, ss.mkdel(this, function() {
+			var theScope = this.$myScope;
+			compile('<div ng-include src="\'http://content.anycardgame.com/partials/gameUI.html\'"></div>')(theScope).appendTo(window.document.body);
+			//                                           uiManager.GameManager.StartGame();
+			clientSiteManagerService.startGame({});
 			//UIWindow.Height = 200;
-		});
+		}));
 		this.$myScope.model.sendChatMessage = ss.delegateCombine(this.$myScope.model.sendChatMessage, ss.mkdel(this, function() {
 			if (this.$myScope.model.currentChatMessage.trim() === '') {
 				return;
 			}
-			uiManager.get_$pageHandler().clientChatManager.sendChatMessage({ message: this.$myScope.model.currentChatMessage.trim() });
+			this.$myClientChatManagerService.sendChatMessage({ message: this.$myScope.model.currentChatMessage.trim() });
 			this.$myScope.model.currentChatMessage = '';
 		}));
-		this.$myUIManager.get_$pageHandler().clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
-		this.$myUIManager.get_$pageHandler().clientChatManager.add_onGetChatLines(ss.mkdel(this, this.$getChatLines));
-		this.$myUIManager.get_$pageHandler().clientChatManager.add_onGetChatInfo(ss.mkdel(this, this.$getChatInfo));
+		this.$myClientSiteManagerService.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
+		this.$myClientChatManagerService.add_onGetChatLines(ss.mkdel(this, this.$getChatLines));
+		this.$myClientChatManagerService.add_onGetChatInfo(ss.mkdel(this, this.$getChatInfo));
 	};
 	$CardGameUI_Controllers_$ActiveLobbyController.prototype = {
 		$getChatLines: function(user, o) {
@@ -99,11 +106,13 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.HomeController
-	var $CardGameUI_Controllers_$HomeController = function(scope, uiManager) {
+	var $CardGameUI_Controllers_$HomeController = function(scope, uiManager, clientSiteManagerService) {
 		this.$myScope = null;
 		this.$myUIManager = null;
+		this.$myClientSiteManagerService = null;
 		this.$myScope = scope;
 		this.$myUIManager = uiManager;
+		this.$myClientSiteManagerService = clientSiteManagerService;
 		this.$myScope.model = $CardGameUI_Scope_HomeModel.$ctor();
 		this.$myUIManager.userLoggedIn = ss.delegateCombine(this.$myUIManager.userLoggedIn, ss.mkdel(this, this.$myUIManager_UserLoggedIn));
 		this.$myScope.visible = false;
@@ -124,29 +133,29 @@
 		this.$myUIManager.roomLeft = ss.delegateCombine(this.$myUIManager.roomLeft, ss.mkdel(this, function() {
 			this.$myScope.swingBack();
 		}));
-		uiManager.get_$pageHandler().clientSiteManager.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
-		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
-		uiManager.get_$pageHandler().clientSiteManager.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
-		uiManager.get_$pageHandler().clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfoReceived));
+		this.$myClientSiteManagerService.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
+		this.$myClientSiteManagerService.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
+		this.$myClientSiteManagerService.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
+		this.$myClientSiteManagerService.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfoReceived));
 	};
 	$CardGameUI_Controllers_$HomeController.prototype = {
 		$joinRoomFn: function() {
-			this.$myUIManager.get_$pageHandler().clientSiteManager.joinRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
+			this.$myClientSiteManagerService.joinRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
 		},
 		$createRoomFn: function() {
 			var action = null;
 			action = ss.mkdel(this, function(roomName) {
-				this.$myUIManager.get_$pageHandler().clientSiteManager.createRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: roomName });
+				this.$myClientSiteManagerService.createRoom({ gameType: this.$myScope.model.selectedGameType.name, roomName: roomName });
 				this.$myUIManager.createRoom = ss.delegateRemove(this.$myUIManager.createRoom, action);
 			});
 			this.$myUIManager.createRoom = ss.delegateCombine(this.$myUIManager.createRoom, action);
 			this.$myUIManager.openCreateRoomDialog();
 		},
 		$roomSelectedFn: function() {
-			this.$myUIManager.get_$pageHandler().clientSiteManager.getRoomInfo({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
+			this.$myClientSiteManagerService.getRoomInfo({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
 		},
 		$gameTypeSelectedFn: function() {
-			this.$myUIManager.get_$pageHandler().clientSiteManager.getRooms({ gameType: this.$myScope.model.selectedGameType.name });
+			this.$myClientSiteManagerService.getRooms({ gameType: this.$myScope.model.selectedGameType.name });
 			this.$myScope.model.selectedRoom = null;
 		},
 		$getRoomInfoReceived: function(user, o) {
@@ -163,13 +172,12 @@
 			this.$populateRoom(o.room);
 			this.$myScope.swingAway(0, false);
 			this.$myUIManager.onRoomJoined(o.room);
-			//    new ActiveLobbyUI(myShuffUIManager, myPageHandler, o.Room);
 		},
 		$populateGames: function(user, o) {
 			this.$myScope.model.gameTypes = o.gameTypes;
 			this.$myScope.model.selectedGameType = this.$myScope.model.gameTypes[0];
 			this.$myScope.$apply();
-			this.$myUIManager.get_$pageHandler().clientSiteManager.getRooms({ gameType: o.gameTypes[0].name });
+			this.$myClientSiteManagerService.getRooms({ gameType: o.gameTypes[0].name });
 		},
 		$populateRooms: function(user, o) {
 			this.$myScope.model.rooms = o.rooms;
@@ -189,7 +197,8 @@
 			this.$myScope.swingAway(6, true);
 			this.$myScope.swingBack();
 			this.$myScope.$apply();
-			this.$myUIManager.get_$pageHandler().clientSiteManager.getGameTypes();
+			this.$myScope.model.user = this.$myUIManager.clientInfo.loggedInUser;
+			this.$myClientSiteManagerService.getGameTypes();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -320,20 +329,22 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.LoginController
-	var $CardGameUI_Controllers_$LoginController = function(scope, uiManager) {
+	var $CardGameUI_Controllers_$LoginController = function(scope, uiManager, clientSiteManagerService) {
 		this.$myScope = null;
 		this.$myUIManager = null;
+		this.$myclientSiteManagerService = null;
 		this.$myScope = scope;
 		this.$myScope.visible = true;
 		this.$myUIManager = uiManager;
+		this.$myclientSiteManagerService = clientSiteManagerService;
 		this.$myScope.model = $CardGameUI_Scope_LoginModel.$ctor();
 		this.$myScope.model.windowClosed = function() {
 			window.alert('woooo');
 		};
 		this.$myScope.model.loginAccount = ss.mkdel(this, this.$loginAccountFn);
 		this.$myScope.model.createAccount = ss.mkdel(this, this.$createAccountFn);
-		$Client_PageHandler.handler.clientSiteManager.add_onLogin(ss.mkdel(this, function(user, data) {
-			$Client_PageHandler.handler.clientInfo.loggedInUser = user;
+		this.$myclientSiteManagerService.add_onLogin(ss.mkdel(this, function(user, data) {
+			uiManager.clientInfo.loggedInUser = user;
 			this.$myUIManager.userLoggedIn();
 			scope.swingAway(7, false);
 		}));
@@ -343,28 +354,29 @@
 			window.alert('Created! hahahJK');
 		},
 		$loginAccountFn: function() {
-			$Client_PageHandler.handler.clientSiteManager.login(this.$myScope.model.username, this.$myScope.model.password);
+			this.$myclientSiteManagerService.login(this.$myScope.model.username, this.$myScope.model.password);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.QuestionController
-	var $CardGameUI_Controllers_$QuestionController = function(scope, uiManager) {
+	var $CardGameUI_Controllers_$QuestionController = function(scope, uiManager, clientGameManagerService) {
 		this.$myScope = null;
 		this.$myUIManager = null;
+		this.$myClientGameManagerService = null;
 		this.$myScope = scope;
 		this.$myUIManager = uiManager;
+		this.$myClientGameManagerService = clientGameManagerService;
 		this.$myScope.model = $CardGameUI_Scope_QuestionModel.$ctor();
 		this.$myScope.model.windowClosed = function() {
 			window.alert('woooo');
 		};
 		this.$myScope.model.answerQuestion = ss.mkdel(this, this.$answerQuestionFn);
 		this.$myScope.visible = false;
-		this.$myUIManager.set_$onQuestionAsked(ss.delegateCombine(this.$myUIManager.get_$onQuestionAsked(), ss.mkdel(this, this.$onQuestionAskedFn)));
-		uiManager.get_$pageHandler().clientGameManager.add_onAskQuestion(ss.mkdel(this, function(user, gameSendAnswerModel) {
+		this.$myClientGameManagerService.add_onAskQuestion(ss.mkdel(this, function(user, gameSendAnswerModel) {
 			this.$myScope.visible = true;
 			this.$myScope.swingAway(0, true);
 			this.$myScope.swingBack();
-			this.$myUIManager.get_$onQuestionAsked()(gameSendAnswerModel);
+			this.$onQuestionAskedFn(gameSendAnswerModel);
 		}));
 	};
 	$CardGameUI_Controllers_$QuestionController.prototype = {
@@ -372,21 +384,40 @@
 			this.$myScope.model.question = arg.question;
 			this.$myScope.model.answers = arg.answers;
 			this.$myScope.model.selectedAnswer = arg.answers[0];
-			this.$myScope.swingBack();
 			this.$myScope.$apply();
 		},
 		$answerQuestionFn: function() {
-			this.$myUIManager.get_$pageHandler().clientGameManager.answerQuestion({ answer: ss.indexOf(this.$myScope.model.answers, this.$myScope.model.selectedAnswer) });
-			this.$myScope.swingAway(0, false);
+			this.$myClientGameManagerService.answerQuestion({ answer: ss.indexOf(this.$myScope.model.answers, this.$myScope.model.selectedAnswer) });
+			this.$myScope.swingAway(4, false);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// CardGameUI.Controllers.GameCtrl
-	var $CardGameUI_Controllers_GameCtrl = function(scope, effectWatcher) {
+	// CardGameUI.Controllers.GameController
+	var $CardGameUI_Controllers_GameController = function(scope, effectWatcher, clientGameManagerService) {
 		this.$scope = null;
 		this.$myEffectWatcher = null;
+		this.$myClientGameManagerService = null;
 		this.$scope = scope;
 		this.$myEffectWatcher = effectWatcher;
+		this.$myClientGameManagerService = clientGameManagerService;
+		//     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
+		//     PageHandler.QuestionUI.Load(gameSendAnswerModel);
+		//     //alert(JSON.stringify(data));
+		//     PageHandler.TimeTracker.EndTime = new DateTime();
+		//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
+		//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
+		//     };
+		this.$myClientGameManagerService.add_onUpdateState(function(user, update) {
+			var data = JSON.parse((new Compressor()).DecompressText(update));
+			scope.mainArea = data;
+			scope.$apply();
+		});
+		this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
+			//alert(JSON.stringify(data));
+		});
+		this.$myClientGameManagerService.add_onGameOver(function(user2, room1) {
+			//alert(JSON.stringify(data));
+		});
 		scope.mainArea = eval('loadMainArea()');
 		scope.selectedCard = null;
 		var addRule = (function(style) {
@@ -824,7 +855,7 @@
 	};
 	$CardGameUI_Directives_DraggableDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
-			element.draggable();
+			element.draggable({ cancel: '.floating-window-inner' });
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -931,27 +962,34 @@
 			scope.$parent.swingBack = ss.mkdel(this, function() {
 				this.swingBack(scope, element);
 			});
-			var $t1 = $CardGameUI_Directives_FloatingWindowStyle.$ctor();
-			$t1.width = scope.width;
-			$t1.height = scope.height;
+			var $t1 = $CardGameUI_Directives_FloatingWindowPosition.$ctor();
 			$t1.left = scope.left;
 			$t1.top = scope.top;
 			$t1.display = 'block';
 			scope.positionStyles = $t1;
+			var $t2 = $CardGameUI_Directives_Size.$ctor();
+			$t2.width = scope.width;
+			$t2.height = scope.height;
+			scope.sizeStyle = $t2;
 			scope.maximize = function() {
 				if (!scope.isMaximized) {
-					scope.lastFullSize = scope.positionStyles;
-					var $t2 = $CardGameUI_Directives_FloatingWindowStyle.$ctor();
-					$t2.width = '100%';
-					$t2.height = '100%';
-					$t2.left = 0;
-					$t2.top = 0;
-					$t2.display = 'block';
-					scope.positionStyles = $t2;
+					scope.lastPositionStyles = scope.positionStyles;
+					scope.lastSizeStyle = scope.sizeStyle;
+					var $t3 = $CardGameUI_Directives_FloatingWindowPosition.$ctor();
+					$t3.left = 0;
+					$t3.top = 0;
+					$t3.display = 'block';
+					scope.positionStyles = $t3;
+					var $t4 = $CardGameUI_Directives_Size.$ctor();
+					$t4.width = '100%';
+					$t4.height = '100%';
+					scope.sizeStyle = $t4;
 				}
 				else {
-					scope.positionStyles = scope.lastFullSize;
-					scope.lastFullSize = null;
+					scope.positionStyles = scope.lastPositionStyles;
+					scope.sizeStyle = scope.lastSizeStyle;
+					scope.lastPositionStyles = null;
+					scope.lastSizeStyle = null;
 				}
 				scope.isMaximized = !scope.isMaximized;
 			};
@@ -965,6 +1003,18 @@
 				scope.positionStyles.display = 'none';
 			};
 		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.FloatingWindowPosition
+	var $CardGameUI_Directives_FloatingWindowPosition = function() {
+	};
+	$CardGameUI_Directives_FloatingWindowPosition.createInstance = function() {
+		return $CardGameUI_Directives_FloatingWindowPosition.$ctor();
+	};
+	$CardGameUI_Directives_FloatingWindowPosition.$ctor = function() {
+		var $this = $CardGameUI_Directives_Position.$ctor();
+		$this.display = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Directives.FloatingWindowScope
@@ -981,8 +1031,10 @@
 		$this.height = null;
 		$this.left = null;
 		$this.top = null;
+		$this.sizeStyle = null;
+		$this.lastSizeStyle = null;
 		$this.positionStyles = null;
-		$this.lastFullSize = null;
+		$this.lastPositionStyles = null;
 		$this.title = null;
 		$this.onclose = null;
 		$this.close = null;
@@ -992,28 +1044,14 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// CardGameUI.Directives.FloatingWindowStyle
-	var $CardGameUI_Directives_FloatingWindowStyle = function() {
+	// CardGameUI.Directives.Position
+	var $CardGameUI_Directives_Position = function() {
 	};
-	$CardGameUI_Directives_FloatingWindowStyle.createInstance = function() {
-		return $CardGameUI_Directives_FloatingWindowStyle.$ctor();
+	$CardGameUI_Directives_Position.createInstance = function() {
+		return $CardGameUI_Directives_Position.$ctor();
 	};
-	$CardGameUI_Directives_FloatingWindowStyle.$ctor = function() {
-		var $this = $CardGameUI_Directives_FullSize.$ctor();
-		$this.display = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CardGameUI.Directives.FullSize
-	var $CardGameUI_Directives_FullSize = function() {
-	};
-	$CardGameUI_Directives_FullSize.createInstance = function() {
-		return $CardGameUI_Directives_FullSize.$ctor();
-	};
-	$CardGameUI_Directives_FullSize.$ctor = function() {
+	$CardGameUI_Directives_Position.$ctor = function() {
 		var $this = {};
-		$this.width = null;
-		$this.height = null;
 		$this.left = null;
 		$this.top = null;
 		return $this;
@@ -1042,6 +1080,19 @@
 				}
 			}
 		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.Size
+	var $CardGameUI_Directives_Size = function() {
+	};
+	$CardGameUI_Directives_Size.createInstance = function() {
+		return $CardGameUI_Directives_Size.$ctor();
+	};
+	$CardGameUI_Directives_Size.$ctor = function() {
+		var $this = {};
+		$this.width = null;
+		$this.height = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope._KeepBaseScopeAlive
@@ -1133,7 +1184,6 @@
 	};
 	$CardGameUI_Scope_HomeModel.$ctor = function() {
 		var $this = {};
-		$this.username = null;
 		$this.gameTypes = null;
 		$this.selectedGameType = null;
 		$this.rooms = null;
@@ -1142,6 +1192,7 @@
 		$this.roomSelected = null;
 		$this.createRoom = null;
 		$this.joinRoom = null;
+		$this.user = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1220,24 +1271,248 @@
 		this.popOpenEffect = null;
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// CardGameUI.Services.UIManagerService
-	var $CardGameUI_Services_$UIManagerService = function() {
-		this.userLoggedIn = null;
-		this.createRoom = null;
-		this.openCreateRoomDialog = null;
-		this.onRoomJoined = null;
-		this.roomLeft = null;
-		this.$1$OnQuestionAskedField = null;
+	// CardGameUI.Services.ClientChatManagerService
+	var $CardGameUI_Services_ClientChatManagerService = function(gateway) {
+		this.$1$OnGetChatLinesField = null;
+		this.$1$OnGetChatInfoField = null;
+		this.$clientChatManager = null;
+		this.$clientChatManager = new ClientLibs.Managers.ClientChatManager(gateway.get_gateway());
+		this.$clientChatManager.add_onGetChatInfo(ss.mkdel(this, function(user, model) {
+			if (!ss.staticEquals(this.$1$OnGetChatInfoField, null)) {
+				this.$1$OnGetChatInfoField(user, model);
+			}
+		}));
+		this.$clientChatManager.add_onGetChatLines(ss.mkdel(this, function(user1, model1) {
+			if (!ss.staticEquals(this.$1$OnGetChatLinesField, null)) {
+				this.$1$OnGetChatLinesField(user1, model1);
+			}
+		}));
 	};
-	$CardGameUI_Services_$UIManagerService.prototype = {
-		get_$pageHandler: function() {
-			return $Client_PageHandler.handler;
+	$CardGameUI_Services_ClientChatManagerService.prototype = {
+		add_onGetChatLines: function(value) {
+			this.$1$OnGetChatLinesField = ss.delegateCombine(this.$1$OnGetChatLinesField, value);
 		},
-		get_$onQuestionAsked: function() {
-			return this.$1$OnQuestionAskedField;
+		remove_onGetChatLines: function(value) {
+			this.$1$OnGetChatLinesField = ss.delegateRemove(this.$1$OnGetChatLinesField, value);
 		},
-		set_$onQuestionAsked: function(value) {
-			this.$1$OnQuestionAskedField = value;
+		add_onGetChatInfo: function(value) {
+			this.$1$OnGetChatInfoField = ss.delegateCombine(this.$1$OnGetChatInfoField, value);
+		},
+		remove_onGetChatInfo: function(value) {
+			this.$1$OnGetChatInfoField = ss.delegateRemove(this.$1$OnGetChatInfoField, value);
+		},
+		sendChatMessage: function(sendChatMessageModel) {
+			this.$clientChatManager.sendChatMessage(sendChatMessageModel);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.ClientDebugManagerService
+	var $CardGameUI_Services_ClientDebugManagerService = function(gateway) {
+		this.$clientDebugManager = null;
+		this.$1$OnGetGameSourceField = null;
+		this.$1$OnGetDebugLogField = null;
+		this.$1$OnGetDebugBreakField = null;
+		this.$1$OnDebugGameOverField = null;
+		this.$clientDebugManager = new ClientLibs.Managers.ClientDebugManager(gateway.get_gateway());
+		this.$clientDebugManager.add_onDebugGameOver(ss.mkdel(this, function(user, model) {
+			if (!ss.staticEquals(this.$1$OnDebugGameOverField, null)) {
+				this.$1$OnDebugGameOverField(user, model);
+			}
+		}));
+		this.$clientDebugManager.add_onGetDebugBreak(ss.mkdel(this, function(user1, model1) {
+			if (!ss.staticEquals(this.$1$OnGetDebugBreakField, null)) {
+				this.$1$OnGetDebugBreakField(user1, model1);
+			}
+		}));
+		this.$clientDebugManager.add_onGetDebugLog(ss.mkdel(this, function(user2, model2) {
+			if (!ss.staticEquals(this.$1$OnGetDebugLogField, null)) {
+				this.$1$OnGetDebugLogField(user2, model2);
+			}
+		}));
+		this.$clientDebugManager.add_onGetGameSource(ss.mkdel(this, function(user3, model3) {
+			if (!ss.staticEquals(this.$1$OnGetGameSourceField, null)) {
+				this.$1$OnGetGameSourceField(user3, model3);
+			}
+		}));
+	};
+	$CardGameUI_Services_ClientDebugManagerService.prototype = {
+		add_onGetGameSource: function(value) {
+			this.$1$OnGetGameSourceField = ss.delegateCombine(this.$1$OnGetGameSourceField, value);
+		},
+		remove_onGetGameSource: function(value) {
+			this.$1$OnGetGameSourceField = ss.delegateRemove(this.$1$OnGetGameSourceField, value);
+		},
+		add_onGetDebugLog: function(value) {
+			this.$1$OnGetDebugLogField = ss.delegateCombine(this.$1$OnGetDebugLogField, value);
+		},
+		remove_onGetDebugLog: function(value) {
+			this.$1$OnGetDebugLogField = ss.delegateRemove(this.$1$OnGetDebugLogField, value);
+		},
+		add_onGetDebugBreak: function(value) {
+			this.$1$OnGetDebugBreakField = ss.delegateCombine(this.$1$OnGetDebugBreakField, value);
+		},
+		remove_onGetDebugBreak: function(value) {
+			this.$1$OnGetDebugBreakField = ss.delegateRemove(this.$1$OnGetDebugBreakField, value);
+		},
+		add_onDebugGameOver: function(value) {
+			this.$1$OnDebugGameOverField = ss.delegateCombine(this.$1$OnDebugGameOverField, value);
+		},
+		remove_onDebugGameOver: function(value) {
+			this.$1$OnDebugGameOverField = ss.delegateRemove(this.$1$OnDebugGameOverField, value);
+		},
+		requestGameSource: function(gameSourceRequestModel) {
+			this.$clientDebugManager.requestGameSource(gameSourceRequestModel);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.ClientGameManagerService
+	var $CardGameUI_Services_ClientGameManagerService = function(gateway) {
+		this.$clientGameManager = null;
+		this.$1$OnAskQuestionField = null;
+		this.$1$OnUpdateStateField = null;
+		this.$1$OnGameStartedField = null;
+		this.$1$OnGameOverField = null;
+		this.$clientGameManager = new ClientLibs.Managers.ClientGameManager(gateway.get_gateway());
+		this.$clientGameManager.add_onAskQuestion(ss.mkdel(this, function(user, model) {
+			if (!ss.staticEquals(this.$1$OnAskQuestionField, null)) {
+				this.$1$OnAskQuestionField(user, model);
+			}
+		}));
+		this.$clientGameManager.add_onGameOver(ss.mkdel(this, function(user1, model1) {
+			if (!ss.staticEquals(this.$1$OnGameOverField, null)) {
+				this.$1$OnGameOverField(user1, model1);
+			}
+		}));
+		this.$clientGameManager.add_onGameStarted(ss.mkdel(this, function(user2, model2) {
+			if (!ss.staticEquals(this.$1$OnGameStartedField, null)) {
+				this.$1$OnGameStartedField(user2, model2);
+			}
+		}));
+		this.$clientGameManager.add_onUpdateState(ss.mkdel(this, function(user3, model3) {
+			if (!ss.staticEquals(this.$1$OnUpdateStateField, null)) {
+				this.$1$OnUpdateStateField(user3, model3);
+			}
+		}));
+	};
+	$CardGameUI_Services_ClientGameManagerService.prototype = {
+		add_onAskQuestion: function(value) {
+			this.$1$OnAskQuestionField = ss.delegateCombine(this.$1$OnAskQuestionField, value);
+		},
+		remove_onAskQuestion: function(value) {
+			this.$1$OnAskQuestionField = ss.delegateRemove(this.$1$OnAskQuestionField, value);
+		},
+		add_onUpdateState: function(value) {
+			this.$1$OnUpdateStateField = ss.delegateCombine(this.$1$OnUpdateStateField, value);
+		},
+		remove_onUpdateState: function(value) {
+			this.$1$OnUpdateStateField = ss.delegateRemove(this.$1$OnUpdateStateField, value);
+		},
+		add_onGameStarted: function(value) {
+			this.$1$OnGameStartedField = ss.delegateCombine(this.$1$OnGameStartedField, value);
+		},
+		remove_onGameStarted: function(value) {
+			this.$1$OnGameStartedField = ss.delegateRemove(this.$1$OnGameStartedField, value);
+		},
+		add_onGameOver: function(value) {
+			this.$1$OnGameOverField = ss.delegateCombine(this.$1$OnGameOverField, value);
+		},
+		remove_onGameOver: function(value) {
+			this.$1$OnGameOverField = ss.delegateRemove(this.$1$OnGameOverField, value);
+		},
+		answerQuestion: function(gameAnswerQuestionModel) {
+			this.$clientGameManager.answerQuestion(gameAnswerQuestionModel);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.ClientSiteManagerService
+	var $CardGameUI_Services_ClientSiteManagerService = function(gateway) {
+		this.$1$OnGetGameTypesReceivedField = null;
+		this.$1$OnLoginField = null;
+		this.$1$OnGetRoomsReceivedField = null;
+		this.$1$OnRoomJoinedField = null;
+		this.$1$OnGetRoomInfoReceivedField = null;
+		this.$clientSiteManager = null;
+		this.$clientSiteManager = new ClientLibs.Managers.ClientSiteManager(gateway.get_gateway());
+		this.$clientSiteManager.add_onGetGameTypesReceived(ss.mkdel(this, function(user, model) {
+			if (!ss.staticEquals(this.$1$OnGetGameTypesReceivedField, null)) {
+				this.$1$OnGetGameTypesReceivedField(user, model);
+			}
+		}));
+		this.$clientSiteManager.add_onLogin(ss.mkdel(this, function(user1, model1) {
+			if (!ss.staticEquals(this.$1$OnLoginField, null)) {
+				this.$1$OnLoginField(user1, model1);
+			}
+		}));
+		this.$clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, function(user2, model2) {
+			if (!ss.staticEquals(this.$1$OnGetRoomsReceivedField, null)) {
+				this.$1$OnGetRoomsReceivedField(user2, model2);
+			}
+		}));
+		this.$clientSiteManager.add_onRoomJoined(ss.mkdel(this, function(user3, model3) {
+			if (!ss.staticEquals(this.$1$OnRoomJoinedField, null)) {
+				this.$1$OnRoomJoinedField(user3, model3);
+			}
+		}));
+		this.$clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, function(user4, model4) {
+			if (!ss.staticEquals(this.$1$OnGetRoomInfoReceivedField, null)) {
+				this.$1$OnGetRoomInfoReceivedField(user4, model4);
+			}
+		}));
+	};
+	$CardGameUI_Services_ClientSiteManagerService.prototype = {
+		add_onGetGameTypesReceived: function(value) {
+			this.$1$OnGetGameTypesReceivedField = ss.delegateCombine(this.$1$OnGetGameTypesReceivedField, value);
+		},
+		remove_onGetGameTypesReceived: function(value) {
+			this.$1$OnGetGameTypesReceivedField = ss.delegateRemove(this.$1$OnGetGameTypesReceivedField, value);
+		},
+		add_onLogin: function(value) {
+			this.$1$OnLoginField = ss.delegateCombine(this.$1$OnLoginField, value);
+		},
+		remove_onLogin: function(value) {
+			this.$1$OnLoginField = ss.delegateRemove(this.$1$OnLoginField, value);
+		},
+		add_onGetRoomsReceived: function(value) {
+			this.$1$OnGetRoomsReceivedField = ss.delegateCombine(this.$1$OnGetRoomsReceivedField, value);
+		},
+		remove_onGetRoomsReceived: function(value) {
+			this.$1$OnGetRoomsReceivedField = ss.delegateRemove(this.$1$OnGetRoomsReceivedField, value);
+		},
+		add_onRoomJoined: function(value) {
+			this.$1$OnRoomJoinedField = ss.delegateCombine(this.$1$OnRoomJoinedField, value);
+		},
+		remove_onRoomJoined: function(value) {
+			this.$1$OnRoomJoinedField = ss.delegateRemove(this.$1$OnRoomJoinedField, value);
+		},
+		add_onGetRoomInfoReceived: function(value) {
+			this.$1$OnGetRoomInfoReceivedField = ss.delegateCombine(this.$1$OnGetRoomInfoReceivedField, value);
+		},
+		remove_onGetRoomInfoReceived: function(value) {
+			this.$1$OnGetRoomInfoReceivedField = ss.delegateRemove(this.$1$OnGetRoomInfoReceivedField, value);
+		},
+		login: function(userName, password) {
+			this.$clientSiteManager.login(userName, password);
+		},
+		getGameTypes: function() {
+			this.$clientSiteManager.getGameTypes();
+		},
+		getRooms: function(getRoomsRequest) {
+			this.$clientSiteManager.getRooms(getRoomsRequest);
+		},
+		createRoom: function(createRoom) {
+			this.$clientSiteManager.createRoom(createRoom);
+		},
+		getRoomInfo: function(roomInfo) {
+			this.$clientSiteManager.getRoomInfo(roomInfo);
+		},
+		joinRoom: function(joinRoom) {
+			this.$clientSiteManager.joinRoom(joinRoom);
+		},
+		leaveRoom: function(leaveRoom) {
+			this.$clientSiteManager.leaveRoom(leaveRoom);
+		},
+		startGame: function(startGameRequest) {
+			this.$clientSiteManager.startGame(startGameRequest);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1260,6 +1535,34 @@
 	// CardGameUI.Services.EffectWatcherService
 	var $CardGameUI_Services_EffectWatcherService = function() {
 		this.applyEffect = null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.GatewayService
+	var $CardGameUI_Services_GatewayService = function(serverUrl) {
+		this.$1$GatewayField = null;
+		this.set_gateway(new ClientLibs.Gateway(serverUrl, false));
+	};
+	$CardGameUI_Services_GatewayService.prototype = {
+		get_gateway: function() {
+			return this.$1$GatewayField;
+		},
+		set_gateway: function(value) {
+			this.$1$GatewayField = value;
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.UIManagerService
+	var $CardGameUI_Services_UIManagerService = function(clientGameManagerService) {
+		this.userLoggedIn = null;
+		this.createRoom = null;
+		this.openCreateRoomDialog = null;
+		this.onRoomJoined = null;
+		this.roomLeft = null;
+		this.clientInfo = null;
+		this.gameDrawer = null;
+		//          gameDrawer = new GameDrawer();
+		this.clientInfo = $Client_ClientInformation.$ctor();
+		//            this.GameManager = new GameManager(clientGameManagerService,this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Util.Effect
@@ -1351,6 +1654,64 @@
 	// Client.BuildAngular
 	var $Client_BuildAngular = function() {
 	};
+	$Client_BuildAngular.setup = function(gatewayServer) {
+		angular.module('acg', ['ui.utils']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', function(scope, effectWatcher, clientGameManagerService) {
+			return new $CardGameUI_Controllers_GameController(scope, effectWatcher, clientGameManagerService);
+		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope1, editEffects, effectWatcher1, effectmanager) {
+			return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1, effectmanager);
+		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
+			return new $CardGameUI_Controllers_$EffectEditorController(scope2, editEffects1);
+		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', function(scope3, uiManager, clientSiteManagerService) {
+			return new $CardGameUI_Controllers_$LoginController(scope3, uiManager, clientSiteManagerService);
+		}]).controller('QuestionController', ['$scope', 'UIManager', 'clientGameManager', function(scope4, uiManager1, clientGameManagerService1) {
+			return new $CardGameUI_Controllers_$QuestionController(scope4, uiManager1, clientGameManagerService1);
+		}]).controller('HomeController', ['$scope', 'UIManager', 'clientSiteManager', function(scope5, uiManager2, clientSiteManagerService1) {
+			return new $CardGameUI_Controllers_$HomeController(scope5, uiManager2, clientSiteManagerService1);
+		}]).controller('ActiveLobbyController', ['$scope', 'UIManager', 'clientSiteManager', 'clientChatManager', '$compile', function(scope6, uiManager3, clientSiteManagerService2, clientChatManagerService, compile) {
+			return new $CardGameUI_Controllers_$ActiveLobbyController(scope6, uiManager3, clientSiteManagerService2, clientChatManagerService, compile);
+		}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope7, uiManager4) {
+			return new $CardGameUI_Controllers_$CreateRoomController(scope7, uiManager4);
+		}]).service('UIManager', ['clientGameManager', function(clientGameManagerService2) {
+			return new $CardGameUI_Services_UIManagerService(clientGameManagerService2);
+		}]).service('editEffects', [function() {
+			return new $CardGameUI_Services_$EditEffectService();
+		}]).service('effectWatcher', [function() {
+			return new $CardGameUI_Services_EffectWatcherService();
+		}]).service('effectManager', [function() {
+			return new $CardGameUI_Services_EffectManagerService();
+		}]).service('clientChatManager', ['gateway', function(gatewayService) {
+			return new $CardGameUI_Services_ClientChatManagerService(gatewayService);
+		}]).service('clientGameManager', ['gateway', function(gatewayService1) {
+			return new $CardGameUI_Services_ClientGameManagerService(gatewayService1);
+		}]).service('clientDebugManager', ['gateway', function(gatewayService2) {
+			return new $CardGameUI_Services_ClientDebugManagerService(gatewayService2);
+		}]).service('clientSiteManager', ['gateway', function(gatewayService3) {
+			return new $CardGameUI_Services_ClientSiteManagerService(gatewayService3);
+		}]).service('gateway', ['gatewayServerURL', function(serverUrl) {
+			return new $CardGameUI_Services_GatewayService(serverUrl);
+		}]).directive('draggable', [function() {
+			return new $CardGameUI_Directives_DraggableDirective();
+		}]).directive('floatingWindow', [function() {
+			return new $CardGameUI_Directives_FloatingWindowDirective();
+		}]).directive('fancyList', [function() {
+			return new $CardGameUI_Directives_FancyListDirective();
+		}]).directive('chatBox', [function() {
+			return new $CardGameUI_Directives_ChatBoxDirective();
+		}]).directive('property', [function() {
+			return new $CardGameUI_Directives_PropertyDirective();
+		}]).directive('acgDrawCard', ['effectManager', function(effectManager) {
+			return new $CardGameUI_Directives_AcgDrawCardDirective(effectManager);
+		}]).directive('acgDrawSpace', [function() {
+			return new $CardGameUI_Directives_AcgDrawSpaceDirective();
+		}]);
+	};
+	$Client_BuildAngular.$buildRouteProvider = function(provider) {
+		// provider.When("/gameUI", new Route() {Controller = "GameController", TemplateURL = "http://content.anycardgame.com/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
+	};
+	$Client_BuildAngular.$buildHttpProvider = function(httpProvider) {
+		httpProvider.defaults.useXDomain = true;
+		delete httpProvider.defaults.headers.common['X-Requested-With'];
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.BuildSite
 	var $Client_BuildSite = function(gatewayServerAddress) {
@@ -1390,7 +1751,7 @@
 				//  e.PreventDefault();
 				//todo: Special right click menu;
 			}, false);
-			var pageHandler = new $Client_PageHandler(this.$gatewayServerAddress);
+			$Client_BuildAngular.setup(this.$gatewayServerAddress);
 			angular.bootstrap(window.document, ['acg']);
 			//
 			//
@@ -1489,7 +1850,6 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.PageHandler
 	var $Client_PageHandler = function(gatewayServerAddress) {
-		this.gameDrawer = null;
 		this.$shuffUIManager = null;
 		this.clientGameManager = null;
 		this.clientDebugManager = null;
@@ -1501,11 +1861,9 @@
 		this.debugUI = null;
 		this.homeUI = null;
 		this.loginUI = null;
+		this.gameManager = null;
 		this.clientInfo = null;
-		this.$1$GameManagerField = null;
-		$Client_PageHandler.handler = this;
 		this.$shuffUIManager = new WebLibraries.ShuffUI.ShuffUI.ShuffUIManager();
-		this.gameDrawer = new $Client_ShufflyGame_GameDrawer();
 		this.timeTracker = $Client_Libs_TimeTracker.$ctor();
 		var gateway = new ClientLibs.Gateway(gatewayServerAddress, false);
 		this.clientGameManager = new ClientLibs.Managers.ClientGameManager(gateway);
@@ -1513,7 +1871,6 @@
 		this.clientDebugManager = new ClientLibs.Managers.ClientDebugManager(gateway);
 		this.clientChatManager = new ClientLibs.Managers.ClientChatManager(gateway);
 		this.clientInfo = $Client_ClientInformation.$ctor();
-		this.set_gameManager(new $Client_ShufflyGame_GameManager(this));
 		//            LoginUI = new LoginUI(shuffUIManager, this);
 		//            HomeUI = new HomeUI(shuffUIManager, this); 
 		//            QuestionUI = new QuestionUI(shuffUIManager, this);
@@ -1529,14 +1886,6 @@
 		//   
 		//   });
 		//   }
-	};
-	$Client_PageHandler.prototype = {
-		get_gameManager: function() {
-			return this.$1$GameManagerField;
-		},
-		set_gameManager: function(value) {
-			this.$1$GameManagerField = value;
-		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Libs.ScriptLoader
@@ -1923,43 +2272,36 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.ShufflyGame.GameManager
-	var $Client_ShufflyGame_GameManager = function(pageHandler) {
-		this.$1$PageHandlerField = null;
-		this.clientGameManager = null;
-		this.set_pageHandler(pageHandler);
-		this.clientGameManager = pageHandler.clientGameManager;
+	var $Client_ShufflyGame_GameManager = function(clientGameManagerService, uiManagerService) {
+		this.$myClientGameManagerService = null;
+		this.$myUIManagerService = null;
+		this.$myClientGameManagerService = clientGameManagerService;
+		this.$myUIManagerService = uiManagerService;
 		this.$init();
 	};
 	$Client_ShufflyGame_GameManager.prototype = {
-		get_pageHandler: function() {
-			return this.$1$PageHandlerField;
-		},
-		set_pageHandler: function(value) {
-			this.$1$PageHandlerField = value;
-		},
 		$init: function() {
-			//     ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) => {
+			//     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
 			//     PageHandler.QuestionUI.Load(gameSendAnswerModel);
 			//     //alert(JSON.stringify(data));
 			//     PageHandler.TimeTracker.EndTime = new DateTime();
 			//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
 			//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
 			//     };
-			this.clientGameManager.add_onUpdateState(ss.mkdel(this, function(user, update) {
+			this.$myClientGameManagerService.add_onUpdateState(ss.mkdel(this, function(user, update) {
 				var data = JSON.parse((new Compressor()).DecompressText(update));
 				//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
-				this.get_pageHandler().gameDrawer.draw(data);
+				this.$myUIManagerService.gameDrawer.draw(data);
 			}));
-			this.clientGameManager.add_onGameStarted(function(user1, room) {
+			this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
 				//alert(JSON.stringify(data));
 			});
-			this.clientGameManager.add_onGameOver(function(user2, room1) {
+			this.$myClientGameManagerService.add_onGameOver(function(user2, room1) {
 				//alert(JSON.stringify(data));
 			});
 		},
 		startGame: function() {
-			this.get_pageHandler().gameDrawer.init();
-			this.get_pageHandler().clientSiteManager.startGame({});
+			this.$myUIManagerService.gameDrawer.init();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2000,7 +2342,7 @@
 		$t2.set_visible(true);
 		this.$myRoomPlayers = $t3.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffListBox).call($t3, $t2);
 		this.uiWindow.addElement(WebLibraries.ShuffUI.ShuffUI.ShuffButton).call(this.uiWindow, new WebLibraries.ShuffUI.ShuffUI.ShuffButton(600, 510, CommonLibraries.Number.op_Implicit$2(175), CommonLibraries.Number.op_Implicit$2(23), ss.makeGenericType(CommonLibraries.DelegateOrValue$1, [String]).op_Implicit$2('Start Game!'), ss.mkdel(this, function(a) {
-			pageHandler.get_gameManager().startGame();
+			pageHandler.gameManager.startGame();
 			this.uiWindow.set_height(CommonLibraries.Number.op_Implicit$2(200));
 		})));
 		var $t5 = this.uiWindow;
@@ -2490,17 +2832,18 @@
 	ss.registerClass(null, 'CardGameUI.Controllers.$ListEffectsController', $CardGameUI_Controllers_$ListEffectsController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$LoginController', $CardGameUI_Controllers_$LoginController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$QuestionController', $CardGameUI_Controllers_$QuestionController);
-	ss.registerClass(global, 'CardGameUI.Controllers.GameCtrl', $CardGameUI_Controllers_GameCtrl);
+	ss.registerClass(global, 'CardGameUI.Controllers.GameController', $CardGameUI_Controllers_GameController);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawCardDirective', $CardGameUI_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawSpaceDirective', $CardGameUI_Directives_AcgDrawSpaceDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.ChatBoxDirective', $CardGameUI_Directives_ChatBoxDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.DraggableDirective', $CardGameUI_Directives_DraggableDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.FancyListDirective', $CardGameUI_Directives_FancyListDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowDirective', $CardGameUI_Directives_FloatingWindowDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.Position', $CardGameUI_Directives_Position);
+	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowPosition', $CardGameUI_Directives_FloatingWindowPosition, $CardGameUI_Directives_Position);
 	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowScope', $CardGameUI_Directives_FloatingWindowScope);
-	ss.registerClass(global, 'CardGameUI.Directives.FullSize', $CardGameUI_Directives_FullSize);
-	ss.registerClass(global, 'CardGameUI.Directives.FloatingWindowStyle', $CardGameUI_Directives_FloatingWindowStyle, $CardGameUI_Directives_FullSize);
 	ss.registerClass(global, 'CardGameUI.Directives.PropertyDirective', $CardGameUI_Directives_PropertyDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.Size', $CardGameUI_Directives_Size);
 	ss.registerClass(global, 'CardGameUI.Scope._KeepBaseScopeAlive', $CardGameUI_Scope__KeepBaseScopeAlive);
 	ss.registerClass(global, 'CardGameUI.Scope.ActiveLobbyModel', $CardGameUI_Scope_ActiveLobbyModel);
 	ss.registerClass(global, 'CardGameUI.Scope.FloatingWindowBaseScope', $CardGameUI_Scope_FloatingWindowBaseScope, CardGameUI.Scope.BaseScope);
@@ -2519,9 +2862,14 @@
 	ss.registerClass(global, 'CardGameUI.Scope.QuestionScope', $CardGameUI_Scope_QuestionScope, $CardGameUI_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.SpaceScope', $CardGameUI_Scope_SpaceScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(null, 'CardGameUI.Services.$EditEffectService', $CardGameUI_Services_$EditEffectService);
-	ss.registerClass(null, 'CardGameUI.Services.$UIManagerService', $CardGameUI_Services_$UIManagerService);
+	ss.registerClass(global, 'CardGameUI.Services.ClientChatManagerService', $CardGameUI_Services_ClientChatManagerService);
+	ss.registerClass(global, 'CardGameUI.Services.ClientDebugManagerService', $CardGameUI_Services_ClientDebugManagerService);
+	ss.registerClass(global, 'CardGameUI.Services.ClientGameManagerService', $CardGameUI_Services_ClientGameManagerService);
+	ss.registerClass(global, 'CardGameUI.Services.ClientSiteManagerService', $CardGameUI_Services_ClientSiteManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectManagerService', $CardGameUI_Services_EffectManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectWatcherService', $CardGameUI_Services_EffectWatcherService);
+	ss.registerClass(global, 'CardGameUI.Services.GatewayService', $CardGameUI_Services_GatewayService);
+	ss.registerClass(global, 'CardGameUI.Services.UIManagerService', $CardGameUI_Services_UIManagerService);
 	ss.registerClass(global, 'CardGameUI.Util.Effect', $CardGameUI_Util_Effect);
 	ss.registerClass(global, 'CardGameUI.Util.EffectProperty', $CardGameUI_Util_EffectProperty);
 	ss.registerClass(global, 'CardGameUI.Util.Extensions', $CardGameUI_Util_Extensions);
@@ -2542,50 +2890,5 @@
 	ss.registerClass(global, 'Client.UIWindow.LoginUI', $Client_UIWindow_LoginUI);
 	ss.registerClass(global, 'Client.UIWindow.QuestionUI', $Client_UIWindow_QuestionUI);
 	ss.registerClass(global, 'Client.UIWindow.Controls.ChatBox', $Client_UIWindow_Controls_ChatBox, WebLibraries.ShuffUI.ShuffUI.ShuffElement);
-	$Client_PageHandler.handler = null;
-	angular.module('acg', ['ui.utils']).config(['$routeProvider', function(provider) {
-		// provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://content.anycardgame.com/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
-	}]).config(['$httpProvider', function(httpProvider) {
-		httpProvider.defaults.useXDomain = true;
-		delete httpProvider.defaults.headers.common['X-Requested-With'];
-	}]).controller('GameCtrl', ['$scope', 'effectWatcher', function(scope, effectWatcher) {
-		return new $CardGameUI_Controllers_GameCtrl(scope, effectWatcher);
-	}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope1, editEffects, effectWatcher1, effectmanager) {
-		return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1, effectmanager);
-	}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
-		return new $CardGameUI_Controllers_$EffectEditorController(scope2, editEffects1);
-	}]).controller('LoginController', ['$scope', 'UIManager', function(scope3, uiManager) {
-		return new $CardGameUI_Controllers_$LoginController(scope3, uiManager);
-	}]).controller('QuestionController', ['$scope', 'UIManager', function(scope4, uiManager1) {
-		return new $CardGameUI_Controllers_$QuestionController(scope4, uiManager1);
-	}]).controller('HomeController', ['$scope', 'UIManager', function(scope5, uiManager2) {
-		return new $CardGameUI_Controllers_$HomeController(scope5, uiManager2);
-	}]).controller('ActiveLobbyController', ['$scope', 'UIManager', function(scope6, uiManager3) {
-		return new $CardGameUI_Controllers_$ActiveLobbyController(scope6, uiManager3);
-	}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope7, uiManager4) {
-		return new $CardGameUI_Controllers_$CreateRoomController(scope7, uiManager4);
-	}]).service('UIManager', [function() {
-		return new $CardGameUI_Services_$UIManagerService();
-	}]).service('editEffects', [function() {
-		return new $CardGameUI_Services_$EditEffectService();
-	}]).service('effectWatcher', [function() {
-		return new $CardGameUI_Services_EffectWatcherService();
-	}]).service('effectManager', [function() {
-		return new $CardGameUI_Services_EffectManagerService();
-	}]).directive('draggable', [function() {
-		return new $CardGameUI_Directives_DraggableDirective();
-	}]).directive('floatingWindow', [function() {
-		return new $CardGameUI_Directives_FloatingWindowDirective();
-	}]).directive('fancyList', [function() {
-		return new $CardGameUI_Directives_FancyListDirective();
-	}]).directive('chatBox', [function() {
-		return new $CardGameUI_Directives_ChatBoxDirective();
-	}]).directive('property', [function() {
-		return new $CardGameUI_Directives_PropertyDirective();
-	}]).directive('acgDrawCard', ['effectManager', function(effectManager) {
-		return new $CardGameUI_Directives_AcgDrawCardDirective(effectManager);
-	}]).directive('acgDrawSpace', [function() {
-		return new $CardGameUI_Directives_AcgDrawSpaceDirective();
-	}]);
 	$Client_BuildSite.instance = null;
 })();

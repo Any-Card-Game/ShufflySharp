@@ -9,33 +9,29 @@ namespace Client
 {
     public static class BuildAngular
     {
-        static BuildAngular()
+        public static void Setup(string gatewayServer)
         {
             angular.module("acg", new string[] { "ui.utils" })
-                 .config(new object[] {
-                                                "$routeProvider",
-                                                new Action<IRouteProviderProvider>(provider => {
-                                                                                       // provider.When("/gameUI", new Route() {Controller = "GameCtrl", TemplateURL = "http://content.anycardgame.com/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
-                                                                                   })
-                                        })
-                 .config(new object[] {
-                                                "$httpProvider", new Action<dynamic>((httpProvider) => {
-                                                                                         httpProvider.defaults.useXDomain = true;
-                                                                                         Delete(httpProvider.defaults.headers.common["X-Requested-With"]);
-                                                                                     })
-                                        })
-                 .controller("GameCtrl", new object[] { "$scope", "effectWatcher", new Func<GameCtrlScope, EffectWatcherService, object>((scope, effectWatcher) => new GameCtrl(scope, effectWatcher)) })
+                 .config(new object[] {"$routeProvider",new Action<IRouteProviderProvider>(buildRouteProvider)})
+                 .config(new object[] {"$httpProvider", new Action<dynamic>(buildHttpProvider)})
+                 .value("gatewayServerURL", gatewayServer)
+                 .controller("GameController", new object[] { "$scope", "effectWatcher", "clientGameManager", new Func<GameCtrlScope, EffectWatcherService, ClientGameManagerService, object>((scope, effectWatcher, clientGameManagerService) => new GameController(scope, effectWatcher, clientGameManagerService)) })
                  .controller("ListEffectsController", new object[] { "$scope", "editEffects", "effectWatcher", "effectManager", new Func<ListEffectsScope, EditEffectService, EffectWatcherService, EffectManagerService, object>((scope, editEffects, effectWatcher, effectmanager) => new ListEffectsController(scope, editEffects, effectWatcher, effectmanager)) })
                  .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
-                 .controller("LoginController", new object[] { "$scope", "UIManager", new Func<LoginScope, UIManagerService, object>((scope, uiManager) => new LoginController(scope, uiManager)) })
-                 .controller("QuestionController", new object[] { "$scope", "UIManager", new Func<QuestionScope, UIManagerService, object>((scope, uiManager) => new QuestionController(scope, uiManager)) })
-                 .controller("HomeController", new object[] { "$scope", "UIManager", new Func<HomeScope, UIManagerService, object>((scope, uiManager) => new HomeController(scope, uiManager)) })
-                 .controller("ActiveLobbyController", new object[] { "$scope", "UIManager", new Func<ActiveLobbyScope, UIManagerService, object>((scope, uiManager) => new ActiveLobbyController(scope, uiManager)) })
+                 .controller("LoginController", new object[] { "$scope", "UIManager", "clientSiteManager", new Func<LoginScope, UIManagerService, ClientSiteManagerService, object>((scope, uiManager, clientSiteManagerService) => new LoginController(scope, uiManager, clientSiteManagerService)) })
+                 .controller("QuestionController", new object[] { "$scope", "UIManager", "clientGameManager", new Func<QuestionScope, UIManagerService, ClientGameManagerService, object>((scope, uiManager, clientGameManagerService) => new QuestionController(scope, uiManager, clientGameManagerService)) })
+                 .controller("HomeController", new object[] { "$scope", "UIManager", "clientSiteManager", new Func<HomeScope, UIManagerService, ClientSiteManagerService, object>((scope, uiManager, clientSiteManagerService) => new HomeController(scope, uiManager, clientSiteManagerService)) })
+                 .controller("ActiveLobbyController", new object[] { "$scope", "UIManager", "clientSiteManager", "clientChatManager", "$compile", new Func<ActiveLobbyScope, UIManagerService, ClientSiteManagerService, ClientChatManagerService, dynamic, object>((scope, uiManager, clientSiteManagerService, clientChatManagerService, compile) => new ActiveLobbyController(scope, uiManager, clientSiteManagerService, clientChatManagerService, compile)) })
                  .controller("CreateRoomController", new object[] { "$scope", "UIManager", new Func<CreateRoomScope, UIManagerService, object>((scope, uiManager) => new CreateRoomController(scope, uiManager)) })
-                 .service("UIManager", new object[] { new Func<object>(() => new UIManagerService()) })
+                 .service("UIManager", new object[] { "clientGameManager",new Func<ClientGameManagerService,object>((clientGameManagerService) => new UIManagerService(clientGameManagerService)) })
                  .service("editEffects", new object[] { new Func<object>(() => new EditEffectService()) })
                  .service("effectWatcher", new object[] { new Func<object>(() => new EffectWatcherService()) })
                  .service("effectManager", new object[] { new Func<object>(() => new EffectManagerService()) })
+                 .service("clientChatManager", new object[] { "gateway", new Func<GatewayService, object>((gatewayService) => new ClientChatManagerService(gatewayService)) })
+                 .service("clientGameManager", new object[] { "gateway", new Func<GatewayService, object>((gatewayService) => new ClientGameManagerService(gatewayService)) })
+                 .service("clientDebugManager", new object[] { "gateway", new Func<GatewayService, object>((gatewayService) => new ClientDebugManagerService(gatewayService)) })
+                 .service("clientSiteManager", new object[] { "gateway", new Func<GatewayService, object>((gatewayService) => new ClientSiteManagerService(gatewayService)) })
+                 .service("gateway", new object[] { "gatewayServerURL", new Func<string, object>((serverUrl) => new GatewayService(serverUrl)) })
                  .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
                  .directive("floatingWindow", new object[] { new Func<object>(() => new FloatingWindowDirective()) })
                  .directive("fancyList", new object[] { new Func<object>(() => new FancyListDirective()) })
@@ -45,6 +41,18 @@ namespace Client
                  .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) });
 
         }
+
+        private static void buildRouteProvider(IRouteProviderProvider provider)
+        {
+            // provider.When("/gameUI", new Route() {Controller = "GameController", TemplateURL = "http://content.anycardgame.com/partials/gameUI.html"}).Otherwise(new OtherwiseRoute() {RedirectTo = "/gameUI"});
+        }
+
+        private static void buildHttpProvider(dynamic httpProvider)
+        {
+            httpProvider.defaults.useXDomain = true;
+            Delete(httpProvider.defaults.headers.common["X-Requested-With"]);
+        }
+
         [InlineCode("delete {o};")]
         private static void Delete(object o)
         {

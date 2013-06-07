@@ -12,11 +12,13 @@ namespace CardGameUI.Controllers
     {
         private readonly QuestionScope myScope;
         private readonly UIManagerService myUIManager;
+        private readonly ClientGameManagerService myClientGameManagerService;
 
-        public QuestionController(QuestionScope scope, UIManagerService uiManager)
+        public QuestionController(QuestionScope scope, UIManagerService uiManager, ClientGameManagerService clientGameManagerService)
         {
             myScope = scope;
             myUIManager = uiManager;
+            myClientGameManagerService = clientGameManagerService;
             myScope.Model = new QuestionModel();
 
             myScope.Model.WindowClosed = () =>
@@ -25,15 +27,14 @@ namespace CardGameUI.Controllers
             };
             myScope.Model.AnswerQuestion = AnswerQuestionFn;
             myScope.Visible = false;
+             
 
-            myUIManager.OnQuestionAsked += OnQuestionAskedFn;
-
-            uiManager.PageHandler.ClientGameManager.OnAskQuestion += (user, gameSendAnswerModel) =>
+            myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
             {
                 myScope.Visible = true;
                 myScope.SwingAway(SwingDirection.TopLeft, true);
-                                                                         myScope.SwingBack();
-                myUIManager.OnQuestionAsked(gameSendAnswerModel);
+                myScope.SwingBack();
+                OnQuestionAskedFn(gameSendAnswerModel);
             };
 
 
@@ -45,15 +46,14 @@ namespace CardGameUI.Controllers
             myScope.Model.Question = arg.Question;
             myScope.Model.Answers = arg.Answers;
             myScope.Model.SelectedAnswer = arg.Answers[0];
-            myScope.SwingBack();
             myScope.Apply();
         }
 
         private void AnswerQuestionFn()
         {
-            myUIManager.PageHandler.ClientGameManager.AnswerQuestion(new GameAnswerQuestionModel(myScope.Model.Answers.IndexOf(myScope.Model.SelectedAnswer)));
+            myClientGameManagerService.AnswerQuestion(new GameAnswerQuestionModel(myScope.Model.Answers.IndexOf(myScope.Model.SelectedAnswer)));
 
-            myScope.SwingAway(SwingDirection.TopLeft, false);
+            myScope.SwingAway(SwingDirection.BottomRight, false);
         }
     }
 }

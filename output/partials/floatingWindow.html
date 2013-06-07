@@ -1,4 +1,4 @@
-﻿<div draggable style="background-color: aqua; z-index: 10000; position: absolute; display: block;" ng-style="positionStyles" ng-show="visible">
+﻿<div draggable style="background-color: aqua; border-radius:9px; border:2px dashed brown;  z-index: 10000; position: absolute; display: block;" ng-style="positionStyles" ng-show="visible">
     <h1>
         {{title}}</h1>
     <div style="position: absolute; top: 0; right: 0">
@@ -13,7 +13,7 @@
         </button>
     </div>
     <div  >
-        <div style="margin: 20px;  background-color: burlywood;   ">
+        <div style="margin: 20px;    background-color: burlywood;" ng-style="sizeStyle" class="floating-window-inner">
             <section ng-transclude>
         
             </section>

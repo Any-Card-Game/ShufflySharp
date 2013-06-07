@@ -43,7 +43,7 @@ namespace CardGameUI.Directives
 
         private void linkFn(dynamic scope, jQueryObject element, dynamic attrs)
         {
-            element.Me().draggable( );
+            element.Me().draggable(new { cancel = ".floating-window-inner" });
          } 
     }
  

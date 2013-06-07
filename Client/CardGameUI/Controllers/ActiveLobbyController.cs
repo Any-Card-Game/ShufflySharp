@@ -16,20 +16,24 @@ namespace CardGameUI.Controllers
     {
         private readonly ActiveLobbyScope myScope;
         private readonly UIManagerService myUIManager;
+        private readonly ClientSiteManagerService myClientSiteManagerService;
+        private readonly ClientChatManagerService myClientChatManagerService;
 
-        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager)
+        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,  ClientChatManagerService clientChatManagerService,dynamic compile)
         {
 
 
             myScope = scope;
             myUIManager = uiManager;
+            myClientSiteManagerService = clientSiteManagerService; 
+            myClientChatManagerService = clientChatManagerService;
             myScope.Model = new ActiveLobbyModel();
             myScope.Model.ChatLines = new List<ChatMessageRoomModel>();
             myScope.Visible = false;
             myScope.Model.WindowClosed += () =>
             {
                 myScope.SwingAway(SwingDirection.BottomRight, false);
-                uiManager.PageHandler.ClientSiteManager.LeaveRoom(new LeaveRoomRequest(myScope.Model.Room));
+                myClientSiteManagerService.LeaveRoom(new LeaveRoomRequest(myScope.Model.Room));
                 uiManager.RoomLeft();
             };
 
@@ -44,9 +48,13 @@ namespace CardGameUI.Controllers
             };
 
             myScope.Model.StartGame += () => {
+                                           var theScope = myScope;
+                                           compile("<div ng-include src=\"'http://content.anycardgame.com/partials/gameUI.html'\"></div>")(theScope).appendTo(Window.Document.Body);
 
-                                           uiManager.PageHandler.GameManager.StartGame();
 
+
+//                                           uiManager.GameManager.StartGame();
+                                            clientSiteManagerService.StartGame(new StartGameRequest());  
                                            //UIWindow.Height = 200;
                                        };
             myScope.Model.SendChatMessage += () =>
@@ -54,14 +62,14 @@ namespace CardGameUI.Controllers
                 if (myScope.Model.CurrentChatMessage.Trim() == string.Empty)
                     return;
 
-                uiManager.PageHandler.ClientChatManager.SendChatMessage(new SendChatMessageModel(myScope.Model.CurrentChatMessage.Trim()));
+                myClientChatManagerService.SendChatMessage(new SendChatMessageModel(myScope.Model.CurrentChatMessage.Trim()));
 
                 myScope.Model.CurrentChatMessage = "";
             };
 
-            myUIManager.PageHandler.ClientSiteManager.OnGetRoomInfoReceived += GetRoomInfo;
-            myUIManager.PageHandler.ClientChatManager.OnGetChatLines += GetChatLines;
-            myUIManager.PageHandler.ClientChatManager.OnGetChatInfo += GetChatInfo;
+            myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfo;
+            myClientChatManagerService.OnGetChatLines += GetChatLines;
+            myClientChatManagerService.OnGetChatInfo += GetChatInfo;
         }
 
         private void GetChatLines(UserModel user, ChatMessagesModel o)

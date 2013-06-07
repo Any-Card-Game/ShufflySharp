@@ -51,6 +51,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="documents\config\dns.txt" />
     <Content Include="documents\diagrams\flowchart.png" />
     <Content Include="documents\diagrams\server layout.png" />
     <Content Include="mockups\better.png" />
@@ -62,6 +63,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="documents\config\nginx.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

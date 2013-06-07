@@ -14,9 +14,6 @@ namespace Client
 {
     public class PageHandler
     {
-        [IntrinsicProperty]
-        public static PageHandler Handler { get; set; }
-        public readonly GameDrawer gameDrawer;
         private readonly ShuffUIManager shuffUIManager; 
         [IntrinsicProperty]
         public ClientGameManager ClientGameManager { get; set; }
@@ -39,14 +36,13 @@ namespace Client
         [IntrinsicProperty]
         public LoginUI LoginUI { get; set; }
         [IntrinsicProperty]
+        public GameManager GameManager { get; set; }
+        [IntrinsicProperty]
         public ClientInformation ClientInfo { get; set; }
 
         public PageHandler(string gatewayServerAddress)
         {
-            Handler = this;
             shuffUIManager = new ShuffUIManager();
-
-            gameDrawer = new GameDrawer();
             TimeTracker = new TimeTracker();
 
             var gateway = new Gateway(gatewayServerAddress,false);
@@ -56,7 +52,7 @@ namespace Client
             ClientChatManager = new ClientChatManager(gateway);
 
             ClientInfo = new ClientInformation();
-            this.GameManager = new GameManager(this);
+           /// this.GameManager = new GameManager(this);
 
 //            LoginUI = new LoginUI(shuffUIManager, this);
 //            HomeUI = new HomeUI(shuffUIManager, this); 
@@ -77,7 +73,6 @@ namespace Client
                }*/
         }
 
-        public GameManager GameManager { get; set; }
  
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using CardGameUI.Util;
+using CommonLibraries;
 using global;
 namespace CardGameUI.Scope
 {

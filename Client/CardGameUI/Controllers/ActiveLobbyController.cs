@@ -19,7 +19,7 @@ namespace CardGameUI.Controllers
         private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly ClientChatManagerService myClientChatManagerService;
 
-        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,  ClientChatManagerService clientChatManagerService,dynamic compile)
+        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,  ClientChatManagerService clientChatManagerService,CompileService compile)
         {
 
 
@@ -49,7 +49,7 @@ namespace CardGameUI.Controllers
 
             myScope.Model.StartGame += () => {
                                            var theScope = myScope;
-                                           compile("<div ng-include src=\"'http://content.anycardgame.com/partials/gameUI.html'\"></div>")(theScope).appendTo(Window.Document.Body);
+                                           compile(jQueryApi.jQuery.FromHtml("<div ng-include src=\"'http://content.anycardgame.com/partials/gameUI.html'\"></div>"))(theScope).AppendTo(Window.Document.Body);
 
 
 

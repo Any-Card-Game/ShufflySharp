@@ -59,30 +59,34 @@ namespace CardGameUI.Directives
             Action redrawCard = () =>
             {
 
-                var spaceScale = new { width = scope.Parent.Space.Width / (scope.Parent.Space.Pile.Cards.Count - 1), height = scope.Parent.Space.Height / (scope.Parent.Space.Pile.Cards.Count-1) };
-                var vertical = scope.Parent.Space.Vertical;
-                var cardIndex = scope.Parent.Space.Pile.Cards.IndexOf(scope.Card);
+                var scale = ((Point)((dynamic)scope.Parent.Parent)["$parent"].scale);
+
+
+                var spaceScale = new { width = scope.Space.Width / (scope.Space.Pile.Cards.Count - 1), height = scope.Space.Height / (scope.Space.Pile.Cards.Count-1) };
+                var vertical = scope.Space.Vertical;
+                var cardIndex = scope.Space.Pile.Cards.IndexOf(scope.Card);
 
                 scope.CardStyle = new { };
 
                 var xx = 0.0;
                 var yy = 0.0;
 
-                switch (scope.Parent.Space.ResizeType)
+
+                                    switch (scope.Space.ResizeType)
                 {
                     case TableSpaceResizeType.Static:
                         if (vertical)
-                            yy = ((scope.Card.Value + 1) / 13.0) * scope.Parent.Space.Height * scope.Parent.Parent.Scale.Y;
+                            yy = ((scope.Card.Value + 1) / 13.0) * scope.Space.Height * scale.Y;
                         else
-                            xx = ((scope.Card.Value + 1) / 13.0) * scope.Parent.Space.Width * scope.Parent.Parent.Scale.X;
+                            xx = ((scope.Card.Value + 1) / 13.0) * scope.Space.Width * scale.X;
                         break;
                     case TableSpaceResizeType.Grow:
-                        xx = (!vertical ? (cardIndex * spaceScale.width * scope.Parent.Parent.Scale.X) : 0);
-                        yy = (vertical ? (cardIndex * spaceScale.height * scope.Parent.Parent.Scale.Y) : 0);
+                        xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
+                        yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
                         break;
                     default:
-                        xx = (!vertical ? (cardIndex * spaceScale.width * scope.Parent.Parent.Scale.X) : 0);
-                        yy = (vertical ? (cardIndex * spaceScale.height * scope.Parent.Parent.Scale.Y) : 0);
+                        xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
+                        yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
                         break;
                 }
 
@@ -92,27 +96,27 @@ namespace CardGameUI.Directives
                 scope.CardStyle.position = "absolute";
                 scope.CardStyle.zIndex = cardIndex;
                 scope.CardStyle.borderRadius = "5px";
-                scope.CardStyle.left = (xx + (vertical ? scope.Parent.Space.Width * scope.Parent.Parent.Scale.X / 2 : 0));
-                scope.CardStyle.top = (yy + (!vertical ? scope.Parent.Space.Height * scope.Parent.Parent.Scale.Y / 2 : 0));
+                scope.CardStyle.left = (xx + (vertical ? scope.Space.Width * scale.X / 2 : 0));
+                scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height * scale.Y / 2 : 0));
 //                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-                element.Me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg");
+                element.Me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate );
                 scope.CardStyle.content = "\"\"";
 
 
-                if (scope.Parent.Space.Name.StartsWith("User"))
+                if (scope.Space.Name.StartsWith("User"))
                 {
 
-                    if (scope.Card.Appearance.Effects.Count == 0)
-                        scope.Card.Appearance.Effects.Add(new CardGameAppearanceEffectBend(new CardGameEffectBendOptions() { Degrees = 15 }));
+                    if (scope.Card.Appearance.EffectNames.Count == 0)
+                        scope.Card.Appearance.EffectNames.Add(EffectType2.Bend.ToString());
 
                 }
                 else
                 {
-                    for (var index = scope.Card.Appearance.Effects.Count - 1; index >= 0; index--)
+                    for (var index = scope.Card.Appearance.EffectNames.Count - 1; index >= 0; index--)
                     {
-                        var cardGameAppearanceEffect = scope.Card.Appearance.Effects[index];
-                        if (cardGameAppearanceEffect.Type == EffectType.Bend)
-                            scope.Card.Appearance.Effects.Remove(cardGameAppearanceEffect);
+                        var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
+                        if (cardGameAppearanceEffect == EffectType2.Bend.ToString())
+                            scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
                     }
                 }
 
@@ -175,7 +179,7 @@ namespace CardGameUI.Directives
 
                             var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
 
-                            element.Me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Parent.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))) + "deg");
+                            element.Me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))) );
 
                             break;
                         case EffectType2.StyleProperty:
@@ -197,18 +201,21 @@ namespace CardGameUI.Directives
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 
+         //   redrawCard();
+            /*
+                          
  
             scope.watch("$parent.space", () =>
             {
                 Console.Log("ac");
                 redrawCard();
             }, true);
-            scope.watch("card.appearance.effectNames", () =>
+            scope.watch("card.appearance.effectNames.join()", () =>
             {
                 Console.Log("b");
                 redrawCard();
-            }, true);
-            scope.watch<CardScope>((_scope) =>
+            }, true);*/
+            /*scope.watch<CardScope>((_scope) =>
             {
 
                 List<Effect> effects = new List<Effect>();
@@ -224,7 +231,7 @@ namespace CardGameUI.Directives
                    redrawCard();
                }, true);
 
-
+*/
             redrawCard();
         }
         public static dynamic hextorgb(string hex)
@@ -247,6 +254,7 @@ namespace CardGameUI.Directives
 
         public static double NoTransformRotate(string ar)
         {
+            if (ar == "") return 0;
             return double.Parse(ar.Replace("rotate(", "").Replace("deg)", "")); //todo regex??
         }
 

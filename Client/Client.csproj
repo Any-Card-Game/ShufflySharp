@@ -49,6 +49,7 @@
     <Compile Include="CardGameUI\Directives\AcgDrawCardDirective.cs" />
     <Compile Include="CardGameUI\Directives\AcgDrawSpaceDirective.cs" />
     <Compile Include="CardGameUI\Directives\ChatBoxDirective.cs" />
+    <Compile Include="CardGameUI\Directives\AcgSpacesDirective.cs" />
     <Compile Include="CardGameUI\Directives\FancyListDirective.cs" />
     <Compile Include="CardGameUI\Directives\FloatingWindowDirective.cs" />
     <Compile Include="CardGameUI\Directives\DraggableDirective.cs" />
@@ -71,12 +72,12 @@
     <Compile Include="CardGameUI\Services\EditEffectService.cs" />
     <Compile Include="CardGameUI\Services\EffectManagerService.cs" />
     <Compile Include="CardGameUI\Services\EffectWatcherService.cs" />
+    <Compile Include="CardGameUI\Services\GameContentManager.cs" />
     <Compile Include="CardGameUI\Services\GatewayService.cs" />
     <Compile Include="CardGameUI\Services\UIManagerService.cs" />
     <Compile Include="CardGameUI\Util\Effect.cs" />
     <Compile Include="CardGameUI\Util\EffectType2.cs" />
     <Compile Include="CardGameUI\Util\Extensions.cs" />
-    <Compile Include="CardGameUI\Util\Point.cs" />
     <Compile Include="ClientInformation.cs" />
     <Compile Include="Libs\ScriptLoader.cs" />
     <Compile Include="Libs\TimeTracker.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Html;
 using CardGameUI.Scope;
+using CommonLibraries;
 using global;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
@@ -18,17 +19,20 @@ namespace CardGameUI.Directives
 
         private void linkFn(SpaceScope scope, jQueryObject element, object attrs)
         {
+
+            var scale = ((Point)((dynamic)scope.Parent)["$parent"].scale);
+            
             element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
             element.Resizable(new ResizableOptions()
             {
-                Grid = new[] { scope.Parent.Scale.X, scope.Parent.Scale.Y },
+                Grid = new[] { scale.X, scale.Y },
                 MinHeight = -1,
                 MinWidth = -1,
                 Handles = "n, e, s, w,nw,sw,ne,se",
                 OnResize = (ev, ele) =>
                 {
-                    scope.Space.Width = ele.Size.Width / scope.Parent.Scale.X;
-                    scope.Space.Height = ele.Size.Height / scope.Parent.Scale.Y;
+                    scope.Space.Width = ele.Size.Width / scale.X;
+                    scope.Space.Height = ele.Size.Height / scale.Y;
                     scope.Apply();
 
                 }
@@ -36,11 +40,11 @@ namespace CardGameUI.Directives
             element.Draggable(new DraggableOptions()
             {
                 Cursor = "crosshair",
-                Grid = new[] { scope.Parent.Scale.X, scope.Parent.Scale.Y }, 
+                Grid = new[] { scale.X, scale.Y }, 
                 OnDrag = (ev, ele) =>
                 {
-                    scope.Space.X = ele.Position.Left / scope.Parent.Scale.X;
-                    scope.Space.Y = ele.Position.Top/ scope.Parent.Scale.Y;
+                    scope.Space.X = ele.Position.Left / scale.X;
+                    scope.Space.Y = ele.Position.Top/ scale.Y;
                     scope.Apply();
 
                 }
@@ -66,11 +70,11 @@ namespace CardGameUI.Directives
 
 
             scope.SpaceStyle.position = "absolute";
-            scope.SpaceStyle.left = scope.Space.X * scope.Parent.Scale.X;
-            scope.SpaceStyle.top = scope.Space.Y * scope.Parent.Scale.Y;
+            scope.SpaceStyle.left = scope.Space.X * scale.X;
+            scope.SpaceStyle.top = scope.Space.Y * scale.Y;
 
-            scope.SpaceStyle.width = scope.Space.Width * scope.Parent.Scale.X;
-            scope.SpaceStyle.height = scope.Space.Height * scope.Parent.Scale.Y;
+            scope.SpaceStyle.width = scope.Space.Width * scale.X;
+            scope.SpaceStyle.height = scope.Space.Height * scale.Y;
             scope.SpaceStyle.backgroundColor = "red";
 
 

@@ -149,7 +149,7 @@ namespace Client.ShufflyGame
                 var cl = space.Appearance.Effects.Count;
                 for (int i = 0; i < cl; i++) {
                     var effect = space.Appearance.Effects[i];
-                    effect.Build(spaceDiv);
+                    effect.Build(spaceDiv);     
                 }
 
                 spaceDiv.OuterElementStyle.Width = ( space.Width * scale.X ).px();

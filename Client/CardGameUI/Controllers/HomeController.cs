@@ -68,11 +68,13 @@ namespace CardGameUI.Controllers
 
         private void RoomSelectedFn()
         {
+            if (myScope.Model.SelectedGameType == null || myScope.Model.SelectedRoom==null) return;
             myClientSiteManagerService.GetRoomInfo(new GetRoomInfoRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
         }
 
         private void GameTypeSelectedFn()
         {
+            if (myScope.Model.SelectedGameType == null) return;
             myClientSiteManagerService.GetRooms(new GetRoomsRequest(myScope.Model.SelectedGameType.Name));
             myScope.Model.SelectedRoom = null;
         }

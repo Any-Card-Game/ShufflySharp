@@ -42,7 +42,7 @@ namespace CardGameUI.Directives
 
             scope.currentStyle = new Func<dynamic,dynamic>((item) =>
             {
-                return new { backgroundColor = (item == scope.bind) ? "white" : "red" };
+                return new { backgroundColor = (item == scope.bind) ? "blue" : "white" };
             });
         }
     }

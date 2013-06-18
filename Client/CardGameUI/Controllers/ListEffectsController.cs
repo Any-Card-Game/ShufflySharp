@@ -51,7 +51,7 @@ namespace CardGameUI.Controllers
             myScope.NewEffect = "";
         }
 
-        private static Effect makeEffect(string effectName, EffectType2 type)
+        public static Effect makeEffect(string effectName, EffectType2 type)
         {
             Effect effect = new Effect() {Name = effectName};
             effect.Type = type;

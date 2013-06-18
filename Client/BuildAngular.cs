@@ -4,6 +4,7 @@ using CardGameUI.Controllers;
 using CardGameUI.Directives;
 using CardGameUI.Scope;
 using CardGameUI.Services;
+using jQueryApi;
 using ng;
 namespace Client
 {
@@ -15,13 +16,13 @@ namespace Client
                  .config(new object[] {"$routeProvider",new Action<IRouteProviderProvider>(buildRouteProvider)})
                  .config(new object[] {"$httpProvider", new Action<dynamic>(buildHttpProvider)})
                  .value("gatewayServerURL", gatewayServer)
-                 .controller("GameController", new object[] { "$scope", "effectWatcher", "clientGameManager", new Func<GameCtrlScope, EffectWatcherService, ClientGameManagerService, object>((scope, effectWatcher, clientGameManagerService) => new GameController(scope, effectWatcher, clientGameManagerService)) })
+                 .controller("GameController", new object[] { "$scope", "effectWatcher", "clientGameManager", "gameContentManager", "effectManager", new Func<GameCtrlScope, EffectWatcherService, ClientGameManagerService, GameContentManager, EffectManagerService, object>((scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager) => new GameController(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager)) })
                  .controller("ListEffectsController", new object[] { "$scope", "editEffects", "effectWatcher", "effectManager", new Func<ListEffectsScope, EditEffectService, EffectWatcherService, EffectManagerService, object>((scope, editEffects, effectWatcher, effectmanager) => new ListEffectsController(scope, editEffects, effectWatcher, effectmanager)) })
                  .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
                  .controller("LoginController", new object[] { "$scope", "UIManager", "clientSiteManager", new Func<LoginScope, UIManagerService, ClientSiteManagerService, object>((scope, uiManager, clientSiteManagerService) => new LoginController(scope, uiManager, clientSiteManagerService)) })
                  .controller("QuestionController", new object[] { "$scope", "UIManager", "clientGameManager", new Func<QuestionScope, UIManagerService, ClientGameManagerService, object>((scope, uiManager, clientGameManagerService) => new QuestionController(scope, uiManager, clientGameManagerService)) })
                  .controller("HomeController", new object[] { "$scope", "UIManager", "clientSiteManager", new Func<HomeScope, UIManagerService, ClientSiteManagerService, object>((scope, uiManager, clientSiteManagerService) => new HomeController(scope, uiManager, clientSiteManagerService)) })
-                 .controller("ActiveLobbyController", new object[] { "$scope", "UIManager", "clientSiteManager", "clientChatManager", "$compile", new Func<ActiveLobbyScope, UIManagerService, ClientSiteManagerService, ClientChatManagerService, dynamic, object>((scope, uiManager, clientSiteManagerService, clientChatManagerService, compile) => new ActiveLobbyController(scope, uiManager, clientSiteManagerService, clientChatManagerService, compile)) })
+                 .controller("ActiveLobbyController", new object[] { "$scope", "UIManager", "clientSiteManager", "clientChatManager", "$compile", new Func<ActiveLobbyScope, UIManagerService, ClientSiteManagerService, ClientChatManagerService, CompileService, object>((scope, uiManager, clientSiteManagerService, clientChatManagerService, compile) => new ActiveLobbyController(scope, uiManager, clientSiteManagerService, clientChatManagerService, compile)) })
                  .controller("CreateRoomController", new object[] { "$scope", "UIManager", new Func<CreateRoomScope, UIManagerService, object>((scope, uiManager) => new CreateRoomController(scope, uiManager)) })
                  .service("UIManager", new object[] { "clientGameManager",new Func<ClientGameManagerService,object>((clientGameManagerService) => new UIManagerService(clientGameManagerService)) })
                  .service("editEffects", new object[] { new Func<object>(() => new EditEffectService()) })
@@ -32,14 +33,17 @@ namespace Client
                  .service("clientDebugManager", new object[] { "gateway", new Func<GatewayService, object>((gatewayService) => new ClientDebugManagerService(gatewayService)) })
                  .service("clientSiteManager", new object[] { "gateway", new Func<GatewayService, object>((gatewayService) => new ClientSiteManagerService(gatewayService)) })
                  .service("gateway", new object[] { "gatewayServerURL", new Func<string, object>((serverUrl) => new GatewayService(serverUrl)) })
+                 .service("gameContentManager", new object[] { new Func<object>(() => new GameContentManager()) })
+                 
                  .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
                  .directive("floatingWindow", new object[] { new Func<object>(() => new FloatingWindowDirective()) })
                  .directive("fancyList", new object[] { new Func<object>(() => new FancyListDirective()) })
                  .directive("chatBox", new object[] { new Func<object>(() => new ChatBoxDirective()) })
                  .directive("property", new object[] { new Func<object>(() => new PropertyDirective()) })
                  .directive("acgDrawCard", new object[] { "effectManager", new Func<EffectManagerService, object>((effectManager) => new AcgDrawCardDirective(effectManager)) })
-                 .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) });
-
+                 .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) })
+                 .directive("acgSpaces", new object[] { "$compile", "gameContentManager", new Func<CompileService, GameContentManager, object>((compile, gameContentManager) => new AcgSpacesDirective(compile, gameContentManager)) });
+            
         }
 
         private static void buildRouteProvider(IRouteProviderProvider provider)

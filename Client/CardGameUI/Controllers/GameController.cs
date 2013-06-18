@@ -8,8 +8,7 @@ using CardGameUI.Util;
 using CommonLibraries;
 using WebLibraries.Common;
 using global;
-using jQueryApi;
-using Point = CardGameUI.Util.Point;
+using jQueryApi; 
 namespace CardGameUI.Controllers
 {
     public class GameController
@@ -17,13 +16,19 @@ namespace CardGameUI.Controllers
         private readonly GameCtrlScope scope;
         private readonly EffectWatcherService myEffectWatcher;
         private readonly ClientGameManagerService myClientGameManagerService;
+        private readonly GameContentManager myGameContentManager;
+        private readonly EffectManagerService myEffectManager;
 
-        public GameController(GameCtrlScope scope, EffectWatcherService effectWatcher, ClientGameManagerService clientGameManagerService)
+        public GameController(GameCtrlScope scope, EffectWatcherService effectWatcher, ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager, EffectManagerService effectManager)
         {
             this.scope = scope;
             myEffectWatcher = effectWatcher;
             myClientGameManagerService = clientGameManagerService;
-
+            myGameContentManager = gameContentManager;
+            myEffectManager = effectManager;
+            effectManager .Effects= new List<Effect>();
+            effectManager.Effects.Add(ListEffectsController.makeEffect("bend", EffectType2.Bend));
+             
             /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
                                                         PageHandler.QuestionUI.Load(gameSendAnswerModel);
                                                         //alert(JSON.stringify(data));
@@ -38,6 +43,7 @@ namespace CardGameUI.Controllers
 
                 scope.MainArea = data;
                 scope.Apply();
+                myGameContentManager.Redraw();
 
             };
 
@@ -96,14 +102,10 @@ namespace CardGameUI.Controllers
                     addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
                 }
             }
+            
 
 
-
-            scope.Scale = new Point()
-            {
-                X = jQueryApi.jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9,
-                Y = ((jQueryApi.jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9
-            };
+            scope.Scale = new Point(jQueryApi.jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ( ( jQueryApi.jQuery.Window.GetHeight() - 250 ) / scope.MainArea.Size.Height ) * .9);
 
             scope.MoveCard = () =>
             {

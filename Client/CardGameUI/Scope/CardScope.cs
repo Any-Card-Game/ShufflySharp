@@ -13,6 +13,8 @@ namespace CardGameUI.Scope
         [IntrinsicProperty]
         public Action CardClick { get; set; }
         [IntrinsicProperty]
+        public CardGameTableSpace Space { get; set; }
+        [IntrinsicProperty]
         [ScriptName("$parent")]
         public SpaceScope Parent { get; set; }
     }

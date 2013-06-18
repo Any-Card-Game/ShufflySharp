@@ -8,9 +8,14 @@ namespace CardGameUI.Services
         [IntrinsicProperty]
 
         public List<Effect> Effects { get; set; }
+        public EffectManagerService()
+        {
+            Effects=new List<Effect>();
+        }
 
         public Effect GetEffectByName(string effect)
         {
+            
 
             foreach (var eff in Effects) {
                 if (eff.Name.ToLower() == effect.ToLower()) {

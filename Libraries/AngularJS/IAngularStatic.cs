@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
+using jQueryApi;
+
+public delegate Func<object,jQueryObject> CompileService(jQueryObject content);
+
 
 [Imported()]
 public static class angular
@@ -18,20 +24,26 @@ public static class angular
 
     public static void Bootstrap(DocumentInstance document, params string[] parms) { }
 
-    public static AngularElement Element(DocumentInstance document)
+    public static jQueryObject Element(DocumentInstance document)
     {
         return null;
     }
-}
-[Imported]
-public class AngularElement
-{
-    public void Ready(Action ready)
+    public static jQueryObject Element(string document)
     {
-        
+        return null;
+    }
+    public static jQueryObject Element(Element document)
+    {
+        return null;
+    }
+    public static void ForEach<T>(IEnumerable<T> items, Action<T> item)
+    {
+    }
+    public static void ForEach(JsDictionary items, Action<string,object> item)
+    {
     }
 }
-namespace ng
+ namespace ng
 {
 
     /// <summary>

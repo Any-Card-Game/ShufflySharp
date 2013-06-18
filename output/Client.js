@@ -29,7 +29,7 @@
 		});
 		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, ss.mkdel(this, function() {
 			var theScope = this.$myScope;
-			compile('<div ng-include src="\'http://content.anycardgame.com/partials/gameUI.html\'"></div>')(theScope).appendTo(window.document.body);
+			compile($('<div ng-include src="\'http://content.anycardgame.com/partials/gameUI.html\'"></div>'))(theScope).appendTo(window.document.body);
 			//                                           uiManager.GameManager.StartGame();
 			clientSiteManagerService.startGame({});
 			//UIWindow.Height = 200;
@@ -152,9 +152,15 @@
 			this.$myUIManager.openCreateRoomDialog();
 		},
 		$roomSelectedFn: function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selectedGameType) || ss.isNullOrUndefined(this.$myScope.model.selectedRoom)) {
+				return;
+			}
 			this.$myClientSiteManagerService.getRoomInfo({ gameType: this.$myScope.model.selectedGameType.name, roomName: this.$myScope.model.selectedRoom.roomName });
 		},
 		$gameTypeSelectedFn: function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selectedGameType)) {
+				return;
+			}
 			this.$myClientSiteManagerService.getRooms({ gameType: this.$myScope.model.selectedGameType.name });
 			this.$myScope.model.selectedRoom = null;
 		},
@@ -393,13 +399,19 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.GameController
-	var $CardGameUI_Controllers_GameController = function(scope, effectWatcher, clientGameManagerService) {
+	var $CardGameUI_Controllers_GameController = function(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager) {
 		this.$scope = null;
 		this.$myEffectWatcher = null;
 		this.$myClientGameManagerService = null;
+		this.$myGameContentManager = null;
+		this.$myEffectManager = null;
 		this.$scope = scope;
 		this.$myEffectWatcher = effectWatcher;
 		this.$myClientGameManagerService = clientGameManagerService;
+		this.$myGameContentManager = gameContentManager;
+		this.$myEffectManager = effectManager;
+		effectManager.effects = [];
+		ss.add(effectManager.effects, $CardGameUI_Controllers_$ListEffectsController.$makeEffect('bend', 'bend'));
 		//     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
 		//     PageHandler.QuestionUI.Load(gameSendAnswerModel);
 		//     //alert(JSON.stringify(data));
@@ -407,11 +419,12 @@
 		//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
 		//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
 		//     };
-		this.$myClientGameManagerService.add_onUpdateState(function(user, update) {
+		this.$myClientGameManagerService.add_onUpdateState(ss.mkdel(this, function(user, update) {
 			var data = JSON.parse((new Compressor()).DecompressText(update));
 			scope.mainArea = data;
 			scope.$apply();
-		});
+			this.$myGameContentManager.redraw();
+		}));
 		this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
 			//alert(JSON.stringify(data));
 		});
@@ -447,10 +460,7 @@
 				addRule('.card' + card.type + '-' + card.value + '::after', {});
 			}
 		}
-		var $t3 = $CardGameUI_Util_Point.$ctor();
-		$t3.x = ss.Int32.div($(window).width(), scope.mainArea.size.width) * 0.9;
-		$t3.y = ss.Int32.div($(window).height() - 250, scope.mainArea.size.height) * 0.9;
-		scope.scale = $t3;
+		scope.scale = new CommonLibraries.Point(ss.Int32.div($(window).width(), scope.mainArea.size.width) * 0.9, ss.Int32.div($(window).height() - 250, scope.mainArea.size.height) * 0.9);
 		scope.moveCard = function() {
 			for (var i = 0; i < 1; i++) {
 				var card1 = null;
@@ -536,30 +546,31 @@
 				}
 			};
 			var redrawCard = ss.mkdel(this, function() {
-				var spaceScale = { width: scope.$parent.space.width / (scope.$parent.space.pile.cards.length - 1), height: scope.$parent.space.height / (scope.$parent.space.pile.cards.length - 1) };
-				var vertical = scope.$parent.space.vertical;
-				var cardIndex = ss.indexOf(scope.$parent.space.pile.cards, scope.card);
+				var scale = scope.$parent.$parent['$parent'].scale;
+				var spaceScale = { width: scope.space.width / (scope.space.pile.cards.length - 1), height: scope.space.height / (scope.space.pile.cards.length - 1) };
+				var vertical = scope.space.vertical;
+				var cardIndex = ss.indexOf(scope.space.pile.cards, scope.card);
 				scope.cardStyle = {};
 				var xx = 0;
 				var yy = 0;
-				switch (scope.$parent.space.resizeType) {
+				switch (scope.space.resizeType) {
 					case 1: {
 						if (vertical) {
-							yy = (scope.card.value + 1) / 13 * scope.$parent.space.height * scope.$parent.$parent.scale.y;
+							yy = (scope.card.value + 1) / 13 * scope.space.height * scale.y;
 						}
 						else {
-							xx = (scope.card.value + 1) / 13 * scope.$parent.space.width * scope.$parent.$parent.scale.x;
+							xx = (scope.card.value + 1) / 13 * scope.space.width * scale.x;
 						}
 						break;
 					}
 					case 0: {
-						xx = (!vertical ? (cardIndex * spaceScale.width * scope.$parent.$parent.scale.x) : 0);
-						yy = (vertical ? (cardIndex * spaceScale.height * scope.$parent.$parent.scale.y) : 0);
+						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
 						break;
 					}
 					default: {
-						xx = (!vertical ? (cardIndex * spaceScale.width * scope.$parent.$parent.scale.x) : 0);
-						yy = (vertical ? (cardIndex * spaceScale.height * scope.$parent.$parent.scale.y) : 0);
+						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
 						break;
 					}
 				}
@@ -568,43 +579,40 @@
 				scope.cardStyle.position = 'absolute';
 				scope.cardStyle.zIndex = cardIndex;
 				scope.cardStyle.borderRadius = '5px';
-				scope.cardStyle.left = xx + (vertical ? (scope.$parent.space.width * scope.$parent.$parent.scale.x / 2) : 0);
-				scope.cardStyle.top = yy + (!vertical ? (scope.$parent.space.height * scope.$parent.$parent.scale.y / 2) : 0);
+				scope.cardStyle.left = xx + (vertical ? (scope.space.width * scale.x / 2) : 0);
+				scope.cardStyle.top = yy + (!vertical ? (scope.space.height * scale.y / 2) : 0);
 				//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-				element.rotate(scope.$parent.space.appearance.innerStyle.rotate + 'deg');
+				element.rotate(scope.$parent.space.appearance.innerStyle.rotate);
 				scope.cardStyle.content = '""';
-				if (ss.startsWithString(scope.$parent.space.name, 'User')) {
-					if (scope.card.appearance.effects.length === 0) {
-						var $t2 = scope.card.appearance.effects;
-						var $t1 = global.CardGameEffectBendOptions.$ctor();
-						$t1.degrees = 15;
-						ss.add($t2, new global.Effect$Bend($t1));
+				if (ss.startsWithString(scope.space.name, 'User')) {
+					if (scope.card.appearance.effectNames.length === 0) {
+						ss.add(scope.card.appearance.effectNames, 'bend'.toString());
 					}
 				}
 				else {
-					for (var index = scope.card.appearance.effects.length - 1; index >= 0; index--) {
-						var cardGameAppearanceEffect = scope.card.appearance.effects[index];
-						if (cardGameAppearanceEffect.type === 2) {
-							ss.remove(scope.card.appearance.effects, cardGameAppearanceEffect);
+					for (var index = scope.card.appearance.effectNames.length - 1; index >= 0; index--) {
+						var cardGameAppearanceEffect = scope.card.appearance.effectNames[index];
+						if (ss.referenceEquals(cardGameAppearanceEffect, 'bend'.toString())) {
+							ss.remove(scope.card.appearance.effectNames, cardGameAppearanceEffect);
 						}
 					}
 				}
-				for (var $t3 = 0; $t3 < scope.card.appearance.effectNames.length; $t3++) {
-					var effect = scope.card.appearance.effectNames[$t3];
+				for (var $t1 = 0; $t1 < scope.card.appearance.effectNames.length; $t1++) {
+					var effect = scope.card.appearance.effectNames[$t1];
 					var grabbedEffect = this.$myEffectManager.getEffectByName(effect);
 					if (ss.isNullOrUndefined(grabbedEffect)) {
 						continue;
 					}
 					switch (grabbedEffect.type) {
 						case 'highlight': {
-							var $t4 = global.CardGameEffectHighlightOptions.$ctor();
-							$t4.color = grabbedEffect.getPropertyByName(String).call(grabbedEffect, 'color');
-							$t4.radius = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'radius');
-							$t4.rotate = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'rotate');
-							$t4.offsetX = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'offsetx');
-							$t4.offsetY = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'offsety');
-							$t4.opacity = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'opacity');
-							var _effect = new global.Effect$Highlight($t4);
+							var $t2 = global.CardGameEffectHighlightOptions.$ctor();
+							$t2.color = grabbedEffect.getPropertyByName(String).call(grabbedEffect, 'color');
+							$t2.radius = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'radius');
+							$t2.rotate = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'rotate');
+							$t2.offsetX = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'offsetx');
+							$t2.offsetY = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'offsety');
+							$t2.opacity = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'opacity');
+							var _effect = new global.Effect$Highlight($t2);
 							var beforeStyle = {};
 							beforeStyle['display'] = 'block';
 							beforeStyle['position'] = 'relative';
@@ -626,11 +634,11 @@
 							break;
 						}
 						case 'bend': {
-							var $t5 = global.CardGameEffectBendOptions.$ctor();
-							$t5.degrees = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'degrees');
-							var bEffect = new global.Effect$Bend($t5);
+							var $t3 = global.CardGameEffectBendOptions.$ctor();
+							$t3.degrees = grabbedEffect.getPropertyByName(Number).call(grabbedEffect, 'degrees');
+							var bEffect = new global.Effect$Bend($t3);
 							var rotate = ss.replaceAllString(element.css('transform'), ' scale(1, 1)', '');
-							element.rotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.$parent.space.pile.cards.length - 1) * cardIndex + $CardGameUI_Directives_AcgDrawCardDirective.noTransformRotate(rotate) + 'deg');
+							element.rotate(-bEffect.degrees / 2 + bEffect.degrees / (scope.space.pile.cards.length - 1) * cardIndex + $CardGameUI_Directives_AcgDrawCardDirective.noTransformRotate(rotate));
 							break;
 						}
 						case 'styleProperty': {
@@ -645,26 +653,62 @@
 			var keys = {};
 			keys['content'] = 'url(\'http://content.anycardgame.com/assets/cards/' + (100 + (scope.card.value + 1) + scope.card.type * 13) + '.gif\')';
 			$CardGameUI_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
-			scope.$watch('$parent.space', function() {
-				console.log('ac');
-				redrawCard();
-			}, true);
-			scope.$watch('card.appearance.effectNames', function() {
-				console.log('b');
-				redrawCard();
-			}, true);
-			scope.$watch(ss.mkdel(this, function(_scope) {
-				var effects = [];
-				for (var $t6 = 0; $t6 < _scope.card.appearance.effectNames.length; $t6++) {
-					var ef = _scope.card.appearance.effectNames[$t6];
-					var _ef = this.$myEffectManager.getEffectByName(ef);
-					ss.add(effects, _ef);
-				}
-				return effects;
-			}), function() {
-				console.log('c');
-				redrawCard();
-			}, true);
+			//   redrawCard();
+			//
+			//                          
+			// 
+			//            scope.watch("$parent.space", () =>
+			//
+			//                          
+			// 
+			//            {
+			//
+			//                          
+			// 
+			//            Console.Log("ac");
+			//
+			//                          
+			// 
+			//            redrawCard();
+			//
+			//                          
+			// 
+			//            }, true);
+			//
+			//                          
+			// 
+			//            scope.watch("card.appearance.effectNames.join()", () =>
+			//
+			//                          
+			// 
+			//            {
+			//
+			//                          
+			// 
+			//            Console.Log("b");
+			//
+			//                          
+			// 
+			//            redrawCard();
+			//
+			//                          
+			// 
+			//            }, true);
+			//scope.watch<CardScope>((_scope) =>
+			//{
+			//
+			//List<Effect> effects = new List<Effect>();
+			//
+			//foreach (var ef in _scope.Card.Appearance.EffectNames)
+			//{
+			//var _ef = myEffectManager.GetEffectByName(ef);
+			//effects.Add(_ef);
+			//}
+			//return effects;
+			//}, () => {
+			//Console.Log("c");
+			//redrawCard();
+			//}, true);
 			redrawCard();
 		}
 	};
@@ -676,6 +720,9 @@
 		return ss.formatString('rotate({0}deg)', ar);
 	};
 	$CardGameUI_Directives_AcgDrawCardDirective.noTransformRotate = function(ar) {
+		if (ar === '') {
+			return 0;
+		}
 		return parseFloat(ss.replaceAllString(ss.replaceAllString(ar, 'rotate(', ''), 'deg)', ''));
 		//todo regex??
 	};
@@ -717,24 +764,25 @@
 	};
 	$CardGameUI_Directives_AcgDrawSpaceDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
+			var scale = scope.$parent['$parent'].scale;
 			element.attr('class', 'space ' + ss.formatString('space{0}', scope.space.name));
 			element.resizable({
-				grid: [scope.$parent.scale.x, scope.$parent.scale.y],
+				grid: [scale.x, scale.y],
 				minHeight: -1,
 				minWidth: -1,
 				handles: 'n, e, s, w,nw,sw,ne,se',
 				resize: function(ev, ele) {
-					scope.space.width = ele.size.width / scope.$parent.scale.x;
-					scope.space.height = ele.size.height / scope.$parent.scale.y;
+					scope.space.width = ele.size.width / scale.x;
+					scope.space.height = ele.size.height / scale.y;
 					scope.$apply();
 				}
 			});
 			element.draggable({
 				cursor: 'crosshair',
-				grid: [scope.$parent.scale.x, scope.$parent.scale.y],
+				grid: [scale.x, scale.y],
 				drag: function(ev1, ele1) {
-					scope.space.x = ele1.position.left / scope.$parent.scale.x;
-					scope.space.y = ele1.position.top / scope.$parent.scale.y;
+					scope.space.x = ele1.position.left / scale.x;
+					scope.space.y = ele1.position.top / scale.y;
 					scope.$apply();
 				}
 			});
@@ -754,10 +802,10 @@
 			$CardGameUI_Directives_AcgDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
 			scope.spaceStyle = {};
 			scope.spaceStyle.position = 'absolute';
-			scope.spaceStyle.left = scope.space.x * scope.$parent.scale.x;
-			scope.spaceStyle.top = scope.space.y * scope.$parent.scale.y;
-			scope.spaceStyle.width = scope.space.width * scope.$parent.scale.x;
-			scope.spaceStyle.height = scope.space.height * scope.$parent.scale.y;
+			scope.spaceStyle.left = scope.space.x * scale.x;
+			scope.spaceStyle.top = scope.space.y * scale.y;
+			scope.spaceStyle.width = scope.space.width * scale.x;
+			scope.spaceStyle.height = scope.space.height * scale.y;
 			scope.spaceStyle.backgroundColor = 'red';
 			for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
 				var effect = scope.space.appearance.effects[$t1];
@@ -829,6 +877,48 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Directives.AcgSpacesDirective
+	var $CardGameUI_Directives_AcgSpacesDirective = function(compile, gameContentManager) {
+		this.$myCompile = null;
+		this.$myGameContentManager = null;
+		this.link = null;
+		this.template = null;
+		this.restrict = null;
+		this.replace = false;
+		this.transclude = false;
+		this.scope = null;
+		this.$myCompile = compile;
+		this.$myGameContentManager = gameContentManager;
+		this.restrict = 'EA';
+		this.template = '\r\n    <div  >\r\n        \r\n    </div>';
+		this.replace = true;
+		this.transclude = false;
+		this.scope = { spaces: '=acgSpaces' };
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$CardGameUI_Directives_AcgSpacesDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			var updater = ss.mkdel(this, function() {
+				element.empty();
+				var content = '<div>\r\n    <div acg-draw-space ng-style=\'spaceStyle\'>\r\n        <div ng-repeat=\'card in space.pile.cards\' acg-draw-card ng-style=\'cardStyle\' ng-click=\'cardClick()\'>\r\n        </div>\r\n    </div> \r\n</';
+				angular.forEach(scope.spaces, ss.mkdel(this, function(space) {
+					var e = angular.element(content);
+					var _scope = scope['$new']();
+					_scope.space = space;
+					this.$myCompile(e.contents())(_scope);
+					element.append(e);
+				}));
+			});
+			//scope["$watch"]("spaces",updater);
+			this.$myGameContentManager.redraw = ss.delegateCombine(this.$myGameContentManager.redraw, function() {
+				console.log('updatinggagaga');
+				updater();
+				scope['$apply']();
+			});
+			updater();
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Directives.ChatBoxDirective
 	var $CardGameUI_Directives_ChatBoxDirective = function() {
 		this.link = null;
@@ -880,7 +970,7 @@
 				scope.bind = item;
 			};
 			scope.currentStyle = function(item1) {
-				return { backgroundColor: (ss.referenceEquals(item1, scope.bind) ? 'white' : 'red') };
+				return { backgroundColor: (ss.referenceEquals(item1, scope.bind) ? 'blue' : 'white') };
 			};
 		}
 	};
@@ -1128,6 +1218,7 @@
 		this.card = null;
 		this.cardStyle = null;
 		this.cardClick = null;
+		this.space = null;
 		this.$parent = null;
 		CardGameUI.Scope.BaseScope.call(this);
 	};
@@ -1519,6 +1610,7 @@
 	// CardGameUI.Services.EffectManagerService
 	var $CardGameUI_Services_EffectManagerService = function() {
 		this.effects = null;
+		this.effects = [];
 	};
 	$CardGameUI_Services_EffectManagerService.prototype = {
 		getEffectByName: function(effect) {
@@ -1535,6 +1627,11 @@
 	// CardGameUI.Services.EffectWatcherService
 	var $CardGameUI_Services_EffectWatcherService = function() {
 		this.applyEffect = null;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Services.GameContentManager
+	var $CardGameUI_Services_GameContentManager = function() {
+		this.redraw = null;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Services.GatewayService
@@ -1638,25 +1735,12 @@
 		return m;
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// CardGameUI.Util.Point
-	var $CardGameUI_Util_Point = function() {
-	};
-	$CardGameUI_Util_Point.createInstance = function() {
-		return $CardGameUI_Util_Point.$ctor();
-	};
-	$CardGameUI_Util_Point.$ctor = function() {
-		var $this = {};
-		$this.x = 0;
-		$this.y = 0;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// Client.BuildAngular
 	var $Client_BuildAngular = function() {
 	};
 	$Client_BuildAngular.setup = function(gatewayServer) {
-		angular.module('acg', ['ui.utils']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', function(scope, effectWatcher, clientGameManagerService) {
-			return new $CardGameUI_Controllers_GameController(scope, effectWatcher, clientGameManagerService);
+		angular.module('acg', ['ui.utils']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', 'gameContentManager', 'effectManager', function(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager) {
+			return new $CardGameUI_Controllers_GameController(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager);
 		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope1, editEffects, effectWatcher1, effectmanager) {
 			return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1, effectmanager);
 		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
@@ -1689,6 +1773,8 @@
 			return new $CardGameUI_Services_ClientSiteManagerService(gatewayService3);
 		}]).service('gateway', ['gatewayServerURL', function(serverUrl) {
 			return new $CardGameUI_Services_GatewayService(serverUrl);
+		}]).service('gameContentManager', [function() {
+			return new $CardGameUI_Services_GameContentManager();
 		}]).directive('draggable', [function() {
 			return new $CardGameUI_Directives_DraggableDirective();
 		}]).directive('floatingWindow', [function() {
@@ -1699,10 +1785,12 @@
 			return new $CardGameUI_Directives_ChatBoxDirective();
 		}]).directive('property', [function() {
 			return new $CardGameUI_Directives_PropertyDirective();
-		}]).directive('acgDrawCard', ['effectManager', function(effectManager) {
-			return new $CardGameUI_Directives_AcgDrawCardDirective(effectManager);
+		}]).directive('acgDrawCard', ['effectManager', function(effectManager1) {
+			return new $CardGameUI_Directives_AcgDrawCardDirective(effectManager1);
 		}]).directive('acgDrawSpace', [function() {
 			return new $CardGameUI_Directives_AcgDrawSpaceDirective();
+		}]).directive('acgSpaces', ['$compile', 'gameContentManager', function(compile1, gameContentManager1) {
+			return new $CardGameUI_Directives_AcgSpacesDirective(compile1, gameContentManager1);
 		}]);
 	};
 	$Client_BuildAngular.$buildRouteProvider = function(provider) {
@@ -2835,6 +2923,7 @@
 	ss.registerClass(global, 'CardGameUI.Controllers.GameController', $CardGameUI_Controllers_GameController);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawCardDirective', $CardGameUI_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawSpaceDirective', $CardGameUI_Directives_AcgDrawSpaceDirective);
+	ss.registerClass(global, 'CardGameUI.Directives.AcgSpacesDirective', $CardGameUI_Directives_AcgSpacesDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.ChatBoxDirective', $CardGameUI_Directives_ChatBoxDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.DraggableDirective', $CardGameUI_Directives_DraggableDirective);
 	ss.registerClass(global, 'CardGameUI.Directives.FancyListDirective', $CardGameUI_Directives_FancyListDirective);
@@ -2868,12 +2957,12 @@
 	ss.registerClass(global, 'CardGameUI.Services.ClientSiteManagerService', $CardGameUI_Services_ClientSiteManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectManagerService', $CardGameUI_Services_EffectManagerService);
 	ss.registerClass(global, 'CardGameUI.Services.EffectWatcherService', $CardGameUI_Services_EffectWatcherService);
+	ss.registerClass(global, 'CardGameUI.Services.GameContentManager', $CardGameUI_Services_GameContentManager);
 	ss.registerClass(global, 'CardGameUI.Services.GatewayService', $CardGameUI_Services_GatewayService);
 	ss.registerClass(global, 'CardGameUI.Services.UIManagerService', $CardGameUI_Services_UIManagerService);
 	ss.registerClass(global, 'CardGameUI.Util.Effect', $CardGameUI_Util_Effect);
 	ss.registerClass(global, 'CardGameUI.Util.EffectProperty', $CardGameUI_Util_EffectProperty);
 	ss.registerClass(global, 'CardGameUI.Util.Extensions', $CardGameUI_Util_Extensions);
-	ss.registerClass(global, 'CardGameUI.Util.Point', $CardGameUI_Util_Point);
 	ss.registerClass(global, 'Client.BuildAngular', $Client_BuildAngular);
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
 	ss.registerClass(global, 'Client.ClientInformation', $Client_ClientInformation);

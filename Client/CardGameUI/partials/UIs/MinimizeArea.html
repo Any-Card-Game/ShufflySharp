@@ -1,0 +1,33 @@
+﻿
+<style type="text/css">
+    .minimizedItem {
+        width: 100px;
+        height: 30px;
+        background-color: blueviolet;
+        border: solid 2px black;
+        moz-transition:0.5s;
+        -webkit-transition:0.5s;
+        -o-transition: 0.5s;
+        transition: 0.5s;
+    
+    }
+    .minimizedItem:hover {
+        width: 200px;
+        height: 30px;
+        background-color: rgb(177, 124, 226);
+        border: solid 2px black;
+    }
+
+    .minimizeList {
+        list-style: none;
+        z-index: 9999;
+        padding: 0;
+    }
+</style>
+<div ng-controller="MinimizeController" >
+    <div style="position:fixed; left:0px;top:40%; ">
+        <ul class="minimizeList">
+            <li class="minimizedItem" ng-repeat="item in items" ng-click="open(item)" ng-mouseover="item.hover=true" ng-mouseout="item.hover=false">{{item.title}} <button ng-click="remove(item)" ng-show="item.hover">Close</button></li>
+        </ul>
+    </div>
+</div>

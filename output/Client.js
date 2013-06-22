@@ -364,6 +364,30 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Controllers.MinimizeController
+	var $CardGameUI_Controllers_$MinimizeController = function(scope, uiManager) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
+		this.$myUIManager = uiManager;
+		scope.items = [];
+		uiManager.set_onMinimize(function(floatingWindowBaseScope) {
+			ss.add(scope.items, floatingWindowBaseScope);
+		});
+		scope.open = ss.mkdel(this, this.$openFn);
+		scope.remove = ss.mkdel(this, this.$removeFn);
+	};
+	$CardGameUI_Controllers_$MinimizeController.prototype = {
+		$removeFn: function(arg) {
+			arg.close();
+			ss.remove(this.$myScope.items, arg);
+		},
+		$openFn: function(arg) {
+			arg.restore();
+			ss.remove(this.$myScope.items, arg);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Controllers.QuestionController
 	var $CardGameUI_Controllers_$QuestionController = function(scope, uiManager, clientGameManagerService) {
 		this.$myScope = null;
@@ -1022,13 +1046,15 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Directives.FloatingWindowDirective
-	var $CardGameUI_Directives_FloatingWindowDirective = function() {
+	var $CardGameUI_Directives_FloatingWindowDirective = function(uiManagerService) {
+		this.$myUIManagerService = null;
 		this.link = null;
 		this.templateUrl = null;
 		this.restrict = null;
 		this.replace = false;
 		this.transclude = false;
 		this.scope = null;
+		this.$myUIManagerService = uiManagerService;
 		this.restrict = 'EA';
 		this.templateUrl = 'http://content.anycardgame.com/partials/floatingWindow.html';
 		this.replace = true;
@@ -1135,8 +1161,12 @@
 				}
 				scope.positionStyles.display = 'none';
 			};
-			scope.minimize = function() {
+			scope.minimize = ss.mkdel(this, function() {
+				this.$myUIManagerService.get_onMinimize()(scope);
 				scope.positionStyles.display = 'none';
+			});
+			scope.restore = function() {
+				scope.positionStyles.display = 'block';
 			};
 		}
 	};
@@ -1176,6 +1206,7 @@
 		$this.close = null;
 		$this.minimize = null;
 		$this.maximize = null;
+		$this.restore = null;
 		$this.isMaximized = false;
 		return $this;
 	};
@@ -1371,6 +1402,14 @@
 	var $CardGameUI_Scope_LoginScope = function() {
 		this.model = null;
 		$CardGameUI_Scope_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// CardGameUI.Scope.MinimizeScope
+	var $CardGameUI_Scope_MinimizeScope = function() {
+		this.items = null;
+		this.open = null;
+		this.remove = null;
+		CardGameUI.Scope.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Scope.QuestionModel
@@ -1702,10 +1741,17 @@
 		this.onRoomJoined = null;
 		this.roomLeft = null;
 		this.clientInfo = null;
-		this.gameDrawer = null;
-		//          gameDrawer = new GameDrawer();
+		this.$1$OnMinimizeField = null;
 		this.clientInfo = $Client_ClientInformation.$ctor();
 		//            this.GameManager = new GameManager(clientGameManagerService,this);
+	};
+	$CardGameUI_Services_UIManagerService.prototype = {
+		get_onMinimize: function() {
+			return this.$1$OnMinimizeField;
+		},
+		set_onMinimize: function(value) {
+			this.$1$OnMinimizeField = value;
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CardGameUI.Util.Effect
@@ -1785,22 +1831,24 @@
 	var $Client_BuildAngular = function() {
 	};
 	$Client_BuildAngular.setup = function(gatewayServer) {
-		angular.module('acg', ['ui.utils']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', 'gameContentManager', 'effectManager', function(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager) {
-			return new $CardGameUI_Controllers_GameController(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager);
-		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope1, editEffects, effectWatcher1, effectmanager) {
-			return new $CardGameUI_Controllers_$ListEffectsController(scope1, editEffects, effectWatcher1, effectmanager);
-		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope2, editEffects1) {
-			return new $CardGameUI_Controllers_$EffectEditorController(scope2, editEffects1);
-		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', function(scope3, uiManager, clientSiteManagerService) {
-			return new $CardGameUI_Controllers_$LoginController(scope3, uiManager, clientSiteManagerService);
-		}]).controller('QuestionController', ['$scope', 'UIManager', 'clientGameManager', function(scope4, uiManager1, clientGameManagerService1) {
-			return new $CardGameUI_Controllers_$QuestionController(scope4, uiManager1, clientGameManagerService1);
-		}]).controller('HomeController', ['$scope', 'UIManager', 'clientSiteManager', function(scope5, uiManager2, clientSiteManagerService1) {
-			return new $CardGameUI_Controllers_$HomeController(scope5, uiManager2, clientSiteManagerService1);
-		}]).controller('ActiveLobbyController', ['$scope', 'UIManager', 'clientSiteManager', 'clientChatManager', '$compile', function(scope6, uiManager3, clientSiteManagerService2, clientChatManagerService, compile) {
-			return new $CardGameUI_Controllers_$ActiveLobbyController(scope6, uiManager3, clientSiteManagerService2, clientChatManagerService, compile);
-		}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope7, uiManager4) {
-			return new $CardGameUI_Controllers_$CreateRoomController(scope7, uiManager4);
+		angular.module('acg', ['ui.utils']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('MinimizeController', ['$scope', 'UIManager', function(scope, uiManager) {
+			return new $CardGameUI_Controllers_$MinimizeController(scope, uiManager);
+		}]).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', 'gameContentManager', 'effectManager', function(scope1, effectWatcher, clientGameManagerService, gameContentManager, effectManager) {
+			return new $CardGameUI_Controllers_GameController(scope1, effectWatcher, clientGameManagerService, gameContentManager, effectManager);
+		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope2, editEffects, effectWatcher1, effectmanager) {
+			return new $CardGameUI_Controllers_$ListEffectsController(scope2, editEffects, effectWatcher1, effectmanager);
+		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope3, editEffects1) {
+			return new $CardGameUI_Controllers_$EffectEditorController(scope3, editEffects1);
+		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', function(scope4, uiManager1, clientSiteManagerService) {
+			return new $CardGameUI_Controllers_$LoginController(scope4, uiManager1, clientSiteManagerService);
+		}]).controller('QuestionController', ['$scope', 'UIManager', 'clientGameManager', function(scope5, uiManager2, clientGameManagerService1) {
+			return new $CardGameUI_Controllers_$QuestionController(scope5, uiManager2, clientGameManagerService1);
+		}]).controller('HomeController', ['$scope', 'UIManager', 'clientSiteManager', function(scope6, uiManager3, clientSiteManagerService1) {
+			return new $CardGameUI_Controllers_$HomeController(scope6, uiManager3, clientSiteManagerService1);
+		}]).controller('ActiveLobbyController', ['$scope', 'UIManager', 'clientSiteManager', 'clientChatManager', '$compile', function(scope7, uiManager4, clientSiteManagerService2, clientChatManagerService, compile) {
+			return new $CardGameUI_Controllers_$ActiveLobbyController(scope7, uiManager4, clientSiteManagerService2, clientChatManagerService, compile);
+		}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope8, uiManager5) {
+			return new $CardGameUI_Controllers_$CreateRoomController(scope8, uiManager5);
 		}]).service('UIManager', ['clientGameManager', function(clientGameManagerService2) {
 			return new $CardGameUI_Services_UIManagerService(clientGameManagerService2);
 		}]).service('editEffects', [function() {
@@ -1823,8 +1871,8 @@
 			return new $CardGameUI_Services_GameContentManager();
 		}]).directive('draggable', [function() {
 			return new $CardGameUI_Directives_DraggableDirective();
-		}]).directive('floatingWindow', [function() {
-			return new $CardGameUI_Directives_FloatingWindowDirective();
+		}]).directive('floatingWindow', ['UIManager', function(uiManagerService) {
+			return new $CardGameUI_Directives_FloatingWindowDirective(uiManagerService);
 		}]).directive('fancyList', [function() {
 			return new $CardGameUI_Directives_FancyListDirective();
 		}]).directive('chatBox', [function() {
@@ -1871,15 +1919,6 @@
 				window.scrollTo(0, 0);
 				e.stopImmediatePropagation();
 			});
-			var dvGame = document.createElement('div');
-			$('body').append(dvGame);
-			dvGame.id = 'dvGame';
-			dvGame.style.left = '0%';
-			dvGame.style.position = 'absolute';
-			dvGame.style.top = '0';
-			dvGame.style.right = '0';
-			dvGame.style.bottom = '0';
-			dvGame.style['-webkit-transform'] = 'scale(1.2)';
 			document.body.style['overflow'] = 'hidden';
 			document.body.addEventListener('contextmenu', function(e1) {
 				//  e.PreventDefault();
@@ -2095,316 +2134,6 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.ShufflyGame.GameDrawer
-	var $Client_ShufflyGame_GameDrawer = function() {
-		this.$cardImages = null;
-		this.cards = {};
-		this.$resetStyles = ['border-radius', '-moz-border-radius', 'left', 'top', '-webkit-border-radius', 'box-shadow', '-moz-box-shadow', 'transform', '-webkit-transform', 'padding', 'background-color', 'border'];
-		this.spaces = {};
-		this.$cardImages = {};
-		for (var i = 101; i < 153; i++) {
-			var img = new Image();
-			var domain = 'http://content.anycardgame.com/assets';
-			var src = domain + '/cards/' + i;
-			var jm;
-			img.src = jm = src + '.gif';
-			this.$cardImages[jm] = img;
-		}
-	};
-	$Client_ShufflyGame_GameDrawer.prototype = {
-		draw: function(data) {
-			for (var $t1 = 0; $t1 < data.spaces.length; $t1++) {
-				var space = data.spaces[$t1];
-				space.appearance = this.$fixAppearance(space.appearance);
-				for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
-					var card = space.pile.cards[$t2];
-					card.appearance = this.$fixAppearance(card.appearance);
-				}
-			}
-			this.drawArea(data);
-		},
-		$fixAppearance: function(appearance) {
-			return global.Appearance.fromJson(appearance);
-		},
-		drawArea: function(mainArea) {
-			this.$newDrawArea(mainArea);
-			for (var $t1 = 0; $t1 < mainArea.textAreas.length; $t1++) {
-				var ta = mainArea.textAreas[$t1];
-				//  gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
-				//  gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
-			}
-		},
-		$findSpace: function(space) {
-			var id = 'dv_space_' + space.name;
-			if (ss.isValue(this.spaces[id])) {
-				return this.spaces[id];
-			}
-			else {
-				var sp = document.createElement('div');
-				sp.id = id;
-				sp.style.position = 'absolute';
-				$('#dvGame').append(sp);
-				return this.spaces[id] = new global.SpaceDrawing(sp);
-			}
-		},
-		$findCard: function(wantedSpace, card) {
-			var id = 'dv_card_' + card.type + '_' + card.value;
-			var space = this.$findSpace(wantedSpace);
-			var doc;
-			if (ss.isValue(this.cards[id])) {
-				var m = document.getElementById(id);
-				if (!ss.referenceEquals(m.parentNode, space.outerElement)) {
-					m.parentNode.removeChild(m);
-					space.outerElement.appendChild(m);
-				}
-				doc = this.cards[id];
-			}
-			else {
-				var sp = document.createElement('div');
-				sp.id = id;
-				$(space.outerElement).append(sp);
-				var cardImage = this.$cloneImage(this.$cardImages[this.drawCard(card)]);
-				sp.appendChild(cardImage);
-				sp.style.position = 'absolute';
-				doc = this.cards[id] = new global.CardDrawing(sp);
-			}
-			return doc;
-		},
-		$newDrawArea: function(mainArea) {
-			//jQuery.Select("#dvGame").Children().Remove();
-			var scale = new CommonLibraries.Point(ss.Int32.div(document.documentElement.clientWidth, mainArea.size.width) * 0.9, ss.Int32.div(document.documentElement.clientHeight - 250, mainArea.size.height) * 0.9);
-			//ExtensionMethods.debugger(null); 
-			//
-			//                        for (int spaceIndex = 0; spaceIndex < sl; spaceIndex++)
-			//
-			//                        {
-			//
-			//                        var space = mainArea.Spaces[spaceIndex];
-			//
-			//                        var jf = findSpace(space).OuterElement;
-			//
-			//                        
-			//
-			//                        for (int i = 0; i < resetStyles.Length; i++)
-			//
-			//                        {
-			//
-			//                        jf.Style[resetStyles[i]] = null;
-			//
-			//                        }
-			//
-			//                        
-			//
-			//                        l = space.Pile.Cards.Count;
-			//
-			//                        for (int index = 0; index < l; index++)
-			//
-			//                        {
-			//
-			//                        var card = space.Pile.Cards[index];
-			//
-			//                        var m = findCard(space, card);
-			//
-			//                        
-			//
-			//                        for (int i = 0; i < resetStyles.Length; i++)
-			//
-			//                        {
-			//
-			//                        m.OuterElement.Style[resetStyles[i]] = null;
-			//
-			//                        m.Image.Style[resetStyles[i]] = null;
-			//
-			//                        }
-			//
-			//                        }
-			//
-			//                        }
-			for (var $t1 = 0; $t1 < mainArea.spaces.length; $t1++) {
-				var space = mainArea.spaces[$t1];
-				var vertical = space.vertical;
-				var spaceDiv = this.$findSpace(space);
-				// var spaceDivJ = jQuery.FromElement(spaceDiv);
-				//ExtensionMethods.debugger();
-				var cl = space.appearance.effects.length;
-				for (var i = 0; i < cl; i++) {
-					var effect = space.appearance.effects[i];
-					effect.build$1(spaceDiv);
-				}
-				spaceDiv.outerElementStyle.set_width(global.domUtils.px(space.width * scale.x));
-				spaceDiv.outerElementStyle.set_height(global.domUtils.px(space.height * scale.y));
-				//   gameboard.Context.FillRect(space.X * scale.X, space.Y * scale.Y, space.Width * scale.X, space.Height * scale.Y);
-				var spaceScale = new CommonLibraries.Point(space.width / space.pile.cards.length, space.height / space.pile.cards.length);
-				var j = 0;
-				var numOfCards = space.pile.cards.length;
-				for (var i1 = 0; i1 < numOfCards; i1++) {
-					var card = space.pile.cards[i1];
-					var xx = 0;
-					var yy = 0;
-					switch (space.resizeType) {
-						case 1: {
-							if (vertical) {
-								yy = card.value * scale.y / 2;
-							}
-							else {
-								xx = card.value * scale.x / 2;
-							}
-							break;
-						}
-						case 0: {
-							xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
-							yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
-							break;
-						}
-						default: {
-							xx = (!vertical ? (j * spaceScale.x * scale.x) : 0);
-							yy = (vertical ? (j * spaceScale.y * scale.y) : 0);
-							break;
-						}
-					}
-					var cardDiv = this.$findCard(space, card);
-					xx -= global.domUtils.nopx(cardDiv.outerElementStyle.get_width()) / 2;
-					yy -= global.domUtils.nopx(cardDiv.outerElementStyle.get_height()) / 2;
-					cardDiv.outerElementStyle.set_borderRadius('5px');
-					cardDiv.outerElementStyle.set_boxShadow('3px 3px 2px #2c2c2c');
-					this.$styleAppearanceFromSpace(cardDiv, j, space);
-					this.$styleAppearance(cardDiv, card.appearance);
-					spaceDiv.outerElementStyle.set_left(global.domUtils.px(space.x * scale.x));
-					spaceDiv.outerElementStyle.set_top(global.domUtils.px(space.y * scale.y));
-					//cardDiv.OuterElement.Style["transform"] = 0.0.TransformRotate();
-					cardDiv.outerElementStyle.set_left(global.domUtils.px(xx + (vertical ? (space.width * scale.x / 2) : 0)));
-					cardDiv.outerElementStyle.set_top(global.domUtils.px(yy + (!vertical ? (space.height * scale.y / 2) : 0)));
-					cardDiv.outerElementStyle.set_transform(global.domUtils.transformRotate(space.appearance.innerStyle.rotate));
-					cardDiv.outerElementStyle.setStyle(cardDiv.outerElement);
-					this.fixBrowserPrefixes(cardDiv.outerElement.style);
-					//                    spaceDiv.AppendChild(cardDiv);
-					j++;
-					//effects
-				}
-				var el = space.appearance.effects.length;
-				for (var i2 = 0; i2 < el; i2++) {
-					var effect1 = space.appearance.effects[i2];
-					effect1.tearDown$1(spaceDiv);
-				}
-			}
-			for (var $t2 = 0; $t2 < mainArea.spaces.length; $t2++) {
-				var space1 = mainArea.spaces[$t2];
-				this.$findSpace(space1).outerElementStyle.setStyle(this.$findSpace(space1).outerElement);
-				for (var $t3 = 0; $t3 < space1.pile.cards.length; $t3++) {
-					var card1 = space1.pile.cards[$t3];
-					//   
-					var m = this.$findCard(space1, card1);
-					this.$findSpace(space1).outerElementStyle.setStyle(this.$findSpace(space1).outerElement);
-					//
-					//                                        m.ImageStyle = new MyStyle();
-					//
-					//                                        m.OuterElementStyle = new MyStyle();
-				}
-			}
-			//
-			//
-			//            foreach (var ta in mainArea.TextAreas)
-			//
-			//
-			//            {
-			//
-			//
-			//            gameboard.Context.FillStyle = "rgba(200, 0, 200, 0.5)";
-			//
-			//
-			//            gameboard.Context.FillText(ta.Text, ta.X * scale.X, ta.Y * scale.Y);
-			//
-			//
-			//            }
-		},
-		$styleAppearanceFromSpace: function(element, cardIndex, space) {
-			var appearance = space.appearance;
-			for (var $t1 = 0; $t1 < appearance.effects.length; $t1++) {
-				var cardGameAppearanceEffect = appearance.effects[$t1];
-				//   cardGameAppearanceEffect.Build(element.Item1);
-				switch (cardGameAppearanceEffect.type) {
-					case 2: {
-						var bEffect = cardGameAppearanceEffect;
-						//rotate
-						var trans = element.outerElementStyle.get_transform();
-						if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
-							element.outerElementStyle.set_transform(global.domUtils.transformRotate(-bEffect.degrees / 2 + bEffect.degrees / (space.pile.cards.length - 1) * cardIndex + global.domUtils.noTransformRotate(trans)));
-						}
-						else {
-							element.outerElementStyle.set_transform(global.domUtils.transformRotate(appearance.innerStyle.rotate));
-						}
-						break;
-					}
-				}
-			}
-			element.outerElementStyle.set_backgroundColor(appearance.innerStyle.backColor);
-		},
-		$styleAppearance: function(element, appearance) {
-			for (var $t1 = 0; $t1 < appearance.effects.length; $t1++) {
-				var cardGameAppearanceEffect = appearance.effects[$t1];
-				cardGameAppearanceEffect.build(element);
-				//new object().debugger();
-				cardGameAppearanceEffect.tearDown(element);
-			}
-			//rotate
-			var trans = element.outerElementStyle.get_transform();
-			if (ss.startsWithString(ss.coalesce(trans, ''), 'rotate(')) {
-				element.outerElementStyle.set_transform(ss.formatString('rotate({0}deg)', appearance.innerStyle.rotate + parseInt(ss.replaceAllString(ss.replaceAllString(trans, 'rotate(', ''), 'deg)', ''))));
-			}
-			else {
-				element.outerElementStyle.set_transform(ss.formatString('rotate({0}deg)', appearance.innerStyle.rotate));
-			}
-			element.outerElementStyle.set_backgroundColor(appearance.innerStyle.backColor);
-		},
-		fixBrowserPrefixes: function(cardImage) {
-			if (ss.isValue(cardImage['transform'])) {
-				cardImage['-webkit-transform'] = cardImage['transform'];
-			}
-			if (ss.isValue(cardImage['box-shadow'])) {
-				cardImage['-moz-box-shadow'] = cardImage['box-shadow'];
-				cardImage['-webkit-box-shadow'] = cardImage['box-shadow'];
-			}
-			if (ss.isValue(cardImage['border-radius'])) {
-				cardImage['-moz-border-radius'] = cardImage['box-shadow'];
-				cardImage['-webkit-border-radius'] = cardImage['box-shadow'];
-			}
-		},
-		$cloneImage: function(cardImage) {
-			var img = new Image();
-			img.src = cardImage.src;
-			return img;
-		},
-		drawCard: function(card) {
-			var src = '';
-			var domain = 'http://content.anycardgame.com/assets';
-			src = domain + '/cards/' + (100 + (card.value + 1) + card.type * 13);
-			return src + '.gif';
-		},
-		canvasOnClick: function(e) {
-			e.preventDefault();
-		},
-		canvasMouseMove: function(e) {
-			e.preventDefault();
-			document.body.style.cursor = 'default';
-		},
-		canvasMouseUp: function(e) {
-			e.preventDefault();
-		},
-		handleScroll: function(e) {
-			e.preventDefault();
-		},
-		clearCache: function() {
-			this.cards = {};
-			this.spaces = {};
-		},
-		init: function() {
-			this.clearCache();
-			$('#dvGame').width('100%');
-			$('#dvGame').height('100%');
-			$('#dvGame').empty();
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// Client.ShufflyGame.GameManager
 	var $Client_ShufflyGame_GameManager = function(clientGameManagerService, uiManagerService) {
 		this.$myClientGameManagerService = null;
@@ -2415,27 +2144,59 @@
 	};
 	$Client_ShufflyGame_GameManager.prototype = {
 		$init: function() {
-			//     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
-			//     PageHandler.QuestionUI.Load(gameSendAnswerModel);
-			//     //alert(JSON.stringify(data));
-			//     PageHandler.TimeTracker.EndTime = new DateTime();
-			//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
-			//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
-			//     };
-			this.$myClientGameManagerService.add_onUpdateState(ss.mkdel(this, function(user, update) {
-				var data = JSON.parse((new Compressor()).DecompressText(update));
-				//  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
-				this.$myUIManagerService.gameDrawer.draw(data);
-			}));
-			this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
-				//alert(JSON.stringify(data));
-			});
-			this.$myClientGameManagerService.add_onGameOver(function(user2, room1) {
-				//alert(JSON.stringify(data));
-			});
+			//
+			//            /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
+			//
+			//            PageHandler.QuestionUI.Load(gameSendAnswerModel);
+			//
+			//            //alert(JSON.stringify(data));
+			//
+			//            PageHandler.TimeTracker.EndTime = new DateTime();
+			//
+			//            var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
+			//
+			//            PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
+			//
+			//            }; #1#
+			//
+			//            
+			//
+			//            myClientGameManagerService.OnUpdateState += (user, update) =>
+			//
+			//            {
+			//
+			//            var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
+			//
+			//            //  gameContext.Context.ClearRect(0, 0, gameContext.CanvasInfo.canvas.Width, gameContext.CanvasInfo.canvas.Height);
+			//
+			//            
+			//
+			//            myUIManagerService.gameDrawer.Draw(data);
+			//
+			//            };
+			//
+			//            
+			//
+			//            myClientGameManagerService.OnGameStarted += (user, room) =>
+			//
+			//            {
+			//
+			//            //alert(JSON.stringify(data));
+			//
+			//            };
+			//
+			//            
+			//
+			//            myClientGameManagerService.OnGameOver += (user, room) =>
+			//
+			//            {
+			//
+			//            //alert(JSON.stringify(data));
+			//
+			//            };
 		},
 		startGame: function() {
-			this.$myUIManagerService.gameDrawer.init();
+			//            myUIManagerService.gameDrawer.Init();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2965,6 +2726,7 @@
 	ss.registerClass(null, 'CardGameUI.Controllers.$HomeController', $CardGameUI_Controllers_$HomeController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$ListEffectsController', $CardGameUI_Controllers_$ListEffectsController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$LoginController', $CardGameUI_Controllers_$LoginController);
+	ss.registerClass(null, 'CardGameUI.Controllers.$MinimizeController', $CardGameUI_Controllers_$MinimizeController);
 	ss.registerClass(null, 'CardGameUI.Controllers.$QuestionController', $CardGameUI_Controllers_$QuestionController);
 	ss.registerClass(global, 'CardGameUI.Controllers.GameController', $CardGameUI_Controllers_GameController);
 	ss.registerClass(global, 'CardGameUI.Directives.AcgDrawCardDirective', $CardGameUI_Directives_AcgDrawCardDirective);
@@ -2993,6 +2755,7 @@
 	ss.registerClass(global, 'CardGameUI.Scope.ListEffectsScope', $CardGameUI_Scope_ListEffectsScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.LoginModel', $CardGameUI_Scope_LoginModel);
 	ss.registerClass(global, 'CardGameUI.Scope.LoginScope', $CardGameUI_Scope_LoginScope, $CardGameUI_Scope_FloatingWindowBaseScope);
+	ss.registerClass(global, 'CardGameUI.Scope.MinimizeScope', $CardGameUI_Scope_MinimizeScope, CardGameUI.Scope.BaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.QuestionModel', $CardGameUI_Scope_QuestionModel);
 	ss.registerClass(global, 'CardGameUI.Scope.QuestionScope', $CardGameUI_Scope_QuestionScope, $CardGameUI_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'CardGameUI.Scope.SpaceScope', $CardGameUI_Scope_SpaceScope, CardGameUI.Scope.BaseScope);
@@ -3015,7 +2778,6 @@
 	ss.registerClass(global, 'Client.PageHandler', $Client_PageHandler);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
 	ss.registerClass(global, 'Client.Libs.TimeTracker', $Client_Libs_TimeTracker);
-	ss.registerClass(global, 'Client.ShufflyGame.GameDrawer', $Client_ShufflyGame_GameDrawer);
 	ss.registerClass(global, 'Client.ShufflyGame.GameManager', $Client_ShufflyGame_GameManager);
 	ss.registerClass(global, 'Client.UIWindow.ActiveLobbyUI', $Client_UIWindow_ActiveLobbyUI);
 	ss.registerClass(global, 'Client.UIWindow.CodeEditorUI', $Client_UIWindow_CodeEditorUI);

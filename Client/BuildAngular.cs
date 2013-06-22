@@ -16,6 +16,7 @@ namespace Client
                  .config(new object[] {"$routeProvider",new Action<IRouteProviderProvider>(buildRouteProvider)})
                  .config(new object[] {"$httpProvider", new Action<dynamic>(buildHttpProvider)})
                  .value("gatewayServerURL", gatewayServer)
+                 .controller("MinimizeController", new object[] { "$scope", "UIManager", new Func<MinimizeScope, UIManagerService, object>((scope, uiManager) => new MinimizeController(scope, uiManager)) })
                  .controller("GameController", new object[] { "$scope", "effectWatcher", "clientGameManager", "gameContentManager", "effectManager", new Func<GameCtrlScope, EffectWatcherService, ClientGameManagerService, GameContentManager, EffectManagerService, object>((scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager) => new GameController(scope, effectWatcher, clientGameManagerService, gameContentManager, effectManager)) })
                  .controller("ListEffectsController", new object[] { "$scope", "editEffects", "effectWatcher", "effectManager", new Func<ListEffectsScope, EditEffectService, EffectWatcherService, EffectManagerService, object>((scope, editEffects, effectWatcher, effectmanager) => new ListEffectsController(scope, editEffects, effectWatcher, effectmanager)) })
                  .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
@@ -36,7 +37,7 @@ namespace Client
                  .service("gameContentManager", new object[] { new Func<object>(() => new GameContentManager()) })
                  
                  .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
-                 .directive("floatingWindow", new object[] { new Func<object>(() => new FloatingWindowDirective()) })
+                 .directive("floatingWindow", new object[] { "UIManager",new Func<UIManagerService, object>((uiManagerService) => new FloatingWindowDirective(uiManagerService)) })
                  .directive("fancyList", new object[] { new Func<object>(() => new FancyListDirective()) })
                  .directive("chatBox", new object[] { new Func<object>(() => new ChatBoxDirective()) })
                  .directive("property", new object[] { new Func<object>(() => new PropertyDirective()) })

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CardGameUI.Scope;
+using CardGameUI.Services;
 using CardGameUI.Util;
 using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
@@ -11,14 +12,16 @@ namespace CardGameUI.Directives
 
      public class FloatingWindowDirective
     {
+         private readonly UIManagerService myUIManagerService;
          public Action<FloatingWindowScope, jQueryObject, dynamic> link;
         public string templateUrl;
         public string restrict;
         public bool replace;
         public bool transclude;
         public dynamic scope;
-        public FloatingWindowDirective()
+        public FloatingWindowDirective(UIManagerService uiManagerService)
         {
+            myUIManagerService = uiManagerService;
             restrict = "EA";
             templateUrl = "http://content.anycardgame.com/partials/floatingWindow.html";
             replace = true;
@@ -130,7 +133,12 @@ namespace CardGameUI.Directives
              };
              scope.Minimize = () =>
              {
+                 myUIManagerService.OnMinimize(scope);
                  scope.PositionStyles.Display = "none";
+             };
+             scope.Restore = () =>
+             {
+                 scope.PositionStyles.Display = "block";
              };
 
          }
@@ -158,6 +166,7 @@ namespace CardGameUI.Directives
         public Action Close { get; set; }
         public Action Minimize { get; set; }
         public Action Maximize { get; set; }
+        public Action Restore { get; set; }
         public bool IsMaximized { get; set; }
     }
 

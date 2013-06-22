@@ -86,15 +86,7 @@ namespace Client
                 e.StopImmediatePropagation();
             });
 
-            Element dvGame = Document.CreateElement("div");
-            jQuery.Select("body").Append(dvGame);
-            dvGame.ID = "dvGame";
-            dvGame.Style.Left = "0%";
-            dvGame.Style.Position = "absolute";
-            dvGame.Style.Top = "0";
-            dvGame.Style.Right = "0";
-            dvGame.Style.Bottom = "0";
-            dvGame.Style["-webkit-transform"] = "scale(1.2)";
+ 
             Document.Body.Style["overflow"] = "hidden";
 
             Document.Body.AddEventListener("contextmenu",

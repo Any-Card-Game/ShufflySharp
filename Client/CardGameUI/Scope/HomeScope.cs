@@ -7,16 +7,10 @@ using Models.SiteManagerModels;
 using WebLibraries.ShuffUI.ShuffUI;
 namespace CardGameUI.Scope
 {
-
-    
-    
-
     public class HomeScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
-        public HomeModel Model { get; set; }
-
-      
+        public HomeModel Model { get; set; } 
     }
     [Serializable]
     public class HomeModel

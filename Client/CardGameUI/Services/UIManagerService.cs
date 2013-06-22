@@ -1,5 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
+using CardGameUI.Directives;
+using CardGameUI.Scope;
 using CardGameUI.Util;
 using Client;
 using Client.ShufflyGame;
@@ -26,16 +28,15 @@ namespace CardGameUI.Services
 //        public GameManager GameManager { get; set; }
         [IntrinsicProperty]
         public ClientInformation ClientInfo { get; set; }
+        public Action<FloatingWindowScope> OnMinimize { get; set; }
+
         public UIManagerService(ClientGameManagerService clientGameManagerService)
-        {
-  //          gameDrawer = new GameDrawer();
+        { 
 
             ClientInfo = new ClientInformation();
 //            this.GameManager = new GameManager(clientGameManagerService,this);
 
-        }
-        
-        public readonly GameDrawer gameDrawer;
+        } 
 
     }
 }

@@ -22,14 +22,14 @@ namespace Client.ShufflyGame
         private void Init( )
         {
 
-
+/*
             /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
                                                         PageHandler.QuestionUI.Load(gameSendAnswerModel);
                                                         //alert(JSON.stringify(data));
                                                         PageHandler.TimeTracker.EndTime = new DateTime();
                                                         var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
                                                       PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
-                                                    }; */
+                                                    }; #1#
 
             myClientGameManagerService.OnUpdateState += (user, update) =>
             {
@@ -47,7 +47,7 @@ namespace Client.ShufflyGame
             myClientGameManagerService.OnGameOver += (user, room) =>
             {
                                                 //alert(JSON.stringify(data));
-                                            };
+                                            };*/
 
         }
 
@@ -56,7 +56,7 @@ namespace Client.ShufflyGame
  
         public void StartGame()
         {
-            myUIManagerService.gameDrawer.Init();
+//            myUIManagerService.gameDrawer.Init();
 
         }
 

@@ -36,17 +36,17 @@ namespace CardGameUI.Directives
             link = LinkFn;
 
         }
-        public void SwingBack(FloatingWindowScope scope,jQueryObject element)
+        public void SwingBack(FloatingWindowScope scope,jQueryObject element, Action callback)
         {
             JsDictionary<string, object> js = new JsDictionary<string, object>();
 
             js["left"] = scope.Left ;
             js["top"] = scope.Top ;
 
-            element.Animate(js, EffectDuration.Fast, EffectEasing.Swing);
+            element.Animate(js, EffectDuration.Fast, EffectEasing.Swing,callback);
         }
 
-        public void SwingAway(SwingDirection direction, bool simulate , jQueryObject element)
+        public void SwingAway(SwingDirection direction, bool simulate , jQueryObject element, Action callback)
         {
             JsDictionary<string, object> js = new JsDictionary<string, object>();
 
@@ -85,18 +85,18 @@ namespace CardGameUI.Directives
             }
 
             if (simulate) element.CSS(js);
-            else element.Animate(js, EffectDuration.Slow, EffectEasing.Swing);
+            else element.Animate(js, EffectDuration.Slow, EffectEasing.Swing,callback);
         }
 
          private void LinkFn(FloatingWindowScope scope, jQueryObject element, dynamic attr)
          {
-             scope.Parent.SwingAway = (a, b) =>
+             scope.Parent.SwingAway = (a, b,c) =>
              {
-                 SwingAway(a, b, element);
+                 SwingAway(a, b, element,c);
              };
-             scope.Parent.SwingBack = () =>
+             scope.Parent.SwingBack = (c) =>
              {
-                 SwingBack(scope, element);
+                 SwingBack(scope, element,c);
              };
              scope.PositionStyles = new FloatingWindowPosition() {  Left = scope.Left, Top = scope.Top, Display = "block" };
              scope.SizeStyle = new Size() { Width = scope.Width, Height = scope.Height, };

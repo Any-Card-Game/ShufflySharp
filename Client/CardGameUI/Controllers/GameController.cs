@@ -37,11 +37,67 @@ namespace CardGameUI.Controllers
                                                       PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
                                                     }; */
 
+            var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
+            {
+                var document = (dynamic)Script.Eval("window.document");
+
+                var sheet = document.head.appendChild(style).sheet;
+                return (selector, css) =>
+                {
+                    var propText = Object.Keys(css).Map((p) =>
+                    {
+                        return p + ":" + css[p];
+                    }).Join(";");
+                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+
+                };
+            }))(Document.CreateElement("style"));
+
+
+
             myClientGameManagerService.OnUpdateState += (user, update) =>
             {
                 var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
 
+                                                            var create = false;
+                if (scope.MainArea == null) {
+                    create = true;
+                }
+
                 scope.MainArea = data;
+
+
+                if (create) {
+                    scope.Scale = new Point(jQueryApi.jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ((jQueryApi.jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9);
+
+                    foreach (var space in scope.MainArea.Spaces)
+                    {
+                        addRule(".space" + space.Name, new JsDictionary<string, object>());
+                        addRule(".space" + space.Name + "::before", new JsDictionary<string, object>());
+                        addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
+
+
+                        foreach (var card in space.Pile.Cards)
+                        {
+                            card.Appearance.EffectNames = new List<string>();
+
+                            if (space.Name.StartsWith("User"))
+                            {
+                                card.Appearance.EffectNames.Add("bend");
+
+                            }
+
+                            addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
+                            addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
+                            addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
+                        }
+                    }
+
+                }
+
+                
+
+
                 scope.Apply();
                 myGameContentManager.Redraw();
 
@@ -59,55 +115,17 @@ namespace CardGameUI.Controllers
 
 
 
-            scope.MainArea = (GameCardGame)Script.Eval("loadMainArea()");
+            scope.MainArea = null;
             scope.SelectedCard = null;
 
-            var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
-            {
-                var document = (dynamic)Script.Eval("window.document");
-
-                var sheet = document.head.appendChild(style).sheet;
-                return (selector, css) =>
-                {
-                    var propText = Object.Keys(css).Map((p) =>
-                    {
-                        return p + ":" + css[p];
-                    }).Join(";");
-                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
-
-                };
-            }))(Document.CreateElement("style"));
 
             //new Action<string,JsDictionary<string,object>>()
 
-            foreach (var space in scope.MainArea.Spaces)
-            {
-                addRule(".space" + space.Name, new JsDictionary<string, object>());
-                addRule(".space" + space.Name + "::before", new JsDictionary<string, object>());
-                addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
-
-
-                foreach (var card in space.Pile.Cards)
-                {
-                    card.Appearance.EffectNames = new List<string>();
-
-                    if (space.Name.StartsWith("User"))
-                    {
-                        card.Appearance.EffectNames.Add("bend");
-
-                    }
-
-                    addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
-                    addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
-                    addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
-                }
-            }
             
 
 
-            scope.Scale = new Point(jQueryApi.jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ( ( jQueryApi.jQuery.Window.GetHeight() - 250 ) / scope.MainArea.Size.Height ) * .9);
 
-            scope.MoveCard = () =>
+           /* scope.MoveCard = () =>
             {
 
                 for (var i = 0; i < 1; i++)
@@ -189,7 +207,7 @@ namespace CardGameUI.Controllers
                         }
                     }
                 }
-            };
+            };*/
 
             effectWatcher.ApplyEffect += (effect) =>
             {

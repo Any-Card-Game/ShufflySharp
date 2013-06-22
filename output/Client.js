@@ -15,16 +15,16 @@
 		this.$myScope.model.chatLines = [];
 		this.$myScope.visible = false;
 		this.$myScope.model.windowClosed = ss.delegateCombine(this.$myScope.model.windowClosed, ss.mkdel(this, function() {
-			this.$myScope.swingAway(4, false);
+			this.$myScope.swingAway(4, false, null);
 			this.$myClientSiteManagerService.leaveRoom({ room: this.$myScope.model.room });
 			uiManager.roomLeft();
 		}));
 		uiManager.onRoomJoined = ss.mkdel(this, function(room) {
 			this.$myScope.visible = true;
-			this.$myScope.swingAway(4, true);
+			this.$myScope.swingAway(4, true, null);
 			this.$myScope.model.room = room;
 			this.$populateGameRoom(room);
-			this.$myScope.swingBack();
+			this.$myScope.swingBack(null);
 			this.$myScope.$apply();
 		});
 		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, ss.mkdel(this, function() {
@@ -74,19 +74,19 @@
 		this.$myUIManager = uiManager;
 		this.$myScope.model = $CardGameUI_Scope_CreateRoomModel.$ctor();
 		this.$myScope.model.windowClosed = ss.mkdel(this, function() {
-			this.$myScope.swingAway(2, false);
+			this.$myScope.swingAway(2, false, null);
 			this.$myScope.visible = false;
 		});
 		this.$myScope.model.createRoom = ss.mkdel(this, this.$createRoomFn);
 		uiManager.openCreateRoomDialog = ss.delegateCombine(uiManager.openCreateRoomDialog, ss.mkdel(this, function() {
 			this.$myScope.visible = true;
-			this.$myScope.swingAway(6, true);
-			this.$myScope.swingBack();
+			this.$myScope.swingAway(6, true, null);
+			this.$myScope.swingBack(null);
 		}));
 	};
 	$CardGameUI_Controllers_$CreateRoomController.prototype = {
 		$createRoomFn: function() {
-			this.$myScope.swingAway(2, false);
+			this.$myScope.swingAway(2, false, null);
 			this.$myUIManager.createRoom(this.$myScope.model.roomName);
 		}
 	};
@@ -131,7 +131,7 @@
 		//  scope.Model.RoomSelected();
 		//  });
 		this.$myUIManager.roomLeft = ss.delegateCombine(this.$myUIManager.roomLeft, ss.mkdel(this, function() {
-			this.$myScope.swingBack();
+			this.$myScope.swingBack(null);
 		}));
 		this.$myClientSiteManagerService.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
 		this.$myClientSiteManagerService.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
@@ -176,7 +176,7 @@
 		},
 		$roomJoined: function(user, o) {
 			this.$populateRoom(o.room);
-			this.$myScope.swingAway(0, false);
+			this.$myScope.swingAway(0, false, null);
 			this.$myUIManager.onRoomJoined(o.room);
 		},
 		$populateGames: function(user, o) {
@@ -200,8 +200,8 @@
 		},
 		$myUIManager_UserLoggedIn: function() {
 			this.$myScope.visible = true;
-			this.$myScope.swingAway(6, true);
-			this.$myScope.swingBack();
+			this.$myScope.swingAway(6, true, null);
+			this.$myScope.swingBack(null);
 			this.$myScope.$apply();
 			this.$myScope.model.user = this.$myUIManager.clientInfo.loggedInUser;
 			this.$myClientSiteManagerService.getGameTypes();
@@ -352,7 +352,7 @@
 		this.$myclientSiteManagerService.add_onLogin(ss.mkdel(this, function(user, data) {
 			uiManager.clientInfo.loggedInUser = user;
 			this.$myUIManager.userLoggedIn();
-			scope.swingAway(7, false);
+			scope.swingAway(7, false, null);
 		}));
 	};
 	$CardGameUI_Controllers_$LoginController.prototype = {
@@ -379,10 +379,12 @@
 		this.$myScope.model.answerQuestion = ss.mkdel(this, this.$answerQuestionFn);
 		this.$myScope.visible = false;
 		this.$myClientGameManagerService.add_onAskQuestion(ss.mkdel(this, function(user, gameSendAnswerModel) {
-			this.$myScope.visible = true;
-			this.$myScope.swingAway(0, true);
-			this.$myScope.swingBack();
-			this.$onQuestionAskedFn(gameSendAnswerModel);
+			window.setTimeout(ss.mkdel(this, function() {
+				this.$myScope.visible = true;
+				this.$myScope.swingAway(0, true, null);
+				this.$myScope.swingBack(null);
+				this.$onQuestionAskedFn(gameSendAnswerModel);
+			}), 500);
 		}));
 	};
 	$CardGameUI_Controllers_$QuestionController.prototype = {
@@ -393,8 +395,9 @@
 			this.$myScope.$apply();
 		},
 		$answerQuestionFn: function() {
-			this.$myClientGameManagerService.answerQuestion({ answer: ss.indexOf(this.$myScope.model.answers, this.$myScope.model.selectedAnswer) });
-			this.$myScope.swingAway(4, false);
+			this.$myScope.swingAway(4, false, ss.mkdel(this, function() {
+				this.$myClientGameManagerService.answerQuestion({ answer: ss.indexOf(this.$myScope.model.answers, this.$myScope.model.selectedAnswer) });
+			}));
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -419,20 +422,6 @@
 		//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
 		//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
 		//     };
-		this.$myClientGameManagerService.add_onUpdateState(ss.mkdel(this, function(user, update) {
-			var data = JSON.parse((new Compressor()).DecompressText(update));
-			scope.mainArea = data;
-			scope.$apply();
-			this.$myGameContentManager.redraw();
-		}));
-		this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
-			//alert(JSON.stringify(data));
-		});
-		this.$myClientGameManagerService.add_onGameOver(function(user2, room1) {
-			//alert(JSON.stringify(data));
-		});
-		scope.mainArea = eval('loadMainArea()');
-		scope.selectedCard = null;
 		var addRule = (function(style) {
 			var document = eval('window.document');
 			var sheet = document.head.appendChild(style).sheet;
@@ -443,73 +432,127 @@
 				sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
 			};
 		})(document.createElement('style'));
-		//new Action<string,JsDictionary<string,object>>()
-		for (var $t1 = 0; $t1 < scope.mainArea.spaces.length; $t1++) {
-			var space = scope.mainArea.spaces[$t1];
-			addRule('.space' + space.name, {});
-			addRule('.space' + space.name + '::before', {});
-			addRule('.space' + space.name + '::after', {});
-			for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
-				var card = space.pile.cards[$t2];
-				card.appearance.effectNames = [];
-				if (ss.startsWithString(space.name, 'User')) {
-					ss.add(card.appearance.effectNames, 'bend');
-				}
-				addRule('.card' + card.type + '-' + card.value + '', {});
-				addRule('.card' + card.type + '-' + card.value + '::before', {});
-				addRule('.card' + card.type + '-' + card.value + '::after', {});
+		this.$myClientGameManagerService.add_onUpdateState(ss.mkdel(this, function(user, update) {
+			var data = JSON.parse((new Compressor()).DecompressText(update));
+			var create = false;
+			if (ss.isNullOrUndefined(scope.mainArea)) {
+				create = true;
 			}
-		}
-		scope.scale = new CommonLibraries.Point(ss.Int32.div($(window).width(), scope.mainArea.size.width) * 0.9, ss.Int32.div($(window).height() - 250, scope.mainArea.size.height) * 0.9);
-		scope.moveCard = function() {
-			for (var i = 0; i < 1; i++) {
-				var card1 = null;
-				while (ss.isNullOrUndefined(card1)) {
-					var pile = $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces).pile;
-					card1 = $CardGameUI_Util_Extensions.randomElement(global.Card).call(null, pile.cards);
-					var _pile = $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces);
-					if (ss.isValue(card1) && ss.isValue(_pile)) {
-						ss.remove(card1.appearance.effectNames, 'bend');
-						if (ss.startsWithString(_pile.name, 'User')) {
-							ss.add(card1.appearance.effectNames, 'bend');
+			scope.mainArea = data;
+			if (create) {
+				scope.scale = new CommonLibraries.Point(ss.Int32.div($(window).width(), scope.mainArea.size.width) * 0.9, ss.Int32.div($(window).height() - 250, scope.mainArea.size.height) * 0.9);
+				for (var $t1 = 0; $t1 < scope.mainArea.spaces.length; $t1++) {
+					var space = scope.mainArea.spaces[$t1];
+					addRule('.space' + space.name, {});
+					addRule('.space' + space.name + '::before', {});
+					addRule('.space' + space.name + '::after', {});
+					for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
+						var card = space.pile.cards[$t2];
+						card.appearance.effectNames = [];
+						if (ss.startsWithString(space.name, 'User')) {
+							ss.add(card.appearance.effectNames, 'bend');
 						}
-						ss.remove(pile.cards, card1);
-						ss.add(_pile.pile.cards, card1);
+						addRule('.card' + card.type + '-' + card.value + '', {});
+						addRule('.card' + card.type + '-' + card.value + '::before', {});
+						addRule('.card' + card.type + '-' + card.value + '::after', {});
 					}
 				}
 			}
-		};
-		scope.animateCard = function() {
-			for (var i1 = 0; i1 < 1; i1++) {
-				var card2 = { $: null };
-				while (ss.isNullOrUndefined(card2.$)) {
-					var pile1 = $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces).pile;
-					card2.$ = $CardGameUI_Util_Extensions.randomElement(global.Card).call(null, pile1.cards);
-					var _pile1 = { $: $CardGameUI_Util_Extensions.randomElement(global.TableSpace).call(null, scope.mainArea.spaces) };
-					if (ss.isValue(card2.$) && ss.isValue(_pile1.$)) {
-						var css1 = ss.formatString('.card{0}-{1}', card2.$.type, card2.$.value);
-						var clone = { $: $CardGameUI_Util_Extensions.fuckingClone($(css1)) };
-						var space1 = $(ss.formatString('.space{0}', _pile1.$.name));
-						var off = space1.offset();
-						clone.$.css('z-index', 1000);
-						var ops = {};
-						ops['left'] = off.left + ss.Int32.div(space1.width(), 2) - 35;
-						ops['top'] = off.top + ss.Int32.div(space1.height(), 2) - 48;
-						ops['rotate'] = '0deg';
-						ss.remove(pile1.cards, card2.$);
-						clone.$.animate(ops, 700, 'easeInOutQuart', ss.mkdel({ card2: card2, _pile1: _pile1, clone: clone }, function() {
-							ss.remove(this.card2.$.appearance.effectNames, 'bend');
-							if (ss.startsWithString(this._pile1.$.name, 'User')) {
-								ss.add(this.card2.$.appearance.effectNames, 'bend');
-							}
-							this.clone.$.remove();
-							ss.add(this._pile1.$.pile.cards, this.card2.$);
-							scope.$apply();
-						}));
-					}
-				}
-			}
-		};
+			scope.$apply();
+			this.$myGameContentManager.redraw();
+		}));
+		this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
+			//alert(JSON.stringify(data));
+		});
+		this.$myClientGameManagerService.add_onGameOver(function(user2, room1) {
+			//alert(JSON.stringify(data));
+		});
+		scope.mainArea = null;
+		scope.selectedCard = null;
+		//new Action<string,JsDictionary<string,object>>()
+		// scope.MoveCard = () =>
+		// {
+		// 
+		// for (var i = 0; i < 1; i++)
+		// {
+		// CardGameCard card = null;
+		// while (card == null)
+		// {
+		// var pile = scope.MainArea.Spaces.RandomElement().Pile;
+		// card = pile.Cards.RandomElement();
+		// var _pile = scope.MainArea.Spaces.RandomElement();
+		// 
+		// if (card != null && _pile != null)
+		// {
+		// card.Appearance.EffectNames.Remove("bend");
+		// if (_pile.Name.StartsWith("User"))
+		// {
+		// 
+		// card.Appearance.EffectNames.Add("bend");
+		// 
+		// }
+		// 
+		// 
+		// pile.Cards.Remove(card);
+		// _pile.Pile.Cards.Add(card);
+		// }
+		// }
+		// }
+		// };
+		// 
+		// scope.AnimateCard = () =>
+		// {
+		// 
+		// for (var i = 0; i < 1; i++)
+		// {
+		// CardGameCard card = null;
+		// while (card == null)
+		// {
+		// var pile = scope.MainArea.Spaces.RandomElement().Pile;
+		// card = pile.Cards.RandomElement();
+		// var _pile = scope.MainArea.Spaces.RandomElement();
+		// 
+		// if (card != null && _pile != null)
+		// {
+		// 
+		// var css = string.Format(".card{0}-{1}", card.Type, card.Value);
+		// var clone = jQueryApi.jQuery.Select(css).FuckingClone();
+		// 
+		// 
+		// var space = jQuery.Select(string.Format(".space{0}", _pile.Name));
+		// var off = space.GetOffset();
+		// 
+		// clone.CSS("z-index", 1000);
+		// 
+		// JsDictionary ops = new JsDictionary();
+		// ops["left"] = off.Left + space.GetWidth() / 2 - 71 / 2;
+		// ops["top"] = off.Top + space.GetHeight() / 2 - 96 / 2;
+		// ops["rotate"] = "0deg";
+		// 
+		// 
+		// pile.Cards.Remove(card);
+		// clone.Animate(ops, 700, (EffectEasing)(dynamic)("easeInOutQuart"), () =>
+		// {
+		// card.Appearance.EffectNames.Remove("bend");
+		// if (_pile.Name.StartsWith("User"))
+		// {
+		// 
+		// card.Appearance.EffectNames.Add("bend");
+		// 
+		// }
+		// 
+		// clone.Remove();
+		// _pile.Pile.Cards.Add(card);
+		// scope.Apply();
+		// 
+		// });
+		// 
+		// 
+		// 
+		// }
+		// }
+		// }
+		// };
 		effectWatcher.applyEffect = ss.delegateCombine(effectWatcher.applyEffect, function(effect) {
 			if (ss.isNullOrUndefined(scope.selectedCard)) {
 				return;
@@ -899,14 +942,17 @@
 	$CardGameUI_Directives_AcgSpacesDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
 			var updater = ss.mkdel(this, function() {
+				element.children().each(function(ind, e) {
+					angular.element(e).scope().$destroy();
+				});
 				element.empty();
 				var content = '<div>\r\n    <div acg-draw-space ng-style=\'spaceStyle\'>\r\n        <div ng-repeat=\'card in space.pile.cards\' acg-draw-card ng-style=\'cardStyle\' ng-click=\'cardClick()\'>\r\n        </div>\r\n    </div> \r\n</';
 				angular.forEach(scope.spaces, ss.mkdel(this, function(space) {
-					var e = angular.element(content);
+					var e1 = angular.element(content);
 					var _scope = scope['$new']();
 					_scope.space = space;
-					this.$myCompile(e.contents())(_scope);
-					element.append(e);
+					var elk = this.$myCompile(e1.contents())(_scope);
+					element.append(elk);
 				}));
 			});
 			//scope["$watch"]("spaces",updater);
@@ -991,13 +1037,13 @@
 		this.link = ss.mkdel(this, this.$linkFn);
 	};
 	$CardGameUI_Directives_FloatingWindowDirective.prototype = {
-		swingBack: function(scope, element) {
+		swingBack: function(scope, element, callback) {
 			var js = {};
 			js['left'] = scope.left;
 			js['top'] = scope.top;
-			element.animate(js, 'fast', 'swing');
+			element.animate(js, 'fast', 'swing', callback);
 		},
-		swingAway: function(direction, simulate, element) {
+		swingAway: function(direction, simulate, element, callback) {
 			var js = {};
 			var distance = '2000';
 			switch (direction) {
@@ -1042,15 +1088,15 @@
 				element.css(js);
 			}
 			else {
-				element.animate(js, 'slow', 'swing');
+				element.animate(js, 'slow', 'swing', callback);
 			}
 		},
 		$linkFn: function(scope, element, attr) {
-			scope.$parent.swingAway = ss.mkdel(this, function(a, b) {
-				this.swingAway(a, b, element);
+			scope.$parent.swingAway = ss.mkdel(this, function(a, b, c) {
+				this.swingAway(a, b, element, c);
 			});
-			scope.$parent.swingBack = ss.mkdel(this, function() {
-				this.swingBack(scope, element);
+			scope.$parent.swingBack = ss.mkdel(this, function(c1) {
+				this.swingBack(scope, element, c1);
 			});
 			var $t1 = $CardGameUI_Directives_FloatingWindowPosition.$ctor();
 			$t1.left = scope.left;

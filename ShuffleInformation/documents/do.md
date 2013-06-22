@@ -71,7 +71,7 @@
             * on board
         * checkbox
         * radio
-    debugging
+    * debugging
         * debug.log
         * debug.pause
     

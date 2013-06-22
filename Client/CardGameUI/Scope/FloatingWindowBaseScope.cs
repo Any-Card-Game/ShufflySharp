@@ -6,9 +6,9 @@ namespace CardGameUI.Scope
     public class FloatingWindowBaseScope : BaseScope
     {
         [IntrinsicProperty]
-        public Action<SwingDirection,bool> SwingAway { get; set; }
+        public Action<SwingDirection,bool,Action> SwingAway { get; set; }
         [IntrinsicProperty]
-        public Action SwingBack { get; set; }
+        public Action<Action> SwingBack { get; set; }
         [IntrinsicProperty]
         public bool Visible { get; set; }
      }

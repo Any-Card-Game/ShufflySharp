@@ -30,7 +30,7 @@ namespace CardGameUI.Controllers
             {
                 uiManager.ClientInfo.LoggedInUser = user;
                 myUIManager.UserLoggedIn();
-                scope.SwingAway(SwingDirection.Left, false);
+                scope.SwingAway(SwingDirection.Left, false, null);
             };
             
 

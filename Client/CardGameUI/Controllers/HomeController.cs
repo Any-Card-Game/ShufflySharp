@@ -40,7 +40,7 @@ namespace CardGameUI.Controllers
                                    });*/
 
             myUIManager.RoomLeft += () => {
-                                        myScope.SwingBack();
+                                        myScope.SwingBack(null);
                                     };
 
             myClientSiteManagerService.OnGetGameTypesReceived += PopulateGames;
@@ -98,7 +98,7 @@ namespace CardGameUI.Controllers
         {
             PopulateRoom(o.Room);
 
-            myScope.SwingAway(SwingDirection.TopLeft,false);
+            myScope.SwingAway(SwingDirection.TopLeft, false, null);
             myUIManager.OnRoomJoined(o.Room);
 
         }
@@ -132,8 +132,8 @@ namespace CardGameUI.Controllers
         void myUIManager_UserLoggedIn()
         {
             myScope.Visible = true;
-            myScope.SwingAway(SwingDirection.BottomLeft, true);
-            myScope.SwingBack();
+            myScope.SwingAway(SwingDirection.BottomLeft, true, null);
+            myScope.SwingBack(null);
             myScope.Apply();
             myScope.Model.User= myUIManager.ClientInfo.LoggedInUser;
             myClientSiteManagerService.GetGameTypes();

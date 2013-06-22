@@ -72,6 +72,9 @@ namespace ng
         [AlternateSignature]
         object Apply();
 
+        [ScriptName("$destroy")]
+        void Destroy();
+        
 #if TODO
     // Documentation says exp is optional, but actual implementaton counts on it
         

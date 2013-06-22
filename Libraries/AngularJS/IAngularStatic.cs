@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
 using jQueryApi;
-
-public delegate Func<object,jQueryObject> CompileService(jQueryObject content);
+using ng;
+using ng.auto;
+public delegate Func<object,AngularElement> CompileService(jQueryObject content);
 
 
 [Imported()]
@@ -24,15 +25,19 @@ public static class angular
 
     public static void Bootstrap(DocumentInstance document, params string[] parms) { }
 
-    public static jQueryObject Element(DocumentInstance document)
+    public static AngularElement Element(DocumentInstance document)
     {
         return null;
     }
-    public static jQueryObject Element(string document)
+    public static AngularElement Element(string document)
     {
         return null;
     }
-    public static jQueryObject Element(Element document)
+    public static AngularElement Element(Element document)
+    {
+        return null;
+    }
+    public static AngularElement Element(jQueryObject document)
     {
         return null;
     }
@@ -43,7 +48,20 @@ public static class angular
     {
     }
 }
- namespace ng
+[Imported()]
+public class AngularElement : jQueryObject
+{
+    public T Scope<T>() where T : IScope
+    {
+        return default(T);
+    }
+    public IInjectorService Injector()
+    {
+        return null;
+    }
+    
+}
+namespace ng
 {
 
     /// <summary>

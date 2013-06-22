@@ -21,20 +21,20 @@ namespace CardGameUI.Controllers
 
             myScope.Model.WindowClosed = () =>
             {
-                myScope.SwingAway(SwingDirection.TopRight, false);
+                myScope.SwingAway(SwingDirection.TopRight, false, null);
                 myScope.Visible = false;
             };
             myScope.Model.CreateRoom = CreateRoomFn;
             uiManager.OpenCreateRoomDialog += () => {
                                                   myScope.Visible = true;
-                                                  myScope.SwingAway(SwingDirection.BottomLeft, true);
-                                                  myScope.SwingBack();
+                                                  myScope.SwingAway(SwingDirection.BottomLeft, true, null);
+                                                  myScope.SwingBack(null);
                                               };
         }
 
         private void CreateRoomFn()
         {
-            myScope.SwingAway(SwingDirection.TopRight,false);
+            myScope.SwingAway(SwingDirection.TopRight, false, null);
             myUIManager.CreateRoom(myScope.Model.RoomName);
         }
          

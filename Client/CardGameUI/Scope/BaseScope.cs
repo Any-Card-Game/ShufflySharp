@@ -127,6 +127,11 @@ namespace CardGameUI.Scope
             return null;
         }
 
+        public void Destroy()
+        {
+            
+        }
+
         public object Apply(string exp)
         {
             return null;

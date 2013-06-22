@@ -41,8 +41,12 @@ namespace CardGameUI.Directives
         private void linkFn(dynamic scope, jQueryObject element, object attrs)
         {
 
-            var updater = new Action(() =>
-            {
+            var updater = new Action(() => {
+
+                                         element.Children().Each((ind, e) => { 
+                                             angular.Element(e).Scope<BaseScope>().Destroy();
+                                         });
+
 
                 element.Empty();
 
@@ -59,20 +63,21 @@ namespace CardGameUI.Directives
                                     var e = angular.Element(content);
                                     var _scope = scope["$new"]();
                                     _scope.space = space;
-                                    myCompile(e.Contents())(_scope);
+                                    var elk=myCompile(e.Contents())(_scope);
 
-                                    element.Append(e);
+                                    element.Append(elk);
                                 }));
 
             });
 
             //scope["$watch"]("spaces",updater);
 
-            myGameContentManager.Redraw += () => {
+            myGameContentManager.Redraw += () =>
+            {
                 Console.Log("updatinggagaga");
-                                               updater();
-                                               scope["$apply"]();
-                                           };
+                updater();
+                scope["$apply"]();
+            };
 
             updater();
 

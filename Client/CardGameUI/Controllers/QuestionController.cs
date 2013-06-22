@@ -29,13 +29,15 @@ namespace CardGameUI.Controllers
             myScope.Visible = false;
              
 
-            myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
-            {
-                myScope.Visible = true;
-                myScope.SwingAway(SwingDirection.TopLeft, true);
-                myScope.SwingBack();
-                OnQuestionAskedFn(gameSendAnswerModel);
-            };
+            myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
+                                                            Window.SetTimeout(() => {
+                                                                                  myScope.Visible = true;
+                                                                                  myScope.SwingAway(SwingDirection.TopLeft, true, null);
+                                                                                  myScope.SwingBack(null);
+                                                                                  OnQuestionAskedFn(gameSendAnswerModel);
+
+                                                                              },500);
+                                                        };
 
 
         }
@@ -51,9 +53,9 @@ namespace CardGameUI.Controllers
 
         private void AnswerQuestionFn()
         {
-            myClientGameManagerService.AnswerQuestion(new GameAnswerQuestionModel(myScope.Model.Answers.IndexOf(myScope.Model.SelectedAnswer)));
-
-            myScope.SwingAway(SwingDirection.BottomRight, false);
+            myScope.SwingAway(SwingDirection.BottomRight, false, () => {
+                                                                     myClientGameManagerService.AnswerQuestion(new GameAnswerQuestionModel(myScope.Model.Answers.IndexOf(myScope.Model.SelectedAnswer)));
+                                                                 });
         }
     }
 }

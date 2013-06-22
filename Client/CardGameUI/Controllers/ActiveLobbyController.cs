@@ -32,7 +32,7 @@ namespace CardGameUI.Controllers
             myScope.Visible = false;
             myScope.Model.WindowClosed += () =>
             {
-                myScope.SwingAway(SwingDirection.BottomRight, false);
+                myScope.SwingAway(SwingDirection.BottomRight, false, null);
                 myClientSiteManagerService.LeaveRoom(new LeaveRoomRequest(myScope.Model.Room));
                 uiManager.RoomLeft();
             };
@@ -40,10 +40,10 @@ namespace CardGameUI.Controllers
             uiManager.OnRoomJoined = (room) =>
             {
                 myScope.Visible = true;
-                myScope.SwingAway(SwingDirection.BottomRight, true);
+                myScope.SwingAway(SwingDirection.BottomRight, true,null);
                 myScope.Model.Room = room;
                 PopulateGameRoom(room);
-                myScope.SwingBack();
+                myScope.SwingBack(null);
                 myScope.Apply();
             };
 

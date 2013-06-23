@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using ClientLibs.Managers;
 using Models.SiteManagerModels;
+using Models.SiteManagerModels.Game;
 namespace Client.Services
 {
     public class ClientSiteManagerService
@@ -11,6 +14,8 @@ namespace Client.Services
         public event ClientSiteManager.GetRoomsReceived OnGetRoomsReceived;
         public event ClientSiteManager.RoomJoined OnRoomJoined;
         public event ClientSiteManager.GetRoomInfoReceived OnGetRoomInfoReceived;
+        
+        public event ClientSiteManager.GetGamesByUserReceived OnGetGamesByUserReceived;
 
         private readonly ClientSiteManager clientSiteManager;
 
@@ -23,6 +28,8 @@ namespace Client.Services
             clientSiteManager.OnGetRoomsReceived += (user, model) => { if (OnGetRoomsReceived != null) OnGetRoomsReceived(user, model); };
             clientSiteManager.OnRoomJoined += (user, model) => { if (OnRoomJoined != null) OnRoomJoined(user, model); };
             clientSiteManager.OnGetRoomInfoReceived += (user, model) => { if (OnGetRoomInfoReceived != null) OnGetRoomInfoReceived(user, model); };
+
+            clientSiteManager.OnGetGamesByUserReceived += (user, model) => { if (OnGetGamesByUserReceived != null) OnGetGamesByUserReceived(user, model); };
 
         }
 
@@ -80,5 +87,11 @@ namespace Client.Services
 
         }
 
+        public void GetGamesByUser(string hash)
+        {
+            clientSiteManager.GetGamesByUser(new GetGamesByUserRequest(hash));
+        
+
+        }
     }
 }

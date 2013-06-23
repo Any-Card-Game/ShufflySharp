@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Client.Controllers;
 using Client.Directives;
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using jQueryApi;
 using ng;
@@ -25,9 +26,10 @@ namespace Client
                  .controller("EffectEditorController", new object[] { "$scope", "editEffects", new Func<EffectEditorScope, EditEffectService, object>((scope, editEffects) => new EffectEditorController(scope, editEffects)) })
                  .controller("LoginController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", new Func<LoginScope, UIManagerService, ClientSiteManagerService, MessageService, object>((scope, uiManager, clientSiteManagerService, messageService) => new LoginController(scope, uiManager, clientSiteManagerService, messageService)) })
                  .controller("QuestionController", new object[] { "$scope", "UIManager", "clientGameManager", new Func<QuestionScope, UIManagerService, ClientGameManagerService, object>((scope, uiManager, clientGameManagerService) => new QuestionController(scope, uiManager, clientGameManagerService)) })
-                 .controller("HomeController", new object[] { "$scope", "UIManager", "clientSiteManager", new Func<HomeScope, UIManagerService, ClientSiteManagerService, object>((scope, uiManager, clientSiteManagerService) => new HomeController(scope, uiManager, clientSiteManagerService)) })
+                 .controller("HomeController", new object[] { "$scope", "UIManager", "clientSiteManager", "createUIService", new Func<HomeScope, UIManagerService, ClientSiteManagerService, CreateUIService, object>((scope, uiManager, clientSiteManagerService, createUIService) => new HomeController(scope, uiManager, clientSiteManagerService, createUIService)) })
                  .controller("ActiveLobbyController", new object[] { "$scope", "UIManager", "clientSiteManager", "clientChatManager", "$compile", new Func<ActiveLobbyScope, UIManagerService, ClientSiteManagerService, ClientChatManagerService, CompileService, object>((scope, uiManager, clientSiteManagerService, clientChatManagerService, compile) => new ActiveLobbyController(scope, uiManager, clientSiteManagerService, clientChatManagerService, compile)) })
                  .controller("CreateRoomController", new object[] { "$scope", "UIManager", new Func<CreateRoomScope, UIManagerService, object>((scope, uiManager) => new CreateRoomController(scope, uiManager)) })
+                 .controller("GameManagerController", new object[] { "$scope", "UIManager", "clientSiteManager", new Func<GameManagerScope, UIManagerService, ClientSiteManagerService, object>((scope, uiManagerService, clientSiteManagerService) => new GameManagerController(scope, uiManagerService, clientSiteManagerService)) })
                  .controller("MessageController", new object[] { "$scope", new Func<MessageScope, object>((scope) => new MessageController(scope)) })
                  
                  .service("UIManager", new object[] { "clientGameManager",new Func<ClientGameManagerService,object>((clientGameManagerService) => new UIManagerService(clientGameManagerService)) })
@@ -41,6 +43,7 @@ namespace Client
                  .service("gateway", new object[] { "gatewayServerURL", new Func<string, object>((serverUrl) => new GatewayService(serverUrl)) })
                  .service("gameContentManager", new object[] { new Func<object>(() => new GameContentManager()) })
                  .service("messageService", new object[] { "$compile","$rootScope",new Func<CompileService, IRootScopeService,object>((compileService, rootScopeService) => new MessageService(compileService, rootScopeService)) })
+                 .service("createUIService", new object[] { "$compile", "$rootScope", new Func<CompileService, IRootScopeService, object>((compileService, rootScopeService) => new CreateUIService(compileService, rootScopeService)) })
                  
                  .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
                  .directive("floatingWindow", new object[] { "UIManager",new Func<UIManagerService, object>((uiManagerService) => new FloatingWindowDirective(uiManagerService)) })

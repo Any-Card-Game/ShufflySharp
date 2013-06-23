@@ -40,8 +40,45 @@
 		$this.password = null;
 		return $this;
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// DataModels.SiteManagerModels.Game.GameDataModel
+	var $DataModels_SiteManagerModels_Game_GameDataModel = function() {
+	};
+	$DataModels_SiteManagerModels_Game_GameDataModel.createInstance = function() {
+		return $DataModels_SiteManagerModels_Game_GameDataModel.$ctor();
+	};
+	$DataModels_SiteManagerModels_Game_GameDataModel.toModel = function($this) {
+		var $t1 = Models.SiteManagerModels.Game.GameModel.$ctor();
+		$t1._id = $this._id;
+		$t1.name = $this.name;
+		$t1.userHash = $this.userHash;
+		$t1.description = $this.description;
+		$t1.maxNumberOfPlayers = $this.maxNumberOfPlayers;
+		$t1.cardImages = $this.cardImages;
+		$t1.assets = $this.assets;
+		$t1.gameCode = $this.gameCode;
+		$t1.gameLayout = $this.gameLayout;
+		$t1.gameLayoutScenarios = $this.gameLayoutScenarios;
+		$t1.effects = $this.effects;
+		return $t1;
+	};
+	$DataModels_SiteManagerModels_Game_GameDataModel.$ctor = function() {
+		var $this = NodeLibraries.MongoDB.MongoDocument.$ctor();
+		$this.name = null;
+		$this.userHash = null;
+		$this.description = null;
+		$this.maxNumberOfPlayers = 0;
+		$this.cardImages = null;
+		$this.assets = null;
+		$this.gameCode = null;
+		$this.gameLayout = null;
+		$this.gameLayoutScenarios = null;
+		$this.effects = null;
+		return $this;
+	};
 	ss.registerClass(global, 'DataModels.ChatManagerModels.ChatRoomDataModel', $DataModels_ChatManagerModels_ChatRoomDataModel, NodeLibraries.MongoDB.MongoDocument);
 	ss.registerClass(global, 'DataModels.GameManagerModels.GameInfoDataModel', $DataModels_GameManagerModels_GameInfoDataModel, NodeLibraries.MongoDB.MongoDocument);
 	ss.registerClass(global, 'DataModels.SiteManagerModels.RoomDataModel', $DataModels_SiteManagerModels_RoomDataModel, NodeLibraries.MongoDB.MongoDocument);
 	ss.registerClass(global, 'DataModels.SiteManagerModels.UserModelData', $DataModels_SiteManagerModels_UserModelData, NodeLibraries.MongoDB.MongoDocument);
+	ss.registerClass(global, 'DataModels.SiteManagerModels.Game.GameDataModel', $DataModels_SiteManagerModels_Game_GameDataModel, NodeLibraries.MongoDB.MongoDocument);
 })();

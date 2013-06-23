@@ -20,6 +20,8 @@ namespace ServerManager.SiteServer
         public delegate void UserCreate(UserLogicModel user, SiteCreateUserRequest data);
         public delegate void StartGame(UserLogicModel user, StartGameRequest data);
 
+        public delegate void GetGamesByUser(UserLogicModel user, GetGamesByUserRequest data);
+
         #endregion
 
         private QueueManager qManager;
@@ -42,6 +44,11 @@ namespace ServerManager.SiteServer
         public event CreateRoom OnCreateRoom;
         public event JoinRoom OnJoinRoom;
         public event StartGame OnStartGame;
+        
+        
+        public event GetGamesByUser OnGetGamesByUser;
+
+        
 
         private void Setup()
         {
@@ -68,6 +75,9 @@ namespace ServerManager.SiteServer
             qManager.AddChannel("Area.Site.JoinRoom", (user, data) => OnJoinRoom(user, (RoomJoinRequest)data));
             qManager.AddChannel("Area.Site.StartGame", (user, data) => OnStartGame(user, (StartGameRequest)data));
             qManager.AddChannel("Area.Site.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
+
+        
+            qManager.AddChannel("Area.Site.GetGamesByUser", (user, data) => OnGetGamesByUser(user, (GetGamesByUserRequest)data));
         }
 
         public void SendLoginResponse(UserLogicModel user, bool success)
@@ -121,6 +131,11 @@ namespace ServerManager.SiteServer
         public void CreateGame(GameCreateRequestModel gameCreateRequestModel)
         {
             qManager.SendMessage("GameServer", "Area.Game.Create", null, gameCreateRequestModel);
+        }
+
+        public void SendGamesByUser(UserLogicModel user,GetGamesByUserResponse getGamesByUserResponse)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Site.GetGamesByUser.Response", user, getGamesByUserResponse);
         }
 
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Html;
 using Client.Scope;
+using Client.Scope.Directive;
 using CommonLibraries;
 using global;
 using jQueryApi;

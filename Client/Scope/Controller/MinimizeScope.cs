@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Client.Directives;
-namespace Client.Scope
+using Client.Scope.Directive;
+namespace Client.Scope.Controller
 {
     public class MinimizeScope : BaseScope
     {

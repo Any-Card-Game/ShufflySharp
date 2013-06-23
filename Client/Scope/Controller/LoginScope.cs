@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
-namespace Client.Scope
+using Client.Scope.Directive;
+namespace Client.Scope.Controller
 {
     public class LoginScope : FloatingWindowBaseScope
     {

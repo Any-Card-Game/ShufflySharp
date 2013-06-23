@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Client.Scope.Directive;
 using Models;
 using Models.ChatManagerModels;
 using Models.SiteManagerModels;
-namespace Client.Scope
+namespace Client.Scope.Controller
 {
 
     public class ActiveLobbyScope : FloatingWindowBaseScope

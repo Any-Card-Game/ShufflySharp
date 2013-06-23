@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Client.Directives;
 using Client.Scope;
+using Client.Scope.Directive;
 using Models;
 using Models.SiteManagerModels;
 namespace Client.Services

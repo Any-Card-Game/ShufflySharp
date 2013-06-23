@@ -60,6 +60,7 @@
     <Compile Include="SiteManagerModels\CreateRoomRequest.cs" />
     <Compile Include="SiteManagerModels\GameTypeModel.cs" />
     <Compile Include="SiteManagerModels\Game\GameModel.cs" />
+    <Compile Include="SiteManagerModels\GetGamesByUserResponse.cs" />
     <Compile Include="SiteManagerModels\GetGameTypesReceivedResponse.cs" />
     <Compile Include="SiteManagerModels\GetRoomInfoRequest.cs" />
     <Compile Include="SiteManagerModels\GetRoomInfoResponse.cs" />

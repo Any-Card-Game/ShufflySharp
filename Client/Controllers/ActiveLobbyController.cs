@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Html;
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using Models;
 using Models.ChatManagerModels;

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Client.Directives;
 using Client.Scope;
+using Client.Scope.Controller;
+using Client.Scope.Directive;
 using Client.Services;
 namespace Client.Controllers
 {

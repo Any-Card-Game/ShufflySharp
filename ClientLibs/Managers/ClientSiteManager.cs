@@ -13,6 +13,7 @@ namespace ClientLibs.Managers
         public delegate void UserLogin(UserModel user, UserLoginResponse o);
         public delegate void UserCreate(UserModel user, UserCreateResponse o);
 
+        public delegate void GetGamesByUserReceived(UserModel user, GetGamesByUserResponse o);
         #endregion
 
         private readonly Gateway myGateway;
@@ -30,6 +31,8 @@ namespace ClientLibs.Managers
         public event RoomJoined OnRoomJoined;
         public event GetRoomInfoReceived OnGetRoomInfoReceived;
 
+        public event GetGamesByUserReceived OnGetGamesByUserReceived;
+
         private void Setup()
         {
 
@@ -39,7 +42,9 @@ namespace ClientLibs.Managers
             myGateway.On("Area.Site.GetGameTypes.Response", (user, data) => { if (OnGetGameTypesReceived != null) OnGetGameTypesReceived(user, ( (GetGameTypesReceivedResponse) data )); });
             myGateway.On("Area.Site.GetRooms.Response", (user, data) => { if (OnGetRoomsReceived != null) OnGetRoomsReceived(user, ( (GetRoomsResponse) data )); });
             myGateway.On("Area.Site.GetRoomInfo.Response", (user, data) => { if (OnGetRoomInfoReceived != null) OnGetRoomInfoReceived(user, ( (GetRoomInfoResponse) data )); });
-            myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { if (OnRoomJoined != null) OnRoomJoined(user, ( (RoomJoinResponse) data )); });
+            myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { if (OnRoomJoined != null) OnRoomJoined(user, ((RoomJoinResponse)data)); });
+
+            myGateway.On("Area.Site.GetGamesByUser.Response", (user, data) => { if (OnGetGamesByUserReceived != null) OnGetGamesByUserReceived(user, ((GetGamesByUserResponse)data)); });
         }
 
         
@@ -88,5 +93,9 @@ namespace ClientLibs.Managers
             myGateway.Emit("Area.Site.CreateUser", createUser);
         }
 
+        public void GetGamesByUser(GetGamesByUserRequest getGamesByUser)
+        {
+            myGateway.Emit("Area.Site.GetGamesByUser", getGamesByUser);
+        }
     }
 }

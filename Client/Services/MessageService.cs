@@ -2,6 +2,7 @@
 using System;
 using System.Html;
 using Client.Scope;
+using Client.Scope.Controller;
 using jQueryApi;
 using ng;
 namespace Client.Services

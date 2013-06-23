@@ -445,6 +445,49 @@ require('./NodeLibraries.js');
 					complete(room);
 				});
 			});
+		},
+		game_GetGamesByUser: function(userHash, action) {
+			this.$manager.client.collection('Games', function(err, collection) {
+				var j = { userHash: userHash };
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
+					action(b);
+				});
+			});
+		},
+		game_CreateGame: function(userHash, gameName, result) {
+			this.$manager.client.collection('Games', function(err, collection) {
+				var $t1 = DataModels.SiteManagerModels.Game.GameDataModel.$ctor();
+				$t1.userHash = userHash;
+				$t1.name = gameName;
+				collection.insert($t1);
+				result();
+			});
+		},
+		game_GameNameExists: function(gameName, result) {
+			this.$manager.client.collection('Games', function(err, collection) {
+				var j = { name: gameName };
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
+					result(b.length > 0);
+				});
+			});
+		},
+		game_UpdateGame: function(model, result) {
+			this.$manager.client.collection('Games', function(err, collection) {
+				var $t1 = DataModels.SiteManagerModels.Game.GameDataModel.$ctor();
+				$t1._id = model._id;
+				$t1.name = model.name;
+				$t1.userHash = model.userHash;
+				$t1.description = model.description;
+				$t1.maxNumberOfPlayers = model.maxNumberOfPlayers;
+				$t1.cardImages = model.cardImages;
+				$t1.assets = model.assets;
+				$t1.gameCode = model.gameCode;
+				$t1.gameLayout = model.gameLayout;
+				$t1.gameLayoutScenarios = model.gameLayoutScenarios;
+				$t1.effects = model.effects;
+				collection.save($t1);
+				result();
+			});
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

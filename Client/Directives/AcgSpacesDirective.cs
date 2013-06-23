@@ -1,5 +1,6 @@
 using System;
 using Client.Scope;
+using Client.Scope.Directive;
 using Client.Services;
 using CommonLibraries;
 using global;

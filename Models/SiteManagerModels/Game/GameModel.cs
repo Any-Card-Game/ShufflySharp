@@ -8,7 +8,7 @@ namespace Models.SiteManagerModels.Game
     public class GameModel
     {
         public string Name { get; set; }
-        public string Owner { get; set; }
+        public string UserHash { get; set; }
         public string Description { get; set; }
         public int MaxNumberOfPlayers { get; set; }
 
@@ -22,6 +22,8 @@ namespace Models.SiteManagerModels.Game
 
         public List<GameLayoutScenario> GameLayoutScenarios { get; set; }
         public List<GameEffectModel> Effects { get; set; }
+        [ScriptName("_id")]
+        public string ID { get; set; }
     }
     [Serializable]
     public class GameLayoutScenario

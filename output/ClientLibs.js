@@ -210,6 +210,7 @@
 		this.$1$OnGetRoomsReceivedField = null;
 		this.$1$OnRoomJoinedField = null;
 		this.$1$OnGetRoomInfoReceivedField = null;
+		this.$1$OnGetGamesByUserReceivedField = null;
 		this.$myGateway = gateway;
 		this.$setup();
 	};
@@ -250,6 +251,12 @@
 		remove_onGetRoomInfoReceived: function(value) {
 			this.$1$OnGetRoomInfoReceivedField = ss.delegateRemove(this.$1$OnGetRoomInfoReceivedField, value);
 		},
+		add_onGetGamesByUserReceived: function(value) {
+			this.$1$OnGetGamesByUserReceivedField = ss.delegateCombine(this.$1$OnGetGamesByUserReceivedField, value);
+		},
+		remove_onGetGamesByUserReceived: function(value) {
+			this.$1$OnGetGamesByUserReceivedField = ss.delegateRemove(this.$1$OnGetGamesByUserReceivedField, value);
+		},
 		$setup: function() {
 			this.$myGateway.on('Area.Site.Login.Response', ss.mkdel(this, function(user, data) {
 				if (!ss.staticEquals(this.$1$OnLoginField, null)) {
@@ -281,6 +288,11 @@
 					this.$1$OnRoomJoinedField(user5, data5);
 				}
 			}));
+			this.$myGateway.on('Area.Site.GetGamesByUser.Response', ss.mkdel(this, function(user6, data6) {
+				if (!ss.staticEquals(this.$1$OnGetGamesByUserReceivedField, null)) {
+					this.$1$OnGetGamesByUserReceivedField(user6, data6);
+				}
+			}));
 		},
 		login: function(userName, password) {
 			this.$myGateway.login(userName, password);
@@ -308,6 +320,9 @@
 		},
 		createUser: function(createUser) {
 			this.$myGateway.emit('Area.Site.CreateUser', createUser);
+		},
+		getGamesByUser: function(getGamesByUser) {
+			this.$myGateway.emit('Area.Site.GetGamesByUser', getGamesByUser);
 		}
 	};
 	ss.registerClass(global, 'ClientLibs.Gateway', $ClientLibs_Gateway);

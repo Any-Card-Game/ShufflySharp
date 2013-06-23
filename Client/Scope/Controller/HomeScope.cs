@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Client.Scope.Directive;
 using Models;
 using Models.SiteManagerModels;
-namespace Client.Scope
+namespace Client.Scope.Controller
 {       
     public class HomeScope : FloatingWindowBaseScope
     {
@@ -22,5 +23,6 @@ namespace Client.Scope
         public Action CreateRoom { get; set; }
         public Action JoinRoom { get; set; }
         public UserModel User { get; set; }
+        public Action CreateGame { get; set; }
     }
 }

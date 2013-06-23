@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using CommonLibraries;
 using DataModels.SiteManagerModels;
+using DataModels.SiteManagerModels.Game;
 using Models;
 using Models.SiteManagerModels;
+using Models.SiteManagerModels.Game;
 using NodeLibraries.Common.Logging;
 using NodeLibraries.MongoDB;
 namespace CommonShuffleLibrary.Data
@@ -196,6 +198,63 @@ namespace CommonShuffleLibrary.Data
                                        });
                  });
 
+        }
+
+        public void Game_GetGamesByUser(string userHash, Action<List<GameDataModel>> action)
+        {
+            manager.client.Collection("Games",
+                                      (err, collection) =>
+                                      {
+
+                                          var j = new { userHash };
+                                          MongoHelper.Find<GameDataModel>(collection, j, (a, b) => action(b));
+                                      });
+        }
+        public void Game_CreateGame(string userHash, string gameName, Action result)
+        {
+            manager.client.Collection("Games",
+                                      (err, collection) =>
+                                      {
+                                          collection.Insert(new GameDataModel()
+                                          {
+                                              UserHash = userHash,
+                                              Name = gameName
+                                          });
+                                          result();
+                                      });
+        }
+
+        public void Game_GameNameExists(string gameName, Action<bool> result)
+        {
+            manager.client.Collection("Games",
+                                      (err, collection) => {
+                                          var j = new {name = gameName};
+                                          MongoHelper.Find<GameDataModel>(collection, j, (a, b) => result(b.Count > 0));
+                                      });
+        }
+
+        public void Game_UpdateGame(GameModel model, Action result)
+        {
+            manager.client.Collection("Games",
+                                      (err, collection) =>
+                                      {
+                                          collection.Save(new GameDataModel()
+                                          {
+                                              ID = model.ID,
+                                              Name = model.Name,
+                                              UserHash = model.UserHash,
+                                              Description = model.Description,
+                                              MaxNumberOfPlayers = model.MaxNumberOfPlayers,
+                                              CardImages = model.CardImages,
+                                              Assets = model.Assets,
+                                              GameCode = model.GameCode,
+                                              GameLayout = model.GameLayout,
+                                              GameLayoutScenarios = model.GameLayoutScenarios,
+                                              Effects = model.Effects,
+                                          });
+                                          result();
+
+                                      });
         }
     }
 }

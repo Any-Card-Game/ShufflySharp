@@ -1244,6 +1244,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$1$OnCreateRoomField = null;
 		this.$1$OnJoinRoomField = null;
 		this.$1$OnStartGameField = null;
+		this.$1$OnGetGamesByUserField = null;
 		this.set_siteServerIndex(siteServerIndex);
 		this.$setup();
 	};
@@ -1314,6 +1315,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		remove_onStartGame: function(value) {
 			this.$1$OnStartGameField = ss.delegateRemove(this.$1$OnStartGameField, value);
 		},
+		add_onGetGamesByUser: function(value) {
+			this.$1$OnGetGamesByUserField = ss.delegateCombine(this.$1$OnGetGamesByUserField, value);
+		},
+		remove_onGetGamesByUser: function(value) {
+			this.$1$OnGetGamesByUserField = ss.delegateRemove(this.$1$OnGetGamesByUserField, value);
+		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_siteServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('SiteServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_siteServerIndex(), null)], ['ChatServer', 'GameServer', 'SiteServer', 'GatewayServer', 'Gateway*']));
 			this.$qManager.addChannel('Area.Site.Login', ss.mkdel(this, function(user, data) {
@@ -1345,6 +1352,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 			this.$qManager.addChannel('Area.Site.UserDisconnect', ss.mkdel(this, function(user9, data9) {
 				this.$1$OnUserDisconnectField(user9, data9);
+			}));
+			this.$qManager.addChannel('Area.Site.GetGamesByUser', ss.mkdel(this, function(user10, data10) {
+				this.$1$OnGetGamesByUserField(user10, data10);
 			}));
 		},
 		sendLoginResponse: function(user, success) {
@@ -1379,6 +1389,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		createGame: function(gameCreateRequestModel) {
 			this.$qManager.sendMessage('GameServer', 'Area.Game.Create', null, gameCreateRequestModel);
+		},
+		sendGamesByUser: function(user, getGamesByUserResponse) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.GetGamesByUser.Response', user, getGamesByUserResponse);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1397,6 +1410,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$mySiteClientManager.add_onJoinRoom(ss.mkdel(this, this.$onJoinRoom));
 		this.$mySiteClientManager.add_onLeaveRoom(ss.mkdel(this, this.$onLeaveRoom));
 		this.$mySiteClientManager.add_onStartGame(ss.mkdel(this, this.$onStartGame));
+		this.$mySiteClientManager.add_onGetGamesByUser(ss.mkdel(this, this.$onGetGamesByUser));
 		this.$mySiteClientManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
 	};
 	$ServerManager_SiteServer_SiteManager.prototype = {
@@ -1520,6 +1534,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				else {
 					this.$mySiteClientManager.sendLoginResponse(user, false);
 				}
+			}));
+		},
+		$onGetGamesByUser: function(user, data) {
+			this.$myDataManager.siteData.game_GetGamesByUser(data.userHash, ss.mkdel(this, function(games) {
+				this.$mySiteClientManager.sendGamesByUser(user, { games: games.map(function(a) {
+					return DataModels.SiteManagerModels.Game.GameDataModel.toModel(a);
+				}) });
 			}));
 		}
 	};

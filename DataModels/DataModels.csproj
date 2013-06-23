@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="ChatManagerModels\ChatRoomDataModel.cs" />
     <Compile Include="GameManagerModels\GameInfoDataModel.cs" />
+    <Compile Include="SiteManagerModels\Game\GameDataModel.cs" />
     <Compile Include="SiteManagerModels\RoomDataModel.cs" />
     <Compile Include="SiteManagerModels\UserModelData.cs" />
   </ItemGroup>
@@ -55,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="SiteManagerModels\Game\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

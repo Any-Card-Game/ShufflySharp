@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Client.Scope;
+using Client.Scope.Directive;
 using Client.Services;
 using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
@@ -49,6 +50,7 @@ namespace Client.Directives
             {
                 SwingBack(scope, element, c);
             };
+            scope.Parent.Minimize = () => scope.Minimize();
             scope.PositionStyles = new FloatingWindowPosition() { Left = scope.Left, Top = scope.Top, Display = "block" };
             if (scope.Left.IndexOf("%") != -1)
             {
@@ -93,12 +95,17 @@ namespace Client.Directives
             scope.Minimize = () =>
             {
                 myUIManagerService.OnMinimize(scope);
-                scope.PositionStyles.Display = "none";
-            };
+                                 scope.Parent.SwingAway(SwingDirection.Bottom,
+                                                        false,
+                                                        () => {
+                                                            scope.PositionStyles.Display = "none";
+                                                        });
+                             };
             scope.Restore = () =>
             {
                 scope.PositionStyles.Display = "block";
-            };
+                                scope.Parent.SwingBack(null);
+                            };
 
         }
         public void SwingBack(FloatingWindowScope scope, jQueryObject element, Action callback)

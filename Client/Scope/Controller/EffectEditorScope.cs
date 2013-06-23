@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 using Models.SiteManagerModels.Game;
-namespace Client.Scope
+namespace Client.Scope.Controller
 {
     public class EffectEditorScope : BaseScope
     {

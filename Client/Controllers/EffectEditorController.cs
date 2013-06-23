@@ -1,4 +1,5 @@
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using Models.SiteManagerModels.Game;
 namespace Client.Controllers

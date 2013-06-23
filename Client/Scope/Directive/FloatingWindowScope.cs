@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
-namespace Client.Scope
+namespace Client.Scope.Directive
 {
 
     [Serializable]

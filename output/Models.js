@@ -297,6 +297,14 @@
 	var $Models_SiteManagerModels_GameTypeModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetGamesByUserRequest
+	var $Models_SiteManagerModels_GetGamesByUserRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.GetGamesByUserResponse
+	var $Models_SiteManagerModels_GetGamesByUserResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.GetGameTypesReceivedResponse
 	var $Models_SiteManagerModels_GetGameTypesReceivedResponse = function() {
 	};
@@ -462,7 +470,7 @@
 	$Models_SiteManagerModels_Game_GameModel.$ctor = function() {
 		var $this = {};
 		$this.name = null;
-		$this.owner = null;
+		$this.userHash = null;
 		$this.description = null;
 		$this.maxNumberOfPlayers = 0;
 		$this.cardImages = null;
@@ -471,6 +479,7 @@
 		$this.gameLayout = null;
 		$this.gameLayoutScenarios = null;
 		$this.effects = null;
+		$this._id = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -539,6 +548,8 @@
 	ss.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.CreateRoomRequest', $Models_SiteManagerModels_CreateRoomRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.GameTypeModel', $Models_SiteManagerModels_GameTypeModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetGamesByUserRequest', $Models_SiteManagerModels_GetGamesByUserRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.GetGamesByUserResponse', $Models_SiteManagerModels_GetGamesByUserResponse);
 	ss.registerClass(global, 'Models.SiteManagerModels.GetGameTypesReceivedResponse', $Models_SiteManagerModels_GetGameTypesReceivedResponse);
 	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoRequest', $Models_SiteManagerModels_GetRoomInfoRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomInfoResponse', $Models_SiteManagerModels_GetRoomInfoResponse);

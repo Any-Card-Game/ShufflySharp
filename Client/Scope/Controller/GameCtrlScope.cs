@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using global;
-namespace Client.Scope
+namespace Client.Scope.Controller
 {
     public class GameCtrlScope : BaseScope
     {

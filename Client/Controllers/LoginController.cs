@@ -1,5 +1,6 @@
 using System.Html;
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using WebLibraries.ShuffUI.ShuffUI;
 namespace Client.Controllers

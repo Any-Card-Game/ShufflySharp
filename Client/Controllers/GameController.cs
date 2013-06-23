@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Html;
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using CommonLibraries;
 using Models.SiteManagerModels.Game;

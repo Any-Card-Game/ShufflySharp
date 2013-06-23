@@ -30,6 +30,9 @@ namespace ServerManager.SiteServer
             mySiteClientManager.OnLeaveRoom += OnLeaveRoom;
             mySiteClientManager.OnStartGame += OnStartGame;
 
+
+            mySiteClientManager.OnGetGamesByUser += OnGetGamesByUser;
+
             mySiteClientManager.OnUserDisconnect += OnUserDisconnect;
         }
 
@@ -194,5 +197,18 @@ namespace ServerManager.SiteServer
 
         }
 
+
+
+        private void OnGetGamesByUser(UserLogicModel user, GetGamesByUserRequest data)
+        {
+            myDataManager.SiteData.Game_GetGamesByUser(data.UserHash,
+                                      (games) =>
+                                      {
+                                          mySiteClientManager.SendGamesByUser(user, new GetGamesByUserResponse(games.Map(a => a.ToModel())));
+                                      });
+
+
+        }
+ 
     }
 }

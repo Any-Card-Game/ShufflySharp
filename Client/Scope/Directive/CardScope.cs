@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using global;
-namespace Client.Scope
+namespace Client.Scope.Directive
 {
     public class CardScope : BaseScope
     {

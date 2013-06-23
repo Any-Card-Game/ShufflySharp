@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Models.SiteManagerModels.Game;
-namespace Client.Scope
+namespace Client.Scope.Controller
 {
     public class ListEffectsScope : BaseScope
     {

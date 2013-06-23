@@ -1,6 +1,7 @@
 using System;
 using System.Html;
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using Models.GameManagerModels;
 using WebLibraries.ShuffUI.ShuffUI;

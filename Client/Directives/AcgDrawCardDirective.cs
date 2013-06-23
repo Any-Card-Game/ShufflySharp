@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Client.Scope;
+using Client.Scope.Directive;
 using Client.Services;
 using CommonLibraries;
 using Models.SiteManagerModels.Game;

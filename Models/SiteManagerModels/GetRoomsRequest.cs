@@ -14,6 +14,17 @@ namespace Models.SiteManagerModels
         }
     }
     [Serializable]
+    public class GetGamesByUserRequest
+    {
+        public string UserHash { get; set; }
+
+        [ObjectLiteral]
+        public GetGamesByUserRequest(string userHash)
+        {
+            UserHash = userHash;
+        }
+    }
+    [Serializable]
     public class StartGameRequest
     { 
 

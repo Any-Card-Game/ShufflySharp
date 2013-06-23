@@ -1,5 +1,6 @@
 using System;
 using Client.Scope;
+using Client.Scope.Controller;
 using Client.Services;
 using Models;
 using Models.SiteManagerModels;
@@ -11,18 +12,21 @@ namespace Client.Controllers
         private readonly HomeScope myScope;
         private readonly UIManagerService myUIManager;
         private readonly ClientSiteManagerService myClientSiteManagerService;
+        private readonly CreateUIService myCreateUIService;
 
-        public HomeController(HomeScope scope, UIManagerService uiManager,ClientSiteManagerService clientSiteManagerService)
+        public HomeController(HomeScope scope, UIManagerService uiManager,ClientSiteManagerService clientSiteManagerService,CreateUIService createUIService)
         {
             myScope = scope;
             myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
+            myCreateUIService = createUIService;
             myScope .Model= new HomeModel();
             myUIManager.UserLoggedIn += myUIManager_UserLoggedIn;
             myScope.Visible = false;
             scope.Model.GameTypeSelected += GameTypeSelectedFn;
             scope.Model.RoomSelected += RoomSelectedFn;
             scope.Model.CreateRoom += CreateRoomFn;
+            scope.Model.CreateGame += CreateGameFn;
             scope.Model.JoinRoom += JoinRoomFn;
             scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedGameType; },
                                    () =>
@@ -46,6 +50,12 @@ namespace Client.Controllers
 
         }
 
+        private void CreateGameFn()
+        {
+            myCreateUIService.Create("GameManager");
+            myScope.Minimize();
+        }
+
         private void JoinRoomFn()
         {
             myClientSiteManagerService.JoinRoom(new RoomJoinRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
@@ -55,7 +65,7 @@ namespace Client.Controllers
         {
             Action<string> action=null;
             action = (roomName) => {
-                myClientSiteManagerService.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, roomName));
+                         myClientSiteManagerService.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, roomName));
                          myUIManager.CreateRoom -= action;
                      };
             myUIManager.CreateRoom += action;

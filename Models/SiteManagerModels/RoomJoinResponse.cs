@@ -5,10 +5,10 @@ namespace Models.SiteManagerModels
     [Serializable]
     public class RoomJoinResponse
     {
-        public RoomData Room { get; set; }
+        public RoomModel Room { get; set; }
 
         [ObjectLiteral]
-        public RoomJoinResponse(RoomData room)
+        public RoomJoinResponse(RoomModel room)
         {
             Room = room;
         }

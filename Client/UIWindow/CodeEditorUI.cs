@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Models;
@@ -59,8 +59,8 @@ namespace Client.UIWindow
             timeTracker.TimeValue += time;
           //  PageHandler.DebugUI.lblHowFast.Text = ( "Time Taken: " + ( timeTracker.TimeValue / timeTracker.NumOfTimes ) );
             PageHandler.CodeEditorUI.codeEditor.Information.editor.SetValue(gameSource.Content); /*
-                                                 buildSite.CodeEditorUI.codeEditor.Information.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");*/
+                                                 buildSite.CodeEditorUI.codeEditor.Information.editor.SetMarker(0, "<span style=\"color: #900\">&nbsp;&nbsp;</span> %N%");#1#
             PageHandler.CodeEditorUI.codeEditor.Information.editor.Refresh();
         }
     }
-}
+}*/

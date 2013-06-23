@@ -13,6 +13,8 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,12 +36,13 @@
   <ItemGroup>
     <Compile Include="ChatManagerModels\ChatMessageRoomModel.cs" />
     <Compile Include="ChatManagerModels\ChatMessagesModel.cs" />
+    <Compile Include="ChatManagerModels\ChatRoomDataModel.cs" />
     <Compile Include="ChatManagerModels\ChatRoomInfoModel.cs" />
-    <Compile Include="ChatManagerModels\ChatRoomModel.cs" />
     <Compile Include="ChatManagerModels\CreateChatRoomRequest.cs" />
     <Compile Include="ChatManagerModels\JoinChatRoomRequest.cs" />
     <Compile Include="ChatManagerModels\RegisterChatChannelModel.cs" />
     <Compile Include="ChatManagerModels\SendChatMessageModel.cs" />
+    <Compile Include="ClientInformation.cs" />
     <Compile Include="GameManagerModels\DebugCreateGameRequestModel.cs" />
     <Compile Include="GatewayLoginMessageModel.cs" />
     <Compile Include="GatewayMessageModel.cs" />
@@ -56,13 +59,14 @@
     <Compile Include="RegisterServerModel.cs" />
     <Compile Include="SiteManagerModels\CreateRoomRequest.cs" />
     <Compile Include="SiteManagerModels\GameTypeModel.cs" />
+    <Compile Include="SiteManagerModels\Game\GameModel.cs" />
     <Compile Include="SiteManagerModels\GetGameTypesReceivedResponse.cs" />
     <Compile Include="SiteManagerModels\GetRoomInfoRequest.cs" />
     <Compile Include="SiteManagerModels\GetRoomInfoResponse.cs" />
     <Compile Include="SiteManagerModels\GetRoomsRequest.cs" />
     <Compile Include="SiteManagerModels\GetRoomsResponse.cs" />
     <Compile Include="SiteManagerModels\LeaveRoomRequest.cs" />
-    <Compile Include="SiteManagerModels\RoomData.cs" />
+    <Compile Include="SiteManagerModels\RoomModel.cs" />
     <Compile Include="SiteManagerModels\RoomJoinRequest.cs" />
     <Compile Include="SiteManagerModels\RoomJoinResponse.cs" />
     <Compile Include="SiteManagerModels\SiteLoginRequest.cs" />
@@ -96,6 +100,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

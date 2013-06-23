@@ -1,6 +1,18 @@
 
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.ClientInformation
+	var $Models_ClientInformation = function() {
+	};
+	$Models_ClientInformation.createInstance = function() {
+		return $Models_ClientInformation.$ctor();
+	};
+	$Models_ClientInformation.$ctor = function() {
+		var $this = {};
+		$this.loggedInUser = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.GatewayLoginMessageModel
 	var $Models_GatewayLoginMessageModel = function() {
 	};
@@ -305,16 +317,16 @@
 	var $Models_SiteManagerModels_LeaveRoomRequest = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Models.SiteManagerModels.RoomData
-	var $Models_SiteManagerModels_RoomData = function() {
-	};
-	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.RoomJoinRequest
 	var $Models_SiteManagerModels_RoomJoinRequest = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.RoomJoinResponse
 	var $Models_SiteManagerModels_RoomJoinResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.RoomModel
+	var $Models_SiteManagerModels_RoomModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.SiteLoginRequest
@@ -327,6 +339,165 @@
 	$Models_SiteManagerModels_StartGameRequest.createInstance = function() {
 		return {};
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.EffectType
+	var $Models_SiteManagerModels_Game_EffectType = function() {
+	};
+	$Models_SiteManagerModels_Game_EffectType.prototype = { highlight: 'highlight', rotate: 'rotate', bend: 'bend', styleProperty: 'styleProperty', animated: 'animated' };
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.EffectType', $Models_SiteManagerModels_Game_EffectType, false);
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameAreaModel
+	var $Models_SiteManagerModels_Game_GameAreaModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameAreaModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameAreaModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameAreaModel.$ctor = function() {
+		var $this = {};
+		$this.top = 0;
+		$this.left = 0;
+		$this.width = 0;
+		$this.height = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameCodeModel
+	var $Models_SiteManagerModels_Game_GameCodeModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameCodeModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameCodeModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameCodeModel.$ctor = function() {
+		var $this = {};
+		$this.code = null;
+		$this.cursorPosition = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameEffectModel
+	var $Models_SiteManagerModels_Game_GameEffectModel = function() {
+		this.name = null;
+		this.type = 0;
+		this.properties = null;
+		this.properties = [];
+	};
+	$Models_SiteManagerModels_Game_GameEffectModel.prototype = {
+		getPropertyByName: function(T) {
+			return function(name) {
+				for (var $t1 = 0; $t1 < this.properties.length; $t1++) {
+					var effectProperty = this.properties[$t1];
+					if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
+						return ss.cast(effectProperty.value, T);
+					}
+				}
+				return ss.getDefaultValue(T);
+			};
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameEffectPropertyModel
+	var $Models_SiteManagerModels_Game_GameEffectPropertyModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameEffectPropertyModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameEffectPropertyModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameEffectPropertyModel.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.value = null;
+		$this.type = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameEffectPropertyType
+	var $Models_SiteManagerModels_Game_GameEffectPropertyType = function() {
+	};
+	$Models_SiteManagerModels_Game_GameEffectPropertyType.prototype = { text: 'text', number: 'number', color: 'color' };
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameEffectPropertyType', $Models_SiteManagerModels_Game_GameEffectPropertyType, false);
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutModel
+	var $Models_SiteManagerModels_Game_GameLayoutModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameLayoutModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameLayoutModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameLayoutModel.$ctor = function() {
+		var $this = {};
+		$this.width = 0;
+		$this.height = 0;
+		$this.spaces = null;
+		$this.texts = null;
+		$this.ares = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutScenario
+	var $Models_SiteManagerModels_Game_GameLayoutScenario = function() {
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenario.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameLayoutScenario.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenario.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.numberOfPlayers = 0;
+		$this.screenSize = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameModel
+	var $Models_SiteManagerModels_Game_GameModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameModel.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.owner = null;
+		$this.description = null;
+		$this.maxNumberOfPlayers = 0;
+		$this.cardImages = null;
+		$this.assets = null;
+		$this.gameCode = null;
+		$this.gameLayout = null;
+		$this.gameLayoutScenarios = null;
+		$this.effects = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameSpaceLayoutType
+	var $Models_SiteManagerModels_Game_GameSpaceLayoutType = function() {
+	};
+	$Models_SiteManagerModels_Game_GameSpaceLayoutType.prototype = { straight: 'straight' };
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameSpaceLayoutType', $Models_SiteManagerModels_Game_GameSpaceLayoutType, false);
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameSpaceModel
+	var $Models_SiteManagerModels_Game_GameSpaceModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameSpaceModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameSpaceModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameSpaceModel.$ctor = function() {
+		var $this = $Models_SiteManagerModels_Game_GameAreaModel.$ctor();
+		$this.layoutType = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameTextModel
+	var $Models_SiteManagerModels_Game_GameTextModel = function() {
+	};
+	$Models_SiteManagerModels_Game_GameTextModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameTextModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameTextModel.$ctor = function() {
+		var $this = {};
+		$this.top = 0;
+		$this.left = 0;
+		$this.text = null;
+		return $this;
+	};
+	ss.registerClass(global, 'Models.ClientInformation', $Models_ClientInformation);
 	ss.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel);
 	ss.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel);
 	ss.registerClass(global, 'Models.RegisterServerModel', $Models_RegisterServerModel);
@@ -340,7 +511,7 @@
 	ss.registerClass(global, 'Models.ChatManagerModels.ChatMessageRoomModel', $Models_ChatManagerModels_ChatMessageRoomModel);
 	ss.registerClass(global, 'Models.ChatManagerModels.ChatMessagesModel', $Models_ChatManagerModels_ChatMessagesModel);
 	ss.registerClass(global, 'Models.ChatManagerModels.ChatRoomInfoModel', $Models_ChatManagerModels_ChatRoomInfoModel);
-	ss.registerClass(global, 'Models.ChatManagerModels.ChatRoomModel', $Models_ChatManagerModels_ChatRoomModel, NodeLibraries.MongoDB.MongoDocument);
+	ss.registerClass(global, 'Models.ChatManagerModels.ChatRoomModel', $Models_ChatManagerModels_ChatRoomModel);
 	ss.registerClass(global, 'Models.ChatManagerModels.CreateChatRoomRequest', $Models_ChatManagerModels_CreateChatRoomRequest);
 	ss.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest);
 	ss.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel);
@@ -365,9 +536,18 @@
 	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomsRequest', $Models_SiteManagerModels_GetRoomsRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.GetRoomsResponse', $Models_SiteManagerModels_GetRoomsResponse);
 	ss.registerClass(global, 'Models.SiteManagerModels.LeaveRoomRequest', $Models_SiteManagerModels_LeaveRoomRequest);
-	ss.registerClass(global, 'Models.SiteManagerModels.RoomData', $Models_SiteManagerModels_RoomData, NodeLibraries.MongoDB.MongoDocument);
 	ss.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.RoomModel', $Models_SiteManagerModels_RoomModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameAreaModel', $Models_SiteManagerModels_Game_GameAreaModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameCodeModel', $Models_SiteManagerModels_Game_GameCodeModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameEffectModel', $Models_SiteManagerModels_Game_GameEffectModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameEffectPropertyModel', $Models_SiteManagerModels_Game_GameEffectPropertyModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutModel', $Models_SiteManagerModels_Game_GameLayoutModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenario', $Models_SiteManagerModels_Game_GameLayoutScenario);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameModel', $Models_SiteManagerModels_Game_GameModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameSpaceModel', $Models_SiteManagerModels_Game_GameSpaceModel, $Models_SiteManagerModels_Game_GameAreaModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameTextModel', $Models_SiteManagerModels_Game_GameTextModel);
 })();

@@ -14,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <NoStdLib>True</NoStdLib>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,66 +35,56 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="CardGameUI\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
-    <Compile Include="CardGameUI\Controllers\ActiveLobbyController.cs" />
-    <Compile Include="CardGameUI\Controllers\MinimizeController.cs" />
-    <Compile Include="CardGameUI\Controllers\QuestionController.cs" />
-    <Compile Include="CardGameUI\Controllers\CreateRoomController.cs" />
-    <Compile Include="CardGameUI\Controllers\HomeController.cs" />
-    <Compile Include="CardGameUI\Controllers\LoginController.cs" />
-    <Compile Include="CardGameUI\Controllers\EffectEditorController.cs" />
-    <Compile Include="CardGameUI\Controllers\GameController.cs" />
-    <Compile Include="CardGameUI\Controllers\ListEffectsController.cs" />
-    <Compile Include="CardGameUI\Directives\AcgDrawCardDirective.cs" />
-    <Compile Include="CardGameUI\Directives\AcgDrawSpaceDirective.cs" />
-    <Compile Include="CardGameUI\Directives\ChatBoxDirective.cs" />
-    <Compile Include="CardGameUI\Directives\AcgSpacesDirective.cs" />
-    <Compile Include="CardGameUI\Directives\FancyListDirective.cs" />
-    <Compile Include="CardGameUI\Directives\FloatingWindowDirective.cs" />
-    <Compile Include="CardGameUI\Directives\DraggableDirective.cs" />
-    <Compile Include="CardGameUI\Scope\ActiveLobbyScope.cs" />
-    <Compile Include="CardGameUI\Scope\BaseScope.cs" />
-    <Compile Include="CardGameUI\Scope\CardScope.cs" />
-    <Compile Include="CardGameUI\Scope\MinimizeScope.cs" />
-    <Compile Include="CardGameUI\Scope\QuestionScope.cs" />
-    <Compile Include="CardGameUI\Scope\CreateRoomScope.cs" />
-    <Compile Include="CardGameUI\Scope\FloatingWindowBaseScope.cs" />
-    <Compile Include="CardGameUI\Scope\HomeScope.cs" />
-    <Compile Include="CardGameUI\Scope\EffectEditorScope.cs" />
-    <Compile Include="CardGameUI\Scope\GameCtrlScope.cs" />
-    <Compile Include="CardGameUI\Scope\ListEffectsScope.cs" />
-    <Compile Include="CardGameUI\Scope\LoginScope.cs" />
-    <Compile Include="CardGameUI\Scope\SpaceScope.cs" />
-    <Compile Include="CardGameUI\Services\ClientChatManagerService.cs" />
-    <Compile Include="CardGameUI\Services\ClientDebugManagerService.cs" />
-    <Compile Include="CardGameUI\Services\ClientGameManagerService.cs" />
-    <Compile Include="CardGameUI\Services\ClientSiteManagerService.cs" />
-    <Compile Include="CardGameUI\Services\EditEffectService.cs" />
-    <Compile Include="CardGameUI\Services\EffectManagerService.cs" />
-    <Compile Include="CardGameUI\Services\EffectWatcherService.cs" />
-    <Compile Include="CardGameUI\Services\GameContentManager.cs" />
-    <Compile Include="CardGameUI\Services\GatewayService.cs" />
-    <Compile Include="CardGameUI\Services\UIManagerService.cs" />
-    <Compile Include="CardGameUI\Util\Effect.cs" />
-    <Compile Include="CardGameUI\Util\EffectType2.cs" />
-    <Compile Include="CardGameUI\Util\Extensions.cs" />
-    <Compile Include="ClientInformation.cs" />
+    <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\CreateRoomController.cs" />
+    <Compile Include="Controllers\EffectEditorController.cs" />
+    <Compile Include="Controllers\GameController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ListEffectsController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MinimizeController.cs" />
+    <Compile Include="Controllers\QuestionController.cs" />
+    <Compile Include="Directives\AcgDrawCardDirective.cs" />
+    <Compile Include="Directives\AcgDrawSpaceDirective.cs" />
+    <Compile Include="Directives\AcgSpacesDirective.cs" />
+    <Compile Include="Directives\ChatBoxDirective.cs" />
+    <Compile Include="Directives\DraggableDirective.cs" />
+    <Compile Include="Directives\FancyListDirective.cs" />
+    <Compile Include="Directives\FloatingWindowDirective.cs" />
+    <Compile Include="Libs\Extensions.cs" />
     <Compile Include="Libs\ScriptLoader.cs" />
     <Compile Include="Libs\TimeTracker.cs" />
-    <Compile Include="PageHandler.cs" />
-    <Compile Include="ShufflyGame\GameManager.cs" />
+    <Compile Include="Scope\ActiveLobbyScope.cs" />
+    <Compile Include="Scope\BaseScope.cs" />
+    <Compile Include="Scope\CardScope.cs" />
+    <Compile Include="Scope\CreateRoomScope.cs" />
+    <Compile Include="Scope\EffectEditorScope.cs" />
+    <Compile Include="Scope\FloatingWindowBaseScope.cs" />
+    <Compile Include="Scope\GameCtrlScope.cs" />
+    <Compile Include="Scope\HomeScope.cs" />
+    <Compile Include="Scope\ListEffectsScope.cs" />
+    <Compile Include="Scope\LoginScope.cs" />
+    <Compile Include="Scope\MinimizeScope.cs" />
+    <Compile Include="Scope\QuestionScope.cs" />
+    <Compile Include="Scope\SpaceScope.cs" />
+    <Compile Include="Services\ClientChatManagerService.cs" />
+    <Compile Include="Services\ClientDebugManagerService.cs" />
+    <Compile Include="Services\ClientGameManagerService.cs" />
+    <Compile Include="Services\ClientSiteManagerService.cs" />
+    <Compile Include="Services\EditEffectService.cs" />
+    <Compile Include="Services\EffectManagerService.cs" />
+    <Compile Include="Services\EffectWatcherService.cs" />
+    <Compile Include="Services\GameContentManager.cs" />
+    <Compile Include="Services\GatewayService.cs" />
+    <Compile Include="Services\UIManagerService.cs" />
     <Compile Include="UIWindow\CodeEditorUI.cs" />
-    <Compile Include="UIWindow\ActiveLobbyUI.cs" />
-    <Compile Include="UIWindow\Controls\ChatBox.cs" />
-    <Compile Include="UIWindow\CreateRoomUI.cs" />
     <Compile Include="UIWindow\DebugUI.cs" />
-    <Compile Include="UIWindow\HomeUI.cs" />
-    <Compile Include="UIWindow\LoginUI.cs" />
-    <Compile Include="UIWindow\QuestionUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ClientLibs\ClientLibs.csproj">
@@ -145,22 +137,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CardGameUI\partials\chatBox.html" />
-    <Content Include="CardGameUI\partials\fancyList.html" />
-    <Content Include="CardGameUI\partials\floatingWindow.html" />
-    <Content Include="CardGameUI\partials\UIs.html" />
-    <Content Include="CardGameUI\partials\gameUI.html" />
-    <Content Include="CardGameUI\partials\UIs\ActiveLobby.html" />
-    <Content Include="CardGameUI\partials\UIs\MinimizeArea.html" />
-    <Content Include="CardGameUI\partials\UIs\Question.html" />
-    <Content Include="CardGameUI\partials\UIs\CreateRoomDialog.html" />
-    <Content Include="CardGameUI\partials\UIs\Home.html" />
-    <Content Include="CardGameUI\partials\UIs\EffectEditor.html" />
-    <Content Include="CardGameUI\partials\UIs\Login.html" />
-    <Content Include="CardGameUI\partials\UIs\ListEffects.html" />
+    <Content Include="partials\chatBox.html" />
+    <Content Include="partials\fancyList.html" />
+    <Content Include="partials\floatingWindow.html" />
+    <Content Include="partials\gameUI.html" />
+    <Content Include="partials\UIs.html" />
+    <Content Include="partials\UIs\ActiveLobby.html" />
+    <Content Include="partials\UIs\CreateRoomDialog.html" />
+    <Content Include="partials\UIs\EffectEditor.html" />
+    <Content Include="partials\UIs\Home.html" />
+    <Content Include="partials\UIs\ListEffects.html" />
+    <Content Include="partials\UIs\Login.html" />
+    <Content Include="partials\UIs\MinimizeArea.html" />
+    <Content Include="partials\UIs\Question.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.0.4\tools\Saltarelle.Compiler.targets')" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

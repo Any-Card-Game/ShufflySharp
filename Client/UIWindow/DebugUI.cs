@@ -1,4 +1,4 @@
-using System;
+﻿/*using System;
 using System.Runtime.CompilerServices;
 using Models;
 using Models.GameManagerModels;
@@ -69,7 +69,7 @@ namespace Client.UIWindow
                  {
                      pageHandler.gateway.Emit("Area.Debug.Continue", new { }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                  }
-             });*/
+             });#1#
              
 
             varText = UIWindow.AddElement(new ShuffTextbox(150, 134, 100, 25, "Var Lookup"));
@@ -84,7 +84,7 @@ namespace Client.UIWindow
                   {
                       pageHandler.gateway.Emit("Area.Debug.VariableLookup.Request", new { variableName = devArea.Data.varText.GetValue() }, devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                   }
-              });*/
+              });#1#
 
             /*   devArea.AddButton(new ShuffButton()
                {
@@ -98,10 +98,50 @@ namespace Client.UIWindow
                        pageHandler.gateway.Emit("Area.Debug.PushNewSource", new { source = codeArea.Data.codeEditor.editor.GetValue(), breakPoints = codeArea.Data.breakPoints },
                            devArea.Data.gameServer); //NO EMIT"ING OUTSIDE OF PageHandler
                    }
-               });*/
+               });#1#
              
 
             txtNumOfPlayers = UIWindow.AddElement(new ShuffTextbox(130, 43, 130, 20, "6", "Number of players=", "font-size:13px"));
-        }
+        }/* 
+            /*
+                        gateway.On<GameRoom>("Area.Game.RoomInfos", data =>
+                            {
+                                buildSite.home.Data.loadRoomInfos(data);
+
+                            });
+            * /
+           
+            /*
+                        gateway.On("Area.Debug.VariableLookup.Response", data =>
+                            {
+                                Window.Alert(Json.Stringify(data));
+                            });
+            * /
+        ClientGameManager.OnGetDebugLog += (user, gameAnswer) => {
+                                                   //                                                   HomeUI.loadRoomInfos(gameAnswer);
+
+                                                   var lines = PageHandler.CodeEditorUI.console.Information.editor.GetValue().Split("\n");
+                                                   lines = lines.Extract(lines.Length - 40, 40);
+
+                                                   PageHandler.CodeEditorUI.console.Information.editor.SetValue(lines.Join("\n") + "\n" + gameAnswer.Value);
+                                                   PageHandler.CodeEditorUI.console.Information.editor.SetCursor(PageHandler.CodeEditorUI.console.Information.editor.LineCount(), 0);
+                                               };
+            ClientGameManager.OnGetDebugBreak += (user, gameAnswer) => {
+                                                     //                                                     HomeUI.loadRoomInfos(gameAnswer);
+
+                                                     var cm = PageHandler.CodeEditorUI.codeEditor;
+
+                                                     /*    cm.Information.editor.ClearMarker(gameAnswer.LineNumber);
+            cm.Information.editor.SetMarker(gameAnswer.LineNumber, "<span style=\"color: #059\">●</span> %N%");
+            cm.Information.editor.SetCursor(gameAnswer.LineNumber + 15, 0);
+            cm.Information.editor.SetCursor(gameAnswer.LineNumber - 15, 0);
+            cm.Information.editor.SetCursor(gameAnswer.LineNumber, 0);* /
+                                                 };
+
+            ClientGameManager.OnDebugGameOver += (user, room) =>
+            {
+                //alert(JSON.stringify(data));
+            };#1#
+
     }
-}
+}*/

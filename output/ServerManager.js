@@ -1,4 +1,4 @@
-require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('./NodeLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./RawDeflate.js');
+require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('./NodeLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./DataModels.js');require('./RawDeflate.js');
 (function() {
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.ServerManager
@@ -362,7 +362,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				var roomToSend = { roomName: room.roomName, users: room.users, messages: null };
 				for (var $t2 = 0; $t2 < room.users.length; $t2++) {
 					var userLogicModel1 = room.users[$t2];
-					this.$myServerManager.sendChatInfo(userLogicModel1, roomToSend);
+					this.$myServerManager.sendChatInfo(userLogicModel1, DataModels.ChatManagerModels.ChatRoomDataModel.toModel(roomToSend));
 				}
 			}));
 		},
@@ -382,42 +382,42 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$getRoomFromUser: function(user) {
-			var currentRoom = null;
+			var currentRoomData = null;
 			for (var $t1 = 0; $t1 < this.$runningRooms.length; $t1++) {
 				var chatRoomModel = this.$runningRooms[$t1];
 				for (var $t2 = 0; $t2 < chatRoomModel.users.length; $t2++) {
 					var item = chatRoomModel.users[$t2];
 					if (ss.referenceEquals(item.userName, user.userName)) {
-						currentRoom = chatRoomModel;
+						currentRoomData = chatRoomModel;
 					}
 				}
 			}
-			return currentRoom;
+			return currentRoomData;
 		},
 		$onJoinChatChannel: function(user, data) {
 			var cur = this.$getRoomFromUser(user);
 			if (ss.isValue(cur)) {
 				this.$leaveChatRoom(user);
 			}
-			var currentRoom = null;
+			var currentRoomData = null;
 			for (var $t1 = 0; $t1 < this.$runningRooms.length; $t1++) {
 				var chatRoomModel = this.$runningRooms[$t1];
 				if (ss.referenceEquals(chatRoomModel.roomName, data.room.chatChannel)) {
-					currentRoom = chatRoomModel;
+					currentRoomData = chatRoomModel;
 				}
 			}
-			if (ss.isNullOrUndefined(currentRoom)) {
+			if (ss.isNullOrUndefined(currentRoomData)) {
 				throw new ss.Exception('idk');
 			}
-			this.$myDataManager.chatData.addUser(currentRoom, user, ss.mkdel(this, function(room) {
+			this.$myDataManager.chatData.addUser(currentRoomData, user, ss.mkdel(this, function(room) {
 				this.$myServerManager.registerChatServer(user);
 				var roomToSend = { roomName: room.roomName, users: room.users, messages: room.messages };
 				roomToSend.messages = ss.arrayExtract(room.messages, room.messages.length - 5);
-				this.$myServerManager.sendChatInfo(user, roomToSend);
+				this.$myServerManager.sendChatInfo(user, DataModels.ChatManagerModels.ChatRoomDataModel.toModel(roomToSend));
 				roomToSend = { roomName: room.roomName, users: room.users, messages: null };
-				for (var $t2 = 0; $t2 < currentRoom.users.length; $t2++) {
-					var userLogicModel = currentRoom.users[$t2];
-					this.$myServerManager.sendChatInfo(userLogicModel, roomToSend);
+				for (var $t2 = 0; $t2 < currentRoomData.users.length; $t2++) {
+					var userLogicModel = currentRoomData.users[$t2];
+					this.$myServerManager.sendChatInfo(userLogicModel, DataModels.ChatManagerModels.ChatRoomDataModel.toModel(roomToSend));
 				}
 			}));
 		},
@@ -430,7 +430,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				this.$myDataManager.chatData.createChatChannel(data.room.chatChannel, user, ss.mkdel(this, function(a) {
 					this.$myServerManager.registerChatServer(user);
 					ss.add(this.$runningRooms, a);
-					this.$myServerManager.sendChatInfo(user, a);
+					this.$myServerManager.sendChatInfo(user, DataModels.ChatManagerModels.ChatRoomDataModel.toModel(a));
 				}));
 			}));
 		},
@@ -1434,16 +1434,18 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					this.$myDataManager.siteData.room_RemovePlayer(room, user, ss.mkdel(this, function(ro) {
 						for (var $t2 = 0; $t2 < room.players.length; $t2++) {
 							var userLogicModel = room.players[$t2];
-							this.$mySiteClientManager.sendRoomInfo(userLogicModel, { room: room });
+							this.$mySiteClientManager.sendRoomInfo(userLogicModel, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
 						}
 					}));
 				}
-				result(room);
+				result(DataModels.SiteManagerModels.RoomDataModel.toModel(room));
 			}));
 		},
 		$onGetRooms: function(user, data) {
 			this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, ss.mkdel(this, function(a) {
-				this.$mySiteClientManager.sendRooms(user, { rooms: a });
+				this.$mySiteClientManager.sendRooms(user, { rooms: a.map(function(b) {
+					return DataModels.SiteManagerModels.RoomDataModel.toModel(b);
+				}) });
 			}));
 		},
 		$onStartGame: function(user, data) {
@@ -1458,17 +1460,19 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		$onGetRoomInfo: function(user, data) {
 			this.$myDataManager.siteData.room_GetByRoomName(data.gameType, data.roomName, ss.mkdel(this, function(a) {
-				this.$mySiteClientManager.sendRoomInfo(user, { room: a });
+				this.$mySiteClientManager.sendRoomInfo(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(a) });
 			}));
 		},
 		$onCreateRoom: function(user, data) {
 			NodeLibraries.Common.Logging.Logger.log(user.userName + ' create room', 1);
 			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
 				this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
-					this.$mySiteClientManager.createChatRoom(user, { room: room });
-					this.$mySiteClientManager.roomJoined(user, { room: room });
+					this.$mySiteClientManager.createChatRoom(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
+					this.$mySiteClientManager.roomJoined(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
 					this.$myDataManager.siteData.room_GetAllByGameType(data.gameType, ss.mkdel(this, function(a) {
-						this.$mySiteClientManager.sendRooms(user, { rooms: a });
+						this.$mySiteClientManager.sendRooms(user, { rooms: a.map(function(b) {
+							return DataModels.SiteManagerModels.RoomDataModel.toModel(b);
+						}) });
 					}));
 				}));
 			}));
@@ -1477,11 +1481,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			NodeLibraries.Common.Logging.Logger.log(user.userName + ' join room', 1);
 			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
 				this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
-					this.$mySiteClientManager.roomJoined(user, { room: room });
-					this.$mySiteClientManager.joinChatRoom(user, { room: room });
+					this.$mySiteClientManager.roomJoined(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
+					this.$mySiteClientManager.joinChatRoom(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
 					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 						var UserLogicModel = room.players[$t1];
-						this.$mySiteClientManager.sendRoomInfo(UserLogicModel, { room: room });
+						this.$mySiteClientManager.sendRoomInfo(UserLogicModel, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
 					}
 				}));
 			}));

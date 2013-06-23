@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using DataModels.ChatManagerModels;
 using Models;
 using Models.ChatManagerModels;
 using NodeLibraries.Common.Logging;
@@ -12,7 +13,7 @@ namespace ServerManager.ChatServer
     {
         private readonly DataManager myDataManager;
         private ChatClientManager myServerManager;
-        private List<ChatRoomModel> runningRooms = new List<ChatRoomModel>();
+        private List<ChatRoomDataModel> runningRooms = new List<ChatRoomDataModel>();
 
         public ChatManager(string chatServerIndex)
         {
@@ -48,10 +49,10 @@ namespace ServerManager.ChatServer
                                               user,
                                               (a) => {
                                                   myServerManager.UnregisterChatServer(user);
-                                                  var roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
+                                                  var roomToSend = new ChatRoomDataModel(room.RoomName, room.Users, null);
 
                                                   foreach (var userLogicModel in room.Users) {
-                                                      myServerManager.SendChatInfo(userLogicModel, roomToSend);
+                                                      myServerManager.SendChatInfo(userLogicModel, roomToSend.ToModel());
                                                   }
                                               });
         }
@@ -72,15 +73,15 @@ namespace ServerManager.ChatServer
                                                });
         }
 
-        private ChatRoomModel getRoomFromUser(UserLogicModel user)
+        private ChatRoomDataModel getRoomFromUser(UserLogicModel user)
         {
-            ChatRoomModel currentRoom = null;
+            ChatRoomDataModel currentRoomData = null;
             foreach (var chatRoomModel in runningRooms) {
                 foreach (var item in chatRoomModel.Users) {
-                    if (item.UserName == user.UserName) currentRoom = chatRoomModel;
+                    if (item.UserName == user.UserName) currentRoomData = chatRoomModel;
                 }
             }
-            return currentRoom;
+            return currentRoomData;
         }
 
         private void OnJoinChatChannel(UserLogicModel user, JoinChatRoomRequest data)
@@ -88,28 +89,28 @@ namespace ServerManager.ChatServer
             var cur = getRoomFromUser(user);
             if (cur != null) leaveChatRoom(user);
 
-            ChatRoomModel currentRoom = null;
+            ChatRoomDataModel currentRoomData = null;
             foreach (var chatRoomModel in runningRooms) {
                 if (chatRoomModel.RoomName == data.Room.ChatChannel)
-                    currentRoom = chatRoomModel;
+                    currentRoomData = chatRoomModel;
             }
-            if (currentRoom == null)
+            if (currentRoomData == null)
                 throw new Exception("idk");
 
 
-            myDataManager.ChatData.AddUser(currentRoom,
+            myDataManager.ChatData.AddUser(currentRoomData,
                                            user,
                                            room => {
                                                myServerManager.RegisterChatServer(user);
-                                               var roomToSend = new ChatRoomModel(room.RoomName, room.Users, room.Messages);
+                                               var roomToSend = new ChatRoomDataModel(room.RoomName, room.Users, room.Messages);
 
                                                roomToSend.Messages = room.Messages.Extract(room.Messages.Count - 5);
-                                               myServerManager.SendChatInfo(user, roomToSend);
+                                               myServerManager.SendChatInfo(user, roomToSend.ToModel());
 
-                                               roomToSend = new ChatRoomModel(room.RoomName, room.Users, null);
+                                               roomToSend = new ChatRoomDataModel(room.RoomName, room.Users, null);
 
-                                               foreach (var userLogicModel in currentRoom.Users) {
-                                                   myServerManager.SendChatInfo(userLogicModel, roomToSend);
+                                               foreach (var userLogicModel in currentRoomData.Users) {
+                                                   myServerManager.SendChatInfo(userLogicModel, roomToSend.ToModel() );
                                                }
                                            });
         }
@@ -128,7 +129,7 @@ namespace ServerManager.ChatServer
                                                                                                        myServerManager.RegisterChatServer(user);
 
                                                                                                        runningRooms.Add(a);
-                                                                                                       myServerManager.SendChatInfo(user, a);
+                                                                                                       myServerManager.SendChatInfo(user, a.ToModel());
                                                                                                    });
                                                       });
 

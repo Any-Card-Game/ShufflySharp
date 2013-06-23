@@ -257,48 +257,48 @@ require('./NodeLibraries.js');
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var $t1 = [];
 				ss.add($t1, user);
-				var chatRoomModel = { roomName: roomName, users: $t1, messages: [] };
-				collection.insert(chatRoomModel);
-				complete(chatRoomModel);
+				var chatRoomDataModel = { roomName: roomName, users: $t1, messages: [] };
+				collection.insert(chatRoomDataModel);
+				complete(chatRoomDataModel);
 			});
 		},
-		addChatLine: function(user, room, message, complete) {
+		addChatLine: function(user, roomData, message, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var messageModel = { user: user, content: message, time: new Date() };
 				var query = {};
 				query['$push'] = { messages: messageModel };
-				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
 					}
-					ss.add(room.messages, messageModel);
+					ss.add(roomData.messages, messageModel);
 					complete(messageModel);
 				});
 			});
 		},
-		addUser: function(room, user, complete) {
+		addUser: function(roomData, user, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var query = {};
 				query['$push'] = { users: user };
-				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
 					}
-					ss.add(room.users, user);
-					complete(room);
+					ss.add(roomData.users, user);
+					complete(roomData);
 				});
 			});
 		},
-		removeUser: function(room, user, complete) {
+		removeUser: function(roomData, user, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var query = {};
 				query['$pop'] = { users: user };
-				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
 					}
-					ss.remove(room.users, user);
-					complete(room);
+					ss.remove(roomData.users, user);
+					complete(roomData);
 				});
 			});
 		}
@@ -340,7 +340,7 @@ require('./NodeLibraries.js');
 			this.$manager.client.collection('Room', function(err, collection) {
 				var j = {};
 				j['players.userName'] = user.userName;
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
 					results(((b.length > 0) ? b[0] : null));
 				});
 			});
@@ -348,7 +348,7 @@ require('./NodeLibraries.js');
 		room_GetAllByGameType: function(gameType, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
 				var j = { gameType: gameType };
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
 					results(b);
 				});
 			});
@@ -366,7 +366,7 @@ require('./NodeLibraries.js');
 		room_JoinRoom: function(gameType, roomName, user, onRoomJoined) {
 			this.$manager.client.collection('Room', ss.mkdel(this, function(err, collection) {
 				var j = { gameType: gameType, roomName: roomName };
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, ss.mkdel(this, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, ss.mkdel(this, function(a, b) {
 					if (b.length === 0) {
 						onRoomJoined(null);
 					}
@@ -382,7 +382,7 @@ require('./NodeLibraries.js');
 		room_GetByRoomName: function(gameType, roomName, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
 				var j = { gameType: gameType, roomName: roomName };
-				$CommonShuffleLibrary_Data_MongoHelper.find(Models.SiteManagerModels.RoomData).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
 					results(((b.length > 0) ? b[0] : null));
 				});
 			});
@@ -428,7 +428,7 @@ require('./NodeLibraries.js');
 			this.$manager.client.collection('Room', function(err, collection) {
 				var query = {};
 				query['$set'] = { chatServer: chatServerIndex };
-				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
+				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room.id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
 						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
 					}
@@ -437,19 +437,6 @@ require('./NodeLibraries.js');
 				});
 			});
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CommonShuffleLibrary.Data.GameInfoModel
-	var $CommonShuffleLibrary_Data_GameInfoModel = function() {
-	};
-	$CommonShuffleLibrary_Data_GameInfoModel.createInstance = function() {
-		return $CommonShuffleLibrary_Data_GameInfoModel.$ctor();
-	};
-	$CommonShuffleLibrary_Data_GameInfoModel.$ctor = function() {
-		var $this = {};
-		$this.answerIndex = 0;
-		$this.gameName = null;
-		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Data.MongoHelper
@@ -490,7 +477,6 @@ require('./NodeLibraries.js');
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerChatData', $CommonShuffleLibrary_Data_DataManagerChatData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.GameInfoModel', $CommonShuffleLibrary_Data_GameInfoModel);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, NodeLibraries.MongoDB.MongoDocument);
 	$CommonShuffleLibrary_DataManager.$connectionAddress = CommonLibraries.IPs.mongoIP;

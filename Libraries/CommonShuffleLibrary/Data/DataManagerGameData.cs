@@ -1,3 +1,4 @@
+using DataModels.GameManagerModels;
 namespace CommonShuffleLibrary.Data
 {
     public class DataManagerGameData
@@ -9,7 +10,7 @@ namespace CommonShuffleLibrary.Data
             this.manager = manager;
         }
 
-        public void Insert(GameInfoModel gmo)
+        public void Insert(GameInfoDataModel gmo)
         {
             manager.client.Collection("gameInfo",
                                       (err, collection) => { collection.Insert(gmo); });

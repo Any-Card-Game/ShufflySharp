@@ -6,10 +6,10 @@ namespace Models.ChatManagerModels
     [Serializable]
     public sealed class JoinChatRoomRequest
     {
-        public RoomData Room { get; set; }
+        public RoomModel Room { get; set; }
 
         [ObjectLiteral]
-        public JoinChatRoomRequest(RoomData room)
+        public JoinChatRoomRequest(RoomModel room)
         {
             Room = room;
         }

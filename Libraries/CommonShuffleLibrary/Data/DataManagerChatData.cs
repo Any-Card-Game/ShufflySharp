@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using DataModels.ChatManagerModels;
 using Models;
 using Models.ChatManagerModels;
 using NodeLibraries.Common.Logging;
@@ -16,17 +17,17 @@ namespace CommonShuffleLibrary.Data
             this.manager = manager;
         }
 
-        public void CreateChatChannel(string roomName, UserLogicModel user, Action<ChatRoomModel> complete)
+        public void CreateChatChannel(string roomName, UserLogicModel user, Action<ChatRoomDataModel> complete)
         {
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
-                                          ChatRoomModel chatRoomModel = new ChatRoomModel(roomName, new List<UserLogicModel>() {user}, new List<ChatMessageRoomModel>());
-                                        collection.Insert(chatRoomModel);
-                                          complete(chatRoomModel);
+                                          ChatRoomDataModel chatRoomDataModel = new ChatRoomDataModel(roomName, new List<UserLogicModel>() {user}, new List<ChatMessageRoomModel>());
+                                        collection.Insert(chatRoomDataModel);
+                                          complete(chatRoomDataModel);
                                       });
         }
 
-        public void AddChatLine(UserLogicModel user, ChatRoomModel room, string message, Action<ChatMessageRoomModel> complete)
+        public void AddChatLine(UserLogicModel user, ChatRoomDataModel roomData, string message, Action<ChatMessageRoomModel> complete)
         {
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
@@ -36,18 +37,18 @@ namespace CommonShuffleLibrary.Data
 
                                           query["$push"] = new {messages = messageModel};
 
-                                          collection.Update(new { _id = MongoDocument.GetID(room.ID )},
+                                          collection.Update(new { _id = MongoDocument.GetID(roomData.ID )},
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null)
                                                                     Logger.Log("Data Error: " + err2,LogLevel.Error);
-                                                                room.Messages.Add(messageModel);
+                                                                roomData.Messages.Add(messageModel);
                                                                 complete(messageModel);
                                                             });
                                       });
         }
 
-        public void AddUser(ChatRoomModel room, UserLogicModel user, Action<ChatRoomModel> complete)
+        public void AddUser(ChatRoomDataModel roomData, UserLogicModel user, Action<ChatRoomDataModel> complete)
         {
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
@@ -55,18 +56,18 @@ namespace CommonShuffleLibrary.Data
 
                                           query["$push"] = new {users = user};
 
-                                          collection.Update(new { _id = MongoDocument.GetID(room.ID) },
+                                          collection.Update(new { _id = MongoDocument.GetID(roomData.ID) },
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null) Logger.Log("Data Error: " + err2,LogLevel.Error);
-                                                                room.Users.Add(user);
+                                                                roomData.Users.Add(user);
 
-                                                                complete(room);
+                                                                complete(roomData);
                                                             });
                                       });
         }
 
-        public void RemoveUser(ChatRoomModel room, UserLogicModel user, Action<ChatRoomModel> complete)
+        public void RemoveUser(ChatRoomDataModel roomData, UserLogicModel user, Action<ChatRoomDataModel> complete)
         {
             manager.client.Collection("ChatRoom",
                                       (err, collection) => {
@@ -74,13 +75,13 @@ namespace CommonShuffleLibrary.Data
 
                                           query["$pop"] = new {users = user};
 
-                                          collection.Update(new { _id = MongoDocument.GetID(room.ID) },
+                                          collection.Update(new { _id = MongoDocument.GetID(roomData.ID) },
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null) Logger.Log("Data Error: " + err2, LogLevel.Error);
-                                                                room.Users.Remove(user);
+                                                                roomData.Users.Remove(user);
 
-                                                                complete(room);
+                                                                complete(roomData);
                                                             });
                                       });
         }

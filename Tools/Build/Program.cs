@@ -20,6 +20,7 @@ namespace Build
                                       shufSharp + @"\Libraries\ShuffleGameLibrary\",
                                       shufSharp + @"\Libraries\NodeLibraries\",
                                       shufSharp + @"\Servers\ServerManager\",
+                                      shufSharp + @"\DataModels\",
                                       shufSharp + @"\Models\",
                                       shufSharp + @"\Client\",
                                       shufSharp + @"\ClientLibs\",
@@ -41,13 +42,13 @@ namespace Build
             }
 
 
-            tryCopyDir(pre + shufSharp + @"\Client\CardGameUI\partials\", pre + shufSharp + @"\output\partials\");
-            tryCopyDir(pre + shufSharp + @"\Client\CardGameUI\partials\UIs\", pre + shufSharp + @"\output\partials\UIs\");
+            tryCopyDir(pre + shufSharp + @"\Client\partials\", pre + shufSharp + @"\output\partials\");
+            tryCopyDir(pre + shufSharp + @"\Client\partials\UIs\", pre + shufSharp + @"\output\partials\UIs\");
 
 
             //client happens in buildsite.cs
             var depends = new Dictionary<string, Application>();
-            depends.Add(shufSharp + @"\Servers\ServerManager\", new Application(true, @"./NodeLibraries.js", @"./CommonLibraries.js", @"./CommonShuffleLibrary.js", @"./ShuffleGameLibrary.js", @"./Models.js", @"./RawDeflate.js"));
+            depends.Add(shufSharp + @"\Servers\ServerManager\", new Application(true, @"./NodeLibraries.js", @"./CommonLibraries.js", @"./CommonShuffleLibrary.js", @"./ShuffleGameLibrary.js", @"./Models.js", @"./DataModels.js", @"./RawDeflate.js"));
             depends.Add(shufSharp + @"\Libraries\CommonShuffleLibrary\", new Application(false, @"./NodeLibraries.js"));
             depends.Add(shufSharp + @"\Libraries\NodeLibraries\", new Application(true));
             depends.Add(shufSharp + @"\Libraries\CommonLibraries\", new Application(false));
@@ -55,6 +56,7 @@ namespace Build
             depends.Add(shufSharp + @"\ClientLibs\", new Application(false));
             depends.Add(shufSharp + @"\ServerSlammer\", new Application(true, @"./NodeLibraries.js", @"./Models.js", @"./ClientLibs.js"));
             depends.Add(shufSharp + @"\Models\", new Application(false));
+            depends.Add(shufSharp + @"\DataModels\", new Application(false));
             depends.Add(shufSharp + @"\Libraries\ShuffleGameLibrary\", new Application(false));
             depends.Add(shufSharp + @"\Client\", new Application(false));
 

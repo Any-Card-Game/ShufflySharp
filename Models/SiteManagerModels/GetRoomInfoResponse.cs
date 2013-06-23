@@ -5,10 +5,10 @@ namespace Models.SiteManagerModels
     [Serializable]
     public class GetRoomInfoResponse
     {
-        public RoomData Room { get; set; }
+        public RoomModel Room { get; set; }
 
         [ObjectLiteral]
-        public GetRoomInfoResponse(RoomData room)
+        public GetRoomInfoResponse(RoomModel room)
         {
             Room = room;
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using CardGameUI.Controllers;
-using CardGameUI.Directives;
-using CardGameUI.Scope;
-using CardGameUI.Services;
+using Client.Controllers;
+using Client.Directives;
+using Client.Scope;
+using Client.Services;
 using jQueryApi;
 using ng;
 namespace Client

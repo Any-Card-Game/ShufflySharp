@@ -13,4 +13,5 @@ namespace Models.ChatManagerModels
             Info = info;
         }
     }
+
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CommonLibraries;
+using DataModels.SiteManagerModels;
 using Models;
 using Models.SiteManagerModels;
 using NodeLibraries.Common.Logging;
@@ -32,32 +33,32 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_GetRoomByUser(UserLogicModel user, Action<RoomData> results)
+        public void Room_GetRoomByUser(UserLogicModel user, Action<RoomDataModel> results)
         {
             manager.client.Collection("Room",
                                       (err, collection) =>
                                       {
                                           JsDictionary<string, object> j = new JsDictionary<string, object>();
                                           j["players.userName"] = user.UserName;
-                                          MongoHelper.Find<RoomData>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
+                                          MongoHelper.Find<RoomDataModel>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
                                       });
         }
 
-        public void Room_GetAllByGameType(string gameType, Action<List<RoomData>> results)
+        public void Room_GetAllByGameType(string gameType, Action<List<RoomDataModel>> results)
         {
             manager.client.Collection("Room",
                                       (err, collection) =>
                                       {
                                           var j = new { gameType };
-                                          MongoHelper.Find<RoomData>(collection, j, (a, b) => results(b));
+                                          MongoHelper.Find<RoomDataModel>(collection, j, (a, b) => results(b));
                                       });
         }
 
-        public void Room_CreateRoom(string gameType, string roomName, UserLogicModel user, Action<RoomData> onRoomCreated)
+        public void Room_CreateRoom(string gameType, string roomName, UserLogicModel user, Action<RoomDataModel> onRoomCreated)
         {
             //ExtensionMethods.debugger();
 
-            RoomData rd = new RoomData(gameType, roomName, roomName + "RoomName", roomName + "GameRoom", new List<UserLogicModel>() { user });
+            RoomDataModel rd = new RoomDataModel(gameType, roomName, roomName + "RoomName", roomName + "GameRoom", new List<UserLogicModel>() { user });
             manager.client.Collection("Room",
                                       (err, collection) =>
                                       {
@@ -67,13 +68,13 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_JoinRoom(string gameType, string roomName, UserLogicModel user, Action<RoomData> onRoomJoined)
+        public void Room_JoinRoom(string gameType, string roomName, UserLogicModel user, Action<RoomDataModel> onRoomJoined)
         {
             manager.client.Collection("Room",
                                       (err, collection) =>
                                       {
                                           var j = new { gameType, roomName };
-                                          MongoHelper.Find<RoomData>(collection,
+                                          MongoHelper.Find<RoomDataModel>(collection,
                                                                      j,
                                                                      (a, b) =>
                                                                      {
@@ -92,17 +93,17 @@ namespace CommonShuffleLibrary.Data
                                       });
         }
 
-        public void Room_GetByRoomName(string gameType, string roomName, Action<RoomData> results)
+        public void Room_GetByRoomName(string gameType, string roomName, Action<RoomDataModel> results)
         {
             manager.client.Collection("Room",
                                       (err, collection) =>
                                       {
                                           var j = new { gameType, roomName };
-                                          MongoHelper.Find<RoomData>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
+                                          MongoHelper.Find<RoomDataModel>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
                                       });
         }
 
-        public void Room_AddPlayer(RoomData room, UserLogicModel user, Action<RoomData> complete)
+        public void Room_AddPlayer(RoomDataModel room, UserLogicModel user, Action<RoomDataModel> complete)
         {
             manager.client.Collection("Room",
                           (err, collection) =>
@@ -125,7 +126,7 @@ namespace CommonShuffleLibrary.Data
                           });
 
         }
-        public void Room_RemovePlayer(RoomData room, UserLogicModel user, Action<RoomData> complete)
+        public void Room_RemovePlayer(RoomDataModel room, UserLogicModel user, Action<RoomDataModel> complete)
         {
             manager.client.Collection("Room",
                           (err, collection) =>
@@ -156,12 +157,12 @@ namespace CommonShuffleLibrary.Data
 
         }
 
-        public void Room_DeleteRoom(RoomData room)
+        public void Room_DeleteRoom(RoomDataModel room)
         {
             manager.client.Collection("Room", (err, collection) => { collection.Remove(new { _id = MongoDocument.GetID(room.ID) }); });
         }
 
-        public void Room_SetChatServer(RoomData room, string chatServerIndex, Action<object> complete)
+        public void Room_SetChatServer(RoomModel room, string chatServerIndex, Action<RoomModel> complete)
         {
             manager.client.Collection("Room",
                  (err, collection) =>

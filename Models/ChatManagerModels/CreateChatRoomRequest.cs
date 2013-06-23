@@ -6,11 +6,11 @@ namespace Models.ChatManagerModels
     [Serializable]
     public class CreateChatRoomRequest
     {
-        public RoomData Room { get; set; }
+        public RoomModel Room { get; set; }
 
 
         [ObjectLiteral]
-        public CreateChatRoomRequest(RoomData room)
+        public CreateChatRoomRequest(RoomModel room)
         {
             Room = room;
         }

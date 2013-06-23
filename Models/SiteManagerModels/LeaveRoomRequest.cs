@@ -5,10 +5,10 @@ namespace Models.SiteManagerModels
     [Serializable]
     public class LeaveRoomRequest
     {
-        public RoomData Room { get; set; }
+        public RoomModel Room { get; set; }
 
         [ObjectLiteral]
-        public LeaveRoomRequest(RoomData room)
+        public LeaveRoomRequest(RoomModel room)
         {
             Room = room;
         }

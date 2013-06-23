@@ -43,7 +43,7 @@ namespace ServerManager.SiteServer
             removeUserFromRoom(data.User, (room) => { });
         }
 
-        private void removeUserFromRoom(UserLogicModel user, Action<RoomData> result)
+        private void removeUserFromRoom(UserLogicModel user, Action<RoomModel> result)
         {
             Logger.Log(user.UserName + " removing", LogLevel.DebugInformation);
             myDataManager.SiteData.Room_GetRoomByUser(user,
@@ -74,18 +74,18 @@ namespace ServerManager.SiteServer
                                                               {
                                                                   foreach (var userLogicModel in room.Players)
                                                                   {
-                                                                      mySiteClientManager.SendRoomInfo(userLogicModel, new GetRoomInfoResponse(room));
+                                                                      mySiteClientManager.SendRoomInfo(userLogicModel, new GetRoomInfoResponse(room.ToModel()));
                                                                   }
 
                                                               });
                                                           }
-                                                          result(room);
+                                                          result(room.ToModel());
                                                       });
         }
 
         private void OnGetRooms(UserLogicModel user, GetRoomsRequest data)
         {
-            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a)); });
+            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a.Map(b=>b.ToModel()))); });
         }
         private void OnStartGame(UserLogicModel user, StartGameRequest data)
         {
@@ -109,7 +109,7 @@ namespace ServerManager.SiteServer
 
         private void OnGetRoomInfo(UserLogicModel user, GetRoomInfoRequest data)
         {
-            myDataManager.SiteData.Room_GetByRoomName(data.GameType, data.RoomName, a => { mySiteClientManager.SendRoomInfo(user, new GetRoomInfoResponse(a)); });
+            myDataManager.SiteData.Room_GetByRoomName(data.GameType, data.RoomName, a => { mySiteClientManager.SendRoomInfo(user, new GetRoomInfoResponse(a.ToModel())); });
         }
 
         private void OnCreateRoom(UserLogicModel user, CreateRoomRequest data)
@@ -124,10 +124,10 @@ namespace ServerManager.SiteServer
                                                                           user,
                                                                           (room) =>
                                                                           {
-                                                                              mySiteClientManager.CreateChatRoom(user, new CreateChatRoomRequest(room));
+                                                                              mySiteClientManager.CreateChatRoom(user, new CreateChatRoomRequest(room.ToModel()));
 
-                                                                              mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room));
-                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a)); });
+                                                                              mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room.ToModel()));
+                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a.Map(b=>b.ToModel()))); });
                                                                           });
                                });
         }
@@ -144,12 +144,12 @@ namespace ServerManager.SiteServer
                                                                         user,
                                                                         (room) =>
                                                                         {
-                                                                            mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room));
-                                                                            mySiteClientManager.JoinChatRoom(user, new JoinChatRoomRequest(room));
+                                                                            mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room.ToModel()));
+                                                                            mySiteClientManager.JoinChatRoom(user, new JoinChatRoomRequest(room.ToModel()));
 
                                                                             foreach (var UserLogicModel in room.Players)
                                                                             {
-                                                                                mySiteClientManager.SendRoomInfo(UserLogicModel, new GetRoomInfoResponse(room));
+                                                                                mySiteClientManager.SendRoomInfo(UserLogicModel, new GetRoomInfoResponse(room.ToModel()));
                                                                             }
                                                                         }
                                            );

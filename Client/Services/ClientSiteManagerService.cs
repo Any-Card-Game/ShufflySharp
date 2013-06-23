@@ -6,6 +6,7 @@ namespace Client.Services
     {
 
         public event ClientSiteManager.GetGameTypesReceived OnGetGameTypesReceived;
+        public event ClientSiteManager.UserCreate OnUserCreate;
         public event ClientSiteManager.UserLogin OnLogin;
         public event ClientSiteManager.GetRoomsReceived OnGetRoomsReceived;
         public event ClientSiteManager.RoomJoined OnRoomJoined;
@@ -18,6 +19,7 @@ namespace Client.Services
             clientSiteManager = new ClientSiteManager(gateway.Gateway);
             clientSiteManager.OnGetGameTypesReceived += (user, model) => { if (OnGetGameTypesReceived != null) OnGetGameTypesReceived(user, model); };
             clientSiteManager.OnLogin += (user, model) => { if (OnLogin != null) OnLogin(user, model); };
+            clientSiteManager.OnUserCreate += (user, model) => { if (OnUserCreate != null) OnUserCreate(user, model); };
             clientSiteManager.OnGetRoomsReceived += (user, model) => { if (OnGetRoomsReceived != null) OnGetRoomsReceived(user, model); };
             clientSiteManager.OnRoomJoined += (user, model) => { if (OnRoomJoined != null) OnRoomJoined(user, model); };
             clientSiteManager.OnGetRoomInfoReceived += (user, model) => { if (OnGetRoomInfoReceived != null) OnGetRoomInfoReceived(user, model); };
@@ -28,6 +30,12 @@ namespace Client.Services
         public void Login(string userName, string password)
         {
             clientSiteManager.Login(userName, password);
+
+        }
+
+        public void CreateUser(string userName, string password)
+        {
+            clientSiteManager.CreateUser(new SiteCreateUserRequest(userName, password));
 
         }
 

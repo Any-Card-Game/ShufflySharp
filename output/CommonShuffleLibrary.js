@@ -323,16 +323,25 @@ require('./NodeLibraries.js');
 		this.$manager = manager;
 	};
 	$CommonShuffleLibrary_Data_DataManagerSiteData.prototype = {
-		user_Insert: function(data) {
+		user_Insert: function(data, result) {
 			this.$manager.client.collection('User', function(err, collection) {
 				collection.insert(data);
+				result();
 			});
 		},
 		user_GetFirstByUsernamePassword: function(username, password, results) {
 			this.$manager.client.collection('User', function(err, collection) {
 				var j = { username: username, password: password };
-				$CommonShuffleLibrary_Data_MongoHelper.find($CommonShuffleLibrary_Data_UserModelData).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.UserModelData).call(null, collection, j, function(a, b) {
 					results(b);
+				});
+			});
+		},
+		user_CheckUsernameExists: function(username, results) {
+			this.$manager.client.collection('User', function(err, collection) {
+				var j = { username: username };
+				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.UserModelData).call(null, collection, j, function(a, b) {
+					results(b.length > 0);
 				});
 			});
 		},
@@ -451,19 +460,6 @@ require('./NodeLibraries.js');
 			});
 		};
 	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CommonShuffleLibrary.Data.UserModelData
-	var $CommonShuffleLibrary_Data_UserModelData = function() {
-	};
-	$CommonShuffleLibrary_Data_UserModelData.createInstance = function() {
-		return $CommonShuffleLibrary_Data_UserModelData.$ctor();
-	};
-	$CommonShuffleLibrary_Data_UserModelData.$ctor = function() {
-		var $this = NodeLibraries.MongoDB.MongoDocument.$ctor();
-		$this.username = null;
-		$this.password = null;
-		return $this;
-	};
 	ss.registerClass(global, 'CommonShuffleLibrary.Consumer', $CommonShuffleLibrary_Consumer);
 	ss.registerClass(global, 'CommonShuffleLibrary.DataManager', $CommonShuffleLibrary_DataManager);
 	ss.registerClass(global, 'CommonShuffleLibrary.PubSub', $CommonShuffleLibrary_PubSub);
@@ -478,7 +474,6 @@ require('./NodeLibraries.js');
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.UserModelData', $CommonShuffleLibrary_Data_UserModelData, NodeLibraries.MongoDB.MongoDocument);
 	$CommonShuffleLibrary_DataManager.$connectionAddress = CommonLibraries.IPs.mongoIP;
 	$CommonShuffleLibrary_DataManager.$connectionPort = '27017';
 })();

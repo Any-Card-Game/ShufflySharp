@@ -11,6 +11,7 @@ namespace ClientLibs.Managers
         public delegate void GetRoomsReceived(UserModel user, GetRoomsResponse o);
         public delegate void RoomJoined(UserModel user, RoomJoinResponse o);
         public delegate void UserLogin(UserModel user, UserLoginResponse o);
+        public delegate void UserCreate(UserModel user, UserCreateResponse o);
 
         #endregion
 
@@ -24,15 +25,17 @@ namespace ClientLibs.Managers
 
         public event GetGameTypesReceived OnGetGameTypesReceived;
         public event UserLogin OnLogin;
+        public event UserCreate OnUserCreate;
         public event GetRoomsReceived OnGetRoomsReceived;
         public event RoomJoined OnRoomJoined;
         public event GetRoomInfoReceived OnGetRoomInfoReceived;
 
         private void Setup()
         {
-     
 
-            myGateway.On("Area.Site.Login.Response", (user, data) => { if (OnLogin != null) OnLogin(user, ( (UserLoginResponse) data )); });
+
+            myGateway.On("Area.Site.Login.Response", (user, data) => { if (OnLogin != null) OnLogin(user, ((UserLoginResponse)data)); });
+            myGateway.On("Area.Site.CreateUser.Response", (user, data) => { if (OnUserCreate != null) OnUserCreate(user, (UserCreateResponse)data); });
             myGateway.On("Area.Site.GetGameTypes.Response", (user, data) => { if (OnGetGameTypesReceived != null) OnGetGameTypesReceived(user, ( (GetGameTypesReceivedResponse) data )); });
             myGateway.On("Area.Site.GetRooms.Response", (user, data) => { if (OnGetRoomsReceived != null) OnGetRoomsReceived(user, ( (GetRoomsResponse) data )); });
             myGateway.On("Area.Site.GetRoomInfo.Response", (user, data) => { if (OnGetRoomInfoReceived != null) OnGetRoomInfoReceived(user, ( (GetRoomInfoResponse) data )); });
@@ -80,5 +83,10 @@ namespace ClientLibs.Managers
         {
             myGateway.Emit("Area.Site.StartGame", startGameRequest);
         }
+        public void CreateUser(SiteCreateUserRequest createUser)
+        {
+            myGateway.Emit("Area.Site.CreateUser", createUser);
+        }
+
     }
 }

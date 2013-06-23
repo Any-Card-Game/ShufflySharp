@@ -1,58 +1,60 @@
 ﻿<!DOCTYPE html>
 <html  >
-<head>
-    <title>Shuffly</title>
+    <head>
+            <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+        <title>Shuffly</title>
         <script type="text/javascript" src="http://content.anycardgame.com/lib/loadData.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/jquery.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/jquery-animate-css-rotate-scale.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/lib/jquery.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/lib/jquery-ui.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/lib/jquery-animate-css-rotate-scale.js"></script>
     
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/angular.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/ui-utils.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/requirejs.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/mscorlib.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/WebLibraries.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/CommonLibraries.js"></script>
-    <script type="text/javascript" src="http://content.anycardgame.com/Client.js"></script> 
-    <script type="text/javascript" src="http://content.anycardgame.com/ClientLibs.js"></script> 
-    <script type="text/javascript" src="http://content.anycardgame.com/ShuffleGameLibrary.js"></script> 
-    <script type="text/javascript" src="http://content.anycardgame.com/Models.js"></script> 
+        <script type="text/javascript" src="http://content.anycardgame.com/lib/angular.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/lib/ui-utils.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/lib/requirejs.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/mscorlib.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/WebLibraries.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/CommonLibraries.js"></script>
+        <script type="text/javascript" src="http://content.anycardgame.com/Client.js"></script> 
+        <script type="text/javascript" src="http://content.anycardgame.com/ClientLibs.js"></script> 
+        <script type="text/javascript" src="http://content.anycardgame.com/ShuffleGameLibrary.js"></script> 
+        <script type="text/javascript" src="http://content.anycardgame.com/Models.js"></script> 
     
      
-    <script type="text/javascript">
-        String.prototype.toString = function () { return this; };
+        <script type="text/javascript">
+            String.prototype.toString = function () { return this; };
 
-        new Client.BuildSite('{{gateway}}');
-    </script>
-    <style type="text/css">
+            new Client.BuildSite('{{gateway}}');
+        </script>
+        <style type="text/css">
             .listItem:hover {
-        background-color: yellow;
+                background-color: yellow;
             }
             
-        html, body
-        {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
+            html, body
+            {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
         
-        body
-        {
-            height: 100%;
-            position: relative;
-            width: 100%;
-        }
+            body
+            {
+                height: 100%;
+                position: relative;
+                width: 100%;
+            }
         
-        body
-        {
-            background-color: cadetblue;
-        }
-    </style>
-</head>
+            body
+            {
+                background-color: cadetblue;
+            }
+        </style>
+    </head>
 <body>
     <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder;
-                                          position: absolute; text-align: center; top: 50%; width: 100%;" id="loading">
+                                              position: absolute; text-align: center; top: 50%; width: 100%; overflow:hidden;" id="loading">
         Its loading...
     </div>
     <div ng-view>

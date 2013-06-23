@@ -117,8 +117,7 @@ namespace ServerManager.GatewayServer
                                             Console.Log("Socket login " + j + "  " + data.UserName);
 
                                             users[data.UserName] = user;
-                                            queueManager.SendMessage("SiteServer",
-                                                                     "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
+                                            queueManager.SendMessage("SiteServer", "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
                                         });
                               socket.On("disconnect",
                                         (string data) => {

@@ -27,7 +27,21 @@
 	$DataModels_SiteManagerModels_RoomDataModel.toModel = function($this) {
 		return { gameType: $this.gameType, roomName: $this.roomName, chatChannel: $this.chatChannel, gameChannel: $this.gameChannel, players: $this.players, chatServer: $this.chatServer, gameServer: $this.gameServer, id: $this._id };
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// DataModels.SiteManagerModels.UserModelData
+	var $DataModels_SiteManagerModels_UserModelData = function() {
+	};
+	$DataModels_SiteManagerModels_UserModelData.createInstance = function() {
+		return $DataModels_SiteManagerModels_UserModelData.$ctor();
+	};
+	$DataModels_SiteManagerModels_UserModelData.$ctor = function() {
+		var $this = NodeLibraries.MongoDB.MongoDocument.$ctor();
+		$this.username = null;
+		$this.password = null;
+		return $this;
+	};
 	ss.registerClass(global, 'DataModels.ChatManagerModels.ChatRoomDataModel', $DataModels_ChatManagerModels_ChatRoomDataModel, NodeLibraries.MongoDB.MongoDocument);
 	ss.registerClass(global, 'DataModels.GameManagerModels.GameInfoDataModel', $DataModels_GameManagerModels_GameInfoDataModel, NodeLibraries.MongoDB.MongoDocument);
 	ss.registerClass(global, 'DataModels.SiteManagerModels.RoomDataModel', $DataModels_SiteManagerModels_RoomDataModel, NodeLibraries.MongoDB.MongoDocument);
+	ss.registerClass(global, 'DataModels.SiteManagerModels.UserModelData', $DataModels_SiteManagerModels_UserModelData, NodeLibraries.MongoDB.MongoDocument);
 })();

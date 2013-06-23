@@ -72,6 +72,9 @@ namespace ng
         [AlternateSignature]
         object Apply();
 
+        [ScriptName("$new")]
+        T New<T>();
+
         [ScriptName("$destroy")]
         void Destroy();
         

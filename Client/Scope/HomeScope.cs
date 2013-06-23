@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using Models;
 using Models.SiteManagerModels;
 namespace Client.Scope
-{
+{       
     public class HomeScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]

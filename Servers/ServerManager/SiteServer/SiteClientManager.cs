@@ -17,6 +17,7 @@ namespace ServerManager.SiteServer
         public delegate void LeaveRoom(UserLogicModel user, LeaveRoomRequest data);
         public delegate void UserDisconnect(UserLogicModel user, UserDisconnectModel data);
         public delegate void UserLogin(UserLogicModel user, SiteLoginRequest data);
+        public delegate void UserCreate(UserLogicModel user, SiteCreateUserRequest data);
         public delegate void StartGame(UserLogicModel user, StartGameRequest data);
 
         #endregion
@@ -31,6 +32,7 @@ namespace ServerManager.SiteServer
             Setup();
         }
 
+        public event UserCreate OnUserCreate;
         public event UserLogin OnUserLogin;
         public event GetGameTypes OnGetGameTypes;
         public event GetRooms OnGetRooms;
@@ -56,6 +58,7 @@ namespace ServerManager.SiteServer
                                                                               "Gateway*"
                                                                       }));
             qManager.AddChannel("Area.Site.Login", (user, data) => OnUserLogin(user, (SiteLoginRequest)data));
+            qManager.AddChannel("Area.Site.CreateUser", (user, data) => OnUserCreate(user, (SiteCreateUserRequest)data));
             qManager.AddChannel("Area.Site.GetGameTypes", (user, data) => OnGetGameTypes(user));
             qManager.AddChannel("Area.Site.GetRooms", (user, data) => OnGetRooms(user, (GetRoomsRequest)data));
             qManager.AddChannel("Area.Site.GetRoomInfo", (user, data) => OnGetRoomInfo(user, (GetRoomInfoRequest)data));
@@ -67,9 +70,13 @@ namespace ServerManager.SiteServer
             qManager.AddChannel("Area.Site.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
         }
 
-        public void SendLoginResponse(UserLogicModel user)
+        public void SendLoginResponse(UserLogicModel user, bool success)
         {
-            qManager.SendMessage(user.Gateway, "Area.Site.Login.Response", user, new UserLoginResponse(true));
+            qManager.SendMessage(user.Gateway, "Area.Site.Login.Response", user, new UserLoginResponse(success));
+        }
+        public void SendCreateResponse(UserLogicModel user, bool success)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Site.CreateUser.Response", user, new UserCreateResponse(success));
         }
 
         public void SendGameTypes(UserLogicModel user, GetGameTypesReceivedResponse gameTypes)

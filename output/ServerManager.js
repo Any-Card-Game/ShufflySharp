@@ -1178,17 +1178,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				}
 				queueManager.sendMessage(channel, data.channel, Models.UserSocketModel.toLogicModel(user), data.content);
 			});
-			socket.on('Gateway.Login', ss.mkdel(this, function(data1) {
-				user = Models.UserSocketModel.$ctor();
-				user.password = data1.password;
-				user.socket = socket;
-				user.userName = data1.userName;
-				user.hash = data1.userName;
-				user.gateway = this.$myGatewayName;
-				this.users[data1.userName] = user;
-				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
-			}));
-			socket.on('disconnect', ss.mkdel(this, function(data2) {
+			socket.on('disconnect', ss.mkdel(this, function(data1) {
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
@@ -1244,6 +1234,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	var $ServerManager_SiteServer_SiteClientManager = function(siteServerIndex) {
 		this.$qManager = null;
 		this.$1$SiteServerIndexField = null;
+		this.$1$OnUserCreateField = null;
 		this.$1$OnUserLoginField = null;
 		this.$1$OnGetGameTypesField = null;
 		this.$1$OnGetRoomsField = null;
@@ -1262,6 +1253,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		set_siteServerIndex: function(value) {
 			this.$1$SiteServerIndexField = value;
+		},
+		add_onUserCreate: function(value) {
+			this.$1$OnUserCreateField = ss.delegateCombine(this.$1$OnUserCreateField, value);
+		},
+		remove_onUserCreate: function(value) {
+			this.$1$OnUserCreateField = ss.delegateRemove(this.$1$OnUserCreateField, value);
 		},
 		add_onUserLogin: function(value) {
 			this.$1$OnUserLoginField = ss.delegateCombine(this.$1$OnUserLoginField, value);
@@ -1322,33 +1319,39 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$qManager.addChannel('Area.Site.Login', ss.mkdel(this, function(user, data) {
 				this.$1$OnUserLoginField(user, data);
 			}));
-			this.$qManager.addChannel('Area.Site.GetGameTypes', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnGetGameTypesField(user1);
+			this.$qManager.addChannel('Area.Site.CreateUser', ss.mkdel(this, function(user1, data1) {
+				this.$1$OnUserCreateField(user1, data1);
 			}));
-			this.$qManager.addChannel('Area.Site.GetRooms', ss.mkdel(this, function(user2, data2) {
-				this.$1$OnGetRoomsField(user2, data2);
+			this.$qManager.addChannel('Area.Site.GetGameTypes', ss.mkdel(this, function(user2, data2) {
+				this.$1$OnGetGameTypesField(user2);
 			}));
-			this.$qManager.addChannel('Area.Site.GetRoomInfo', ss.mkdel(this, function(user3, data3) {
-				this.$1$OnGetRoomInfoField(user3, data3);
+			this.$qManager.addChannel('Area.Site.GetRooms', ss.mkdel(this, function(user3, data3) {
+				this.$1$OnGetRoomsField(user3, data3);
 			}));
-			this.$qManager.addChannel('Area.Site.CreateRoom', ss.mkdel(this, function(user4, data4) {
-				this.$1$OnCreateRoomField(user4, data4);
+			this.$qManager.addChannel('Area.Site.GetRoomInfo', ss.mkdel(this, function(user4, data4) {
+				this.$1$OnGetRoomInfoField(user4, data4);
 			}));
-			this.$qManager.addChannel('Area.Site.LeaveRoom', ss.mkdel(this, function(user5, data5) {
-				this.$1$OnLeaveRoomField(user5, data5);
+			this.$qManager.addChannel('Area.Site.CreateRoom', ss.mkdel(this, function(user5, data5) {
+				this.$1$OnCreateRoomField(user5, data5);
 			}));
-			this.$qManager.addChannel('Area.Site.JoinRoom', ss.mkdel(this, function(user6, data6) {
-				this.$1$OnJoinRoomField(user6, data6);
+			this.$qManager.addChannel('Area.Site.LeaveRoom', ss.mkdel(this, function(user6, data6) {
+				this.$1$OnLeaveRoomField(user6, data6);
 			}));
-			this.$qManager.addChannel('Area.Site.StartGame', ss.mkdel(this, function(user7, data7) {
-				this.$1$OnStartGameField(user7, data7);
+			this.$qManager.addChannel('Area.Site.JoinRoom', ss.mkdel(this, function(user7, data7) {
+				this.$1$OnJoinRoomField(user7, data7);
 			}));
-			this.$qManager.addChannel('Area.Site.UserDisconnect', ss.mkdel(this, function(user8, data8) {
-				this.$1$OnUserDisconnectField(user8, data8);
+			this.$qManager.addChannel('Area.Site.StartGame', ss.mkdel(this, function(user8, data8) {
+				this.$1$OnStartGameField(user8, data8);
+			}));
+			this.$qManager.addChannel('Area.Site.UserDisconnect', ss.mkdel(this, function(user9, data9) {
+				this.$1$OnUserDisconnectField(user9, data9);
 			}));
 		},
-		sendLoginResponse: function(user) {
-			this.$qManager.sendMessage(user.gateway, 'Area.Site.Login.Response', user, { successful: true });
+		sendLoginResponse: function(user, success) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.Login.Response', user, { successful: success });
+		},
+		sendCreateResponse: function(user, success) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.CreateUser.Response', user, { successful: success });
 		},
 		sendGameTypes: function(user, gameTypes) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Site.GetGameTypes.Response', user, gameTypes);
@@ -1386,6 +1389,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$myDataManager = new CommonShuffleLibrary.DataManager();
 		this.$mySiteClientManager = new $ServerManager_SiteServer_SiteClientManager(siteServerIndex);
 		this.$mySiteClientManager.add_onUserLogin(ss.mkdel(this, this.$onUserLogin));
+		this.$mySiteClientManager.add_onUserCreate(ss.mkdel(this, this.$onUserCreate));
 		this.$mySiteClientManager.add_onGetGameTypes(ss.mkdel(this, this.$onGetGameTypes));
 		this.$mySiteClientManager.add_onGetRoomInfo(ss.mkdel(this, this.$onGetRoomInfo));
 		this.$mySiteClientManager.add_onGetRooms(ss.mkdel(this, this.$onGetRooms));
@@ -1498,7 +1502,25 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$mySiteClientManager.sendGameTypes(user, { gameTypes: types });
 		},
 		$onUserLogin: function(user, data) {
-			this.$mySiteClientManager.sendLoginResponse(user);
+			this.$myDataManager.siteData.user_GetFirstByUsernamePassword(user.userName, user.password, ss.mkdel(this, function(users) {
+				this.$mySiteClientManager.sendLoginResponse(user, users.length !== 0);
+			}));
+		},
+		$onUserCreate: function(user, data) {
+			this.$myDataManager.siteData.user_CheckUsernameExists(data.userName, ss.mkdel(this, function(exists) {
+				if (!exists) {
+					var $t2 = this.$myDataManager.siteData;
+					var $t1 = DataModels.SiteManagerModels.UserModelData.$ctor();
+					$t1.username = data.userName;
+					$t1.password = data.password;
+					$t2.user_Insert($t1, ss.mkdel(this, function() {
+						this.$mySiteClientManager.sendLoginResponse(user, true);
+					}));
+				}
+				else {
+					this.$mySiteClientManager.sendLoginResponse(user, false);
+				}
+			}));
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

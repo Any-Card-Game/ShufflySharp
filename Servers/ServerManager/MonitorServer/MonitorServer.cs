@@ -89,20 +89,7 @@ namespace ServerManager.MonitorServer
                                                     break;
                                             }
                                             queueManager.SendMessage(channel, data.Channel, user.ToLogicModel(), data.Content);
-                                        });
-
-                              socket.On("Gateway.Login",
-                                        (GatewayLoginMessageModel data) =>
-                                        {
-                                            user = new UserSocketModel();
-                                            user.Password = data.Password;
-                                            user.Socket = socket;
-                                            user.UserName = data.UserName;
-                                            user.Hash = data.UserName;
-                                            user.Gateway = myGatewayName;
-                                            users[data.UserName] = user;
-                                            queueManager.SendMessage("SiteServer", "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
-                                        });
+                                        }); 
                               socket.On("disconnect",
                                         (string data) =>
                                         {

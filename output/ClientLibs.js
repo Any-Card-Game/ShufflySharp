@@ -206,6 +206,7 @@
 		this.$myGateway = null;
 		this.$1$OnGetGameTypesReceivedField = null;
 		this.$1$OnLoginField = null;
+		this.$1$OnUserCreateField = null;
 		this.$1$OnGetRoomsReceivedField = null;
 		this.$1$OnRoomJoinedField = null;
 		this.$1$OnGetRoomInfoReceivedField = null;
@@ -224,6 +225,12 @@
 		},
 		remove_onLogin: function(value) {
 			this.$1$OnLoginField = ss.delegateRemove(this.$1$OnLoginField, value);
+		},
+		add_onUserCreate: function(value) {
+			this.$1$OnUserCreateField = ss.delegateCombine(this.$1$OnUserCreateField, value);
+		},
+		remove_onUserCreate: function(value) {
+			this.$1$OnUserCreateField = ss.delegateRemove(this.$1$OnUserCreateField, value);
 		},
 		add_onGetRoomsReceived: function(value) {
 			this.$1$OnGetRoomsReceivedField = ss.delegateCombine(this.$1$OnGetRoomsReceivedField, value);
@@ -249,24 +256,29 @@
 					this.$1$OnLoginField(user, data);
 				}
 			}));
-			this.$myGateway.on('Area.Site.GetGameTypes.Response', ss.mkdel(this, function(user1, data1) {
+			this.$myGateway.on('Area.Site.CreateUser.Response', ss.mkdel(this, function(user1, data1) {
+				if (!ss.staticEquals(this.$1$OnUserCreateField, null)) {
+					this.$1$OnUserCreateField(user1, data1);
+				}
+			}));
+			this.$myGateway.on('Area.Site.GetGameTypes.Response', ss.mkdel(this, function(user2, data2) {
 				if (!ss.staticEquals(this.$1$OnGetGameTypesReceivedField, null)) {
-					this.$1$OnGetGameTypesReceivedField(user1, data1);
+					this.$1$OnGetGameTypesReceivedField(user2, data2);
 				}
 			}));
-			this.$myGateway.on('Area.Site.GetRooms.Response', ss.mkdel(this, function(user2, data2) {
+			this.$myGateway.on('Area.Site.GetRooms.Response', ss.mkdel(this, function(user3, data3) {
 				if (!ss.staticEquals(this.$1$OnGetRoomsReceivedField, null)) {
-					this.$1$OnGetRoomsReceivedField(user2, data2);
+					this.$1$OnGetRoomsReceivedField(user3, data3);
 				}
 			}));
-			this.$myGateway.on('Area.Site.GetRoomInfo.Response', ss.mkdel(this, function(user3, data3) {
+			this.$myGateway.on('Area.Site.GetRoomInfo.Response', ss.mkdel(this, function(user4, data4) {
 				if (!ss.staticEquals(this.$1$OnGetRoomInfoReceivedField, null)) {
-					this.$1$OnGetRoomInfoReceivedField(user3, data3);
+					this.$1$OnGetRoomInfoReceivedField(user4, data4);
 				}
 			}));
-			this.$myGateway.on('Area.Site.JoinRoom.Response', ss.mkdel(this, function(user4, data4) {
+			this.$myGateway.on('Area.Site.JoinRoom.Response', ss.mkdel(this, function(user5, data5) {
 				if (!ss.staticEquals(this.$1$OnRoomJoinedField, null)) {
-					this.$1$OnRoomJoinedField(user4, data4);
+					this.$1$OnRoomJoinedField(user5, data5);
 				}
 			}));
 		},
@@ -293,6 +305,9 @@
 		},
 		startGame: function(startGameRequest) {
 			this.$myGateway.emit('Area.Site.StartGame', startGameRequest);
+		},
+		createUser: function(createUser) {
+			this.$myGateway.emit('Area.Site.CreateUser', createUser);
 		}
 	};
 	ss.registerClass(global, 'ClientLibs.Gateway', $ClientLibs_Gateway);

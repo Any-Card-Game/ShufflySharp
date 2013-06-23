@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CommonShuffleLibrary;
+using DataModels.SiteManagerModels;
 using Models;
 using Models.ChatManagerModels;
 using Models.GameManagerModels;
@@ -20,6 +21,7 @@ namespace ServerManager.SiteServer
             mySiteClientManager = new SiteClientManager(siteServerIndex);
 
             mySiteClientManager.OnUserLogin += OnUserLogin;
+            mySiteClientManager.OnUserCreate += OnUserCreate;
             mySiteClientManager.OnGetGameTypes += OnGetGameTypes;
             mySiteClientManager.OnGetRoomInfo += OnGetRoomInfo;
             mySiteClientManager.OnGetRooms += OnGetRooms;
@@ -30,6 +32,7 @@ namespace ServerManager.SiteServer
 
             mySiteClientManager.OnUserDisconnect += OnUserDisconnect;
         }
+
 
         private void OnLeaveRoom(UserLogicModel user, LeaveRoomRequest data)
         {
@@ -85,7 +88,7 @@ namespace ServerManager.SiteServer
 
         private void OnGetRooms(UserLogicModel user, GetRoomsRequest data)
         {
-            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a.Map(b=>b.ToModel()))); });
+            myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a.Map(b => b.ToModel()))); });
         }
         private void OnStartGame(UserLogicModel user, StartGameRequest data)
         {
@@ -127,7 +130,7 @@ namespace ServerManager.SiteServer
                                                                               mySiteClientManager.CreateChatRoom(user, new CreateChatRoomRequest(room.ToModel()));
 
                                                                               mySiteClientManager.RoomJoined(user, new RoomJoinResponse(room.ToModel()));
-                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a.Map(b=>b.ToModel()))); });
+                                                                              myDataManager.SiteData.Room_GetAllByGameType(data.GameType, a => { mySiteClientManager.SendRooms(user, new GetRoomsResponse(a.Map(b => b.ToModel()))); });
                                                                           });
                                });
         }
@@ -165,7 +168,31 @@ namespace ServerManager.SiteServer
 
         private void OnUserLogin(UserLogicModel user, SiteLoginRequest data)
         {
-            mySiteClientManager.SendLoginResponse(user);
+            myDataManager.SiteData.User_GetFirstByUsernamePassword(user.UserName,
+                                                                   user.Password,
+                                                                   (users) =>
+                                                                   {
+                                                                       mySiteClientManager.SendLoginResponse(user, users.Count != 0);
+                                                                   });
         }
+        private void OnUserCreate(UserLogicModel user, SiteCreateUserRequest data)
+        {
+            myDataManager.SiteData.User_CheckUsernameExists(data.UserName,
+                                               (exists) =>
+                                               {
+                                                   if (!exists) {
+                                                       myDataManager.SiteData.User_Insert(new UserModelData() {Username = data.UserName, Password = data.Password},
+                                                                                          () => {
+                                                                                              mySiteClientManager.SendLoginResponse(user, true);
+                                                                                          });
+                                                   } else {
+                                                       mySiteClientManager.SendLoginResponse(user, false);
+                                                       
+                                                   }
+                                               });
+            
+
+        }
+
     }
 }

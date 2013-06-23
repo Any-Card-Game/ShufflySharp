@@ -14,6 +14,7 @@ namespace Models
         public SocketIOConnection Socket { get; set; }
         public string CurrentGameServer { get; set; }
         public string CurrentChatServer { get; set; }
+        public UserSocketModel() {}
 
         public UserModel ToUserModel()
         {

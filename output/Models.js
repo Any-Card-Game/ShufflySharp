@@ -52,6 +52,10 @@
 		this.content = content;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.UserCreateResponse
+	var $Models_UserCreateResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserDisconnectModel
 	var $Models_UserDisconnectModel = function() {
 	};
@@ -329,6 +333,10 @@
 	var $Models_SiteManagerModels_RoomModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.SiteCreateUserRequest
+	var $Models_SiteManagerModels_SiteCreateUserRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.SiteLoginRequest
 	var $Models_SiteManagerModels_SiteLoginRequest = function() {
 	};
@@ -502,6 +510,7 @@
 	ss.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel);
 	ss.registerClass(global, 'Models.RegisterServerModel', $Models_RegisterServerModel);
 	ss.registerClass(global, 'Models.SocketClientMessageModel', $Models_SocketClientMessageModel);
+	ss.registerClass(global, 'Models.UserCreateResponse', $Models_UserCreateResponse);
 	ss.registerClass(global, 'Models.UserDisconnectModel', $Models_UserDisconnectModel);
 	ss.registerClass(global, 'Models.UserLeaveModel', $Models_UserLeaveModel);
 	ss.registerClass(global, 'Models.UserLogicModel', $Models_UserLogicModel);
@@ -539,6 +548,7 @@
 	ss.registerClass(global, 'Models.SiteManagerModels.RoomJoinRequest', $Models_SiteManagerModels_RoomJoinRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.RoomJoinResponse', $Models_SiteManagerModels_RoomJoinResponse);
 	ss.registerClass(global, 'Models.SiteManagerModels.RoomModel', $Models_SiteManagerModels_RoomModel);
+	ss.registerClass(global, 'Models.SiteManagerModels.SiteCreateUserRequest', $Models_SiteManagerModels_SiteCreateUserRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameAreaModel', $Models_SiteManagerModels_Game_GameAreaModel);

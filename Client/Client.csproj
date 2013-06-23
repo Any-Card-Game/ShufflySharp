@@ -42,6 +42,7 @@
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\CreateRoomController.cs" />
     <Compile Include="Controllers\EffectEditorController.cs" />
     <Compile Include="Controllers\GameController.cs" />
@@ -63,13 +64,16 @@
     <Compile Include="Scope\ActiveLobbyScope.cs" />
     <Compile Include="Scope\BaseScope.cs" />
     <Compile Include="Scope\CardScope.cs" />
+    <Compile Include="Scope\AcgSpacesScope.cs" />
     <Compile Include="Scope\CreateRoomScope.cs" />
     <Compile Include="Scope\EffectEditorScope.cs" />
     <Compile Include="Scope\FloatingWindowBaseScope.cs" />
+    <Compile Include="Scope\FloatingWindowScope.cs" />
     <Compile Include="Scope\GameCtrlScope.cs" />
     <Compile Include="Scope\HomeScope.cs" />
     <Compile Include="Scope\ListEffectsScope.cs" />
     <Compile Include="Scope\LoginScope.cs" />
+    <Compile Include="Scope\MessageScope.cs" />
     <Compile Include="Scope\MinimizeScope.cs" />
     <Compile Include="Scope\QuestionScope.cs" />
     <Compile Include="Scope\SpaceScope.cs" />
@@ -77,6 +81,7 @@
     <Compile Include="Services\ClientDebugManagerService.cs" />
     <Compile Include="Services\ClientGameManagerService.cs" />
     <Compile Include="Services\ClientSiteManagerService.cs" />
+    <Compile Include="Services\MessageService.cs" />
     <Compile Include="Services\EditEffectService.cs" />
     <Compile Include="Services\EffectManagerService.cs" />
     <Compile Include="Services\EffectWatcherService.cs" />
@@ -143,6 +148,7 @@
     <Content Include="partials\gameUI.html" />
     <Content Include="partials\UIs.html" />
     <Content Include="partials\UIs\ActiveLobby.html" />
+    <Content Include="partials\UIs\Message.html" />
     <Content Include="partials\UIs\CreateRoomDialog.html" />
     <Content Include="partials\UIs\EffectEditor.html" />
     <Content Include="partials\UIs\Home.html" />

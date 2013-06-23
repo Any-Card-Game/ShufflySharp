@@ -13,8 +13,8 @@
 			return new $Client_Controllers_$ListEffectsController(scope2, editEffects, effectWatcher1, effectmanager);
 		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope3, editEffects1) {
 			return new $Client_Controllers_$EffectEditorController(scope3, editEffects1);
-		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', function(scope4, uiManager1, clientSiteManagerService) {
-			return new $Client_Controllers_$LoginController(scope4, uiManager1, clientSiteManagerService);
+		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope4, uiManager1, clientSiteManagerService, messageService) {
+			return new $Client_Controllers_$LoginController(scope4, uiManager1, clientSiteManagerService, messageService);
 		}]).controller('QuestionController', ['$scope', 'UIManager', 'clientGameManager', function(scope5, uiManager2, clientGameManagerService1) {
 			return new $Client_Controllers_$QuestionController(scope5, uiManager2, clientGameManagerService1);
 		}]).controller('HomeController', ['$scope', 'UIManager', 'clientSiteManager', function(scope6, uiManager3, clientSiteManagerService1) {
@@ -23,6 +23,8 @@
 			return new $Client_Controllers_$ActiveLobbyController(scope7, uiManager4, clientSiteManagerService2, clientChatManagerService, compile);
 		}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope8, uiManager5) {
 			return new $Client_Controllers_$CreateRoomController(scope8, uiManager5);
+		}]).controller('MessageController', ['$scope', function(scope9) {
+			return new $Client_Controllers_$MessageController(scope9);
 		}]).service('UIManager', ['clientGameManager', function(clientGameManagerService2) {
 			return new $Client_Services_UIManagerService(clientGameManagerService2);
 		}]).service('editEffects', [function() {
@@ -43,6 +45,8 @@
 			return new $Client_Services_GatewayService(serverUrl);
 		}]).service('gameContentManager', [function() {
 			return new $Client_Services_GameContentManager();
+		}]).service('messageService', ['$compile', '$rootScope', function(compileService, rootScopeService) {
+			return new $Client_Services_MessageService(compileService, rootScopeService);
 		}]).directive('draggable', [function() {
 			return new $Client_Directives_DraggableDirective();
 		}]).directive('floatingWindow', ['UIManager', function(uiManagerService) {
@@ -517,14 +521,16 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.LoginController
-	var $Client_Controllers_$LoginController = function(scope, uiManager, clientSiteManagerService) {
+	var $Client_Controllers_$LoginController = function(scope, uiManager, clientSiteManagerService, messageService) {
 		this.$myScope = null;
 		this.$myUIManager = null;
 		this.$myclientSiteManagerService = null;
+		this.$myMessageService = null;
 		this.$myScope = scope;
 		this.$myScope.visible = true;
 		this.$myUIManager = uiManager;
 		this.$myclientSiteManagerService = clientSiteManagerService;
+		this.$myMessageService = messageService;
 		this.$myScope.model = $Client_Scope_LoginModel.$ctor();
 		this.$myScope.model.windowClosed = function() {
 			window.alert('woooo');
@@ -532,18 +538,45 @@
 		this.$myScope.model.loginAccount = ss.mkdel(this, this.$loginAccountFn);
 		this.$myScope.model.createAccount = ss.mkdel(this, this.$createAccountFn);
 		this.$myclientSiteManagerService.add_onLogin(ss.mkdel(this, function(user, data) {
-			uiManager.clientInfo.loggedInUser = user;
-			this.$myUIManager.userLoggedIn();
-			scope.swingAway(7, false, null);
+			if (data.successful) {
+				uiManager.clientInfo.loggedInUser = user;
+				this.$myUIManager.userLoggedIn();
+				scope.swingAway(7, false, null);
+			}
+			else {
+				this.$myMessageService.popupOkay('Bad!', 'You no login!', function() {
+					window.alert('bb');
+				});
+			}
 		}));
+		this.$myclientSiteManagerService.add_onUserCreate(ss.mkdel(this, this.$onUserCreateFn));
 	};
 	$Client_Controllers_$LoginController.prototype = {
+		$onUserCreateFn: function(user, o) {
+			if (o.successful) {
+				this.$myUIManager.clientInfo.loggedInUser = user;
+				this.$myUIManager.userLoggedIn();
+				this.$myScope.swingAway(7, false, null);
+			}
+			else {
+				this.$myMessageService.popupOkay('Bad!', 'You no create! It exist! What up!!?', function() {
+					window.alert('aa');
+				});
+			}
+		},
 		$createAccountFn: function() {
-			window.alert('Created! hahahJK');
+			this.$myclientSiteManagerService.createUser(this.$myScope.model.username, this.$myScope.model.password);
 		},
 		$loginAccountFn: function() {
 			this.$myclientSiteManagerService.login(this.$myScope.model.username, this.$myScope.model.password);
 		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Controllers.MessageController
+	var $Client_Controllers_$MessageController = function(scope) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myScope = scope;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.MinimizeController
@@ -1155,7 +1188,7 @@
 				var content = '<div>\r\n    <div acg-draw-space ng-style=\'spaceStyle\'>\r\n        <div ng-repeat=\'card in space.pile.cards\' acg-draw-card ng-style=\'cardStyle\' ng-click=\'cardClick()\'>\r\n        </div>\r\n    </div> \r\n</';
 				angular.forEach(scope.spaces, ss.mkdel(this, function(space) {
 					var e1 = angular.element(content);
-					var _scope = scope['$new']();
+					var _scope = scope.$new();
 					_scope.space = space;
 					var elk = this.$myCompile(e1.contents())(_scope);
 					element.append(elk);
@@ -1165,7 +1198,7 @@
 			this.$myGameContentManager.redraw = ss.delegateCombine(this.$myGameContentManager.redraw, function() {
 				console.log('updatinggagaga');
 				updater();
-				scope['$apply']();
+				scope.$apply();
 			});
 			updater();
 		}
@@ -1245,6 +1278,64 @@
 		this.link = ss.mkdel(this, this.$linkFn);
 	};
 	$Client_Directives_FloatingWindowDirective.prototype = {
+		$linkFn: function(scope, element, attr) {
+			scope.$parent.swingAway = ss.mkdel(this, function(a, b, c) {
+				this.swingAway(a, b, element, c);
+			});
+			scope.$parent.swingBack = ss.mkdel(this, function(c1) {
+				this.swingBack(scope, element, c1);
+			});
+			var $t1 = $Client_Scope_FloatingWindowPosition.$ctor();
+			$t1.left = scope.left;
+			$t1.top = scope.top;
+			$t1.display = 'block';
+			scope.positionStyles = $t1;
+			if (scope.left.indexOf('%') !== -1) {
+				scope.positionStyles.marginLeft = -ss.Int32.div(parseInt(ss.replaceAllString(scope.width, 'px', '')), 2) + 'px';
+			}
+			if (scope.top.indexOf('%') !== -1) {
+				scope.positionStyles.marginTop = -ss.Int32.div(parseInt(ss.replaceAllString(scope.height, 'px', '')), 2) + 'px';
+			}
+			var $t2 = $Client_Scope_Size.$ctor();
+			$t2.width = scope.width;
+			$t2.height = scope.height;
+			scope.sizeStyle = $t2;
+			scope.maximize = function() {
+				if (!scope.isMaximized) {
+					scope.lastPositionStyles = scope.positionStyles;
+					scope.lastSizeStyle = scope.sizeStyle;
+					var $t3 = $Client_Scope_FloatingWindowPosition.$ctor();
+					$t3.left = '0';
+					$t3.top = '0';
+					$t3.display = 'block';
+					scope.positionStyles = $t3;
+					var $t4 = $Client_Scope_Size.$ctor();
+					$t4.width = '100%';
+					$t4.height = '100%';
+					scope.sizeStyle = $t4;
+				}
+				else {
+					scope.positionStyles = scope.lastPositionStyles;
+					scope.sizeStyle = scope.lastSizeStyle;
+					scope.lastPositionStyles = null;
+					scope.lastSizeStyle = null;
+				}
+				scope.isMaximized = !scope.isMaximized;
+			};
+			scope.close = function() {
+				if (!ss.staticEquals(scope.onclose, null)) {
+					scope.onclose();
+				}
+				scope.positionStyles.display = 'none';
+			};
+			scope.minimize = ss.mkdel(this, function() {
+				this.$myUIManagerService.get_onMinimize()(scope);
+				scope.positionStyles.display = 'none';
+			});
+			scope.restore = function() {
+				scope.positionStyles.display = 'block';
+			};
+		},
 		swingBack: function(scope, element, callback) {
 			var js = {};
 			js['left'] = scope.left;
@@ -1253,7 +1344,7 @@
 		},
 		swingAway: function(direction, simulate, element, callback) {
 			var js = {};
-			var distance = '2000';
+			var distance = '3000';
 			switch (direction) {
 				case 0: {
 					js['left'] = '-' + distance + 'px';
@@ -1298,112 +1389,7 @@
 			else {
 				element.animate(js, 'slow', 'swing', callback);
 			}
-		},
-		$linkFn: function(scope, element, attr) {
-			scope.$parent.swingAway = ss.mkdel(this, function(a, b, c) {
-				this.swingAway(a, b, element, c);
-			});
-			scope.$parent.swingBack = ss.mkdel(this, function(c1) {
-				this.swingBack(scope, element, c1);
-			});
-			var $t1 = $Client_Directives_FloatingWindowPosition.$ctor();
-			$t1.left = scope.left;
-			$t1.top = scope.top;
-			$t1.display = 'block';
-			scope.positionStyles = $t1;
-			var $t2 = $Client_Directives_Size.$ctor();
-			$t2.width = scope.width;
-			$t2.height = scope.height;
-			scope.sizeStyle = $t2;
-			scope.maximize = function() {
-				if (!scope.isMaximized) {
-					scope.lastPositionStyles = scope.positionStyles;
-					scope.lastSizeStyle = scope.sizeStyle;
-					var $t3 = $Client_Directives_FloatingWindowPosition.$ctor();
-					$t3.left = 0;
-					$t3.top = 0;
-					$t3.display = 'block';
-					scope.positionStyles = $t3;
-					var $t4 = $Client_Directives_Size.$ctor();
-					$t4.width = '100%';
-					$t4.height = '100%';
-					scope.sizeStyle = $t4;
-				}
-				else {
-					scope.positionStyles = scope.lastPositionStyles;
-					scope.sizeStyle = scope.lastSizeStyle;
-					scope.lastPositionStyles = null;
-					scope.lastSizeStyle = null;
-				}
-				scope.isMaximized = !scope.isMaximized;
-			};
-			scope.close = function() {
-				if (!ss.staticEquals(scope.onclose, null)) {
-					scope.onclose();
-				}
-				scope.positionStyles.display = 'none';
-			};
-			scope.minimize = ss.mkdel(this, function() {
-				this.$myUIManagerService.get_onMinimize()(scope);
-				scope.positionStyles.display = 'none';
-			});
-			scope.restore = function() {
-				scope.positionStyles.display = 'block';
-			};
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Directives.FloatingWindowPosition
-	var $Client_Directives_FloatingWindowPosition = function() {
-	};
-	$Client_Directives_FloatingWindowPosition.createInstance = function() {
-		return $Client_Directives_FloatingWindowPosition.$ctor();
-	};
-	$Client_Directives_FloatingWindowPosition.$ctor = function() {
-		var $this = $Client_Directives_Position.$ctor();
-		$this.display = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Directives.FloatingWindowScope
-	var $Client_Directives_FloatingWindowScope = function() {
-	};
-	$Client_Directives_FloatingWindowScope.createInstance = function() {
-		return $Client_Directives_FloatingWindowScope.$ctor();
-	};
-	$Client_Directives_FloatingWindowScope.$ctor = function() {
-		var $this = {};
-		$this.$parent = null;
-		$this.visible = false;
-		$this.width = null;
-		$this.height = null;
-		$this.left = null;
-		$this.top = null;
-		$this.sizeStyle = null;
-		$this.lastSizeStyle = null;
-		$this.positionStyles = null;
-		$this.lastPositionStyles = null;
-		$this.title = null;
-		$this.onclose = null;
-		$this.close = null;
-		$this.minimize = null;
-		$this.maximize = null;
-		$this.restore = null;
-		$this.isMaximized = false;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Directives.Position
-	var $Client_Directives_Position = function() {
-	};
-	$Client_Directives_Position.createInstance = function() {
-		return $Client_Directives_Position.$ctor();
-	};
-	$Client_Directives_Position.$ctor = function() {
-		var $this = {};
-		$this.left = null;
-		$this.top = null;
-		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.PropertyDirective
@@ -1429,19 +1415,6 @@
 				}
 			}
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Directives.Size
-	var $Client_Directives_Size = function() {
-	};
-	$Client_Directives_Size.createInstance = function() {
-		return $Client_Directives_Size.$ctor();
-	};
-	$Client_Directives_Size.$ctor = function() {
-		var $this = {};
-		$this.width = null;
-		$this.height = null;
-		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Libs.Extensions
@@ -1547,6 +1520,13 @@
 	var $Client_Scope__KeepBaseScopeAlive = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.AcgSpacesScope
+	var $Client_Scope_AcgSpacesScope = function() {
+		this.spaces = null;
+		this.space = null;
+		Client.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.ActiveLobbyModel
 	var $Client_Scope_ActiveLobbyModel = function() {
 	};
@@ -1613,6 +1593,50 @@
 		this.swingBack = null;
 		this.visible = false;
 		Client.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.FloatingWindowPosition
+	var $Client_Scope_FloatingWindowPosition = function() {
+	};
+	$Client_Scope_FloatingWindowPosition.createInstance = function() {
+		return $Client_Scope_FloatingWindowPosition.$ctor();
+	};
+	$Client_Scope_FloatingWindowPosition.$ctor = function() {
+		var $this = {};
+		$this.display = null;
+		$this.left = null;
+		$this.top = null;
+		$this.marginLeft = null;
+		$this.marginTop = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.FloatingWindowScope
+	var $Client_Scope_FloatingWindowScope = function() {
+	};
+	$Client_Scope_FloatingWindowScope.createInstance = function() {
+		return $Client_Scope_FloatingWindowScope.$ctor();
+	};
+	$Client_Scope_FloatingWindowScope.$ctor = function() {
+		var $this = {};
+		$this.$parent = null;
+		$this.visible = false;
+		$this.width = null;
+		$this.height = null;
+		$this.left = null;
+		$this.top = null;
+		$this.sizeStyle = null;
+		$this.lastSizeStyle = null;
+		$this.positionStyles = null;
+		$this.lastPositionStyles = null;
+		$this.title = null;
+		$this.onclose = null;
+		$this.close = null;
+		$this.minimize = null;
+		$this.maximize = null;
+		$this.restore = null;
+		$this.isMaximized = false;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.GameCtrlScope
@@ -1685,6 +1709,14 @@
 		$Client_Scope_FloatingWindowBaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.MessageScope
+	var $Client_Scope_MessageScope = function() {
+		this.title = null;
+		this.message = null;
+		this.okay = null;
+		$Client_Scope_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.MinimizeScope
 	var $Client_Scope_MinimizeScope = function() {
 		this.items = null;
@@ -1713,6 +1745,19 @@
 	var $Client_Scope_QuestionScope = function() {
 		this.model = null;
 		$Client_Scope_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Size
+	var $Client_Scope_Size = function() {
+	};
+	$Client_Scope_Size.createInstance = function() {
+		return $Client_Scope_Size.$ctor();
+	};
+	$Client_Scope_Size.$ctor = function() {
+		var $this = {};
+		$this.width = null;
+		$this.height = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.SpaceScope
@@ -1884,6 +1929,7 @@
 	// Client.Services.ClientSiteManagerService
 	var $Client_Services_ClientSiteManagerService = function(gateway) {
 		this.$1$OnGetGameTypesReceivedField = null;
+		this.$1$OnUserCreateField = null;
 		this.$1$OnLoginField = null;
 		this.$1$OnGetRoomsReceivedField = null;
 		this.$1$OnRoomJoinedField = null;
@@ -1900,19 +1946,24 @@
 				this.$1$OnLoginField(user1, model1);
 			}
 		}));
-		this.$clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, function(user2, model2) {
+		this.$clientSiteManager.add_onUserCreate(ss.mkdel(this, function(user2, model2) {
+			if (!ss.staticEquals(this.$1$OnUserCreateField, null)) {
+				this.$1$OnUserCreateField(user2, model2);
+			}
+		}));
+		this.$clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, function(user3, model3) {
 			if (!ss.staticEquals(this.$1$OnGetRoomsReceivedField, null)) {
-				this.$1$OnGetRoomsReceivedField(user2, model2);
+				this.$1$OnGetRoomsReceivedField(user3, model3);
 			}
 		}));
-		this.$clientSiteManager.add_onRoomJoined(ss.mkdel(this, function(user3, model3) {
+		this.$clientSiteManager.add_onRoomJoined(ss.mkdel(this, function(user4, model4) {
 			if (!ss.staticEquals(this.$1$OnRoomJoinedField, null)) {
-				this.$1$OnRoomJoinedField(user3, model3);
+				this.$1$OnRoomJoinedField(user4, model4);
 			}
 		}));
-		this.$clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, function(user4, model4) {
+		this.$clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, function(user5, model5) {
 			if (!ss.staticEquals(this.$1$OnGetRoomInfoReceivedField, null)) {
-				this.$1$OnGetRoomInfoReceivedField(user4, model4);
+				this.$1$OnGetRoomInfoReceivedField(user5, model5);
 			}
 		}));
 	};
@@ -1922,6 +1973,12 @@
 		},
 		remove_onGetGameTypesReceived: function(value) {
 			this.$1$OnGetGameTypesReceivedField = ss.delegateRemove(this.$1$OnGetGameTypesReceivedField, value);
+		},
+		add_onUserCreate: function(value) {
+			this.$1$OnUserCreateField = ss.delegateCombine(this.$1$OnUserCreateField, value);
+		},
+		remove_onUserCreate: function(value) {
+			this.$1$OnUserCreateField = ss.delegateRemove(this.$1$OnUserCreateField, value);
 		},
 		add_onLogin: function(value) {
 			this.$1$OnLoginField = ss.delegateCombine(this.$1$OnLoginField, value);
@@ -1949,6 +2006,9 @@
 		},
 		login: function(userName, password) {
 			this.$clientSiteManager.login(userName, password);
+		},
+		createUser: function(userName, password) {
+			this.$clientSiteManager.createUser({ userName: userName, password: password });
 		},
 		getGameTypes: function() {
 			this.$clientSiteManager.getGameTypes();
@@ -2014,6 +2074,31 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Services.MessageService
+	var $Client_Services_MessageService = function(compileService, rootScopeService) {
+		this.$myCompileService = null;
+		this.$myRootScopeService = null;
+		this.$myCompileService = compileService;
+		this.$myRootScopeService = rootScopeService;
+	};
+	$Client_Services_MessageService.prototype = {
+		popupOkay: function(title, message, callback) {
+			var item = null;
+			var mess = this.$myRootScopeService.$new();
+			mess.okay = function() {
+				mess.$destroy();
+				item.remove();
+				callback();
+				mess.$apply();
+			};
+			mess.title = title;
+			mess.message = message;
+			item = this.$myCompileService($('<div ng-include src="\'http://content.anycardgame.com/partials/UIs/Message.html\'"></div>'))(mess);
+			item.appendTo(window.document.body);
+			mess.$apply();
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Services.UIManagerService
 	var $Client_Services_UIManagerService = function(clientGameManagerService) {
 		this.userLoggedIn = null;
@@ -2042,6 +2127,7 @@
 	ss.registerClass(null, 'Client.Controllers.$HomeController', $Client_Controllers_$HomeController);
 	ss.registerClass(null, 'Client.Controllers.$ListEffectsController', $Client_Controllers_$ListEffectsController);
 	ss.registerClass(null, 'Client.Controllers.$LoginController', $Client_Controllers_$LoginController);
+	ss.registerClass(null, 'Client.Controllers.$MessageController', $Client_Controllers_$MessageController);
 	ss.registerClass(null, 'Client.Controllers.$MinimizeController', $Client_Controllers_$MinimizeController);
 	ss.registerClass(null, 'Client.Controllers.$QuestionController', $Client_Controllers_$QuestionController);
 	ss.registerClass(global, 'Client.Controllers.GameController', $Client_Controllers_GameController);
@@ -2052,15 +2138,12 @@
 	ss.registerClass(global, 'Client.Directives.DraggableDirective', $Client_Directives_DraggableDirective);
 	ss.registerClass(global, 'Client.Directives.FancyListDirective', $Client_Directives_FancyListDirective);
 	ss.registerClass(global, 'Client.Directives.FloatingWindowDirective', $Client_Directives_FloatingWindowDirective);
-	ss.registerClass(global, 'Client.Directives.Position', $Client_Directives_Position);
-	ss.registerClass(global, 'Client.Directives.FloatingWindowPosition', $Client_Directives_FloatingWindowPosition, $Client_Directives_Position);
-	ss.registerClass(global, 'Client.Directives.FloatingWindowScope', $Client_Directives_FloatingWindowScope);
 	ss.registerClass(global, 'Client.Directives.PropertyDirective', $Client_Directives_PropertyDirective);
-	ss.registerClass(global, 'Client.Directives.Size', $Client_Directives_Size);
 	ss.registerClass(global, 'Client.Libs.Extensions', $Client_Libs_Extensions);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
 	ss.registerClass(global, 'Client.Libs.TimeTracker', $Client_Libs_TimeTracker);
 	ss.registerClass(global, 'Client.Scope._KeepBaseScopeAlive', $Client_Scope__KeepBaseScopeAlive);
+	ss.registerClass(global, 'Client.Scope.AcgSpacesScope', $Client_Scope_AcgSpacesScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.ActiveLobbyModel', $Client_Scope_ActiveLobbyModel);
 	ss.registerClass(global, 'Client.Scope.FloatingWindowBaseScope', $Client_Scope_FloatingWindowBaseScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.ActiveLobbyScope', $Client_Scope_ActiveLobbyScope, $Client_Scope_FloatingWindowBaseScope);
@@ -2068,15 +2151,19 @@
 	ss.registerClass(global, 'Client.Scope.CreateRoomModel', $Client_Scope_CreateRoomModel);
 	ss.registerClass(global, 'Client.Scope.CreateRoomScope', $Client_Scope_CreateRoomScope, $Client_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.EffectEditorScope', $Client_Scope_EffectEditorScope, Client.Scope.BaseScope);
+	ss.registerClass(global, 'Client.Scope.FloatingWindowPosition', $Client_Scope_FloatingWindowPosition);
+	ss.registerClass(global, 'Client.Scope.FloatingWindowScope', $Client_Scope_FloatingWindowScope);
 	ss.registerClass(global, 'Client.Scope.GameCtrlScope', $Client_Scope_GameCtrlScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.HomeModel', $Client_Scope_HomeModel);
 	ss.registerClass(global, 'Client.Scope.HomeScope', $Client_Scope_HomeScope, $Client_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.ListEffectsScope', $Client_Scope_ListEffectsScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.LoginModel', $Client_Scope_LoginModel);
 	ss.registerClass(global, 'Client.Scope.LoginScope', $Client_Scope_LoginScope, $Client_Scope_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.MessageScope', $Client_Scope_MessageScope, $Client_Scope_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.MinimizeScope', $Client_Scope_MinimizeScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.QuestionModel', $Client_Scope_QuestionModel);
 	ss.registerClass(global, 'Client.Scope.QuestionScope', $Client_Scope_QuestionScope, $Client_Scope_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Size', $Client_Scope_Size);
 	ss.registerClass(global, 'Client.Scope.SpaceScope', $Client_Scope_SpaceScope, Client.Scope.BaseScope);
 	ss.registerClass(null, 'Client.Services.$EditEffectService', $Client_Services_$EditEffectService);
 	ss.registerClass(global, 'Client.Services.ClientChatManagerService', $Client_Services_ClientChatManagerService);
@@ -2087,6 +2174,7 @@
 	ss.registerClass(global, 'Client.Services.EffectWatcherService', $Client_Services_EffectWatcherService);
 	ss.registerClass(global, 'Client.Services.GameContentManager', $Client_Services_GameContentManager);
 	ss.registerClass(global, 'Client.Services.GatewayService', $Client_Services_GatewayService);
+	ss.registerClass(global, 'Client.Services.MessageService', $Client_Services_MessageService);
 	ss.registerClass(global, 'Client.Services.UIManagerService', $Client_Services_UIManagerService);
 	$Client_BuildSite.instance = null;
 })();

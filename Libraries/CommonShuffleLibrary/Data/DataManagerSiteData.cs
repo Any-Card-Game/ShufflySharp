@@ -17,9 +17,13 @@ namespace CommonShuffleLibrary.Data
             this.manager = manager;
         }
 
-        public void User_Insert(UserModelData data)
+        public void User_Insert(UserModelData data, Action result)
         {
-            manager.client.Collection("User", (err, collection) => { collection.Insert(data); });
+            manager.client.Collection("User",
+                                      (err, collection) => {
+                                          collection.Insert(data);
+                                          result();
+                                      });
         }
 
         public void User_GetFirstByUsernamePassword(string username, string password, Action<List<UserModelData>> results)
@@ -30,6 +34,16 @@ namespace CommonShuffleLibrary.Data
                                           var j = new { username, password };
 
                                           MongoHelper.Find<UserModelData>(collection, j, (a, b) => results(b));
+                                      });
+        }
+        public void User_CheckUsernameExists(string username, Action<bool> results)
+        {
+            manager.client.Collection("User",
+                                      (err, collection) =>
+                                      {
+                                          var j = new { username };
+
+                                          MongoHelper.Find<UserModelData>(collection, j, (a, b) => results(b.Count>0));
                                       });
         }
 

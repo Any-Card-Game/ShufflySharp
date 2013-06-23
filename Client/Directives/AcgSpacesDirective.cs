@@ -10,7 +10,7 @@ namespace Client.Directives
     {
         private readonly CompileService myCompile;
         private readonly GameContentManager myGameContentManager;
-        public Action<SpaceScope, jQueryObject, object> link;
+        public Action<AcgSpacesScope, jQueryObject, object> link;
         public string template;
         public string restrict;
         public bool replace;
@@ -35,7 +35,7 @@ namespace Client.Directives
 
         }
 
-        private void linkFn(dynamic scope, jQueryObject element, object attrs)
+        private void linkFn(AcgSpacesScope scope, jQueryObject element, object attrs)
         {
 
             var updater = new Action(() => {
@@ -54,16 +54,16 @@ namespace Client.Directives
     </div> 
 </";
 
-                angular.ForEach(scope.spaces,
-                                new Action<CardGameTableSpace>((space) =>
+                angular.ForEach(scope.Spaces,
+                                (space) =>
                                 {
                                     var e = angular.Element(content);
-                                    var _scope = scope["$new"]();
-                                    _scope.space = space;
-                                    var elk=myCompile(e.Contents())(_scope);
+                                    var _scope = scope.New<AcgSpacesScope>();
+                                    _scope.Space = space;
+                                    var elk = myCompile(e.Contents())(_scope);
 
                                     element.Append(elk);
-                                }));
+                                });
 
             });
 
@@ -73,7 +73,7 @@ namespace Client.Directives
             {
                 Console.Log("updatinggagaga");
                 updater();
-                scope["$apply"]();
+                scope.Apply();
             };
 
             updater();

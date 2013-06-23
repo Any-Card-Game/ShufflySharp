@@ -9,13 +9,15 @@ namespace Client.Controllers
         private readonly LoginScope myScope;
         private readonly UIManagerService myUIManager;
         private readonly ClientSiteManagerService myclientSiteManagerService;
+        private readonly MessageService myMessageService;
 
-        public LoginController(LoginScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService)
+        public LoginController(LoginScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,MessageService messageService)
         {
             myScope = scope;
             myScope.Visible = true;
             myUIManager = uiManager;
             myclientSiteManagerService = clientSiteManagerService;
+            myMessageService = messageService;
             myScope.Model = new LoginModel();
 
             myScope.Model.WindowClosed = () =>
@@ -26,18 +28,38 @@ namespace Client.Controllers
             myScope.Model.CreateAccount = CreateAccountFn;
             myclientSiteManagerService.OnLogin += (user, data) =>
             {
-                uiManager.ClientInfo.LoggedInUser = user;
-                myUIManager.UserLoggedIn();
-                scope.SwingAway(SwingDirection.Left, false, null);
+                if (data.Successful) {
+                    uiManager.ClientInfo.LoggedInUser = user;
+                    myUIManager.UserLoggedIn();
+                    scope.SwingAway(SwingDirection.Left, false, null);
+                } else {
+                    myMessageService.PopupOkay("Bad!","You no login!",() => {
+                                                                          
+                                                                      });
+                }
             };
-            
+            myclientSiteManagerService.OnUserCreate += OnUserCreateFn;
 
+        }
+
+        void OnUserCreateFn(Models.UserModel user, Models.UserCreateResponse o)
+        {
+            if (o.Successful) {
+                myUIManager.ClientInfo.LoggedInUser = user;
+                myUIManager.UserLoggedIn();
+                myScope.SwingAway(SwingDirection.Left, false, null);
+
+            } else {
+                myMessageService.PopupOkay("Bad!", "You no create! It exist! What up!!?", () =>
+                {
+                });
+
+            }
         }
 
         private void CreateAccountFn()
         {
-
-            Window.Alert("Created! hahahJK");
+            myclientSiteManagerService.CreateUser(myScope.Model.Username, myScope.Model.Password);
         }
 
         private void LoginAccountFn()

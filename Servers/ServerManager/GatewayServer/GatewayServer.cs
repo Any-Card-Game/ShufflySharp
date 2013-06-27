@@ -20,48 +20,54 @@ namespace ServerManager.GatewayServer
         public GatewayServer()
         {
             myGatewayName = "Gateway " + Guid.NewGuid();
-/*
+            /*
 
-            var charm = Charmer.Setup();
+                        var charm = Charmer.Setup();
 
-            var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
+                        var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
 
-            Global.SetInterval(() => {
-                                   prog.CurValue++; 
-                               },200);
-*/
+                        Global.SetInterval(() => {
+                                               prog.CurValue++; 
+                                           },200);
+            */
 
-             
+
             Logger.Start(myGatewayName);
 
             //ExtensionMethods.debugger("");
             var http = Global.Require<Http>("http");
-            
+
             var app = http.CreateServer((req, res) => res.End());
 
             var io = Global.Require<SocketIO>("socket.io").Listen(app);
             var fs = Global.Require<FS>("fs");
             QueueManager queueManager;
-            var port = 1800 + Math.Truncate((int) ( Math.Random() * 4000 ));
+            var port = 1800 + Math.Truncate((Math.Random() * 4000d));
             port = 1800;
             string currentSubdomain = "gateway1";
-            string currentIP=ServerHelper.GetNetworkIPs( )[0]+":"+port;
-            Console.Log(currentIP);
+            string currentIP = ServerHelper.GetNetworkIPs()[0] + ":" + port;
+            string content;
+            if (Constants.Local)
+                content = string.Format("http://{0}", currentIP);
+            else
+                content = string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com");
+             
+            Console.Log(content);
             app.Listen(port);
             io.Set("log level", 0);
 
-            ps = new PubSub(() => {
-                var content = string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com");
-                content = string.Format("http://{0}", currentIP);
-
+            ps = new PubSub(() =>
+                            {
+                               
 
                                 ps.Subscribe<string>("PUBSUB.GatewayServers.Ping",
-                                                     message => {
+                                                     message =>
+                                                     {
                                                          ps.Publish("PUBSUB.GatewayServers", content);
-                                                         
-                               //                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+
+                                                         //                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
                                                      });
-//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+                                //                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
                                 ps.Publish("PUBSUB.GatewayServers", content);
                             });
 
@@ -80,18 +86,21 @@ namespace ServerManager.GatewayServer
                                                                                   "HeadServer"
                                                                           }));
             io.Sockets.On("connection",
-                          (SocketIOConnection socket) => {
+                          (SocketIOConnection socket) =>
+                          {
                               var j = ++curc;
-                              Console.Log("Socket Connected "+j);
+                              Console.Log("Socket Connected " + j);
                               UserSocketModel user = null;
                               socket.On("Gateway.Message",
-                                        (GatewayMessageModel data) => {
+                                        (GatewayMessageModel data) =>
+                                        {
                                             if (user == null)
                                                 return;
                                             Console.Log("Socket message " + j + "  " + user.UserName);
 
                                             var channel = "Bad";
-                                            switch (data.Channel.Split('.')[1]) {
+                                            switch (data.Channel.Split('.')[1])
+                                            {
                                                 case "Game":
                                                     channel = user.CurrentGameServer ?? "GameServer";
                                                     break;
@@ -112,7 +121,8 @@ namespace ServerManager.GatewayServer
                                         });
 
                               socket.On("Gateway.Login",
-                                        (GatewayLoginMessageModel data) => {
+                                        (GatewayLoginMessageModel data) =>
+                                        {
                                             //ExtensionMethods.debugger();
                                             user = new UserSocketModel();
                                             user.Password = data.Password;
@@ -127,7 +137,8 @@ namespace ServerManager.GatewayServer
                                             queueManager.SendMessage("SiteServer", "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
                                         });
                               socket.On("disconnect",
-                                        (string data) => {
+                                        (string data) =>
+                                        {
                                             if (user == null)
                                                 return;
                                             Console.Log("Socket left " + j + "  " + user.UserName);
@@ -147,11 +158,12 @@ namespace ServerManager.GatewayServer
                                         });
                           });
         }
- 
+
 
         private void messageReceived(string gateway, UserLogicModel user, string eventChannel, object content)
         {
-            if (users.ContainsKey(user.UserName)) {
+            if (users.ContainsKey(user.UserName))
+            {
                 var u = users[user.UserName];
 
                 sendMessage(u, eventChannel, content);
@@ -166,25 +178,29 @@ namespace ServerManager.GatewayServer
 
         private bool specialHandle(UserSocketModel user, string eventChannel, object content)
         {
-          
-            if (eventChannel == "Area.Chat.RegisterServer") {
+
+            if (eventChannel == "Area.Chat.RegisterServer")
+            {
                 Logger.Log(string.Format("Chat Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
-                user.CurrentChatServer = ( (RegisterServerModel) content ).Server;
+                user.CurrentChatServer = ((RegisterServerModel)content).Server;
                 return false;
             }
-            if (eventChannel == "Area.Chat.UnregisterServer") {
+            if (eventChannel == "Area.Chat.UnregisterServer")
+            {
                 Logger.Log("Chat Server UnRegistered", LogLevel.Information);
 
                 user.CurrentChatServer = null;
                 return false;
             }
-            if (eventChannel == "Area.Game.RegisterServer") {
+            if (eventChannel == "Area.Game.RegisterServer")
+            {
                 Logger.Log(string.Format("Game Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
-                user.CurrentGameServer = ( (RegisterServerModel) content ).Server;
+                user.CurrentGameServer = ((RegisterServerModel)content).Server;
                 return false;
             }
-            if (eventChannel == "Area.Game.UnregisterServer") {
-                Logger.Log("Game Server UnRegistered",LogLevel.Information);
+            if (eventChannel == "Area.Game.UnregisterServer")
+            {
+                Logger.Log("Game Server UnRegistered", LogLevel.Information);
                 user.CurrentGameServer = null;
                 return false;
             }

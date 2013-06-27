@@ -29,7 +29,6 @@
 	var $WebLibraries_ShuffUI_ShuffUI_DockStyle = function() {
 	};
 	$WebLibraries_ShuffUI_ShuffUI_DockStyle.prototype = { none: 0, fill: 1, fillWidth: 2, fillHeight: 3 };
-	ss.registerEnum(global, 'WebLibraries.ShuffUI.ShuffUI.DockStyle', $WebLibraries_ShuffUI_ShuffUI_DockStyle, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// WebLibraries.ShuffUI.ShuffUI.ParentChangedEvent
 	var $WebLibraries_ShuffUI_ShuffUI_ParentChangedEvent = function() {
@@ -819,7 +818,6 @@
 	var $WebLibraries_ShuffUI_ShuffUI_SwingDirection = function() {
 	};
 	$WebLibraries_ShuffUI_ShuffUI_SwingDirection.prototype = { topLeft: 0, top: 1, topRight: 2, right: 3, bottomRight: 4, bottom: 5, bottomLeft: 6, left: 7 };
-	ss.registerEnum(global, 'WebLibraries.ShuffUI.ShuffUI.SwingDirection', $WebLibraries_ShuffUI_ShuffUI_SwingDirection, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// WebLibraries.ShuffUI.ShuffUI.TextChangedEvent
 	var $WebLibraries_ShuffUI_ShuffUI_TextChangedEvent = function() {
@@ -867,6 +865,7 @@
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.ButtonClickedEvent', $WebLibraries_ShuffUI_ShuffUI_ButtonClickedEvent);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.CodeMirrorInformation', $WebLibraries_ShuffUI_ShuffUI_CodeMirrorInformation);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.CodeMirrorInformationData', $WebLibraries_ShuffUI_ShuffUI_CodeMirrorInformationData);
+	ss.registerEnum(global, 'WebLibraries.ShuffUI.ShuffUI.DockStyle', $WebLibraries_ShuffUI_ShuffUI_DockStyle);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.ParentChangedEvent', $WebLibraries_ShuffUI_ShuffUI_ParentChangedEvent);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.PositionChangedEvent', $WebLibraries_ShuffUI_ShuffUI_PositionChangedEvent);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.ShuffElement', $WebLibraries_ShuffUI_ShuffUI_ShuffElement);
@@ -880,6 +879,7 @@
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.ShuffUIManager', $WebLibraries_ShuffUI_ShuffUI_ShuffUIManager);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.ShuffWindow', $WebLibraries_ShuffUI_ShuffUI_ShuffWindow, $WebLibraries_ShuffUI_ShuffUI_ShuffPanel);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.SizeChangedEvent', $WebLibraries_ShuffUI_ShuffUI_SizeChangedEvent);
+	ss.registerEnum(global, 'WebLibraries.ShuffUI.ShuffUI.SwingDirection', $WebLibraries_ShuffUI_ShuffUI_SwingDirection);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.TextChangedEvent', $WebLibraries_ShuffUI_ShuffUI_TextChangedEvent);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.UIAreaInformation', $WebLibraries_ShuffUI_ShuffUI_UIAreaInformation);
 	ss.registerClass(global, 'WebLibraries.ShuffUI.ShuffUI.VisibleChangedEvent', $WebLibraries_ShuffUI_ShuffUI_VisibleChangedEvent);

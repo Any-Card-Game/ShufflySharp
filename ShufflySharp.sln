@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{0D9CEDF5-ADDD-451B-9631-7C46B2CDF78B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffleGameLibrary", "Libraries\ShuffleGameLibrary\ShuffleGameLibrary.csproj", "{2D9347BC-A4DD-4B5D-8BE1-13D1607A33C7}"
@@ -149,6 +149,7 @@ Global
 		{EC796BA9-1192-4288-9919-CD0E5383F944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC796BA9-1192-4288-9919-CD0E5383F944}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC796BA9-1192-4288-9919-CD0E5383F944}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EC796BA9-1192-4288-9919-CD0E5383F944}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{EC796BA9-1192-4288-9919-CD0E5383F944}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{EC796BA9-1192-4288-9919-CD0E5383F944}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC796BA9-1192-4288-9919-CD0E5383F944}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU

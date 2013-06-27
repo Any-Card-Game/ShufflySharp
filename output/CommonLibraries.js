@@ -50,16 +50,16 @@
 		};
 		$type.$ctor1.prototype = $type.prototype;
 		$type.op_Implicit$2 = function(d) {
-			return new (ss.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]).$ctor1)(d);
+			return new $type.$ctor1(d);
 		};
 		$type.op_Implicit$1 = function(d) {
-			return new (ss.makeGenericType($CommonLibraries_DelegateOrValue$1, [T]))(d);
+			return new $type(d);
 		};
 		$type.op_Implicit = function(d) {
 			return d.$evaluate();
 		};
 		ss.registerGenericClassInstance($type, $CommonLibraries_DelegateOrValue$1, [T], function() {
-			return Object;
+			return null;
 		}, function() {
 			return [];
 		});
@@ -214,7 +214,7 @@
 		};
 		$type.$ctor1.prototype = $type.prototype;
 		ss.registerGenericClassInstance($type, $CommonLibraries_TypeOrFunction$1, [T], function() {
-			return Object;
+			return null;
 		}, function() {
 			return [];
 		});
@@ -229,9 +229,10 @@
 	ss.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number);
 	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
 	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
-	$CommonLibraries_Constants.webIP = 'http://localhost:8881/';
+	$CommonLibraries_Constants.local = false;
+	$CommonLibraries_Constants.webIP = 'http://content.anycardgame.com/';
 	$CommonLibraries_Constants.redisIP = '198.211.107.101';
 	$CommonLibraries_Constants.mongoIP = '198.211.107.101';
-	$CommonLibraries_Constants.HARDLOCATION = 'C:\\code\\node\\';
+	$CommonLibraries_Constants.HARDLOCATION = '/usr/local/src/new/';
 	$CommonLibraries_Help.verbose = true;
 })();

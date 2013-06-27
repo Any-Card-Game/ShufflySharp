@@ -461,7 +461,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var queueManager = new CommonShuffleLibrary.QueueManager('Debug1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('DebugServer', null)], ['GatewayServer', 'Gateway*']));
 		queueManager.addChannel('Area.Debug2.GetGameSource.Request', function(sender, data) {
 			var sourceRequest = data;
-			fs.readFile('C:\\code\\node\\Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
+			fs.readFile('/usr/local/src/new/Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
 				queueManager.sendMessage(sender.gateway, 'Area.Debug.GetGameSource.Response', sender, { content: data2 });
 			});
 		});
@@ -920,25 +920,25 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
 		//
 		//
-		//            var charm = Charmer.Setup();
+		//                        var charm = Charmer.Setup();
 		//
 		//
-		//            
+		//                        
 		//
 		//
-		//            var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
+		//                        var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
 		//
 		//
-		//            
+		//                        
 		//
 		//
-		//            Global.SetInterval(() => {
+		//                        Global.SetInterval(() => {
 		//
 		//
-		//            prog.CurValue++;
+		//                        prog.CurValue++;
 		//
 		//
-		//            },200);
+		//                        },200);
 		NodeLibraries.Common.Logging.Logger.start(this.$myGatewayName);
 		//ExtensionMethods.debugger("");
 		var http = require('http');
@@ -948,16 +948,21 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var io = require('socket.io').listen(app);
 		var fs = require('fs');
 		var queueManager;
-		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
+		var port = 1800 + (Math.random() * 4000 | 0);
 		port = 1800;
 		var currentSubdomain = 'gateway1';
 		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0] + ':' + port;
-		console.log(currentIP);
+		var content;
+		if (CommonLibraries.Constants.local) {
+			content = ss.formatString('http://{0}', currentIP);
+		}
+		else {
+			content = ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com');
+		}
+		console.log(content);
 		app.listen(port);
 		io.set('log level', 0);
 		this.$ps = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
-			var content = ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com');
-			content = ss.formatString('http://{0}', currentIP);
 			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
 				this.$ps.publish('PUBSUB.GatewayServers', content);
 				//                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
@@ -1151,7 +1156,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var io = require('socket.io').listen(app);
 		var fs = require('fs');
 		var queueManager;
-		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
+		var port = 1800 + (Math.random() * 4000 | 0);
 		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
 		console.log(currentIP);
 		app.listen(port);

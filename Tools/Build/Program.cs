@@ -1,4 +1,4 @@
-﻿//#define FTP
+﻿#define FTP
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -11,8 +11,11 @@ namespace Build
     internal class Program
     {
         private static string ReplaceWebIP = "http://content.anycardgame.com/";
+#if !FTP
         private static string WebIP = "http://localhost:8881/";
-
+#else
+        private static string WebIP = "http://content.anycardgame.com/";
+#endif
         private static void Main(string[] args)
         {
             string shufSharp = "ShufflySharp";

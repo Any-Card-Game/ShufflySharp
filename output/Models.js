@@ -384,7 +384,6 @@
 	var $Models_SiteManagerModels_Game_EffectType = function() {
 	};
 	$Models_SiteManagerModels_Game_EffectType.prototype = { highlight: 'highlight', rotate: 'rotate', bend: 'bend', styleProperty: 'styleProperty', animated: 'animated' };
-	ss.registerEnum(global, 'Models.SiteManagerModels.Game.EffectType', $Models_SiteManagerModels_Game_EffectType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameAreaModel
 	var $Models_SiteManagerModels_Game_GameAreaModel = function() {
@@ -455,7 +454,6 @@
 	var $Models_SiteManagerModels_Game_GameEffectPropertyType = function() {
 	};
 	$Models_SiteManagerModels_Game_GameEffectPropertyType.prototype = { text: 'text', number: 'number', color: 'color' };
-	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameEffectPropertyType', $Models_SiteManagerModels_Game_GameEffectPropertyType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameLayoutModel
 	var $Models_SiteManagerModels_Game_GameLayoutModel = function() {
@@ -524,7 +522,6 @@
 	var $Models_SiteManagerModels_Game_GameSpaceLayoutType = function() {
 	};
 	$Models_SiteManagerModels_Game_GameSpaceLayoutType.prototype = { straight: 'straight' };
-	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameSpaceLayoutType', $Models_SiteManagerModels_Game_GameSpaceLayoutType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameSpaceModel
 	var $Models_SiteManagerModels_Game_GameSpaceModel = function() {
@@ -605,13 +602,16 @@
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteCreateUserRequest', $Models_SiteManagerModels_SiteCreateUserRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest);
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.EffectType', $Models_SiteManagerModels_Game_EffectType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameAreaModel', $Models_SiteManagerModels_Game_GameAreaModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameCodeModel', $Models_SiteManagerModels_Game_GameCodeModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameEffectModel', $Models_SiteManagerModels_Game_GameEffectModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameEffectPropertyModel', $Models_SiteManagerModels_Game_GameEffectPropertyModel);
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameEffectPropertyType', $Models_SiteManagerModels_Game_GameEffectPropertyType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutModel', $Models_SiteManagerModels_Game_GameLayoutModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenario', $Models_SiteManagerModels_Game_GameLayoutScenario);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameModel', $Models_SiteManagerModels_Game_GameModel);
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameSpaceLayoutType', $Models_SiteManagerModels_Game_GameSpaceLayoutType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameSpaceModel', $Models_SiteManagerModels_Game_GameSpaceModel, $Models_SiteManagerModels_Game_GameAreaModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameTextModel', $Models_SiteManagerModels_Game_GameTextModel);
 })();

@@ -5,7 +5,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	var $NodeLibraries_Common_Charm_CharmColors = function() {
 	};
 	$NodeLibraries_Common_Charm_CharmColors.prototype = { red: 'red', cyan: 'cyan', yellow: 'yellow', green: 'green', blue: 'blue', magenta: 'magenta', black: 'black', white: 'white' };
-	ss.registerEnum(global, 'NodeLibraries.Common.Charm.CharmColors', $NodeLibraries_Common_Charm_CharmColors, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.Charmer
 	var $NodeLibraries_Common_Charm_Charmer = function() {
@@ -49,13 +48,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	var $NodeLibraries_Common_Charm_DisplayType = function() {
 	};
 	$NodeLibraries_Common_Charm_DisplayType.prototype = { reset: 'reset', bright: 'bright', dim: 'dim', underscore: 'underscore', blink: 'blink', reverse: 'reverse', hidden: 'hidden' };
-	ss.registerEnum(global, 'NodeLibraries.Common.Charm.DisplayType', $NodeLibraries_Common_Charm_DisplayType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.EraseType
 	var $NodeLibraries_Common_Charm_EraseType = function() {
 	};
 	$NodeLibraries_Common_Charm_EraseType.prototype = { end: 'end', start: 'start', line: 'line', down: 'down', Up: 'Up', screen: 'screen' };
-	ss.registerEnum(global, 'NodeLibraries.Common.Charm.EraseType', $NodeLibraries_Common_Charm_EraseType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.Logger
 	var $NodeLibraries_Common_Logging_Logger = function() {
@@ -85,7 +82,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	var $NodeLibraries_Common_Logging_LogLevel = function() {
 	};
 	$NodeLibraries_Common_Logging_LogLevel.prototype = { error: 0, debugInformation: 1, information: 2 };
-	ss.registerEnum(global, 'NodeLibraries.Common.Logging.LogLevel', $NodeLibraries_Common_Logging_LogLevel, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.ProgressBar
 	var $NodeLibraries_Common_Logging_ProgressBar = function(charm, minValue, maxValue) {
@@ -230,8 +226,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 		blpop: function(objectsAndTimeout, action) {
 		}
 	};
+	ss.registerEnum(global, 'NodeLibraries.Common.Charm.CharmColors', $NodeLibraries_Common_Charm_CharmColors);
 	ss.registerClass(global, 'NodeLibraries.Common.Charm.Charmer', $NodeLibraries_Common_Charm_Charmer);
+	ss.registerEnum(global, 'NodeLibraries.Common.Charm.DisplayType', $NodeLibraries_Common_Charm_DisplayType);
+	ss.registerEnum(global, 'NodeLibraries.Common.Charm.EraseType', $NodeLibraries_Common_Charm_EraseType);
 	ss.registerClass(global, 'NodeLibraries.Common.Logging.Logger', $NodeLibraries_Common_Logging_Logger);
+	ss.registerEnum(global, 'NodeLibraries.Common.Logging.LogLevel', $NodeLibraries_Common_Logging_LogLevel);
 	ss.registerClass(global, 'NodeLibraries.Common.Logging.ProgressBar', $NodeLibraries_Common_Logging_ProgressBar);
 	ss.registerClass(global, 'NodeLibraries.Common.Logging.ServerHelper', $NodeLibraries_Common_Logging_ServerHelper);
 	ss.registerClass(global, 'NodeLibraries.MongoDB.MongoDocument', $NodeLibraries_MongoDB_MongoDocument);

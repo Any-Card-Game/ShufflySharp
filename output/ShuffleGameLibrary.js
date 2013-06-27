@@ -69,13 +69,11 @@
 	var $global_AnimatedEffectEase = function() {
 	};
 	$global_AnimatedEffectEase.prototype = { linear: 0, swing: 1, easeInQuad: 2, easeOutQuad: 3, easeInOutQuad: 4, easeInCubic: 5, easeOutCubic: 6, easeInOutCubic: 7, easeInQuart: 8, easeOutQuart: 9, easeInOutQuart: 10, easeInQuint: 11, easeOutQuint: 12, easeInOutQuint: 13, easeInSine: 14, easeOutSine: 15, easeInOutSine: 16, easeInExpo: 17, easeOutExpo: 18, easeInOutExpo: 19, easeInCirc: 20, easeOutCirc: 21, easeInOutCirc: 22, easeInElastic: 23, easeOutElastic: 24, easeInOutElastic: 25, easeInBack: 26, easeOutBack: 27, easeInOutBack: 28, easeInBounce: 29, easeOutBounce: 30, easeInOutBounce: 31 };
-	ss.registerEnum(global, 'global.AnimatedEffectEase', $global_AnimatedEffectEase, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameAppearanceAnimatedEffectType
 	var $global_AnimatedEffectType = function() {
 	};
 	$global_AnimatedEffectType.prototype = { between: 0 };
-	ss.registerEnum(global, 'global.AnimatedEffectType', $global_AnimatedEffectType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameAppearance
 	var $global_Appearance = function() {
@@ -153,7 +151,6 @@
 	var $global_AppearanceStyleCursor = function() {
 	};
 	$global_AppearanceStyleCursor.prototype = { default: 'default', auto: 'auto', pointer: 'pointer', move: 'move', eResize: 'eResize', neResize: 'neResize', nwResize: 'nwResize', nResize: 'nResize', seResize: 'seResize', swResize: 'swResize', sResize: 'sResize', wResize: 'wResize', text: 'text', wait: 'wait', help: 'help' };
-	ss.registerEnum(global, 'global.AppearanceStyleCursor', $global_AppearanceStyleCursor, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameAppearanceStyleItem
 	var $global_AppearanceStyleItem = function(options) {
@@ -347,7 +344,7 @@
 			this.items = items;
 		};
 		ss.registerGenericClassInstance($type, $global_ArrayUtils$GroupByKey$2, [T, T2], function() {
-			return Object;
+			return null;
 		}, function() {
 			return [];
 		});
@@ -395,7 +392,7 @@
 		this.numberOfJokers = ((options.numberOfJokers === 0) ? 52 : options.numberOfJokers);
 		this.deck = new $global_Pile('deck');
 		for (var i = 0; i < this.numberOfCards; i++) {
-			ss.add(this.deck.cards, new $global_Card(i % 13, ss.Int32.trunc(Math.floor(ss.Int32.div(i, 13)))));
+			ss.add(this.deck.cards, new $global_Card(i % 13, ss.Int32.trunc(Math.floor(i / 13))));
 		}
 		for (var i1 = 0; i1 < this.numberOfJokers; i1++) {
 			ss.add(this.deck.cards, new $global_Card(0, 0));
@@ -450,13 +447,11 @@
 	var $global_CardGameAppearanceEffectDrawTime = function() {
 	};
 	$global_CardGameAppearanceEffectDrawTime.prototype = { pre: 0, during: 1, post: 2 };
-	ss.registerEnum(global, 'global.CardGameAppearanceEffectDrawTime', $global_CardGameAppearanceEffectDrawTime, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameAppearanceStyleBorderStyle
 	var $global_CardGameAppearanceStyleBorderStyle = function() {
 	};
 	$global_CardGameAppearanceStyleBorderStyle.prototype = { none: 0, dotted: 1, dashed: 2, solid: 3, double$1: 4, groove: 5, ridge: 6, inset: 7, offset: 8 };
-	ss.registerEnum(global, 'global.CardGameAppearanceStyleBorderStyle', $global_CardGameAppearanceStyleBorderStyle, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameArea
 	var $global_CardGameArea = function() {
@@ -550,13 +545,11 @@
 	var $global_CardState = function() {
 	};
 	$global_CardState.prototype = { faceUp: 0, faceDown: 1, faceUpIfOwned: 2 };
-	ss.registerEnum(global, 'global.CardState', $global_CardState, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameCardType
 	var $global_CardType = function() {
 	};
 	$global_CardType.prototype = { heart: 0, diamond: 1, spade: 2, club: 3 };
-	ss.registerEnum(global, 'global.CardType', $global_CardType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.DomUtils
 	var $global_domUtils = function() {
@@ -828,7 +821,6 @@
 	var $global_EffectType = function() {
 	};
 	$global_EffectType.prototype = { highlight: 0, rotate: 1, bend: 2, styleProperty: 3, animated: 4 };
-	ss.registerEnum(global, 'global.EffectType', $global_EffectType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.FiberYieldResponse
 	var $global_FiberYieldResponse = function(type) {
@@ -877,7 +869,6 @@
 	var $global_FiberYieldResponseType = function() {
 	};
 	$global_FiberYieldResponseType.prototype = { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 };
-	ss.registerEnum(global, 'global.FiberYieldResponseType', $global_FiberYieldResponseType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.GameCardGameOptions
 	var $global_GameCardGameOptions = function() {
@@ -2130,7 +2121,6 @@
 	var $global_Order = function() {
 	};
 	$global_Order.prototype = { noOrder: 0, ascending: 1, descending: 2 };
-	ss.registerEnum(global, 'global.Order', $global_Order, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGamePile
 	var $global_Pile = function(name) {
@@ -2165,7 +2155,6 @@
 	var $global_PokerWinType = function() {
 	};
 	$global_PokerWinType.prototype = { straight: 1, flush: 2, pair: 3, threeOfAKind: 4, fourOfAKind: 5, straightFlush: 6 };
-	ss.registerEnum(global, 'global.PokerWinType', $global_PokerWinType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.Rectangle
 	var $global_Rectangle = function() {
@@ -2270,7 +2259,6 @@
 	var $global_TableSpaceResizeType = function() {
 	};
 	$global_TableSpaceResizeType.prototype = { grow: 0, static: 1 };
-	ss.registerEnum(global, 'global.TableSpaceResizeType', $global_TableSpaceResizeType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// global.GameCardGameTextArea
 	var $global_TableTextArea = function(options) {
@@ -2296,10 +2284,13 @@
 	ss.registerClass(global, 'global.Effect', $global_Effect);
 	ss.registerClass(global, 'global.AnimatedEffect', $global_AnimatedEffect, $global_Effect);
 	ss.registerClass(global, 'global.AnimatedEffect$Between', $global_AnimatedEffect$Between, $global_AnimatedEffect);
+	ss.registerEnum(global, 'global.AnimatedEffectEase', $global_AnimatedEffectEase);
+	ss.registerEnum(global, 'global.AnimatedEffectType', $global_AnimatedEffectType);
 	ss.registerClass(global, 'global.AppearanceStyle', $global_AppearanceStyle);
 	ss.registerClass(global, 'global.Appearance', $global_Appearance, $global_AppearanceStyle);
 	ss.registerClass(global, 'global.AppearanceStyleBorder', $global_AppearanceStyleBorder);
 	ss.registerClass(global, 'global.AppearanceStyleBorderArea', $global_AppearanceStyleBorderArea);
+	ss.registerEnum(global, 'global.AppearanceStyleCursor', $global_AppearanceStyleCursor);
 	ss.registerClass(global, 'global.AppearanceStyleItem', $global_AppearanceStyleItem);
 	ss.registerClass(global, 'global.AppearanceStyleMargin', $global_AppearanceStyleMargin);
 	ss.registerClass(global, 'global.AppearanceStylePadding', $global_AppearanceStylePadding);
@@ -2308,27 +2299,36 @@
 	ss.registerClass(global, 'global.CardDrawing', $global_CardDrawing);
 	ss.registerClass(global, 'global.CardGame', $global_CardGame);
 	ss.registerClass(global, 'global.CardGameAnswer', $global_CardGameAnswer);
+	ss.registerEnum(global, 'global.CardGameAppearanceEffectDrawTime', $global_CardGameAppearanceEffectDrawTime);
+	ss.registerEnum(global, 'global.CardGameAppearanceStyleBorderStyle', $global_CardGameAppearanceStyleBorderStyle);
 	ss.registerClass(global, 'global.CardGameArea', $global_CardGameArea);
 	ss.registerClass(global, 'global.CardGameEffectBendOptions', $global_CardGameEffectBendOptions);
 	ss.registerClass(global, 'global.CardGameEffectHighlightOptions', $global_CardGameEffectHighlightOptions);
 	ss.registerClass(global, 'global.CardGameEffectRotateOptions', $global_CardGameEffectRotateOptions);
 	ss.registerClass(global, 'global.CardGameQuestion', $global_CardGameQuestion);
 	ss.registerClass(global, 'global.CardGameTableSpaceOptions', $global_CardGameTableSpaceOptions);
+	ss.registerEnum(global, 'global.CardState', $global_CardState);
+	ss.registerEnum(global, 'global.CardType', $global_CardType);
 	ss.registerClass(global, 'global.domUtils', $global_domUtils);
 	ss.registerClass(global, 'global.Effect$Bend', $global_Effect$Bend, $global_Effect);
 	ss.registerClass(global, 'global.Effect$Highlight', $global_Effect$Highlight, $global_Effect);
 	ss.registerClass(global, 'global.Effect$Rotate', $global_Effect$Rotate, $global_Effect);
 	ss.registerClass(global, 'global.Effect$StyleProperty', $global_Effect$StyleProperty, $global_Effect);
+	ss.registerEnum(global, 'global.EffectType', $global_EffectType);
 	ss.registerClass(global, 'global.FiberYieldResponse', $global_FiberYieldResponse);
+	ss.registerEnum(global, 'global.FiberYieldResponseType', $global_FiberYieldResponseType);
 	ss.registerClass(global, 'global.GameCardGameOptions', $global_GameCardGameOptions);
 	ss.registerClass(global, 'global.GameCardGameTextAreaOptions', $global_GameCardGameTextAreaOptions);
 	ss.registerClass(global, 'global.InternalStyle', $global_InternalStyle);
+	ss.registerEnum(global, 'global.Order', $global_Order);
 	ss.registerClass(global, 'global.Pile', $global_Pile);
 	ss.registerClass(global, 'global.PokerResult', $global_PokerResult);
+	ss.registerEnum(global, 'global.PokerWinType', $global_PokerWinType);
 	ss.registerClass(global, 'global.Rectangle', $global_Rectangle);
 	ss.registerClass(global, 'global.shuff', $global_shuff);
 	ss.registerClass(global, 'global.SpaceDrawing', $global_SpaceDrawing);
 	ss.registerClass(global, 'global.TableSpace', $global_TableSpace);
+	ss.registerEnum(global, 'global.TableSpaceResizeType', $global_TableSpaceResizeType);
 	ss.registerClass(global, 'global.TableTextArea', $global_TableTextArea);
 	ss.registerClass(global, 'global.User', $global_User);
 	eval('Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};');

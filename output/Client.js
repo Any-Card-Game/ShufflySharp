@@ -1849,7 +1849,6 @@
 	var $Client_Scope_Controller_MessageType = function() {
 	};
 	$Client_Scope_Controller_MessageType.prototype = { okay: 'okay', question: 'question' };
-	ss.registerEnum(global, 'Client.Scope.Controller.MessageType', $Client_Scope_Controller_MessageType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.MinimizeScope
 	var $Client_Scope_Controller_MinimizeScope = function() {
@@ -1885,7 +1884,6 @@
 	var $Client_Scope_Controller_UpdateStatusType = function() {
 	};
 	$Client_Scope_Controller_UpdateStatusType.prototype = { dirty: 'dirty', syncing: 'syncing', synced: 'synced' };
-	ss.registerEnum(global, 'Client.Scope.Controller.UpdateStatusType', $Client_Scope_Controller_UpdateStatusType, false);
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Directive.AcgSpacesScope
 	var $Client_Scope_Directive_AcgSpacesScope = function() {
@@ -2494,9 +2492,11 @@
 	ss.registerClass(global, 'Client.Scope.Controller.LoginScope', $Client_Scope_Controller_LoginScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.MessageModel', $Client_Scope_Controller_MessageModel);
 	ss.registerClass(global, 'Client.Scope.Controller.MessageScope', $Client_Scope_Controller_MessageScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerEnum(global, 'Client.Scope.Controller.MessageType', $Client_Scope_Controller_MessageType);
 	ss.registerClass(global, 'Client.Scope.Controller.MinimizeScope', $Client_Scope_Controller_MinimizeScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.QuestionModel', $Client_Scope_Controller_QuestionModel);
 	ss.registerClass(global, 'Client.Scope.Controller.QuestionScope', $Client_Scope_Controller_QuestionScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerEnum(global, 'Client.Scope.Controller.UpdateStatusType', $Client_Scope_Controller_UpdateStatusType);
 	ss.registerClass(global, 'Client.Scope.Directive.AcgSpacesScope', $Client_Scope_Directive_AcgSpacesScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.CardScope', $Client_Scope_Directive_CardScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.FloatingWindowPosition', $Client_Scope_Directive_FloatingWindowPosition);

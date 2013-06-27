@@ -28,7 +28,7 @@ namespace ServerManager.MonitorServer
             var io = Global.Require<SocketIO>("socket.io").Listen(app);
             var fs = Global.Require<FS>("fs");
             QueueManager queueManager;
-            var port = 1800 + Math.Truncate((int)(Math.Random() * 4000));
+            var port = 1800 + Math.Truncate( (Math.Random() * 4000d));
 
             string currentIP = ServerHelper.GetNetworkIPs()[0];
             Console.Log(currentIP);

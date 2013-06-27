@@ -42,7 +42,7 @@ namespace global
 
             Deck = new CardGamePile("deck");
             for (var i = 0; i < NumberOfCards; i++) {
-                Deck.Cards.Add(new CardGameCard(i % 13, (int) Math.Floor(i / 13)));
+                Deck.Cards.Add(new CardGameCard(i % 13, (int) Math.Floor(i / 13d)));
             }
             for (var i = 0; i < NumberOfJokers; i++) {
                 Deck.Cards.Add(new CardGameCard(0, 0));

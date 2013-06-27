@@ -6,6 +6,7 @@ namespace NodeLibraries.MongoDB
     [Serializable]
     public class MongoDocument
     {
+        [IntrinsicProperty]
         public static Func<string, object> ObjectID { get; set; }
         static MongoDocument()
         {

@@ -21,6 +21,9 @@ namespace ServerManager.SiteServer
         public delegate void StartGame(UserLogicModel user, StartGameRequest data);
 
         public delegate void GetGamesByUser(UserLogicModel user, GetGamesByUserRequest data);
+        public delegate void DoesGameNameExist(UserLogicModel user, DoesGameExistRequest data);
+        public delegate void DeveloperCreateGame(UserLogicModel user, DeveloperCreateGameRequest data);
+        public delegate void DeveloperUpdateGame(UserLogicModel user, DeveloperUpdateGameRequest data);
 
         #endregion
 
@@ -44,9 +47,12 @@ namespace ServerManager.SiteServer
         public event CreateRoom OnCreateRoom;
         public event JoinRoom OnJoinRoom;
         public event StartGame OnStartGame;
-        
-        
+
+
         public event GetGamesByUser OnGetGamesByUser;
+        public event DoesGameNameExist OnDoesGameNameExist;
+        public event DeveloperCreateGame OnDeveloperCreateGame;
+        public event DeveloperUpdateGame OnDeveloperUpdateGame;
 
         
 
@@ -64,6 +70,7 @@ namespace ServerManager.SiteServer
                                                                               "GatewayServer",
                                                                               "Gateway*"
                                                                       }));
+
             qManager.AddChannel("Area.Site.Login", (user, data) => OnUserLogin(user, (SiteLoginRequest)data));
             qManager.AddChannel("Area.Site.CreateUser", (user, data) => OnUserCreate(user, (SiteCreateUserRequest)data));
             qManager.AddChannel("Area.Site.GetGameTypes", (user, data) => OnGetGameTypes(user));
@@ -76,9 +83,13 @@ namespace ServerManager.SiteServer
             qManager.AddChannel("Area.Site.StartGame", (user, data) => OnStartGame(user, (StartGameRequest)data));
             qManager.AddChannel("Area.Site.UserDisconnect", (user, data) => OnUserDisconnect(user, (UserDisconnectModel)data));
 
-        
+
             qManager.AddChannel("Area.Site.GetGamesByUser", (user, data) => OnGetGamesByUser(user, (GetGamesByUserRequest)data));
+            qManager.AddChannel("Area.Site.DoesGameNameExist", (user, data) => OnDoesGameNameExist(user, (DoesGameExistRequest)data));
+            qManager.AddChannel("Area.Site.DeveloperCreateGame", (user, data) => OnDeveloperCreateGame(user, (DeveloperCreateGameRequest)data));
+            qManager.AddChannel("Area.Site.DeveloperUpdateGame", (user, data) => OnDeveloperUpdateGame(user, (DeveloperUpdateGameRequest)data));
         }
+
 
         public void SendLoginResponse(UserLogicModel user, bool success)
         {
@@ -133,10 +144,24 @@ namespace ServerManager.SiteServer
             qManager.SendMessage("GameServer", "Area.Game.Create", null, gameCreateRequestModel);
         }
 
-        public void SendGamesByUser(UserLogicModel user,GetGamesByUserResponse getGamesByUserResponse)
+        public void SendGamesByUser(UserLogicModel user, GetGamesByUserResponse getGamesByUserResponse)
         {
             qManager.SendMessage(user.Gateway, "Area.Site.GetGamesByUser.Response", user, getGamesByUserResponse);
         }
+        public void SendDoesGameNameExist(UserLogicModel user, DoesGameExistResponse doesGameExistResponse)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Site.DoesGameNameExist.Response", user, doesGameExistResponse);
+        }
 
+        public void SendUpdateGameResponse(UserLogicModel user, DeveloperUpdateGameResponse developerUpdateGameResponse)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Site.DeveloperUpdateGame.Response", user, developerUpdateGameResponse);
+        }
+
+        public void SendCreateGameResponse(UserLogicModel user, DeveloperCreateGameResponse developerCreateGameResponse)
+        {
+            qManager.SendMessage(user.Gateway, "Area.Site.DeveloperCreateGame.Response", user, developerCreateGameResponse);
+
+        }
     }
 }

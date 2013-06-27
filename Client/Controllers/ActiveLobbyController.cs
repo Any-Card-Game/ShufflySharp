@@ -15,8 +15,9 @@ namespace Client.Controllers
         private readonly UIManagerService myUIManager;
         private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly ClientChatManagerService myClientChatManagerService;
+        private readonly CreateUIService myCreateUIService;
 
-        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,  ClientChatManagerService clientChatManagerService,CompileService compile)
+        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,  ClientChatManagerService clientChatManagerService,CreateUIService createUIService)
         {
 
 
@@ -24,6 +25,7 @@ namespace Client.Controllers
             myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService; 
             myClientChatManagerService = clientChatManagerService;
+            myCreateUIService = createUIService;
             myScope.Model = new ActiveLobbyModel();
             myScope.Model.ChatLines = new List<ChatMessageRoomModel>();
             myScope.Visible = false;
@@ -45,11 +47,7 @@ namespace Client.Controllers
             };
 
             myScope.Model.StartGame += () => {
-                                           var theScope = myScope;
-                                           compile(jQueryApi.jQuery.FromHtml("<div ng-include src=\"'http://content.anycardgame.com/partials/gameUI.html'\"></div>"))(theScope).AppendTo(Window.Document.Body);
-
-
-
+                                           myCreateUIService.Create("gameUI", myScope);
 //                                           uiManager.GameManager.StartGame();
                                             clientSiteManagerService.StartGame(new StartGameRequest());  
                                            //UIWindow.Height = 200;

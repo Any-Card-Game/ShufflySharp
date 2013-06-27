@@ -14,6 +14,9 @@ namespace ClientLibs.Managers
         public delegate void UserCreate(UserModel user, UserCreateResponse o);
 
         public delegate void GetGamesByUserReceived(UserModel user, GetGamesByUserResponse o);
+        public delegate void DoesGameNameExistReceived(UserModel user, DoesGameExistResponse o);
+        public delegate void DeveloperCreateGameReceived(UserModel user, DeveloperCreateGameResponse o);
+        public delegate void DeveloperUpdateGameReceived(UserModel user, DeveloperUpdateGameResponse o);
         #endregion
 
         private readonly Gateway myGateway;
@@ -32,6 +35,9 @@ namespace ClientLibs.Managers
         public event GetRoomInfoReceived OnGetRoomInfoReceived;
 
         public event GetGamesByUserReceived OnGetGamesByUserReceived;
+        public event DoesGameNameExistReceived OnDoesGameNameExistReceived;
+        public event DeveloperCreateGameReceived OnDeveloperCreateGameReceived;
+        public event DeveloperUpdateGameReceived OnDeveloperUpdateGameReceived;
 
         private void Setup()
         {
@@ -45,6 +51,9 @@ namespace ClientLibs.Managers
             myGateway.On("Area.Site.JoinRoom.Response", (user, data) => { if (OnRoomJoined != null) OnRoomJoined(user, ((RoomJoinResponse)data)); });
 
             myGateway.On("Area.Site.GetGamesByUser.Response", (user, data) => { if (OnGetGamesByUserReceived != null) OnGetGamesByUserReceived(user, ((GetGamesByUserResponse)data)); });
+            myGateway.On("Area.Site.DoesGameNameExist.Response", (user, data) => { if (OnDoesGameNameExistReceived != null) OnDoesGameNameExistReceived(user, ((DoesGameExistResponse)data)); });
+            myGateway.On("Area.Site.DeveloperCreateGame.Response", (user, data) => { if (OnDeveloperCreateGameReceived != null) OnDeveloperCreateGameReceived(user, ((DeveloperCreateGameResponse)data)); });
+            myGateway.On("Area.Site.DeveloperUpdateGame.Response", (user, data) => { if (OnDeveloperUpdateGameReceived != null) OnDeveloperUpdateGameReceived(user, ((DeveloperUpdateGameResponse)data)); });
         }
 
         
@@ -96,6 +105,21 @@ namespace ClientLibs.Managers
         public void GetGamesByUser(GetGamesByUserRequest getGamesByUser)
         {
             myGateway.Emit("Area.Site.GetGamesByUser", getGamesByUser);
+        }
+
+        public void DoesGameNameExist(DoesGameExistRequest getGamesByUser)
+        {
+            myGateway.Emit("Area.Site.DoesGameNameExist", getGamesByUser);
+        }
+
+        public void DeveloperCreateGame(DeveloperCreateGameRequest getGamesByUser)
+        {
+            myGateway.Emit("Area.Site.DeveloperCreateGame", getGamesByUser);
+        }
+
+        public void DeveloperUpdateGame(DeveloperUpdateGameRequest getGamesByUser)
+        {
+            myGateway.Emit("Area.Site.DeveloperUpdateGame", getGamesByUser);
         }
     }
 }

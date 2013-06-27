@@ -1,4 +1,5 @@
 using System;
+using CommonLibraries;
 using jQueryApi;
 namespace Client.Directives
 {
@@ -15,7 +16,7 @@ namespace Client.Directives
         public ChatBoxDirective()
         {
             restrict = "EA";
-            templateUrl = "http://content.anycardgame.com/partials/chatBox.html";
+            templateUrl = string.Format("{0}partials/chatBox.html", Constants.WebIP);
             replace = true;
             scope = new
             {

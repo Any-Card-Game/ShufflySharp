@@ -1,4 +1,5 @@
 using System;
+using CommonLibraries;
 using jQueryApi;
 namespace Client.Directives
 {
@@ -15,7 +16,7 @@ namespace Client.Directives
         public FancyListDirective()
         {
             restrict = "EA";
-            templateUrl = "http://content.anycardgame.com/partials/fancyList.html";
+            templateUrl = string.Format("{0}partials/fancyList.html", Constants.WebIP);
             replace = true;
             transclude = true;
             scope = new

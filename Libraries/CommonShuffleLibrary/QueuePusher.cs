@@ -13,7 +13,7 @@ namespace CommonShuffleLibrary
         {
             var redis = Global.Require<Redis>("redis");
             Channel = pusher;
-            client1 = redis.CreateClient(6379, IPs.RedisIP);
+            client1 = redis.CreateClient(6379, Constants.RedisIP);
         }
 
         public void Message(string channel, string name, UserLogicModel user, string eventChannel, object content)

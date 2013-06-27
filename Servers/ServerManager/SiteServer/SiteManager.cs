@@ -32,9 +32,13 @@ namespace ServerManager.SiteServer
 
 
             mySiteClientManager.OnGetGamesByUser += OnGetGamesByUser;
+            mySiteClientManager.OnDoesGameNameExist += OnDoesGameNameExist;
+            mySiteClientManager.OnDeveloperCreateGame += OnDeveloperCreateGame;
+            mySiteClientManager.OnDeveloperUpdateGame += OnDeveloperUpdateGame;
 
             mySiteClientManager.OnUserDisconnect += OnUserDisconnect;
         }
+
 
 
         private void OnLeaveRoom(UserLogicModel user, LeaveRoomRequest data)
@@ -186,10 +190,10 @@ namespace ServerManager.SiteServer
                                                    if (!exists) {
                                                        myDataManager.SiteData.User_Insert(new UserModelData() {Username = data.UserName, Password = data.Password},
                                                                                           () => {
-                                                                                              mySiteClientManager.SendLoginResponse(user, true);
+                                                                                              mySiteClientManager.SendCreateResponse(user, true);
                                                                                           });
                                                    } else {
-                                                       mySiteClientManager.SendLoginResponse(user, false);
+                                                       mySiteClientManager.SendCreateResponse(user, false);
                                                        
                                                    }
                                                });
@@ -206,9 +210,35 @@ namespace ServerManager.SiteServer
                                       {
                                           mySiteClientManager.SendGamesByUser(user, new GetGamesByUserResponse(games.Map(a => a.ToModel())));
                                       });
+        }
+        private void OnDoesGameNameExist(UserLogicModel user, DoesGameExistRequest data)
+        {
+            myDataManager.SiteData.Game_GameNameExists(data.GameName,
+                                      (exists) =>
+                                      {
+                                          mySiteClientManager.SendDoesGameNameExist(user, new DoesGameExistResponse(data.GameName, exists));
+                                      });
 
 
         }
- 
+        private void OnDeveloperUpdateGame(UserLogicModel user, DeveloperUpdateGameRequest data)
+        {
+            myDataManager.SiteData.Game_UpdateGame(data.GameModel,
+                             (success) =>
+                             {
+                                 mySiteClientManager.SendUpdateGameResponse(user, new DeveloperUpdateGameResponse(success));
+                             });
+
+        }
+
+        private void OnDeveloperCreateGame(UserLogicModel user, DeveloperCreateGameRequest data)
+        {
+            myDataManager.SiteData.Game_CreateGame(user.Hash,data.GameName,
+                             (game) =>
+                             {
+                                 mySiteClientManager.SendCreateGameResponse(user, new DeveloperCreateGameResponse(game.ToModel()));
+                             });
+
+        }
     }
 }

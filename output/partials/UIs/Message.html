@@ -1,7 +1,16 @@
 <div ng-controller="MessageController">
-    <div floating-window left="'50%'" top="'50%'" height="'150px'" width="'300px'" title="title" visible="true">
-        <span>{{Message}}</span>
-        <button ng-click="okay()">Okay</button>
-
+    <div floating-window left="'50%'" top="'50%'" height="'80px'" width="'200px'" title="model.title"
+        visible="true">
+        <div ng-switch="model.messageType" id="5">
+            <div ng-switch-when="okay">
+                <span>{{model.message}}</span>
+                <button ng-click="model.callback()">Okay</button>
+            </div>
+            <div ng-switch-when="question">
+                <span>{{model.message}}</span>
+                <input type="text" ng-model="model.response" />
+                <button ng-click="model.callback()">Okay</button>
+            </div>
+        </div>
     </div>
 </div>

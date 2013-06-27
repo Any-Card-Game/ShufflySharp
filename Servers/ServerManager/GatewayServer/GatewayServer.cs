@@ -4,6 +4,7 @@ using CommonLibraries;
 using CommonShuffleLibrary;
 using Models;
 using Models.SiteManagerModels;
+using NodeLibraries.Common.Charm;
 using NodeLibraries.Common.Logging;
 using NodeLibraries.NodeJS;
 using NodeLibraries.SocketIONode;
@@ -13,20 +14,22 @@ namespace ServerManager.GatewayServer
     {
         private string myGatewayName;
         private PubSub ps;
-        public JsDictionary<string, UserSocketModel> users = new JsDictionary<string, UserSocketModel>();
+        private JsDictionary<string, UserSocketModel> users = new JsDictionary<string, UserSocketModel>();
         int curc = 0;
 
         public GatewayServer()
         {
             myGatewayName = "Gateway " + Guid.NewGuid();
+/*
 
-           /* var charm = Charmer.Setup();
+            var charm = Charmer.Setup();
 
             var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
 
             Global.SetInterval(() => {
-                                   prog.CurValue++;1
-                               },200);*/
+                                   prog.CurValue++; 
+                               },200);
+*/
 
              
             Logger.Start(myGatewayName);
@@ -42,20 +45,24 @@ namespace ServerManager.GatewayServer
             var port = 1800 + Math.Truncate((int) ( Math.Random() * 4000 ));
             port = 1800;
             string currentSubdomain = "gateway1";
-            string currentIP=ServerHelper.GetNetworkIPs( )[0];
+            string currentIP=ServerHelper.GetNetworkIPs( )[0]+":"+port;
             Console.Log(currentIP);
             app.Listen(port);
             io.Set("log level", 0);
 
             ps = new PubSub(() => {
+                var content = string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com");
+                content = string.Format("http://{0}", currentIP);
+
+
                                 ps.Subscribe<string>("PUBSUB.GatewayServers.Ping",
                                                      message => {
-                                                         ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com"));
+                                                         ps.Publish("PUBSUB.GatewayServers", content);
                                                          
                                //                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
                                                      });
 //                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
-                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com"));
+                                ps.Publish("PUBSUB.GatewayServers", content);
                             });
 
             queueManager = new QueueManager(myGatewayName,

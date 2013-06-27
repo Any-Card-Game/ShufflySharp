@@ -211,6 +211,9 @@
 		this.$1$OnRoomJoinedField = null;
 		this.$1$OnGetRoomInfoReceivedField = null;
 		this.$1$OnGetGamesByUserReceivedField = null;
+		this.$1$OnDoesGameNameExistReceivedField = null;
+		this.$1$OnDeveloperCreateGameReceivedField = null;
+		this.$1$OnDeveloperUpdateGameReceivedField = null;
 		this.$myGateway = gateway;
 		this.$setup();
 	};
@@ -257,6 +260,24 @@
 		remove_onGetGamesByUserReceived: function(value) {
 			this.$1$OnGetGamesByUserReceivedField = ss.delegateRemove(this.$1$OnGetGamesByUserReceivedField, value);
 		},
+		add_onDoesGameNameExistReceived: function(value) {
+			this.$1$OnDoesGameNameExistReceivedField = ss.delegateCombine(this.$1$OnDoesGameNameExistReceivedField, value);
+		},
+		remove_onDoesGameNameExistReceived: function(value) {
+			this.$1$OnDoesGameNameExistReceivedField = ss.delegateRemove(this.$1$OnDoesGameNameExistReceivedField, value);
+		},
+		add_onDeveloperCreateGameReceived: function(value) {
+			this.$1$OnDeveloperCreateGameReceivedField = ss.delegateCombine(this.$1$OnDeveloperCreateGameReceivedField, value);
+		},
+		remove_onDeveloperCreateGameReceived: function(value) {
+			this.$1$OnDeveloperCreateGameReceivedField = ss.delegateRemove(this.$1$OnDeveloperCreateGameReceivedField, value);
+		},
+		add_onDeveloperUpdateGameReceived: function(value) {
+			this.$1$OnDeveloperUpdateGameReceivedField = ss.delegateCombine(this.$1$OnDeveloperUpdateGameReceivedField, value);
+		},
+		remove_onDeveloperUpdateGameReceived: function(value) {
+			this.$1$OnDeveloperUpdateGameReceivedField = ss.delegateRemove(this.$1$OnDeveloperUpdateGameReceivedField, value);
+		},
 		$setup: function() {
 			this.$myGateway.on('Area.Site.Login.Response', ss.mkdel(this, function(user, data) {
 				if (!ss.staticEquals(this.$1$OnLoginField, null)) {
@@ -293,6 +314,21 @@
 					this.$1$OnGetGamesByUserReceivedField(user6, data6);
 				}
 			}));
+			this.$myGateway.on('Area.Site.DoesGameNameExist.Response', ss.mkdel(this, function(user7, data7) {
+				if (!ss.staticEquals(this.$1$OnDoesGameNameExistReceivedField, null)) {
+					this.$1$OnDoesGameNameExistReceivedField(user7, data7);
+				}
+			}));
+			this.$myGateway.on('Area.Site.DeveloperCreateGame.Response', ss.mkdel(this, function(user8, data8) {
+				if (!ss.staticEquals(this.$1$OnDeveloperCreateGameReceivedField, null)) {
+					this.$1$OnDeveloperCreateGameReceivedField(user8, data8);
+				}
+			}));
+			this.$myGateway.on('Area.Site.DeveloperUpdateGame.Response', ss.mkdel(this, function(user9, data9) {
+				if (!ss.staticEquals(this.$1$OnDeveloperUpdateGameReceivedField, null)) {
+					this.$1$OnDeveloperUpdateGameReceivedField(user9, data9);
+				}
+			}));
 		},
 		login: function(userName, password) {
 			this.$myGateway.login(userName, password);
@@ -323,6 +359,15 @@
 		},
 		getGamesByUser: function(getGamesByUser) {
 			this.$myGateway.emit('Area.Site.GetGamesByUser', getGamesByUser);
+		},
+		doesGameNameExist: function(getGamesByUser) {
+			this.$myGateway.emit('Area.Site.DoesGameNameExist', getGamesByUser);
+		},
+		developerCreateGame: function(getGamesByUser) {
+			this.$myGateway.emit('Area.Site.DeveloperCreateGame', getGamesByUser);
+		},
+		developerUpdateGame: function(getGamesByUser) {
+			this.$myGateway.emit('Area.Site.DeveloperUpdateGame', getGamesByUser);
 		}
 	};
 	ss.registerClass(global, 'ClientLibs.Gateway', $ClientLibs_Gateway);

@@ -84,13 +84,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		NodeLibraries.Common.Logging.Logger.log('Shuffly Admin V0.49', 1);
 		NodeLibraries.Common.Logging.Logger.log('Shuffly Admin V0.49', 2);
 		var redis = require('redis');
-		var client = redis.createClient(6379, CommonLibraries.IPs.redisIP);
+		var client = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		// client.On<string,object>("monitor",(time, args) => {
 		// Logger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation);
 		// });
 		this.$util = require('util');
 		this.$exec = require('child_process').exec;
-		this.$__dirname = CommonLibraries.IPs.HARDLOCATION;
+		this.$__dirname = CommonLibraries.Constants.HARDLOCATION;
 		this.$nonDebuggable = ['node-inspector', 'pkill'];
 		require('http').createServer(ss.mkdel(this, this.$handler)).listen(8090);
 		this.$debug = true;
@@ -461,7 +461,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var queueManager = new CommonShuffleLibrary.QueueManager('Debug1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('DebugServer', null)], ['GatewayServer', 'Gateway*']));
 		queueManager.addChannel('Area.Debug2.GetGameSource.Request', function(sender, data) {
 			var sourceRequest = data;
-			fs.readFile('/usr/local/src/new/Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
+			fs.readFile('C:\\code\\node\\Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
 				queueManager.sendMessage(sender.gateway, 'Area.Debug.GetGameSource.Response', sender, { content: data2 });
 			});
 		});
@@ -915,16 +915,30 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	var $ServerManager_GatewayServer_GatewayServer = function() {
 		this.$myGatewayName = null;
 		this.$ps = null;
-		this.users = {};
+		this.$users = {};
 		this.$curc = 0;
 		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
-		// var charm = Charmer.Setup();
-		// 
-		// var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
-		// 
-		// Global.SetInterval(() => {
-		// prog.CurValue++;1
-		// },200);
+		//
+		//
+		//            var charm = Charmer.Setup();
+		//
+		//
+		//            
+		//
+		//
+		//            var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
+		//
+		//
+		//            
+		//
+		//
+		//            Global.SetInterval(() => {
+		//
+		//
+		//            prog.CurValue++;
+		//
+		//
+		//            },200);
 		NodeLibraries.Common.Logging.Logger.start(this.$myGatewayName);
 		//ExtensionMethods.debugger("");
 		var http = require('http');
@@ -937,17 +951,19 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var port = 1800 + (ss.Int32.trunc(Math.random() * 4000) | 0);
 		port = 1800;
 		var currentSubdomain = 'gateway1';
-		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
+		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0] + ':' + port;
 		console.log(currentIP);
 		app.listen(port);
 		io.set('log level', 0);
 		this.$ps = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
+			var content = ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com');
+			content = ss.formatString('http://{0}', currentIP);
 			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
-				this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com'));
+				this.$ps.publish('PUBSUB.GatewayServers', content);
 				//                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
 			}));
 			//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
-			this.$ps.publish('PUBSUB.GatewayServers', ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com'));
+			this.$ps.publish('PUBSUB.GatewayServers', content);
 		}));
 		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
 		io.sockets.on('connection', ss.mkdel(this, function(socket) {
@@ -993,7 +1009,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				user.hash = data1.userName;
 				user.gateway = this.$myGatewayName;
 				console.log('Socket login ' + j + '  ' + data1.userName);
-				this.users[data1.userName] = user;
+				this.$users[data1.userName] = user;
 				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
 			}));
 			socket.on('disconnect', ss.mkdel(this, function(data2) {
@@ -1008,7 +1024,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				if (ss.isValue(user.currentGameServer)) {
 					queueManager.sendMessage(user.currentGameServer, 'Area.Game.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
 				}
-				delete this.users[user.userName];
+				delete this.$users[user.userName];
 				socket.removeAllListeners();
 				//socket.Delete();
 				delete io.sockets.sockets[socket.id];
@@ -1018,8 +1034,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	};
 	$ServerManager_GatewayServer_GatewayServer.prototype = {
 		$messageReceived: function(gateway, user, eventChannel, content) {
-			if (ss.keyExists(this.users, user.userName)) {
-				var u = this.users[user.userName];
+			if (ss.keyExists(this.$users, user.userName)) {
+				var u = this.$users[user.userName];
 				this.$sendMessage(u, eventChannel, content);
 			}
 		},
@@ -1055,7 +1071,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.HeadServer.HeadServer
 	var $ServerManager_HeadServer_HeadServer = function() {
-		this.$__dirname = CommonLibraries.IPs.HARDLOCATION;
+		this.$__dirname = CommonLibraries.Constants.HARDLOCATION;
 		this.$fs = require('fs');
 		this.$gateways = [];
 		this.$indexForSites = [];
@@ -1245,6 +1261,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$1$OnJoinRoomField = null;
 		this.$1$OnStartGameField = null;
 		this.$1$OnGetGamesByUserField = null;
+		this.$1$OnDoesGameNameExistField = null;
+		this.$1$OnDeveloperCreateGameField = null;
+		this.$1$OnDeveloperUpdateGameField = null;
 		this.set_siteServerIndex(siteServerIndex);
 		this.$setup();
 	};
@@ -1321,6 +1340,24 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		remove_onGetGamesByUser: function(value) {
 			this.$1$OnGetGamesByUserField = ss.delegateRemove(this.$1$OnGetGamesByUserField, value);
 		},
+		add_onDoesGameNameExist: function(value) {
+			this.$1$OnDoesGameNameExistField = ss.delegateCombine(this.$1$OnDoesGameNameExistField, value);
+		},
+		remove_onDoesGameNameExist: function(value) {
+			this.$1$OnDoesGameNameExistField = ss.delegateRemove(this.$1$OnDoesGameNameExistField, value);
+		},
+		add_onDeveloperCreateGame: function(value) {
+			this.$1$OnDeveloperCreateGameField = ss.delegateCombine(this.$1$OnDeveloperCreateGameField, value);
+		},
+		remove_onDeveloperCreateGame: function(value) {
+			this.$1$OnDeveloperCreateGameField = ss.delegateRemove(this.$1$OnDeveloperCreateGameField, value);
+		},
+		add_onDeveloperUpdateGame: function(value) {
+			this.$1$OnDeveloperUpdateGameField = ss.delegateCombine(this.$1$OnDeveloperUpdateGameField, value);
+		},
+		remove_onDeveloperUpdateGame: function(value) {
+			this.$1$OnDeveloperUpdateGameField = ss.delegateRemove(this.$1$OnDeveloperUpdateGameField, value);
+		},
 		$setup: function() {
 			this.$qManager = new CommonShuffleLibrary.QueueManager(this.get_siteServerIndex(), new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('SiteServer', null), new CommonShuffleLibrary.QueueWatcher(this.get_siteServerIndex(), null)], ['ChatServer', 'GameServer', 'SiteServer', 'GatewayServer', 'Gateway*']));
 			this.$qManager.addChannel('Area.Site.Login', ss.mkdel(this, function(user, data) {
@@ -1355,6 +1392,15 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 			this.$qManager.addChannel('Area.Site.GetGamesByUser', ss.mkdel(this, function(user10, data10) {
 				this.$1$OnGetGamesByUserField(user10, data10);
+			}));
+			this.$qManager.addChannel('Area.Site.DoesGameNameExist', ss.mkdel(this, function(user11, data11) {
+				this.$1$OnDoesGameNameExistField(user11, data11);
+			}));
+			this.$qManager.addChannel('Area.Site.DeveloperCreateGame', ss.mkdel(this, function(user12, data12) {
+				this.$1$OnDeveloperCreateGameField(user12, data12);
+			}));
+			this.$qManager.addChannel('Area.Site.DeveloperUpdateGame', ss.mkdel(this, function(user13, data13) {
+				this.$1$OnDeveloperUpdateGameField(user13, data13);
 			}));
 		},
 		sendLoginResponse: function(user, success) {
@@ -1392,6 +1438,15 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		sendGamesByUser: function(user, getGamesByUserResponse) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Site.GetGamesByUser.Response', user, getGamesByUserResponse);
+		},
+		sendDoesGameNameExist: function(user, doesGameExistResponse) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.DoesGameNameExist.Response', user, doesGameExistResponse);
+		},
+		sendUpdateGameResponse: function(user, developerUpdateGameResponse) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.DeveloperUpdateGame.Response', user, developerUpdateGameResponse);
+		},
+		sendCreateGameResponse: function(user, developerCreateGameResponse) {
+			this.$qManager.sendMessage(user.gateway, 'Area.Site.DeveloperCreateGame.Response', user, developerCreateGameResponse);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1411,6 +1466,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$mySiteClientManager.add_onLeaveRoom(ss.mkdel(this, this.$onLeaveRoom));
 		this.$mySiteClientManager.add_onStartGame(ss.mkdel(this, this.$onStartGame));
 		this.$mySiteClientManager.add_onGetGamesByUser(ss.mkdel(this, this.$onGetGamesByUser));
+		this.$mySiteClientManager.add_onDoesGameNameExist(ss.mkdel(this, this.$onDoesGameNameExist));
+		this.$mySiteClientManager.add_onDeveloperCreateGame(ss.mkdel(this, this.$onDeveloperCreateGame));
+		this.$mySiteClientManager.add_onDeveloperUpdateGame(ss.mkdel(this, this.$onDeveloperUpdateGame));
 		this.$mySiteClientManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
 	};
 	$ServerManager_SiteServer_SiteManager.prototype = {
@@ -1528,11 +1586,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					$t1.username = data.userName;
 					$t1.password = data.password;
 					$t2.user_Insert($t1, ss.mkdel(this, function() {
-						this.$mySiteClientManager.sendLoginResponse(user, true);
+						this.$mySiteClientManager.sendCreateResponse(user, true);
 					}));
 				}
 				else {
-					this.$mySiteClientManager.sendLoginResponse(user, false);
+					this.$mySiteClientManager.sendCreateResponse(user, false);
 				}
 			}));
 		},
@@ -1541,6 +1599,21 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				this.$mySiteClientManager.sendGamesByUser(user, { games: games.map(function(a) {
 					return DataModels.SiteManagerModels.Game.GameDataModel.toModel(a);
 				}) });
+			}));
+		},
+		$onDoesGameNameExist: function(user, data) {
+			this.$myDataManager.siteData.game_GameNameExists(data.gameName, ss.mkdel(this, function(exists) {
+				this.$mySiteClientManager.sendDoesGameNameExist(user, { gameName: data.gameName, exists: exists });
+			}));
+		},
+		$onDeveloperUpdateGame: function(user, data) {
+			this.$myDataManager.siteData.game_UpdateGame(data.gameModel, ss.mkdel(this, function(success) {
+				this.$mySiteClientManager.sendUpdateGameResponse(user, { success: success });
+			}));
+		},
+		$onDeveloperCreateGame: function(user, data) {
+			this.$myDataManager.siteData.game_CreateGame(user.hash, data.gameName, ss.mkdel(this, function(game) {
+				this.$mySiteClientManager.sendCreateGameResponse(user, { gameModel: DataModels.SiteManagerModels.Game.GameDataModel.toModel(game) });
 			}));
 		}
 	};

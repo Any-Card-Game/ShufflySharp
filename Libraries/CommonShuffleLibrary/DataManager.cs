@@ -6,7 +6,7 @@ namespace CommonShuffleLibrary
 {
     public partial class DataManager
     {
-        private const string ConnectionAddress = IPs.MongoIP;
+        private const string ConnectionAddress = Constants.MongoIP;
         private const string ConnectionPort = "27017";
         private MongoConnection Connection;
         private MongoServer Server;

@@ -293,6 +293,30 @@
 	var $Models_SiteManagerModels_CreateRoomRequest = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.DeveloperCreateGameRequest
+	var $Models_SiteManagerModels_DeveloperCreateGameRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.DeveloperCreateGameResponse
+	var $Models_SiteManagerModels_DeveloperCreateGameResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.DeveloperUpdateGameRequest
+	var $Models_SiteManagerModels_DeveloperUpdateGameRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.DeveloperUpdateGameResponse
+	var $Models_SiteManagerModels_DeveloperUpdateGameResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.DoesGameExistRequest
+	var $Models_SiteManagerModels_DoesGameExistRequest = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.DoesGameExistResponse
+	var $Models_SiteManagerModels_DoesGameExistResponse = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.GameTypeModel
 	var $Models_SiteManagerModels_GameTypeModel = function() {
 	};
@@ -387,6 +411,8 @@
 		var $this = {};
 		$this.code = null;
 		$this.cursorPosition = null;
+		$this.code = '';
+		$this.cursorPosition = new CommonLibraries.IntPoint(0, 0);
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -444,6 +470,11 @@
 		$this.spaces = null;
 		$this.texts = null;
 		$this.ares = null;
+		$this.width = 25;
+		$this.height = 15;
+		$this.spaces = [];
+		$this.texts = [];
+		$this.ares = [];
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -480,6 +511,12 @@
 		$this.gameLayoutScenarios = null;
 		$this.effects = null;
 		$this._id = null;
+		$this.gameCode = $Models_SiteManagerModels_Game_GameCodeModel.$ctor();
+		$this.cardImages = [];
+		$this.assets = [];
+		$this.gameLayout = $Models_SiteManagerModels_Game_GameLayoutModel.$ctor();
+		$this.gameLayoutScenarios = [];
+		$this.effects = [];
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -547,6 +584,12 @@
 	ss.registerClass(global, 'Models.GameManagerModels.JoinGameRequestModel', $Models_GameManagerModels_JoinGameRequestModel);
 	ss.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.CreateRoomRequest', $Models_SiteManagerModels_CreateRoomRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.DeveloperCreateGameRequest', $Models_SiteManagerModels_DeveloperCreateGameRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.DeveloperCreateGameResponse', $Models_SiteManagerModels_DeveloperCreateGameResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.DeveloperUpdateGameRequest', $Models_SiteManagerModels_DeveloperUpdateGameRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.DeveloperUpdateGameResponse', $Models_SiteManagerModels_DeveloperUpdateGameResponse);
+	ss.registerClass(global, 'Models.SiteManagerModels.DoesGameExistRequest', $Models_SiteManagerModels_DoesGameExistRequest);
+	ss.registerClass(global, 'Models.SiteManagerModels.DoesGameExistResponse', $Models_SiteManagerModels_DoesGameExistResponse);
 	ss.registerClass(global, 'Models.SiteManagerModels.GameTypeModel', $Models_SiteManagerModels_GameTypeModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.GetGamesByUserRequest', $Models_SiteManagerModels_GetGamesByUserRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.GetGamesByUserResponse', $Models_SiteManagerModels_GetGamesByUserResponse);

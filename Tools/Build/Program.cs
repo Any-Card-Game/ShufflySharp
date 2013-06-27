@@ -1,7 +1,8 @@
-﻿#define FTP
+﻿//#define FTP
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Renci.SshNet;
@@ -9,6 +10,9 @@ namespace Build
 {
     internal class Program
     {
+        private static string ReplaceWebIP = "http://content.anycardgame.com/";
+        private static string WebIP = "http://localhost:8881/";
+
         private static void Main(string[] args)
         {
             string shufSharp = "ShufflySharp";
@@ -36,15 +40,21 @@ namespace Build
                 var from = pre + proj + @"\bin\release\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #endif
                 to = pre + shufSharp + @"\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
-
-                if (File.Exists(to)) tryDelete(to);
+                 
                 tryCopy(from, to);
             }
 
 
-            tryCopyDir(pre + shufSharp + @"\Client\partials\", pre + shufSharp + @"\output\partials\");
-            tryCopyDir(pre + shufSharp + @"\Client\partials\UIs\", pre + shufSharp + @"\output\partials\UIs\");
+            tryCopyHtml(pre + shufSharp + @"\Client\index.html", pre + shufSharp + @"\output\index.html");
+            tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\", pre + shufSharp + @"\output\partials\");
+            tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\UIs\", pre + shufSharp + @"\output\partials\UIs\");
 
+
+            tryCopyHtml(pre + shufSharp + @"\Client\index.html", @"C:\code\node\index.html");/*
+            tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\", @"C:\code\node\partials\");
+            tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\UIs\", @"C:\code\node\partials\UIs\");
+*/
+             
 
             //client happens in buildsite.cs
             var depends = new Dictionary<string, Application>();
@@ -61,7 +71,6 @@ namespace Build
             depends.Add(shufSharp + @"\Client\", new Application(false));
 
 #if FTP
-            string loc = ConfigurationSettings.AppSettings["web-ftpdir"];
             Console.WriteLine("connecting ftp");
             /*   Ftp webftp = new Ftp();
             webftp.Connect(ConfigurationSettings.AppSettings["web-ftpurl"]);
@@ -159,12 +168,10 @@ namespace Build
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
-#endif
-                if (File.Exists(@"C:\code\node\" + name) && /*new FileInfo(@"C:\code\node\" + name).Length != new FileInfo(to).Length*/ true) {
-                    tryDelete(@"C:\code\node\" + name);
-                    tryCopy(to, @"C:\code\node\" + name);
-                }
+#endif 
+                tryCopy(to, @"C:\code\node\" + name);
             }
+#if FTP
 
             var send = pre + shufSharp + @"\output\index.html";
 
@@ -188,6 +195,7 @@ namespace Build
                 fileStream.Close();
                 Console.WriteLine("web ftp html complete " + file.FullName);
 
+
             }
 
             foreach (var file in new DirectoryInfo(pre + shufSharp + @"\output\partials\UIs").GetFiles())
@@ -198,9 +206,10 @@ namespace Build
                 Console.WriteLine("web ftp html complete " + file.FullName);
 
             }
+#endif
 
 
-            
+
 
 
 
@@ -227,24 +236,17 @@ namespace Build
                 Console.WriteLine("server ftp complete " + to);
 #endif
             }
+     
+        Debug.WriteLine("Finished");
         }
-
-        private static void tryDelete(string to)
-        {
-            top:
-            try {
-                File.Delete(to);
-            } catch (Exception) {
-                goto top;
-            }
-        }
+ 
 
         private static void tryCopy(string from, string to)
         {
         top:
             try
             {
-                File.Copy(from, to);
+                File.Copy(from, to,true);
             }
             catch (Exception)
             {
@@ -252,16 +254,16 @@ namespace Build
                 goto top;
             }
         }
-        private static void tryCopyDir(string from, string to)
+        private static void tryCopyHtmlDir(string from, string to)
         {
         top:
             try
             {
-                
+
                 foreach (var file in new DirectoryInfo(from).GetFiles())
                 {
-                    File.Copy(from + file.Name, to + file.Name,true);
-                    
+                    File.Copy(from + file.Name, to + file.Name, true);
+                    File.WriteAllText(to + file.Name, File.ReadAllText(to + file.Name).Replace(ReplaceWebIP, WebIP));
                 }
             }
             catch (Exception)
@@ -270,21 +272,35 @@ namespace Build
                 goto top;
             }
         }
-
-        #region Nested type: Application
-
-        public class Application
+        private static void tryCopyHtml(string from, string to)
         {
-            public bool Node { get; set; }
-            public string[] IncludesAfter { get; set; }
-
-            public Application(bool node, params string[] includesAfter)
+        top:
+            try
             {
-                Node = node;
-                IncludesAfter = includesAfter;
+
+                
+                    File.Copy(from, to , true);
+                    File.WriteAllText(to , File.ReadAllText(to ).Replace(ReplaceWebIP, WebIP));
+                
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Copy Failed   " + from);
+                goto top;
             }
         }
 
-        #endregion
+     }
+    public class Application
+    {
+        public bool Node { get; set; }
+        public string[] IncludesAfter { get; set; }
+
+        public Application(bool node, params string[] includesAfter)
+        {
+            Node = node;
+            IncludesAfter = includesAfter;
+        }
     }
+
 }

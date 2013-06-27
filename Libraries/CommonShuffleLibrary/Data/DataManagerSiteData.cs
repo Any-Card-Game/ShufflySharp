@@ -35,7 +35,7 @@ namespace CommonShuffleLibrary.Data
                                       {
                                           var j = new { username, password };
 
-                                          MongoHelper.Find<UserModelData>(collection, j, (a, b) => results(b));
+                                          MongoHelper.Where<UserModelData>(collection, j, (a, b) => results(b));
                                       });
         }
         public void User_CheckUsernameExists(string username, Action<bool> results)
@@ -45,7 +45,7 @@ namespace CommonShuffleLibrary.Data
                                       {
                                           var j = new { username };
 
-                                          MongoHelper.Find<UserModelData>(collection, j, (a, b) => results(b.Count>0));
+                                          MongoHelper.Where<UserModelData>(collection, j, (a, b) => results(b.Count>0));
                                       });
         }
 
@@ -56,7 +56,7 @@ namespace CommonShuffleLibrary.Data
                                       {
                                           JsDictionary<string, object> j = new JsDictionary<string, object>();
                                           j["players.userName"] = user.UserName;
-                                          MongoHelper.Find<RoomDataModel>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
+                                          MongoHelper.Where<RoomDataModel>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
                                       });
         }
 
@@ -66,7 +66,7 @@ namespace CommonShuffleLibrary.Data
                                       (err, collection) =>
                                       {
                                           var j = new { gameType };
-                                          MongoHelper.Find<RoomDataModel>(collection, j, (a, b) => results(b));
+                                          MongoHelper.Where<RoomDataModel>(collection, j, (a, b) => results(b));
                                       });
         }
 
@@ -90,7 +90,7 @@ namespace CommonShuffleLibrary.Data
                                       (err, collection) =>
                                       {
                                           var j = new { gameType, roomName };
-                                          MongoHelper.Find<RoomDataModel>(collection,
+                                          MongoHelper.Where<RoomDataModel>(collection,
                                                                      j,
                                                                      (a, b) =>
                                                                      {
@@ -115,7 +115,7 @@ namespace CommonShuffleLibrary.Data
                                       (err, collection) =>
                                       {
                                           var j = new { gameType, roomName };
-                                          MongoHelper.Find<RoomDataModel>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
+                                          MongoHelper.Where<RoomDataModel>(collection, j, (a, b) => results(b.Count > 0 ? b[0] : null));
                                       });
         }
 
@@ -207,20 +207,19 @@ namespace CommonShuffleLibrary.Data
                                       {
 
                                           var j = new { userHash };
-                                          MongoHelper.Find<GameDataModel>(collection, j, (a, b) => action(b));
+                                          collection.Where<GameDataModel>(j, (a, b) => action(b));
                                       });
         }
-        public void Game_CreateGame(string userHash, string gameName, Action result)
+        public void Game_CreateGame(string userHash, string gameName, Action<GameDataModel> result)
         {
             manager.client.Collection("Games",
                                       (err, collection) =>
                                       {
-                                          collection.Insert(new GameDataModel()
-                                          {
-                                              UserHash = userHash,
-                                              Name = gameName
-                                          });
-                                          result();
+                                          GameDataModel gameDataModel = new GameDataModel() {
+                                                                                                    UserHash = userHash, Name = gameName
+                                                                                            };
+                                          collection.Insert(gameDataModel);
+                                          result(gameDataModel);
                                       });
         }
 
@@ -229,18 +228,18 @@ namespace CommonShuffleLibrary.Data
             manager.client.Collection("Games",
                                       (err, collection) => {
                                           var j = new {name = gameName};
-                                          MongoHelper.Find<GameDataModel>(collection, j, (a, b) => result(b.Count > 0));
+                                          collection.Any<GameDataModel>(j, (a, b) => result(b));
                                       });
         }
 
-        public void Game_UpdateGame(GameModel model, Action result)
+        public void Game_UpdateGame(GameModel model, Action<bool> result)
         {
             manager.client.Collection("Games",
                                       (err, collection) =>
                                       {
                                           collection.Save(new GameDataModel()
                                           {
-                                              ID = model.ID,
+                                              ID = Script.Reinterpret<string>(MongoDocument.ObjectID(model.ID)),
                                               Name = model.Name,
                                               UserHash = model.UserHash,
                                               Description = model.Description,
@@ -252,7 +251,7 @@ namespace CommonShuffleLibrary.Data
                                               GameLayoutScenarios = model.GameLayoutScenarios,
                                               Effects = model.Effects,
                                           });
-                                          result();
+                                          result(true);
 
                                       });
         }

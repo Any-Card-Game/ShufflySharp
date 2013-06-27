@@ -2,6 +2,7 @@ using System.Html;
 using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
+using Models;
 using WebLibraries.ShuffUI.ShuffUI;
 namespace Client.Controllers
 {
@@ -27,19 +28,26 @@ namespace Client.Controllers
             };
             myScope.Model.LoginAccount = LoginAccountFn;
             myScope.Model.CreateAccount = CreateAccountFn;
-            myclientSiteManagerService.OnLogin += (user, data) =>
-            {
-                if (data.Successful) {
-                    uiManager.ClientInfo.LoggedInUser = user;
-                    myUIManager.UserLoggedIn();
-                    scope.SwingAway(SwingDirection.Left, false, null);
-                } else {
-                    myMessageService.PopupOkay("Bad!","You no login!",() => {
-                                                                          
-                                                                      });
-                }
-            };
+            myclientSiteManagerService.OnLogin += OnLoginFn;
             myclientSiteManagerService.OnUserCreate += OnUserCreateFn;
+
+        }
+
+        private void OnLoginFn(UserModel user, UserLoginResponse data)
+        {
+            if (data.Successful)
+            {
+                myUIManager.ClientInfo.LoggedInUser = user;
+                myUIManager.UserLoggedIn();
+                myScope.SwingAway(SwingDirection.Left, false, null);
+            }
+            else
+            {
+                myMessageService.PopupOkay("Bad!", "You no login!", () =>
+                {
+
+                });
+            }
 
         }
 

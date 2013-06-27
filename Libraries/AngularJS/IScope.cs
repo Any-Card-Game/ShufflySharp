@@ -75,6 +75,9 @@ namespace ng
         [ScriptName("$new")]
         T New<T>();
 
+        [AlternateSignature]
+        IScope New();
+
         [ScriptName("$destroy")]
         void Destroy();
         

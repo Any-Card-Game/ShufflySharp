@@ -1,0 +1,17 @@
+<div ng-controller="GameEditorController">
+    <div floating-window left="'50%'" top="'25%'" height="'500px'" width="'400px'" title="'Game Editor!'"
+        visible="visible">
+        EDit your game heres
+        <input type="text" ng-model="model.game.name" placeholder="Name" />
+        <input type="text" ng-model="model.game.description" placeholder="Description" />
+        <input type="text" ng-model="model.game.maxNumberOfPlayers" placeholder="Max Number Of Players" />
+        <div style="width: 20%; height: 400px;" fancy-list items="model.game.maxNumberOfPlayers" bind="model.selectedUser">
+        </div>
+        <button ng-click="model.openCode()">Code</button>
+        <button ng-click="model.openLayout()">Layout</button>
+        <button ng-click="model.openEffects()">Effects</button>
+        <button ng-click="model.openTest()">Test</button>
+        <button ng-click="model.updateGame() ">save</button>
+        {{model.updateStatus}}
+    </div>
+</div>

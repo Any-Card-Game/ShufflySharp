@@ -6,10 +6,21 @@ namespace Client.Scope.Controller
     public class MessageScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
+        public MessageModel Model { get; set; } 
+
+    }
+    [Serializable]
+    public class MessageModel 
+    {
         public string Title { get; set; }
-        [IntrinsicProperty]
         public string Message { get; set; }
-        [IntrinsicProperty]
-        public Action Okay { get; set; }
+        public Action Callback { get; set; }
+        public MessageType MessageType { get; set; }
+        public string Response { get; set; }
+    }
+    [NamedValues]
+    public enum MessageType
+    {
+        Okay,Question
     }
 }

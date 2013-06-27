@@ -2,6 +2,7 @@
 using System;
 using System.Html;
 using Client.Scope;
+using CommonLibraries;
 using jQueryApi;
 using ng;
 namespace Client.Services
@@ -17,15 +18,46 @@ namespace Client.Services
             myRootScopeService = rootScopeService;
         }
 
-        public void Create(string ui)
+        public T Create<T>(string ui) where T : BaseScope
         {
- 
-            BaseScope scope = myRootScopeService.New<BaseScope>();
-           var item = myCompileService(jQuery.FromHtml("<div ng-include src=\"'http://content.anycardgame.com/partials/UIs/" + ui + ".html'\"></div>"))(scope);
+
+            T scope = myRootScopeService.New<T>();
+            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 
+            return scope;
+        }
+        public T Create<T>(string ui,Action<T,jQueryObject> populateScope) where T : BaseScope
+        {
 
+            T scope = myRootScopeService.New<T>();
+            var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP));
+            populateScope(scope,html);
+            var item = myCompileService(html)(scope);
+            item.AppendTo(Window.Document.Body);
+            scope.Apply();
+
+            return scope;
+        }
+        public IScope Create(string ui)
+        {
+
+            var scope = myRootScopeService.New();
+            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP)))(scope);
+            item.AppendTo(Window.Document.Body);
+            scope.Apply();
+
+            return scope;
+        }
+        public IScope Create(string ui,BaseScope scope)
+        {
+
+            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP)))(scope);
+            item.AppendTo(Window.Document.Body);
+            scope.Apply();
+
+            return scope;
         }
     }
 }

@@ -5,6 +5,7 @@ using Client.Scope;
 using Client.Scope.Directive;
 using Models;
 using Models.SiteManagerModels;
+using Models.SiteManagerModels.Game;
 namespace Client.Services
 {
     public class UIManagerService
@@ -27,6 +28,7 @@ namespace Client.Services
         [IntrinsicProperty]
         public ClientInformation ClientInfo { get; set; }
         public Action<FloatingWindowScope> OnMinimize { get; set; }
+        public Action<GameModel> OpenGameEditor { get; set; }
 
         public UIManagerService(ClientGameManagerService clientGameManagerService)
         { 

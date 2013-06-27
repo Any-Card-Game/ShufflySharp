@@ -4,8 +4,10 @@ using System.Runtime.CompilerServices;
 using Client.Scope;
 using Client.Scope.Directive;
 using Client.Services;
+using CommonLibraries;
 using WebLibraries.ShuffUI.ShuffUI;
 using jQueryApi;
+using Size = Client.Scope.Directive.Size;
 namespace Client.Directives
 {
 
@@ -23,7 +25,7 @@ namespace Client.Directives
         {
             myUIManagerService = uiManagerService;
             restrict = "EA";
-            templateUrl = "http://content.anycardgame.com/partials/floatingWindow.html";
+            templateUrl = string.Format("{0}partials/floatingWindow.html", Constants.WebIP);
             replace = true;
             transclude = true;
             scope = new
@@ -103,8 +105,9 @@ namespace Client.Directives
                              };
             scope.Restore = () =>
             {
-                scope.PositionStyles.Display = "block";
                                 scope.Parent.SwingBack(null);
+                                scope.PositionStyles.Display = "block";
+
                             };
 
         }

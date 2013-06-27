@@ -141,6 +141,10 @@ namespace Client.Scope
         {
             return default(T);
         }
+        public IScope New()
+        {
+            return default(IScope);
+        }
 
 #if TODO
         // Documentation says exp is optional, but actual implementaton counts on it

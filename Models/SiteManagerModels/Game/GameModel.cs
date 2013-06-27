@@ -8,6 +8,16 @@ namespace Models.SiteManagerModels.Game
     public class GameModel
     {
         public string Name { get; set; }
+        public GameModel()
+        {
+            GameCode=new GameCodeModel();
+            CardImages = new List<object>();
+            Assets = new List<object>();
+            GameLayout=new GameLayoutModel();
+            GameLayoutScenarios = new List<GameLayoutScenario>();
+            Effects = new List<GameEffectModel>();
+
+        }
         public string UserHash { get; set; }
         public string Description { get; set; }
         public int MaxNumberOfPlayers { get; set; }
@@ -35,6 +45,15 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameLayoutModel
     {
+        public GameLayoutModel()
+        {
+            Width = 25;
+            Height = 15;
+            Spaces = new List<GameSpaceModel>();
+            Texts = new List<GameTextModel>();
+            Ares = new List<GameAreaModel>();
+
+        }
         public int Width { get; set; }
         public int Height { get; set; }
         public List<GameSpaceModel> Spaces { get; set; }
@@ -75,6 +94,11 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameCodeModel
     {
+        public GameCodeModel()
+        {
+            Code = "";
+            CursorPosition = new IntPoint(0, 0);
+        }
         public string Code { get; set; }
         public IntPoint CursorPosition { get; set; }
     }

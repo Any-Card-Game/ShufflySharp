@@ -53,8 +53,8 @@ require('./NodeLibraries.js');
 		var someSubbed = this.$subbed;
 		var redis = require('redis');
 		redis.debug_mode = false;
-		this.$subClient = redis.createClient(6379, CommonLibraries.IPs.redisIP);
-		this.$pubClient = redis.createClient(6379, CommonLibraries.IPs.redisIP);
+		this.$subClient = redis.createClient(6379, CommonLibraries.Constants.redisIP);
+		this.$pubClient = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		this.$subClient.on('subscribe', function(channel, count) {
 			NodeLibraries.Common.Logging.Logger.log('subscribed: ' + channel + ' ' + count, 2);
 		});
@@ -200,7 +200,7 @@ require('./NodeLibraries.js');
 		$CommonShuffleLibrary_QueueItem.call(this);
 		var redis = require('redis');
 		this.channel = pusher;
-		this.$client1 = redis.createClient(6379, CommonLibraries.IPs.redisIP);
+		this.$client1 = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 	};
 	$CommonShuffleLibrary_QueuePusher.prototype = {
 		message: function(channel, name, user, eventChannel, content) {
@@ -222,7 +222,7 @@ require('./NodeLibraries.js');
 		this.channel = queue;
 		this.set_callback(callback);
 		var redis = require('redis');
-		this.$client1 = redis.createClient(6379, CommonLibraries.IPs.redisIP);
+		this.$client1 = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		this.cycle(queue);
 	};
 	$CommonShuffleLibrary_QueueWatcher.prototype = {
@@ -332,7 +332,7 @@ require('./NodeLibraries.js');
 		user_GetFirstByUsernamePassword: function(username, password, results) {
 			this.$manager.client.collection('User', function(err, collection) {
 				var j = { username: username, password: password };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.UserModelData).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.UserModelData).call(null, collection, j, function(a, b) {
 					results(b);
 				});
 			});
@@ -340,7 +340,7 @@ require('./NodeLibraries.js');
 		user_CheckUsernameExists: function(username, results) {
 			this.$manager.client.collection('User', function(err, collection) {
 				var j = { username: username };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.UserModelData).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.UserModelData).call(null, collection, j, function(a, b) {
 					results(b.length > 0);
 				});
 			});
@@ -349,7 +349,7 @@ require('./NodeLibraries.js');
 			this.$manager.client.collection('Room', function(err, collection) {
 				var j = {};
 				j['players.userName'] = user.userName;
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
 					results(((b.length > 0) ? b[0] : null));
 				});
 			});
@@ -357,7 +357,7 @@ require('./NodeLibraries.js');
 		room_GetAllByGameType: function(gameType, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
 				var j = { gameType: gameType };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
 					results(b);
 				});
 			});
@@ -375,7 +375,7 @@ require('./NodeLibraries.js');
 		room_JoinRoom: function(gameType, roomName, user, onRoomJoined) {
 			this.$manager.client.collection('Room', ss.mkdel(this, function(err, collection) {
 				var j = { gameType: gameType, roomName: roomName };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, ss.mkdel(this, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, ss.mkdel(this, function(a, b) {
 					if (b.length === 0) {
 						onRoomJoined(null);
 					}
@@ -391,7 +391,7 @@ require('./NodeLibraries.js');
 		room_GetByRoomName: function(gameType, roomName, results) {
 			this.$manager.client.collection('Room', function(err, collection) {
 				var j = { gameType: gameType, roomName: roomName };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.RoomDataModel).call(null, collection, j, function(a, b) {
 					results(((b.length > 0) ? b[0] : null));
 				});
 			});
@@ -449,7 +449,7 @@ require('./NodeLibraries.js');
 		game_GetGamesByUser: function(userHash, action) {
 			this.$manager.client.collection('Games', function(err, collection) {
 				var j = { userHash: userHash };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
+				$CommonShuffleLibrary_Data_MongoHelper.where(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
 					action(b);
 				});
 			});
@@ -459,22 +459,23 @@ require('./NodeLibraries.js');
 				var $t1 = DataModels.SiteManagerModels.Game.GameDataModel.$ctor();
 				$t1.userHash = userHash;
 				$t1.name = gameName;
-				collection.insert($t1);
-				result();
+				var gameDataModel = $t1;
+				collection.insert(gameDataModel);
+				result(gameDataModel);
 			});
 		},
 		game_GameNameExists: function(gameName, result) {
 			this.$manager.client.collection('Games', function(err, collection) {
 				var j = { name: gameName };
-				$CommonShuffleLibrary_Data_MongoHelper.find(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
-					result(b.length > 0);
+				$CommonShuffleLibrary_Data_MongoHelper.any(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
+					result(b);
 				});
 			});
 		},
 		game_UpdateGame: function(model, result) {
 			this.$manager.client.collection('Games', function(err, collection) {
 				var $t1 = DataModels.SiteManagerModels.Game.GameDataModel.$ctor();
-				$t1._id = model._id;
+				$t1._id = NodeLibraries.MongoDB.MongoDocument.objectID(model._id);
 				$t1.name = model.name;
 				$t1.userHash = model.userHash;
 				$t1.description = model.description;
@@ -486,7 +487,7 @@ require('./NodeLibraries.js');
 				$t1.gameLayoutScenarios = model.gameLayoutScenarios;
 				$t1.effects = model.effects;
 				collection.save($t1);
-				result();
+				result(true);
 			});
 		}
 	};
@@ -494,11 +495,20 @@ require('./NodeLibraries.js');
 	// CommonShuffleLibrary.Data.MongoHelper
 	var $CommonShuffleLibrary_Data_MongoHelper = function() {
 	};
-	$CommonShuffleLibrary_Data_MongoHelper.find = function(T) {
+	$CommonShuffleLibrary_Data_MongoHelper.where = function(T) {
 		return function(collection, query, result) {
 			collection.find(query, function(a, b) {
 				b.toArray(function(c, d) {
 					result(a, d);
+				});
+			});
+		};
+	};
+	$CommonShuffleLibrary_Data_MongoHelper.any = function(T) {
+		return function(collection, query, result) {
+			collection.find(query, function(a, b) {
+				b.toArray(function(c, d) {
+					result(a, d.length > 0);
 				});
 			});
 		};
@@ -517,6 +527,6 @@ require('./NodeLibraries.js');
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData);
 	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
-	$CommonShuffleLibrary_DataManager.$connectionAddress = CommonLibraries.IPs.mongoIP;
+	$CommonShuffleLibrary_DataManager.$connectionAddress = CommonLibraries.Constants.mongoIP;
 	$CommonShuffleLibrary_DataManager.$connectionPort = '27017';
 })();

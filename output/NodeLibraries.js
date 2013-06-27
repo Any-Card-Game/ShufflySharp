@@ -199,18 +199,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	$NodeLibraries_MongoDB_MongoDocument.createInstance = function() {
 		return $NodeLibraries_MongoDB_MongoDocument.$ctor();
 	};
-	$NodeLibraries_MongoDB_MongoDocument.get_objectID = function() {
-		return $NodeLibraries_MongoDB_MongoDocument.$1$ObjectIDField;
-	};
-	$NodeLibraries_MongoDB_MongoDocument.set_objectID = function(value) {
-		$NodeLibraries_MongoDB_MongoDocument.$1$ObjectIDField = value;
-	};
 	$NodeLibraries_MongoDB_MongoDocument.getID = function(id) {
 		if (ss.isNullOrUndefined(id)) {
 			return null;
 		}
 		if (ss.referenceEquals(ss.getInstanceType(id), String)) {
-			return $NodeLibraries_MongoDB_MongoDocument.get_objectID()(id);
+			return $NodeLibraries_MongoDB_MongoDocument.objectID(id);
 		}
 		return id;
 	};
@@ -245,6 +239,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	$NodeLibraries_Common_Logging_Logger.$fs = null;
 	$NodeLibraries_Common_Logging_Logger.$key = null;
 	$NodeLibraries_Common_Logging_Logger.$fs = require('fs');
-	$NodeLibraries_MongoDB_MongoDocument.$1$ObjectIDField = null;
-	$NodeLibraries_MongoDB_MongoDocument.set_objectID(require('bson').ObjectID);
+	$NodeLibraries_MongoDB_MongoDocument.objectID = null;
+	$NodeLibraries_MongoDB_MongoDocument.objectID = require('bson').ObjectID;
 })();

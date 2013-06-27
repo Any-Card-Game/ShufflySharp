@@ -20,7 +20,7 @@ namespace Client
         {
             Instance = this;
             this.gatewayServerAddress = gatewayServerAddress;
-            loadJunk(IPs.WebIP, ready);
+            loadJunk(Constants.WebIP, ready);
         }
 
         private static void loadJunk(string url, Action ready)

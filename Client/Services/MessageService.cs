@@ -9,34 +9,58 @@ namespace Client.Services
 {
     public class MessageService
     {
-        private readonly CompileService myCompileService;
+        private readonly CreateUIService myCreateUIService;
         private readonly IRootScopeService myRootScopeService;
 
-        public MessageService(CompileService compileService, IRootScopeService rootScopeService)
+        public MessageService(CreateUIService createUIService, IRootScopeService rootScopeService)
         {
-            myCompileService = compileService;
+            myCreateUIService = createUIService;
             myRootScopeService = rootScopeService;
         }
 
         public void PopupOkay(string title, string message, Action callback)
         {
-            AngularElement item = null;
 
-            MessageScope mess = myRootScopeService.New<MessageScope>();
-            mess.Okay = () =>
+
+            myCreateUIService.Create<MessageScope>("Message", (mess,item) =>
+             {
+                 mess.Model = new MessageModel();
+
+                 mess.Model.Callback = () =>
+                 {
+                     mess.Destroy();
+                     item.Remove();
+
+                     callback();
+
+                 };
+                 mess.Model.Title = title;
+                 mess.Model.Message = message;
+                 mess.Model.MessageType = MessageType.Okay;
+
+             });
+
+
+
+        }
+        public void PopupQuestion(string title, string message, Action<string> callback)
+        {
+            myCreateUIService.Create<MessageScope>("Message", (mess, item) =>
             {
-                mess.Destroy();
-                item.Remove();
+                mess.Model = new MessageModel();
 
-                callback();
+                mess.Model.Callback = () =>
+                {
+                    mess.Destroy();
+                    item.Remove();
+                    callback(mess.Model.Response);
+                };
+                mess.Model.Title = title;
+                mess.Model.Message = message;
+                mess.Model.MessageType = MessageType.Question;
+            });
 
-            };
-            mess.Title = title;
-            mess.Message = message;
-            item = myCompileService(jQuery.FromHtml("<div ng-include src=\"'http://content.anycardgame.com/partials/UIs/Message.html'\"></div>"))(mess);
-            item.AppendTo(Window.Document.Body);
-            mess.Apply();
-
+             
 
         }
     }

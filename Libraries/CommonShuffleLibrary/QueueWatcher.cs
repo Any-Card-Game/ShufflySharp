@@ -18,7 +18,7 @@ namespace CommonShuffleLibrary
 
             var redis = Global.Require<Redis>("redis");
 
-            client1 = redis.CreateClient(6379, IPs.RedisIP);
+            client1 = redis.CreateClient(6379, Constants.RedisIP);
 
             Cycle(queue);
         }

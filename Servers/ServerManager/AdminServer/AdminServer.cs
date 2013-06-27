@@ -38,14 +38,14 @@ namespace ServerManager.AdminServer
             Logger.Log("Shuffly Admin V0.49", LogLevel.Information);
 
             var redis = Global.Require<Redis>("redis");
-            var client = redis.CreateClient(6379, IPs.RedisIP);
+            var client = redis.CreateClient(6379, Constants.RedisIP);
            /* client.On<string,object>("monitor",(time, args) => {
                                    Logger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation); 
                                 });*/
              
             util = Global.Require<Util>("util");
             exec = Global.Require<ChildProcess>("child_process").Exec;
-            __dirname = IPs.HARDLOCATION;
+            __dirname = Constants.HARDLOCATION;
             nonDebuggable = new[] {"node-inspector", "pkill"};
 
             Global.Require<Http>("http").CreateServer(handler).Listen(8090);

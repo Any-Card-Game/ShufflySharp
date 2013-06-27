@@ -20,8 +20,8 @@ namespace CommonShuffleLibrary
 
             var redis = Global.Require<NodeLibraries.Redis.Redis>("redis");
             redis.DebugMode = false;
-            subClient = redis.CreateClient(6379, IPs.RedisIP);
-            pubClient = redis.CreateClient(6379, IPs.RedisIP);
+            subClient = redis.CreateClient(6379, Constants.RedisIP);
+            pubClient = redis.CreateClient(6379, Constants.RedisIP);
             subClient.On("subscribe", (string channel, int count) => Logger.Log("subscribed: " + channel + " " + count,LogLevel.Information));
             subClient.On("unsubscribe", (string channel, int count) => Logger.Log("unsubscribed: " + channel + " " + count, LogLevel.Information));
 

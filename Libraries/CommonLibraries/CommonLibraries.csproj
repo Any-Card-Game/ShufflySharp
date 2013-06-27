@@ -39,7 +39,7 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="Help.cs" />
-    <Compile Include="IPs.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="Jsonner.cs" />
     <Compile Include="MyStyle.cs" />

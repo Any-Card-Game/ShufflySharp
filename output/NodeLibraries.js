@@ -54,12 +54,27 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	};
 	$NodeLibraries_Common_Charm_EraseType.prototype = { end: 'end', start: 'start', line: 'line', down: 'down', Up: 'Up', screen: 'screen' };
 	////////////////////////////////////////////////////////////////////////////////
+	// NodeLibraries.Common.Logging.Common
+	var $NodeLibraries_Common_Logging_Common = function() {
+	};
+	$NodeLibraries_Common_Logging_Common.currentDate = function() {
+		var sb = '';
+		var dt = new Date();
+		sb += dt.getDate();
+		sb += dt.getMonth() + 1;
+		sb += dt.getFullYear();
+		sb += dt.getHours();
+		sb += dt.getMinutes();
+		sb += dt.getSeconds();
+		return sb;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.Logger
 	var $NodeLibraries_Common_Logging_Logger = function() {
 	};
 	$NodeLibraries_Common_Logging_Logger.start = function(key) {
-		console.log(key + ' - ' + (new Date()).toDateString() + '  ' + (new Date()).toTimeString());
-		$NodeLibraries_Common_Logging_Logger.$key = key + ' - ' + (new Date()).toDateString() + '  ' + (new Date()).toTimeString() + '.txt';
+		console.log(key + ' - ' + $NodeLibraries_Common_Logging_Common.currentDate());
+		$NodeLibraries_Common_Logging_Logger.$key = key + ' - ' + $NodeLibraries_Common_Logging_Common.currentDate() + '.txt';
 	};
 	$NodeLibraries_Common_Logging_Logger.log = function(item, level) {
 		switch (level) {
@@ -75,7 +90,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 				break;
 			}
 		}
-		$NodeLibraries_Common_Logging_Logger.$fs.appendFile('logs/' + $NodeLibraries_Common_Logging_Logger.$key, item + '\n', null, null);
+		$NodeLibraries_Common_Logging_Logger.$fs.appendFile('logs/' + $NodeLibraries_Common_Logging_Logger.$key, item + '\n', null, function(error, outp) {
+			if (ss.isValue(error)) {
+				console.log(error);
+				console.log(outp);
+			}
+		});
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.LogLevel
@@ -230,6 +250,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	ss.registerClass(global, 'NodeLibraries.Common.Charm.Charmer', $NodeLibraries_Common_Charm_Charmer);
 	ss.registerEnum(global, 'NodeLibraries.Common.Charm.DisplayType', $NodeLibraries_Common_Charm_DisplayType);
 	ss.registerEnum(global, 'NodeLibraries.Common.Charm.EraseType', $NodeLibraries_Common_Charm_EraseType);
+	ss.registerClass(global, 'NodeLibraries.Common.Logging.Common', $NodeLibraries_Common_Logging_Common);
 	ss.registerClass(global, 'NodeLibraries.Common.Logging.Logger', $NodeLibraries_Common_Logging_Logger);
 	ss.registerEnum(global, 'NodeLibraries.Common.Logging.LogLevel', $NodeLibraries_Common_Logging_LogLevel);
 	ss.registerClass(global, 'NodeLibraries.Common.Logging.ProgressBar', $NodeLibraries_Common_Logging_ProgressBar);

@@ -51,7 +51,7 @@ namespace ServerManager.AdminServer
             Global.Require<Http>("http").CreateServer(handler).Listen(8090);
 
             debug = true;
-            Global.SetInterval(() => { Console.Log("keep alive " + new DateTime().ToString().Substring(17, 24)); }, 10 * 1000);
+            Global.SetInterval(() => { Console.Log("keep alive " + Common.CurrentDate()); }, 10 * 1000);
 
             Global.Process.On("exit",
                               () => {
@@ -210,13 +210,13 @@ namespace ServerManager.AdminServer
                 dummy.STDOut.On<string>("data",
                                         (data) => {
                                             if (data.IndexOf("debug: ") == -1) {
-                                                util.Print(string.Format("--{0}: {1}   {2}   {3}", name, debugPort, new DateTime().ToString().Substring(17, 24), data));
+                                                util.Print(string.Format("--{0}: {1}   {2}   {3}", name, debugPort, Common.CurrentDate(), data));
                                                 util.Print("?: ");
                                             }
                                         });
                 dummy.STDError.On<string>("data",
                                           (data) => {
-                                              util.Print(string.Format("--{0}: {1}   {2}   {3}", name, debugPort, new DateTime().ToString().Substring(17, 24), data));
+                                              util.Print(string.Format("--{0}: {1}   {2}   {3}", name, debugPort, Common.CurrentDate(), data));
                                               util.Print("?: ");
                                           });
             }

@@ -5,7 +5,7 @@
 	var $Client_BuildAngular = function() {
 	};
 	$Client_BuildAngular.setup = function(gatewayServer) {
-		angular.module('acg', ['ui.utils']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameCodeController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope, uiManager, clientSiteManagerService, messageService) {
+		angular.module('acg', ['ui.utils', 'ui.codemirror']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameCodeController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope, uiManager, clientSiteManagerService, messageService) {
 			return new $Client_Controllers_$GameCodeController(scope, uiManager, clientSiteManagerService, messageService);
 		}]).controller('MinimizeController', ['$scope', 'UIManager', function(scope1, uiManager1) {
 			return new $Client_Controllers_$MinimizeController(scope1, uiManager1);
@@ -309,6 +309,7 @@
 		this.$myUIManager = uiManager;
 		this.$myClientSiteManagerService = clientSiteManagerService;
 		this.$myMessageService = messageService;
+		scope.visible = true;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.GameEditorController

@@ -1,6 +1,13 @@
 <div ng-controller="GameCodeController">
     <div floating-window left="'25%'" top="'25%'" height="'800px'" width="'800px'" title="'Code Editor!'" visible="visible">
         
+        
+        <textarea ui-codemirror="{
+    lineNumbers: true,
+    theme:'rubyblue'
+    }"  style="height:100%;" ng-model="cdc"></textarea>
+        
+        {{cdc}}
         <button ng-click="model.updateGame() ">save</button>
         {{model.updateStatus}}
     </div>

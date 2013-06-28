@@ -4,6 +4,7 @@ using ClientLibs.Managers;
 using CommonLibraries;
 using Models.GameManagerModels;
 using Models.SiteManagerModels;
+using NodeLibraries.Common.Logging;
 using NodeLibraries.NodeJS;
 namespace ServerSlammer
 {
@@ -16,7 +17,7 @@ namespace ServerSlammer
         public Program()
         {
             Global.SetInterval(() => {
-                                   //Console.Log("timer " + DateTime.Now);
+//                Console.Log("timer " + Common.CurrentDate());
                                },
                                2000);
 

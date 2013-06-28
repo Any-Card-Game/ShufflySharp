@@ -4,6 +4,23 @@ using CommonLibraries;
 using NodeLibraries.NodeJS;
 namespace NodeLibraries.Common.Logging
 {
+    public static class Common
+    {
+        public static string CurrentDate()
+        {
+            string sb = "";
+
+            var dt = DateTime.Now;
+
+            sb += dt.Day;
+            sb += (dt.Month );
+            sb += dt.Year;
+            sb += dt.Hour;
+            sb += dt.Minute;
+            sb += dt.Second;
+            return sb;
+        }
+    }
     public static class Logger
     {
         private static FS fs;
@@ -15,8 +32,10 @@ namespace NodeLibraries.Common.Logging
         }
         public static void Start(string key)
         {
-            Console.Log(key + " - " + new DateTime().ToDateString() + "  " + new DateTime().ToTimeString());
-            Key = key + " - " + new DateTime().ToDateString() + "  " + new DateTime().ToTimeString() + ".txt";
+
+            
+            Console.Log(key + " - " + Common.CurrentDate());
+            Key = key + " - " + Common.CurrentDate() + ".txt";
         }
         public static void Log(string item,LogLevel level)
         {
@@ -30,7 +49,14 @@ namespace NodeLibraries.Common.Logging
                 case LogLevel.Information:
                     break;
             }
-            fs.AppendFile("logs/"+Key , item+"\n", null, null);
+            fs.AppendFile("logs/"+Key , item+"\n", null, (error, outp) =>
+                                                         {
+                                                             if (error != null)
+                                                             {
+                                                                 Console.Log(error);
+                                                                 Console.Log(outp);
+                                                             }
+                                                         });
         }
     }
     public enum LogLevel { Error, DebugInformation, Information }

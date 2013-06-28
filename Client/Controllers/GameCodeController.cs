@@ -22,8 +22,8 @@ namespace Client.Controllers
             myScope = scope;
             myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
-            myMessageService = messageService;  
-
+            myMessageService = messageService;
+            scope.Visible = true;
         } 
     }
 }

@@ -229,10 +229,10 @@
 	ss.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number);
 	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
 	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
-	$CommonLibraries_Constants.local = false;
-	$CommonLibraries_Constants.webIP = 'http://content.anycardgame.com/';
+	$CommonLibraries_Constants.local = true;
+	$CommonLibraries_Constants.webIP = 'http://localhost:8881/';
 	$CommonLibraries_Constants.redisIP = '198.211.107.101';
 	$CommonLibraries_Constants.mongoIP = '198.211.107.101';
-	$CommonLibraries_Constants.HARDLOCATION = '/usr/local/src/new/';
+	$CommonLibraries_Constants.HARDLOCATION = 'C:\\code\\node\\';
 	$CommonLibraries_Help.verbose = true;
 })();

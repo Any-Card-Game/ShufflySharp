@@ -13,7 +13,7 @@ namespace Client
     {
         public static void Setup(string gatewayServer)
         {
-            angular.module("acg", new string[] { "ui.utils" })
+            angular.module("acg", new string[] { "ui.utils", "ui.codemirror" })
                  
                 .config(new object[] {"$routeProvider",new Action<IRouteProviderProvider>(buildRouteProvider)})
                  .config(new object[] {"$httpProvider", new Action<dynamic>(buildHttpProvider)})

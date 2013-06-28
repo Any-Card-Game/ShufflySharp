@@ -95,7 +95,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		require('http').createServer(ss.mkdel(this, this.$handler)).listen(8090);
 		this.$debug = true;
 		setInterval(function() {
-			console.log('keep alive ' + (new Date()).toString().substr(17, 24));
+			console.log('keep alive ' + NodeLibraries.Common.Logging.Common.currentDate());
 		}, 10000);
 		process.on('exit', ss.mkdel(this, function() {
 			NodeLibraries.Common.Logging.Logger.log('Exiting ', 1);
@@ -221,12 +221,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			if (ss.indexOf(this.$nonDebuggable, process) === -1) {
 				dummy.stdout.on('data', ss.mkdel(this, function(data) {
 					if (data.indexOf('debug: ') === -1) {
-						this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substr(17, 24), data));
+						this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, NodeLibraries.Common.Logging.Common.currentDate(), data));
 						this.$util.print('?: ');
 					}
 				}));
 				dummy.stderr.on('data', ss.mkdel(this, function(data1) {
-					this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, (new Date()).toString().substr(17, 24), data1));
+					this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, NodeLibraries.Common.Logging.Common.currentDate(), data1));
 					this.$util.print('?: ');
 				}));
 			}
@@ -461,7 +461,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var queueManager = new CommonShuffleLibrary.QueueManager('Debug1', new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('DebugServer', null)], ['GatewayServer', 'Gateway*']));
 		queueManager.addChannel('Area.Debug2.GetGameSource.Request', function(sender, data) {
 			var sourceRequest = data;
-			fs.readFile('/usr/local/src/new/Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
+			fs.readFile('C:\\code\\node\\Games/' + sourceRequest.gameName + '/app.js', 'ascii', function(err, data2) {
 				queueManager.sendMessage(sender.gateway, 'Area.Debug.GetGameSource.Response', sender, { content: data2 });
 			});
 		});

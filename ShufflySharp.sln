@@ -27,6 +27,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffleInformation", "Shuff
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffleGames", "ShuffleGames\ShuffleGames.csproj", "{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientLibs", "ClientLibs\ClientLibs.csproj", "{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSlammer", "ServerSlammer\ServerSlammer.csproj", "{76D08C79-8160-4C95-A35B-AEC3A527C000}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeLibraries", "Libraries\NodeLibraries\NodeLibraries.csproj", "{06E82003-D11E-4482-9DC8-9AD109B537A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "Servers\ServerManager\ServerManager.csproj", "{E5F0F569-B645-4A02-93A2-DB646BE99A44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularJS", "Libraries\AngularJS\AngularJS.csproj", "{815CC797-F742-4C48-8C98-BD7DE050D95A}"
+EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "output", "output\", "{695D02E9-9050-4C99-AAFC-7B2249D8523C}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
@@ -46,23 +56,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "output", "output\", "{695D0
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "58533"
 		StartServerOnDebug = "false"
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientLibs", "ClientLibs\ClientLibs.csproj", "{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSlammer", "ServerSlammer\ServerSlammer.csproj", "{76D08C79-8160-4C95-A35B-AEC3A527C000}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeLibraries", "Libraries\NodeLibraries\NodeLibraries.csproj", "{06E82003-D11E-4482-9DC8-9AD109B537A0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerManager", "Servers\ServerManager\ServerManager.csproj", "{E5F0F569-B645-4A02-93A2-DB646BE99A44}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularJS", "Libraries\AngularJS\AngularJS.csproj", "{815CC797-F742-4C48-8C98-BD7DE050D95A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{89B0465F-E432-42DA-9181-A560C7DDA2A7}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Global
@@ -171,13 +164,6 @@ Global
 		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|x86.ActiveCfg = Release|x86
 		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|x86.Build.0 = Release|x86
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
-		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|x86.ActiveCfg = Debug|Any CPU
 		{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -230,6 +216,15 @@ Global
 		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{815CC797-F742-4C48-8C98-BD7DE050D95A}.Release|x86.ActiveCfg = Release|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

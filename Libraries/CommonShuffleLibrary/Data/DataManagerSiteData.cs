@@ -212,12 +212,35 @@ namespace CommonShuffleLibrary.Data
         }
         public void Game_CreateGame(string userHash, string gameName, Action<GameDataModel> result)
         {
+            
             manager.client.Collection("Games",
                                       (err, collection) =>
                                       {
-                                          GameDataModel gameDataModel = new GameDataModel() {
-                                                                                                    UserHash = userHash, Name = gameName
-                                                                                            };
+                                          GameDataModel gameDataModel = new GameDataModel()
+                                                                        {
+                                                                            Assets = new List<object>(),
+                                                                            CardImages = new List<object>(),
+                                                                            Effects = new List<GameEffectModel>(),
+                                                                            GameCode = new GameCodeModel()
+                                                                                       {
+                                                                                           Code = "",
+                                                                                           CursorPosition = new IntPoint(0,0)
+                                                                                       },
+                                                                            GameLayout = new GameLayoutModel()
+                                                                                         {
+                                                                                             Areas = new List<GameAreaModel>(),
+                                                                                             Spaces = new List<GameSpaceModel>(),
+                                                                                             Texts = new List<GameTextModel>(),
+                                                                                             Width=16,
+                                                                                             Height=16
+                                                                                         },
+                                                                            GameLayoutScenarios =new List<GameLayoutScenario>(),
+
+                                                                            UserHash = userHash,
+                                                                            Name = gameName,
+                                                                            Description="",
+                                                                           MaxNumberOfPlayers = 6
+                                                                        };
                                           collection.Insert(gameDataModel);
                                           result(gameDataModel);
                                       });

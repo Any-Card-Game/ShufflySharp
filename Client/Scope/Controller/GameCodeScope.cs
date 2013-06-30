@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
+using Models.SiteManagerModels.Game;
+
 namespace Client.Scope.Controller
 {
 
@@ -11,8 +13,4 @@ namespace Client.Scope.Controller
         public GameCodeModel Model { get; set; }
     }
   
-    [Serializable]
-    public class GameCodeModel
-    { 
-    }
-}
+ }

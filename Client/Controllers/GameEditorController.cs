@@ -39,6 +39,7 @@ namespace Client.Controllers
                 myScope.SwingAway(SwingDirection.TopRight, true, null);
                 myScope.SwingBack(null);
                 myScope.Model.Game = game;
+                OpenCodeFn();
             };
             myScope.watch("model.game",
                           () => {
@@ -64,7 +65,10 @@ namespace Client.Controllers
 
         private void OpenCodeFn()
         {
-            myCreateUIService.Create<GameEditorScope>("GameCodeEditor");
+            myCreateUIService.Create<GameCodeScope>("GameCodeEditor", (scope, elem) =>
+                                                                        {
+                                                                            scope.Model =myScope.Model.Game.GameCode;
+                                                                        });
         }
 
         void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)

@@ -51,14 +51,14 @@ namespace Models.SiteManagerModels.Game
             Height = 15;
             Spaces = new List<GameSpaceModel>();
             Texts = new List<GameTextModel>();
-            Ares = new List<GameAreaModel>();
+            Areas = new List<GameAreaModel>();
 
         }
         public int Width { get; set; }
         public int Height { get; set; }
         public List<GameSpaceModel> Spaces { get; set; }
         public List<GameTextModel> Texts { get; set; }
-        public List<GameAreaModel> Ares { get; set; }
+        public List<GameAreaModel> Areas { get; set; }
 
     }
     [Serializable]
@@ -96,7 +96,7 @@ namespace Models.SiteManagerModels.Game
     {
         public GameCodeModel()
         {
-            Code = "";
+            Code = "dada";
             CursorPosition = new IntPoint(0, 0);
         }
         public string Code { get; set; }

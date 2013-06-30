@@ -12,6 +12,7 @@
     <script type="text/javascript" src="http://localhost:8881/lib/codemirror/lib/codemirror.js"></script>
     <script type="text/javascript" src="http://localhost:8881/lib/ui-codemirror.js"></script>
 
+    
     <script type="text/javascript" src="http://localhost:8881/lib/ui-utils.js"></script>
     <script type="text/javascript" src="http://localhost:8881/lib/requirejs.js"></script>
     <script type="text/javascript" src="http://localhost:8881/mscorlib.js"></script>
@@ -21,10 +22,17 @@
     <script type="text/javascript" src="http://localhost:8881/ClientLibs.js"></script>
     <script type="text/javascript" src="http://localhost:8881/ShuffleGameLibrary.js"></script>
     <script type="text/javascript" src="http://localhost:8881/Models.js"></script>
+    <script type="text/javascript" src="http://localhost:8881/lib/UglifyJS.js"></script>
+    <link rel="stylesheet" href="http://localhost:8881/lib/codemirror/theme/midnight.css"/>
+    
+
+
     <script type="text/javascript">
         String.prototype.toString = function () { return this; };
 
         new Client.BuildSite('{{gateway}}');
+        
+     
     </script>
     <style type="text/css">
         .listItem:hover

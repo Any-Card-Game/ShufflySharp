@@ -1,11 +1,21 @@
+<script type="text/javascript">
+    CodeMirror.commands.autocomplete = function (cm) {
+        CodeMirror.showHint(cm, ACGIntellisense);
+    }
+</script>
+
+    <script type="text/javascript" src="http://localhost:8881/lib/codemirror/addon/hint/show-hint.js"></script>
+    <link rel="stylesheet" href="http://localhost:8881/lib/codemirror/addon/hint/show-hint.css">
+    <script type="text/javascript" src="http://localhost:8881/lib/codemirror/addon/hint/javascript-hint.js"></script>
+    <script type="text/javascript" src="http://localhost:8881/lib/codemirror/mode/javascript/javascript.js"></script>
+      
 <div ng-controller="GameCodeController">
-    <div floating-window left="'25%'" top="'25%'" height="'800px'" width="'800px'" title="'Code Editor!'" visible="visible">
+    <div floating-window left="'25%'" top="'50%'" height="'500px'" width="'800px'" title="'Code Editor!'" visible="visible">
         
         
-        <textarea ui-codemirror="{lineNumbers: true,theme:'midnight',mode:'monokai'}" 
-            ng-model="cdc"></textarea>
+        <textarea ui-codemirror="{lineNumbers: true,theme:'midnight',mode:'javascript',extraKeys: { 'Ctrl-Space': 'autocomplete' }}" 
+            ng-model="model.code"></textarea>
         
-        {{cdc}}
         <button ng-click="model.updateGame() ">save</button>
         {{model.updateStatus}}
     </div>

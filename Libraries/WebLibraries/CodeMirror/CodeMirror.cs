@@ -1,3 +1,4 @@
+using System;
 using System.Html;
 using System.Runtime.CompilerServices;
 namespace WebLibraries.CodeMirror
@@ -32,6 +33,14 @@ namespace WebLibraries.CodeMirror
         {
             return null;
         }
+        public CodeEditorToken GetTokenAt(CodeEditorCursor cursor)
+        {
+            return null;
+        }
+        public int IndexFromPos(CodeEditorCursor cursor)
+        {
+            return 0;
+        }
 
         public CodeMirrorLine AddLineClass(CodeMirrorLine line, string where, string style)
         {
@@ -64,5 +73,13 @@ namespace WebLibraries.CodeMirror
         {
             return null;
         }
+    }
+    [Imported]
+    [Serializable]
+    public class CodeEditorToken
+    {
+        public int Start { get; set; }
+        public string String { get; set; }
+        public int End { get; set; }
     }
 }

@@ -410,7 +410,7 @@
 		var $this = {};
 		$this.code = null;
 		$this.cursorPosition = null;
-		$this.code = '';
+		$this.code = 'dada';
 		$this.cursorPosition = new CommonLibraries.IntPoint(0, 0);
 		return $this;
 	};
@@ -467,12 +467,12 @@
 		$this.height = 0;
 		$this.spaces = null;
 		$this.texts = null;
-		$this.ares = null;
+		$this.areas = null;
 		$this.width = 25;
 		$this.height = 15;
 		$this.spaces = [];
 		$this.texts = [];
-		$this.ares = [];
+		$this.areas = [];
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////

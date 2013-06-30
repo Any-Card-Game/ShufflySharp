@@ -12,14 +12,16 @@ namespace Client.Controllers
         private readonly UIManagerService myUIManager;
         private readonly ClientSiteManagerService myclientSiteManagerService;
         private readonly MessageService myMessageService;
+        private readonly CreateUIService myCreateUIService;
 
-        public LoginController(LoginScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,MessageService messageService)
+        public LoginController(LoginScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, MessageService messageService, CreateUIService createUIService)
         {
             myScope = scope;
             myScope.Visible = true;
             myUIManager = uiManager;
             myclientSiteManagerService = clientSiteManagerService;
             myMessageService = messageService;
+            myCreateUIService = createUIService;
             myScope.Model = new LoginModel();
 
             myScope.Model.WindowClosed = () =>
@@ -31,14 +33,19 @@ namespace Client.Controllers
             myclientSiteManagerService.OnLogin += OnLoginFn;
             myclientSiteManagerService.OnUserCreate += OnUserCreateFn;
 
+            myclientSiteManagerService.Login("dested1", "Ddested");
+            
         }
 
         private void OnLoginFn(UserModel user, UserLoginResponse data)
         {
+
             if (data.Successful)
             {
                 myUIManager.ClientInfo.LoggedInUser = user;
-                myUIManager.UserLoggedIn();
+                //myUIManager.UserLoggedIn();
+                myCreateUIService.Create("GameManager");
+
                 myScope.SwingAway(SwingDirection.Left, false, null);
             }
             else

@@ -37,7 +37,6 @@
     <Compile Include="CodeMirror\CodeEditorCursor.cs" />
     <Compile Include="CodeMirror\CodeMirror.cs" />
     <Compile Include="CodeMirror\CodeMirrorKeyMap.cs" />
-    <Compile Include="CodeMirror\CodeMirrorLine.cs" />
     <Compile Include="CodeMirror\CodeMirrorOptions.cs" />
     <Compile Include="Common\Compressor.cs" />
     <Compile Include="Common\KeyboardJS.cs" />
@@ -66,6 +65,7 @@
     <Compile Include="ShuffUI\ShuffUI\UIAreaInformation.cs" />
     <Compile Include="ShuffUI\ShuffUI\VisibleChangedEvent.cs" />
     <Compile Include="SocketIOClient\SocketIOClient.cs" />
+    <Compile Include="UglifyJS\UglifyJS.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib">

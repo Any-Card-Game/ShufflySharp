@@ -457,8 +457,25 @@ require('./NodeLibraries.js');
 		game_CreateGame: function(userHash, gameName, result) {
 			this.$manager.client.collection('Games', function(err, collection) {
 				var $t1 = DataModels.SiteManagerModels.Game.GameDataModel.$ctor();
+				$t1.assets = [];
+				$t1.cardImages = [];
+				$t1.effects = [];
+				var $t2 = Models.SiteManagerModels.Game.GameCodeModel.$ctor();
+				$t2.code = '';
+				$t2.cursorPosition = new CommonLibraries.IntPoint(0, 0);
+				$t1.gameCode = $t2;
+				var $t3 = Models.SiteManagerModels.Game.GameLayoutModel.$ctor();
+				$t3.areas = [];
+				$t3.spaces = [];
+				$t3.texts = [];
+				$t3.width = 16;
+				$t3.height = 16;
+				$t1.gameLayout = $t3;
+				$t1.gameLayoutScenarios = [];
 				$t1.userHash = userHash;
 				$t1.name = gameName;
+				$t1.description = '';
+				$t1.maxNumberOfPlayers = 6;
 				var gameDataModel = $t1;
 				collection.insert(gameDataModel);
 				result(gameDataModel);

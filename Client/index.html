@@ -12,6 +12,7 @@
     <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/lib/codemirror.js"></script>
     <script type="text/javascript" src="http://content.anycardgame.com/lib/ui-codemirror.js"></script>
 
+    
     <script type="text/javascript" src="http://content.anycardgame.com/lib/ui-utils.js"></script>
     <script type="text/javascript" src="http://content.anycardgame.com/lib/requirejs.js"></script>
     <script type="text/javascript" src="http://content.anycardgame.com/mscorlib.js"></script>
@@ -21,10 +22,17 @@
     <script type="text/javascript" src="http://content.anycardgame.com/ClientLibs.js"></script>
     <script type="text/javascript" src="http://content.anycardgame.com/ShuffleGameLibrary.js"></script>
     <script type="text/javascript" src="http://content.anycardgame.com/Models.js"></script>
+    <script type="text/javascript" src="http://content.anycardgame.com/lib/UglifyJS.js"></script>
+    <link rel="stylesheet" href="http://content.anycardgame.com/lib/codemirror/theme/midnight.css"/>
+    
+
+
     <script type="text/javascript">
         String.prototype.toString = function () { return this; };
 
         new Client.BuildSite('{{gateway}}');
+        
+     
     </script>
     <style type="text/css">
         .listItem:hover

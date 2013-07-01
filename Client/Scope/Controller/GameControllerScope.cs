@@ -4,10 +4,9 @@ using CommonLibraries;
 using global;
 namespace Client.Scope.Controller
 {
-    public class GameCtrlScope : BaseScope
+    public class GameControllerScope : BaseScope
     {
         [IntrinsicProperty]
-
         public GameCardGame MainArea { get; set; }
         [IntrinsicProperty]
         public Point Scale { get; set; }

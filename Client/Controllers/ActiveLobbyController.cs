@@ -47,7 +47,7 @@ namespace Client.Controllers
             };
 
             myScope.Model.StartGame += () => {
-                                           myCreateUIService.Create("gameUI", myScope);
+                                           myCreateUIService.Create("gameUI");
 //                                           uiManager.GameManager.StartGame();
                                             clientSiteManagerService.StartGame(new StartGameRequest());  
                                            //UIWindow.Height = 200;

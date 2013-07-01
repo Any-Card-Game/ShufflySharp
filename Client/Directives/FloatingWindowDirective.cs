@@ -41,9 +41,17 @@ namespace Client.Directives
             link = LinkFn;
 
         }
+        static Dictionary<jQueryObject, FloatingWindowScope> items = new Dictionary<jQueryObject, FloatingWindowScope>();
+        private jQueryObject myElement;
+        private FloatingWindowScope myScope;
 
         private void LinkFn(FloatingWindowScope scope, jQueryObject element, dynamic attr)
         {
+            items.Add(element,scope);
+
+
+            element.Click((elem, @event) => Focus());
+
             scope.Parent.SwingAway = (a, b, c) =>
             {
                 SwingAway(a, b, element, c);
@@ -52,8 +60,14 @@ namespace Client.Directives
             {
                 SwingBack(scope, element, c);
             };
-            scope.Parent.Minimize = () => scope.Minimize();
+            scope.Parent.Minimize = () =>
+                                    {
+                                        scope.Parent.Minimized = true;
+                                        scope.Minimize();
+                                    };
             scope.PositionStyles = new FloatingWindowPosition() { Left = scope.Left, Top = scope.Top, Display = "block" };
+            scope.PositionStyles.ZIndex = 10000;
+
             if (scope.Left.IndexOf("%") != -1)
             {
                 scope.PositionStyles.MarginLeft = (-(int.Parse(scope.Width.Replace("px", "")) / 2)) + "px";
@@ -109,8 +123,20 @@ namespace Client.Directives
                                 scope.PositionStyles.Display = "block";
 
                             };
+            //Focus();
 
         }
+
+        private void Focus()
+        {
+            foreach (var floatingWindowScope in items)
+            {
+                floatingWindowScope.Value.PositionStyles.ZIndex = 10000;
+            }
+            items[myElement].PositionStyles.ZIndex = 10001;
+            myScope.Apply();
+        }
+
         public void SwingBack(FloatingWindowScope scope, jQueryObject element, Action callback)
         {
             JsDictionary<string, object> js = new JsDictionary<string, object>();

@@ -13,13 +13,13 @@ namespace Client.Controllers
 {
     public class GameController
     {
-        private readonly GameCtrlScope scope;
+        private readonly GameControllerScope scope;
         private readonly EffectWatcherService myEffectWatcher;
         private readonly ClientGameManagerService myClientGameManagerService;
         private readonly GameContentManager myGameContentManager;
         private readonly EffectManagerService myEffectManager;
 
-        public GameController(GameCtrlScope scope, EffectWatcherService effectWatcher, ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager, EffectManagerService effectManager)
+        public GameController(GameControllerScope scope, EffectWatcherService effectWatcher, ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager, EffectManagerService effectManager)
         {
             this.scope = scope;
             myEffectWatcher = effectWatcher;

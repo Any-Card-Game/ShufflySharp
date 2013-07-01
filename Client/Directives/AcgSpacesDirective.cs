@@ -22,10 +22,7 @@ namespace Client.Directives
             myCompile = compile;
             myGameContentManager = gameContentManager;
             restrict = "EA";
-            template = @"
-    <div  >
-        
-    </div>";
+            template = @"<div></div>";
             replace = true;
             transclude = false;
             scope = new
@@ -72,7 +69,7 @@ namespace Client.Directives
 
             myGameContentManager.Redraw += () =>
             {
-                Console.Log("updatinggagaga");
+                Console.Log("updating board");
                 updater();
                 scope.Apply();
             };

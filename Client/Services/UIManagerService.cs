@@ -22,12 +22,12 @@ namespace Client.Services
         [IntrinsicProperty]
         public Action RoomLeft { get; set; }
          
-
-    //    [IntrinsicProperty]
-//        public GameManager GameManager { get; set; }
+         
         [IntrinsicProperty]
         public ClientInformation ClientInfo { get; set; }
+        [IntrinsicProperty]
         public Action<FloatingWindowScope> OnMinimize { get; set; }
+        [IntrinsicProperty]
         public Action<GameModel> OpenGameEditor { get; set; }
 
         public UIManagerService(ClientGameManagerService clientGameManagerService)

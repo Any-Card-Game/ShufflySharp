@@ -19,13 +19,19 @@ namespace Client.Scope.Controller
         Synced
     }
     [Serializable]
-    public class GameEditorModel
+    public class GameEditorModel : GameUpdater
     {
         public GameModel Game { get; set; }
         public Action OpenCode { get; set; }
         public Action OpenLayout { get; set; }
         public Action OpenEffects { get; set; }
         public Action OpenTest { get; set; }
+    }
+
+    [Serializable]
+    public class GameUpdater
+    {
+
         public Action UpdateGame { get; set; }
         public UpdateStatusType UpdateStatus { get; set; }
     }

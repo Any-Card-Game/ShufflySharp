@@ -33,8 +33,11 @@ namespace Client.Controllers
             myclientSiteManagerService.OnLogin += OnLoginFn;
             myclientSiteManagerService.OnUserCreate += OnUserCreateFn;
 
-            myclientSiteManagerService.Login("dested1", "Ddested");
-            
+            myScope.Model.Username = "dested1";
+            myScope.Model.Password = "Ddested";
+
+            Window.SetTimeout(LoginAccountFn, 1000);
+
         }
 
         private void OnLoginFn(UserModel user, UserLoginResponse data)
@@ -43,8 +46,8 @@ namespace Client.Controllers
             if (data.Successful)
             {
                 myUIManager.ClientInfo.LoggedInUser = user;
-                //myUIManager.UserLoggedIn();
-                myCreateUIService.Create("GameManager");
+                myUIManager.UserLoggedIn();
+           //     myCreateUIService.Create("GameManager");
 
                 myScope.SwingAway(SwingDirection.Left, false, null);
             }

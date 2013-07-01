@@ -51,69 +51,74 @@ namespace Client.Directives
                 }
             });
 
-            JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
-            beforeStyle["display"] = "block";
-            beforeStyle["position"] = "relative";
-            beforeStyle["z-index"] = "-1";
-            beforeStyle["width"] = "100%";
-            beforeStyle["height"] = "100%";
-            beforeStyle["left"] = "-50px";
-            beforeStyle["top"] = "-50px";
-            beforeStyle["padding"] = "50px";
-            beforeStyle["border-radius"] = "15px";
-            beforeStyle["box-shadow"] = "rgb(51, 51, 51) 4px 4px 2px";
-            beforeStyle["content"] = "\"\"";
-            beforeStyle["background"] = "rgba(112, 12, 58, 0.231373)";
-            ChangeCSS("space" + scope.Space.Name + "::before", beforeStyle);
+            scope.watch("space", () =>
+                                 {
 
-            scope.SpaceStyle = new { };
+                                     JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
+                                     beforeStyle["display"] = "block";
+                                     beforeStyle["position"] = "relative";
+                                     beforeStyle["z-index"] = "-1";
+                                     beforeStyle["width"] = "100%";
+                                     beforeStyle["height"] = "100%";
+                                     beforeStyle["left"] = "-50px";
+                                     beforeStyle["top"] = "-50px";
+                                     beforeStyle["padding"] = "50px";
+                                     beforeStyle["border-radius"] = "15px";
+                                     beforeStyle["box-shadow"] = "rgb(51, 51, 51) 4px 4px 2px";
+                                     beforeStyle["content"] = "\"\"";
+                                     beforeStyle["background"] = "rgba(112, 12, 58, 0.231373)";
+                                     ChangeCSS("space" + scope.Space.Name + "::before", beforeStyle);
 
-
-
-            scope.SpaceStyle.position = "absolute";
-            scope.SpaceStyle.left = scope.Space.X * scale.X;
-            scope.SpaceStyle.top = scope.Space.Y * scale.Y;
-
-            scope.SpaceStyle.width = scope.Space.Width * scale.X;
-            scope.SpaceStyle.height = scope.Space.Height * scale.Y;
-            scope.SpaceStyle.backgroundColor = "red";
+                                     scope.SpaceStyle = new {};
 
 
 
-            foreach (var effect in scope.Space.Appearance.Effects)
-            {
-                switch (effect.Type)
-                {
-                    case EffectType.Highlight:
-                        var hEffect = ((CardGameAppearanceEffectHighlight)effect);
-                        scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}", hEffect.Radius);
-                        scope.SpaceStyle.backgroundColor = hEffect.Color;
-                        scope.SpaceStyle.border = "solid 2px black";
-                        scope.SpaceStyle.borderRadius = 15.0;
-                        scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
-                        break;
-                    case EffectType.Rotate:
-                        Window.Alert(effect.Type.ToString());
-                        break;
-                    case EffectType.Bend:
-                        var bEffect = (CardGameAppearanceEffectBend)effect;
+                                     scope.SpaceStyle.position = "absolute";
+                                     scope.SpaceStyle.left = scope.Space.X*scale.X;
+                                     scope.SpaceStyle.top = scope.Space.Y*scale.Y;
 
-                        //rotate
+                                     scope.SpaceStyle.width = scope.Space.Width*scale.X;
+                                     scope.SpaceStyle.height = scope.Space.Height*scale.Y;
+                                     scope.SpaceStyle.backgroundColor = "red";
 
 
-                        break;
-                    case EffectType.StyleProperty:
-                        Window.Alert(effect.Type.ToString());
-                        break;
-                    case EffectType.Animated:
-                        Window.Alert(effect.Type.ToString());
-                        break;
-                    default:
 
-                        break;
-                }
-            }
+                                     foreach (var effect in scope.Space.Appearance.Effects)
+                                     {
+                                         switch (effect.Type)
+                                         {
+                                             case EffectType.Highlight:
+                                                 var hEffect = ((CardGameAppearanceEffectHighlight) effect);
+                                                 scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}",
+                                                     hEffect.Radius);
+                                                 scope.SpaceStyle.backgroundColor = hEffect.Color;
+                                                 scope.SpaceStyle.border = "solid 2px black";
+                                                 scope.SpaceStyle.borderRadius = 15.0;
+                                                 scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
+                                                 break;
+                                             case EffectType.Rotate:
+                                                 Window.Alert(effect.Type.ToString());
+                                                 break;
+                                             case EffectType.Bend:
+                                                 var bEffect = (CardGameAppearanceEffectBend) effect;
 
+                                                 //rotate
+
+
+                                                 break;
+                                             case EffectType.StyleProperty:
+                                                 Window.Alert(effect.Type.ToString());
+                                                 break;
+                                             case EffectType.Animated:
+                                                 Window.Alert(effect.Type.ToString());
+                                                 break;
+                                             default:
+
+                                                 break;
+                                         }
+                                     }
+
+                                 },true);
         }
         public static string TransformRotate(double ar)
         {

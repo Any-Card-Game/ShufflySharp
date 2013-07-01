@@ -67,12 +67,15 @@ namespace Models.SiteManagerModels.Game
         public int Top { get; set; }
         public int Left { get; set; }
 
+        public string Name { get; set; }
         public string Text { get; set; }
 
     }
     [Serializable]
     public class GameAreaModel
     {
+        public string Name { get; set; }
+
         public int Top { get; set; }
         public int Left { get; set; }
 

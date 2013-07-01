@@ -41,6 +41,7 @@
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\GameLayoutEditorController.cs" />
     <Compile Include="Controllers\GameCodeController.cs" />
     <Compile Include="Controllers\GameEditorController.cs" />
     <Compile Include="Controllers\GameManagerController.cs" />
@@ -68,8 +69,9 @@
     <Compile Include="Scope\Controller\CreateRoomScope.cs" />
     <Compile Include="Scope\Controller\EffectEditorScope.cs" />
     <Compile Include="Scope\Controller\GameCodeScope.cs" />
-    <Compile Include="Scope\Controller\GameCtrlScope.cs" />
+    <Compile Include="Scope\Controller\GameControllerScope.cs" />
     <Compile Include="Scope\Controller\GameEditorScope.cs" />
+    <Compile Include="Scope\Controller\GameLayoutEditorScope.cs" />
     <Compile Include="Scope\Controller\GameManagerScope.cs" />
     <Compile Include="Scope\Controller\HomeScope.cs" />
     <Compile Include="Scope\Controller\ListEffectsScope.cs" />

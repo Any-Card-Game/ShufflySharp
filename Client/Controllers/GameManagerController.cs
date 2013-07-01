@@ -35,6 +35,8 @@ namespace Client.Controllers
             myScope.watch("model.selectedGame",
                           () => {
                               uiManager.OpenGameEditor(myScope.Model.SelectedGame);
+                              if (!scope.Minimized)      
+                              scope.Minimize();
                           });
         }
 

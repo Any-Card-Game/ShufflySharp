@@ -15,10 +15,10 @@ namespace Client.Controllers
 
         public QuestionController(QuestionScope scope, UIManagerService uiManager, ClientGameManagerService clientGameManagerService)
         {
-            myScope = scope;
+            myScope = scope; 
             myUIManager = uiManager;
             myClientGameManagerService = clientGameManagerService;
-            myScope.Model = new QuestionModel();
+            myScope.Model = new QuestionScopeModel();
 
             myScope.Model.WindowClosed = () =>
             {

@@ -393,6 +393,7 @@
 	};
 	$Models_SiteManagerModels_Game_GameAreaModel.$ctor = function() {
 		var $this = {};
+		$this.name = null;
 		$this.top = 0;
 		$this.left = 0;
 		$this.width = 0;
@@ -545,6 +546,7 @@
 		var $this = {};
 		$this.top = 0;
 		$this.left = 0;
+		$this.name = null;
 		$this.text = null;
 		return $this;
 	};

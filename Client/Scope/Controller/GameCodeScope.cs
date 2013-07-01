@@ -10,7 +10,11 @@ namespace Client.Scope.Controller
     public class GameCodeScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
-        public GameCodeModel Model { get; set; }
+        public GameCodeScopeModel Model { get; set; }
     }
-  
- }
+    [Serializable]
+    public class GameCodeScopeModel
+    {
+        public GameCodeModel Code { get; set; }
+    }
+}

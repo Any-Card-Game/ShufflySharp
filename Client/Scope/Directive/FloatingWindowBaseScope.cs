@@ -14,5 +14,8 @@ namespace Client.Scope.Directive
         public Action Minimize { get; set; }
         [IntrinsicProperty]
         public bool Visible { get; set; }
+        [IntrinsicProperty]
+        public bool Minimized { get; set; }
+
      }
 }

@@ -1,13 +1,49 @@
 <div ng-controller="GameLayoutEditorController">
-    <div floating-window left="'50%'" top="'25%'" height="'500px'" width="'400px'" title="'Game Editor!'"
-        visible="visible">
-        EDit your game heres
-        <input type="text" ng-model="model.game.name" placeholder="Name" />
-        <input type="text" ng-model="model.game.description" placeholder="Description" />
-        <input type="text" ng-model="model.game.maxNumberOfPlayers" placeholder="Max Number Of Players" />
-        <div style="width: 20%; height: 400px;" fancy-list items="model.game.maxNumberOfPlayers" bind="model.selectedUser">
+    <div floating-window left="'75%'" top="'25%'" height="'600px'" width="'400px'" title="'Game Layout Editor!'"
+         visible="visible">
+        <div style="width:50%; float:left;">
+            Width: 
+            <input type="text" ng-model="model.game.gameLayout.width" />
+            Height: 
+            <input type="text" ng-model="model.game.gameLayout.height" />
+            Spaces:
+            <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.spaces" bind="model.selectedSpace">
+                {{item.name}}
+            </div>
+            <button ng-click="model.addSpace()">Add Space</button>
+            Texts:
+            <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.texts" bind="model.selectedText">
+                {{item.name}}
+            </div>
+            <button ng-click="model.addText()">Add Text</button>
+            Areas:
+            <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.areas" bind="model.selectedArea">
+                {{item.name}}
+            </div>
+            <button ng-click="model.addArea()">Add Area</button>
+            <button ng-click="model.updateGame() ">save</button>
+            {{model.updateStatus}}
+
+            <button ng-click="model.test()">Test</button>
+
         </div>
-        <button ng-click="model.updateGame() ">save</button>
-        {{model.updateStatus}}
+        <div style="width:50%; float:left;">
+            Edit {{model.selectedPiece}}
+            <div ng-switch="model.selectedPiece">
+                <div ng-switch-when="space">
+                    <h2>{{model.selectedSpace.name}}</h2>
+                    <input type="text" ng-model="model.selectedSpace.name"/>
+                </div>
+                <div ng-switch-when="area">
+                    <h2>{{model.selectedArea.name}}</h2>
+                    <input type="text" ng-model="model.selectedArea.name"/>
+                </div>
+                <div ng-switch-when="text">
+                    <h2>{{model.selectedText.name}}</h2>
+                    <input type="text" ng-model="model.selectedText.name"/>
+                </div>
+            </div>
+            content
+        </div>
     </div>
 </div>

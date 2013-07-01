@@ -5,32 +5,34 @@
 	var $Client_BuildAngular = function() {
 	};
 	$Client_BuildAngular.setup = function(gatewayServer) {
-		angular.module('acg', ['ui.utils', 'ui.codemirror']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('GameCodeController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope, uiManager, clientSiteManagerService, messageService) {
-			return new $Client_Controllers_$GameCodeController(scope, uiManager, clientSiteManagerService, messageService);
-		}]).controller('MinimizeController', ['$scope', 'UIManager', function(scope1, uiManager1) {
-			return new $Client_Controllers_$MinimizeController(scope1, uiManager1);
-		}]).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', 'gameContentManager', 'effectManager', function(scope2, effectWatcher, clientGameManagerService, gameContentManager, effectManager) {
-			return new $Client_Controllers_GameController(scope2, effectWatcher, clientGameManagerService, gameContentManager, effectManager);
-		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope3, editEffects, effectWatcher1, effectmanager) {
-			return new $Client_Controllers_$ListEffectsController(scope3, editEffects, effectWatcher1, effectmanager);
-		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope4, editEffects1) {
-			return new $Client_Controllers_$EffectEditorController(scope4, editEffects1);
-		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope5, uiManager2, clientSiteManagerService1, messageService1, createUIService) {
-			return new $Client_Controllers_$LoginController(scope5, uiManager2, clientSiteManagerService1, messageService1, createUIService);
-		}]).controller('QuestionController', ['$scope', 'UIManager', 'clientGameManager', function(scope6, uiManager3, clientGameManagerService1) {
-			return new $Client_Controllers_$QuestionController(scope6, uiManager3, clientGameManagerService1);
-		}]).controller('HomeController', ['$scope', 'UIManager', 'clientSiteManager', 'createUIService', function(scope7, uiManager4, clientSiteManagerService2, createUIService1) {
-			return new $Client_Controllers_$HomeController(scope7, uiManager4, clientSiteManagerService2, createUIService1);
-		}]).controller('ActiveLobbyController', ['$scope', 'UIManager', 'clientSiteManager', 'clientChatManager', 'createUIService', function(scope8, uiManager5, clientSiteManagerService3, clientChatManagerService, createUIService2) {
-			return new $Client_Controllers_$ActiveLobbyController(scope8, uiManager5, clientSiteManagerService3, clientChatManagerService, createUIService2);
-		}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope9, uiManager6) {
-			return new $Client_Controllers_$CreateRoomController(scope9, uiManager6);
-		}]).controller('GameManagerController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope10, uiManagerService, clientSiteManagerService4, messageService2) {
-			return new $Client_Controllers_$GameManagerController(scope10, uiManagerService, clientSiteManagerService4, messageService2);
-		}]).controller('GameEditorController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope11, uiManagerService1, clientSiteManagerService5, messageService3, createUIService3) {
-			return new $Client_Controllers_$GameEditorController(scope11, uiManagerService1, clientSiteManagerService5, messageService3, createUIService3);
-		}]).controller('MessageController', ['$scope', function(scope12) {
-			return new $Client_Controllers_$MessageController(scope12);
+		angular.module('acg', ['ui.utils', 'ui.codemirror']).config(['$routeProvider', $Client_BuildAngular.$buildRouteProvider]).config(['$httpProvider', $Client_BuildAngular.$buildHttpProvider]).value('gatewayServerURL', gatewayServer).controller('MinimizeController', ['$scope', 'UIManager', function(scope, uiManager) {
+			return new $Client_Controllers_$MinimizeController(scope, uiManager);
+		}]).controller('GameController', ['$scope', 'effectWatcher', 'clientGameManager', 'gameContentManager', 'effectManager', function(scope1, effectWatcher, clientGameManagerService, gameContentManager, effectManager) {
+			return new $Client_Controllers_GameController(scope1, effectWatcher, clientGameManagerService, gameContentManager, effectManager);
+		}]).controller('ListEffectsController', ['$scope', 'editEffects', 'effectWatcher', 'effectManager', function(scope2, editEffects, effectWatcher1, effectmanager) {
+			return new $Client_Controllers_$ListEffectsController(scope2, editEffects, effectWatcher1, effectmanager);
+		}]).controller('EffectEditorController', ['$scope', 'editEffects', function(scope3, editEffects1) {
+			return new $Client_Controllers_$EffectEditorController(scope3, editEffects1);
+		}]).controller('LoginController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope4, uiManager1, clientSiteManagerService, messageService, createUIService) {
+			return new $Client_Controllers_$LoginController(scope4, uiManager1, clientSiteManagerService, messageService, createUIService);
+		}]).controller('QuestionController', ['$scope', 'UIManager', 'clientGameManager', function(scope5, uiManager2, clientGameManagerService1) {
+			return new $Client_Controllers_$QuestionController(scope5, uiManager2, clientGameManagerService1);
+		}]).controller('HomeController', ['$scope', 'UIManager', 'clientSiteManager', 'createUIService', function(scope6, uiManager3, clientSiteManagerService1, createUIService1) {
+			return new $Client_Controllers_$HomeController(scope6, uiManager3, clientSiteManagerService1, createUIService1);
+		}]).controller('ActiveLobbyController', ['$scope', 'UIManager', 'clientSiteManager', 'clientChatManager', 'createUIService', function(scope7, uiManager4, clientSiteManagerService2, clientChatManagerService, createUIService2) {
+			return new $Client_Controllers_$ActiveLobbyController(scope7, uiManager4, clientSiteManagerService2, clientChatManagerService, createUIService2);
+		}]).controller('CreateRoomController', ['$scope', 'UIManager', function(scope8, uiManager5) {
+			return new $Client_Controllers_$CreateRoomController(scope8, uiManager5);
+		}]).controller('GameManagerController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope9, uiManagerService, clientSiteManagerService3, messageService1) {
+			return new $Client_Controllers_$GameManagerController(scope9, uiManagerService, clientSiteManagerService3, messageService1);
+		}]).controller('GameEditorController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope10, uiManagerService1, clientSiteManagerService4, messageService2, createUIService3) {
+			return new $Client_Controllers_$GameEditorController(scope10, uiManagerService1, clientSiteManagerService4, messageService2, createUIService3);
+		}]).controller('GameLayoutEditorController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope11, uiManagerService2, clientSiteManagerService5, messageService3, createUIService4) {
+			return new $Client_Controllers_$GameLayoutEditorController(scope11, uiManagerService2, clientSiteManagerService5, messageService3, createUIService4);
+		}]).controller('GameCodeController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope12, uiManager6, clientSiteManagerService6, messageService4) {
+			return new $Client_Controllers_$GameCodeController(scope12, uiManager6, clientSiteManagerService6, messageService4);
+		}]).controller('MessageController', ['$scope', function(scope13) {
+			return new $Client_Controllers_$MessageController(scope13);
 		}]).service('UIManager', ['clientGameManager', function(clientGameManagerService2) {
 			return new $Client_Services_UIManagerService(clientGameManagerService2);
 		}]).service('editEffects', [function() {
@@ -51,14 +53,14 @@
 			return new $Client_Services_GatewayService(serverUrl);
 		}]).service('gameContentManager', [function() {
 			return new $Client_Services_GameContentManager();
-		}]).service('messageService', ['createUIService', '$rootScope', function(createUIService4, rootScopeService) {
-			return new $Client_Services_MessageService(createUIService4, rootScopeService);
+		}]).service('messageService', ['createUIService', '$rootScope', function(createUIService5, rootScopeService) {
+			return new $Client_Services_MessageService(createUIService5, rootScopeService);
 		}]).service('createUIService', ['$compile', '$rootScope', function(compileService, rootScopeService1) {
 			return new $Client_Services_CreateUIService(compileService, rootScopeService1);
 		}]).directive('draggable', [function() {
 			return new $Client_Directives_DraggableDirective();
-		}]).directive('floatingWindow', ['UIManager', function(uiManagerService2) {
-			return new $Client_Directives_FloatingWindowDirective(uiManagerService2);
+		}]).directive('floatingWindow', ['UIManager', function(uiManagerService3) {
+			return new $Client_Directives_FloatingWindowDirective(uiManagerService3);
 		}]).directive('fancyList', [function() {
 			return new $Client_Directives_FancyListDirective();
 		}]).directive('chatBox', [function() {
@@ -223,7 +225,7 @@
 			this.$myScope.$apply();
 		});
 		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, ss.mkdel(this, function() {
-			this.$myCreateUIService.create$2('gameUI', this.$myScope);
+			this.$myCreateUIService.create$1('gameUI');
 			//                                           uiManager.GameManager.StartGame();
 			clientSiteManagerService.startGame({});
 			//UIWindow.Height = 200;
@@ -417,36 +419,131 @@
 		this.$myMessageService = messageService;
 		this.$myCreateUIService = createUIService;
 		this.$myScope.model = $Client_Scope_Controller_GameEditorModel.$ctor();
-		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 		this.$myScope.model.openCode = ss.mkdel(this, this.$openCodeFn);
 		this.$myScope.model.openEffects = ss.mkdel(this, this.$openEffectsFn);
 		this.$myScope.model.openLayout = ss.mkdel(this, this.$openLayoutFn);
 		this.$myScope.model.openTest = ss.mkdel(this, this.$openTestFn);
 		this.$myScope.visible = false;
-		uiManager.set_openGameEditor(ss.delegateCombine(uiManager.get_openGameEditor(), ss.mkdel(this, function(game) {
+		uiManager.openGameEditor = ss.delegateCombine(uiManager.openGameEditor, ss.mkdel(this, function(game) {
 			this.$myScope.visible = true;
 			this.$myScope.swingAway(2, true, null);
 			this.$myScope.swingBack(null);
 			this.$myScope.model.game = game;
-			this.$openCodeFn();
-		})));
+			this.$openLayoutFn();
+			//delete
+		}));
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
 		}), true);
 		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
+		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 	};
 	$Client_Controllers_$GameEditorController.prototype = {
 		$openTestFn: function() {
 		},
 		$openLayoutFn: function() {
+			this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_GameLayoutEditorScope).call(this.$myCreateUIService, 'GameLayoutEditor', ss.mkdel(this, function(scope, elem) {
+				scope.model = $Client_Scope_Controller_GameLayoutEditorScopeModel.$ctor();
+				scope.model.game = this.$myScope.model.game;
+			}));
 		},
 		$openEffectsFn: function() {
 		},
 		$openCodeFn: function() {
-			this.$myCreateUIService.create$3($Client_Scope_Controller_GameCodeScope).call(this.$myCreateUIService, 'GameCodeEditor', ss.mkdel(this, function(scope, elem) {
-				scope.model = this.$myScope.model.game.gameCode;
+			this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_GameCodeScope).call(this.$myCreateUIService, 'GameCodeEditor', ss.mkdel(this, function(scope, elem) {
+				scope.model = $Client_Scope_Controller_GameCodeScopeModel.$ctor();
+				scope.model.code = this.$myScope.model.game.gameCode;
 			}));
+		},
+		$onDeveloperUpdateGameReceivedFn: function(user, o) {
+			this.$myScope.model.updateStatus = 'synced';
+			this.$myScope.$apply();
+		},
+		$updateGameFn: function() {
+			this.$myScope.model.updateStatus = 'syncing';
+			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.game);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Controllers.GameLayoutEditorController
+	var $Client_Controllers_$GameLayoutEditorController = function(scope, uiManager, clientSiteManagerService, messageService, createUIService) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myClientSiteManagerService = null;
+		this.$myMessageService = null;
+		this.$myCreateUIService = null;
+		this.$myScope = scope;
+		this.$myUIManager = uiManager;
+		this.$myClientSiteManagerService = clientSiteManagerService;
+		this.$myMessageService = messageService;
+		this.$myCreateUIService = createUIService;
+		this.$myScope.visible = true;
+		this.$myScope.model.selectedPiece = 'none';
+		this.$myScope.$watch('model.selectedSpace', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selectedSpace)) {
+				return;
+			}
+			this.$myScope.model.selectedText = null;
+			this.$myScope.model.selectedArea = null;
+			this.$myScope.model.selectedPiece = 'space';
+		}));
+		this.$myScope.$watch('model.selectedText', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selectedText)) {
+				return;
+			}
+			this.$myScope.model.selectedSpace = null;
+			this.$myScope.model.selectedArea = null;
+			this.$myScope.model.selectedPiece = 'text';
+		}));
+		this.$myScope.$watch('model.selectedArea', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selectedArea)) {
+				return;
+			}
+			this.$myScope.model.selectedText = null;
+			this.$myScope.model.selectedSpace = null;
+			this.$myScope.model.selectedPiece = 'area';
+		}));
+		this.$myScope.model.addText = ss.mkdel(this, this.$addTextFn);
+		this.$myScope.model.addArea = ss.mkdel(this, this.$addAreaFn);
+		this.$myScope.model.addSpace = ss.mkdel(this, this.$addSpaceFn);
+		this.$myScope.model.test = ss.mkdel(this, this.$testFn);
+		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
+			this.$myScope.model.updateStatus = 'dirty';
+		}), true);
+		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myScope.model.updateStatus = 'synced';
+		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
+	};
+	$Client_Controllers_$GameLayoutEditorController.prototype = {
+		$testFn: function() {
+		},
+		$addSpaceFn: function() {
+			var spaces = this.$myScope.model.game.gameLayout.spaces;
+			var $t1 = Models.SiteManagerModels.Game.GameSpaceModel.$ctor();
+			$t1.name = 'Space ' + (spaces.length + 1);
+			$t1.layoutType = 'straight';
+			$t1.left = 0;
+			$t1.top = 0;
+			$t1.height = 1;
+			$t1.width = 1;
+			ss.add(spaces, $t1);
+		},
+		$addAreaFn: function() {
+			var areas = this.$myScope.model.game.gameLayout.areas;
+			var $t1 = Models.SiteManagerModels.Game.GameAreaModel.$ctor();
+			$t1.name = 'Area ' + (areas.length + 1);
+			$t1.left = 0;
+			$t1.top = 0;
+			ss.add(areas, $t1);
+		},
+		$addTextFn: function() {
+			var texts = this.$myScope.model.game.gameLayout.texts;
+			var $t1 = Models.SiteManagerModels.Game.GameTextModel.$ctor();
+			$t1.name = 'Text ' + (texts.length + 1);
+			$t1.left = 0;
+			$t1.top = 0;
+			ss.add(texts, $t1);
 		},
 		$onDeveloperUpdateGameReceivedFn: function(user, o) {
 			this.$myScope.model.updateStatus = 'synced';
@@ -476,7 +573,10 @@
 		this.$myClientSiteManagerService.add_onDoesGameNameExistReceived(ss.mkdel(this, this.$onDoesGameNameExistReceivedFn));
 		this.$myScope.model.createGame = ss.delegateCombine(this.$myScope.model.createGame, ss.mkdel(this, this.$createGameFn));
 		this.$myScope.$watch('model.selectedGame', ss.mkdel(this, function() {
-			uiManager.get_openGameEditor()(this.$myScope.model.selectedGame);
+			uiManager.openGameEditor(this.$myScope.model.selectedGame);
+			if (!scope.minimized) {
+				scope.minimize();
+			}
 		}));
 	};
 	$Client_Controllers_$GameManagerController.prototype = {
@@ -754,14 +854,16 @@
 		this.$myScope.model.createAccount = ss.mkdel(this, this.$createAccountFn);
 		this.$myclientSiteManagerService.add_onLogin(ss.mkdel(this, this.$onLoginFn));
 		this.$myclientSiteManagerService.add_onUserCreate(ss.mkdel(this, this.$onUserCreateFn));
-		this.$myclientSiteManagerService.login('dested1', 'Ddested');
+		this.$myScope.model.username = 'dested1';
+		this.$myScope.model.password = 'Ddested';
+		window.setTimeout(ss.mkdel(this, this.$loginAccountFn), 1000);
 	};
 	$Client_Controllers_$LoginController.prototype = {
 		$onLoginFn: function(user, data) {
 			if (data.successful) {
 				this.$myUIManager.clientInfo.loggedInUser = user;
-				//myUIManager.UserLoggedIn();
-				this.$myCreateUIService.create$1('GameManager');
+				this.$myUIManager.userLoggedIn();
+				//     myCreateUIService.Create("GameManager");
 				this.$myScope.swingAway(7, false, null);
 			}
 			else {
@@ -802,9 +904,9 @@
 		this.$myScope = scope;
 		this.$myUIManager = uiManager;
 		scope.items = [];
-		uiManager.set_onMinimize(function(floatingWindowBaseScope) {
+		uiManager.onMinimize = function(floatingWindowBaseScope) {
 			ss.add(scope.items, floatingWindowBaseScope);
-		});
+		};
 		scope.open = ss.mkdel(this, this.$openFn);
 		scope.remove = ss.mkdel(this, this.$removeFn);
 	};
@@ -827,7 +929,7 @@
 		this.$myScope = scope;
 		this.$myUIManager = uiManager;
 		this.$myClientGameManagerService = clientGameManagerService;
-		this.$myScope.model = $Client_Scope_Controller_QuestionModel.$ctor();
+		this.$myScope.model = $Client_Scope_Controller_QuestionScopeModel.$ctor();
 		this.$myScope.model.windowClosed = function() {
 			window.alert('woooo');
 		};
@@ -1288,61 +1390,63 @@
 					scope.$apply();
 				}
 			});
-			var beforeStyle = {};
-			beforeStyle['display'] = 'block';
-			beforeStyle['position'] = 'relative';
-			beforeStyle['z-index'] = '-1';
-			beforeStyle['width'] = '100%';
-			beforeStyle['height'] = '100%';
-			beforeStyle['left'] = '-50px';
-			beforeStyle['top'] = '-50px';
-			beforeStyle['padding'] = '50px';
-			beforeStyle['border-radius'] = '15px';
-			beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
-			beforeStyle['content'] = '""';
-			beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
-			$Client_Directives_AcgDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
-			scope.spaceStyle = {};
-			scope.spaceStyle.position = 'absolute';
-			scope.spaceStyle.left = scope.space.x * scale.x;
-			scope.spaceStyle.top = scope.space.y * scale.y;
-			scope.spaceStyle.width = scope.space.width * scale.x;
-			scope.spaceStyle.height = scope.space.height * scale.y;
-			scope.spaceStyle.backgroundColor = 'red';
-			for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
-				var effect = scope.space.appearance.effects[$t1];
-				switch (effect.type) {
-					case 0: {
-						var hEffect = effect;
-						scope.spaceStyle.padding = ss.formatString('{0} {0} {0} {0}', hEffect.radius);
-						scope.spaceStyle.backgroundColor = hEffect.color;
-						scope.spaceStyle.border = 'solid 2px black';
-						scope.spaceStyle.borderRadius = 15;
-						scope.spaceStyle.boxShadow = '4px 4px 2px #333';
-						break;
-					}
-					case 1: {
-						window.alert(effect.type.toString());
-						break;
-					}
-					case 2: {
-						var bEffect = effect;
-						//rotate
-						break;
-					}
-					case 3: {
-						window.alert(effect.type.toString());
-						break;
-					}
-					case 4: {
-						window.alert(effect.type.toString());
-						break;
-					}
-					default: {
-						break;
+			scope.$watch('space', function() {
+				var beforeStyle = {};
+				beforeStyle['display'] = 'block';
+				beforeStyle['position'] = 'relative';
+				beforeStyle['z-index'] = '-1';
+				beforeStyle['width'] = '100%';
+				beforeStyle['height'] = '100%';
+				beforeStyle['left'] = '-50px';
+				beforeStyle['top'] = '-50px';
+				beforeStyle['padding'] = '50px';
+				beforeStyle['border-radius'] = '15px';
+				beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
+				beforeStyle['content'] = '""';
+				beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
+				$Client_Directives_AcgDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
+				scope.spaceStyle = {};
+				scope.spaceStyle.position = 'absolute';
+				scope.spaceStyle.left = scope.space.x * scale.x;
+				scope.spaceStyle.top = scope.space.y * scale.y;
+				scope.spaceStyle.width = scope.space.width * scale.x;
+				scope.spaceStyle.height = scope.space.height * scale.y;
+				scope.spaceStyle.backgroundColor = 'red';
+				for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
+					var effect = scope.space.appearance.effects[$t1];
+					switch (effect.type) {
+						case 0: {
+							var hEffect = effect;
+							scope.spaceStyle.padding = ss.formatString('{0} {0} {0} {0}', hEffect.radius);
+							scope.spaceStyle.backgroundColor = hEffect.color;
+							scope.spaceStyle.border = 'solid 2px black';
+							scope.spaceStyle.borderRadius = 15;
+							scope.spaceStyle.boxShadow = '4px 4px 2px #333';
+							break;
+						}
+						case 1: {
+							window.alert(effect.type.toString());
+							break;
+						}
+						case 2: {
+							var bEffect = effect;
+							//rotate
+							break;
+						}
+						case 3: {
+							window.alert(effect.type.toString());
+							break;
+						}
+						case 4: {
+							window.alert(effect.type.toString());
+							break;
+						}
+						default: {
+							break;
+						}
 					}
 				}
-			}
+			}, true);
 		}
 	};
 	$Client_Directives_AcgDrawSpaceDirective.transformRotate = function(ar) {
@@ -1392,7 +1496,7 @@
 		this.$myCompile = compile;
 		this.$myGameContentManager = gameContentManager;
 		this.restrict = 'EA';
-		this.template = '\r\n    <div  >\r\n        \r\n    </div>';
+		this.template = '<div></div>';
 		this.replace = true;
 		this.transclude = false;
 		this.scope = { spaces: '=acgSpaces' };
@@ -1416,7 +1520,7 @@
 			});
 			//scope["$watch"]("spaces",updater);
 			this.$myGameContentManager.redraw = ss.delegateCombine(this.$myGameContentManager.redraw, function() {
-				console.log('updatinggagaga');
+				console.log('updating board');
 				updater();
 				scope.$apply();
 			});
@@ -1489,6 +1593,8 @@
 		this.replace = false;
 		this.transclude = false;
 		this.scope = null;
+		this.$myElement = null;
+		this.$myScope = null;
 		this.$myUIManagerService = uiManagerService;
 		this.restrict = 'EA';
 		this.templateUrl = ss.formatString('{0}partials/floatingWindow.html', CommonLibraries.Constants.webIP);
@@ -1499,6 +1605,10 @@
 	};
 	$Client_Directives_FloatingWindowDirective.prototype = {
 		$linkFn: function(scope, element, attr) {
+			$Client_Directives_FloatingWindowDirective.$items.add(element, scope);
+			element.click(ss.thisFix(ss.mkdel(this, function(elem, event) {
+				this.$focus();
+			})));
 			scope.$parent.swingAway = ss.mkdel(this, function(a, b, c) {
 				this.swingAway(a, b, element, c);
 			});
@@ -1506,6 +1616,7 @@
 				this.swingBack(scope, element, c1);
 			});
 			scope.$parent.minimize = function() {
+				scope.$parent.minimized = true;
 				scope.minimize();
 			};
 			var $t1 = $Client_Scope_Directive_FloatingWindowPosition.$ctor();
@@ -1513,6 +1624,7 @@
 			$t1.top = scope.top;
 			$t1.display = 'block';
 			scope.positionStyles = $t1;
+			scope.positionStyles.zIndex = 10000;
 			if (scope.left.indexOf('%') !== -1) {
 				scope.positionStyles.marginLeft = -ss.Int32.div(parseInt(ss.replaceAllString(scope.width, 'px', '')), 2) + 'px';
 			}
@@ -1552,7 +1664,7 @@
 				scope.positionStyles.display = 'none';
 			};
 			scope.minimize = ss.mkdel(this, function() {
-				this.$myUIManagerService.get_onMinimize()(scope);
+				this.$myUIManagerService.onMinimize(scope);
 				scope.$parent.swingAway(5, false, function() {
 					scope.positionStyles.display = 'none';
 				});
@@ -1561,6 +1673,21 @@
 				scope.$parent.swingBack(null);
 				scope.positionStyles.display = 'block';
 			};
+			//Focus();
+		},
+		$focus: function() {
+			var $t1 = $Client_Directives_FloatingWindowDirective.$items.getEnumerator();
+			try {
+				while ($t1.moveNext()) {
+					var floatingWindowScope = $t1.current();
+					floatingWindowScope.value.positionStyles.zIndex = 10000;
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			$Client_Directives_FloatingWindowDirective.$items.get_item(this.$myElement).positionStyles.zIndex = 10001;
+			this.$myScope.$apply();
 		},
 		swingBack: function(scope, element, callback) {
 			var js = {};
@@ -1802,8 +1929,20 @@
 		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.Scope.Controller.GameCtrlScope
-	var $Client_Scope_Controller_GameCtrlScope = function() {
+	// Client.Scope.Controller.GameCodeScopeModel
+	var $Client_Scope_Controller_GameCodeScopeModel = function() {
+	};
+	$Client_Scope_Controller_GameCodeScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_GameCodeScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_GameCodeScopeModel.$ctor = function() {
+		var $this = {};
+		$this.code = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameControllerScope
+	var $Client_Scope_Controller_GameControllerScope = function() {
 		this.mainArea = null;
 		this.scale = null;
 		this.moveCard = null;
@@ -1819,14 +1958,12 @@
 		return $Client_Scope_Controller_GameEditorModel.$ctor();
 	};
 	$Client_Scope_Controller_GameEditorModel.$ctor = function() {
-		var $this = {};
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
 		$this.game = null;
 		$this.openCode = null;
 		$this.openLayout = null;
 		$this.openEffects = null;
 		$this.openTest = null;
-		$this.updateGame = null;
-		$this.updateStatus = 0;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1834,6 +1971,32 @@
 	var $Client_Scope_Controller_GameEditorScope = function() {
 		this.model = null;
 		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameLayoutEditorScope
+	var $Client_Scope_Controller_GameLayoutEditorScope = function() {
+		this.model = null;
+		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameLayoutEditorScopeModel
+	var $Client_Scope_Controller_GameLayoutEditorScopeModel = function() {
+	};
+	$Client_Scope_Controller_GameLayoutEditorScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_GameLayoutEditorScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_GameLayoutEditorScopeModel.$ctor = function() {
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
+		$this.selectedSpace = null;
+		$this.selectedText = null;
+		$this.selectedArea = null;
+		$this.selectedPiece = 0;
+		$this.game = null;
+		$this.addText = null;
+		$this.addArea = null;
+		$this.addSpace = null;
+		$this.test = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.GameManagerModel
@@ -1854,6 +2017,19 @@
 	var $Client_Scope_Controller_GameManagerScope = function() {
 		this.model = null;
 		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameUpdater
+	var $Client_Scope_Controller_GameUpdater = function() {
+	};
+	$Client_Scope_Controller_GameUpdater.createInstance = function() {
+		return $Client_Scope_Controller_GameUpdater.$ctor();
+	};
+	$Client_Scope_Controller_GameUpdater.$ctor = function() {
+		var $this = {};
+		$this.updateGame = null;
+		$this.updateStatus = 0;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.HomeModel
@@ -1952,13 +2128,19 @@
 		Client.Scope.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.Scope.Controller.QuestionModel
-	var $Client_Scope_Controller_QuestionModel = function() {
+	// Client.Scope.Controller.QuestionScope
+	var $Client_Scope_Controller_QuestionScope = function() {
+		this.model = null;
+		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
 	};
-	$Client_Scope_Controller_QuestionModel.createInstance = function() {
-		return $Client_Scope_Controller_QuestionModel.$ctor();
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.QuestionScopeModel
+	var $Client_Scope_Controller_QuestionScopeModel = function() {
 	};
-	$Client_Scope_Controller_QuestionModel.$ctor = function() {
+	$Client_Scope_Controller_QuestionScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_QuestionScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_QuestionScopeModel.$ctor = function() {
 		var $this = {};
 		$this.windowClosed = null;
 		$this.question = null;
@@ -1968,11 +2150,10 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
-	// Client.Scope.Controller.QuestionScope
-	var $Client_Scope_Controller_QuestionScope = function() {
-		this.model = null;
-		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	// Client.Scope.Controller.SelectedGameLayoutPiece
+	var $Client_Scope_Controller_SelectedGameLayoutPiece = function() {
 	};
+	$Client_Scope_Controller_SelectedGameLayoutPiece.prototype = { none: 'none', space: 'space', text: 'text', area: 'area' };
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.UpdateStatusType
 	var $Client_Scope_Controller_UpdateStatusType = function() {
@@ -2002,6 +2183,7 @@
 		this.swingBack = null;
 		this.minimize = null;
 		this.visible = false;
+		this.minimized = false;
 		Client.Scope.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2018,35 +2200,30 @@
 		$this.top = null;
 		$this.marginLeft = null;
 		$this.marginTop = null;
+		$this.zIndex = 0;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Directive.FloatingWindowScope
 	var $Client_Scope_Directive_FloatingWindowScope = function() {
-	};
-	$Client_Scope_Directive_FloatingWindowScope.createInstance = function() {
-		return $Client_Scope_Directive_FloatingWindowScope.$ctor();
-	};
-	$Client_Scope_Directive_FloatingWindowScope.$ctor = function() {
-		var $this = {};
-		$this.$parent = null;
-		$this.visible = false;
-		$this.width = null;
-		$this.height = null;
-		$this.left = null;
-		$this.top = null;
-		$this.sizeStyle = null;
-		$this.lastSizeStyle = null;
-		$this.positionStyles = null;
-		$this.lastPositionStyles = null;
-		$this.title = null;
-		$this.onclose = null;
-		$this.close = null;
-		$this.minimize = null;
-		$this.maximize = null;
-		$this.restore = null;
-		$this.isMaximized = false;
-		return $this;
+		this.$parent = null;
+		this.visible = false;
+		this.width = null;
+		this.height = null;
+		this.left = null;
+		this.top = null;
+		this.sizeStyle = null;
+		this.lastSizeStyle = null;
+		this.positionStyles = null;
+		this.lastPositionStyles = null;
+		this.title = null;
+		this.onclose = null;
+		this.close = null;
+		this.minimize = null;
+		this.maximize = null;
+		this.restore = null;
+		this.isMaximized = false;
+		Client.Scope.BaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Directive.Size
@@ -2396,17 +2573,15 @@
 	var $Client_Services_CreateUIService = function(compileService, rootScopeService) {
 		this.$myCompileService = null;
 		this.$myRootScopeService = null;
+		this.$singltons = {};
 		this.$myCompileService = compileService;
 		this.$myRootScopeService = rootScopeService;
 	};
 	$Client_Services_CreateUIService.prototype = {
 		create: function(T) {
 			return function(ui) {
-				var scope = this.$myRootScopeService.$new();
-				var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.webIP)))(scope);
-				item.appendTo(window.document.body);
-				scope.$apply();
-				return scope;
+				return this.create$3(T).call(this, ui, function(a, b) {
+				});
 			};
 		},
 		create$3: function(T) {
@@ -2417,6 +2592,34 @@
 				var item = this.$myCompileService(html)(scope);
 				item.appendTo(window.document.body);
 				scope.$apply();
+				return scope;
+			};
+		},
+		createSingleton: function(T) {
+			return function(ui) {
+				return this.createSingleton$1(T).call(this, ui, function(a, b) {
+				});
+			};
+		},
+		createSingleton$1: function(T) {
+			return function(ui, populateScope) {
+				var scope;
+				if (ss.keyExists(this.$singltons, ui)) {
+					var html = this.$singltons[ui];
+					scope = this.$myRootScopeService.$new();
+					populateScope(scope, html);
+					this.$myCompileService(html)(scope);
+					scope.$apply();
+				}
+				else {
+					scope = this.$myRootScopeService.$new();
+					var html1 = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.webIP));
+					populateScope(scope, html1);
+					var item = this.$myCompileService(html1)(scope);
+					item.appendTo(window.document.body);
+					scope.$apply();
+					this.$singltons[ui] = html1;
+				}
 				return scope;
 			};
 		},
@@ -2520,24 +2723,10 @@
 		this.onRoomJoined = null;
 		this.roomLeft = null;
 		this.clientInfo = null;
-		this.$1$OnMinimizeField = null;
-		this.$1$OpenGameEditorField = null;
+		this.onMinimize = null;
+		this.openGameEditor = null;
 		this.clientInfo = Models.ClientInformation.$ctor();
 		//            this.GameManager = new GameManager(clientGameManagerService,this);
-	};
-	$Client_Services_UIManagerService.prototype = {
-		get_onMinimize: function() {
-			return this.$1$OnMinimizeField;
-		},
-		set_onMinimize: function(value) {
-			this.$1$OnMinimizeField = value;
-		},
-		get_openGameEditor: function() {
-			return this.$1$OpenGameEditorField;
-		},
-		set_openGameEditor: function(value) {
-			this.$1$OpenGameEditorField = value;
-		}
 	};
 	ss.registerClass(global, 'Client.BuildAngular', $Client_BuildAngular);
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
@@ -2546,6 +2735,7 @@
 	ss.registerClass(null, 'Client.Controllers.$EffectEditorController', $Client_Controllers_$EffectEditorController);
 	ss.registerClass(null, 'Client.Controllers.$GameCodeController', $Client_Controllers_$GameCodeController);
 	ss.registerClass(null, 'Client.Controllers.$GameEditorController', $Client_Controllers_$GameEditorController);
+	ss.registerClass(null, 'Client.Controllers.$GameLayoutEditorController', $Client_Controllers_$GameLayoutEditorController);
 	ss.registerClass(null, 'Client.Controllers.$GameManagerController', $Client_Controllers_$GameManagerController);
 	ss.registerClass(null, 'Client.Controllers.$HomeController', $Client_Controllers_$HomeController);
 	ss.registerClass(null, 'Client.Controllers.$ListEffectsController', $Client_Controllers_$ListEffectsController);
@@ -2574,9 +2764,13 @@
 	ss.registerClass(global, 'Client.Scope.Controller.CreateRoomScope', $Client_Scope_Controller_CreateRoomScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.EffectEditorScope', $Client_Scope_Controller_EffectEditorScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameCodeScope', $Client_Scope_Controller_GameCodeScope, $Client_Scope_Directive_FloatingWindowBaseScope);
-	ss.registerClass(global, 'Client.Scope.Controller.GameCtrlScope', $Client_Scope_Controller_GameCtrlScope, Client.Scope.BaseScope);
-	ss.registerClass(global, 'Client.Scope.Controller.GameEditorModel', $Client_Scope_Controller_GameEditorModel);
+	ss.registerClass(global, 'Client.Scope.Controller.GameCodeScopeModel', $Client_Scope_Controller_GameCodeScopeModel);
+	ss.registerClass(global, 'Client.Scope.Controller.GameControllerScope', $Client_Scope_Controller_GameControllerScope, Client.Scope.BaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameUpdater', $Client_Scope_Controller_GameUpdater);
+	ss.registerClass(global, 'Client.Scope.Controller.GameEditorModel', $Client_Scope_Controller_GameEditorModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameEditorScope', $Client_Scope_Controller_GameEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameLayoutEditorScope', $Client_Scope_Controller_GameLayoutEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameLayoutEditorScopeModel', $Client_Scope_Controller_GameLayoutEditorScopeModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameManagerModel', $Client_Scope_Controller_GameManagerModel);
 	ss.registerClass(global, 'Client.Scope.Controller.GameManagerScope', $Client_Scope_Controller_GameManagerScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.HomeModel', $Client_Scope_Controller_HomeModel);
@@ -2588,13 +2782,14 @@
 	ss.registerClass(global, 'Client.Scope.Controller.MessageScope', $Client_Scope_Controller_MessageScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerEnum(global, 'Client.Scope.Controller.MessageType', $Client_Scope_Controller_MessageType);
 	ss.registerClass(global, 'Client.Scope.Controller.MinimizeScope', $Client_Scope_Controller_MinimizeScope, Client.Scope.BaseScope);
-	ss.registerClass(global, 'Client.Scope.Controller.QuestionModel', $Client_Scope_Controller_QuestionModel);
 	ss.registerClass(global, 'Client.Scope.Controller.QuestionScope', $Client_Scope_Controller_QuestionScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.QuestionScopeModel', $Client_Scope_Controller_QuestionScopeModel);
+	ss.registerEnum(global, 'Client.Scope.Controller.SelectedGameLayoutPiece', $Client_Scope_Controller_SelectedGameLayoutPiece);
 	ss.registerEnum(global, 'Client.Scope.Controller.UpdateStatusType', $Client_Scope_Controller_UpdateStatusType);
 	ss.registerClass(global, 'Client.Scope.Directive.AcgSpacesScope', $Client_Scope_Directive_AcgSpacesScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.CardScope', $Client_Scope_Directive_CardScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.FloatingWindowPosition', $Client_Scope_Directive_FloatingWindowPosition);
-	ss.registerClass(global, 'Client.Scope.Directive.FloatingWindowScope', $Client_Scope_Directive_FloatingWindowScope);
+	ss.registerClass(global, 'Client.Scope.Directive.FloatingWindowScope', $Client_Scope_Directive_FloatingWindowScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.Size', $Client_Scope_Directive_Size);
 	ss.registerClass(global, 'Client.Scope.Directive.SpaceScope', $Client_Scope_Directive_SpaceScope, Client.Scope.BaseScope);
 	ss.registerClass(null, 'Client.Services.$EditEffectService', $Client_Services_$EditEffectService);
@@ -2609,5 +2804,6 @@
 	ss.registerClass(global, 'Client.Services.GatewayService', $Client_Services_GatewayService);
 	ss.registerClass(global, 'Client.Services.MessageService', $Client_Services_MessageService);
 	ss.registerClass(global, 'Client.Services.UIManagerService', $Client_Services_UIManagerService);
+	$Client_Directives_FloatingWindowDirective.$items = new (ss.makeGenericType(ss.Dictionary$2, [Object, $Client_Scope_Directive_FloatingWindowScope]))();
 	$Client_BuildSite.instance = null;
 })();

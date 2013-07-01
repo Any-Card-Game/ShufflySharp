@@ -9,6 +9,7 @@ namespace Client.Scope.Controller
     {
         [IntrinsicProperty]
         public GameManagerModel Model { get; set; }
+
     }
     [Serializable]
     public class GameManagerModel

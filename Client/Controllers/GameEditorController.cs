@@ -26,7 +26,6 @@ namespace Client.Controllers
             myMessageService = messageService;
             myCreateUIService = createUIService;
             myScope.Model = new GameEditorModel();
-            myScope.Model.UpdateGame = UpdateGameFn;
             myScope.Model.OpenCode = OpenCodeFn;
             myScope.Model.OpenEffects = OpenEffectsFn;
             myScope.Model.OpenLayout = OpenLayoutFn;
@@ -39,7 +38,7 @@ namespace Client.Controllers
                 myScope.SwingAway(SwingDirection.TopRight, true, null);
                 myScope.SwingBack(null);
                 myScope.Model.Game = game;
-                OpenCodeFn();
+                OpenLayoutFn();//delete
             };
             myScope.watch("model.game",
                           () => {
@@ -48,6 +47,7 @@ namespace Client.Controllers
                           true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
+            myScope.Model.UpdateGame = UpdateGameFn;
 
         }
 
@@ -57,6 +57,12 @@ namespace Client.Controllers
 
         private void OpenLayoutFn()
         {
+            myCreateUIService.CreateSingleton<GameLayoutEditorScope>("GameLayoutEditor", (scope, elem) =>
+            {
+                scope.Model =new GameLayoutEditorScopeModel();
+                scope.Model.Game = myScope.Model.Game;
+            });
+
         }
 
         private void OpenEffectsFn()
@@ -65,9 +71,11 @@ namespace Client.Controllers
 
         private void OpenCodeFn()
         {
-            myCreateUIService.Create<GameCodeScope>("GameCodeEditor", (scope, elem) =>
+            myCreateUIService.CreateSingleton<GameCodeScope>("GameCodeEditor", (scope, elem) =>
                                                                         {
-                                                                            scope.Model =myScope.Model.Game.GameCode;
+                                                                            scope.Model=new GameCodeScopeModel();
+                                                                            scope.Model.Code = myScope.Model.Game.GameCode;
+
                                                                         });
         }
 

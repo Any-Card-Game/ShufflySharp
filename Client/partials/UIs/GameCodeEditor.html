@@ -1,12 +1,45 @@
 <script type="text/javascript">
+    var espri;
+try {
+    require(["plugins/esprima/esprimaJsContentAssist"], function(esprimaJsContentAssist) {
+        espri = new esprimaJsContentAssist.EsprimaJavaScriptContentAssistProvider();
+    });
+} catch(ex) {
+    
+    require(["plugins/esprima/esprimaJsContentAssist"], function (esprimaJsContentAssist) {
+        espri = new esprimaJsContentAssist.EsprimaJavaScriptContentAssistProvider();
+    });
+}
+
     CodeMirror.commands.autocomplete = function (cm) {
-        CodeMirror.showHint(cm, ACGIntellisense);
+
+        CodeMirror.showHint(cm, function (editor, options) {
+
+            var cur = editor.getCursor();
+            var token = editor.getTokenAt(cur);
+            var val = editor.getValue();
+            var ind = editor.indexFromPos(cur);
+       
+            
+            function getPrefixStart(a) {
+                for (; a > 0 && /[A-Za-z0-9_]/.test(getText(val,a - 1, a)); )
+                    a--;
+                return a
+            }
+
+            function getText(str,start,end) {
+                return str.substring(start, end);
+            }
+            var items = espri.computeProposals(val, ind, { line: cur.line, prefix: getText(val, getPrefixStart(ind), ind), selection: { start: ind, end: ind } });
+            debugger;
+
+            return { list: items.map(function (c) { return c.proposal }), from: CodeMirror.Pos(cur.line, token.end), to: CodeMirror.Pos(cur.line, token.end) }
+        });
     }
 </script>
 
     <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.js"></script>
     <link rel="stylesheet" href="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.css">
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/addon/hint/javascript-hint.js"></script>
     <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/mode/javascript/javascript.js"></script>
       
 <div ng-controller="GameCodeController">
@@ -14,7 +47,7 @@
         
         
         <textarea ui-codemirror="{lineNumbers: true,theme:'midnight',mode:'javascript',extraKeys: { 'Ctrl-Space': 'autocomplete' }}" 
-            ng-model="model.code"></textarea>
+            ng-model="model.code.code"></textarea>
         
         <button ng-click="model.updateGame() ">save</button>
         {{model.updateStatus}}

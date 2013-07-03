@@ -77,6 +77,8 @@
 			return new $Client_Directives_AcgTestDrawCardDirective(effectManager3);
 		}]).directive('acgTestDrawSpace', [function() {
 			return new $Client_Directives_AcgTestDrawSpaceDirective();
+		}]).directive('acgTestDrawText', [function() {
+			return new $Client_Directives_AcgTestDrawTextDirective();
 		}]).directive('acgSpaces', ['$compile', 'gameContentManager', function(compile, gameContentManager1) {
 			return new $Client_Directives_AcgSpacesDirective(compile, gameContentManager1);
 		}]);
@@ -528,7 +530,7 @@
 		$addSpaceFn: function() {
 			var spaces = this.$myScope.model.game.gameLayout.spaces;
 			var $t1 = Models.SiteManagerModels.Game.GameSpaceModel.$ctor();
-			$t1.name = 'Space ' + (spaces.length + 1);
+			$t1.name = 'Space' + (spaces.length + 1);
 			$t1.layoutType = 'straight';
 			$t1.left = 0;
 			$t1.top = 0;
@@ -539,7 +541,7 @@
 		$addAreaFn: function() {
 			var areas = this.$myScope.model.game.gameLayout.areas;
 			var $t1 = Models.SiteManagerModels.Game.GameAreaModel.$ctor();
-			$t1.name = 'Area ' + (areas.length + 1);
+			$t1.name = 'Area' + (areas.length + 1);
 			$t1.left = 0;
 			$t1.top = 0;
 			ss.add(areas, $t1);
@@ -547,7 +549,7 @@
 		$addTextFn: function() {
 			var texts = this.$myScope.model.game.gameLayout.texts;
 			var $t1 = Models.SiteManagerModels.Game.GameTextModel.$ctor();
-			$t1.name = 'Text ' + (texts.length + 1);
+			$t1.name = 'Text' + (texts.length + 1);
 			$t1.left = 0;
 			$t1.top = 0;
 			ss.add(texts, $t1);
@@ -2085,7 +2087,6 @@
 				//                                                     }
 				//
 				//                                                     }
-				scope.$broadcast('redrawCard');
 			};
 			scope.$watch('model.scale', function() {
 				scale = scope.model.scale;
@@ -2121,6 +2122,88 @@
 		return ss.formatString('rotate({0}deg)', ar);
 	};
 	$Client_Directives_AcgTestDrawSpaceDirective.$changeCSS = function(myClass, values) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					var $t1 = new ss.ObjectEnumerator(values);
+					try {
+						while ($t1.moveNext()) {
+							var m = $t1.current();
+							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
+						}
+					}
+					finally {
+						$t1.dispose();
+					}
+				}
+			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.AcgTestDrawTextDirective
+	var $Client_Directives_AcgTestDrawTextDirective = function() {
+		this.link = null;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Directives_AcgTestDrawTextDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			var scale = scope.model.scale;
+			var reApplyTextBind = function() {
+				var beforeStyle = {};
+				if (false) {
+					beforeStyle['display'] = 'block';
+					beforeStyle['position'] = 'relative';
+					beforeStyle['z-index'] = '-1';
+					beforeStyle['width'] = '100%';
+					beforeStyle['height'] = '100%';
+					beforeStyle['left'] = '-50px';
+					beforeStyle['top'] = '-50px';
+					beforeStyle['padding'] = '50px';
+					beforeStyle['border-radius'] = '15px';
+					beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
+					beforeStyle['content'] = '""';
+					beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
+				}
+				$Client_Directives_AcgTestDrawTextDirective.$changeCSS('text' + scope.text.name + '::before', beforeStyle);
+				scope.textStyle = {};
+				scope.textStyle.position = 'absolute';
+				scope.textStyle.left = scope.text.left * scale.x;
+				scope.textStyle.top = scope.text.top * scale.y;
+				element.text(scope.text.text);
+			};
+			scope.$watch('model.scale', function() {
+				scale = scope.model.scale;
+				element.attr('class', 'text ' + ss.formatString('text{0}', scope.text.name));
+				element.draggable({
+					cursor: 'crosshair',
+					grid: [scale.x, scale.y],
+					drag: function(ev, ele) {
+						scope.text.left = ele.position.left / scale.x;
+						scope.text.top = ele.position.top / scale.y;
+						scope.$apply();
+					}
+				});
+				reApplyTextBind();
+			});
+			scope.$watch('text', reApplyTextBind, true);
+		}
+	};
+	$Client_Directives_AcgTestDrawTextDirective.transformRotate = function(ar) {
+		return ss.formatString('rotate({0}deg)', ar);
+	};
+	$Client_Directives_AcgTestDrawTextDirective.$changeCSS = function(myClass, values) {
 		myClass = '.' + myClass;
 		var CSSRules = '';
 		var document = eval('window.document');
@@ -2906,6 +2989,13 @@
 		$Client_Scope_Controller_TestGameControllerScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Directive.TestTextScope
+	var $Client_Scope_Directive_TestTextScope = function() {
+		this.text = null;
+		this.textStyle = null;
+		$Client_Scope_Controller_TestGameControllerScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Services.EditEffectService
 	var $Client_Services_$EditEffectService = function() {
 		this.popOpenEffect = null;
@@ -3410,6 +3500,7 @@
 	ss.registerClass(global, 'Client.Directives.AcgSpacesDirective', $Client_Directives_AcgSpacesDirective);
 	ss.registerClass(global, 'Client.Directives.AcgTestDrawCardDirective', $Client_Directives_AcgTestDrawCardDirective);
 	ss.registerClass(global, 'Client.Directives.AcgTestDrawSpaceDirective', $Client_Directives_AcgTestDrawSpaceDirective);
+	ss.registerClass(global, 'Client.Directives.AcgTestDrawTextDirective', $Client_Directives_AcgTestDrawTextDirective);
 	ss.registerClass(global, 'Client.Directives.ChatBoxDirective', $Client_Directives_ChatBoxDirective);
 	ss.registerClass(global, 'Client.Directives.DraggableDirective', $Client_Directives_DraggableDirective);
 	ss.registerClass(global, 'Client.Directives.FancyListDirective', $Client_Directives_FancyListDirective);
@@ -3458,6 +3549,7 @@
 	ss.registerClass(global, 'Client.Scope.Directive.SpaceScope', $Client_Scope_Directive_SpaceScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.TestSpaceScope', $Client_Scope_Directive_TestSpaceScope, $Client_Scope_Controller_TestGameControllerScope);
 	ss.registerClass(global, 'Client.Scope.Directive.TestCardScope', $Client_Scope_Directive_TestCardScope, $Client_Scope_Directive_TestSpaceScope);
+	ss.registerClass(global, 'Client.Scope.Directive.TestTextScope', $Client_Scope_Directive_TestTextScope, $Client_Scope_Controller_TestGameControllerScope);
 	ss.registerClass(null, 'Client.Services.$EditEffectService', $Client_Services_$EditEffectService);
 	ss.registerClass(global, 'Client.Services.ClientChatManagerService', $Client_Services_ClientChatManagerService);
 	ss.registerClass(global, 'Client.Services.ClientDebugManagerService', $Client_Services_ClientDebugManagerService);

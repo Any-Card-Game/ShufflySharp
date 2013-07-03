@@ -61,6 +61,7 @@
     <Compile Include="Directives\ChatBoxDirective.cs" />
     <Compile Include="Directives\AcgTestDrawCardDirective.cs" />
     <Compile Include="Directives\AcgTestDrawSpaceDirective.cs" />
+    <Compile Include="Directives\AcgTestDrawTextDirective.cs" />
     <Compile Include="Directives\DraggableDirective.cs" />
     <Compile Include="Directives\FancyListDirective.cs" />
     <Compile Include="Directives\FloatingWindowDirective.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Scope\Directive\SpaceScope.cs" />
     <Compile Include="Scope\Directive\TestCardScope.cs" />
     <Compile Include="Scope\Directive\TestSpaceScope.cs" />
+    <Compile Include="Scope\Directive\TestTextScope.cs" />
     <Compile Include="Services\ClientChatManagerService.cs" />
     <Compile Include="Services\ClientDebugManagerService.cs" />
     <Compile Include="Services\ClientGameManagerService.cs" />

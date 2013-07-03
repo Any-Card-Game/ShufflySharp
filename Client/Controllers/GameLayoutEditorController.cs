@@ -87,7 +87,7 @@ namespace Client.Controllers
 
             spaces.Add(new GameSpaceModel()
                        {
-                           Name = "Space " + (spaces.Count + 1),
+                           Name = "Space" + (spaces.Count + 1),
                            LayoutType = GameSpaceLayoutType.Straight,
                            Left = 0,
                            Top = 0,
@@ -102,7 +102,7 @@ namespace Client.Controllers
 
             areas.Add(new GameAreaModel()
             {
-                Name = "Area " + (areas.Count + 1),
+                Name = "Area" + (areas.Count + 1),
                 Left = 0,
                 Top = 0,
             });
@@ -114,7 +114,7 @@ namespace Client.Controllers
 
             texts.Add(new GameTextModel()
             {
-                Name = "Text " + (texts.Count + 1),
+                Name = "Text" + (texts.Count + 1),
                 Left = 0,
                 Top = 0,
             });

@@ -58,6 +58,7 @@ namespace Client
                  .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) })
                  .directive("acgTestDrawCard", new object[] { "effectManager", new Func<EffectManagerService, object>((effectManager) => new AcgTestDrawCardDirective(effectManager)) })
                  .directive("acgTestDrawSpace", new object[] { new Func<object>(() => new AcgTestDrawSpaceDirective()) })
+                 .directive("acgTestDrawText", new object[] { new Func<object>(() => new AcgTestDrawTextDirective()) })
                  .directive("acgSpaces", new object[] { "$compile", "gameContentManager", new Func<CompileService, GameContentManager, object>((compile, gameContentManager) => new AcgSpacesDirective(compile, gameContentManager)) });
             
         }

@@ -91,7 +91,6 @@ namespace Client.Directives
                                                          }
                                                      }
                 */
-                scope.Broadcast("redrawCard");
             };
             scope.watch("model.scale", () =>
                                        {

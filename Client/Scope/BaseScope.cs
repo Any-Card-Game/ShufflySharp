@@ -9,7 +9,7 @@ namespace Client.Scope
     }
 
     [Imported]
-    public class BaseScope:IScope
+    public abstract class BaseScope:IScope
     {
  
 
@@ -127,6 +127,7 @@ namespace Client.Scope
             return null;
         }
 
+
         public void Destroy()
         {
             
@@ -145,6 +146,21 @@ namespace Client.Scope
         {
             return default(IScope);
         }
+
+        public void Broadcast<T>(string channel, T value)
+        {
+        }
+        public void Broadcast(string channel)
+        {
+        }
+
+        public void On<T>(string channel, Action<T> callback)
+        {
+        }
+        public void On(string channel, Action callback)
+        {
+        }
+
 
 #if TODO
         // Documentation says exp is optional, but actual implementaton counts on it

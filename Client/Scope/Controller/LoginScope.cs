@@ -6,10 +6,10 @@ namespace Client.Scope.Controller
     public class LoginScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
-        public LoginModel Model { get; set; } 
+        public LoginScopeModel Model { get; set; } 
     }
     [Serializable]
-    public class LoginModel 
+    public class LoginScopeModel 
     {
         public Action WindowClosed { get; set; }
         public string Username { get; set; }
@@ -17,4 +17,4 @@ namespace Client.Scope.Controller
         public Action CreateAccount { get; set; }
         public Action LoginAccount { get; set; }
     }
-}
+} 

@@ -13,9 +13,7 @@ namespace Client.Scope.Controller
         [IntrinsicProperty]
         public Action MoveCard { get; set; }
         [IntrinsicProperty]
-        public Action AnimateCard { get; set; }
-        [IntrinsicProperty]
-        public CardGameCard SelectedCard { get; set; }
+        public Action AnimateCard { get; set; } 
 
     }
 }

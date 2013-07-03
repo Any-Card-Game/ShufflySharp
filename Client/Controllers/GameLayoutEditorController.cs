@@ -5,6 +5,8 @@ using System.Html;
 using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
+using CommonLibraries;
+using global;
 using Models;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
@@ -37,7 +39,7 @@ namespace Client.Controllers
                                                  });
             myScope.watch("model.selectedText", () =>
                                                 {
-                                                    if (myScope.Model.SelectedText== null) return;
+                                                    if (myScope.Model.SelectedText == null) return;
                                                     myScope.Model.SelectedSpace = null;
                                                     myScope.Model.SelectedArea = null;
                                                     myScope.Model.SelectedPiece = SelectedGameLayoutPiece.Text;
@@ -45,7 +47,7 @@ namespace Client.Controllers
                                                 });
             myScope.watch("model.selectedArea", () =>
                                                 {
-                                                    if (myScope.Model.SelectedArea== null) return;
+                                                    if (myScope.Model.SelectedArea == null) return;
                                                     myScope.Model.SelectedText = null;
                                                     myScope.Model.SelectedSpace = null;
                                                     myScope.Model.SelectedPiece = SelectedGameLayoutPiece.Area;
@@ -56,7 +58,6 @@ namespace Client.Controllers
             myScope.Model.AddText = AddTextFn;
             myScope.Model.AddArea = AddAreaFn;
             myScope.Model.AddSpace = AddSpaceFn;
-            myScope.Model.Test = TestFn;
 
 
             myScope.watch("model.game",
@@ -69,11 +70,16 @@ namespace Client.Controllers
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
 
-        }
+            myCreateUIService.CreateSingleton<TestGameControllerScope>("TestGameUI", (_scope, elem) =>
+            {
+                _scope.Model =new TestGameControllerScopeModel();
+                _scope.Model.MainLayout = myScope.Model.Game.GameLayout;
 
-        private void TestFn()
-        {
+            });
+
+
         }
+         
 
         private void AddSpaceFn()
         {

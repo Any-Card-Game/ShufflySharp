@@ -173,7 +173,11 @@ namespace ServerManager.GatewayServer
         private void sendMessage(UserSocketModel user, string eventChannel, object content)
         {
             if (specialHandle(user, eventChannel, content))
-                user.Socket.Emit("Client.Message", new SocketClientMessageModel(user.ToUserModel(), eventChannel, content));
+            {
+                var socketClientMessageModel = new SocketClientMessageModel(user.ToUserModel(), eventChannel, content);
+                Logger.Log(socketClientMessageModel.ToString(), LogLevel.Information);
+                user.Socket.Emit("Client.Message", socketClientMessageModel);
+            }
         }
 
         private bool specialHandle(UserSocketModel user, string eventChannel, object content)

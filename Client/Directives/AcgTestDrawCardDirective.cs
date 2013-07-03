@@ -14,30 +14,56 @@ namespace Client.Directives
 
 
 
-    public class AcgDrawCardDirective
+    public class AcgTestDrawCardDirective
     {
         private readonly EffectManagerService myEffectManager;
-        public Action<CardScope, jQueryObject, object> link;
-        public AcgDrawCardDirective(EffectManagerService effectManager)
+        public Action<TestCardScope, jQueryObject, object> link;
+        public AcgTestDrawCardDirective(EffectManagerService effectManager)
         {
             myEffectManager = effectManager;
             link = linkFn;
         }
 
-        private void linkFn(CardScope scope, jQueryObject element, object attrs)
+        private void linkFn(TestCardScope scope, jQueryObject element, object attrs)
         {
             element.Attribute("style", "width:71px; height:96px;");
-            element.Attribute("class", "card "+string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
+            element.Attribute("class", "card " + string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
 
 
-  
+            scope.watch("model.selectedCard",
+                        () =>
+                        {
+                            if (scope.Model.SelectedCard == null || scope.Model.SelectedCard != scope.Card)
+                            {
+                                scope.CardStyle.border = Script.Undefined;
+                                scope.CardStyle.margin = Script.Undefined;
+                            }
+                            else
+                            {
+                                scope.CardStyle.border = "solid 4px green";
+                                scope.CardStyle.margin = "-4px";
+                            }
+                        });
+
+            scope.CardClick = () =>
+            {
+                if (scope.Model.SelectedCard == scope.Card)
+                {
+                    scope.Model.SelectedCard = null;
+                }
+                else
+                {
+                    scope.Model.SelectedCard = scope.Card;
+                }
+            };
+
             Action redrawCard = () =>
             {
+/*
+                var scale = scope.Model.Scale;
 
-                var scale = ((Point)((dynamic)scope.Parent.Parent)["$parent"].scale);
 
-
-                var spaceScale = new { width = scope.Space.Width / (scope.Space.Pile.Cards.Count - 1), height = scope.Space.Height / (scope.Space.Pile.Cards.Count-1) };
+                var spaceScale = new { width = scope.Space.Width / (scope.Space.Pile.Cards.Count - 1), height = scope.Space.Height / (scope.Space.Pile.Cards.Count - 1) };
                 var vertical = scope.Space.Vertical;
                 var cardIndex = scope.Space.Pile.Cards.IndexOf(scope.Card);
 
@@ -47,7 +73,7 @@ namespace Client.Directives
                 var yy = 0.0;
 
 
-                                    switch (scope.Space.ResizeType)
+                switch (scope.Space.ResizeType)
                 {
                     case TableSpaceResizeType.Static:
                         if (vertical)
@@ -73,8 +99,8 @@ namespace Client.Directives
                 scope.CardStyle.borderRadius = "5px";
                 scope.CardStyle.left = (xx + (vertical ? scope.Space.Width * scale.X / 2 : 0));
                 scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height * scale.Y / 2 : 0));
-//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
+                //                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
+                element.me().rotate(scope.Space.Appearance.InnerStyle.Rotate);
                 scope.CardStyle.content = "\"\"";
 
 
@@ -154,7 +180,7 @@ namespace Client.Directives
 
                             var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
 
-                            element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))) );
+                            element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))));
 
                             break;
                         case EffectType.StyleProperty:
@@ -163,22 +189,23 @@ namespace Client.Directives
                             break;
                     }
                 }
+*/
 
 
 
 
- 
 
-           
+
+
             };
             JsDictionary<string, string> keys = new JsDictionary<string, string>() { };
-            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13),Constants.WebIP);
+            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13), Constants.WebIP);
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 
             scope.On("redrawCard", redrawCard);
 
-         //   redrawCard();
+            //   redrawCard();
             /*
                           
  
@@ -244,7 +271,8 @@ namespace Client.Directives
                 CSSRules = "rules";
             else if (document.getElementById)
                 CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++) {
+            for (var a = 0; a < document.styleSheets.length; a++)
+            {
                 if (document.styleSheets[a][CSSRules] == null) continue;
                 for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
                 {

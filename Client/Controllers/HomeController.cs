@@ -47,7 +47,7 @@ namespace Client.Controllers
             myClientSiteManagerService.OnGetRoomsReceived += PopulateRooms;
             myClientSiteManagerService.OnRoomJoined += RoomJoined;
             myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfoReceived;
-
+            
         }
 
         private void CreateGameFn()

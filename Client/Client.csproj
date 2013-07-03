@@ -41,6 +41,7 @@
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\TestGameController.cs" />
     <Compile Include="Controllers\GameLayoutEditorController.cs" />
     <Compile Include="Controllers\GameCodeController.cs" />
     <Compile Include="Controllers\GameEditorController.cs" />
@@ -58,6 +59,8 @@
     <Compile Include="Directives\AcgDrawSpaceDirective.cs" />
     <Compile Include="Directives\AcgSpacesDirective.cs" />
     <Compile Include="Directives\ChatBoxDirective.cs" />
+    <Compile Include="Directives\AcgTestDrawCardDirective.cs" />
+    <Compile Include="Directives\AcgTestDrawSpaceDirective.cs" />
     <Compile Include="Directives\DraggableDirective.cs" />
     <Compile Include="Directives\FancyListDirective.cs" />
     <Compile Include="Directives\FloatingWindowDirective.cs" />
@@ -79,11 +82,14 @@
     <Compile Include="Scope\Controller\MessageScope.cs" />
     <Compile Include="Scope\Controller\MinimizeScope.cs" />
     <Compile Include="Scope\Controller\QuestionScope.cs" />
+    <Compile Include="Scope\Controller\TestGameControllerScope.cs" />
     <Compile Include="Scope\Directive\AcgSpacesScope.cs" />
     <Compile Include="Scope\Directive\CardScope.cs" />
     <Compile Include="Scope\Directive\FloatingWindowBaseScope.cs" />
     <Compile Include="Scope\Directive\FloatingWindowScope.cs" />
     <Compile Include="Scope\Directive\SpaceScope.cs" />
+    <Compile Include="Scope\Directive\TestCardScope.cs" />
+    <Compile Include="Scope\Directive\TestSpaceScope.cs" />
     <Compile Include="Services\ClientChatManagerService.cs" />
     <Compile Include="Services\ClientDebugManagerService.cs" />
     <Compile Include="Services\ClientGameManagerService.cs" />
@@ -154,7 +160,8 @@
     <Content Include="partials\chatBox.html" />
     <Content Include="partials\fancyList.html" />
     <Content Include="partials\floatingWindow.html" />
-    <Content Include="partials\UIs\gameUI.html" />
+    <Content Include="partials\UIs\TestGameUI.html" />
+    <Content Include="partials\UIs\GameUI.html" />
     <Content Include="partials\UIs.html" />
     <Content Include="partials\UIs\ActiveLobby.html" />
     <Content Include="partials\UIs\GameCodeEditor.html" />

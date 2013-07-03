@@ -169,7 +169,7 @@ require('./NodeLibraries.js');
 				return;
 			}
 			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			// Logger.Log(string.Format("- Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content));
+			NodeLibraries.Common.Logging.Logger.log(ss.formatString('  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}', channel, this.name, user, eventChannel, content), 2);
 			pusher.message(channel, this.name, user, eventChannel, content);
 		}
 	};

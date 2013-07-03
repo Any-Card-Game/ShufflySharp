@@ -34,7 +34,7 @@
 		},
 		login: function(userName, password) {
 			var $t2 = this.gatewaySocket;
-			var $t1 = Models.UserModel.$ctor();
+			var $t1 = new Models.UserModel();
 			$t1.userName = userName;
 			$t1.password = password;
 			$t2.emit('Gateway.Login', $t1);

@@ -1,16 +1,15 @@
 using System.Runtime.CompilerServices;
 using Client.Scope.Controller;
 using global;
+using Models.SiteManagerModels.Game;
+
 namespace Client.Scope.Directive
 {
-    public class SpaceScope : BaseScope
+    public class TestSpaceScope : TestGameControllerScope
     {
 
         [IntrinsicProperty]
-        public CardGameTableSpace Space { get; set; }
-        [IntrinsicProperty]
-        [ScriptName("$parent")]
-        public GameControllerScope Parent { get; set; }
+        public GameSpaceModel Space { get; set; } 
         [IntrinsicProperty]
         public dynamic SpaceStyle { get; set; }
 

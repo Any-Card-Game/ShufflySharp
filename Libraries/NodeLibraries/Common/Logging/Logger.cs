@@ -47,6 +47,7 @@ namespace NodeLibraries.Common.Logging
                     Console.Log(item);
                     break;
                 case LogLevel.Information:
+                    Console.Log(item);
                     break;
             }
             fs.AppendFile("logs/"+Key , item+"\n", null, (error, outp) =>

@@ -87,6 +87,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 				break;
 			}
 			case 2: {
+				console.log(item);
 				break;
 			}
 		}

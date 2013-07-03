@@ -2239,14 +2239,14 @@
 		this.vertical = (!options.vertical ? false : options.vertical);
 		this.x = ((options.x === 0) ? 0 : options.x);
 		this.y = ((options.y === 0) ? 0 : options.y);
+		this.name = ss.coalesce(options.name, 'TableSpace');
 		this.width = ((options.width === 0) ? 0 : options.width);
 		this.height = ((options.height === 0) ? 0 : options.height);
-		this.pile = options.pile;
+		this.pile = options.pile || new $global_Pile(this.name);
 		//Rotate = options.Rotate == 0 ? 0 : options.Rotate;
 		this.visible = (!options.visible ? true : options.visible);
 		this.stackCards = (!options.stackCards ? false : options.stackCards);
 		this.drawCardsBent = (!options.drawCardsBent ? true : options.drawCardsBent);
-		this.name = ss.coalesce(options.name, 'TableSpace');
 		this.sortOrder = options.sortOrder;
 		this.numberOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 		this.numberOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);

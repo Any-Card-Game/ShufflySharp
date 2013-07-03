@@ -1,0 +1,8 @@
+<div ng-controller="TestGameController">
+    <div ng-repeat='space in model.mainLayout.spaces' >
+        <div acg-test-draw-space ng-style='spaceStyle'>
+            <div ng-repeat='card in space.pile.cards' acg-test-draw-card ng-style='cardStyle' ng-click='cardClick()'>
+            </div>
+        </div>
+    </div>
+</div>

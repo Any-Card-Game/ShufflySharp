@@ -1046,7 +1046,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		$sendMessage: function(user, eventChannel, content) {
 			if (this.$specialHandle(user, eventChannel, content)) {
-				user.socket.emit('Client.Message', new Models.SocketClientMessageModel(Models.UserSocketModel.toUserModel(user), eventChannel, content));
+				var socketClientMessageModel = new Models.SocketClientMessageModel(Models.UserSocketModel.toUserModel(user), eventChannel, content);
+				NodeLibraries.Common.Logging.Logger.log(socketClientMessageModel.toString(), 2);
+				user.socket.emit('Client.Message', socketClientMessageModel);
 			}
 		},
 		$specialHandle: function(user, eventChannel, content) {

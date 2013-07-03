@@ -33,7 +33,9 @@ namespace Client.Controllers
 
             myScope.Model.CreateGame += CreateGameFn;
             myScope.watch("model.selectedGame",
-                          () => {
+                          () =>
+                          {
+                              if (myScope.Model.SelectedGame == null) return;
                               uiManager.OpenGameEditor(myScope.Model.SelectedGame);
                               if (!scope.Minimized)      
                               scope.Minimize();

@@ -22,7 +22,7 @@ namespace Client.Controllers
             myclientSiteManagerService = clientSiteManagerService;
             myMessageService = messageService;
             myCreateUIService = createUIService;
-            myScope.Model = new LoginModel();
+            myScope.Model = new LoginScopeModel();
 
             myScope.Model.WindowClosed = () =>
             {
@@ -34,7 +34,7 @@ namespace Client.Controllers
             myclientSiteManagerService.OnUserCreate += OnUserCreateFn;
 
             myScope.Model.Username = "dested1";
-            myScope.Model.Password = "Ddested";
+            myScope.Model.Password = "d";
 
             Window.SetTimeout(LoginAccountFn, 1000);
 
@@ -47,8 +47,6 @@ namespace Client.Controllers
             {
                 myUIManager.ClientInfo.LoggedInUser = user;
                 myUIManager.UserLoggedIn();
-           //     myCreateUIService.Create("GameManager");
-
                 myScope.SwingAway(SwingDirection.Left, false, null);
             }
             else
@@ -61,14 +59,16 @@ namespace Client.Controllers
 
         }
 
-        void OnUserCreateFn(Models.UserModel user, Models.UserCreateResponse o)
+        void OnUserCreateFn(UserModel user, UserCreateResponse o)
         {
-            if (o.Successful) {
+            if (o.Successful)
+            {
                 myUIManager.ClientInfo.LoggedInUser = user;
                 myUIManager.UserLoggedIn();
-                myScope.SwingAway(SwingDirection.Left, false, null);
-
-            } else {
+                myScope.SwingAway(SwingDirection.Left, false, null); 
+            }
+            else
+            {
                 myMessageService.PopupOkay("Bad!", "You no create! It exist! What up!!?", () =>
                 {
                 });

@@ -47,7 +47,7 @@ namespace Client.Directives
 
         private void LinkFn(FloatingWindowScope scope, jQueryObject element, dynamic attr)
         {
-            items.Add(element,scope);
+            items.Add(element, scope);
 
 
             element.Click((elem, @event) => Focus());
@@ -111,19 +111,19 @@ namespace Client.Directives
             scope.Minimize = () =>
             {
                 myUIManagerService.OnMinimize(scope);
-                                 scope.Parent.SwingAway(SwingDirection.Bottom,
-                                                        false,
-                                                        () => {
-                                                            scope.PositionStyles.Display = "none";
-                                                        });
-                             };
+                scope.Parent.SwingAway(SwingDirection.Bottom,
+                                       false,
+                                       () =>
+                                       {
+                                           scope.PositionStyles.Display = "none";
+                                       });
+            };
             scope.Restore = () =>
-            {
+                            {
                                 scope.Parent.SwingBack(null);
                                 scope.PositionStyles.Display = "block";
-
                             };
-            //Focus();
+            Focus();
 
         }
 
@@ -133,8 +133,11 @@ namespace Client.Directives
             {
                 floatingWindowScope.Value.PositionStyles.ZIndex = 10000;
             }
-            items[myElement].PositionStyles.ZIndex = 10001;
-            myScope.Apply();
+            if (items.ContainsKey(myElement))
+            {
+                items[myElement].PositionStyles.ZIndex = 10001;
+                myScope.Apply();
+            }
         }
 
         public void SwingBack(FloatingWindowScope scope, jQueryObject element, Action callback)

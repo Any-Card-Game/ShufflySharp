@@ -64,8 +64,8 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameTextModel
     {
-        public int Top { get; set; }
-        public int Left { get; set; }
+        public double Top { get; set; }
+        public double Left { get; set; }
 
         public string Name { get; set; }
         public string Text { get; set; }
@@ -76,18 +76,18 @@ namespace Models.SiteManagerModels.Game
     {
         public string Name { get; set; }
 
-        public int Top { get; set; }
-        public int Left { get; set; }
+        public double Top { get; set; }
+        public double Left { get; set; }
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
 
     }
     [Serializable]
     public class GameSpaceModel : GameAreaModel
     {
         public GameSpaceLayoutType LayoutType { get; set; }
-
+        public bool Vertical { get; set; }
     }
     [NamedValues]
     public enum GameSpaceLayoutType

@@ -25,6 +25,7 @@ namespace Client.Controllers
 
         public GameCodeController(GameCodeScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, MessageService messageService)
         {
+
             //scope.Model.
             myScope = scope;
             myUIManager = uiManager;

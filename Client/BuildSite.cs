@@ -43,7 +43,6 @@ namespace Client
                                                                    url + "lib/FunctionWorker.js",
                                                                    url + "lib/Stats.js",
                                                                    url + "lib/keyboardjs.js",
-                                                                   url + "lib/Dialog.js",
                                                            },
                                                      false,
                                                      stepThree);

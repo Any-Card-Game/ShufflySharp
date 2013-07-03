@@ -16,5 +16,10 @@ namespace Models
             Channel = channel;
             Content = content;
         }
+
+        public override string ToString()
+        {
+            return string.Format("Channel: {0}, Content: {1}, User: ({2})", Channel, Content, User);
+        }
     }
 }

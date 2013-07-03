@@ -1,7 +1,7 @@
 <div ng-controller="GameLayoutEditorController">
     <div floating-window left="'75%'" top="'25%'" height="'600px'" width="'400px'" title="'Game Layout Editor!'"
-         visible="visible">
-        <div style="width:50%; float:left;">
+        visible="visible">
+        <div style="width: 50%; float: left;">
             Width: 
             <input type="text" ng-model="model.game.gameLayout.width" />
             Height: 
@@ -23,24 +23,34 @@
             <button ng-click="model.addArea()">Add Area</button>
             <button ng-click="model.updateGame() ">save</button>
             {{model.updateStatus}}
-
-            <button ng-click="model.test()">Test</button>
+             
 
         </div>
-        <div style="width:50%; float:left;">
+        <div style="width: 50%; float: left;">
             Edit {{model.selectedPiece}}
             <div ng-switch="model.selectedPiece">
                 <div ng-switch-when="space">
                     <h2>{{model.selectedSpace.name}}</h2>
-                    <input type="text" ng-model="model.selectedSpace.name"/>
+                    <input type="text" ng-model="model.selectedSpace.name" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selectedSpace.left" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selectedSpace.top" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selectedSpace.width" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selectedSpace.height" />
                 </div>
                 <div ng-switch-when="area">
                     <h2>{{model.selectedArea.name}}</h2>
-                    <input type="text" ng-model="model.selectedArea.name"/>
+                    <input type="text" ng-model="model.selectedArea.name" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selectedArea.left" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selectedArea.top" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selectedArea.width" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selectedArea.height" />
                 </div>
                 <div ng-switch-when="text">
                     <h2>{{model.selectedText.name}}</h2>
-                    <input type="text" ng-model="model.selectedText.name"/>
+                    <input type="text" ng-model="model.selectedText.name" />
+                    <input type="text" ng-model="model.selectedText.text" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selectedText.left" />
+                    <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selectedText.top" />
                 </div>
             </div>
             content

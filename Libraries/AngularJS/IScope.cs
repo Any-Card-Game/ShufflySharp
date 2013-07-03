@@ -75,8 +75,21 @@ namespace ng
         [ScriptName("$new")]
         T New<T>();
 
-        [AlternateSignature]
+        [ScriptName("$new")]
         IScope New();
+
+        [ScriptName("$broadcast")]
+        void Broadcast<T>(string channel, T value);
+
+        [ScriptName("$on")]
+        void On<T>(string channel, Action<T> callback);
+
+        [AlternateSignature]
+        void Broadcast(string channel);
+
+        [AlternateSignature]
+        void On(string channel, Action callback);
+
 
         [ScriptName("$destroy")]
         void Destroy();

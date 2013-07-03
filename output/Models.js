@@ -51,6 +51,11 @@
 		this.channel = channel;
 		this.content = content;
 	};
+	$Models_SocketClientMessageModel.prototype = {
+		toString: function() {
+			return ss.formatString('Channel: {0}, Content: {1}, User: ({2})', this.channel, this.content, this.user);
+		}
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserCreateResponse
 	var $Models_UserCreateResponse = function() {
@@ -87,17 +92,15 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserModel
 	var $Models_UserModel = function() {
+		this.gateway = null;
+		this.userName = null;
+		this.password = null;
+		this.hash = null;
 	};
-	$Models_UserModel.createInstance = function() {
-		return $Models_UserModel.$ctor();
-	};
-	$Models_UserModel.$ctor = function() {
-		var $this = {};
-		$this.gateway = null;
-		$this.userName = null;
-		$this.password = null;
-		$this.hash = null;
-		return $this;
+	$Models_UserModel.prototype = {
+		toString: function() {
+			return ss.formatString('Gateway: {0}, UserName: {1}, Password: {2}, Hash: {3}', this.gateway, this.userName, this.password, this.hash);
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.UserSocketModel
@@ -107,7 +110,7 @@
 		return $Models_UserSocketModel.$ctor();
 	};
 	$Models_UserSocketModel.toUserModel = function($this) {
-		var m = $this.localUserModel || ($this.localUserModel = $Models_UserModel.$ctor());
+		var m = $this.localUserModel || ($this.localUserModel = new $Models_UserModel());
 		m.gateway = $this.gateway;
 		m.hash = $this.hash;
 		m.password = $this.password;
@@ -533,6 +536,7 @@
 	$Models_SiteManagerModels_Game_GameSpaceModel.$ctor = function() {
 		var $this = $Models_SiteManagerModels_Game_GameAreaModel.$ctor();
 		$this.layoutType = 0;
+		$this.vertical = false;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////

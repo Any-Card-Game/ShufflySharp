@@ -41,14 +41,14 @@ namespace global
             Vertical = !options.Vertical ? false : options.Vertical;
             X = options.X == 0 ? 0 : options.X;
             Y = options.Y == 0 ? 0 : options.Y;
+            Name = options.Name ?? "TableSpace";
             Width = options.Width == 0 ? 0 : options.Width;
             Height = options.Height == 0 ? 0 : options.Height;
-            Pile = options.Pile;
+            Pile = options.Pile??new CardGamePile(Name);
             //Rotate = options.Rotate == 0 ? 0 : options.Rotate;
             Visible = !options.Visible ? true : options.Visible;
             StackCards = !options.StackCards ? false : options.StackCards;
             DrawCardsBent = !options.DrawCardsBent ? true : options.DrawCardsBent;
-            Name = options.Name ?? "TableSpace";
             SortOrder = options.SortOrder;
             NumberOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
             NumberOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;

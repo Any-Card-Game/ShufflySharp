@@ -47,10 +47,10 @@ namespace Client.Directives
 
                 var content = @"<div>
     <div acg-draw-space ng-style='spaceStyle'>
-        <div ng-repeat='card in space.pile.cards' acg-draw-card ng-style='cardStyle' ng-click='cardClick()'>
+        <div ng-repeat='card in space.pile.cards' acg-draw-card ng-style='cardStyle'>
         </div>
     </div> 
-</";
+</div>";
 
                 angular.ForEach(scope.Spaces,
                                 (space) =>

@@ -117,7 +117,7 @@ namespace Client.Directives
                                                  break;
                                          }
                                      }
-
+                                     scope.Broadcast("redrawCard");
                                  },true);
         }
         public static string TransformRotate(double ar)

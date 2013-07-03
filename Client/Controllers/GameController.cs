@@ -116,7 +116,6 @@ namespace Client.Controllers
 
 
             scope.MainArea = null;
-            scope.SelectedCard = null;
 
 
             //new Action<string,JsDictionary<string,object>>()
@@ -209,14 +208,7 @@ namespace Client.Controllers
                 }
             };*/
 
-            effectWatcher.ApplyEffect += (effect) =>
-            {
-                if (scope.SelectedCard == null)
-                    return;
-
-                scope.SelectedCard.Appearance.EffectNames.Add(effect.Name);
-            };
-
+ 
 
         }
 

@@ -22,7 +22,6 @@ namespace Client.Scope.Controller
         public Action AddText { get; set; }
         public Action AddArea { get; set; }
         public Action AddSpace { get; set; }
-        public Action Test { get; set; }
     }
 
     [NamedValues]

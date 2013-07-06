@@ -114,14 +114,16 @@ namespace Client.Directives
                     Handles = "n, e, s, w,nw,sw,ne,se",
                     OnResize = (ev, ele) =>
                     {
-                        scope.Area.Left = ele.Position.Left /
-                                           scale.X;
-                        scope.Area.Top = ele.Position.Top /
-                                          scale.Y;
-                        scope.Area.Width = ele.Size.Width /
-                                            scale.X;
-                        scope.Area.Height = ele.Size.Height /
-                                             scale.Y;
+
+                        scope.Area.Left = (int)(ele.Position.Left / scale.X);
+                        scope.Area.Top = (int)(ele.Position.Top /
+                                          scale.Y);
+                        scope.Area.Width = (int)(ele.Size.Width /
+                                            scale.X);
+                        scope.Area.Height = (int)(ele.Size.Height /
+                                             scale.Y);
+
+                         
                         scope.Apply();
 
                     }
@@ -132,9 +134,10 @@ namespace Client.Directives
                     Grid = new[] { scale.X, scale.Y },
                     OnDrag = (ev, ele) =>
                     {
-                        scope.Area.Left = ele.Position.Left /
-                                           scale.X;
-                        scope.Area.Top = ele.Position.Top / scale.Y;
+
+                        scope.Area.Left = (int)(ele.Position.Left / scale.X);
+                        scope.Area.Top = (int)(ele.Position.Top /
+                                          scale.Y);
                         scope.Apply();
 
                     }

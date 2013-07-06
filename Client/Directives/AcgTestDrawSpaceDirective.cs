@@ -119,16 +119,11 @@ namespace Client.Directives
                                                                  Handles = "n, e, s, w,nw,sw,ne,se",
                                                                  OnResize = (ev, ele) =>
                                                                             {
-                                                                                scope.Space.Left = ele.Position.Left /
-                                                                                                   scale.X;
-                                                                                scope.Space.Top = ele.Position.Top /
-                                                                                                  scale.Y;
-                                                                                scope.Space.Width = ele.Size.Width /
-                                                                                                    scale.X;
-                                                                                scope.Space.Height = ele.Size.Height /
-                                                                                                     scale.Y;
-                                                                                scope.Apply();
-
+                                                                                scope.Space.Left =  (ele.Position.Left / scale.X);
+                                                                                scope.Space.Top =  (ele.Position.Top /scale.Y);
+                                                                                scope.Space.Width =  (ele.Size.Width /scale.X);
+                                                                                scope.Space.Height =  (ele.Size.Height /scale.Y);
+                                                                                scope.Apply(); 
                                                                             }
                                                              });
                                            element.Draggable(new DraggableOptions()
@@ -137,9 +132,8 @@ namespace Client.Directives
                                                                  Grid = new[] { scale.X, scale.Y },
                                                                  OnDrag = (ev, ele) =>
                                                                           {
-                                                                              scope.Space.Left = ele.Position.Left /
-                                                                                                 scale.X;
-                                                                              scope.Space.Top = ele.Position.Top / scale.Y;
+                                                                              scope.Space.Left =  (ele.Position.Left /scale.X);
+                                                                              scope.Space.Top =  (ele.Position.Top / scale.Y);
                                                                               scope.Apply();
 
                                                                           }

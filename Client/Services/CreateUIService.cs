@@ -36,9 +36,13 @@ namespace Client.Services
             return scope;
         }
 
-        private JsDictionary<string, jQueryObject> singltons = new JsDictionary<string, jQueryObject>(); 
+        private JsDictionary<string, jQueryObject> singltons = new JsDictionary<string, jQueryObject>();
 
 
+        public BaseScope CreateSingleton(string ui)
+        {
+            return CreateSingleton<BaseScope>(ui);
+        }
         public T CreateSingleton<T>(string ui) where T : BaseScope
         {
             return CreateSingleton<T>(ui, (a, b) => { });
@@ -55,7 +59,7 @@ namespace Client.Services
                 populateScope(scope, html);
                 myCompileService(html)(scope);
                 scope.Apply();
-                
+
             }
             else
             {
@@ -81,7 +85,7 @@ namespace Client.Services
 
             return scope;
         }
-        public IScope Create(string ui,BaseScope scope)
+        public IScope Create(string ui, BaseScope scope)
         {
 
             var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP)))(scope);

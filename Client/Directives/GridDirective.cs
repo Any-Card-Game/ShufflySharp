@@ -23,12 +23,25 @@ namespace Client.Directives
             replace = true;
             scope = new
             {
-                scale = "=grid", 
+                scale = "=grid",
+                showGrid = "=",
             };
         }
 
         private void linkFn(dynamic scope, jQueryObject element, object attrs)
         {
+            scope["$watch"]("showGrid", new Action(() =>
+            {
+                if (scope.showGrid)
+                {
+                    element.Show(EffectDuration.Fast);
+
+                }
+                else
+                {
+                    element.Hide(EffectDuration.Fast);
+                }
+            }));
 
             scope["$watch"]("scale", new Action(() =>
             {

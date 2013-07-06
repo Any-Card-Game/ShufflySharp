@@ -24,7 +24,7 @@ namespace Client.Directives
             var scale = ((Point)((dynamic)scope.Parent)["$parent"].scale);
             
             element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
-            element.Resizable(new ResizableOptions()
+          /*  element.Resizable(new ResizableOptions()
             {
                 Grid = new[] { scale.X, scale.Y },
                 MinHeight = -1,
@@ -49,7 +49,7 @@ namespace Client.Directives
                     scope.Apply();
 
                 }
-            });
+            });*/
 
             scope.watch("space", () =>
                                  {

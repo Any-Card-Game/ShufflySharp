@@ -29,8 +29,8 @@ namespace Client.Controllers
             myMessageService = messageService;
             myCreateUIService = createUIService;
             myScope.Visible = true;
-            myScope.Model.Selection = new GameEditorSelectionScopeModel();
-
+            myScope.Model.Selection = new GameEditorSelectionScopeModel(){ShowGrid=true};
+            myScope.Model.ToggleGrid = ToggleGridFn;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
             myScope.watch("model.selection.selectedSpace", () =>
                                                  {
@@ -95,6 +95,11 @@ namespace Client.Controllers
             });
 
 
+        }
+
+        private void ToggleGridFn()
+        {
+            myScope.Model.Selection.ShowGrid = !myScope.Model.Selection.ShowGrid;
         }
 
         private void OpenScenariosFn()

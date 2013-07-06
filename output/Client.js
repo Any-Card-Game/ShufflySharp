@@ -443,8 +443,6 @@
 			this.$myScope.swingAway(2, true, null);
 			this.$myScope.swingBack(null);
 			this.$myScope.model.game = game;
-			this.$openLayoutFn();
-			//delete
 		}));
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
@@ -457,15 +455,17 @@
 		$openTestFn: function() {
 		},
 		$openLayoutFn: function() {
-			this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_GameLayoutEditorScope).call(this.$myCreateUIService, 'GameLayoutEditor', ss.mkdel(this, function(scope, elem) {
+			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameLayoutEditorScope).call(this.$myCreateUIService, 'GameLayoutEditor', ss.mkdel(this, function(scope, elem) {
 				scope.model = $Client_Scope_Controller_GameLayoutEditorScopeModel.$ctor();
 				scope.model.game = this.$myScope.model.game;
 			}));
 		},
 		$openEffectsFn: function() {
+			this.$myCreateUIService.createSingleton('ListEffects');
+			this.$myCreateUIService.createSingleton('EffectEditor');
 		},
 		$openCodeFn: function() {
-			this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_GameCodeScope).call(this.$myCreateUIService, 'GameCodeEditor', ss.mkdel(this, function(scope, elem) {
+			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameCodeScope).call(this.$myCreateUIService, 'GameCodeEditor', ss.mkdel(this, function(scope, elem) {
 				scope.model = $Client_Scope_Controller_GameCodeScopeModel.$ctor();
 				scope.model.code = this.$myScope.model.game.gameCode;
 			}));
@@ -493,7 +493,11 @@
 		this.$myMessageService = messageService;
 		this.$myCreateUIService = createUIService;
 		this.$myScope.visible = true;
-		this.$myScope.model.selection = $Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor();
+		var $t2 = this.$myScope.model;
+		var $t1 = $Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor();
+		$t1.showGrid = true;
+		$t2.selection = $t1;
+		this.$myScope.model.toggleGrid = ss.mkdel(this, this.$toggleGridFn);
 		this.$myScope.model.selection.selectedLayoutPiece = 'none';
 		this.$myScope.$watch('model.selection.selectedSpace', ss.mkdel(this, function() {
 			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedSpace)) {
@@ -502,8 +506,8 @@
 			this.$myScope.model.selection.selectedText = null;
 			this.$myScope.model.selection.selectedArea = null;
 			this.$myScope.model.selection.selectedLayoutPiece = 'space';
-			for (var $t1 = 0; $t1 < this.$myScope.model.selection.selectedScenario.spaces.length; $t1++) {
-				var gameLayoutScenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t1];
+			for (var $t3 = 0; $t3 < this.$myScope.model.selection.selectedScenario.spaces.length; $t3++) {
+				var gameLayoutScenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t3];
 				if (ss.referenceEquals(gameLayoutScenarioSpace.spaceGuid, this.$myScope.model.selection.selectedSpace.guid)) {
 					this.$myScope.model.selection.selectedScenarioSpace = gameLayoutScenarioSpace;
 					break;
@@ -539,15 +543,18 @@
 		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
-		this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_TestGameControllerScope).call(this.$myCreateUIService, 'TestGameUI', ss.mkdel(this, function(_scope, elem) {
+		this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_TestGameControllerScope).call(this.$myCreateUIService, 'TestGameUI', ss.mkdel(this, function(_scope, elem) {
 			_scope.model = $Client_Scope_Controller_TestGameControllerScopeModel.$ctor();
 			_scope.model.game = this.$myScope.model.game;
 			_scope.model.selection = this.$myScope.model.selection;
 		}));
 	};
 	$Client_Controllers_$GameLayoutEditorController.prototype = {
+		$toggleGridFn: function() {
+			this.$myScope.model.selection.showGrid = !this.$myScope.model.selection.showGrid;
+		},
 		$openScenariosFn: function() {
-			this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_GameScenarioEditorScope).call(this.$myCreateUIService, 'GameScenarioEditor', ss.mkdel(this, function(_scope, elem) {
+			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameScenarioEditorScope).call(this.$myCreateUIService, 'GameScenarioEditor', ss.mkdel(this, function(_scope, elem) {
 				_scope.model = $Client_Scope_Controller_GameScenarioEditorScopeModel.$ctor();
 				_scope.model.game = this.$myScope.model.game;
 				_scope.model.selection = this.$myScope.model.selection;
@@ -679,6 +686,13 @@
 			}
 			this.$myScope.model.selection.selectedScenarioEffect = null;
 			this.$myScope.model.selection.selectedScenarioSpace = null;
+			for (var $t1 = 0; $t1 < this.$myScope.model.selection.selectedScenario.spaces.length; $t1++) {
+				var gameLayoutScenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t1];
+				if (ss.referenceEquals(gameLayoutScenarioSpace.spaceGuid, this.$myScope.model.selection.selectedSpace.guid)) {
+					this.$myScope.model.selection.selectedScenarioSpace = gameLayoutScenarioSpace;
+					break;
+				}
+			}
 		}));
 		this.$myScope.$watch('model.selection.selectedScenarioSpace', ss.mkdel(this, function() {
 			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedScenarioSpace)) {
@@ -1632,26 +1646,32 @@
 		$linkFn: function(scope, element, attrs) {
 			var scale = scope.$parent['$parent'].scale;
 			element.attr('class', 'space ' + ss.formatString('space{0}', scope.space.name));
-			element.resizable({
-				grid: [scale.x, scale.y],
-				minHeight: -1,
-				minWidth: -1,
-				handles: 'n, e, s, w,nw,sw,ne,se',
-				resize: function(ev, ele) {
-					scope.space.width = ele.size.width / scale.x;
-					scope.space.height = ele.size.height / scale.y;
-					scope.$apply();
-				}
-			});
-			element.draggable({
-				cursor: 'crosshair',
-				grid: [scale.x, scale.y],
-				drag: function(ev1, ele1) {
-					scope.space.x = ele1.position.left / scale.x;
-					scope.space.y = ele1.position.top / scale.y;
-					scope.$apply();
-				}
-			});
+			//  element.Resizable(new ResizableOptions()
+			//  {
+			//  Grid = new[] { scale.X, scale.Y },
+			//  MinHeight = -1,
+			//  MinWidth = -1,
+			//  Handles = "n, e, s, w,nw,sw,ne,se",
+			//  OnResize = (ev, ele) =>
+			//  {
+			//  scope.Space.Width = ele.Size.Width / scale.X;
+			//  scope.Space.Height = ele.Size.Height / scale.Y;
+			//  scope.Apply();
+			//  
+			//  }
+			//  });
+			//  element.Draggable(new DraggableOptions()
+			//  {
+			//  Cursor = "crosshair",
+			//  Grid = new[] { scale.X, scale.Y },
+			//  OnDrag = (ev, ele) =>
+			//  {
+			//  scope.Space.X = ele.Position.Left / scale.X;
+			//  scope.Space.Y = ele.Position.Top/ scale.Y;
+			//  scope.Apply();
+			//  
+			//  }
+			//  });
 			scope.$watch('space', function() {
 				var beforeStyle = {};
 				beforeStyle['display'] = 'block';
@@ -1907,10 +1927,10 @@
 					minWidth: -1,
 					handles: 'n, e, s, w,nw,sw,ne,se',
 					resize: function(ev, ele) {
-						scope.area.left = ele.position.left / scale.x;
-						scope.area.top = ele.position.top / scale.y;
-						scope.area.width = ele.size.width / scale.x;
-						scope.area.height = ele.size.height / scale.y;
+						scope.area.left = ss.Int32.trunc(ele.position.left / scale.x);
+						scope.area.top = ss.Int32.trunc(ele.position.top / scale.y);
+						scope.area.width = ss.Int32.trunc(ele.size.width / scale.x);
+						scope.area.height = ss.Int32.trunc(ele.size.height / scale.y);
 						scope.$apply();
 					}
 				});
@@ -1918,8 +1938,8 @@
 					cursor: 'crosshair',
 					grid: [scale.x, scale.y],
 					drag: function(ev1, ele1) {
-						scope.area.left = ele1.position.left / scale.x;
-						scope.area.top = ele1.position.top / scale.y;
+						scope.area.left = ss.Int32.trunc(ele1.position.left / scale.x);
+						scope.area.top = ss.Int32.trunc(ele1.position.top / scale.y);
 						scope.$apply();
 					}
 				});
@@ -2771,10 +2791,18 @@
 		this.scope = null;
 		this.link = ss.mkdel(this, this.$linkFn);
 		this.replace = true;
-		this.scope = { scale: '=grid' };
+		this.scope = { scale: '=grid', showGrid: '=' };
 	};
 	$Client_Directives_GridDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
+			scope['$watch']('showGrid', function() {
+				if (scope.showGrid) {
+					element.show('fast');
+				}
+				else {
+					element.hide('fast');
+				}
+			});
 			scope['$watch']('scale', function() {
 				element.empty();
 				var scale = scope.scale;
@@ -3086,6 +3114,7 @@
 		$this.selectedLayoutPiece = 0;
 		$this.selectedScenarioPiece = 0;
 		$this.selectedScenario = null;
+		$this.showGrid = false;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -3112,6 +3141,7 @@
 		$this.removeArea = null;
 		$this.removeText = null;
 		$this.openScenarios = null;
+		$this.toggleGrid = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -3792,13 +3822,16 @@
 				return scope;
 			};
 		},
-		createSingleton: function(T) {
+		createSingleton: function(ui) {
+			return this.createSingleton$1(Object).call(this, ui);
+		},
+		createSingleton$1: function(T) {
 			return function(ui) {
-				return this.createSingleton$1(T).call(this, ui, function(a, b) {
+				return this.createSingleton$2(T).call(this, ui, function(a, b) {
 				});
 			};
 		},
-		createSingleton$1: function(T) {
+		createSingleton$2: function(T) {
 			return function(ui, populateScope) {
 				var scope;
 				if (ss.keyExists(this.$singltons, ui)) {

@@ -38,7 +38,6 @@ namespace Client.Controllers
                 myScope.SwingAway(SwingDirection.TopRight, true, null);
                 myScope.SwingBack(null);
                 myScope.Model.Game = game;
-                OpenLayoutFn();//delete
             };
             myScope.watch("model.game",
                           () => {
@@ -48,6 +47,7 @@ namespace Client.Controllers
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
+
 
         }
 
@@ -59,14 +59,17 @@ namespace Client.Controllers
         {
             myCreateUIService.CreateSingleton<GameLayoutEditorScope>("GameLayoutEditor", (scope, elem) =>
             {
-                scope.Model =new GameLayoutEditorScopeModel();
+                scope.Model = new GameLayoutEditorScopeModel();
                 scope.Model.Game = myScope.Model.Game;
             });
-
         }
 
         private void OpenEffectsFn()
         {
+
+            myCreateUIService.CreateSingleton("ListEffects");
+            myCreateUIService.CreateSingleton("EffectEditor");
+
         }
 
         private void OpenCodeFn()

@@ -73,9 +73,8 @@ namespace Client.Directives
                                                                  Grid = new[] { scale.X, scale.Y },
                                                                  OnDrag = (ev, ele) =>
                                                                           {
-                                                                              scope.Text.Left = ele.Position.Left /
-                                                                                                 scale.X;
-                                                                              scope.Text.Top = ele.Position.Top / scale.Y;
+                                                                              scope.Text.Left =  (ele.Position.Left / scale.X);
+                                                                              scope.Text.Top =  (ele.Position.Top / scale.Y);
                                                                               scope.Apply();
 
                                                                           }

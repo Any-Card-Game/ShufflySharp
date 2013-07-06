@@ -39,6 +39,17 @@ namespace Client.Controllers
                 myScope.Model.Selection.SelectedScenarioEffect = null;
                 myScope.Model.Selection.SelectedScenarioSpace = null;
 
+
+                foreach (var gameLayoutScenarioSpace in myScope.Model.Selection.SelectedScenario.Spaces)
+                {
+                    if (gameLayoutScenarioSpace.SpaceGuid == myScope.Model.Selection.SelectedSpace.Guid)
+                    {
+                        myScope.Model.Selection.SelectedScenarioSpace = gameLayoutScenarioSpace;
+                        break;
+                    }
+                }
+
+
             });
 
             myScope.watch("model.selection.selectedScenarioSpace", () =>

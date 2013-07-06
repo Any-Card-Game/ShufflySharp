@@ -30,7 +30,11 @@ namespace Client.Controllers
             myScope.Model.OpenEffects = OpenEffectsFn;
             myScope.Model.OpenLayout = OpenLayoutFn;
             myScope.Model.OpenTest = OpenTestFn;
-            myScope.Model.Selection = new GameEditorSelectionScopeModel() { ShowGrid = true };
+            myScope.Model.Selection = new GameEditorSelectionScopeModel() { ShowGrid = true ,SelectedScenarioPieces = new SelectedScenarioPieces()
+                                                                                                                      {
+                                                                                                                          Piece = SelectedScenarioPieceType.None
+                                                                                                                      
+                                                                                                                      }};
 
             myScope.Visible = false;
             uiManager.OpenGameEditor += (game) =>

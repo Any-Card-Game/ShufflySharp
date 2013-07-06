@@ -172,7 +172,7 @@ namespace Client.Directives
            
             };
             JsDictionary<string, string> keys = new JsDictionary<string, string>() { };
-            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13),Constants.WebIP);
+            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13),Constants.ContentAddress);
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 

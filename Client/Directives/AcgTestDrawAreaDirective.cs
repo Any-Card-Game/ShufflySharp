@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Html;
+using System.Text.RegularExpressions;
 using Client.Scope;
 using Client.Scope.Directive;
 using CommonLibraries;
-using global;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
+using Models.SiteManagerModels.Game;
+
 namespace Client.Directives
 {
     public class AcgTestDrawAreaDirective
@@ -29,23 +31,7 @@ namespace Client.Directives
             var scale = scope.Model.Scale;
             Action reApplyAreaBind = () =>
             {
-                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
-                if (false)
-                {
-                    beforeStyle["display"] = "block";
-                    beforeStyle["position"] = "relative";
-                    beforeStyle["z-index"] = "-1";
-                    beforeStyle["width"] = "100%";
-                    beforeStyle["height"] = "100%";
-                    beforeStyle["left"] = "-50px";
-                    beforeStyle["top"] = "-50px";
-                    beforeStyle["padding"] = "50px";
-                    beforeStyle["border-radius"] = "15px";
-                    beforeStyle["box-shadow"] = "rgb(51, 51, 51) 4px 4px 2px";
-                    beforeStyle["content"] = "\"\"";
-                    beforeStyle["background"] = "rgba(112, 12, 58, 0.231373)";
-                }
-                ChangeCSS("area" + scope.Area.Name + "::before", beforeStyle);
+    
                 scope.AreaStyle = new { };
 
 
@@ -63,49 +49,83 @@ namespace Client.Directives
 
 
 
-                /*
-                                                     foreach (var effect in scope.Space.Appearance.Effects)
-                                                     {
-                                                         switch (effect.Type)
-                                                         {
-                                                             case EffectType.Highlight:
-                                                                 var hEffect = ((CardGameAppearanceEffectHighlight) effect);
-                                                                 scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}",
-                                                                     hEffect.Radius);
-                                                                 scope.SpaceStyle.backgroundColor = hEffect.Color;
-                                                                 scope.SpaceStyle.border = "solid 2px black";
-                                                                 scope.SpaceStyle.borderRadius = 15.0;
-                                                                 scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
-                                                                 break;
-                                                             case EffectType.Rotate:
-                                                                 Window.Alert(effect.Type.ToString());
-                                                                 break;
-                                                             case EffectType.Bend:
-                                                                 var bEffect = (CardGameAppearanceEffectBend) effect;
 
-                                                                 //rotate
+                PurgeCSS("area" + scope.Area.Name + "::before");
 
 
-                                                                 break;
-                                                             case EffectType.StyleProperty:
-                                                                 Window.Alert(effect.Type.ToString());
-                                                                 break;
-                                                             case EffectType.Animated:
-                                                                 Window.Alert(effect.Type.ToString());
-                                                                 break;
-                                                             default:
 
-                                                                 break;
-                                                         }
-                                                     }
-                */
+                foreach (var gameLayoutScenarioEffect in scope.Model.Selection.SelectedScenario.Effects)
+                {
+                    foreach (var areaGuid in gameLayoutScenarioEffect.AreaGuids)
+                    {
+                        if (areaGuid == scope.Area.Guid)
+                        {
+                            foreach (var gameEffectModel in scope.Model.Game.Effects)
+                            {
+                                if (gameEffectModel.Guid == gameLayoutScenarioEffect.EffectGuid)
+                                {
+
+                                    var effect = gameEffectModel;
+                                    switch (effect.Type)
+                                    {
+                                        case EffectType.Highlight:
+
+                                            var color = effect.GetString("color");
+                                            var radius = effect.GetNumber("radius");
+                                            var rotate = effect.GetNumber("rotate");
+                                            var offsetX = effect.GetNumber("offsetx");
+                                            var offsetY = effect.GetNumber("offsety");
+                                            var opacity = effect.GetNumber("opacity");
+
+                                            JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
+
+                                            beforeStyle["display"] = "block";
+                                            beforeStyle["position"] = "relative";
+                                            beforeStyle["z-index"] = "-1";
+                                            beforeStyle["width"] = "100%";
+                                            beforeStyle["height"] = "100%";
+                                            beforeStyle["left"] = (-radius + offsetX) + "px";
+                                            beforeStyle["top"] = (-radius + offsetY) + "px";
+                                            beforeStyle["padding"] = (radius) + "px";
+                                            beforeStyle["border-radius"] = "5px";
+                                            beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
+                                            var hexcolor = hextorgb(color);
+                                            beforeStyle["content"] = "\"\"";
+
+                                            beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+                                            beforeStyle["border"] = "2px solid black";
+
+                                            ChangeCSS("area" + scope.Area.Name + "::before", beforeStyle);
+
+                                            break;
+                                        case EffectType.Rotate:
+                                            break;
+                                        case EffectType.Bend:
+                                            break;
+                                        case EffectType.StyleProperty:
+                                            break;
+                                        case EffectType.Animated:
+                                            break;
+                                    }
+
+
+
+
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            
             };
             scope.watch("model.scale", () =>
             {
                 scale = scope.Model.Scale;
 
 
-                element.Attribute("class", "space " + string.Format("space{0}", scope.Area.Name));
+                element.Attribute("class", "area " + string.Format("area{0}", scope.Area.Name));
                 element.Resizable(new ResizableOptions()
                 {
                     Grid = new[] { scale.X, scale.Y },
@@ -148,6 +168,8 @@ namespace Client.Directives
 
 
             scope.watch("area", reApplyAreaBind, true);
+            scope.watch("model.selection.selectedEffect", reApplyAreaBind, true);
+            scope.watch("model.selection.selectedScenario.effects", reApplyAreaBind, true);
         }
         public static string TransformRotate(double ar)
         {
@@ -177,6 +199,43 @@ namespace Client.Directives
                     }
                 }
             }
+
+        }
+        private static void PurgeCSS(string myClass)
+        {
+            myClass = "." + myClass;
+            string CSSRules = "";
+            var document = (dynamic)Script.Eval("window.document");
+            if (document.all)
+                CSSRules = "rules";
+            else if (document.getElementById)
+                CSSRules = "cssRules";
+            for (var a = 0; a < document.styleSheets.length; a++)
+            {
+                if (document.styleSheets[a][CSSRules] == null) continue;
+                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
+                {
+                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
+                    {
+                        document.styleSheets[a].removeRule(i);
+                        document.styleSheets[a].insertRule(myClass + "{}");
+
+                    }
+                }
+            }
+
+        }
+        public static dynamic hextorgb(string hex)
+        {
+
+            var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
+            return result != null ? new
+            {
+                R = int.Parse(result[1], 16),
+                G = int.Parse(result[2], 16),
+                B = int.Parse(result[3], 16)
+            } : null;
+
 
         }
     }

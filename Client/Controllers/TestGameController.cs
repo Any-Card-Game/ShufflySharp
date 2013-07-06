@@ -31,10 +31,9 @@ namespace Client.Controllers
 
             if (scenario == null)
             {
-                this.scope.Model.Selection.SelectedScenario = this.scope.Model.Game.GameLayoutScenarios.Filter((scen) => scen.Name == "Default")[0];
+                this.scope.Model.Selection.SelectedScenario = this.scope.Model.Game.GameLayoutScenarios.Filter((scen) => scen.Name == "Default")[0];//todo fix default to guid idiot
             }
-
-
+             
 
             var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
             {
@@ -84,9 +83,18 @@ namespace Client.Controllers
                 addRule(".space" + space.Name, new JsDictionary<string, object>());
                 addRule(".space" + space.Name + "::before", new JsDictionary<string, object>());
                 addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
-
-
-
+            }
+            foreach (var area in scope.Model.Game.GameLayout.Areas)
+            {
+                addRule(".area" + area.Name, new JsDictionary<string, object>());
+                addRule(".area" + area.Name + "::before", new JsDictionary<string, object>());
+                addRule(".area" + area.Name + "::after", new JsDictionary<string, object>());
+            }
+            foreach (var text in scope.Model.Game.GameLayout.Texts)
+            {
+                addRule(".text" + text.Name, new JsDictionary<string, object>());
+                addRule(".text" + text.Name + "::before", new JsDictionary<string, object>());
+                addRule(".text" + text.Name + "::after", new JsDictionary<string, object>());
             }
             for (int t = 0; t < 4; t++)
             {
@@ -110,38 +118,8 @@ namespace Client.Controllers
 
         private List<GameLayoutScenarioCard> GetCardsFromScenarioFn(GameSpaceModel arg)
         {
-
             var scenario = this.scope.Model.Selection.SelectedScenario;
-
-
-
-
-
-
-            var defaultCards = new List<GameLayoutScenarioCard>()
-                               {
-                                   new GameLayoutScenarioCard() {Type = 1,Value=5,State = GameLayoutCardState.FaceDown},
-                                   new GameLayoutScenarioCard() {Type = 1,Value=5,State = GameLayoutCardState.FaceUp},
-                                   new GameLayoutScenarioCard() {Type = 1,Value=5,State = GameLayoutCardState.FaceDown},
-                                   new GameLayoutScenarioCard() {Type = 1,Value=5,State = GameLayoutCardState.FaceUp},
-                                   new GameLayoutScenarioCard() {Type = 1,Value=5,State = GameLayoutCardState.FaceDown},
-                                   new GameLayoutScenarioCard() {Type = 1,Value=5,State = GameLayoutCardState.FaceUp},
-                               };
-
-
-            var spaces = scenario.Spaces.Filter((s) => s.SpaceGuid == arg.Guid);
-            GameLayoutScenarioSpace space;
-            if (spaces.Count == 0)
-            {
-                scenario.Spaces.Add(space = new GameLayoutScenarioSpace() { SpaceGuid = arg.Guid, Cards = defaultCards });
-            }
-            else
-            {
-                space = spaces[0];
-            }
-
-
-            return space.Cards;
+            return scenario.Spaces.Filter((s) => s.SpaceGuid == arg.Guid)[0].Cards;
         }
     }
 }

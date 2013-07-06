@@ -251,9 +251,7 @@ namespace CommonShuffleLibrary.Data
                                                                                     Spaces =
                                                                                         new List
                                                                                         <GameLayoutScenarioSpace>(),
-                                                                                    Effects =
-                                                                                        new List
-                                                                                        <GameLayoutScenarioEffect>(),
+                                                                                    Effects =new List<GameLayoutScenarioEffect>(){},
                                                                                     Name = "Default",
                                                                                     NumberOfPlayers = 6,
                                                                                     ScreenSize = new IntPoint(1024, 768)

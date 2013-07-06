@@ -16,7 +16,7 @@ namespace Client.Directives
         public FancyListDirective()
         {
             restrict = "EA";
-            templateUrl = string.Format("{0}partials/fancyList.html", Constants.WebIP);
+            templateUrl = string.Format("{0}partials/fancyList.html", Constants.ContentAddress);
             replace = true;
             transclude = true;
             scope = new

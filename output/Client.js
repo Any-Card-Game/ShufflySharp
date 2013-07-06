@@ -103,7 +103,7 @@
 		this.$gatewayServerAddress = null;
 		$Client_BuildSite.instance = this;
 		this.$gatewayServerAddress = gatewayServerAddress;
-		$Client_BuildSite.$loadJunk(CommonLibraries.Constants.webIP, ss.mkdel(this, this.$ready));
+		$Client_BuildSite.$loadJunk(CommonLibraries.Constants.contentAddress, ss.mkdel(this, this.$ready));
 	};
 	$Client_BuildSite.prototype = {
 		$ready: function() {
@@ -424,10 +424,13 @@
 		this.$myScope.model.openEffects = ss.mkdel(this, this.$openEffectsFn);
 		this.$myScope.model.openLayout = ss.mkdel(this, this.$openLayoutFn);
 		this.$myScope.model.openTest = ss.mkdel(this, this.$openTestFn);
-		var $t2 = this.$myScope.model;
+		var $t3 = this.$myScope.model;
 		var $t1 = $Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor();
 		$t1.showGrid = true;
-		$t2.selection = $t1;
+		var $t2 = $Client_Scope_Controller_SelectedScenarioPieces.$ctor();
+		$t2.piece = 'none';
+		$t1.selectedScenarioPieces = $t2;
+		$t3.selection = $t1;
 		this.$myScope.visible = false;
 		uiManager.openGameEditor = ss.delegateCombine(uiManager.openGameEditor, ss.mkdel(this, function(game) {
 			this.$myScope.visible = true;
@@ -512,15 +515,19 @@
 			this.$myScope.model.newEffectType = 'bend';
 			this.$myScope.model.newEffectName = '';
 			this.$myScope.model.selection.selectedEffect = effect;
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$removeEffectFn: function(effect) {
 			ss.remove(this.$myScope.model.game.effects, effect);
 			this.$myScope.model.selection.selectedEffect = null;
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		}
 	};
 	$Client_Controllers_$GameEffectsEditorController.$makeEffect = function(effectName, type) {
-		var $t1 = new Models.SiteManagerModels.Game.GameEffectModel();
+		var $t1 = Models.SiteManagerModels.Game.GameEffectModel.$ctor();
 		$t1.name = effectName;
+		$t1.properties = [];
+		$t1.guid = CommonLibraries.Guid.newGuid();
 		var effect = $t1;
 		effect.type = type;
 		switch (effect.type) {
@@ -631,13 +638,7 @@
 			this.$myScope.model.selection.selectedText = null;
 			this.$myScope.model.selection.selectedArea = null;
 			this.$myScope.model.selection.selectedLayoutPiece = 'space';
-			for (var $t1 = 0; $t1 < this.$myScope.model.selection.selectedScenario.spaces.length; $t1++) {
-				var gameLayoutScenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t1];
-				if (ss.referenceEquals(gameLayoutScenarioSpace.spaceGuid, this.$myScope.model.selection.selectedSpace.guid)) {
-					this.$myScope.model.selection.selectedScenarioSpace = gameLayoutScenarioSpace;
-					break;
-				}
-			}
+			this.$myScope.model.selection.selectedCard = null;
 		}));
 		this.$myScope.$watch('model.selection.selectedText', ss.mkdel(this, function() {
 			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedText)) {
@@ -689,16 +690,19 @@
 			ss.remove(this.$myScope.model.game.gameLayout.spaces, arg);
 			this.$myScope.model.selection.selectedSpace = null;
 			this.$myScope.model.selection.selectedLayoutPiece = 'none';
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$removeAreaFn: function(arg) {
 			ss.remove(this.$myScope.model.game.gameLayout.areas, arg);
 			this.$myScope.model.selection.selectedArea = null;
 			this.$myScope.model.selection.selectedLayoutPiece = 'none';
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$removeTextFn: function(arg) {
 			ss.remove(this.$myScope.model.game.gameLayout.texts, arg);
 			this.$myScope.model.selection.selectedText = null;
 			this.$myScope.model.selection.selectedLayoutPiece = 'none';
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$addSpaceFn: function() {
 			var spaces = this.$myScope.model.game.gameLayout.spaces;
@@ -711,22 +715,29 @@
 			$t1.height = 1;
 			$t1.width = 1;
 			ss.add(spaces, $t1);
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$addAreaFn: function() {
 			var areas = this.$myScope.model.game.gameLayout.areas;
 			var $t1 = Models.SiteManagerModels.Game.GameAreaModel.$ctor();
+			$t1.guid = CommonLibraries.Guid.newGuid();
 			$t1.name = 'Area' + (areas.length + 1);
 			$t1.left = 0;
 			$t1.top = 0;
+			$t1.width = 1;
+			$t1.height = 1;
 			ss.add(areas, $t1);
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$addTextFn: function() {
 			var texts = this.$myScope.model.game.gameLayout.texts;
 			var $t1 = Models.SiteManagerModels.Game.GameTextModel.$ctor();
+			$t1.guid = CommonLibraries.Guid.newGuid();
 			$t1.name = 'Text' + (texts.length + 1);
 			$t1.left = 0;
 			$t1.top = 0;
 			ss.add(texts, $t1);
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$onDeveloperUpdateGameReceivedFn: function(user, o) {
 			this.$myScope.model.updateStatus = 'synced';
@@ -735,6 +746,92 @@
 		$updateGameFn: function() {
 			this.$myScope.model.updateStatus = 'syncing';
 			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.game);
+		}
+	};
+	$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios = function(gameModel) {
+		for (var $t1 = 0; $t1 < gameModel.gameLayoutScenarios.length; $t1++) {
+			var gameLayoutScenario = gameModel.gameLayoutScenarios[$t1];
+			for (var $t2 = 0; $t2 < gameModel.gameLayout.spaces.length; $t2++) {
+				var gameSpaceModel = { $: gameModel.gameLayout.spaces[$t2] };
+				if (gameLayoutScenario.spaces.filter(ss.mkdel({ gameSpaceModel: gameSpaceModel }, function(a) {
+					return ss.referenceEquals(a.spaceGuid, this.gameSpaceModel.$.guid);
+				})).length === 0) {
+					var $t3 = [];
+					var $t4 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t4.cardGuid = CommonLibraries.Guid.newGuid();
+					$t4.type = 1;
+					$t4.value = 5;
+					$t4.state = 'faceDown';
+					ss.add($t3, $t4);
+					var $t5 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t5.cardGuid = CommonLibraries.Guid.newGuid();
+					$t5.type = 1;
+					$t5.value = 5;
+					$t5.state = 'faceUp';
+					ss.add($t3, $t5);
+					var $t6 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t6.cardGuid = CommonLibraries.Guid.newGuid();
+					$t6.type = 1;
+					$t6.value = 5;
+					$t6.state = 'faceDown';
+					ss.add($t3, $t6);
+					var $t7 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t7.cardGuid = CommonLibraries.Guid.newGuid();
+					$t7.type = 1;
+					$t7.value = 5;
+					$t7.state = 'faceUp';
+					ss.add($t3, $t7);
+					var $t8 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t8.cardGuid = CommonLibraries.Guid.newGuid();
+					$t8.type = 1;
+					$t8.value = 5;
+					$t8.state = 'faceDown';
+					ss.add($t3, $t8);
+					var $t9 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t9.cardGuid = CommonLibraries.Guid.newGuid();
+					$t9.type = 1;
+					$t9.value = 5;
+					$t9.state = 'faceUp';
+					ss.add($t3, $t9);
+					var defaultCards = $t3;
+					var $t11 = gameLayoutScenario.spaces;
+					var $t10 = Models.SiteManagerModels.Game.GameLayoutScenarioSpace.$ctor();
+					$t10.spaceGuid = gameSpaceModel.$.guid;
+					$t10.cards = defaultCards;
+					ss.add($t11, $t10);
+				}
+			}
+			for (var $t12 = 0; $t12 < gameLayoutScenario.spaces.length; $t12++) {
+				var gameSpaceModel1 = { $: gameLayoutScenario.spaces[$t12] };
+				if (gameModel.gameLayout.spaces.filter(ss.mkdel({ gameSpaceModel1: gameSpaceModel1 }, function(a1) {
+					return ss.referenceEquals(a1.guid, this.gameSpaceModel1.$.spaceGuid);
+				})).length === 0) {
+					ss.remove(gameLayoutScenario.spaces, gameSpaceModel1.$);
+				}
+			}
+			for (var $t13 = 0; $t13 < gameModel.effects.length; $t13++) {
+				var gameEffectModel = { $: gameModel.effects[$t13] };
+				if (gameLayoutScenario.effects.filter(ss.mkdel({ gameEffectModel: gameEffectModel }, function(a2) {
+					return ss.referenceEquals(a2.effectGuid, this.gameEffectModel.$.guid);
+				})).length === 0) {
+					var $t15 = gameLayoutScenario.effects;
+					var $t14 = Models.SiteManagerModels.Game.GameLayoutScenarioEffect.$ctor();
+					$t14.effectGuid = gameEffectModel.$.guid;
+					$t14.areaGuids = [];
+					$t14.textGuids = [];
+					$t14.spaceGuids = [];
+					$t14.cardGuids = [];
+					ss.add($t15, $t14);
+				}
+			}
+			for (var $t16 = 0; $t16 < gameLayoutScenario.effects.length; $t16++) {
+				var gameEffectModel1 = { $: gameLayoutScenario.effects[$t16] };
+				if (gameModel.effects.filter(ss.mkdel({ gameEffectModel1: gameEffectModel1 }, function(a3) {
+					return ss.referenceEquals(a3.guid, this.gameEffectModel1.$.effectGuid);
+				})).length === 0) {
+					ss.remove(gameLayoutScenario.effects, gameEffectModel1.$);
+				}
+			}
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -811,6 +908,9 @@
 			}
 			this.$myScope.model.selection.selectedScenarioEffect = null;
 			this.$myScope.model.selection.selectedScenarioSpace = null;
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedSpace)) {
+				return;
+			}
 			for (var $t1 = 0; $t1 < this.$myScope.model.selection.selectedScenario.spaces.length; $t1++) {
 				var gameLayoutScenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t1];
 				if (ss.referenceEquals(gameLayoutScenarioSpace.spaceGuid, this.$myScope.model.selection.selectedSpace.guid)) {
@@ -833,16 +933,119 @@
 			this.$myScope.model.selection.selectedScenarioSpace = null;
 			this.$myScope.model.selection.selectedScenarioPiece = 'effect';
 		}));
-		this.$myScope.model.getSpaceByScenarioSpace = ss.mkdel(this, this.$getSpaceByScenarioSpaceFn);
-		this.$myScope.model.addCard = ss.mkdel(this, this.$addCardFn);
-		this.$myScope.model.removeCard = ss.mkdel(this, this.$removeCardFn);
+		this.$myScope.model.getSpaceBySpaceGuid = ss.mkdel(this, this.$getSpaceBySpaceGuidFn);
+		this.$myScope.model.getAreaByAreaGuid = ss.mkdel(this, this.$getAreaByAreaGuidFn);
+		this.$myScope.model.getTextByTextGuid = ss.mkdel(this, this.$getTextByTextGuidFn);
+		this.$myScope.model.getCardByCardGuid = ss.mkdel(this, this.$getCardByCardGuidFn);
+		this.$myScope.model.removeSpaceFromEffect = ss.mkdel(this, this.$removeSpaceFromEffectFn);
+		this.$myScope.model.removeAreaFromEffect = ss.mkdel(this, this.$removeAreaFromEffectFn);
+		this.$myScope.model.removeCardFromEffect = ss.mkdel(this, this.$removeCardFromEffectFn);
+		this.$myScope.model.removeTextFromEffect = ss.mkdel(this, this.$removeTextFromEffectFn);
+		this.$myScope.model.getEffectByScenarioEffect = ss.mkdel(this, this.$getEffectByScenarioEffectFn);
+		this.$myScope.model.addCardToSpace = ss.mkdel(this, this.$addCardToSpaceFn);
+		this.$myScope.model.removeCardFromSpace = ss.mkdel(this, this.$removeCardFromSpaceFn);
 		this.$myScope.model.addNewScenario = ss.mkdel(this, this.$addNewScenarioFn);
 		this.$myScope.model.cloneNewScenario = ss.mkdel(this, this.$cloneNewScenarioFn);
+		this.$myScope.model.deleteScenario = ss.mkdel(this, this.$deleteScenarioFn);
+		this.$myScope.model.getCurrentlySelected = ss.mkdel(this, this.$getCurrentlySelectedFn);
+		this.$myScope.model.applyEffectToCurrentlySelected = ss.mkdel(this, this.$applyEffectToCurrentlySelectedFn);
 		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 	};
 	$Client_Controllers_$GameScenarioEditorController.prototype = {
+		$deleteScenarioFn: function() {
+			ss.remove(this.$myScope.model.game.gameLayoutScenarios, this.$myScope.model.selection.selectedScenario);
+			this.$myScope.model.selection.selectedScenario = this.$myScope.model.game.gameLayoutScenarios.filter(function(a) {
+				return a.name === 'Default';
+			})[0];
+		},
+		$removeTextFromEffectFn: function(guid) {
+			ss.remove(this.$myScope.model.selection.selectedScenarioEffect.textGuids, guid);
+		},
+		$removeCardFromEffectFn: function(guid) {
+			ss.remove(this.$myScope.model.selection.selectedScenarioEffect.cardGuids, guid);
+		},
+		$removeAreaFromEffectFn: function(guid) {
+			ss.remove(this.$myScope.model.selection.selectedScenarioEffect.areaGuids, guid);
+		},
+		$removeSpaceFromEffectFn: function(guid) {
+			ss.remove(this.$myScope.model.selection.selectedScenarioEffect.spaceGuids, guid);
+		},
+		$getCardByCardGuidFn: function(guid) {
+			for (var $t1 = 0; $t1 < this.$myScope.model.selection.selectedScenario.spaces.length; $t1++) {
+				var scenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t1];
+				for (var $t2 = 0; $t2 < scenarioSpace.cards.length; $t2++) {
+					var gameLayoutScenarioCard = scenarioSpace.cards[$t2];
+					if (ss.referenceEquals(gameLayoutScenarioCard.cardGuid, guid)) {
+						return gameLayoutScenarioCard;
+					}
+				}
+			}
+			return null;
+		},
+		$getTextByTextGuidFn: function(guid) {
+			for (var $t1 = 0; $t1 < this.$myScope.model.game.gameLayout.texts.length; $t1++) {
+				var gameTextModel = this.$myScope.model.game.gameLayout.texts[$t1];
+				if (ss.referenceEquals(gameTextModel.guid, guid)) {
+					return gameTextModel;
+				}
+			}
+			return null;
+		},
+		$getAreaByAreaGuidFn: function(guid) {
+			for (var $t1 = 0; $t1 < this.$myScope.model.game.gameLayout.areas.length; $t1++) {
+				var gameAreaModel = this.$myScope.model.game.gameLayout.areas[$t1];
+				if (ss.referenceEquals(gameAreaModel.guid, guid)) {
+					return gameAreaModel;
+				}
+			}
+			return null;
+		},
+		$applyEffectToCurrentlySelectedFn: function() {
+			var selection = this.$myScope.model.selection;
+			if (ss.isValue(selection.selectedArea)) {
+				ss.add(this.$myScope.model.selection.selectedScenarioEffect.areaGuids, selection.selectedArea.guid);
+				return;
+			}
+			if (ss.isValue(selection.selectedText)) {
+				ss.add(this.$myScope.model.selection.selectedScenarioEffect.textGuids, selection.selectedText.guid);
+				return;
+			}
+			if (ss.isValue(selection.selectedCard)) {
+				ss.add(this.$myScope.model.selection.selectedScenarioEffect.cardGuids, selection.selectedCard.cardGuid);
+				return;
+			}
+			if (ss.isValue(selection.selectedSpace)) {
+				ss.add(this.$myScope.model.selection.selectedScenarioEffect.spaceGuids, selection.selectedSpace.guid);
+				return;
+			}
+		},
+		$getCurrentlySelectedFn: function() {
+			var selection = this.$myScope.model.selection;
+			if (ss.isValue(selection.selectedArea)) {
+				return 'Area: ' + selection.selectedArea.name;
+			}
+			if (ss.isValue(selection.selectedText)) {
+				return 'Text: ' + selection.selectedText.name;
+			}
+			if (ss.isValue(selection.selectedCard)) {
+				return 'Card: ' + selection.selectedCard.value + ' of ' + selection.selectedCard.type;
+			}
+			if (ss.isValue(selection.selectedSpace)) {
+				return 'Space: ' + selection.selectedSpace.name;
+			}
+			return 'Nothing Selected';
+		},
+		$getEffectByScenarioEffectFn: function(effect) {
+			for (var $t1 = 0; $t1 < this.$myScope.model.game.effects.length; $t1++) {
+				var gameEffectModel = this.$myScope.model.game.effects[$t1];
+				if (ss.referenceEquals(gameEffectModel.guid, effect.effectGuid)) {
+					return gameEffectModel;
+				}
+			}
+			return null;
+		},
 		$addNewScenarioFn: function() {
 			var $t2 = this.$myScope.model.game.gameLayoutScenarios;
 			var $t1 = Models.SiteManagerModels.Game.GameLayoutScenario.$ctor();
@@ -852,15 +1055,17 @@
 			$t1.numberOfPlayers = 6;
 			$t1.screenSize = new CommonLibraries.IntPoint(1024, 768);
 			ss.add($t2, $t1);
+			$Client_Controllers_$GameLayoutEditorController.$sureUpScenarios(this.$myScope.model.game);
 		},
 		$cloneNewScenarioFn: function() {
-			var $t4 = this.$myScope.model.game.gameLayoutScenarios;
+			var $t5 = this.$myScope.model.game.gameLayoutScenarios;
 			var $t1 = Models.SiteManagerModels.Game.GameLayoutScenario.$ctor();
 			$t1.spaces = this.$myScope.model.selection.selectedScenario.spaces.map(function(e) {
 				var $t2 = Models.SiteManagerModels.Game.GameLayoutScenarioSpace.$ctor();
 				$t2.spaceGuid = e.spaceGuid;
 				$t2.cards = e.cards.map(function(c) {
 					var $t3 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t3.cardGuid = CommonLibraries.Guid.newGuid();
 					$t3.state = c.state;
 					$t3.value = c.value;
 					$t3.type = c.type;
@@ -869,28 +1074,35 @@
 				return $t2;
 			});
 			$t1.effects = this.$myScope.model.selection.selectedScenario.effects.map(function(e1) {
-				return Models.SiteManagerModels.Game.GameLayoutScenarioEffect.$ctor();
+				var $t4 = Models.SiteManagerModels.Game.GameLayoutScenarioEffect.$ctor();
+				$t4.effectGuid = e1.effectGuid;
+				$t4.areaGuids = e1.areaGuids;
+				$t4.textGuids = e1.textGuids;
+				$t4.cardGuids = e1.cardGuids;
+				$t4.spaceGuids = e1.spaceGuids;
+				return $t4;
 			});
 			$t1.name = 'Clone Of ' + this.$myScope.model.selection.selectedScenario.name;
 			$t1.numberOfPlayers = this.$myScope.model.selection.selectedScenario.numberOfPlayers;
 			$t1.screenSize = this.$myScope.model.selection.selectedScenario.screenSize;
-			ss.add($t4, $t1);
+			ss.add($t5, $t1);
 		},
-		$removeCardFn: function(arg) {
+		$removeCardFromSpaceFn: function(arg) {
 			ss.remove(this.$myScope.model.selection.selectedScenarioSpace.cards, arg);
 		},
-		$addCardFn: function() {
+		$addCardToSpaceFn: function() {
 			var $t2 = this.$myScope.model.selection.selectedScenarioSpace.cards;
 			var $t1 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t1.cardGuid = CommonLibraries.Guid.newGuid();
 			$t1.state = 'faceUp';
 			$t1.type = 3;
 			$t1.value = 11;
 			ss.add($t2, $t1);
 		},
-		$getSpaceByScenarioSpaceFn: function(space) {
+		$getSpaceBySpaceGuidFn: function(guid) {
 			for (var $t1 = 0; $t1 < this.$myScope.model.game.gameLayout.spaces.length; $t1++) {
 				var gameSpaceModel = this.$myScope.model.game.gameLayout.spaces[$t1];
-				if (ss.referenceEquals(gameSpaceModel.guid, space.spaceGuid)) {
+				if (ss.referenceEquals(gameSpaceModel.guid, guid)) {
 					return gameSpaceModel;
 				}
 			}
@@ -1013,8 +1225,6 @@
 			this.$myScope.$apply();
 			this.$myScope.model.user = this.$myUIManager.clientInfo.loggedInUser;
 			this.$myClientSiteManagerService.getGameTypes();
-			this.$myCreateUIService.create$1('GameManager');
-			this.$myScope.minimize();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1149,6 +1359,7 @@
 		scope.model.spaceTest = $Client_Scope_Controller_EffectTesterSpaceModel.$ctor();
 		var $t2 = scope.model.spaceTest;
 		var $t1 = Models.SiteManagerModels.Game.GameSpaceModel.$ctor();
+		$t1.guid = CommonLibraries.Guid.newGuid();
 		$t1.left = 3;
 		$t1.top = 3;
 		$t1.height = 2;
@@ -1160,31 +1371,37 @@
 		var $t10 = scope.model.spaceTest;
 		var $t3 = [];
 		var $t4 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t4.cardGuid = CommonLibraries.Guid.newGuid();
 		$t4.state = 'faceDown';
 		$t4.type = 1;
 		$t4.value = 5;
 		ss.add($t3, $t4);
 		var $t5 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t5.cardGuid = CommonLibraries.Guid.newGuid();
 		$t5.state = 'faceDown';
 		$t5.type = 1;
 		$t5.value = 6;
 		ss.add($t3, $t5);
 		var $t6 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t6.cardGuid = CommonLibraries.Guid.newGuid();
 		$t6.state = 'faceDown';
 		$t6.type = 1;
 		$t6.value = 7;
 		ss.add($t3, $t6);
 		var $t7 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t7.cardGuid = CommonLibraries.Guid.newGuid();
 		$t7.state = 'faceDown';
 		$t7.type = 1;
 		$t7.value = 8;
 		ss.add($t3, $t7);
 		var $t8 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t8.cardGuid = CommonLibraries.Guid.newGuid();
 		$t8.state = 'faceDown';
 		$t8.type = 1;
 		$t8.value = 9;
 		ss.add($t3, $t8);
 		var $t9 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t9.cardGuid = CommonLibraries.Guid.newGuid();
 		$t9.state = 'faceDown';
 		$t9.type = 1;
 		$t9.value = 10;
@@ -1193,6 +1410,7 @@
 		scope.model.cardTest = $Client_Scope_Controller_EffectTesterCardModel.$ctor();
 		var $t12 = scope.model.cardTest;
 		var $t11 = Models.SiteManagerModels.Game.GameSpaceModel.$ctor();
+		$t11.guid = CommonLibraries.Guid.newGuid();
 		$t11.left = 3;
 		$t11.top = 8;
 		$t11.height = 2;
@@ -1203,6 +1421,7 @@
 		$t12.space = $t11;
 		var $t14 = scope.model.cardTest;
 		var $t13 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+		$t13.cardGuid = CommonLibraries.Guid.newGuid();
 		$t13.state = 'faceDown';
 		$t13.type = 2;
 		$t13.value = 0;
@@ -1210,6 +1429,7 @@
 		scope.model.areaTest = $Client_Scope_Controller_EffectTesterAreaModel.$ctor();
 		var $t16 = scope.model.areaTest;
 		var $t15 = Models.SiteManagerModels.Game.GameAreaModel.$ctor();
+		$t15.guid = CommonLibraries.Guid.newGuid();
 		$t15.left = 3;
 		$t15.top = 6;
 		$t15.height = 2;
@@ -1219,6 +1439,7 @@
 		scope.model.textTest = $Client_Scope_Controller_EffectTesterTextModel.$ctor();
 		var $t18 = scope.model.textTest;
 		var $t17 = Models.SiteManagerModels.Game.GameTextModel.$ctor();
+		$t17.guid = CommonLibraries.Guid.newGuid();
 		$t17.left = 7;
 		$t17.top = 6;
 		$t17.text = 'This is some text!';
@@ -1424,6 +1645,7 @@
 			this.$scope.model.selection.selectedScenario = this.$scope.model.game.gameLayoutScenarios.filter(function(scen) {
 				return scen.name === 'Default';
 			})[0];
+			//todo fix default to guid idiot
 		}
 		var addRule = (function(style) {
 			var document = eval('window.document');
@@ -1463,6 +1685,18 @@
 			addRule('.space' + space.name + '::before', {});
 			addRule('.space' + space.name + '::after', {});
 		}
+		for (var $t2 = 0; $t2 < scope.model.game.gameLayout.areas.length; $t2++) {
+			var area = scope.model.game.gameLayout.areas[$t2];
+			addRule('.area' + area.name, {});
+			addRule('.area' + area.name + '::before', {});
+			addRule('.area' + area.name + '::after', {});
+		}
+		for (var $t3 = 0; $t3 < scope.model.game.gameLayout.texts.length; $t3++) {
+			var text = scope.model.game.gameLayout.texts[$t3];
+			addRule('.text' + text.name, {});
+			addRule('.text' + text.name + '::before', {});
+			addRule('.text' + text.name + '::after', {});
+		}
 		for (var t = 0; t < 4; t++) {
 			for (var c = 0; c < 13; c++) {
 				addRule('.card' + t + '-' + c + '', {});
@@ -1475,53 +1709,9 @@
 	$Client_Controllers_TestGameController.prototype = {
 		$getCardsFromScenarioFn: function(arg) {
 			var scenario = this.$scope.model.selection.selectedScenario;
-			var $t1 = [];
-			var $t2 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
-			$t2.type = 1;
-			$t2.value = 5;
-			$t2.state = 'faceDown';
-			ss.add($t1, $t2);
-			var $t3 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
-			$t3.type = 1;
-			$t3.value = 5;
-			$t3.state = 'faceUp';
-			ss.add($t1, $t3);
-			var $t4 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
-			$t4.type = 1;
-			$t4.value = 5;
-			$t4.state = 'faceDown';
-			ss.add($t1, $t4);
-			var $t5 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
-			$t5.type = 1;
-			$t5.value = 5;
-			$t5.state = 'faceUp';
-			ss.add($t1, $t5);
-			var $t6 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
-			$t6.type = 1;
-			$t6.value = 5;
-			$t6.state = 'faceDown';
-			ss.add($t1, $t6);
-			var $t7 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
-			$t7.type = 1;
-			$t7.value = 5;
-			$t7.state = 'faceUp';
-			ss.add($t1, $t7);
-			var defaultCards = $t1;
-			var spaces = scenario.spaces.filter(function(s) {
+			return scenario.spaces.filter(function(s) {
 				return ss.referenceEquals(s.spaceGuid, arg.guid);
-			});
-			var space;
-			if (spaces.length === 0) {
-				var $t9 = scenario.spaces;
-				var $t8 = Models.SiteManagerModels.Game.GameLayoutScenarioSpace.$ctor();
-				$t8.spaceGuid = arg.guid;
-				$t8.cards = defaultCards;
-				ss.add($t9, space = $t8);
-			}
-			else {
-				space = spaces[0];
-			}
-			return space.cards;
+			})[0].cards;
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1722,7 +1912,7 @@
 				//                }
 			};
 			var keys = {};
-			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.webIP);
+			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
 			$Client_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$on('redrawCard', redrawCard);
 			//   redrawCard();
@@ -2197,7 +2387,7 @@
 				}
 				$Client_Directives_AcgEffectTestDrawCardDirective.$purgeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value));
 				keys = {};
-				keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.webIP);
+				keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
 				$Client_Directives_AcgEffectTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 				var effect = scope.model.selection.selectedEffect;
 				if (ss.isNullOrUndefined(effect)) {
@@ -2270,7 +2460,7 @@
 				}
 			}, true);
 			keys = {};
-			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.webIP);
+			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
 			$Client_Directives_AcgEffectTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$watch('space', redrawCard, true);
 			scope.$watch('model.selection.selectedScenario', redrawCard, true);
@@ -2765,22 +2955,6 @@
 			});
 			var scale = scope.model.scale;
 			var reApplyAreaBind = function() {
-				var beforeStyle = {};
-				if (false) {
-					beforeStyle['display'] = 'block';
-					beforeStyle['position'] = 'relative';
-					beforeStyle['z-index'] = '-1';
-					beforeStyle['width'] = '100%';
-					beforeStyle['height'] = '100%';
-					beforeStyle['left'] = '-50px';
-					beforeStyle['top'] = '-50px';
-					beforeStyle['padding'] = '50px';
-					beforeStyle['border-radius'] = '15px';
-					beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
-					beforeStyle['content'] = '""';
-					beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
-				}
-				$Client_Directives_AcgTestDrawAreaDirective.$changeCSS('area' + scope.area.name + '::before', beforeStyle);
 				scope.areaStyle = {};
 				scope.areaStyle.position = 'absolute';
 				scope.areaStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
@@ -2790,78 +2964,64 @@
 				scope.areaStyle.width = scope.area.width * scale.x;
 				scope.areaStyle.height = scope.area.height * scale.y;
 				scope.areaStyle.backgroundColor = 'blue';
-				//
-				//                                                     foreach (var effect in scope.Space.Appearance.Effects)
-				//
-				//                                                     {
-				//
-				//                                                     switch (effect.Type)
-				//
-				//                                                     {
-				//
-				//                                                     case EffectType.Highlight:
-				//
-				//                                                     var hEffect = ((CardGameAppearanceEffectHighlight) effect);
-				//
-				//                                                     scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}",
-				//
-				//                                                     hEffect.Radius);
-				//
-				//                                                     scope.SpaceStyle.backgroundColor = hEffect.Color;
-				//
-				//                                                     scope.SpaceStyle.border = "solid 2px black";
-				//
-				//                                                     scope.SpaceStyle.borderRadius = 15.0;
-				//
-				//                                                     scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.Rotate:
-				//
-				//                                                     Window.Alert(effect.Type.ToString());
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.Bend:
-				//
-				//                                                     var bEffect = (CardGameAppearanceEffectBend) effect;
-				//
-				//                                                     
-				//
-				//                                                     //rotate
-				//
-				//                                                     
-				//
-				//                                                     
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.StyleProperty:
-				//
-				//                                                     Window.Alert(effect.Type.ToString());
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.Animated:
-				//
-				//                                                     Window.Alert(effect.Type.ToString());
-				//
-				//                                                     break;
-				//
-				//                                                     default:
-				//
-				//                                                     
-				//
-				//                                                     break;
-				//
-				//                                                     }
-				//
-				//                                                     }
+				$Client_Directives_AcgTestDrawAreaDirective.$purgeCSS('area' + scope.area.name + '::before');
+				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
+					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
+					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.areaGuids.length; $t2++) {
+						var areaGuid = gameLayoutScenarioEffect.areaGuids[$t2];
+						if (ss.referenceEquals(areaGuid, scope.area.guid)) {
+							for (var $t3 = 0; $t3 < scope.model.game.effects.length; $t3++) {
+								var gameEffectModel = scope.model.game.effects[$t3];
+								if (ss.referenceEquals(gameEffectModel.guid, gameLayoutScenarioEffect.effectGuid)) {
+									var effect = gameEffectModel;
+									switch (effect.type) {
+										case 'highlight': {
+											var color = Models.SiteManagerModels.Game.EffectHelper.getString(effect, 'color');
+											var radius = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'radius');
+											var rotate = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'rotate');
+											var offsetX = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsetx');
+											var offsetY = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsety');
+											var opacity = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'opacity');
+											var beforeStyle = {};
+											beforeStyle['display'] = 'block';
+											beforeStyle['position'] = 'relative';
+											beforeStyle['z-index'] = '-1';
+											beforeStyle['width'] = '100%';
+											beforeStyle['height'] = '100%';
+											beforeStyle['left'] = -radius + offsetX + 'px';
+											beforeStyle['top'] = -radius + offsetY + 'px';
+											beforeStyle['padding'] = radius + 'px';
+											beforeStyle['border-radius'] = '5px';
+											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
+											var hexcolor = $Client_Directives_AcgTestDrawAreaDirective.hextorgb(color);
+											beforeStyle['content'] = '""';
+											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+											beforeStyle['border'] = '2px solid black';
+											$Client_Directives_AcgTestDrawAreaDirective.$changeCSS('area' + scope.area.name + '::before', beforeStyle);
+											break;
+										}
+										case 'rotate': {
+											break;
+										}
+										case 'bend': {
+											break;
+										}
+										case 'styleProperty': {
+											break;
+										}
+										case 'animated': {
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			};
 			scope.$watch('model.scale', function() {
 				scale = scope.model.scale;
-				element.attr('class', 'space ' + ss.formatString('space{0}', scope.area.name));
+				element.attr('class', 'area ' + ss.formatString('area{0}', scope.area.name));
 				element.resizable({
 					grid: [scale.x, scale.y],
 					minHeight: -1,
@@ -2887,6 +3047,8 @@
 				reApplyAreaBind();
 			});
 			scope.$watch('area', reApplyAreaBind, true);
+			scope.$watch('model.selection.selectedEffect', reApplyAreaBind, true);
+			scope.$watch('model.selection.selectedScenario.effects', reApplyAreaBind, true);
 		}
 	};
 	$Client_Directives_AcgTestDrawAreaDirective.transformRotate = function(ar) {
@@ -2922,6 +3084,32 @@
 			}
 		}
 	};
+	$Client_Directives_AcgTestDrawAreaDirective.$purgeCSS = function(myClass) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					document.styleSheets[a].removeRule(i);
+					document.styleSheets[a].insertRule(myClass + '{}');
+				}
+			}
+		}
+	};
+	$Client_Directives_AcgTestDrawAreaDirective.hextorgb = function(hex) {
+		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
+		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawCardDirective
 	var $Client_Directives_AcgTestDrawCardDirective = function() {
@@ -2932,6 +3120,7 @@
 		$linkFn: function(scope, element, attrs) {
 			element.attr('style', 'width:71px; height:96px;');
 			element.attr('class', 'card ' + ss.formatString('card{0}-{1}', scope.card.type, scope.card.value));
+			var keys;
 			scope.$watch('model.selection.selectedCard', function(old, new1) {
 				if (ss.referenceEquals(old, new1)) {
 					return;
@@ -2993,146 +3182,106 @@
 				//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
 				//                element.me().rotate(scope.Space.Appearance.InnerStyle.Rotate);
 				scope.cardStyle.content = '""';
-				//
-				//                foreach (var effect in scope.Card.Appearance.EffectNames)
-				//
-				//                {
-				//
-				//                GameEffectModel grabbedEffect = myEffectManager.GetEffectByName(effect);
-				//
-				//                if (grabbedEffect == null)
-				//
-				//                {
-				//
-				//                continue;
-				//
-				//                }
-				//
-				//                switch (grabbedEffect.Type)
-				//
-				//                {
-				//
-				//                case EffectType.Highlight:
-				//
-				//                
-				//
-				//                var _effect = new CardGameAppearanceEffectHighlight(new CardGameEffectHighlightOptions()
-				//
-				//                {
-				//
-				//                Color = grabbedEffect.GetPropertyByName<string>("color"),
-				//
-				//                Radius = grabbedEffect.GetPropertyByName<double>("radius"),
-				//
-				//                Rotate = grabbedEffect.GetPropertyByName<double>("rotate"),
-				//
-				//                OffsetX = grabbedEffect.GetPropertyByName<double>("offsetx"),
-				//
-				//                OffsetY = grabbedEffect.GetPropertyByName<double>("offsety"),
-				//
-				//                Opacity = grabbedEffect.GetPropertyByName<double>("opacity"),
-				//
-				//                });
-				//
-				//                
-				//
-				//                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
-				//
-				//                beforeStyle["display"] = "block";
-				//
-				//                beforeStyle["position"] = "relative";
-				//
-				//                beforeStyle["z-index"] = "-1";
-				//
-				//                beforeStyle["width"] = "100%";
-				//
-				//                beforeStyle["height"] = "100%";
-				//
-				//                beforeStyle["left"] = (-_effect.Radius + _effect.OffsetX) + "px";
-				//
-				//                beforeStyle["top"] = (-_effect.Radius + _effect.OffsetY) + "px";
-				//
-				//                beforeStyle["padding"] = (_effect.Radius) + "px";
-				//
-				//                beforeStyle["border-radius"] = "5px";
-				//
-				//                beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
-				//
-				//                var color = hextorgb(_effect.Color);
-				//
-				//                
-				//
-				//                beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", color.R, color.G, color.B, _effect.Opacity);
-				//
-				//                beforeStyle["border"] = "2px solid black";
-				//
-				//                
-				//
-				//                ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
-				//
-				//                
-				//
-				//                
-				//
-				//                
-				//
-				//                
-				//
-				//                break;
-				//
-				//                case EffectType.Rotate:
-				//
-				//                break;
-				//
-				//                case EffectType.Bend:
-				//
-				//                
-				//
-				//                
-				//
-				//                
-				//
-				//                
-				//
-				//                var bEffect = (new CardGameAppearanceEffectBend(new CardGameEffectBendOptions()
-				//
-				//                {
-				//
-				//                Degrees = grabbedEffect.GetPropertyByName<double>("degrees"),
-				//
-				//                }));
-				//
-				//                
-				//
-				//                
-				//
-				//                var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
-				//
-				//                
-				//
-				//                element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))));
-				//
-				//                
-				//
-				//                break;
-				//
-				//                case EffectType.StyleProperty:
-				//
-				//                break;
-				//
-				//                case EffectType.Animated:
-				//
-				//                break;
-				//
-				//                }
-				//
-				//                }
+				$Client_Directives_AcgTestDrawCardDirective.$purgeCSS(ss.formatString('card{0}-{1}', scope.card.type, scope.card.value) + '::before');
+				keys = {};
+				keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
+				$Client_Directives_AcgTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
+					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
+					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.cardGuids.length; $t2++) {
+						var cardGuid = gameLayoutScenarioEffect.cardGuids[$t2];
+						if (ss.referenceEquals(cardGuid, scope.card.cardGuid)) {
+							for (var $t3 = 0; $t3 < scope.model.game.effects.length; $t3++) {
+								var gameEffectModel = scope.model.game.effects[$t3];
+								if (ss.referenceEquals(gameEffectModel.guid, gameLayoutScenarioEffect.effectGuid)) {
+									var effect = gameEffectModel;
+									switch (effect.type) {
+										case 'highlight': {
+											var color = Models.SiteManagerModels.Game.EffectHelper.getString(effect, 'color');
+											var radius = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'radius');
+											var rotate = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'rotate');
+											var offsetX = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsetx');
+											var offsetY = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsety');
+											var opacity = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'opacity');
+											var beforeStyle = {};
+											beforeStyle['display'] = 'block';
+											beforeStyle['position'] = 'relative';
+											beforeStyle['z-index'] = '-1';
+											beforeStyle['width'] = '100%';
+											beforeStyle['height'] = '100%';
+											beforeStyle['left'] = -radius + offsetX + 'px';
+											beforeStyle['top'] = -radius + offsetY + 'px';
+											beforeStyle['padding'] = radius + 'px';
+											beforeStyle['border-radius'] = '5px';
+											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
+											beforeStyle['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
+											var hexcolor = $Client_Directives_AcgTestDrawCardDirective.hextorgb(color);
+											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+											beforeStyle['border'] = '2px solid black';
+											$Client_Directives_AcgTestDrawCardDirective.$changeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value), beforeStyle);
+											break;
+										}
+										case 'rotate': {
+											break;
+										}
+										case 'bend': {
+											//
+											//
+											//
+											//                                                                      var bEffect = (new CardGameAppearanceEffectBend(new CardGameEffectBendOptions()
+											//
+											//
+											//
+											//                                                                      {
+											//
+											//
+											//
+											//                                                                      Degrees = grabbedEffect.GetPropertyByName<double>("degrees"),
+											//
+											//
+											//
+											//                                                                      }));
+											//
+											//
+											//
+											//                                                                      
+											//
+											//
+											//
+											//                                                                      
+											//
+											//
+											//
+											//                                                                      var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
+											//
+											//
+											//
+											//                                                                      
+											//
+											//
+											//
+											//                                                                      element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))));
+											break;
+										}
+										case 'styleProperty': {
+											break;
+										}
+										case 'animated': {
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			};
-			var keys = {};
-			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.webIP);
+			keys = {};
+			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
 			$Client_Directives_AcgTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$watch('space', redrawCard, true);
 			scope.$watch('model.selection.selectedScenario', redrawCard, true);
+			scope.$watch('model.selection.selectedEffect', redrawCard, true);
 			//            scope.On("redrawCard", redrawCard);
 			//   redrawCard();
 			//
@@ -3237,6 +3386,28 @@
 			}
 		}
 	};
+	$Client_Directives_AcgTestDrawCardDirective.$purgeCSS = function(myClass) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					document.styleSheets[a].removeRule(i);
+					document.styleSheets[a].insertRule(myClass + '{}');
+				}
+			}
+		}
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawSpaceDirective
 	var $Client_Directives_AcgTestDrawSpaceDirective = function() {
@@ -3257,22 +3428,6 @@
 			});
 			var scale = scope.model.scale;
 			var reApplySpaceBind = function() {
-				var beforeStyle = {};
-				if (false) {
-					beforeStyle['display'] = 'block';
-					beforeStyle['position'] = 'relative';
-					beforeStyle['z-index'] = '-1';
-					beforeStyle['width'] = '100%';
-					beforeStyle['height'] = '100%';
-					beforeStyle['left'] = '-50px';
-					beforeStyle['top'] = '-50px';
-					beforeStyle['padding'] = '50px';
-					beforeStyle['border-radius'] = '15px';
-					beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
-					beforeStyle['content'] = '""';
-					beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
-				}
-				$Client_Directives_AcgTestDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
 				scope.spaceStyle = {};
 				var l = scope.space.left;
 				var t = scope.space.top;
@@ -3288,74 +3443,60 @@
 				scope.spaceStyle.width = w * sl;
 				scope.spaceStyle.height = h * st;
 				scope.spaceStyle.backgroundColor = 'red';
-				//
-				//                                                     foreach (var effect in scope.Space.Appearance.Effects)
-				//
-				//                                                     {
-				//
-				//                                                     switch (effect.Type)
-				//
-				//                                                     {
-				//
-				//                                                     case EffectType.Highlight:
-				//
-				//                                                     var hEffect = ((CardGameAppearanceEffectHighlight) effect);
-				//
-				//                                                     scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}",
-				//
-				//                                                     hEffect.Radius);
-				//
-				//                                                     scope.SpaceStyle.backgroundColor = hEffect.Color;
-				//
-				//                                                     scope.SpaceStyle.border = "solid 2px black";
-				//
-				//                                                     scope.SpaceStyle.borderRadius = 15.0;
-				//
-				//                                                     scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.Rotate:
-				//
-				//                                                     Window.Alert(effect.Type.ToString());
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.Bend:
-				//
-				//                                                     var bEffect = (CardGameAppearanceEffectBend) effect;
-				//
-				//                                                     
-				//
-				//                                                     //rotate
-				//
-				//                                                     
-				//
-				//                                                     
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.StyleProperty:
-				//
-				//                                                     Window.Alert(effect.Type.ToString());
-				//
-				//                                                     break;
-				//
-				//                                                     case EffectType.Animated:
-				//
-				//                                                     Window.Alert(effect.Type.ToString());
-				//
-				//                                                     break;
-				//
-				//                                                     default:
-				//
-				//                                                     
-				//
-				//                                                     break;
-				//
-				//                                                     }
-				//
-				//                                                     }
+				$Client_Directives_AcgTestDrawSpaceDirective.$purgeCSS('space' + scope.space.name + '::before');
+				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
+					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
+					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.spaceGuids.length; $t2++) {
+						var spaceGuid = gameLayoutScenarioEffect.spaceGuids[$t2];
+						if (ss.referenceEquals(spaceGuid, scope.space.guid)) {
+							for (var $t3 = 0; $t3 < scope.model.game.effects.length; $t3++) {
+								var gameEffectModel = scope.model.game.effects[$t3];
+								if (ss.referenceEquals(gameEffectModel.guid, gameLayoutScenarioEffect.effectGuid)) {
+									var effect = gameEffectModel;
+									switch (effect.type) {
+										case 'highlight': {
+											var color = Models.SiteManagerModels.Game.EffectHelper.getString(effect, 'color');
+											var radius = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'radius');
+											var rotate = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'rotate');
+											var offsetX = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsetx');
+											var offsetY = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsety');
+											var opacity = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'opacity');
+											var beforeStyle = {};
+											beforeStyle['display'] = 'block';
+											beforeStyle['position'] = 'relative';
+											beforeStyle['z-index'] = '-1';
+											beforeStyle['width'] = '100%';
+											beforeStyle['height'] = '100%';
+											beforeStyle['left'] = -radius + offsetX + 'px';
+											beforeStyle['top'] = -radius + offsetY + 'px';
+											beforeStyle['padding'] = radius + 'px';
+											beforeStyle['border-radius'] = '5px';
+											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
+											var hexcolor = $Client_Directives_AcgTestDrawSpaceDirective.hextorgb(color);
+											beforeStyle['content'] = '""';
+											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+											beforeStyle['border'] = '2px solid black';
+											$Client_Directives_AcgTestDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
+											break;
+										}
+										case 'rotate': {
+											break;
+										}
+										case 'bend': {
+											break;
+										}
+										case 'styleProperty': {
+											break;
+										}
+										case 'animated': {
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			};
 			scope.$watch('model.scale', function() {
 				scale = scope.model.scale;
@@ -3384,6 +3525,8 @@
 				reApplySpaceBind();
 			});
 			scope.$watch('space', reApplySpaceBind, true);
+			scope.$watch('model.selection.selectedEffect', reApplySpaceBind, true);
+			scope.$watch('model.selection.selectedScenario.effects', reApplySpaceBind, true);
 		}
 	};
 	$Client_Directives_AcgTestDrawSpaceDirective.transformRotate = function(ar) {
@@ -3419,6 +3562,32 @@
 			}
 		}
 	};
+	$Client_Directives_AcgTestDrawSpaceDirective.$purgeCSS = function(myClass) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					document.styleSheets[a].removeRule(i);
+					document.styleSheets[a].insertRule(myClass + '{}');
+				}
+			}
+		}
+	};
+	$Client_Directives_AcgTestDrawSpaceDirective.hextorgb = function(hex) {
+		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
+		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawTextDirective
 	var $Client_Directives_AcgTestDrawTextDirective = function() {
@@ -3434,22 +3603,6 @@
 			});
 			var scale = scope.model.scale;
 			var reApplyTextBind = function() {
-				var beforeStyle = {};
-				if (false) {
-					beforeStyle['display'] = 'block';
-					beforeStyle['position'] = 'relative';
-					beforeStyle['z-index'] = '-1';
-					beforeStyle['width'] = '100%';
-					beforeStyle['height'] = '100%';
-					beforeStyle['left'] = '-50px';
-					beforeStyle['top'] = '-50px';
-					beforeStyle['padding'] = '50px';
-					beforeStyle['border-radius'] = '15px';
-					beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
-					beforeStyle['content'] = '""';
-					beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
-				}
-				$Client_Directives_AcgTestDrawTextDirective.$changeCSS('text' + scope.text.name + '::before', beforeStyle);
 				scope.textStyle = {};
 				scope.textStyle.position = 'absolute';
 				scope.textStyle.left = scope.text.left * scale.x;
@@ -3457,6 +3610,60 @@
 				scope.textStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
 				scope.textStyle.borderRadius = '15px';
 				element.text(scope.text.text);
+				$Client_Directives_AcgTestDrawTextDirective.$purgeCSS('text' + scope.text.name + '::before');
+				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
+					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
+					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.textGuids.length; $t2++) {
+						var textGuid = gameLayoutScenarioEffect.textGuids[$t2];
+						if (ss.referenceEquals(textGuid, scope.text.guid)) {
+							for (var $t3 = 0; $t3 < scope.model.game.effects.length; $t3++) {
+								var gameEffectModel = scope.model.game.effects[$t3];
+								if (ss.referenceEquals(gameEffectModel.guid, gameLayoutScenarioEffect.effectGuid)) {
+									var effect = gameEffectModel;
+									switch (effect.type) {
+										case 'highlight': {
+											var color = Models.SiteManagerModels.Game.EffectHelper.getString(effect, 'color');
+											var radius = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'radius');
+											var rotate = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'rotate');
+											var offsetX = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsetx');
+											var offsetY = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'offsety');
+											var opacity = Models.SiteManagerModels.Game.EffectHelper.getNumber(effect, 'opacity');
+											var beforeStyle = {};
+											beforeStyle['display'] = 'block';
+											beforeStyle['position'] = 'relative';
+											beforeStyle['z-index'] = '-1';
+											beforeStyle['width'] = '100%';
+											beforeStyle['height'] = '100%';
+											beforeStyle['left'] = -radius + offsetX + 'px';
+											beforeStyle['top'] = -radius + offsetY + 'px';
+											beforeStyle['padding'] = radius + 'px';
+											beforeStyle['border-radius'] = '5px';
+											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
+											var hexcolor = $Client_Directives_AcgTestDrawTextDirective.hextorgb(color);
+											beforeStyle['content'] = '""';
+											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+											beforeStyle['border'] = '2px solid black';
+											$Client_Directives_AcgTestDrawTextDirective.$changeCSS('text' + scope.text.name + '::before', beforeStyle);
+											break;
+										}
+										case 'rotate': {
+											break;
+										}
+										case 'bend': {
+											break;
+										}
+										case 'styleProperty': {
+											break;
+										}
+										case 'animated': {
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			};
 			scope.$watch('model.scale', function() {
 				scale = scope.model.scale;
@@ -3472,6 +3679,8 @@
 				reApplyTextBind();
 			});
 			scope.$watch('text', reApplyTextBind, true);
+			scope.$watch('model.selection.selectedEffect', reApplyTextBind, true);
+			scope.$watch('model.selection.selectedScenario.effects', reApplyTextBind, true);
 		}
 	};
 	$Client_Directives_AcgTestDrawTextDirective.transformRotate = function(ar) {
@@ -3507,6 +3716,32 @@
 			}
 		}
 	};
+	$Client_Directives_AcgTestDrawTextDirective.$purgeCSS = function(myClass) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					document.styleSheets[a].removeRule(i);
+					document.styleSheets[a].insertRule(myClass + '{}');
+				}
+			}
+		}
+	};
+	$Client_Directives_AcgTestDrawTextDirective.hextorgb = function(hex) {
+		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
+		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
+	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.ChatBoxDirective
 	var $Client_Directives_ChatBoxDirective = function() {
@@ -3517,7 +3752,7 @@
 		this.transclude = false;
 		this.scope = null;
 		this.restrict = 'EA';
-		this.templateUrl = ss.formatString('{0}partials/chatBox.html', CommonLibraries.Constants.webIP);
+		this.templateUrl = ss.formatString('{0}partials/chatBox.html', CommonLibraries.Constants.contentAddress);
 		this.replace = true;
 		this.scope = { contents: '=' };
 		this.link = ss.mkdel(this, this.$linkFn);
@@ -3547,7 +3782,7 @@
 		this.transclude = false;
 		this.scope = null;
 		this.restrict = 'EA';
-		this.templateUrl = ss.formatString('{0}partials/fancyList.html', CommonLibraries.Constants.webIP);
+		this.templateUrl = ss.formatString('{0}partials/fancyList.html', CommonLibraries.Constants.contentAddress);
 		this.replace = true;
 		this.transclude = true;
 		this.scope = { items: '=', bind: '=' };
@@ -3578,7 +3813,7 @@
 		this.$myScope = null;
 		this.$myUIManagerService = uiManagerService;
 		this.restrict = 'EA';
-		this.templateUrl = ss.formatString('{0}partials/floatingWindow.html', CommonLibraries.Constants.webIP);
+		this.templateUrl = ss.formatString('{0}partials/floatingWindow.html', CommonLibraries.Constants.contentAddress);
 		this.replace = true;
 		this.transclude = true;
 		this.scope = { width: '=', height: '=', left: '=', top: '=', title: '=', visible: '=', onclose: '&' };
@@ -4122,6 +4357,7 @@
 	$Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor = function() {
 		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
 		$this.selectedEffect = null;
+		$this.selectedScenarioPieces = null;
 		$this.selectedScenarioCard = null;
 		$this.selectedScenarioSpace = null;
 		$this.selectedScenarioEffect = null;
@@ -4224,11 +4460,22 @@
 		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
 		$this.selection = null;
 		$this.game = null;
-		$this.getSpaceByScenarioSpace = null;
-		$this.addCard = null;
-		$this.removeCard = null;
+		$this.getSpaceBySpaceGuid = null;
+		$this.getAreaByAreaGuid = null;
+		$this.getTextByTextGuid = null;
+		$this.getCardByCardGuid = null;
+		$this.getEffectByScenarioEffect = null;
+		$this.addCardToSpace = null;
+		$this.removeCardFromSpace = null;
 		$this.addNewScenario = null;
+		$this.deleteScenario = null;
 		$this.cloneNewScenario = null;
+		$this.getCurrentlySelected = null;
+		$this.applyEffectToCurrentlySelected = null;
+		$this.removeSpaceFromEffect = null;
+		$this.removeAreaFromEffect = null;
+		$this.removeCardFromEffect = null;
+		$this.removeTextFromEffect = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -4360,6 +4607,27 @@
 	var $Client_Scope_Controller_SelectedGameScenarioPiece = function() {
 	};
 	$Client_Scope_Controller_SelectedGameScenarioPiece.prototype = { none: 'none', space: 'space', effect: 'effect' };
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.SelectedScenarioPieces
+	var $Client_Scope_Controller_SelectedScenarioPieces = function() {
+	};
+	$Client_Scope_Controller_SelectedScenarioPieces.createInstance = function() {
+		return $Client_Scope_Controller_SelectedScenarioPieces.$ctor();
+	};
+	$Client_Scope_Controller_SelectedScenarioPieces.$ctor = function() {
+		var $this = {};
+		$this.space = null;
+		$this.card = null;
+		$this.area = null;
+		$this.text = null;
+		$this.piece = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.SelectedScenarioPieceType
+	var $Client_Scope_Controller_SelectedScenarioPieceType = function() {
+	};
+	$Client_Scope_Controller_SelectedScenarioPieceType.prototype = { none: 'none', space: 'space', area: 'area', text: 'text', card: 'card' };
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.TestGameControllerScope
 	var $Client_Scope_Controller_TestGameControllerScope = function() {
@@ -4879,7 +5147,7 @@
 		create$3: function(T) {
 			return function(ui, populateScope) {
 				var scope = this.$myRootScopeService.$new();
-				var html = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.webIP));
+				var html = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress));
 				populateScope(scope, html);
 				var item = this.$myCompileService(html)(scope);
 				item.appendTo(window.document.body);
@@ -4908,7 +5176,7 @@
 				}
 				else {
 					scope = this.$myRootScopeService.$new();
-					var html1 = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.webIP));
+					var html1 = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress));
 					populateScope(scope, html1);
 					var item = this.$myCompileService(html1)(scope);
 					item.appendTo(window.document.body);
@@ -4920,13 +5188,13 @@
 		},
 		create$1: function(ui) {
 			var scope = this.$myRootScopeService.$new();
-			var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.webIP)))(scope);
+			var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress)))(scope);
 			item.appendTo(window.document.body);
 			scope.$apply();
 			return scope;
 		},
 		create$2: function(ui, scope) {
-			var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.webIP)))(scope);
+			var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress)))(scope);
 			item.appendTo(window.document.body);
 			scope.$apply();
 			return scope;
@@ -5079,6 +5347,8 @@
 	ss.registerClass(global, 'Client.Scope.Controller.QuestionScopeModel', $Client_Scope_Controller_QuestionScopeModel);
 	ss.registerEnum(global, 'Client.Scope.Controller.SelectedGameLayoutPiece', $Client_Scope_Controller_SelectedGameLayoutPiece);
 	ss.registerEnum(global, 'Client.Scope.Controller.SelectedGameScenarioPiece', $Client_Scope_Controller_SelectedGameScenarioPiece);
+	ss.registerClass(global, 'Client.Scope.Controller.SelectedScenarioPieces', $Client_Scope_Controller_SelectedScenarioPieces);
+	ss.registerEnum(global, 'Client.Scope.Controller.SelectedScenarioPieceType', $Client_Scope_Controller_SelectedScenarioPieceType);
 	ss.registerClass(global, 'Client.Scope.Controller.TestGameControllerScope', $Client_Scope_Controller_TestGameControllerScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.TestGameControllerScopeModel', $Client_Scope_Controller_TestGameControllerScopeModel);
 	ss.registerEnum(global, 'Client.Scope.Controller.UpdateStatusType', $Client_Scope_Controller_UpdateStatusType);

@@ -145,9 +145,6 @@ namespace Client.Controllers
             myScope.Apply();
             myScope.Model.User= myUIManager.ClientInfo.LoggedInUser;
             myClientSiteManagerService.GetGameTypes();
-
-            myCreateUIService.Create("GameManager");
-            myScope.Minimize();
         } 
     } 
 }

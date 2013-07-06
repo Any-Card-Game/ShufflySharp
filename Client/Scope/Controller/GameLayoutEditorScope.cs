@@ -30,6 +30,7 @@ namespace Client.Scope.Controller
     public class GameEditorSelectionScopeModel : GameUpdater
     {
         public GameEffectModel SelectedEffect { get; set; }
+        public SelectedScenarioPieces SelectedScenarioPieces { get; set; }
         public GameLayoutScenarioCard SelectedScenarioCard { get; set; }
         public GameLayoutScenarioSpace SelectedScenarioSpace { get; set; }
         public GameLayoutScenarioEffect SelectedScenarioEffect { get; set; }
@@ -41,6 +42,20 @@ namespace Client.Scope.Controller
         public SelectedGameScenarioPiece SelectedScenarioPiece { get; set; }
         public GameLayoutScenario SelectedScenario { get; set; }
         public bool ShowGrid { get; set; }
+    }
+    [Serializable]
+    public class SelectedScenarioPieces
+    {
+        public string Space { get; set; }
+        public string Card { get; set; }
+        public string Area { get; set; }
+        public string Text { get; set; }
+        public SelectedScenarioPieceType Piece { get; set; }
+    }
+    [NamedValues]
+    public enum SelectedScenarioPieceType
+    {
+      None,  Space,Area,Text,Card
     }
 
     [NamedValues]

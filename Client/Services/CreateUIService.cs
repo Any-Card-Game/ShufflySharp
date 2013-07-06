@@ -27,7 +27,7 @@ namespace Client.Services
         {
 
             T scope = myRootScopeService.New<T>();
-            var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP));
+            var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress));
             populateScope(scope, html);
             var item = myCompileService(html)(scope);
             item.AppendTo(Window.Document.Body);
@@ -64,7 +64,7 @@ namespace Client.Services
             else
             {
                 scope = myRootScopeService.New<T>();
-                var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP));
+                var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress));
                 populateScope(scope, html);
                 var item = myCompileService(html)(scope);
                 item.AppendTo(Window.Document.Body);
@@ -79,7 +79,7 @@ namespace Client.Services
         {
 
             var scope = myRootScopeService.New();
-            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP)))(scope);
+            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 
@@ -88,7 +88,7 @@ namespace Client.Services
         public IScope Create(string ui, BaseScope scope)
         {
 
-            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.WebIP)))(scope);
+            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 

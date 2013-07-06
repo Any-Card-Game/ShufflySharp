@@ -41,6 +41,7 @@
                     Top: <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.top" />{{model.selection.selectedSpace.top}}
                     Width: <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.width" />{{model.selection.selectedSpace.width}}
                     Height: <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.height" />{{model.selection.selectedSpace.height}}
+                    Vertical: <input type="checkbox" ng-model="model.selection.selectedSpace.vertical" />
                     <button ng-click="model.removeSpace(model.selection.selectedSpace)">Remove</button>
                 </div>
                 <div ng-switch-when="area">

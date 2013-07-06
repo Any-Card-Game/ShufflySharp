@@ -1,0 +1,32 @@
+<div ng-controller="GameEffectsEditorController">
+    <div floating-window left="'20%'" top="'40%'" height="'380px'" width="'370px'" title="'Game Effects Editor!'" visible="visible">
+        <div style="width: 50%; float: left;">
+
+            <div style="width: 150px; height: 100px;" fancy-list items="model.game.effects" bind="model.selection.selectedEffect">
+                {{item.name}} - {{item.type}}
+            </div>
+            <button ng-click="model.selection.selectedEffect=null;">Add New Effect</button>
+        </div>
+        <div style="width: 50%; float: left;">
+            <div ng-show="model.selection.selectedEffect">
+                Name:
+                <input type="text" ng-model="model.selection.selectedEffect.name" />
+                Type: {{effect.type}}
+                <div ng-repeat="prop in model.selection.selectedEffect.properties">
+                    {{prop.name}}:<input ng-model="prop.value" property="prop" />{{prop.value}}
+                </div>
+                <button ng-click="model.removeEffect(model.selection.selectedEffect)">Remove</button>
+            </div>
+            <div ng-show="!model.selection.selectedEffect">
+                <input type="text" ng-model="model.newEffectName" />
+                <section>
+                    <label ng-repeat="effectType in model.effectTypes">
+                        <input name="effecttypes" type="radio" value="{{effectType}}" ng-model="model.newEffectType">
+                        <span>{{effectType}}</span>
+                    </label>
+                </section>
+                <button ng-click="model.addEffect()">Add New Effect</button>
+            </div>
+        </div>
+    </div>
+</div>

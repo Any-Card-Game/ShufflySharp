@@ -230,7 +230,9 @@
 	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
 	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
 	$CommonLibraries_Constants.local = true;
-	$CommonLibraries_Constants.webIP = 'http://localhost:8881/';
+	$CommonLibraries_Constants.rootAddress = 'http://localhost';
+	$CommonLibraries_Constants.homeAddress = 'http://localhost:1700';
+	$CommonLibraries_Constants.contentAddress = 'http://localhost:8881/';
 	$CommonLibraries_Constants.redisIP = '198.211.107.101';
 	$CommonLibraries_Constants.mongoIP = '198.211.107.101';
 	$CommonLibraries_Constants.HARDLOCATION = 'C:\\code\\node\\';

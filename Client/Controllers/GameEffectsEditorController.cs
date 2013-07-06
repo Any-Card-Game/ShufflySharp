@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
+using CommonLibraries;
 using Models.SiteManagerModels.Game;
 namespace Client.Controllers
 {
@@ -60,17 +61,19 @@ namespace Client.Controllers
 
             myScope.Model.NewEffectName = "";
             myScope.Model.Selection.SelectedEffect = effect;
+            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
         }
 
         private void RemoveEffectFn(GameEffectModel effect)
         {
             myScope.Model.Game.Effects.Remove(effect);
             myScope.Model.Selection.SelectedEffect = null;
+            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
         }
 
         public static GameEffectModel makeEffect(string effectName, EffectType type)
         {
-            GameEffectModel effect = new GameEffectModel() { Name = effectName };
+            GameEffectModel effect = new GameEffectModel() { Name = effectName ,Properties=new List<GameEffectPropertyModel>(),Guid=Guid.NewGuid()};
             effect.Type = type;
             switch (effect.Type) {
                 case EffectType.Highlight:

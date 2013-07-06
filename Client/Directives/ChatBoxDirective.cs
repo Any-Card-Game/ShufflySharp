@@ -16,7 +16,7 @@ namespace Client.Directives
         public ChatBoxDirective()
         {
             restrict = "EA";
-            templateUrl = string.Format("{0}partials/chatBox.html", Constants.WebIP);
+            templateUrl = string.Format("{0}partials/chatBox.html", Constants.ContentAddress);
             replace = true;
             scope = new
             {

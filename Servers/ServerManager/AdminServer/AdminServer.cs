@@ -78,7 +78,7 @@ namespace ServerManager.AdminServer
                         "ascii",
                         (err, content) => {
                             var fieldSets = "";
-                            fieldSets += string.Format("<span>Main Site: {0}</span>", "<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://198.211.107.101\",\"MainSite\");'>Launch</a>");
+                            fieldSets += string.Format("<span>Main Site: {0}</span>", string.Format("<a href='#{0}' onclick='goHere(\"{1}\",\"MainSite\");'>Launch</a>", (int.Parse((Math.Random() * 20000).ToString())), Constants.HomeAddress));
 
                             fieldSets += buildFieldset(sites, "Site Servers");
                             fieldSets += buildFieldset(gateways, "Gateway Servers");
@@ -89,7 +89,7 @@ namespace ServerManager.AdminServer
                             var dict = new JsDictionary();
                             dict["Content-Type"] = "text/html";
                             response.WriteHead(200, dict);
-                            response.End(content.Replace("{0}", fieldSets));
+                            response.End(content.Replace("{0}", fieldSets).Replace("{1}", Constants.HomeAddress));
                         });
         }
 
@@ -108,9 +108,8 @@ namespace ServerManager.AdminServer
                                      process.Index + 1,
                                      debug
                                              ? string.Format(
-                                                     "<a href='#" + (int.Parse((Math.Random() * 20000).ToString())) + "' onclick='goHere(\"http://198.211.107.101:8080/debug?port={0}\",\"" + name + "(" + (process.Index + 1) + ")" +
-                                                     "\");'>Debug</a>",
-                                                     process.DebugPort + "&foo=" + int.Parse(( Math.Random() * 5000000 ).ToString()))
+                                                     "<a href='#{1}' onclick='goHere(\"{2}:8080/debug?port={0}\",\"{3}({4})" + "\");'>Debug</a>",
+                                                     process.DebugPort + "&foo=" + int.Parse(( Math.Random() * 5000000 ).ToString()), (int.Parse((Math.Random() * 20000).ToString())), Constants.RootAddress, name, (process.Index + 1))
                                              : "Debug");
                 str += "</li>";
 

@@ -1,0 +1,21 @@
+<div ng-controller="TestGameController">
+
+    <div style="position: relative; margin: auto;top:0; bottom:0; left:0; right:0 " ng-style="{width:model.selection.selectedScenario.screenSize.x+'px',height:model.selection.selectedScenario.screenSize.y+'px'}">
+        <div grid="model.scale" show-grid="model.selection.showGrid"></div>
+        <div ng-repeat='space in model.game.gameLayout.spaces'>
+            <div acg-test-draw-space ng-style='spaceStyle'>
+                <div ng-repeat='card in model.getCardsFromScenario(space)'>
+                    <div acg-test-draw-card ng-style='cardStyle' ng-click='cardClick()'></div>
+                </div>
+            </div>
+        </div>
+        <div ng-repeat='area in model.game.gameLayout.areas'>
+            <div acg-test-draw-area ng-style='areaStyle'>
+            </div>
+        </div>
+        <div ng-repeat='text in model.game.gameLayout.texts'>
+            <div acg-test-draw-text ng-style='textStyle'>
+            </div>
+        </div>
+    </div>
+</div>

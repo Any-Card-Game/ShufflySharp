@@ -116,7 +116,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		$handler: function(request, response) {
 			this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', ss.mkdel(this, function(err, content) {
 				var fieldSets = '';
-				fieldSets += ss.formatString('<span>Main Site: {0}</span>', '<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://198.211.107.101","MainSite");\'>Launch</a>');
+				fieldSets += ss.formatString('<span>Main Site: {0}</span>', ss.formatString('<a href=\'#{0}\' onclick=\'goHere("{1}","MainSite");\'>Launch</a>', parseInt((Math.random() * 20000).toString()), CommonLibraries.Constants.homeAddress));
 				fieldSets += this.$buildFieldset(this.$sites, 'Site Servers');
 				fieldSets += this.$buildFieldset(this.$gateways, 'Gateway Servers');
 				fieldSets += this.$buildFieldset(this.$games, 'Game Servers');
@@ -125,7 +125,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				var dict = {};
 				dict['Content-Type'] = 'text/html';
 				response.writeHead(200, dict);
-				response.end(ss.replaceAllString(content, '{0}', fieldSets));
+				response.end(ss.replaceAllString(ss.replaceAllString(content, '{0}', fieldSets), '{1}', CommonLibraries.Constants.homeAddress));
 			}));
 		},
 		$buildFieldset: function(items, name) {
@@ -136,7 +136,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			for (var $t1 = 0; $t1 < items.length; $t1++) {
 				var process = items[$t1];
 				str += '<li>';
-				str += ss.formatString('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? ss.formatString('<a href=\'#' + parseInt((Math.random() * 20000).toString()) + '\' onclick=\'goHere("http://198.211.107.101:8080/debug?port={0}","' + name + '(' + (process.index + 1) + ')' + '");\'>Debug</a>', process.debugPort + '&foo=' + parseInt((Math.random() * 5000000).toString())) : 'Debug'));
+				str += ss.formatString('<span>{0} ({1}): {2}</span>', process.name, process.index + 1, (this.$debug ? ss.formatString('<a href=\'#{1}\' onclick=\'goHere("{2}:8080/debug?port={0}","{3}({4})");\'>Debug</a>', process.debugPort + '&foo=' + parseInt((Math.random() * 5000000).toString()), parseInt((Math.random() * 20000).toString()), CommonLibraries.Constants.rootAddress, name, process.index + 1) : 'Debug'));
 				str += '</li>';
 				//document.frames["test"].location.reload();
 			}

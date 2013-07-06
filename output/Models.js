@@ -423,6 +423,7 @@
 	};
 	$Models_SiteManagerModels_Game_GameAreaModel.$ctor = function() {
 		var $this = {};
+		$this.guid = null;
 		$this.name = null;
 		$this.top = 0;
 		$this.left = 0;
@@ -448,10 +449,17 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameEffectModel
 	var $Models_SiteManagerModels_Game_GameEffectModel = function() {
-		this.name = null;
-		this.type = 0;
-		this.properties = null;
-		this.properties = [];
+	};
+	$Models_SiteManagerModels_Game_GameEffectModel.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameEffectModel.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameEffectModel.$ctor = function() {
+		var $this = {};
+		$this.guid = null;
+		$this.name = null;
+		$this.type = 0;
+		$this.properties = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameEffectPropertyModel
@@ -518,6 +526,7 @@
 	};
 	$Models_SiteManagerModels_Game_GameLayoutScenarioCard.$ctor = function() {
 		var $this = {};
+		$this.cardGuid = null;
 		$this.value = 0;
 		$this.type = 0;
 		$this.state = 0;
@@ -532,6 +541,11 @@
 	};
 	$Models_SiteManagerModels_Game_GameLayoutScenarioEffect.$ctor = function() {
 		var $this = {};
+		$this.effectGuid = null;
+		$this.spaceGuids = null;
+		$this.cardGuids = null;
+		$this.textGuids = null;
+		$this.areaGuids = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -604,6 +618,7 @@
 	};
 	$Models_SiteManagerModels_Game_GameTextModel.$ctor = function() {
 		var $this = {};
+		$this.guid = null;
 		$this.top = 0;
 		$this.left = 0;
 		$this.name = null;

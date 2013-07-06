@@ -290,6 +290,7 @@
                 ndiv.setAttribute('class', 'tab');
                 ndiv.ind = counter++;
                 ndiv.setAttribute('id', 'tab' + name);
+                ndiv.setAttribute('style', 'height:900px;');
                 document.getElementById('tabs').appendChild(ndiv);
 
                 var ifr = document.createElement('iframe');
@@ -306,7 +307,7 @@
                 ndiv2.appendChild(na);
 
                 na = document.createElement('span');
-                na.setAttribute('class', 'spsp');
+                na.setAttribute('c1ss', 'spsp');
                 na.innerText = "X";
                 na.onclick = function(e) {
                     document.getElementById('tabs').removeChild(ndiv);
@@ -323,9 +324,8 @@
                 });
             }
 
-            goHere('http://50.116.22.241', 'MainSite');
+            goHere('{1}', 'MainSite');
 
         </script>
     </body>
-</html>
-working
+</html> 

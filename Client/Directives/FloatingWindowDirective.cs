@@ -25,7 +25,7 @@ namespace Client.Directives
         {
             myUIManagerService = uiManagerService;
             restrict = "EA";
-            templateUrl = string.Format("{0}partials/floatingWindow.html", Constants.WebIP);
+            templateUrl = string.Format("{0}partials/floatingWindow.html", Constants.ContentAddress);
             replace = true;
             transclude = true;
             scope = new

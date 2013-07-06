@@ -58,12 +58,10 @@ namespace Models.SiteManagerModels.Game
     }
     [Serializable]
     public class GameLayoutScenarioCard 
-    { 
-        [IntrinsicProperty]
+    {
+        public string CardGuid { get; set; }
         public int Value { get; set; }
-        [IntrinsicProperty]
         public int Type { get; set; }
-        [IntrinsicProperty]
         public GameLayoutCardState State { get; set; }  
     }
     [ScriptName("CardState")]
@@ -77,6 +75,11 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameLayoutScenarioEffect
     {
+        public string EffectGuid { get; set; }
+        public List<string> SpaceGuids { get; set; }
+        public List<string> CardGuids { get; set; }
+        public List<string> TextGuids { get; set; }
+        public List<string> AreaGuids { get; set; }
     }
     [Serializable]
     public class GameLayoutModel
@@ -100,6 +103,7 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameTextModel
     {
+        public string Guid { get; set; }
         public double Top { get; set; }
         public double Left { get; set; }
 
@@ -110,6 +114,7 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameAreaModel
     {
+        public string Guid { get; set; }
         public string Name { get; set; }
 
         public double Top { get; set; }
@@ -145,17 +150,12 @@ namespace Models.SiteManagerModels.Game
         public IntPoint CursorPosition { get; set; }
     }
 
+    [Serializable]
     public class GameEffectModel
-    {
-        public GameEffectModel()
-        {
-            Properties = new List<GameEffectPropertyModel>();
-        }
-        [IntrinsicProperty]
+    { 
+        public string Guid { get; set; }
         public string Name { get; set; }
-        [IntrinsicProperty]
         public EffectType Type { get; set; }
-        [IntrinsicProperty]
         public List<GameEffectPropertyModel> Properties { get; set; }
     }
 

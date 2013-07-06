@@ -1,6 +1,5 @@
 using System;
-using System.Runtime.CompilerServices;
-using WebLibraries.ShuffUI.ShuffUI;
+using System.Runtime.CompilerServices; 
 namespace Client.Scope.Directive
 {
     public class FloatingWindowBaseScope : BaseScope
@@ -20,4 +19,16 @@ namespace Client.Scope.Directive
         [IntrinsicProperty]
         public Action OnClose { get; set; }
     }
+    public enum SwingDirection
+    {
+        TopLeft,
+        Top,
+        TopRight,
+        Right,
+        BottomRight,
+        Bottom,
+        BottomLeft,
+        Left
+    }
+
 }

@@ -1,7 +1,7 @@
 using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 namespace Client.Controllers
 {
     internal class CreateRoomController

@@ -5,7 +5,7 @@ using Client.Scope;
 using Client.Scope.Directive;
 using Client.Services;
 using CommonLibraries;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 using jQueryApi;
 using Size = Client.Scope.Directive.Size;
 namespace Client.Directives

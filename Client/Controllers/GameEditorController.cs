@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Html;
 using Client.Scope;
 using Client.Scope.Controller;
+using Client.Scope.Directive;
 using Client.Services;
 using Models;
 using Models.SiteManagerModels;
-using Models.SiteManagerModels.Game;
-using WebLibraries.ShuffUI.ShuffUI;
+using Models.SiteManagerModels.Game; 
 namespace Client.Controllers
 {
     internal class GameEditorController

@@ -3,16 +3,14 @@ using System.Html;
 using System.Runtime.CompilerServices; 
 using Client.Libs;
 using CommonLibraries;
-using WebLibraries.Common;
-using WebLibraries.ShuffUI.ShuffUI;
+using WebLibraries.Common; 
 using jQueryApi;
 [assembly: ScriptSharpCompatibility(OmitDowncasts = true, OmitNullableChecks = true)]
 namespace Client
 {
     public class BuildSite
     {
-        private string gatewayServerAddress;
-        public ShuffUIManager shuffUIManager;
+        private string gatewayServerAddress; 
         [IntrinsicProperty]
         public static BuildSite Instance { get; set; }
 

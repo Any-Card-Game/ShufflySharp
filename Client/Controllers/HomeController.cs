@@ -5,7 +5,7 @@ using Client.Scope.Controller;
 using Client.Services;
 using Models;
 using Models.SiteManagerModels;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 namespace Client.Controllers
 {
     internal class HomeController

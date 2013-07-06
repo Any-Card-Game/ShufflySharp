@@ -10,7 +10,7 @@ using global;
 using Models;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 namespace Client.Controllers
 {
     internal class GameLayoutEditorController

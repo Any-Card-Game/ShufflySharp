@@ -10,7 +10,7 @@ using Models;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
 using WebLibraries.CodeMirror;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 using WebLibraries.UglifyJS;
 
 namespace Client.Controllers

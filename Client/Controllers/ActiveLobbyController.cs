@@ -6,7 +6,7 @@ using Client.Services;
 using Models;
 using Models.ChatManagerModels;
 using Models.SiteManagerModels;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 namespace Client.Controllers
 {
     internal class ActiveLobbyController

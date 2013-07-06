@@ -4,7 +4,7 @@ using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
 using Models.GameManagerModels;
-using WebLibraries.ShuffUI.ShuffUI;
+using Client.Scope.Directive;
 namespace Client.Controllers
 {
     internal class QuestionController

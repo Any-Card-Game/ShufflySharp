@@ -9,25 +9,25 @@ using jQueryApi;
 using jQueryApi.UI.Interactions;
 namespace Client.Directives
 {
-    public class AcgTestDrawSpaceDirective
+    public class AcgTestDrawAreaDirective
     {
-        public Action<TestSpaceScope, jQueryObject, object> link;
-        public AcgTestDrawSpaceDirective()
+        public Action<TestAreaScope, jQueryObject, object> link;
+        public AcgTestDrawAreaDirective()
         {
             link = linkFn;
 
         }
 
-        private void linkFn(TestSpaceScope scope, jQueryObject element, object attrs)
+        private void linkFn(TestAreaScope scope, jQueryObject element, object attrs)
         {
-
             element.MouseDown((e) =>
-                          {
-                              scope.Model.Selection.SelectedSpace = scope.Space;
-                              scope.Apply();
-                          });
+            {
+                scope.Model.Selection.SelectedArea = scope.Area;
+                scope.Apply();
+            });
+
             var scale = scope.Model.Scale;
-            Action  reApplySpaceBind = () =>
+            Action reApplyAreaBind = () =>
             {
                 JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
                 if (false)
@@ -45,26 +45,21 @@ namespace Client.Directives
                     beforeStyle["content"] = "\"\"";
                     beforeStyle["background"] = "rgba(112, 12, 58, 0.231373)";
                 }
-                ChangeCSS("space" + scope.Space.Name + "::before", beforeStyle);
-                scope.SpaceStyle = new { };
-
-               var l  =  scope.Space.Left;
-               var t  =  scope.Space.Top;
-               var w  =  scope.Space.Width;
-               var h  =  scope.Space.Height;
-               var sl =  scale.X;
-               var st =  scale.Y;
-
-                scope.SpaceStyle.position = "absolute";
-                scope.SpaceStyle.left = l * sl;
-                scope.SpaceStyle.top = t * st;
-                scope.SpaceStyle.boxShadow = "rgb(51, 51, 51) 4px 4px 2px";
-                scope.SpaceStyle.borderRadius = "15px";
+                ChangeCSS("area" + scope.Area.Name + "::before", beforeStyle);
+                scope.AreaStyle = new { };
 
 
-                scope.SpaceStyle.width = w * sl;
-                scope.SpaceStyle.height = h * st;
-                scope.SpaceStyle.backgroundColor = "red";
+
+                scope.AreaStyle.position = "absolute";
+                scope.AreaStyle.boxShadow = "rgb(51, 51, 51) 4px 4px 2px";
+                scope.AreaStyle.borderRadius = "15px";
+
+                scope.AreaStyle.left = scope.Area.Left * scale.X;
+                scope.AreaStyle.top = scope.Area.Top * scale.Y;
+
+                scope.AreaStyle.width = scope.Area.Width * scale.X;
+                scope.AreaStyle.height = scope.Area.Height * scale.Y;
+                scope.AreaStyle.backgroundColor = "blue";
 
 
 
@@ -106,50 +101,50 @@ namespace Client.Directives
                 */
             };
             scope.watch("model.scale", () =>
-                                       {
-                                           scale = scope.Model.Scale;
+            {
+                scale = scope.Model.Scale;
 
 
-                                           element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
-                                           element.Resizable(new ResizableOptions()
-                                                             {
-                                                                 Grid = new[] { scale.X, scale.Y },
-                                                                 MinHeight = -1,
-                                                                 MinWidth = -1,
-                                                                 Handles = "n, e, s, w,nw,sw,ne,se",
-                                                                 OnResize = (ev, ele) =>
-                                                                            {
-                                                                                scope.Space.Left = ele.Position.Left /
-                                                                                                   scale.X;
-                                                                                scope.Space.Top = ele.Position.Top /
-                                                                                                  scale.Y;
-                                                                                scope.Space.Width = ele.Size.Width /
-                                                                                                    scale.X;
-                                                                                scope.Space.Height = ele.Size.Height /
-                                                                                                     scale.Y;
-                                                                                scope.Apply();
+                element.Attribute("class", "space " + string.Format("space{0}", scope.Area.Name));
+                element.Resizable(new ResizableOptions()
+                {
+                    Grid = new[] { scale.X, scale.Y },
+                    MinHeight = -1,
+                    MinWidth = -1,
+                    Handles = "n, e, s, w,nw,sw,ne,se",
+                    OnResize = (ev, ele) =>
+                    {
+                        scope.Area.Left = ele.Position.Left /
+                                           scale.X;
+                        scope.Area.Top = ele.Position.Top /
+                                          scale.Y;
+                        scope.Area.Width = ele.Size.Width /
+                                            scale.X;
+                        scope.Area.Height = ele.Size.Height /
+                                             scale.Y;
+                        scope.Apply();
 
-                                                                            }
-                                                             });
-                                           element.Draggable(new DraggableOptions()
-                                                             {
-                                                                 Cursor = "crosshair",
-                                                                 Grid = new[] { scale.X, scale.Y },
-                                                                 OnDrag = (ev, ele) =>
-                                                                          {
-                                                                              scope.Space.Left = ele.Position.Left /
-                                                                                                 scale.X;
-                                                                              scope.Space.Top = ele.Position.Top / scale.Y;
-                                                                              scope.Apply();
+                    }
+                });
+                element.Draggable(new DraggableOptions()
+                {
+                    Cursor = "crosshair",
+                    Grid = new[] { scale.X, scale.Y },
+                    OnDrag = (ev, ele) =>
+                    {
+                        scope.Area.Left = ele.Position.Left /
+                                           scale.X;
+                        scope.Area.Top = ele.Position.Top / scale.Y;
+                        scope.Apply();
 
-                                                                          }
-                                                             });
-                                           reApplySpaceBind();
-                                       });
+                    }
+                });
+                reApplyAreaBind();
+            });
 
 
 
-            scope.watch("space", reApplySpaceBind, true);
+            scope.watch("area", reApplyAreaBind, true);
         }
         public static string TransformRotate(double ar)
         {

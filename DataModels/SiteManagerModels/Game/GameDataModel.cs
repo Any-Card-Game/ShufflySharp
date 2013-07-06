@@ -9,6 +9,10 @@ namespace DataModels.SiteManagerModels.Game
 
     public class GameDataModel:MongoDocument
     {
+        public GameDataModel()
+        {
+        }
+
         public string Name { get; set; }
         public string UserHash { get; set; }
         public string Description { get; set; }
@@ -25,6 +29,8 @@ namespace DataModels.SiteManagerModels.Game
         public List<GameLayoutScenario> GameLayoutScenarios { get; set; }
         public List<GameEffectModel> Effects { get; set; }
 
+        public bool Deleted { get; set; }
+
         public GameModel ToModel()
         {
 
@@ -40,6 +46,8 @@ namespace DataModels.SiteManagerModels.Game
                                            GameLayout = GameLayout,
                                            GameLayoutScenarios = GameLayoutScenarios,
                                            Effects = Effects,
+                                           Deleted=Deleted,
+
                                    };
         }
     }

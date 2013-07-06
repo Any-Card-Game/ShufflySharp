@@ -1,4 +1,5 @@
 using System;
+using System.Html;
 using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
@@ -47,7 +48,8 @@ namespace Client.Controllers
             myClientSiteManagerService.OnGetRoomsReceived += PopulateRooms;
             myClientSiteManagerService.OnRoomJoined += RoomJoined;
             myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfoReceived;
-            
+       
+
         }
 
         private void CreateGameFn()
@@ -144,6 +146,8 @@ namespace Client.Controllers
             myScope.Model.User= myUIManager.ClientInfo.LoggedInUser;
             myClientSiteManagerService.GetGameTypes();
 
+            myCreateUIService.Create("GameManager");
+            myScope.Minimize();
         } 
     } 
 }

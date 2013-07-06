@@ -33,6 +33,7 @@ namespace Client
                  .controller("GameManagerController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", new Func<GameManagerScope, UIManagerService, ClientSiteManagerService, MessageService, object>((scope, uiManagerService, clientSiteManagerService, messageService) => new GameManagerController(scope, uiManagerService, clientSiteManagerService, messageService)) })
                  .controller("GameEditorController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", "createUIService", new Func<GameEditorScope, UIManagerService, ClientSiteManagerService, MessageService, CreateUIService, object>((scope, uiManagerService, clientSiteManagerService, messageService, createUIService) => new GameEditorController(scope, uiManagerService, clientSiteManagerService, messageService, createUIService)) })
                  .controller("GameLayoutEditorController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", "createUIService", new Func<GameLayoutEditorScope, UIManagerService, ClientSiteManagerService, MessageService, CreateUIService, object>((scope, uiManagerService, clientSiteManagerService, messageService, createUIService) => new GameLayoutEditorController(scope, uiManagerService, clientSiteManagerService, messageService, createUIService)) })
+                 .controller("GameScenarioEditorController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", "createUIService", new Func<GameScenarioEditorScope, UIManagerService, ClientSiteManagerService, MessageService, CreateUIService, object>((scope, uiManagerService, clientSiteManagerService, messageService, createUIService) => new GameScenarioEditorController(scope, uiManagerService, clientSiteManagerService, messageService, createUIService)) })
                  .controller("GameCodeController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", new Func<GameCodeScope, UIManagerService, ClientSiteManagerService, MessageService, object>((scope, uiManager, clientSiteManagerService, messageService) => new GameCodeController(scope, uiManager, clientSiteManagerService, messageService)) })
                  .controller("MessageController", new object[] { "$scope", new Func<MessageScope, object>((scope) => new MessageController(scope)) })
                  
@@ -48,7 +49,8 @@ namespace Client
                  .service("gameContentManager", new object[] { new Func<object>(() => new GameContentManager()) })
                  .service("messageService", new object[] { "createUIService", "$rootScope", new Func<CreateUIService, IRootScopeService, object>((createUIService, rootScopeService) => new MessageService(createUIService, rootScopeService)) })
                  .service("createUIService", new object[] { "$compile", "$rootScope", new Func<CompileService, IRootScopeService, object>((compileService, rootScopeService) => new CreateUIService(compileService, rootScopeService)) })
-                 
+
+                 .directive("grid", new object[] { new Func<object>(() => new GridDirective()) })
                  .directive("draggable", new object[] { new Func<object>(() => new DraggableDirective()) })
                  .directive("floatingWindow", new object[] { "UIManager",new Func<UIManagerService, object>((uiManagerService) => new FloatingWindowDirective(uiManagerService)) })
                  .directive("fancyList", new object[] { new Func<object>(() => new FancyListDirective()) })
@@ -58,6 +60,7 @@ namespace Client
                  .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) })
                  .directive("acgTestDrawCard", new object[] { "effectManager", new Func<EffectManagerService, object>((effectManager) => new AcgTestDrawCardDirective(effectManager)) })
                  .directive("acgTestDrawSpace", new object[] { new Func<object>(() => new AcgTestDrawSpaceDirective()) })
+                 .directive("acgTestDrawArea", new object[] { new Func<object>(() => new AcgTestDrawAreaDirective()) })
                  .directive("acgTestDrawText", new object[] { new Func<object>(() => new AcgTestDrawTextDirective()) })
                  .directive("acgSpaces", new object[] { "$compile", "gameContentManager", new Func<CompileService, GameContentManager, object>((compile, gameContentManager) => new AcgSpacesDirective(compile, gameContentManager)) });
             

@@ -60,6 +60,7 @@
 		$t1.gameLayout = $this.gameLayout;
 		$t1.gameLayoutScenarios = $this.gameLayoutScenarios;
 		$t1.effects = $this.effects;
+		$t1.deleted = $this.deleted;
 		return $t1;
 	};
 	$DataModels_SiteManagerModels_Game_GameDataModel.$ctor = function() {
@@ -74,6 +75,7 @@
 		$this.gameLayout = null;
 		$this.gameLayoutScenarios = null;
 		$this.effects = null;
+		$this.deleted = false;
 		return $this;
 	};
 	ss.registerClass(global, 'DataModels.ChatManagerModels.ChatRoomDataModel', $DataModels_ChatManagerModels_ChatRoomDataModel, NodeLibraries.MongoDB.MongoDocument);

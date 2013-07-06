@@ -29,28 +29,40 @@ namespace Client.Controllers
             myMessageService = messageService;
             myCreateUIService = createUIService;
             myScope.Visible = true;
-            myScope.Model.SelectedPiece = SelectedGameLayoutPiece.None;
-            myScope.watch("model.selectedSpace", () =>
+            myScope.Model.Selection = new GameEditorSelectionScopeModel();
+
+            myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
+            myScope.watch("model.selection.selectedSpace", () =>
                                                  {
-                                                     if (myScope.Model.SelectedSpace == null) return;
-                                                     myScope.Model.SelectedText = null;
-                                                     myScope.Model.SelectedArea = null;
-                                                     myScope.Model.SelectedPiece = SelectedGameLayoutPiece.Space;
+                                                     if (myScope.Model.Selection.SelectedSpace == null) return;
+                                                     myScope.Model.Selection.SelectedText = null;
+                                                     myScope.Model.Selection.SelectedArea = null;
+                                                     myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Space;
+
+                                                     foreach (var gameLayoutScenarioSpace in myScope.Model.Selection.SelectedScenario.Spaces)
+                                                     {
+                                                         if (gameLayoutScenarioSpace.SpaceGuid == myScope.Model.Selection.SelectedSpace.Guid)
+                                                         {
+                                                             myScope.Model.Selection.SelectedScenarioSpace =gameLayoutScenarioSpace;
+                                                             break;
+                                                         }
+                                                     }
+
                                                  });
-            myScope.watch("model.selectedText", () =>
+            myScope.watch("model.selection.selectedText", () =>
                                                 {
-                                                    if (myScope.Model.SelectedText == null) return;
-                                                    myScope.Model.SelectedSpace = null;
-                                                    myScope.Model.SelectedArea = null;
-                                                    myScope.Model.SelectedPiece = SelectedGameLayoutPiece.Text;
+                                                    if (myScope.Model.Selection.SelectedText == null) return;
+                                                    myScope.Model.Selection.SelectedSpace = null;
+                                                    myScope.Model.Selection.SelectedArea = null;
+                                                    myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Text;
 
                                                 });
-            myScope.watch("model.selectedArea", () =>
+            myScope.watch("model.selection.selectedArea", () =>
                                                 {
-                                                    if (myScope.Model.SelectedArea == null) return;
-                                                    myScope.Model.SelectedText = null;
-                                                    myScope.Model.SelectedSpace = null;
-                                                    myScope.Model.SelectedPiece = SelectedGameLayoutPiece.Area;
+                                                    if (myScope.Model.Selection.SelectedArea == null) return;
+                                                    myScope.Model.Selection.SelectedText = null;
+                                                    myScope.Model.Selection.SelectedSpace = null;
+                                                    myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Area;
                                                 });
 
 
@@ -58,7 +70,11 @@ namespace Client.Controllers
             myScope.Model.AddText = AddTextFn;
             myScope.Model.AddArea = AddAreaFn;
             myScope.Model.AddSpace = AddSpaceFn;
+            myScope.Model.RemoveArea = RemoveAreaFn;
+            myScope.Model.RemoveSpace = RemoveSpaceFn;
+            myScope.Model.RemoveText = RemoveTextFn;
 
+            myScope.Model.OpenScenarios = OpenScenariosFn;
 
             myScope.watch("model.game",
                        () =>
@@ -72,14 +88,46 @@ namespace Client.Controllers
 
             myCreateUIService.CreateSingleton<TestGameControllerScope>("TestGameUI", (_scope, elem) =>
             {
-                _scope.Model =new TestGameControllerScopeModel();
-                _scope.Model.MainLayout = myScope.Model.Game.GameLayout;
+                _scope.Model = new TestGameControllerScopeModel();
+                _scope.Model.Game = myScope.Model.Game;
+                _scope.Model.Selection = myScope.Model.Selection;
 
             });
 
 
         }
-         
+
+        private void OpenScenariosFn()
+        {
+            myCreateUIService.CreateSingleton<GameScenarioEditorScope>("GameScenarioEditor", (_scope, elem) =>
+            {
+                _scope.Model = new GameScenarioEditorScopeModel();
+                _scope.Model.Game = myScope.Model.Game;
+                _scope.Model.Selection = myScope.Model.Selection;
+            });
+        }
+
+        private void RemoveSpaceFn(GameSpaceModel arg)
+        {
+            myScope.Model.Game.GameLayout.Spaces.Remove(arg);
+            myScope.Model.Selection.SelectedSpace = null;
+            myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
+        }
+
+        private void RemoveAreaFn(GameAreaModel arg)
+        {
+            myScope.Model.Game.GameLayout.Areas.Remove(arg);
+            myScope.Model.Selection.SelectedArea = null;
+            myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
+        }
+
+        private void RemoveTextFn(GameTextModel arg)
+        {
+            myScope.Model.Game.GameLayout.Texts.Remove(arg);
+            myScope.Model.Selection.SelectedText = null;
+            myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
+        }
+
 
         private void AddSpaceFn()
         {
@@ -88,7 +136,8 @@ namespace Client.Controllers
             spaces.Add(new GameSpaceModel()
                        {
                            Name = "Space" + (spaces.Count + 1),
-                           LayoutType = GameSpaceLayoutType.Straight,
+                           LayoutType = GameSpaceLayoutType.Grow,
+                           Guid = Guid.NewGuid(),
                            Left = 0,
                            Top = 0,
                            Height = 1,

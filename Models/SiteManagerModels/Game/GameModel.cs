@@ -34,6 +34,8 @@ namespace Models.SiteManagerModels.Game
         public List<GameEffectModel> Effects { get; set; }
         [ScriptName("_id")]
         public string ID { get; set; }
+
+        public bool Deleted { get; set; }
     }
     [Serializable]
     public class GameLayoutScenario
@@ -41,6 +43,45 @@ namespace Models.SiteManagerModels.Game
         public string Name { get; set; }
         public int NumberOfPlayers { get; set; }
         public IntPoint ScreenSize { get; set; }
+        public List<GameLayoutScenarioSpace> Spaces { get; set; }
+        public List<GameLayoutScenarioEffect> Effects { get; set; }
+
+//        public GameLayoutScenarioAct _Act { get; set; }
+
+    }
+
+    public class GameLayoutScenarioAct
+    {
+//        public List<GameLayoutScenarioSpace> Space { get; set; }
+    }
+
+    [Serializable]
+    public class GameLayoutScenarioSpace
+    {
+        public string SpaceGuid { get; set; }
+        public List<GameLayoutScenarioCard> Cards { get; set; } 
+    }
+    [Serializable]
+    public class GameLayoutScenarioCard 
+    { 
+        [IntrinsicProperty]
+        public int Value { get; set; }
+        [IntrinsicProperty]
+        public int Type { get; set; }
+        [IntrinsicProperty]
+        public GameLayoutCardState State { get; set; }  
+    }
+    [ScriptName("CardState")]
+    [NamedValues]
+    public enum GameLayoutCardState
+    {
+        FaceUp = 0,
+        FaceDown = 1,
+        FaceUpIfOwned = 2
+    }
+    [Serializable]
+    public class GameLayoutScenarioEffect
+    {
     }
     [Serializable]
     public class GameLayoutModel
@@ -86,13 +127,15 @@ namespace Models.SiteManagerModels.Game
     [Serializable]
     public class GameSpaceModel : GameAreaModel
     {
+        public string Guid { get; set; }
         public GameSpaceLayoutType LayoutType { get; set; }
         public bool Vertical { get; set; }
     }
     [NamedValues]
     public enum GameSpaceLayoutType
     {
-        Straight
+        Grow,
+        Static
     }
     [Serializable]
     public class GameCodeModel

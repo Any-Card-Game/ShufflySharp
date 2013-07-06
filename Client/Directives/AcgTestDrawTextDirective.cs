@@ -20,6 +20,12 @@ namespace Client.Directives
 
         private void linkFn(TestTextScope scope, jQueryObject element, object attrs)
         {
+            element.MouseDown((e) =>
+            {
+                scope.Model.Selection.SelectedText= scope.Text;
+                scope.Apply();
+            });
+
 
             var scale = scope.Model.Scale;
             Action reApplyTextBind = () =>
@@ -48,6 +54,8 @@ namespace Client.Directives
                 scope.TextStyle.position = "absolute";
                 scope.TextStyle.left = scope.Text.Left * scale.X;
                 scope.TextStyle.top = scope.Text.Top * scale.Y;
+                scope.TextStyle.boxShadow = "rgb(51, 51, 51) 4px 4px 2px";
+                scope.TextStyle.borderRadius = "15px";
 
                 
                 element.Text(scope.Text.Text);

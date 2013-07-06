@@ -76,7 +76,9 @@ namespace Client.Directives
             {
                 scope.PositionStyles.MarginTop = (-(int.Parse(scope.Height.Replace("px", "")) / 2)) + "px";
             }
+             
 
+            
             scope.SizeStyle = new Size() { Width = scope.Width, Height = scope.Height, };
             scope.Maximize = () =>
             {

@@ -30,10 +30,11 @@ namespace Client.Directives
             element.Attribute("class", "card " + string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
 
 
-            scope.watch("model.selectedCard",
-                        () =>
+            scope.watch("model.selection.selectedCard",
+                        (old,@new) =>
                         {
-                            if (scope.Model.SelectedCard == null || scope.Model.SelectedCard != scope.Card)
+                            if (old == @new) return;
+                            if (scope.Model.Selection.SelectedCard == null || scope.Model.Selection.SelectedCard != scope.Card)
                             {
                                 scope.CardStyle.border = Script.Undefined;
                                 scope.CardStyle.margin = Script.Undefined;
@@ -47,25 +48,25 @@ namespace Client.Directives
 
             scope.CardClick = () =>
             {
-                if (scope.Model.SelectedCard == scope.Card)
+                if (scope.Model.Selection.SelectedCard == scope.Card)
                 {
-                    scope.Model.SelectedCard = null;
+                    scope.Model.Selection.SelectedCard = null;
                 }
                 else
                 {
-                    scope.Model.SelectedCard = scope.Card;
+                    scope.Model.Selection.SelectedCard = scope.Card;
                 }
             };
 
             Action redrawCard = () =>
             {
-/*
                 var scale = scope.Model.Scale;
 
+                var cards = scope.Model.GetCardsFromScenario(scope.Space);
 
-                var spaceScale = new { width = scope.Space.Width / (scope.Space.Pile.Cards.Count - 1), height = scope.Space.Height / (scope.Space.Pile.Cards.Count - 1) };
+                var spaceScale = new { width = scope.Space.Width / (cards.Count - 1), height = scope.Space.Height / (cards.Count - 1) };
                 var vertical = scope.Space.Vertical;
-                var cardIndex = scope.Space.Pile.Cards.IndexOf(scope.Card);
+                var cardIndex = cards.IndexOf(scope.Card);
 
                 scope.CardStyle = new { };
 
@@ -73,15 +74,15 @@ namespace Client.Directives
                 var yy = 0.0;
 
 
-                switch (scope.Space.ResizeType)
+                switch (scope.Space.LayoutType)
                 {
-                    case TableSpaceResizeType.Static:
+                    case GameSpaceLayoutType.Static:
                         if (vertical)
                             yy = ((scope.Card.Value + 1) / 13.0) * scope.Space.Height * scale.Y;
                         else
                             xx = ((scope.Card.Value + 1) / 13.0) * scope.Space.Width * scale.X;
                         break;
-                    case TableSpaceResizeType.Grow:
+                    case GameSpaceLayoutType.Grow:
                         xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
                         yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
                         break;
@@ -100,28 +101,13 @@ namespace Client.Directives
                 scope.CardStyle.left = (xx + (vertical ? scope.Space.Width * scale.X / 2 : 0));
                 scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height * scale.Y / 2 : 0));
                 //                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-                element.me().rotate(scope.Space.Appearance.InnerStyle.Rotate);
+//                element.me().rotate(scope.Space.Appearance.InnerStyle.Rotate);
                 scope.CardStyle.content = "\"\"";
 
 
-                if (scope.Space.Name.StartsWith("User"))
-                {
+ 
 
-                    if (scope.Card.Appearance.EffectNames.Count == 0)
-                        scope.Card.Appearance.EffectNames.Add(EffectType.Bend.ToString());
-
-                }
-                else
-                {
-                    for (var index = scope.Card.Appearance.EffectNames.Count - 1; index >= 0; index--)
-                    {
-                        var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
-                        if (cardGameAppearanceEffect == EffectType.Bend.ToString())
-                            scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
-                    }
-                }
-
-
+/*
                 foreach (var effect in scope.Card.Appearance.EffectNames)
                 {
                     GameEffectModel grabbedEffect = myEffectManager.GetEffectByName(effect);
@@ -192,18 +178,18 @@ namespace Client.Directives
 */
 
 
-
-
-
-
+                 
 
             };
             JsDictionary<string, string> keys = new JsDictionary<string, string>() { };
             keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13), Constants.WebIP);
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
+            scope.watch("space", redrawCard, true);
 
-            scope.On("redrawCard", redrawCard);
+            scope.watch("model.selection.selectedScenario", redrawCard, true);
+            
+//            scope.On("redrawCard", redrawCard);
 
             //   redrawCard();
             /*

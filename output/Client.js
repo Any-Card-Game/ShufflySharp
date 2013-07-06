@@ -31,10 +31,12 @@
 			return new $Client_Controllers_$GameEditorController(scope11, uiManagerService1, clientSiteManagerService4, messageService2, createUIService3);
 		}]).controller('GameLayoutEditorController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope12, uiManagerService2, clientSiteManagerService5, messageService3, createUIService4) {
 			return new $Client_Controllers_$GameLayoutEditorController(scope12, uiManagerService2, clientSiteManagerService5, messageService3, createUIService4);
-		}]).controller('GameCodeController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope13, uiManager6, clientSiteManagerService6, messageService4) {
-			return new $Client_Controllers_$GameCodeController(scope13, uiManager6, clientSiteManagerService6, messageService4);
-		}]).controller('MessageController', ['$scope', function(scope14) {
-			return new $Client_Controllers_$MessageController(scope14);
+		}]).controller('GameScenarioEditorController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', 'createUIService', function(scope13, uiManagerService3, clientSiteManagerService6, messageService4, createUIService5) {
+			return new $Client_Controllers_$GameScenarioEditorController(scope13, uiManagerService3, clientSiteManagerService6, messageService4, createUIService5);
+		}]).controller('GameCodeController', ['$scope', 'UIManager', 'clientSiteManager', 'messageService', function(scope14, uiManager6, clientSiteManagerService7, messageService5) {
+			return new $Client_Controllers_$GameCodeController(scope14, uiManager6, clientSiteManagerService7, messageService5);
+		}]).controller('MessageController', ['$scope', function(scope15) {
+			return new $Client_Controllers_$MessageController(scope15);
 		}]).service('UIManager', ['clientGameManager', function(clientGameManagerService2) {
 			return new $Client_Services_UIManagerService(clientGameManagerService2);
 		}]).service('editEffects', [function() {
@@ -55,14 +57,16 @@
 			return new $Client_Services_GatewayService(serverUrl);
 		}]).service('gameContentManager', [function() {
 			return new $Client_Services_GameContentManager();
-		}]).service('messageService', ['createUIService', '$rootScope', function(createUIService5, rootScopeService) {
-			return new $Client_Services_MessageService(createUIService5, rootScopeService);
+		}]).service('messageService', ['createUIService', '$rootScope', function(createUIService6, rootScopeService) {
+			return new $Client_Services_MessageService(createUIService6, rootScopeService);
 		}]).service('createUIService', ['$compile', '$rootScope', function(compileService, rootScopeService1) {
 			return new $Client_Services_CreateUIService(compileService, rootScopeService1);
+		}]).directive('grid', [function() {
+			return new $Client_Directives_GridDirective();
 		}]).directive('draggable', [function() {
 			return new $Client_Directives_DraggableDirective();
-		}]).directive('floatingWindow', ['UIManager', function(uiManagerService3) {
-			return new $Client_Directives_FloatingWindowDirective(uiManagerService3);
+		}]).directive('floatingWindow', ['UIManager', function(uiManagerService4) {
+			return new $Client_Directives_FloatingWindowDirective(uiManagerService4);
 		}]).directive('fancyList', [function() {
 			return new $Client_Directives_FancyListDirective();
 		}]).directive('chatBox', [function() {
@@ -77,6 +81,8 @@
 			return new $Client_Directives_AcgTestDrawCardDirective(effectManager3);
 		}]).directive('acgTestDrawSpace', [function() {
 			return new $Client_Directives_AcgTestDrawSpaceDirective();
+		}]).directive('acgTestDrawArea', [function() {
+			return new $Client_Directives_AcgTestDrawAreaDirective();
 		}]).directive('acgTestDrawText', [function() {
 			return new $Client_Directives_AcgTestDrawTextDirective();
 		}]).directive('acgSpaces', ['$compile', 'gameContentManager', function(compile, gameContentManager1) {
@@ -487,34 +493,46 @@
 		this.$myMessageService = messageService;
 		this.$myCreateUIService = createUIService;
 		this.$myScope.visible = true;
-		this.$myScope.model.selectedPiece = 'none';
-		this.$myScope.$watch('model.selectedSpace', ss.mkdel(this, function() {
-			if (ss.isNullOrUndefined(this.$myScope.model.selectedSpace)) {
+		this.$myScope.model.selection = $Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor();
+		this.$myScope.model.selection.selectedLayoutPiece = 'none';
+		this.$myScope.$watch('model.selection.selectedSpace', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedSpace)) {
 				return;
 			}
-			this.$myScope.model.selectedText = null;
-			this.$myScope.model.selectedArea = null;
-			this.$myScope.model.selectedPiece = 'space';
+			this.$myScope.model.selection.selectedText = null;
+			this.$myScope.model.selection.selectedArea = null;
+			this.$myScope.model.selection.selectedLayoutPiece = 'space';
+			for (var $t1 = 0; $t1 < this.$myScope.model.selection.selectedScenario.spaces.length; $t1++) {
+				var gameLayoutScenarioSpace = this.$myScope.model.selection.selectedScenario.spaces[$t1];
+				if (ss.referenceEquals(gameLayoutScenarioSpace.spaceGuid, this.$myScope.model.selection.selectedSpace.guid)) {
+					this.$myScope.model.selection.selectedScenarioSpace = gameLayoutScenarioSpace;
+					break;
+				}
+			}
 		}));
-		this.$myScope.$watch('model.selectedText', ss.mkdel(this, function() {
-			if (ss.isNullOrUndefined(this.$myScope.model.selectedText)) {
+		this.$myScope.$watch('model.selection.selectedText', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedText)) {
 				return;
 			}
-			this.$myScope.model.selectedSpace = null;
-			this.$myScope.model.selectedArea = null;
-			this.$myScope.model.selectedPiece = 'text';
+			this.$myScope.model.selection.selectedSpace = null;
+			this.$myScope.model.selection.selectedArea = null;
+			this.$myScope.model.selection.selectedLayoutPiece = 'text';
 		}));
-		this.$myScope.$watch('model.selectedArea', ss.mkdel(this, function() {
-			if (ss.isNullOrUndefined(this.$myScope.model.selectedArea)) {
+		this.$myScope.$watch('model.selection.selectedArea', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedArea)) {
 				return;
 			}
-			this.$myScope.model.selectedText = null;
-			this.$myScope.model.selectedSpace = null;
-			this.$myScope.model.selectedPiece = 'area';
+			this.$myScope.model.selection.selectedText = null;
+			this.$myScope.model.selection.selectedSpace = null;
+			this.$myScope.model.selection.selectedLayoutPiece = 'area';
 		}));
 		this.$myScope.model.addText = ss.mkdel(this, this.$addTextFn);
 		this.$myScope.model.addArea = ss.mkdel(this, this.$addAreaFn);
 		this.$myScope.model.addSpace = ss.mkdel(this, this.$addSpaceFn);
+		this.$myScope.model.removeArea = ss.mkdel(this, this.$removeAreaFn);
+		this.$myScope.model.removeSpace = ss.mkdel(this, this.$removeSpaceFn);
+		this.$myScope.model.removeText = ss.mkdel(this, this.$removeTextFn);
+		this.$myScope.model.openScenarios = ss.mkdel(this, this.$openScenariosFn);
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
 		}), true);
@@ -523,15 +541,39 @@
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 		this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_TestGameControllerScope).call(this.$myCreateUIService, 'TestGameUI', ss.mkdel(this, function(_scope, elem) {
 			_scope.model = $Client_Scope_Controller_TestGameControllerScopeModel.$ctor();
-			_scope.model.mainLayout = this.$myScope.model.game.gameLayout;
+			_scope.model.game = this.$myScope.model.game;
+			_scope.model.selection = this.$myScope.model.selection;
 		}));
 	};
 	$Client_Controllers_$GameLayoutEditorController.prototype = {
+		$openScenariosFn: function() {
+			this.$myCreateUIService.createSingleton$1($Client_Scope_Controller_GameScenarioEditorScope).call(this.$myCreateUIService, 'GameScenarioEditor', ss.mkdel(this, function(_scope, elem) {
+				_scope.model = $Client_Scope_Controller_GameScenarioEditorScopeModel.$ctor();
+				_scope.model.game = this.$myScope.model.game;
+				_scope.model.selection = this.$myScope.model.selection;
+			}));
+		},
+		$removeSpaceFn: function(arg) {
+			ss.remove(this.$myScope.model.game.gameLayout.spaces, arg);
+			this.$myScope.model.selection.selectedSpace = null;
+			this.$myScope.model.selection.selectedLayoutPiece = 'none';
+		},
+		$removeAreaFn: function(arg) {
+			ss.remove(this.$myScope.model.game.gameLayout.areas, arg);
+			this.$myScope.model.selection.selectedArea = null;
+			this.$myScope.model.selection.selectedLayoutPiece = 'none';
+		},
+		$removeTextFn: function(arg) {
+			ss.remove(this.$myScope.model.game.gameLayout.texts, arg);
+			this.$myScope.model.selection.selectedText = null;
+			this.$myScope.model.selection.selectedLayoutPiece = 'none';
+		},
 		$addSpaceFn: function() {
 			var spaces = this.$myScope.model.game.gameLayout.spaces;
 			var $t1 = Models.SiteManagerModels.Game.GameSpaceModel.$ctor();
 			$t1.name = 'Space' + (spaces.length + 1);
-			$t1.layoutType = 'straight';
+			$t1.layoutType = 'grow';
+			$t1.guid = CommonLibraries.Guid.newGuid();
 			$t1.left = 0;
 			$t1.top = 0;
 			$t1.height = 1;
@@ -581,6 +623,7 @@
 		this.$myClientSiteManagerService.add_onDeveloperCreateGameReceived(ss.mkdel(this, this.$onDeveloperCreateGameReceivedFn));
 		this.$myClientSiteManagerService.add_onDoesGameNameExistReceived(ss.mkdel(this, this.$onDoesGameNameExistReceivedFn));
 		this.$myScope.model.createGame = ss.delegateCombine(this.$myScope.model.createGame, ss.mkdel(this, this.$createGameFn));
+		this.$myScope.model.deleteGame = ss.delegateCombine(this.$myScope.model.deleteGame, ss.mkdel(this, this.$deleteGameFn));
 		this.$myScope.$watch('model.selectedGame', ss.mkdel(this, function() {
 			if (ss.isNullOrUndefined(this.$myScope.model.selectedGame)) {
 				return;
@@ -592,6 +635,11 @@
 		}));
 	};
 	$Client_Controllers_$GameManagerController.prototype = {
+		$deleteGameFn: function() {
+			ss.remove(this.$myScope.model.games, this.$myScope.model.selectedGame);
+			this.$myScope.model.selectedGame.deleted = true;
+			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.selectedGame);
+		},
 		$onDoesGameNameExistReceivedFn: function(user, o) {
 		},
 		$onDeveloperCreateGameReceivedFn: function(user, o) {
@@ -606,6 +654,116 @@
 			this.$myScope.model.games = response.games;
 			this.$myScope.model.selectedGame = this.$myScope.model.games[0];
 			this.$myScope.$apply();
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Controllers.GameScenarioEditorController
+	var $Client_Controllers_$GameScenarioEditorController = function(scope, uiManager, clientSiteManagerService, messageService, createUIService) {
+		this.$myScope = null;
+		this.$myUIManager = null;
+		this.$myClientSiteManagerService = null;
+		this.$myMessageService = null;
+		this.$myCreateUIService = null;
+		this.$myScope = scope;
+		this.$myUIManager = uiManager;
+		this.$myClientSiteManagerService = clientSiteManagerService;
+		this.$myMessageService = messageService;
+		this.$myCreateUIService = createUIService;
+		this.$myScope.visible = true;
+		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
+			this.$myScope.model.updateStatus = 'dirty';
+		}), true);
+		this.$myScope.$watch('model.selection.selectedScenario', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedScenario)) {
+				return;
+			}
+			this.$myScope.model.selection.selectedScenarioEffect = null;
+			this.$myScope.model.selection.selectedScenarioSpace = null;
+		}));
+		this.$myScope.$watch('model.selection.selectedScenarioSpace', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedScenarioSpace)) {
+				return;
+			}
+			this.$myScope.model.selection.selectedScenarioEffect = null;
+			this.$myScope.model.selection.selectedScenarioPiece = 'space';
+		}));
+		this.$myScope.$watch('model.selection.selectedScenarioEffect', ss.mkdel(this, function() {
+			if (ss.isNullOrUndefined(this.$myScope.model.selection.selectedScenarioEffect)) {
+				return;
+			}
+			this.$myScope.model.selection.selectedScenarioSpace = null;
+			this.$myScope.model.selection.selectedScenarioPiece = 'effect';
+		}));
+		this.$myScope.model.getSpaceByScenarioSpace = ss.mkdel(this, this.$getSpaceByScenarioSpaceFn);
+		this.$myScope.model.addCard = ss.mkdel(this, this.$addCardFn);
+		this.$myScope.model.removeCard = ss.mkdel(this, this.$removeCardFn);
+		this.$myScope.model.addNewScenario = ss.mkdel(this, this.$addNewScenarioFn);
+		this.$myScope.model.cloneNewScenario = ss.mkdel(this, this.$cloneNewScenarioFn);
+		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myScope.model.updateStatus = 'synced';
+		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
+	};
+	$Client_Controllers_$GameScenarioEditorController.prototype = {
+		$addNewScenarioFn: function() {
+			var $t2 = this.$myScope.model.game.gameLayoutScenarios;
+			var $t1 = Models.SiteManagerModels.Game.GameLayoutScenario.$ctor();
+			$t1.spaces = [];
+			$t1.effects = [];
+			$t1.name = 'Scenario' + this.$myScope.model.game.gameLayoutScenarios.length;
+			$t1.numberOfPlayers = 6;
+			$t1.screenSize = new CommonLibraries.IntPoint(1024, 768);
+			ss.add($t2, $t1);
+		},
+		$cloneNewScenarioFn: function() {
+			var $t4 = this.$myScope.model.game.gameLayoutScenarios;
+			var $t1 = Models.SiteManagerModels.Game.GameLayoutScenario.$ctor();
+			$t1.spaces = this.$myScope.model.selection.selectedScenario.spaces.map(function(e) {
+				var $t2 = Models.SiteManagerModels.Game.GameLayoutScenarioSpace.$ctor();
+				$t2.spaceGuid = e.spaceGuid;
+				$t2.cards = e.cards.map(function(c) {
+					var $t3 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+					$t3.state = c.state;
+					$t3.value = c.value;
+					$t3.type = c.type;
+					return $t3;
+				});
+				return $t2;
+			});
+			$t1.effects = this.$myScope.model.selection.selectedScenario.effects.map(function(e1) {
+				return Models.SiteManagerModels.Game.GameLayoutScenarioEffect.$ctor();
+			});
+			$t1.name = 'Clone Of ' + this.$myScope.model.selection.selectedScenario.name;
+			$t1.numberOfPlayers = this.$myScope.model.selection.selectedScenario.numberOfPlayers;
+			$t1.screenSize = this.$myScope.model.selection.selectedScenario.screenSize;
+			ss.add($t4, $t1);
+		},
+		$removeCardFn: function(arg) {
+			ss.remove(this.$myScope.model.selection.selectedScenarioSpace.cards, arg);
+		},
+		$addCardFn: function() {
+			var $t2 = this.$myScope.model.selection.selectedScenarioSpace.cards;
+			var $t1 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t1.state = 'faceUp';
+			$t1.type = 3;
+			$t1.value = 11;
+			ss.add($t2, $t1);
+		},
+		$getSpaceByScenarioSpaceFn: function(space) {
+			for (var $t1 = 0; $t1 < this.$myScope.model.game.gameLayout.spaces.length; $t1++) {
+				var gameSpaceModel = this.$myScope.model.game.gameLayout.spaces[$t1];
+				if (ss.referenceEquals(gameSpaceModel.guid, space.spaceGuid)) {
+					return gameSpaceModel;
+				}
+			}
+			return null;
+		},
+		$onDeveloperUpdateGameReceivedFn: function(user, o) {
+			this.$myScope.model.updateStatus = 'synced';
+			this.$myScope.$apply();
+		},
+		$updateGameFn: function() {
+			this.$myScope.model.updateStatus = 'syncing';
+			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.game);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -716,6 +874,8 @@
 			this.$myScope.$apply();
 			this.$myScope.model.user = this.$myUIManager.clientInfo.loggedInUser;
 			this.$myClientSiteManagerService.getGameTypes();
+			this.$myCreateUIService.create$1('GameManager');
+			this.$myScope.minimize();
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -1029,6 +1189,10 @@
 			scope.$apply();
 			this.$myGameContentManager.redraw();
 		}));
+		$(window).bind('resize', function(a) {
+			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, ($(window).height() - 250) / scope.mainArea.size.height * 0.9);
+			scope.$apply();
+		});
 		this.$myClientGameManagerService.add_onGameStarted(function(user1, room) {
 			//alert(JSON.stringify(data));
 		});
@@ -1136,6 +1300,13 @@
 		this.$myEffectManager = effectManager;
 		effectManager.effects = [];
 		ss.add(effectManager.effects, $Client_Controllers_$ListEffectsController.$makeEffect('bend', 'bend'));
+		scope.model.getCardsFromScenario = ss.mkdel(this, this.$getCardsFromScenarioFn);
+		var scenario = this.$scope.model.selection.selectedScenario;
+		if (ss.isNullOrUndefined(scenario)) {
+			this.$scope.model.selection.selectedScenario = this.$scope.model.game.gameLayoutScenarios.filter(function(scen) {
+				return scen.name === 'Default';
+			})[0];
+		}
 		var addRule = (function(style) {
 			var document = eval('window.document');
 			var sheet = document.head.appendChild(style).sheet;
@@ -1147,55 +1318,85 @@
 			};
 		})(document.createElement('style'));
 		effectWatcher.applyEffect = ss.delegateCombine(effectWatcher.applyEffect, function(effect) {
-			if (ss.isNullOrUndefined(scope.model.selectedCard)) {
+			if (ss.isNullOrUndefined(scope.model.selection.selectedCard)) {
 				return;
 			}
-			ss.add(scope.model.selectedCard.appearance.effectNames, effect.name);
+			//todo scope.Model.Selection.SelectedCard.Appearance.EffectNames.Add(effect.Name);
 		});
-		scope.$watch('model.mainLayout.width + model.mainLayout.height', function() {
-			console.log('hap');
-			scope.model.scale = new CommonLibraries.Point($(window).width() / scope.model.mainLayout.width * 0.9, ($(window).height() - 250) / scope.model.mainLayout.height * 0.9);
+		scope.$watch('model.game.gameLayout.width + model.game.gameLayout.height', function() {
+			scope.model.scale = new CommonLibraries.Point(scope.model.selection.selectedScenario.screenSize.x / scope.model.game.gameLayout.width * 0.9, scope.model.selection.selectedScenario.screenSize.y / scope.model.game.gameLayout.height * 0.9);
 		});
-		$(window).bind('resize', function(a) {
-			scope.model.scale = new CommonLibraries.Point($(window).width() / scope.model.mainLayout.width * 0.9, ($(window).height() - 250) / scope.model.mainLayout.height * 0.9);
-			scope.$apply();
+		scope.$watch('model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y', function() {
+			scope.model.scale = new CommonLibraries.Point(scope.model.selection.selectedScenario.screenSize.x / scope.model.game.gameLayout.width * 0.9, scope.model.selection.selectedScenario.screenSize.y / scope.model.game.gameLayout.height * 0.9);
 		});
-		scope.model.scale = new CommonLibraries.Point($(window).width() / scope.model.mainLayout.width * 0.9, ($(window).height() - 250) / scope.model.mainLayout.height * 0.9);
-		for (var $t1 = 0; $t1 < scope.model.mainLayout.spaces.length; $t1++) {
-			var space = scope.model.mainLayout.spaces[$t1];
+		scope.model.scale = new CommonLibraries.Point(scope.model.selection.selectedScenario.screenSize.x / scope.model.game.gameLayout.width * 0.9, scope.model.selection.selectedScenario.screenSize.y / scope.model.game.gameLayout.height * 0.9);
+		//            scope.Model.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.Model.Game.GameLayout.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.Model.Game.GameLayout.Height) * .9);
+		for (var $t1 = 0; $t1 < scope.model.game.gameLayout.spaces.length; $t1++) {
+			var space = scope.model.game.gameLayout.spaces[$t1];
 			addRule('.space' + space.name, {});
 			addRule('.space' + space.name + '::before', {});
 			addRule('.space' + space.name + '::after', {});
-			//
-			//                                    foreach (var card in space.Pile.Cards)
-			//
-			//                                    {
-			//
-			//                                    card.Appearance.EffectNames = new List<string>();
-			//
-			//                                    
-			//
-			//                                    if (space.Name.StartsWith("User"))
-			//
-			//                                    {
-			//
-			//                                    card.Appearance.EffectNames.Add("bend");
-			//
-			//                                    
-			//
-			//                                    }
-			//
-			//                                    
-			//
-			//                                    addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
-			//
-			//                                    addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
-			//
-			//                                    addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
-			//
-			//                                    }
+			for (var t = 0; t < 4; t++) {
+				for (var c = 0; c < 13; c++) {
+					addRule('.card' + t + '-' + c + '', {});
+					addRule('.card' + t + '-' + c + '::before', {});
+					addRule('.card' + t + '-' + c + '::after', {});
+				}
+			}
 		}
 		//  myGameContentManager.Redraw();
+	};
+	$Client_Controllers_TestGameController.prototype = {
+		$getCardsFromScenarioFn: function(arg) {
+			var scenario = this.$scope.model.selection.selectedScenario;
+			var $t1 = [];
+			var $t2 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t2.type = 1;
+			$t2.value = 5;
+			$t2.state = 'faceDown';
+			ss.add($t1, $t2);
+			var $t3 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t3.type = 1;
+			$t3.value = 5;
+			$t3.state = 'faceUp';
+			ss.add($t1, $t3);
+			var $t4 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t4.type = 1;
+			$t4.value = 5;
+			$t4.state = 'faceDown';
+			ss.add($t1, $t4);
+			var $t5 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t5.type = 1;
+			$t5.value = 5;
+			$t5.state = 'faceUp';
+			ss.add($t1, $t5);
+			var $t6 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t6.type = 1;
+			$t6.value = 5;
+			$t6.state = 'faceDown';
+			ss.add($t1, $t6);
+			var $t7 = Models.SiteManagerModels.Game.GameLayoutScenarioCard.$ctor();
+			$t7.type = 1;
+			$t7.value = 5;
+			$t7.state = 'faceUp';
+			ss.add($t1, $t7);
+			var defaultCards = $t1;
+			var spaces = scenario.spaces.filter(function(s) {
+				return ss.referenceEquals(s.spaceGuid, arg.guid);
+			});
+			var space;
+			if (spaces.length === 0) {
+				var $t9 = scenario.spaces;
+				var $t8 = Models.SiteManagerModels.Game.GameLayoutScenarioSpace.$ctor();
+				$t8.spaceGuid = arg.guid;
+				$t8.cards = defaultCards;
+				ss.add($t9, space = $t8);
+			}
+			else {
+				space = spaces[0];
+			}
+			return space.cards;
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgDrawCardDirective
@@ -1590,6 +1791,177 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.AcgTestDrawAreaDirective
+	var $Client_Directives_AcgTestDrawAreaDirective = function() {
+		this.link = null;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Directives_AcgTestDrawAreaDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			element.mousedown(function(e) {
+				scope.model.selection.selectedArea = scope.area;
+				scope.$apply();
+			});
+			var scale = scope.model.scale;
+			var reApplyAreaBind = function() {
+				var beforeStyle = {};
+				if (false) {
+					beforeStyle['display'] = 'block';
+					beforeStyle['position'] = 'relative';
+					beforeStyle['z-index'] = '-1';
+					beforeStyle['width'] = '100%';
+					beforeStyle['height'] = '100%';
+					beforeStyle['left'] = '-50px';
+					beforeStyle['top'] = '-50px';
+					beforeStyle['padding'] = '50px';
+					beforeStyle['border-radius'] = '15px';
+					beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
+					beforeStyle['content'] = '""';
+					beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
+				}
+				$Client_Directives_AcgTestDrawAreaDirective.$changeCSS('area' + scope.area.name + '::before', beforeStyle);
+				scope.areaStyle = {};
+				scope.areaStyle.position = 'absolute';
+				scope.areaStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
+				scope.areaStyle.borderRadius = '15px';
+				scope.areaStyle.left = scope.area.left * scale.x;
+				scope.areaStyle.top = scope.area.top * scale.y;
+				scope.areaStyle.width = scope.area.width * scale.x;
+				scope.areaStyle.height = scope.area.height * scale.y;
+				scope.areaStyle.backgroundColor = 'blue';
+				//
+				//                                                     foreach (var effect in scope.Space.Appearance.Effects)
+				//
+				//                                                     {
+				//
+				//                                                     switch (effect.Type)
+				//
+				//                                                     {
+				//
+				//                                                     case EffectType.Highlight:
+				//
+				//                                                     var hEffect = ((CardGameAppearanceEffectHighlight) effect);
+				//
+				//                                                     scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}",
+				//
+				//                                                     hEffect.Radius);
+				//
+				//                                                     scope.SpaceStyle.backgroundColor = hEffect.Color;
+				//
+				//                                                     scope.SpaceStyle.border = "solid 2px black";
+				//
+				//                                                     scope.SpaceStyle.borderRadius = 15.0;
+				//
+				//                                                     scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
+				//
+				//                                                     break;
+				//
+				//                                                     case EffectType.Rotate:
+				//
+				//                                                     Window.Alert(effect.Type.ToString());
+				//
+				//                                                     break;
+				//
+				//                                                     case EffectType.Bend:
+				//
+				//                                                     var bEffect = (CardGameAppearanceEffectBend) effect;
+				//
+				//                                                     
+				//
+				//                                                     //rotate
+				//
+				//                                                     
+				//
+				//                                                     
+				//
+				//                                                     break;
+				//
+				//                                                     case EffectType.StyleProperty:
+				//
+				//                                                     Window.Alert(effect.Type.ToString());
+				//
+				//                                                     break;
+				//
+				//                                                     case EffectType.Animated:
+				//
+				//                                                     Window.Alert(effect.Type.ToString());
+				//
+				//                                                     break;
+				//
+				//                                                     default:
+				//
+				//                                                     
+				//
+				//                                                     break;
+				//
+				//                                                     }
+				//
+				//                                                     }
+			};
+			scope.$watch('model.scale', function() {
+				scale = scope.model.scale;
+				element.attr('class', 'space ' + ss.formatString('space{0}', scope.area.name));
+				element.resizable({
+					grid: [scale.x, scale.y],
+					minHeight: -1,
+					minWidth: -1,
+					handles: 'n, e, s, w,nw,sw,ne,se',
+					resize: function(ev, ele) {
+						scope.area.left = ele.position.left / scale.x;
+						scope.area.top = ele.position.top / scale.y;
+						scope.area.width = ele.size.width / scale.x;
+						scope.area.height = ele.size.height / scale.y;
+						scope.$apply();
+					}
+				});
+				element.draggable({
+					cursor: 'crosshair',
+					grid: [scale.x, scale.y],
+					drag: function(ev1, ele1) {
+						scope.area.left = ele1.position.left / scale.x;
+						scope.area.top = ele1.position.top / scale.y;
+						scope.$apply();
+					}
+				});
+				reApplyAreaBind();
+			});
+			scope.$watch('area', reApplyAreaBind, true);
+		}
+	};
+	$Client_Directives_AcgTestDrawAreaDirective.transformRotate = function(ar) {
+		return ss.formatString('rotate({0}deg)', ar);
+	};
+	$Client_Directives_AcgTestDrawAreaDirective.$changeCSS = function(myClass, values) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					var $t1 = new ss.ObjectEnumerator(values);
+					try {
+						while ($t1.moveNext()) {
+							var m = $t1.current();
+							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
+						}
+					}
+					finally {
+						$t1.dispose();
+					}
+				}
+			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawCardDirective
 	var $Client_Directives_AcgTestDrawCardDirective = function(effectManager) {
 		this.$myEffectManager = null;
@@ -1601,8 +1973,11 @@
 		$linkFn: function(scope, element, attrs) {
 			element.attr('style', 'width:71px; height:96px;');
 			element.attr('class', 'card ' + ss.formatString('card{0}-{1}', scope.card.type, scope.card.value));
-			scope.$watch('model.selectedCard', function() {
-				if (ss.isNullOrUndefined(scope.model.selectedCard) || !ss.referenceEquals(scope.model.selectedCard, scope.card)) {
+			scope.$watch('model.selection.selectedCard', function(old, new1) {
+				if (ss.referenceEquals(old, new1)) {
+					return;
+				}
+				if (ss.isNullOrUndefined(scope.model.selection.selectedCard) || !ss.referenceEquals(scope.model.selection.selectedCard, scope.card)) {
 					scope.cardStyle.border = undefined;
 					scope.cardStyle.margin = undefined;
 				}
@@ -1612,138 +1987,53 @@
 				}
 			});
 			scope.cardClick = function() {
-				if (ss.referenceEquals(scope.model.selectedCard, scope.card)) {
-					scope.model.selectedCard = null;
+				if (ss.referenceEquals(scope.model.selection.selectedCard, scope.card)) {
+					scope.model.selection.selectedCard = null;
 				}
 				else {
-					scope.model.selectedCard = scope.card;
+					scope.model.selection.selectedCard = scope.card;
 				}
 			};
 			var redrawCard = function() {
-				//
-				//                var scale = scope.Model.Scale;
-				//
-				//                
-				//
-				//                
-				//
-				//                var spaceScale = new { width = scope.Space.Width / (scope.Space.Pile.Cards.Count - 1), height = scope.Space.Height / (scope.Space.Pile.Cards.Count - 1) };
-				//
-				//                var vertical = scope.Space.Vertical;
-				//
-				//                var cardIndex = scope.Space.Pile.Cards.IndexOf(scope.Card);
-				//
-				//                
-				//
-				//                scope.CardStyle = new { };
-				//
-				//                
-				//
-				//                var xx = 0.0;
-				//
-				//                var yy = 0.0;
-				//
-				//                
-				//
-				//                
-				//
-				//                switch (scope.Space.ResizeType)
-				//
-				//                {
-				//
-				//                case TableSpaceResizeType.Static:
-				//
-				//                if (vertical)
-				//
-				//                yy = ((scope.Card.Value + 1) / 13.0) * scope.Space.Height * scale.Y;
-				//
-				//                else
-				//
-				//                xx = ((scope.Card.Value + 1) / 13.0) * scope.Space.Width * scale.X;
-				//
-				//                break;
-				//
-				//                case TableSpaceResizeType.Grow:
-				//
-				//                xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
-				//
-				//                yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
-				//
-				//                break;
-				//
-				//                default:
-				//
-				//                xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
-				//
-				//                yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
-				//
-				//                break;
-				//
-				//                }
-				//
-				//                
-				//
-				//                xx -= 71 / 2;
-				//
-				//                yy -= 96 / 2;
-				//
-				//                
-				//
-				//                scope.CardStyle.position = "absolute";
-				//
-				//                scope.CardStyle.zIndex = cardIndex;
-				//
-				//                scope.CardStyle.borderRadius = "5px";
-				//
-				//                scope.CardStyle.left = (xx + (vertical ? scope.Space.Width * scale.X / 2 : 0));
-				//
-				//                scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height * scale.Y / 2 : 0));
-				//
-				//                //                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-				//
+				var scale = scope.model.scale;
+				var cards = scope.model.getCardsFromScenario(scope.space);
+				var spaceScale = { width: scope.space.width / (cards.length - 1), height: scope.space.height / (cards.length - 1) };
+				var vertical = scope.space.vertical;
+				var cardIndex = ss.indexOf(cards, scope.card);
+				scope.cardStyle = {};
+				var xx = 0;
+				var yy = 0;
+				switch (scope.space.layoutType) {
+					case 'static': {
+						if (vertical) {
+							yy = (scope.card.value + 1) / 13 * scope.space.height * scale.y;
+						}
+						else {
+							xx = (scope.card.value + 1) / 13 * scope.space.width * scale.x;
+						}
+						break;
+					}
+					case 'grow': {
+						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
+						break;
+					}
+					default: {
+						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
+						break;
+					}
+				}
+				xx -= 35;
+				yy -= 48;
+				scope.cardStyle.position = 'absolute';
+				scope.cardStyle.zIndex = cardIndex;
+				scope.cardStyle.borderRadius = '5px';
+				scope.cardStyle.left = xx + (vertical ? (scope.space.width * scale.x / 2) : 0);
+				scope.cardStyle.top = yy + (!vertical ? (scope.space.height * scale.y / 2) : 0);
+				//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
 				//                element.me().rotate(scope.Space.Appearance.InnerStyle.Rotate);
-				//
-				//                scope.CardStyle.content = "\"\"";
-				//
-				//                
-				//
-				//                
-				//
-				//                if (scope.Space.Name.StartsWith("User"))
-				//
-				//                {
-				//
-				//                
-				//
-				//                if (scope.Card.Appearance.EffectNames.Count == 0)
-				//
-				//                scope.Card.Appearance.EffectNames.Add(EffectType.Bend.ToString());
-				//
-				//                
-				//
-				//                }
-				//
-				//                else
-				//
-				//                {
-				//
-				//                for (var index = scope.Card.Appearance.EffectNames.Count - 1; index >= 0; index--)
-				//
-				//                {
-				//
-				//                var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
-				//
-				//                if (cardGameAppearanceEffect == EffectType.Bend.ToString())
-				//
-				//                scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
-				//
-				//                }
-				//
-				//                }
-				//
-				//                
-				//
-				//                
+				scope.cardStyle.content = '""';
 				//
 				//                foreach (var effect in scope.Card.Appearance.EffectNames)
 				//
@@ -1882,7 +2172,9 @@
 			var keys = {};
 			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.webIP);
 			$Client_Directives_AcgTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
-			scope.$on('redrawCard', redrawCard);
+			scope.$watch('space', redrawCard, true);
+			scope.$watch('model.selection.selectedScenario', redrawCard, true);
+			//            scope.On("redrawCard", redrawCard);
 			//   redrawCard();
 			//
 			//                          
@@ -1994,6 +2286,10 @@
 	};
 	$Client_Directives_AcgTestDrawSpaceDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
+			element.mousedown(function(e) {
+				scope.model.selection.selectedSpace = scope.space;
+				scope.$apply();
+			});
 			var scale = scope.model.scale;
 			var reApplySpaceBind = function() {
 				var beforeStyle = {};
@@ -2013,11 +2309,19 @@
 				}
 				$Client_Directives_AcgTestDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
 				scope.spaceStyle = {};
+				var l = scope.space.left;
+				var t = scope.space.top;
+				var w = scope.space.width;
+				var h = scope.space.height;
+				var sl = scale.x;
+				var st = scale.y;
 				scope.spaceStyle.position = 'absolute';
-				scope.spaceStyle.left = scope.space.left * scale.x;
-				scope.spaceStyle.top = scope.space.top * scale.y;
-				scope.spaceStyle.width = scope.space.width * scale.x;
-				scope.spaceStyle.height = scope.space.height * scale.y;
+				scope.spaceStyle.left = l * sl;
+				scope.spaceStyle.top = t * st;
+				scope.spaceStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
+				scope.spaceStyle.borderRadius = '15px';
+				scope.spaceStyle.width = w * sl;
+				scope.spaceStyle.height = h * st;
 				scope.spaceStyle.backgroundColor = 'red';
 				//
 				//                                                     foreach (var effect in scope.Space.Appearance.Effects)
@@ -2159,6 +2463,10 @@
 	};
 	$Client_Directives_AcgTestDrawTextDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
+			element.mousedown(function(e) {
+				scope.model.selection.selectedText = scope.text;
+				scope.$apply();
+			});
 			var scale = scope.model.scale;
 			var reApplyTextBind = function() {
 				var beforeStyle = {};
@@ -2181,6 +2489,8 @@
 				scope.textStyle.position = 'absolute';
 				scope.textStyle.left = scope.text.left * scale.x;
 				scope.textStyle.top = scope.text.top * scale.y;
+				scope.textStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
+				scope.textStyle.borderRadius = '15px';
 				element.text(scope.text.text);
 			};
 			scope.$watch('model.scale', function() {
@@ -2287,6 +2597,7 @@
 			scope.currentStyle = function(item1) {
 				return { backgroundColor: (ss.referenceEquals(item1, scope.bind) ? 'blue' : 'white') };
 			};
+			scope.parentScope = scope['$parent']['$parent']['$parent'];
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2450,6 +2761,83 @@
 			else {
 				element.animate(js, 'slow', 'swing', callback);
 			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.GridDirective
+	var $Client_Directives_GridDirective = function() {
+		this.link = null;
+		this.replace = false;
+		this.scope = null;
+		this.link = ss.mkdel(this, this.$linkFn);
+		this.replace = true;
+		this.scope = { scale: '=grid' };
+	};
+	$Client_Directives_GridDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			scope['$watch']('scale', function() {
+				element.empty();
+				var scale = scope.scale;
+				var n = document.createElement('canvas');
+				var w = scale.x;
+				var h = scale.y;
+				n.width = ss.Int32.trunc(w) + 1;
+				n.height = ss.Int32.trunc(h) + 1;
+				var context = n.getContext('2d');
+				context.lineWidth = 1;
+				context.moveTo(w, 0);
+				context.lineTo(w, h);
+				context.stroke();
+				context.moveTo(0, h);
+				context.lineTo(w, h);
+				context.stroke();
+				var url = n.toDataURL('image/png');
+				element.css('background-image', ss.formatString('url({0})', url));
+				element.css('background-repeat', 'repeat-x repeat-y');
+				element.css('width', '100%');
+				element.css('height', '100%');
+				element.css('margin-left', 'auto');
+				element.css('margin-right', 'auto');
+				element.css('margin-bottom', 'auto');
+				element.css('margin-top', 'auto');
+				element.zIndex(-10000);
+			}, true);
+			//
+			//            scope["$watch"]("scale", new Action(() =>
+			//
+			//            {
+			//
+			//            element.Empty();
+			//
+			//            var scale = (Point) scope.scale;
+			//
+			//            var w = jQueryApi.jQuery.Window.GetWidth();
+			//
+			//            var h = jQueryApi.jQuery.Window.GetHeight();
+			//
+			//            
+			//
+			//            for (int i = 0; i < (w/scale.X) + 2; i++)
+			//
+			//            {
+			//
+			//            for (int j = 0; j < (h/scale.Y) + 2; j++)
+			//
+			//            {
+			//
+			//            element.Append(
+			//
+			//            string.Format(
+			//
+			//            "<div style='border:solid 1px black;position:absolute;left:{0}px;top:{1}px;width:{2}px;height:{3}px;'></div>",
+			//
+			//            i*scale.X, j*scale.Y, scale.X, scale.Y));
+			//
+			//            }
+			//
+			//            }
+			//
+			//            }), true);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2680,6 +3068,27 @@
 		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameEditorSelectionScopeModel
+	var $Client_Scope_Controller_GameEditorSelectionScopeModel = function() {
+	};
+	$Client_Scope_Controller_GameEditorSelectionScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_GameEditorSelectionScopeModel.$ctor = function() {
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
+		$this.selectedScenarioCard = null;
+		$this.selectedScenarioSpace = null;
+		$this.selectedScenarioEffect = null;
+		$this.selectedSpace = null;
+		$this.selectedText = null;
+		$this.selectedArea = null;
+		$this.selectedCard = null;
+		$this.selectedLayoutPiece = 0;
+		$this.selectedScenarioPiece = 0;
+		$this.selectedScenario = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.GameLayoutEditorScope
 	var $Client_Scope_Controller_GameLayoutEditorScope = function() {
 		this.model = null;
@@ -2694,14 +3103,15 @@
 	};
 	$Client_Scope_Controller_GameLayoutEditorScopeModel.$ctor = function() {
 		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
-		$this.selectedSpace = null;
-		$this.selectedText = null;
-		$this.selectedArea = null;
-		$this.selectedPiece = 0;
+		$this.selection = null;
 		$this.game = null;
 		$this.addText = null;
 		$this.addArea = null;
 		$this.addSpace = null;
+		$this.removeSpace = null;
+		$this.removeArea = null;
+		$this.removeText = null;
+		$this.openScenarios = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2716,6 +3126,7 @@
 		$this.games = null;
 		$this.selectedGame = null;
 		$this.createGame = null;
+		$this.deleteGame = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2723,6 +3134,30 @@
 	var $Client_Scope_Controller_GameManagerScope = function() {
 		this.model = null;
 		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameScenarioEditorScope
+	var $Client_Scope_Controller_GameScenarioEditorScope = function() {
+		this.model = null;
+		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameScenarioEditorScopeModel
+	var $Client_Scope_Controller_GameScenarioEditorScopeModel = function() {
+	};
+	$Client_Scope_Controller_GameScenarioEditorScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_GameScenarioEditorScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_GameScenarioEditorScopeModel.$ctor = function() {
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
+		$this.selection = null;
+		$this.game = null;
+		$this.getSpaceByScenarioSpace = null;
+		$this.addCard = null;
+		$this.removeCard = null;
+		$this.addNewScenario = null;
+		$this.cloneNewScenario = null;
+		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.GameUpdater
@@ -2861,6 +3296,11 @@
 	};
 	$Client_Scope_Controller_SelectedGameLayoutPiece.prototype = { none: 'none', space: 'space', text: 'text', area: 'area' };
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.SelectedGameScenarioPiece
+	var $Client_Scope_Controller_SelectedGameScenarioPiece = function() {
+	};
+	$Client_Scope_Controller_SelectedGameScenarioPiece.prototype = { none: 'none', space: 'space', effect: 'effect' };
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.TestGameControllerScope
 	var $Client_Scope_Controller_TestGameControllerScope = function() {
 		this.model = null;
@@ -2875,11 +3315,12 @@
 	};
 	$Client_Scope_Controller_TestGameControllerScopeModel.$ctor = function() {
 		var $this = {};
-		$this.mainLayout = null;
+		$this.game = null;
 		$this.scale = null;
 		$this.moveCard = null;
 		$this.animateCard = null;
-		$this.selectedCard = null;
+		$this.selection = null;
+		$this.getCardsFromScenario = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2972,6 +3413,13 @@
 		this.$parent = null;
 		this.spaceStyle = null;
 		Client.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Directive.TestAreaScope
+	var $Client_Scope_Directive_TestAreaScope = function() {
+		this.area = null;
+		this.areaStyle = null;
+		$Client_Scope_Controller_TestGameControllerScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Directive.TestCardScope
@@ -3486,6 +3934,7 @@
 	ss.registerClass(null, 'Client.Controllers.$GameEditorController', $Client_Controllers_$GameEditorController);
 	ss.registerClass(null, 'Client.Controllers.$GameLayoutEditorController', $Client_Controllers_$GameLayoutEditorController);
 	ss.registerClass(null, 'Client.Controllers.$GameManagerController', $Client_Controllers_$GameManagerController);
+	ss.registerClass(null, 'Client.Controllers.$GameScenarioEditorController', $Client_Controllers_$GameScenarioEditorController);
 	ss.registerClass(null, 'Client.Controllers.$HomeController', $Client_Controllers_$HomeController);
 	ss.registerClass(null, 'Client.Controllers.$ListEffectsController', $Client_Controllers_$ListEffectsController);
 	ss.registerClass(null, 'Client.Controllers.$LoginController', $Client_Controllers_$LoginController);
@@ -3498,6 +3947,7 @@
 	ss.registerClass(global, 'Client.Directives.AcgDrawCardDirective', $Client_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'Client.Directives.AcgDrawSpaceDirective', $Client_Directives_AcgDrawSpaceDirective);
 	ss.registerClass(global, 'Client.Directives.AcgSpacesDirective', $Client_Directives_AcgSpacesDirective);
+	ss.registerClass(global, 'Client.Directives.AcgTestDrawAreaDirective', $Client_Directives_AcgTestDrawAreaDirective);
 	ss.registerClass(global, 'Client.Directives.AcgTestDrawCardDirective', $Client_Directives_AcgTestDrawCardDirective);
 	ss.registerClass(global, 'Client.Directives.AcgTestDrawSpaceDirective', $Client_Directives_AcgTestDrawSpaceDirective);
 	ss.registerClass(global, 'Client.Directives.AcgTestDrawTextDirective', $Client_Directives_AcgTestDrawTextDirective);
@@ -3505,6 +3955,7 @@
 	ss.registerClass(global, 'Client.Directives.DraggableDirective', $Client_Directives_DraggableDirective);
 	ss.registerClass(global, 'Client.Directives.FancyListDirective', $Client_Directives_FancyListDirective);
 	ss.registerClass(global, 'Client.Directives.FloatingWindowDirective', $Client_Directives_FloatingWindowDirective);
+	ss.registerClass(global, 'Client.Directives.GridDirective', $Client_Directives_GridDirective);
 	ss.registerClass(global, 'Client.Directives.PropertyDirective', $Client_Directives_PropertyDirective);
 	ss.registerClass(global, 'Client.Libs.Extensions', $Client_Libs_Extensions);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
@@ -3522,10 +3973,13 @@
 	ss.registerClass(global, 'Client.Scope.Controller.GameUpdater', $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameEditorModel', $Client_Scope_Controller_GameEditorModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameEditorScope', $Client_Scope_Controller_GameEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameEditorSelectionScopeModel', $Client_Scope_Controller_GameEditorSelectionScopeModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameLayoutEditorScope', $Client_Scope_Controller_GameLayoutEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameLayoutEditorScopeModel', $Client_Scope_Controller_GameLayoutEditorScopeModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameManagerModel', $Client_Scope_Controller_GameManagerModel);
 	ss.registerClass(global, 'Client.Scope.Controller.GameManagerScope', $Client_Scope_Controller_GameManagerScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameScenarioEditorScope', $Client_Scope_Controller_GameScenarioEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameScenarioEditorScopeModel', $Client_Scope_Controller_GameScenarioEditorScopeModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.HomeModel', $Client_Scope_Controller_HomeModel);
 	ss.registerClass(global, 'Client.Scope.Controller.HomeScope', $Client_Scope_Controller_HomeScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.ListEffectsScope', $Client_Scope_Controller_ListEffectsScope, Client.Scope.BaseScope);
@@ -3538,6 +3992,7 @@
 	ss.registerClass(global, 'Client.Scope.Controller.QuestionScope', $Client_Scope_Controller_QuestionScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.QuestionScopeModel', $Client_Scope_Controller_QuestionScopeModel);
 	ss.registerEnum(global, 'Client.Scope.Controller.SelectedGameLayoutPiece', $Client_Scope_Controller_SelectedGameLayoutPiece);
+	ss.registerEnum(global, 'Client.Scope.Controller.SelectedGameScenarioPiece', $Client_Scope_Controller_SelectedGameScenarioPiece);
 	ss.registerClass(global, 'Client.Scope.Controller.TestGameControllerScope', $Client_Scope_Controller_TestGameControllerScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.TestGameControllerScopeModel', $Client_Scope_Controller_TestGameControllerScopeModel);
 	ss.registerEnum(global, 'Client.Scope.Controller.UpdateStatusType', $Client_Scope_Controller_UpdateStatusType);
@@ -3547,6 +4002,7 @@
 	ss.registerClass(global, 'Client.Scope.Directive.FloatingWindowScope', $Client_Scope_Directive_FloatingWindowScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.Size', $Client_Scope_Directive_Size);
 	ss.registerClass(global, 'Client.Scope.Directive.SpaceScope', $Client_Scope_Directive_SpaceScope, Client.Scope.BaseScope);
+	ss.registerClass(global, 'Client.Scope.Directive.TestAreaScope', $Client_Scope_Directive_TestAreaScope, $Client_Scope_Controller_TestGameControllerScope);
 	ss.registerClass(global, 'Client.Scope.Directive.TestSpaceScope', $Client_Scope_Directive_TestSpaceScope, $Client_Scope_Controller_TestGameControllerScope);
 	ss.registerClass(global, 'Client.Scope.Directive.TestCardScope', $Client_Scope_Directive_TestCardScope, $Client_Scope_Directive_TestSpaceScope);
 	ss.registerClass(global, 'Client.Scope.Directive.TestTextScope', $Client_Scope_Directive_TestTextScope, $Client_Scope_Controller_TestGameControllerScope);

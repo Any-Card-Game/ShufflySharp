@@ -4,6 +4,7 @@ using System.Html;
 using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
+using CommonLibraries;
 using Models;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
@@ -32,6 +33,7 @@ namespace Client.Controllers
             myClientSiteManagerService.OnDoesGameNameExistReceived += OnDoesGameNameExistReceivedFn;
 
             myScope.Model.CreateGame += CreateGameFn;
+            myScope.Model.DeleteGame += DeleteGameFn;
             myScope.watch("model.selectedGame",
                           () =>
                           {
@@ -40,6 +42,14 @@ namespace Client.Controllers
                               if (!scope.Minimized)      
                               scope.Minimize();
                           });
+        }
+
+        private void DeleteGameFn()
+        {
+            myScope.Model.Games.Remove(myScope.Model.SelectedGame);
+            myScope.Model.SelectedGame.Deleted = true;
+            myClientSiteManagerService.DeveloperUpdateGame(myScope.Model.SelectedGame);
+
         }
 
         private void OnDoesGameNameExistReceivedFn(UserModel user, DoesGameExistResponse o)

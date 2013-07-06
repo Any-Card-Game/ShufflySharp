@@ -5,6 +5,7 @@ using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
 using CommonLibraries;
+using jQueryApi;
 using Models.SiteManagerModels.Game;
 using WebLibraries.Common;
 using global;
@@ -102,6 +103,15 @@ namespace Client.Controllers
                 myGameContentManager.Redraw();
 
             };
+
+            jQuery.Window.Bind("resize", (a) =>
+            {
+
+                scope.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.MainArea.Size.Height  ) * .9);
+                scope.Apply();
+
+            });
+
 
             myClientGameManagerService.OnGameStarted += (user, room) =>
             {

@@ -30,7 +30,6 @@ namespace Client.Directives
 
         private void LinkFn(dynamic scope, jQueryObject element, dynamic attr)
         {
-         
             scope.itemClick = new Action<dynamic>((item) =>
             {
                 scope.bind = item;
@@ -40,6 +39,7 @@ namespace Client.Directives
             {
                 return new { backgroundColor = (item == scope.bind) ? "blue" : "white" };
             });
+            scope.parentScope = scope["$parent"]["$parent"]["$parent"];
         }
     }
 

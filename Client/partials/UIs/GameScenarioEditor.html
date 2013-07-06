@@ -1,0 +1,63 @@
+<div ng-controller="GameScenarioEditorController">
+    <div floating-window left="'82%'" top="'40%'" height="'600px'" width="'400px'" title="'Game Scenario Editor!'"
+        visible="visible">
+        <div style="width: 100%; height: 100px;" fancy-list items="model.game.gameLayoutScenarios" bind="model.selection.selectedScenario">
+            {{item.name}}
+        </div>
+        <button style="width:50%" ng-click="model.addNewScenario()">Add New Scenario</button>
+        <button style="width:50%" ng-click="model.cloneNewScenario()">Clone Scenario</button>
+        <div ng-show="model.selection.selectedScenario">
+
+            <div style="width: 50%; float: left;">
+                Name:
+                <input type="text" ng-model="model.selection.selectedScenario.name" />
+                Number Of Players:
+                <input type="range" min="1" max="8" ng-model="model.selection.selectedScenario.numberOfPlayers" />{{model.selection.selectedScenario.numberOfPlayers}}
+                Screen Width:
+                <input type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.x" />{{model.selection.selectedScenario.screenSize.x}}
+                Screen Height:
+                <input type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.y" />{{model.selection.selectedScenario.screenSize.y}}
+ 
+                Spaces:
+            
+                <div style="width: 150px; height: 100px;" fancy-list items="model.selection.selectedScenario.spaces" bind="model.selection.selectedScenarioSpace">
+                    <div ng-init="space=parentScope.model.getSpaceByScenarioSpace(item)">
+                        {{space.name}}
+                    </div>
+
+                </div>
+                Effects:
+                <div style="width: 150px; height: 100px;" fancy-list items="model.selection.selectedScenario.effects" bind="model.selection.selectedScenarioEffect">
+                    {{item.name}}
+                </div>
+
+            </div>
+
+            <div style="width: 50%; float: left;">
+                Edit {{model.selection.selectedScenarioPiece}}
+            <div ng-switch="model.selection.selectedScenarioPiece">
+                <div ng-switch-when="space">
+
+                    <div ng-init="space=parentScope.model.getSpaceByScenarioSpace(model.selection.selectedScenarioSpace)">
+
+
+                        <h2>{{space.name}}</h2>
+                        <div style="width: 100%; height: 100px;" fancy-list items="model.selection.selectedScenarioSpace.cards" bind="model.selection.selectedScenarioCard">
+                            {{item.state}} {{item.type}} {{item.value}} 
+                            <button ng-click="parentScope.model.removeCard(item)">Remove</button>
+                        </div>
+                        <button ng-click="model.addCard()">Add New Card</button>
+                    </div>
+
+                </div>
+                <div ng-switch-when="effect">
+                    <h2>{{model.selection.selectedScenarioEffect.name}}</h2>
+
+                </div>
+            </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

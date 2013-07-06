@@ -383,6 +383,11 @@
 		return {};
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutCardState
+	var $Models_SiteManagerModels_Game_CardState = function() {
+	};
+	$Models_SiteManagerModels_Game_CardState.prototype = { faceUp: 'faceUp', faceDown: 'faceDown', faceUpIfOwned: 'faceUpIfOwned' };
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.EffectType
 	var $Models_SiteManagerModels_Game_EffectType = function() {
 	};
@@ -491,6 +496,50 @@
 		$this.name = null;
 		$this.numberOfPlayers = 0;
 		$this.screenSize = null;
+		$this.spaces = null;
+		$this.effects = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutScenarioAct
+	var $Models_SiteManagerModels_Game_GameLayoutScenarioAct = function() {
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutScenarioCard
+	var $Models_SiteManagerModels_Game_GameLayoutScenarioCard = function() {
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenarioCard.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameLayoutScenarioCard.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenarioCard.$ctor = function() {
+		var $this = {};
+		$this.value = 0;
+		$this.type = 0;
+		$this.state = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutScenarioEffect
+	var $Models_SiteManagerModels_Game_GameLayoutScenarioEffect = function() {
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenarioEffect.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameLayoutScenarioEffect.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenarioEffect.$ctor = function() {
+		var $this = {};
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.GameLayoutScenarioSpace
+	var $Models_SiteManagerModels_Game_GameLayoutScenarioSpace = function() {
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenarioSpace.createInstance = function() {
+		return $Models_SiteManagerModels_Game_GameLayoutScenarioSpace.$ctor();
+	};
+	$Models_SiteManagerModels_Game_GameLayoutScenarioSpace.$ctor = function() {
+		var $this = {};
+		$this.spaceGuid = null;
+		$this.cards = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -513,6 +562,7 @@
 		$this.gameLayoutScenarios = null;
 		$this.effects = null;
 		$this._id = null;
+		$this.deleted = false;
 		$this.gameCode = $Models_SiteManagerModels_Game_GameCodeModel.$ctor();
 		$this.cardImages = [];
 		$this.assets = [];
@@ -525,7 +575,7 @@
 	// Models.SiteManagerModels.Game.GameSpaceLayoutType
 	var $Models_SiteManagerModels_Game_GameSpaceLayoutType = function() {
 	};
-	$Models_SiteManagerModels_Game_GameSpaceLayoutType.prototype = { straight: 'straight' };
+	$Models_SiteManagerModels_Game_GameSpaceLayoutType.prototype = { grow: 'grow', static: 'static' };
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameSpaceModel
 	var $Models_SiteManagerModels_Game_GameSpaceModel = function() {
@@ -535,6 +585,7 @@
 	};
 	$Models_SiteManagerModels_Game_GameSpaceModel.$ctor = function() {
 		var $this = $Models_SiteManagerModels_Game_GameAreaModel.$ctor();
+		$this.guid = null;
 		$this.layoutType = 0;
 		$this.vertical = false;
 		return $this;
@@ -608,6 +659,7 @@
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteCreateUserRequest', $Models_SiteManagerModels_SiteCreateUserRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest);
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.CardState', $Models_SiteManagerModels_Game_CardState);
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.EffectType', $Models_SiteManagerModels_Game_EffectType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameAreaModel', $Models_SiteManagerModels_Game_GameAreaModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameCodeModel', $Models_SiteManagerModels_Game_GameCodeModel);
@@ -616,6 +668,10 @@
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameEffectPropertyType', $Models_SiteManagerModels_Game_GameEffectPropertyType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutModel', $Models_SiteManagerModels_Game_GameLayoutModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenario', $Models_SiteManagerModels_Game_GameLayoutScenario);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioAct', $Models_SiteManagerModels_Game_GameLayoutScenarioAct);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioCard', $Models_SiteManagerModels_Game_GameLayoutScenarioCard);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioEffect', $Models_SiteManagerModels_Game_GameLayoutScenarioEffect);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioSpace', $Models_SiteManagerModels_Game_GameLayoutScenarioSpace);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameModel', $Models_SiteManagerModels_Game_GameModel);
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameSpaceLayoutType', $Models_SiteManagerModels_Game_GameSpaceLayoutType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameSpaceModel', $Models_SiteManagerModels_Game_GameSpaceModel, $Models_SiteManagerModels_Game_GameAreaModel);

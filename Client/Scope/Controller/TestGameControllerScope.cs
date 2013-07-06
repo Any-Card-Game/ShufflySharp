@@ -11,17 +11,17 @@ namespace Client.Scope.Controller
     { 
         [IntrinsicProperty]
         public TestGameControllerScopeModel Model { get; set; }
-
+         
     }
     [Serializable]
     public class TestGameControllerScopeModel  
     {
-        public GameLayoutModel MainLayout { get; set; }
+        public GameModel Game { get; set; }
         public Point Scale { get; set; }
         public Action MoveCard { get; set; }
         public Action AnimateCard { get; set; }
-        public CardGameCard SelectedCard { get; set; }
-
+        public GameEditorSelectionScopeModel Selection { get; set; }
+        public Func<GameSpaceModel, List<GameLayoutScenarioCard>> GetCardsFromScenario { get; set; }
     }
 
  

@@ -17,5 +17,6 @@ namespace Client.Scope.Controller
         public List<GameModel> Games { get; set; }
         public GameModel SelectedGame { get; set; }
         public Action CreateGame { get; set; }
+        public Action DeleteGame { get; set; }
     }
  }

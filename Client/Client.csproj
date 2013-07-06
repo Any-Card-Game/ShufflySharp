@@ -41,6 +41,7 @@
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\EffectTesterController.cs" />
     <Compile Include="Controllers\GameScenarioEditorController.cs" />
     <Compile Include="Controllers\TestGameController.cs" />
     <Compile Include="Controllers\GameLayoutEditorController.cs" />
@@ -63,6 +64,10 @@
     <Compile Include="Directives\AcgTestDrawSpaceDirective.cs" />
     <Compile Include="Directives\AcgTestDrawTextDirective.cs" />
     <Compile Include="Directives\AcgTestDrawAreaDirective.cs" />
+    <Compile Include="Directives\AcgEffectTestDrawSpaceDirective.cs" />
+    <Compile Include="Directives\AcgEffectTestDrawCardDirective.cs" />
+    <Compile Include="Directives\AcgEffectTestDrawAreaDirective.cs" />
+    <Compile Include="Directives\AcgEffectTestDrawTextDirective.cs" />
     <Compile Include="Directives\GridDirective.cs" />
     <Compile Include="Directives\DraggableDirective.cs" />
     <Compile Include="Directives\FancyListDirective.cs" />
@@ -73,6 +78,7 @@
     <Compile Include="Scope\BaseScope.cs" />
     <Compile Include="Scope\Controller\ActiveLobbyScope.cs" />
     <Compile Include="Scope\Controller\CreateRoomScope.cs" />
+    <Compile Include="Scope\Controller\EffectTesterControllerScope.cs" />
     <Compile Include="Scope\Controller\GameCodeScope.cs" />
     <Compile Include="Scope\Controller\GameControllerScope.cs" />
     <Compile Include="Scope\Controller\GameEditorScope.cs" />
@@ -162,6 +168,7 @@
     <Content Include="partials\chatBox.html" />
     <Content Include="partials\fancyList.html" />
     <Content Include="partials\floatingWindow.html" />
+    <Content Include="partials\UIs\EffectTester.html" />
     <Content Include="partials\UIs\GameScenarioEditor.html" />
     <Content Include="partials\UIs\TestGameUI.html" />
     <Content Include="partials\UIs\GameUI.html" />

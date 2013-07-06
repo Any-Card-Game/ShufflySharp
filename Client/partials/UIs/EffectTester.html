@@ -1,0 +1,30 @@
+<div ng-controller="EffectTesterController">
+
+    <div style="position: relative; margin: auto; top: 0; bottom: 0; left: 0; right: 0; width: 50%; height: 50%;">
+        <div ng-init="space=model.spaceTest.space;">
+            <div acg-effect-test-draw-space ng-style='spaceStyle'>
+                <div ng-repeat='card in model.spaceTest.cards'>
+                    <div ng-init="test='space';">
+                        <div acg-effect-test-draw-card ng-style='cardStyle' ng-click='cardClick()'></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-init="area=model.areaTest.area;test='area';">
+            <div acg-effect-test-draw-area ng-style='areaStyle'>
+            </div>
+        </div>
+
+        <div ng-init="space=model.cardTest.space;card=model.cardTest.card;">
+            <div ng-init="test='card';">
+                <div acg-effect-test-draw-card ng-style='cardStyle' ng-click='cardClick()'></div>
+            </div>
+        </div>
+
+        <div ng-init="text=model.textTest.text;test='text';">
+            <div acg-effect-test-draw-text ng-style='textStyle'>
+            </div>
+        </div> 
+    </div>
+</div>

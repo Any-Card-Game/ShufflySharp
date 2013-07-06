@@ -8,13 +8,13 @@ using Models.SiteManagerModels.Game;
 namespace Client.Scope.Controller
 {
     public class TestGameControllerScope : BaseScope
-    { 
+    {
         [IntrinsicProperty]
         public TestGameControllerScopeModel Model { get; set; }
-         
+
     }
     [Serializable]
-    public class TestGameControllerScopeModel  
+    public class TestGameControllerScopeModel
     {
         public GameModel Game { get; set; }
         public Point Scale { get; set; }

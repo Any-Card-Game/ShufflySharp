@@ -125,6 +125,7 @@ namespace Models.SiteManagerModels.Game
         public string Guid { get; set; }
         public GameSpaceLayoutType LayoutType { get; set; }
         public bool Vertical { get; set; }
+
     }
     [NamedValues]
     public enum GameSpaceLayoutType
@@ -160,16 +161,27 @@ namespace Models.SiteManagerModels.Game
 
     public static class EffectHelper
     {
-        public static T GetPropertyByName<T>(this GameEffectModel effect, string name)
+        public static double GetNumber(this GameEffectModel effect, string name)
         {
             foreach (var effectProperty in effect.Properties)
             {
                 if (effectProperty.Name.ToLower() == name.ToLower())
                 {
-                    return (T)effectProperty.Value;
+                    return double.Parse(effectProperty.Value.ToString());
                 }
             }
-            return default(T);
+            return 0.0;
+        }
+        public static string GetString(this GameEffectModel effect, string name)
+        {
+            foreach (var effectProperty in effect.Properties)
+            {
+                if (effectProperty.Name.ToLower() == name.ToLower())
+                {
+                    return effectProperty.Value.ToString();
+                }
+            }
+            return "";
         }
     }
     [NamedValues]

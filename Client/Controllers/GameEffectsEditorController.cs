@@ -7,11 +7,13 @@ namespace Client.Controllers
 {
     internal class GameEffectsEditorController
     {
-        private readonly GameEffectsEditorScope myScope; 
+        private readonly GameEffectsEditorScope myScope;
+        private readonly CreateUIService createUIService;
 
-        public GameEffectsEditorController(GameEffectsEditorScope scope )
+        public GameEffectsEditorController(GameEffectsEditorScope scope, CreateUIService createUIService)
         {
-            myScope = scope;  
+            myScope = scope;
+            this.createUIService = createUIService;
             var effectTypes = new List<EffectType>();
 
             effectTypes.Add(EffectType.Bend);
@@ -36,6 +38,15 @@ namespace Client.Controllers
                                                                 }
                                                             });
 
+
+
+            createUIService.CreateSingleton<EffectTesterControllerScope>("EffectTester", (_scope, elem) =>
+            {
+                _scope.Model = new EffectTesterControllerScopeModel();
+                _scope.Model.Game = myScope.Model.Game;
+                _scope.Model.Selection = myScope.Model.Selection;
+
+            });
 
         }
 

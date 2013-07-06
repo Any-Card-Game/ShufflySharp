@@ -12,14 +12,19 @@ namespace Client.Directives
     public class AcgTestDrawSpaceDirective
     {
         public Action<TestSpaceScope, jQueryObject, object> link;
+        public dynamic scope;
         public AcgTestDrawSpaceDirective()
         {
             link = linkFn;
-
+            /*scope=new
+                  {
+                      space = "=acgTestDrawSpace"
+                  };*/
         }
 
         private void linkFn(TestSpaceScope scope, jQueryObject element, object attrs)
         {
+            element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
 
             element.MouseDown((e) =>
                           {
@@ -110,7 +115,6 @@ namespace Client.Directives
                                            scale = scope.Model.Scale;
 
 
-                                           element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
                                            element.Resizable(new ResizableOptions()
                                                              {
                                                                  Grid = new[] { scale.X, scale.Y },

@@ -391,16 +391,23 @@
 	// Models.SiteManagerModels.Game.EffectHelper
 	var $Models_SiteManagerModels_Game_EffectHelper = function() {
 	};
-	$Models_SiteManagerModels_Game_EffectHelper.getPropertyByName = function(T) {
-		return function(effect, name) {
-			for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
-				var effectProperty = effect.properties[$t1];
-				if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
-					return ss.cast(effectProperty.value, T);
-				}
+	$Models_SiteManagerModels_Game_EffectHelper.getNumber = function(effect, name) {
+		for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
+			var effectProperty = effect.properties[$t1];
+			if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
+				return parseFloat(effectProperty.value.toString());
 			}
-			return ss.getDefaultValue(T);
-		};
+		}
+		return 0;
+	};
+	$Models_SiteManagerModels_Game_EffectHelper.getString = function(effect, name) {
+		for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
+			var effectProperty = effect.properties[$t1];
+			if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
+				return effectProperty.value.toString();
+			}
+		}
+		return '';
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.EffectType

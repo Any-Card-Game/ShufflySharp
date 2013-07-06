@@ -23,7 +23,7 @@ namespace Client
                  .controller("MinimizeController", new object[] { "$scope", "UIManager", new Func<MinimizeScope, UIManagerService, object>((scope, uiManager) => new MinimizeController(scope, uiManager)) })
                  .controller("GameController", new object[] { "$scope", "clientGameManager", "gameContentManager", new Func<GameControllerScope, ClientGameManagerService, GameContentManager, object>((scope,  clientGameManagerService, gameContentManager) => new GameController(scope,  clientGameManagerService, gameContentManager)) })
                  .controller("TestGameController", new object[] { "$scope",  new Func<TestGameControllerScope, object>((scope ) => new TestGameController(scope)) })
-                 .controller("GameEffectsEditorController", new object[] { "$scope", new Func<GameEffectsEditorScope, object>((scope) => new GameEffectsEditorController(scope)) })
+                 .controller("GameEffectsEditorController", new object[] { "$scope", "createUIService", new Func<GameEffectsEditorScope, CreateUIService, object>((scope, createUIService) => new GameEffectsEditorController(scope, createUIService)) })
                  .controller("LoginController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", "createUIService", new Func<LoginScope, UIManagerService, ClientSiteManagerService, MessageService, CreateUIService, object>((scope, uiManager, clientSiteManagerService, messageService, createUIService) => new LoginController(scope, uiManager, clientSiteManagerService, messageService, createUIService)) })
                  .controller("QuestionController", new object[] { "$scope", "UIManager", "clientGameManager", new Func<QuestionScope, UIManagerService, ClientGameManagerService, object>((scope, uiManager, clientGameManagerService) => new QuestionController(scope, uiManager, clientGameManagerService)) })
                  .controller("HomeController", new object[] { "$scope", "UIManager", "clientSiteManager", "createUIService", new Func<HomeScope, UIManagerService, ClientSiteManagerService, CreateUIService, object>((scope, uiManager, clientSiteManagerService, createUIService) => new HomeController(scope, uiManager, clientSiteManagerService, createUIService)) })
@@ -35,6 +35,7 @@ namespace Client
                  .controller("GameScenarioEditorController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", "createUIService", new Func<GameScenarioEditorScope, UIManagerService, ClientSiteManagerService, MessageService, CreateUIService, object>((scope, uiManagerService, clientSiteManagerService, messageService, createUIService) => new GameScenarioEditorController(scope, uiManagerService, clientSiteManagerService, messageService, createUIService)) })
                  .controller("GameCodeController", new object[] { "$scope", "UIManager", "clientSiteManager", "messageService", new Func<GameCodeScope, UIManagerService, ClientSiteManagerService, MessageService, object>((scope, uiManager, clientSiteManagerService, messageService) => new GameCodeController(scope, uiManager, clientSiteManagerService, messageService)) })
                  .controller("MessageController", new object[] { "$scope", new Func<MessageScope, object>((scope) => new MessageController(scope)) })
+                 .controller("EffectTesterController", new object[] { "$scope", new Func<EffectTesterControllerScope, object>((scope) => new EffectTesterController(scope)) })
                  
                  .service("UIManager", new object[] { "clientGameManager",new Func<ClientGameManagerService,object>((clientGameManagerService) => new UIManagerService(clientGameManagerService)) })
    
@@ -55,8 +56,13 @@ namespace Client
                  .directive("property", new object[] { new Func<object>(() => new PropertyDirective()) })
                  .directive("acgDrawCard", new object[] {  new Func< object>(() => new AcgDrawCardDirective()) })
                  .directive("acgDrawSpace", new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) })
-                 .directive("acgTestDrawCard", new object[] { new Func< object>(() => new AcgTestDrawCardDirective()) })
+                 .directive("acgTestDrawCard", new object[] { new Func<object>(() => new AcgTestDrawCardDirective()) })
                  .directive("acgTestDrawSpace", new object[] { new Func<object>(() => new AcgTestDrawSpaceDirective()) })
+
+                 .directive("acgEffectTestDrawArea", new object[] { new Func<object>(() => new AcgEffectTestDrawAreaDirective()) })
+                 .directive("acgEffectTestDrawText", new object[] { new Func<object>(() => new AcgEffectTestDrawTextDirective()) })
+                 .directive("acgEffectTestDrawCard", new object[] { new Func<object>(() => new AcgEffectTestDrawCardDirective()) })
+                 .directive("acgEffectTestDrawSpace", new object[] { new Func<object>(() => new AcgEffectTestDrawSpaceDirective()) })
                  .directive("acgTestDrawArea", new object[] { new Func<object>(() => new AcgTestDrawAreaDirective()) })
                  .directive("acgTestDrawText", new object[] { new Func<object>(() => new AcgTestDrawTextDirective()) })
                  .directive("acgSpaces", new object[] { "$compile", "gameContentManager", new Func<CompileService, GameContentManager, object>((compile, gameContentManager) => new AcgSpacesDirective(compile, gameContentManager)) });

@@ -20,6 +20,7 @@ namespace Client.Directives
 
         private void linkFn(TestTextScope scope, jQueryObject element, object attrs)
         {
+            element.Attribute("class", "text " + string.Format("text{0}", scope.Text.Name));
             element.MouseDown((e) =>
             {
                 scope.Model.Selection.SelectedText= scope.Text;
@@ -65,7 +66,6 @@ namespace Client.Directives
                                            scale = scope.Model.Scale;
 
 
-                                           element.Attribute("class", "text " + string.Format("text{0}", scope.Text.Name));
                                            
                                            element.Draggable(new DraggableOptions()
                                                              {

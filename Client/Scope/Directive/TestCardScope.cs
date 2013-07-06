@@ -12,6 +12,20 @@ namespace Client.Scope.Directive
         [IntrinsicProperty]
         public dynamic CardStyle { get; set; }
         [IntrinsicProperty]
-        public Action CardClick { get; set; } 
+        public Action CardClick { get; set; }
+    }
+    public class EffectTestCardScope : EffectTestSpaceScope
+    {
+        [IntrinsicProperty]
+        public GameLayoutScenarioCard Card { get; set; }
+        [IntrinsicProperty]
+        public dynamic CardStyle { get; set; }
+        [IntrinsicProperty]
+        public EffectTestType Test { get; set; }
+    }
+    [NamedValues]
+    public enum EffectTestType
+    {
+        Card,Space,Area,Text
     }
 }

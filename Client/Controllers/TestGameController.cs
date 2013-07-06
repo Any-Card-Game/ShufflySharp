@@ -15,15 +15,15 @@ namespace Client.Controllers
 {
     public class TestGameController
     {
-        private readonly TestGameControllerScope scope; 
+        private readonly TestGameControllerScope scope;
 
         public TestGameController(TestGameControllerScope scope)
         {
             this.scope = scope;
-/*
-            effectManager.Effects = new List<GameEffectModel>();
-            effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
-*/
+            /*
+                        effectManager.Effects = new List<GameEffectModel>();
+                        effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
+            */
 
             scope.Model.GetCardsFromScenario = GetCardsFromScenarioFn;
 
@@ -54,30 +54,30 @@ namespace Client.Controllers
 
 
 
-/*
-            effectWatcher.ApplyEffect += (effect) =>
-            {
-                if (scope.Model.Selection.SelectedCard == null)
-                    return;
+            /*
+                        effectWatcher.ApplyEffect += (effect) =>
+                        {
+                            if (scope.Model.Selection.SelectedCard == null)
+                                return;
 
-                //todo scope.Model.Selection.SelectedCard.Appearance.EffectNames.Add(effect.Name);
-            };
-*/
-            
+                            //todo scope.Model.Selection.SelectedCard.Appearance.EffectNames.Add(effect.Name);
+                        };
+            */
+
             scope.watch("model.game.gameLayout.width + model.game.gameLayout.height", () =>
-                                                                            {
-                                                                                scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
-                                                                            });
+            {
+                scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
+            });
 
 
             scope.watch("model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y", () =>
-                                                                            {
-                                                                                scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
-                                                                            });
+            {
+                scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
+            });
 
             scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
 
-//            scope.Model.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.Model.Game.GameLayout.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.Model.Game.GameLayout.Height) * .9);
+            //            scope.Model.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.Model.Game.GameLayout.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.Model.Game.GameLayout.Height) * .9);
 
             foreach (var space in scope.Model.Game.GameLayout.Spaces)
             {
@@ -86,17 +86,17 @@ namespace Client.Controllers
                 addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
 
 
-                for (int t = 0; t < 4; t++)
+
+            }
+            for (int t = 0; t < 4; t++)
+            {
+                for (int c = 0; c < 13; c++)
                 {
-                    for (int c = 0; c < 13; c++)
-                    {
-                        addRule(".card" + t + "-" + c + "", new JsDictionary<string, object>());
-                        addRule(".card" + t + "-" + c + "::before", new JsDictionary<string, object>());
-                        addRule(".card" + t + "-" + c + "::after", new JsDictionary<string, object>());
+                    addRule(".card" + t + "-" + c + "", new JsDictionary<string, object>());
+                    addRule(".card" + t + "-" + c + "::before", new JsDictionary<string, object>());
+                    addRule(".card" + t + "-" + c + "::after", new JsDictionary<string, object>());
 
-                    }
                 }
-
             }
 
 
@@ -113,7 +113,7 @@ namespace Client.Controllers
 
             var scenario = this.scope.Model.Selection.SelectedScenario;
 
-        
+
 
 
 

@@ -18,14 +18,14 @@ namespace Client.Controllers
         private readonly ClientGameManagerService myClientGameManagerService;
         private readonly GameContentManager myGameContentManager;
 
-        public GameController(GameControllerScope scope,  ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager)
+        public GameController(GameControllerScope scope, ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager)
         {
             this.scope = scope;
             myClientGameManagerService = clientGameManagerService;
             myGameContentManager = gameContentManager;
-           /* effectManager.Effects =new List<GameEffectModel>();
-            effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
-             */
+            /* effectManager.Effects =new List<GameEffectModel>();
+             effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
+              */
             /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
                                                         PageHandler.QuestionUI.Load(gameSendAnswerModel);
                                                         //alert(JSON.stringify(data));
@@ -56,15 +56,13 @@ namespace Client.Controllers
             {
                 var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
 
-                                                            var create = false;
-                if (scope.MainArea == null) {
-                    create = true;
-                }
+                bool create = scope.MainArea == null;
 
                 scope.MainArea = data;
 
 
-                if (create) {
+                if (create)
+                {
                     scope.Scale = new Point(jQueryApi.jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ((jQueryApi.jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9);
 
                     foreach (var space in scope.MainArea.Spaces)
@@ -92,7 +90,7 @@ namespace Client.Controllers
 
                 }
 
-                
+
 
 
                 scope.Apply();
@@ -103,7 +101,7 @@ namespace Client.Controllers
             jQuery.Window.Bind("resize", (a) =>
             {
 
-                scope.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.MainArea.Size.Height  ) * .9);
+                scope.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.MainArea.Size.Height) * .9);
                 scope.Apply();
 
             });
@@ -126,95 +124,95 @@ namespace Client.Controllers
 
             //new Action<string,JsDictionary<string,object>>()
 
-            
 
 
 
-           /* scope.MoveCard = () =>
-            {
 
-                for (var i = 0; i < 1; i++)
-                {
-                    CardGameCard card = null;
-                    while (card == null)
-                    {
-                        var pile = scope.MainArea.Spaces.RandomElement().Pile;
-                        card = pile.Cards.RandomElement();
-                        var _pile = scope.MainArea.Spaces.RandomElement();
+            /* scope.MoveCard = () =>
+             {
 
-                        if (card != null && _pile != null)
-                        {
-                            card.Appearance.EffectNames.Remove("bend");
-                            if (_pile.Name.StartsWith("User"))
-                            {
+                 for (var i = 0; i < 1; i++)
+                 {
+                     CardGameCard card = null;
+                     while (card == null)
+                     {
+                         var pile = scope.MainArea.Spaces.RandomElement().Pile;
+                         card = pile.Cards.RandomElement();
+                         var _pile = scope.MainArea.Spaces.RandomElement();
 
-                                card.Appearance.EffectNames.Add("bend");
+                         if (card != null && _pile != null)
+                         {
+                             card.Appearance.EffectNames.Remove("bend");
+                             if (_pile.Name.StartsWith("User"))
+                             {
 
-                            }
+                                 card.Appearance.EffectNames.Add("bend");
 
-
-                            pile.Cards.Remove(card);
-                            _pile.Pile.Cards.Add(card);
-                        }
-                    }
-                }
-            };
-
-            scope.AnimateCard = () =>
-            {
-
-                for (var i = 0; i < 1; i++)
-                {
-                    CardGameCard card = null;
-                    while (card == null)
-                    {
-                        var pile = scope.MainArea.Spaces.RandomElement().Pile;
-                        card = pile.Cards.RandomElement();
-                        var _pile = scope.MainArea.Spaces.RandomElement();
-
-                        if (card != null && _pile != null)
-                        {
-
-                            var css = string.Format(".card{0}-{1}", card.Type, card.Value);
-                            var clone = jQueryApi.jQuery.Select(css).FuckingClone();
+                             }
 
 
-                            var space = jQuery.Select(string.Format(".space{0}", _pile.Name));
-                            var off = space.GetOffset();
+                             pile.Cards.Remove(card);
+                             _pile.Pile.Cards.Add(card);
+                         }
+                     }
+                 }
+             };
 
-                            clone.CSS("z-index", 1000);
+             scope.AnimateCard = () =>
+             {
 
-                            JsDictionary ops = new JsDictionary();
-                            ops["left"] = off.Left + space.GetWidth() / 2 - 71 / 2;
-                            ops["top"] = off.Top + space.GetHeight() / 2 - 96 / 2;
-                            ops["rotate"] = "0deg";
+                 for (var i = 0; i < 1; i++)
+                 {
+                     CardGameCard card = null;
+                     while (card == null)
+                     {
+                         var pile = scope.MainArea.Spaces.RandomElement().Pile;
+                         card = pile.Cards.RandomElement();
+                         var _pile = scope.MainArea.Spaces.RandomElement();
 
+                         if (card != null && _pile != null)
+                         {
 
-                            pile.Cards.Remove(card);
-                            clone.Animate(ops, 700, (EffectEasing)(dynamic)("easeInOutQuart"), () =>
-                            {
-                                card.Appearance.EffectNames.Remove("bend");
-                                if (_pile.Name.StartsWith("User"))
-                                {
-
-                                    card.Appearance.EffectNames.Add("bend");
-
-                                }
-
-                                clone.Remove();
-                                _pile.Pile.Cards.Add(card);
-                                scope.Apply();
-
-                            });
+                             var css = string.Format(".card{0}-{1}", card.Type, card.Value);
+                             var clone = jQueryApi.jQuery.Select(css).FuckingClone();
 
 
+                             var space = jQuery.Select(string.Format(".space{0}", _pile.Name));
+                             var off = space.GetOffset();
 
-                        }
-                    }
-                }
-            };*/
+                             clone.CSS("z-index", 1000);
 
- 
+                             JsDictionary ops = new JsDictionary();
+                             ops["left"] = off.Left + space.GetWidth() / 2 - 71 / 2;
+                             ops["top"] = off.Top + space.GetHeight() / 2 - 96 / 2;
+                             ops["rotate"] = "0deg";
+
+
+                             pile.Cards.Remove(card);
+                             clone.Animate(ops, 700, (EffectEasing)(dynamic)("easeInOutQuart"), () =>
+                             {
+                                 card.Appearance.EffectNames.Remove("bend");
+                                 if (_pile.Name.StartsWith("User"))
+                                 {
+
+                                     card.Appearance.EffectNames.Add("bend");
+
+                                 }
+
+                                 clone.Remove();
+                                 _pile.Pile.Cards.Add(card);
+                                 scope.Apply();
+
+                             });
+
+
+
+                         }
+                     }
+                 }
+             };*/
+
+
 
         }
 

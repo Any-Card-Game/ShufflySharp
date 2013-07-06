@@ -15,21 +15,17 @@ namespace Client.Controllers
     public class GameController
     {
         private readonly GameControllerScope scope;
-        private readonly EffectWatcherService myEffectWatcher;
         private readonly ClientGameManagerService myClientGameManagerService;
         private readonly GameContentManager myGameContentManager;
-        private readonly EffectManagerService myEffectManager;
 
-        public GameController(GameControllerScope scope, EffectWatcherService effectWatcher, ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager, EffectManagerService effectManager)
+        public GameController(GameControllerScope scope,  ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager)
         {
             this.scope = scope;
-            myEffectWatcher = effectWatcher;
             myClientGameManagerService = clientGameManagerService;
             myGameContentManager = gameContentManager;
-            myEffectManager = effectManager;
-            effectManager.Effects = new List<GameEffectModel>();
-            effectManager.Effects.Add(ListEffectsController.makeEffect("bend", EffectType.Bend));
-             
+           /* effectManager.Effects =new List<GameEffectModel>();
+            effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
+             */
             /*     myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) => {
                                                         PageHandler.QuestionUI.Load(gameSendAnswerModel);
                                                         //alert(JSON.stringify(data));

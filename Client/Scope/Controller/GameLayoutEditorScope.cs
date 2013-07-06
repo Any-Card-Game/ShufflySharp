@@ -29,6 +29,7 @@ namespace Client.Scope.Controller
     [Serializable]
     public class GameEditorSelectionScopeModel : GameUpdater
     {
+        public GameEffectModel SelectedEffect { get; set; }
         public GameLayoutScenarioCard SelectedScenarioCard { get; set; }
         public GameLayoutScenarioSpace SelectedScenarioSpace { get; set; }
         public GameLayoutScenarioEffect SelectedScenarioEffect { get; set; }

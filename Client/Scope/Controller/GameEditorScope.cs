@@ -26,6 +26,7 @@ namespace Client.Scope.Controller
         public Action OpenLayout { get; set; }
         public Action OpenEffects { get; set; }
         public Action OpenTest { get; set; }
+        public GameEditorSelectionScopeModel Selection { get; set; }
     }
 
     [Serializable]

@@ -46,14 +46,9 @@ namespace Models.SiteManagerModels.Game
         public List<GameLayoutScenarioSpace> Spaces { get; set; }
         public List<GameLayoutScenarioEffect> Effects { get; set; }
 
-//        public GameLayoutScenarioAct _Act { get; set; }
 
     }
-
-    public class GameLayoutScenarioAct
-    {
-//        public List<GameLayoutScenarioSpace> Space { get; set; }
-    }
+     
 
     [Serializable]
     public class GameLayoutScenarioSpace
@@ -161,11 +156,13 @@ namespace Models.SiteManagerModels.Game
         public EffectType Type { get; set; }
         [IntrinsicProperty]
         public List<GameEffectPropertyModel> Properties { get; set; }
+    }
 
-
-        public T GetPropertyByName<T>(string name)
+    public static class EffectHelper
+    {
+        public static T GetPropertyByName<T>(this GameEffectModel effect, string name)
         {
-            foreach (var effectProperty in Properties)
+            foreach (var effectProperty in effect.Properties)
             {
                 if (effectProperty.Name.ToLower() == name.ToLower())
                 {

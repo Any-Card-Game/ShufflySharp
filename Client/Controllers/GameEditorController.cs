@@ -30,6 +30,8 @@ namespace Client.Controllers
             myScope.Model.OpenEffects = OpenEffectsFn;
             myScope.Model.OpenLayout = OpenLayoutFn;
             myScope.Model.OpenTest = OpenTestFn;
+            myScope.Model.Selection = new GameEditorSelectionScopeModel() { ShowGrid = true };
+
             myScope.Visible = false;
             uiManager.OpenGameEditor += (game) =>
             {
@@ -39,6 +41,10 @@ namespace Client.Controllers
                 myScope.SwingBack(null);
                 myScope.Model.Game = game;
             };
+            myScope.OnClose += () =>
+                               {
+                                   //todo destroy spawned
+                               };
             myScope.watch("model.game",
                           () => {
                               myScope.Model.UpdateStatus = UpdateStatusType.Dirty;
@@ -61,14 +67,20 @@ namespace Client.Controllers
             {
                 scope.Model = new GameLayoutEditorScopeModel();
                 scope.Model.Game = myScope.Model.Game;
+                scope.Model.Selection = myScope.Model.Selection;
             });
         }
 
         private void OpenEffectsFn()
         {
 
-            myCreateUIService.CreateSingleton("ListEffects");
-            myCreateUIService.CreateSingleton("EffectEditor");
+            myCreateUIService.CreateSingleton<GameEffectsEditorScope>("GameEffectsEditor", (scope, elem) =>
+                                                                                           {
+                                                                                               scope.Model =new GameEffectsEditorScopeModel();
+                                                                                               scope.Model.Game = myScope.Model.Game;
+                                                                                               scope.Model.Selection = myScope.Model.Selection;
+
+                                                                                           });
 
         }
 

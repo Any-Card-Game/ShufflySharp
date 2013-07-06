@@ -15,12 +15,10 @@ namespace Client.Directives
 
 
     public class AcgTestDrawCardDirective
-    {
-        private readonly EffectManagerService myEffectManager;
+    { 
         public Action<TestCardScope, jQueryObject, object> link;
-        public AcgTestDrawCardDirective(EffectManagerService effectManager)
-        {
-            myEffectManager = effectManager;
+        public AcgTestDrawCardDirective( )
+        { 
             link = linkFn;
         }
 

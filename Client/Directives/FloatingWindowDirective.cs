@@ -61,10 +61,12 @@ namespace Client.Directives
                 SwingBack(scope, element, c);
             };
             scope.Parent.Minimize = () =>
-                                    {
-                                        scope.Parent.Minimized = true;
-                                        scope.Minimize();
-                                    };
+            {
+                scope.Parent.Minimized = true;
+                scope.Minimize();
+            };
+             
+
             scope.PositionStyles = new FloatingWindowPosition() { Left = scope.Left, Top = scope.Top, Display = "block" };
             scope.PositionStyles.ZIndex = 10000;
 
@@ -108,6 +110,11 @@ namespace Client.Directives
                 {
                     scope.OnClose();
                 }
+                if (scope.Parent.OnClose!=null)
+                {
+                    scope.Parent.OnClose();
+                }
+                //todo destroy
                 scope.PositionStyles.Display = "none";
             };
             scope.Minimize = () =>

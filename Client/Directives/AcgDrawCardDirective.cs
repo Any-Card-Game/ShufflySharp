@@ -15,12 +15,10 @@ namespace Client.Directives
 
 
     public class AcgDrawCardDirective
-    {
-        private readonly EffectManagerService myEffectManager;
+    { 
         public Action<CardScope, jQueryObject, object> link;
-        public AcgDrawCardDirective(EffectManagerService effectManager)
-        {
-            myEffectManager = effectManager;
+        public AcgDrawCardDirective( )
+        { 
             link = linkFn;
         }
 
@@ -96,6 +94,7 @@ namespace Client.Directives
                 }
 
 
+/*
                 foreach (var effect in scope.Card.Appearance.EffectNames)
                 {
                     GameEffectModel grabbedEffect = myEffectManager.GetEffectByName(effect);
@@ -163,6 +162,7 @@ namespace Client.Directives
                             break;
                     }
                 }
+*/
 
 
 

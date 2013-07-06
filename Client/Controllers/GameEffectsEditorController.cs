@@ -5,50 +5,56 @@ using Client.Services;
 using Models.SiteManagerModels.Game;
 namespace Client.Controllers
 {
-    internal class ListEffectsController
+    internal class GameEffectsEditorController
     {
-        private readonly ListEffectsScope myScope;
-        private readonly EditEffectService myEditEffects;
-        private readonly EffectWatcherService myEffectWatcher;
+        private readonly GameEffectsEditorScope myScope; 
 
-        public ListEffectsController(ListEffectsScope scope, EditEffectService editEffects, EffectWatcherService effectWatcher, EffectManagerService effectManager)
+        public GameEffectsEditorController(GameEffectsEditorScope scope )
         {
-            myScope = scope;
-            myEditEffects = editEffects;
-            myEffectWatcher = effectWatcher;
-            scope.Effects = effectManager.Effects = new List<GameEffectModel>();
+            myScope = scope;  
             var effectTypes = new List<EffectType>();
 
             effectTypes.Add(EffectType.Bend);
             effectTypes.Add(EffectType.Highlight);
             effectTypes.Add(EffectType.Rotate);
             effectTypes.Add(EffectType.StyleProperty);
+            scope.Visible = true;
 
-            scope.EffectTypes = effectTypes;
-            scope.SelectedEffectType = EffectType.Bend;
+            myScope.Model.EffectTypes = effectTypes;
+            myScope.Model.NewEffectType = EffectType.Bend;
 
-            scope.NewEffect = "";
-            scope.AddEffect = AddEffectFn;
-            scope.EffectClick = EffectClickFn;
-            scope.EnableEffect = EnableEffectFn;
+            myScope.Model.NewEffectName = "";
 
-            myScope.Effects.Add(makeEffect("bend", EffectType.Bend));
+            myScope.Model.AddEffect = AddEffectFn;
+            myScope.Model.RemoveEffect = RemoveEffectFn;
+
+            myScope.watch("model.selection.selectedEffect", () =>
+                                                            {
+                                                                if (myScope.Model.Selection.SelectedEffect != null)
+                                                                {
+
+                                                                }
+                                                            });
 
 
         }
 
-        private void EnableEffectFn(GameEffectModel effect)
-        {
-            myEffectWatcher.ApplyEffect(effect);
-        }
 
         private void AddEffectFn()
         {
-            myScope.Effects.Add(makeEffect(myScope.NewEffect, myScope.SelectedEffectType));
-            
-            myScope.SelectedEffectType = EffectType.Bend;
-            
-            myScope.NewEffect = "";
+            GameEffectModel effect;
+            myScope.Model.Game.Effects.Add(effect=makeEffect(myScope.Model.NewEffectName, myScope.Model.NewEffectType));
+
+            myScope.Model.NewEffectType = EffectType.Bend;
+
+            myScope.Model.NewEffectName = "";
+            myScope.Model.Selection.SelectedEffect = effect;
+        }
+
+        private void RemoveEffectFn(GameEffectModel effect)
+        {
+            myScope.Model.Game.Effects.Remove(effect);
+            myScope.Model.Selection.SelectedEffect = null;
         }
 
         public static GameEffectModel makeEffect(string effectName, EffectType type)
@@ -81,10 +87,6 @@ namespace Client.Controllers
 
             return effect;
         }
-
-        private void EffectClickFn(GameEffectModel effect)
-        {
-            myEditEffects.PopOpenEffect(effect);
-        }
+         
     }
 }

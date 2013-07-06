@@ -15,17 +15,15 @@ namespace Client.Controllers
 {
     public class TestGameController
     {
-        private readonly TestGameControllerScope scope;
-        private readonly EffectWatcherService myEffectWatcher;
-        private readonly EffectManagerService myEffectManager;
+        private readonly TestGameControllerScope scope; 
 
-        public TestGameController(TestGameControllerScope scope, EffectWatcherService effectWatcher, EffectManagerService effectManager)
+        public TestGameController(TestGameControllerScope scope)
         {
             this.scope = scope;
-            myEffectWatcher = effectWatcher;
-            myEffectManager = effectManager;
+/*
             effectManager.Effects = new List<GameEffectModel>();
-            effectManager.Effects.Add(ListEffectsController.makeEffect("bend", EffectType.Bend));
+            effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
+*/
 
             scope.Model.GetCardsFromScenario = GetCardsFromScenarioFn;
 
@@ -56,6 +54,7 @@ namespace Client.Controllers
 
 
 
+/*
             effectWatcher.ApplyEffect += (effect) =>
             {
                 if (scope.Model.Selection.SelectedCard == null)
@@ -63,6 +62,7 @@ namespace Client.Controllers
 
                 //todo scope.Model.Selection.SelectedCard.Appearance.EffectNames.Add(effect.Name);
             };
+*/
             
             scope.watch("model.game.gameLayout.width + model.game.gameLayout.height", () =>
                                                                             {

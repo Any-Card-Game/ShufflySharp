@@ -49,10 +49,9 @@
     <Compile Include="Controllers\GameManagerController.cs" />
     <Compile Include="Controllers\MessageController.cs" />
     <Compile Include="Controllers\CreateRoomController.cs" />
-    <Compile Include="Controllers\EffectEditorController.cs" />
     <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ListEffectsController.cs" />
+    <Compile Include="Controllers\GameEffectsEditorController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MinimizeController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
@@ -74,7 +73,6 @@
     <Compile Include="Scope\BaseScope.cs" />
     <Compile Include="Scope\Controller\ActiveLobbyScope.cs" />
     <Compile Include="Scope\Controller\CreateRoomScope.cs" />
-    <Compile Include="Scope\Controller\EffectEditorScope.cs" />
     <Compile Include="Scope\Controller\GameCodeScope.cs" />
     <Compile Include="Scope\Controller\GameControllerScope.cs" />
     <Compile Include="Scope\Controller\GameEditorScope.cs" />
@@ -82,7 +80,7 @@
     <Compile Include="Scope\Controller\GameManagerScope.cs" />
     <Compile Include="Scope\Controller\GameScenarioEditorScope.cs" />
     <Compile Include="Scope\Controller\HomeScope.cs" />
-    <Compile Include="Scope\Controller\ListEffectsScope.cs" />
+    <Compile Include="Scope\Controller\GameEffectsEditorScope.cs" />
     <Compile Include="Scope\Controller\LoginScope.cs" />
     <Compile Include="Scope\Controller\MessageScope.cs" />
     <Compile Include="Scope\Controller\MinimizeScope.cs" />
@@ -103,9 +101,6 @@
     <Compile Include="Services\ClientSiteManagerService.cs" />
     <Compile Include="Services\CreateUIService.cs" />
     <Compile Include="Services\MessageService.cs" />
-    <Compile Include="Services\EditEffectService.cs" />
-    <Compile Include="Services\EffectManagerService.cs" />
-    <Compile Include="Services\EffectWatcherService.cs" />
     <Compile Include="Services\GameContentManager.cs" />
     <Compile Include="Services\GatewayService.cs" />
     <Compile Include="Services\UIManagerService.cs" />
@@ -178,9 +173,8 @@
     <Content Include="partials\UIs\GameManager.html" />
     <Content Include="partials\UIs\Message.html" />
     <Content Include="partials\UIs\CreateRoomDialog.html" />
-    <Content Include="partials\UIs\EffectEditor.html" />
     <Content Include="partials\UIs\Home.html" />
-    <Content Include="partials\UIs\ListEffects.html" />
+    <Content Include="partials\UIs\GameEffectsEditor.html" />
     <Content Include="partials\UIs\Login.html" />
     <Content Include="partials\UIs\MinimizeArea.html" />
     <Content Include="partials\UIs\Question.html" />

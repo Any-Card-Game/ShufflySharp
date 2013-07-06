@@ -388,6 +388,21 @@
 	};
 	$Models_SiteManagerModels_Game_CardState.prototype = { faceUp: 'faceUp', faceDown: 'faceDown', faceUpIfOwned: 'faceUpIfOwned' };
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.EffectHelper
+	var $Models_SiteManagerModels_Game_EffectHelper = function() {
+	};
+	$Models_SiteManagerModels_Game_EffectHelper.getPropertyByName = function(T) {
+		return function(effect, name) {
+			for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
+				var effectProperty = effect.properties[$t1];
+				if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
+					return ss.cast(effectProperty.value, T);
+				}
+			}
+			return ss.getDefaultValue(T);
+		};
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.EffectType
 	var $Models_SiteManagerModels_Game_EffectType = function() {
 	};
@@ -430,19 +445,6 @@
 		this.type = 0;
 		this.properties = null;
 		this.properties = [];
-	};
-	$Models_SiteManagerModels_Game_GameEffectModel.prototype = {
-		getPropertyByName: function(T) {
-			return function(name) {
-				for (var $t1 = 0; $t1 < this.properties.length; $t1++) {
-					var effectProperty = this.properties[$t1];
-					if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
-						return ss.cast(effectProperty.value, T);
-					}
-				}
-				return ss.getDefaultValue(T);
-			};
-		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameEffectPropertyModel
@@ -499,10 +501,6 @@
 		$this.spaces = null;
 		$this.effects = null;
 		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Models.SiteManagerModels.Game.GameLayoutScenarioAct
-	var $Models_SiteManagerModels_Game_GameLayoutScenarioAct = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.SiteManagerModels.Game.GameLayoutScenarioCard
@@ -660,6 +658,7 @@
 	ss.registerClass(global, 'Models.SiteManagerModels.SiteLoginRequest', $Models_SiteManagerModels_SiteLoginRequest);
 	ss.registerClass(global, 'Models.SiteManagerModels.StartGameRequest', $Models_SiteManagerModels_StartGameRequest);
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.CardState', $Models_SiteManagerModels_Game_CardState);
+	ss.registerClass(global, 'Models.SiteManagerModels.Game.EffectHelper', $Models_SiteManagerModels_Game_EffectHelper);
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.EffectType', $Models_SiteManagerModels_Game_EffectType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameAreaModel', $Models_SiteManagerModels_Game_GameAreaModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameCodeModel', $Models_SiteManagerModels_Game_GameCodeModel);
@@ -668,7 +667,6 @@
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameEffectPropertyType', $Models_SiteManagerModels_Game_GameEffectPropertyType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutModel', $Models_SiteManagerModels_Game_GameLayoutModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenario', $Models_SiteManagerModels_Game_GameLayoutScenario);
-	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioAct', $Models_SiteManagerModels_Game_GameLayoutScenarioAct);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioCard', $Models_SiteManagerModels_Game_GameLayoutScenarioCard);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioEffect', $Models_SiteManagerModels_Game_GameLayoutScenarioEffect);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameLayoutScenarioSpace', $Models_SiteManagerModels_Game_GameLayoutScenarioSpace);

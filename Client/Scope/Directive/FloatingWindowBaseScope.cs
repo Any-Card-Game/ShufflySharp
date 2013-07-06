@@ -17,5 +17,7 @@ namespace Client.Scope.Directive
         [IntrinsicProperty]
         public bool Minimized { get; set; }
 
-     }
+        [IntrinsicProperty]
+        public Action OnClose { get; set; }
+    }
 }

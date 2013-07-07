@@ -169,7 +169,7 @@ require('./NodeLibraries.js');
 				return;
 			}
 			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			NodeLibraries.Common.Logging.Logger.log(ss.formatString('  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}', channel, this.name, user, eventChannel, content), 2);
+			NodeLibraries.Common.Logging.Logger.log(ss.formatString('  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}', channel, this.name, user.toString(), eventChannel, content), 2);
 			pusher.message(channel, this.name, user, eventChannel, content);
 		}
 	};
@@ -207,7 +207,7 @@ require('./NodeLibraries.js');
 			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
 			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
 			if (CommonLibraries.Help.verbose) {
-				NodeLibraries.Common.Logging.Logger.log(channel + '  \n ' + value, 2);
+				NodeLibraries.Common.Logging.Logger.log(channel + 'RPush ' + value, 2);
 			}
 			this.$client1.rpush(channel, value);
 			//todo:maybe sanitize
@@ -233,8 +233,9 @@ require('./NodeLibraries.js');
 			this.$2$CallbackField = value;
 		},
 		cycle: function(channel) {
-			this.$client1.blpop([channel, 0], ss.mkdel(this, function(caller, dtj) {
+			this.$client1.blpop([channel, 10], ss.mkdel(this, function(caller, dtj) {
 				var data = ss.cast(dtj, Array);
+				NodeLibraries.Common.Logging.Logger.log(channel + ' BLPop Data: ' + data, 2);
 				if (ss.isValue(dtj)) {
 					if (CommonLibraries.Help.verbose) {
 						NodeLibraries.Common.Logging.Logger.log(data[1], 2);
@@ -300,6 +301,12 @@ require('./NodeLibraries.js');
 					ss.remove(roomData.users, user);
 					complete(roomData);
 				});
+			});
+		},
+		removeRoom: function(roomData, complete) {
+			this.$manager.client.collection('ChatRoom', function(err, collection) {
+				collection.remove({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) });
+				complete();
 			});
 		}
 	};

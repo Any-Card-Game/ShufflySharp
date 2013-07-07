@@ -48,7 +48,7 @@ namespace ServerSlammer
 
                                         if (data.IndexOf("debug: ") == -1)
                                         {
-                                            util.Print(string.Format("--{0}: {1}   {2}", name, Common.CurrentDate(), data));
+                                            util.Print(string.Format("--{0}: {1}   {2}", name, Common.ShortDate(), data));
                                             util.Print("?: ");
                                         }
                                     });
@@ -56,7 +56,7 @@ namespace ServerSlammer
                                       (data) =>
                                       {
                                           fs.AppendFile("C:\\bbbbbb" + file + ".txt", data+"\n", null, null);
-                                          util.Print(string.Format("--{0}: {1}   {2}", name, Common.CurrentDate(), data));
+                                          util.Print(string.Format("--{0}: {1}   {2}", name, Common.ShortDate(), data));
                                           util.Print("?: ");
                                       });
          

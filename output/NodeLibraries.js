@@ -57,14 +57,28 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	// NodeLibraries.Common.Logging.Common
 	var $NodeLibraries_Common_Logging_Common = function() {
 	};
-	$NodeLibraries_Common_Logging_Common.currentDate = function() {
+	$NodeLibraries_Common_Logging_Common.shortDate = function() {
 		var sb = '';
 		var dt = new Date();
-		sb += dt.getDate();
-		sb += dt.getMonth() + 1;
-		sb += dt.getFullYear();
-		sb += dt.getHours();
-		sb += dt.getMinutes();
+		//
+		//                        sb += dt.Day;
+		//
+		//                        sb += (dt.Month );
+		//
+		//                        sb += dt.Year;
+		sb += dt.getHours() + ':';
+		sb += dt.getMinutes() + ':';
+		sb += dt.getSeconds();
+		return sb;
+	};
+	$NodeLibraries_Common_Logging_Common.longDate = function() {
+		var sb = '';
+		var dt = new Date();
+		sb += dt.getDate() + '-';
+		sb += dt.getMonth() + 1 + '-';
+		sb += dt.getFullYear() + '-';
+		sb += dt.getHours() + '-';
+		sb += dt.getMinutes() + '-';
 		sb += dt.getSeconds();
 		return sb;
 	};
@@ -73,8 +87,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	var $NodeLibraries_Common_Logging_Logger = function() {
 	};
 	$NodeLibraries_Common_Logging_Logger.start = function(key) {
-		console.log(key + ' - ' + $NodeLibraries_Common_Logging_Common.currentDate());
-		$NodeLibraries_Common_Logging_Logger.$key = key + ' - ' + $NodeLibraries_Common_Logging_Common.currentDate() + '.txt';
+		console.log(key + ' - ' + $NodeLibraries_Common_Logging_Common.longDate());
+		$NodeLibraries_Common_Logging_Logger.$key = key + ' - ' + $NodeLibraries_Common_Logging_Common.longDate() + '.txt';
+		$NodeLibraries_Common_Logging_Logger.log('Start: ' + key, 2);
 	};
 	$NodeLibraries_Common_Logging_Logger.log = function(item, level) {
 		switch (level) {

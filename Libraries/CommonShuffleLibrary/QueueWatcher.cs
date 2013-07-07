@@ -25,12 +25,18 @@ namespace CommonShuffleLibrary
 
         public void Cycle(string channel)
         {
-            client1.BLPop(new object[] {channel, 0},
+            client1.BLPop(new object[] {channel, 10},
                           (caller, dtj) => {
-                              var data = (string[]) dtj;
-                              if (dtj != null) {
 
-                                  if (CommonLibraries.Help.Verbose) Logger.Log(data[1],LogLevel.Information);
+
+                              var data = (string[])dtj;
+                              Logger.Log(channel+ " BLPop Data: " + data, LogLevel.Information);
+
+                              if (dtj != null)
+                              {
+
+                                  if (CommonLibraries.Help.Verbose)
+                                      Logger.Log(data[1],LogLevel.Information);
 
                                   var dt = Json.ParseData<QueueMessage>(data[1]);
                                   Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);

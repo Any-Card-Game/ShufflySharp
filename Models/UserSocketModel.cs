@@ -26,6 +26,7 @@ namespace Models
             return m;
         }
 
+ 
         public UserLogicModel ToLogicModel()
         {
             var m = localLogicModel ?? ( localLogicModel = new UserLogicModel() );

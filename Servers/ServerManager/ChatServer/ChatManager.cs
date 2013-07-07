@@ -51,6 +51,12 @@ namespace ServerManager.ChatServer
                                                   myServerManager.UnregisterChatServer(user);
                                                   var roomToSend = new ChatRoomDataModel(room.RoomName, room.Users, null);
 
+                                                         if (room.Users.Count == 0)
+                                                         {
+                                                             myDataManager.ChatData.RemoveRoom(room, () => { });
+                                                             return;
+                                                         }
+
                                                   foreach (var userLogicModel in room.Users) {
                                                       myServerManager.SendChatInfo(userLogicModel, roomToSend.ToModel());
                                                   }

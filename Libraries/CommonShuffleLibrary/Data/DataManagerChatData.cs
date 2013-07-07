@@ -70,19 +70,32 @@ namespace CommonShuffleLibrary.Data
         public void RemoveUser(ChatRoomDataModel roomData, UserLogicModel user, Action<ChatRoomDataModel> complete)
         {
             manager.client.Collection("ChatRoom",
-                                      (err, collection) => {
+                                      (err, collection) =>
+                                      {
                                           JsDictionary<string, object> query = new JsDictionary<string, object>();
 
-                                          query["$pop"] = new {users = user};
+                                          query["$pop"] = new { users = user };
 
                                           collection.Update(new { _id = MongoDocument.GetID(roomData.ID) },
                                                             query,
-                                                            (err2) => {
+                                                            (err2) =>
+                                                            {
                                                                 if (err2 != null) Logger.Log("Data Error: " + err2, LogLevel.Error);
                                                                 roomData.Users.Remove(user);
 
                                                                 complete(roomData);
                                                             });
+                                      });
+        }
+        public void RemoveRoom(ChatRoomDataModel roomData, Action complete)
+        {
+            manager.client.Collection("ChatRoom",
+                                      (err, collection) =>
+                                      {
+                                          
+                                          collection.Remove(new { _id = MongoDocument.GetID(roomData.ID) } );
+
+                                          complete();
                                       });
         }
     }

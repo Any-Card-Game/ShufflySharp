@@ -60,7 +60,7 @@ namespace CommonShuffleLibrary
             }
 
             var pusher = ( (QueuePusher) qpCollection.GetByChannel(channel) );
-           Logger.Log(string.Format("  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content),LogLevel.Information);
+           Logger.Log(string.Format("  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user.ToString() , eventChannel, content),LogLevel.Information);
             pusher.Message(channel, Name, user, eventChannel, content);
         }
     }

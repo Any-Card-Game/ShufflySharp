@@ -125,13 +125,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				clearTimeout(cl);
 				cl = setTimeout(pollGateways, 10000);
 				if (data.indexOf('debug: ') === -1) {
-					this.$util.print(ss.formatString('--{0}: {1}   {2}', name, NodeLibraries.Common.Logging.Common.currentDate(), data));
+					this.$util.print(ss.formatString('--{0}: {1}   {2}', name, NodeLibraries.Common.Logging.Common.shortDate(), data));
 					this.$util.print('?: ');
 				}
 			}));
 			dummy.stderr.on('data', ss.mkdel(this, function(data1) {
 				this.$fs.appendFile('C:\\bbbbbb' + file + '.txt', data1 + '\n', null, null);
-				this.$util.print(ss.formatString('--{0}: {1}   {2}', name, NodeLibraries.Common.Logging.Common.currentDate(), data1));
+				this.$util.print(ss.formatString('--{0}: {1}   {2}', name, NodeLibraries.Common.Logging.Common.shortDate(), data1));
 				this.$util.print('?: ');
 			}));
 			return dummy;

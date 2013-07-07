@@ -72,6 +72,7 @@
     <Compile Include="Directives\DraggableDirective.cs" />
     <Compile Include="Directives\FancyListDirective.cs" />
     <Compile Include="Directives\FloatingWindowDirective.cs" />
+    <Compile Include="Directives\PropertyDirective.cs" />
     <Compile Include="Libs\Extensions.cs" />
     <Compile Include="Libs\ScriptLoader.cs" />
     <Compile Include="Libs\TimeTracker.cs" />

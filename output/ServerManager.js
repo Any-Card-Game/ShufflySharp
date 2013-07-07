@@ -95,7 +95,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		require('http').createServer(ss.mkdel(this, this.$handler)).listen(8090);
 		this.$debug = true;
 		setInterval(function() {
-			console.log('keep alive ' + NodeLibraries.Common.Logging.Common.currentDate());
+			console.log('keep alive ' + NodeLibraries.Common.Logging.Common.shortDate());
 		}, 10000);
 		process.on('exit', ss.mkdel(this, function() {
 			NodeLibraries.Common.Logging.Logger.log('Exiting ', 1);
@@ -221,12 +221,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			if (ss.indexOf(this.$nonDebuggable, process) === -1) {
 				dummy.stdout.on('data', ss.mkdel(this, function(data) {
 					if (data.indexOf('debug: ') === -1) {
-						this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, NodeLibraries.Common.Logging.Common.currentDate(), data));
+						this.$util.print(ss.formatString('{0} {1} {2}', debugPort, NodeLibraries.Common.Logging.Common.shortDate(), data));
 						this.$util.print('?: ');
 					}
 				}));
 				dummy.stderr.on('data', ss.mkdel(this, function(data1) {
-					this.$util.print(ss.formatString('--{0}: {1}   {2}   {3}', name, debugPort, NodeLibraries.Common.Logging.Common.currentDate(), data1));
+					this.$util.print(ss.formatString('{0} {1} {2}', debugPort, NodeLibraries.Common.Logging.Common.shortDate(), data1));
 					this.$util.print('?: ');
 				}));
 			}
@@ -360,6 +360,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$myDataManager.chatData.removeUser(room, user, ss.mkdel(this, function(a) {
 				this.$myServerManager.unregisterChatServer(user);
 				var roomToSend = { roomName: room.roomName, users: room.users, messages: null };
+				if (room.users.length === 0) {
+					this.$myDataManager.chatData.removeRoom(room, function() {
+					});
+					return;
+				}
 				for (var $t2 = 0; $t2 < room.users.length; $t2++) {
 					var userLogicModel1 = room.users[$t2];
 					this.$myServerManager.sendChatInfo(userLogicModel1, DataModels.ChatManagerModels.ChatRoomDataModel.toModel(roomToSend));
@@ -1013,7 +1018,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				user.userName = data1.userName;
 				user.hash = data1.userName;
 				user.gateway = this.$myGatewayName;
-				console.log('Socket login ' + j + '  ' + data1.userName);
+				console.log('Socket login ' + j + '  ' + user.toString());
 				this.$users[data1.userName] = user;
 				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
 			}));

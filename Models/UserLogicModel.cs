@@ -11,5 +11,6 @@ namespace Models
         public string Hash { get; set; }
         public string CurrentGameServer { get; set; }
         public string CurrentChatServer { get; set; }
-    }
+
+     }
 }

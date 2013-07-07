@@ -131,7 +131,7 @@ namespace ServerManager.GatewayServer
                                             user.Hash = data.UserName;
                                             user.Gateway = myGatewayName;
 
-                                            Console.Log("Socket login " + j + "  " + data.UserName);
+                                            Console.Log("Socket login " + j + "  " + user.ToString());
 
                                             users[data.UserName] = user;
                                             queueManager.SendMessage("SiteServer", "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));

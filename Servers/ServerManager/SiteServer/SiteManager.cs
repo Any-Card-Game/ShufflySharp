@@ -168,7 +168,7 @@ namespace ServerManager.SiteServer
 
         private void OnGetGameTypes(UserLogicModel user)
         {
-            var types = new List<GameTypeModel>() { new GameTypeModel("Blackjack"), new GameTypeModel("Sevens") };
+            var types = new List<GameTypeModel>() { new GameTypeModel("Blackjack"), new GameTypeModel("Sevens"), new GameTypeModel("NewSevens") };
 
             mySiteClientManager.SendGameTypes(user, new GetGameTypesReceivedResponse(types));
         }

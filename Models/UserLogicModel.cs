@@ -9,6 +9,7 @@ namespace Models
         public string UserName { get; set; }
         public string Password { get; set; }
         public string Hash { get; set; }
+        public string CurrentDebugServer { get; set; }
         public string CurrentGameServer { get; set; }
         public string CurrentChatServer { get; set; }
 

@@ -308,103 +308,39 @@
 		this.$myUIManager = null;
 		this.$myClientSiteManagerService = null;
 		this.$myMessageService = null;
+		$Client_Controllers_$GameCodeController.$instance = this;
 		//scope.Model.
 		this.$myScope = scope;
 		this.$myUIManager = uiManager;
 		this.$myClientSiteManagerService = clientSiteManagerService;
 		this.$myMessageService = messageService;
 		scope.visible = true;
-		scope.$watch('model.code', function() {
+		scope.$watch('model.game.gameCode.code', function() {
 		});
-		eval('window.ACGIntellisense= $Client_Controllers_$GameCodeController.$build');
+		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
+			this.$myScope.model.updateStatus = 'dirty';
+		}), true);
+		scope.model.forceUpdate = false;
+		window.setTimeout(function() {
+			scope.model.forceUpdate = true;
+			scope.$apply();
+		}, 500);
+		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myScope.model.updateStatus = 'synced';
+		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 	};
-	$Client_Controllers_$GameCodeController.$build = function(editor, options) {
-		var val = editor.getValue();
-		var cur = editor.getCursor();
-		var token = editor.getTokenAt(cur);
-		switch (token.string) {
-			case '.':
-			case '=':
-			case '+': {
-				cur.ch++;
-				token = editor.getTokenAt(cur);
-				break;
-			}
+	$Client_Controllers_$GameCodeController.prototype = {
+		$save: function() {
+			this.$updateGameFn();
+		},
+		$onDeveloperUpdateGameReceivedFn: function(user, o) {
+			this.$myScope.model.updateStatus = 'synced';
+			this.$myScope.$apply();
+		},
+		$updateGameFn: function() {
+			this.$myScope.model.updateStatus = 'syncing';
+			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.game);
 		}
-		var oldVal = val;
-		if (token.string.trim() === '') {
-			val = $Client_Controllers_$GameCodeController.$splice(val, editor.indexFromPos(cur), 0, '$$$');
-			cur.ch++;
-		}
-		var top;
-		try {
-			top = UglifyJS.parse(val);
-		}
-		catch ($t1) {
-			top = UglifyJS.parse(oldVal);
-		}
-		top.figure_out_scope();
-		//
-		//            foreach (var astStatement in top.Body)
-		//
-		//            {
-		//
-		//            switch (astStatement.Type)
-		//
-		//            {
-		//
-		//            case NodeType.SimpleStatement:
-		//
-		//            var m = (AST_SimpleStatement)astStatement;
-		//
-		//            var j = m.Body.Type;
-		//
-		//            Console.Log(j);
-		//
-		//            break;
-		//
-		//            }
-		//
-		//            }
-		var goodNode = null;
-		var alrightNode = null;
-		top.walk(new UglifyJS.TreeWalker(function(node, descend) {
-			if (ss.isValue(goodNode)) {
-				return true;
-			}
-			if ($Client_Controllers_$GameCodeController.$nodeContains(cur, node)) {
-				goodNode = node;
-				return true;
-			}
-			if ($Client_Controllers_$GameCodeController.$nodeAfter(cur, node)) {
-				alrightNode = node;
-			}
-			return false;
-		}));
-		if (ss.isNullOrUndefined(goodNode)) {
-			goodNode = alrightNode;
-		}
-		console.log(goodNode);
-		var $t2 = [];
-		ss.add($t2, 'aa');
-		ss.add($t2, 'bb');
-		ss.add($t2, 'cc');
-		return { list: $t2, to: CodeMirror.Pos(cur.line, token.start), from: CodeMirror.Pos(cur.line, token.end) };
-	};
-	$Client_Controllers_$GameCodeController.$splice = function(str, start, leave, piece) {
-		return str.substr(0, start) + piece + str.substring(start + Math.abs(leave));
-	};
-	$Client_Controllers_$GameCodeController.$nodeContains = function(cur, node) {
-		if (node.start.line === cur.line + 1 && node.end.line === cur.line + 1) {
-			return node.start.col <= cur.ch && node.end.col + node.end.value.length > cur.ch;
-		}
-		return false;
-	};
-	$Client_Controllers_$GameCodeController.$nodeAfter = function(cur, node) {
-		if (node.start.line >= cur.line + 1 && node.start.col >= cur.ch) {
-			return true;
-		}
-		return node.start.line >= cur.line + 1;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.GameEditorController
@@ -468,7 +404,8 @@
 		$openCodeFn: function() {
 			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameCodeScope).call(this.$myCreateUIService, 'GameCodeEditor', ss.mkdel(this, function(scope, elem) {
 				scope.model = $Client_Scope_Controller_GameCodeScopeModel.$ctor();
-				scope.model.code = this.$myScope.model.game.gameCode;
+				scope.model.game = this.$myScope.model.game;
+				scope.model.selection = this.$myScope.model.selection;
 			}));
 		},
 		$onDeveloperUpdateGameReceivedFn: function(user, o) {
@@ -1625,10 +1562,6 @@
 		// }
 		// }
 		// };
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Client.Controllers.IntellisenseReturn
-	var $Client_Controllers_IntellisenseReturn = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.TestGameController
@@ -4311,8 +4244,10 @@
 		return $Client_Scope_Controller_GameCodeScopeModel.$ctor();
 	};
 	$Client_Scope_Controller_GameCodeScopeModel.$ctor = function() {
-		var $this = {};
-		$this.code = null;
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
+		$this.game = null;
+		$this.forceUpdate = false;
+		$this.selection = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -4850,7 +4785,6 @@
 	// Client.Services.ClientDebugManagerService
 	var $Client_Services_ClientDebugManagerService = function(gateway) {
 		this.$clientDebugManager = null;
-		this.$1$OnGetGameSourceField = null;
 		this.$1$OnGetDebugLogField = null;
 		this.$1$OnGetDebugBreakField = null;
 		this.$1$OnDebugGameOverField = null;
@@ -4870,19 +4804,8 @@
 				this.$1$OnGetDebugLogField(user2, model2);
 			}
 		}));
-		this.$clientDebugManager.add_onGetGameSource(ss.mkdel(this, function(user3, model3) {
-			if (!ss.staticEquals(this.$1$OnGetGameSourceField, null)) {
-				this.$1$OnGetGameSourceField(user3, model3);
-			}
-		}));
 	};
 	$Client_Services_ClientDebugManagerService.prototype = {
-		add_onGetGameSource: function(value) {
-			this.$1$OnGetGameSourceField = ss.delegateCombine(this.$1$OnGetGameSourceField, value);
-		},
-		remove_onGetGameSource: function(value) {
-			this.$1$OnGetGameSourceField = ss.delegateRemove(this.$1$OnGetGameSourceField, value);
-		},
 		add_onGetDebugLog: function(value) {
 			this.$1$OnGetDebugLogField = ss.delegateCombine(this.$1$OnGetDebugLogField, value);
 		},
@@ -4900,9 +4823,6 @@
 		},
 		remove_onDebugGameOver: function(value) {
 			this.$1$OnDebugGameOverField = ss.delegateRemove(this.$1$OnDebugGameOverField, value);
-		},
-		requestGameSource: function(gameSourceRequestModel) {
-			this.$clientDebugManager.requestGameSource(gameSourceRequestModel);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -5286,7 +5206,6 @@
 	ss.registerClass(null, 'Client.Controllers.$QuestionController', $Client_Controllers_$QuestionController);
 	ss.registerClass(global, 'Client.Controllers.EffectTesterController', $Client_Controllers_EffectTesterController);
 	ss.registerClass(global, 'Client.Controllers.GameController', $Client_Controllers_GameController);
-	ss.registerClass(global, 'Client.Controllers.IntellisenseReturn', $Client_Controllers_IntellisenseReturn);
 	ss.registerClass(global, 'Client.Controllers.TestGameController', $Client_Controllers_TestGameController);
 	ss.registerClass(global, 'Client.Directives.AcgDrawCardDirective', $Client_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'Client.Directives.AcgDrawSpaceDirective', $Client_Directives_AcgDrawSpaceDirective);
@@ -5321,9 +5240,9 @@
 	ss.registerClass(global, 'Client.Scope.Controller.EffectTesterSpaceModel', $Client_Scope_Controller_EffectTesterSpaceModel);
 	ss.registerClass(global, 'Client.Scope.Controller.EffectTesterTextModel', $Client_Scope_Controller_EffectTesterTextModel);
 	ss.registerClass(global, 'Client.Scope.Controller.GameCodeScope', $Client_Scope_Controller_GameCodeScope, $Client_Scope_Directive_FloatingWindowBaseScope);
-	ss.registerClass(global, 'Client.Scope.Controller.GameCodeScopeModel', $Client_Scope_Controller_GameCodeScopeModel);
-	ss.registerClass(global, 'Client.Scope.Controller.GameControllerScope', $Client_Scope_Controller_GameControllerScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameUpdater', $Client_Scope_Controller_GameUpdater);
+	ss.registerClass(global, 'Client.Scope.Controller.GameCodeScopeModel', $Client_Scope_Controller_GameCodeScopeModel, $Client_Scope_Controller_GameUpdater);
+	ss.registerClass(global, 'Client.Scope.Controller.GameControllerScope', $Client_Scope_Controller_GameControllerScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameEditorModel', $Client_Scope_Controller_GameEditorModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.GameEditorScope', $Client_Scope_Controller_GameEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameEditorSelectionScopeModel', $Client_Scope_Controller_GameEditorSelectionScopeModel, $Client_Scope_Controller_GameUpdater);
@@ -5377,6 +5296,7 @@
 	ss.registerClass(global, 'Client.Services.GatewayService', $Client_Services_GatewayService);
 	ss.registerClass(global, 'Client.Services.MessageService', $Client_Services_MessageService);
 	ss.registerClass(global, 'Client.Services.UIManagerService', $Client_Services_UIManagerService);
+	$Client_Controllers_$GameCodeController.$instance = null;
 	$Client_Directives_FloatingWindowDirective.$items = new (ss.makeGenericType(ss.Dictionary$2, [Object, $Client_Scope_Directive_FloatingWindowScope]))();
 	$Client_BuildSite.instance = null;
 })();

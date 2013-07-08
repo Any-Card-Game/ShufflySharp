@@ -81,6 +81,7 @@
 		$this.userName = null;
 		$this.password = null;
 		$this.hash = null;
+		$this.currentDebugServer = null;
 		$this.currentGameServer = null;
 		$this.currentChatServer = null;
 		return $this;
@@ -123,6 +124,7 @@
 		m.hash = $this.hash;
 		m.currentChatServer = $this.currentChatServer;
 		m.currentGameServer = $this.currentGameServer;
+		m.currentDebugServer = $this.currentDebugServer;
 		m.password = $this.password;
 		m.userName = $this.userName;
 		return m;
@@ -136,6 +138,7 @@
 		$this.password = null;
 		$this.hash = null;
 		$this.socket = null;
+		$this.currentDebugServer = null;
 		$this.currentGameServer = null;
 		$this.currentChatServer = null;
 		return $this;
@@ -173,6 +176,115 @@
 	var $Models_ChatManagerModels_SendChatMessageModel = function() {
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugCreateGameRequestModel
+	var $Models_DebugGameManagerModels_DebugCreateGameRequestModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugCreateGameRequestModel.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.gameName = null;
+		$this.source = null;
+		$this.breakPoints = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameAnswerModel
+	var $Models_DebugGameManagerModels_DebugGameAnswerModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameAnswerModel.$ctor = function() {
+		var $this = {};
+		$this.lineNumber = 0;
+		$this.value = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameAnswerQuestionModel
+	var $Models_DebugGameManagerModels_DebugGameAnswerQuestionModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameAnswerQuestionModel.$ctor = function() {
+		var $this = {};
+		$this.answer = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameBreakModel
+	var $Models_DebugGameManagerModels_DebugGameBreakModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameBreakModel.$ctor = function() {
+		var $this = {};
+		$this.lineNumber = 0;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameCreateRequestModel
+	var $Models_DebugGameManagerModels_DebugGameCreateRequestModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameCreateRequestModel.$ctor = function() {
+		var $this = {};
+		$this.gameType = null;
+		$this.players = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameLogModel
+	var $Models_DebugGameManagerModels_DebugGameLogModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameLogModel.$ctor = function() {
+		var $this = {};
+		$this.value = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameRoomModel
+	var $Models_DebugGameManagerModels_DebugGameRoomModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameRoomModel.createInstance = function() {
+		return $Models_DebugGameManagerModels_DebugGameRoomModel.$ctor();
+	};
+	$Models_DebugGameManagerModels_DebugGameRoomModel.$ctor = function() {
+		var $this = {};
+		$this.roomID = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugGameSendAnswerModel
+	var $Models_DebugGameManagerModels_DebugGameSendAnswerModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugGameSendAnswerModel.$ctor = function() {
+		var $this = {};
+		$this.question = null;
+		$this.answers = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebuggerJoinRequestModel
+	var $Models_DebugGameManagerModels_DebuggerJoinRequestModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebuggerJoinRequestModel.$ctor = function() {
+		var $this = {};
+		$this.roomID = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugJoinGameRequestModel
+	var $Models_DebugGameManagerModels_DebugJoinGameRequestModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugJoinGameRequestModel.$ctor = function() {
+		var $this = {};
+		$this.roomID = null;
+		$this.user = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugStartGameRequestModel
+	var $Models_DebugGameManagerModels_DebugStartGameRequestModel = function() {
+	};
+	$Models_DebugGameManagerModels_DebugStartGameRequestModel.$ctor = function() {
+		var $this = {};
+		$this.roomID = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.GameManagerModels.CreateGameRequestModel
 	var $Models_GameManagerModels_CreateGameRequestModel = function() {
 	};
@@ -192,15 +304,6 @@
 		$this.gameName = null;
 		$this.source = null;
 		$this.breakPoints = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Models.GameManagerModels.DebuggerJoinRequestModel
-	var $Models_GameManagerModels_DebuggerJoinRequestModel = function() {
-	};
-	$Models_GameManagerModels_DebuggerJoinRequestModel.$ctor = function() {
-		var $this = {};
-		$this.roomID = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -252,24 +355,6 @@
 		var $this = {};
 		$this.question = null;
 		$this.answers = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Models.GameManagerModels.GameSourceRequestModel
-	var $Models_GameManagerModels_GameSourceRequestModel = function() {
-	};
-	$Models_GameManagerModels_GameSourceRequestModel.$ctor = function() {
-		var $this = {};
-		$this.gameName = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// Models.GameManagerModels.GameSourceResponseModel
-	var $Models_GameManagerModels_GameSourceResponseModel = function() {
-	};
-	$Models_GameManagerModels_GameSourceResponseModel.$ctor = function() {
-		var $this = {};
-		$this.content = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -645,16 +730,24 @@
 	ss.registerClass(global, 'Models.ChatManagerModels.JoinChatRoomRequest', $Models_ChatManagerModels_JoinChatRoomRequest);
 	ss.registerClass(global, 'Models.ChatManagerModels.RegisterChatChannelModel', $Models_ChatManagerModels_RegisterChatChannelModel);
 	ss.registerClass(global, 'Models.ChatManagerModels.SendChatMessageModel', $Models_ChatManagerModels_SendChatMessageModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugCreateGameRequestModel', $Models_DebugGameManagerModels_DebugCreateGameRequestModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameAnswerModel', $Models_DebugGameManagerModels_DebugGameAnswerModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameAnswerQuestionModel', $Models_DebugGameManagerModels_DebugGameAnswerQuestionModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameBreakModel', $Models_DebugGameManagerModels_DebugGameBreakModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameCreateRequestModel', $Models_DebugGameManagerModels_DebugGameCreateRequestModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameLogModel', $Models_DebugGameManagerModels_DebugGameLogModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameRoomModel', $Models_DebugGameManagerModels_DebugGameRoomModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugGameSendAnswerModel', $Models_DebugGameManagerModels_DebugGameSendAnswerModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebuggerJoinRequestModel', $Models_DebugGameManagerModels_DebuggerJoinRequestModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugJoinGameRequestModel', $Models_DebugGameManagerModels_DebugJoinGameRequestModel);
+	ss.registerClass(global, 'Models.DebugGameManagerModels.DebugStartGameRequestModel', $Models_DebugGameManagerModels_DebugStartGameRequestModel);
 	ss.registerClass(global, 'Models.GameManagerModels.CreateGameRequestModel', $Models_GameManagerModels_CreateGameRequestModel);
 	ss.registerClass(global, 'Models.GameManagerModels.DebugCreateGameRequestModel', $Models_GameManagerModels_DebugCreateGameRequestModel);
-	ss.registerClass(global, 'Models.GameManagerModels.DebuggerJoinRequestModel', $Models_GameManagerModels_DebuggerJoinRequestModel);
 	ss.registerClass(global, 'Models.GameManagerModels.GameAnswerModel', $Models_GameManagerModels_GameAnswerModel);
 	ss.registerClass(global, 'Models.GameManagerModels.GameAnswerQuestionModel', $Models_GameManagerModels_GameAnswerQuestionModel);
 	ss.registerClass(global, 'Models.GameManagerModels.GameCreateRequestModel', $Models_GameManagerModels_GameCreateRequestModel);
 	ss.registerClass(global, 'Models.GameManagerModels.GameRoomModel', $Models_GameManagerModels_GameRoomModel);
 	ss.registerClass(global, 'Models.GameManagerModels.GameSendAnswerModel', $Models_GameManagerModels_GameSendAnswerModel);
-	ss.registerClass(global, 'Models.GameManagerModels.GameSourceRequestModel', $Models_GameManagerModels_GameSourceRequestModel);
-	ss.registerClass(global, 'Models.GameManagerModels.GameSourceResponseModel', $Models_GameManagerModels_GameSourceResponseModel);
 	ss.registerClass(global, 'Models.GameManagerModels.JoinGameRequestModel', $Models_GameManagerModels_JoinGameRequestModel);
 	ss.registerClass(global, 'Models.GameManagerModels.StartGameRequestModel', $Models_GameManagerModels_StartGameRequestModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.CreateRoomRequest', $Models_SiteManagerModels_CreateRoomRequest);

@@ -1,15 +1,15 @@
    
 module.exports = Sevens = function() {
     var self = this;
-    self.spades = new Pile('spades');
-    self.clubs = new Pile('clubs');
-    self.hearts = new Pile('hearts');
-    self.diamonds = new Pile('diamonds');
+    self.cardGame = new CardGame( );
 
-    self.cardGame = new CardGame({ numberOfCards: 52, size: { width: 16, height: 12 } });
+    self.constructor = function () {
 
-    self.constructor = function() {
-        debugger;
+        self.spades = new Pile('spades');
+        self.clubs = new Pile('clubs');
+        self.hearts = new Pile('hearts');
+        self.diamonds = new Pile('diamonds');
+
         self.cardGame.spaces.push(new TableSpace({
             visible: true,
             vertical: true,
@@ -18,6 +18,7 @@ module.exports = Sevens = function() {
             x: 5,
             y: 4,
             width: 0,
+            height: 6,
             height: 6,
             pile: self.clubs,
             numberOfCardsHorizontal: 1,

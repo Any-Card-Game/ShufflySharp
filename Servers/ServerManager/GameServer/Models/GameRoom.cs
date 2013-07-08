@@ -9,9 +9,7 @@ namespace ServerManager.GameServer.Models
     [Serializable]
     public class GameRoom
     {
-        public List<CardGameAnswer> Answers { get; set; }
-        public bool Debuggable { get; set; }
-        public UserLogicModel DebuggingSender { get; set; }
+        public List<CardGameAnswer> EmulatedAnswers { get; set; }
         public Fiber<List<UserLogicModel>> Fiber { get; set; }
         public GameObject Game { get; set; }
         public string GameType{ get; set; }
@@ -27,7 +25,7 @@ namespace ServerManager.GameServer.Models
         {
             Players = new List<UserLogicModel>();
             RoomID = Guid.NewGuid();
-            Answers = new List<CardGameAnswer>();
+            EmulatedAnswers = new List<CardGameAnswer>();
         }
     }
 }

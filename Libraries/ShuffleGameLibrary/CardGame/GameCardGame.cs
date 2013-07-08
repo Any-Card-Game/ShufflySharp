@@ -13,7 +13,7 @@ namespace global
         [IntrinsicProperty]
         public string Name { get; set; }
         [IntrinsicProperty]
-        public int AnswerIndex { get; set; }
+        public int EmulatedAnswerIndex { get; set; }
         [IntrinsicProperty]
         public List<CardGameTableSpace> Spaces { get; set; }
         [IntrinsicProperty]
@@ -21,7 +21,7 @@ namespace global
         [IntrinsicProperty]
         public Size Size { get; set; }
         [IntrinsicProperty]
-        public List<CardGameAnswer> Answers { get; set; }
+        public List<CardGameAnswer> EmulatedAnswers { get; set; }
         [IntrinsicProperty]
         public List<CardGameUser> Users { get; set; }
         [IntrinsicProperty]
@@ -31,41 +31,33 @@ namespace global
         [IntrinsicProperty]
         public int NumberOfJokers { get; set; }
 
-        public GameCardGame(GameCardGameOptions options)
+        public GameCardGame( )
         {
             Spaces = new List<CardGameTableSpace>();
             TextAreas = new List<GameCardGameTextArea>();
-            Answers = new List<CardGameAnswer>();
-            Users = new List<CardGameUser>();
-            NumberOfCards = options.NumberOfCards == 0 ? 52 : options.NumberOfCards;
-            NumberOfJokers = options.NumberOfJokers == 0 ? 52 : options.NumberOfJokers;
+            EmulatedAnswers = new List<CardGameAnswer>();
+            Users = new List<CardGameUser>(); 
+            Deck = new CardGamePile("deck"); 
+        }
 
-            Deck = new CardGamePile("deck");
-            for (var i = 0; i < NumberOfCards; i++) {
-                Deck.Cards.Add(new CardGameCard(i % 13, (int) Math.Floor(i / 13d)));
+        public void ConfigurationCompleted()
+        {
+            for (var i = 0; i < NumberOfCards; i++)
+            {
+                Deck.Cards.Add(new CardGameCard(i % 13, (int)Math.Floor(i / 13d)));
             }
-            for (var i = 0; i < NumberOfJokers; i++) {
+            for (var i = 0; i < NumberOfJokers; i++)
+            {
                 Deck.Cards.Add(new CardGameCard(0, 0));
             }
-
-            Size = options.Size ?? new Size(15, 15);
-
-            /*
-           
-
-    this.setAnswers = function (answers) {
-        this.answers = answers;
-    };
-             */
+             
         }
 
-        [ScriptName("setAnswers")]
-        public void SetAnswers(List<CardGameAnswer> answers)
+        public void SetEmulatedAnswers(List<CardGameAnswer> answers)
         {
-            Answers = answers;
+            EmulatedAnswers = answers;
         }
 
-        [ScriptName("setPlayers")]
         public void SetPlayers(List<UserLogicModel> players)
         {
             Users = new List<CardGameUser>();
@@ -74,15 +66,37 @@ namespace global
                 return;
             if (players.Count > 6)
                 players.RemoveRange(6, players.Count - 6);
-            for (var j = 0; j < players.Count; j++) {
+            for (var j = 0; j < players.Count; j++)
+            {
                 Users.Add(new CardGameUser(players[j].UserName));
             }
+        }
+        public CardGameTableSpace GetSpaceByName(string name)
+        {
+            foreach (var cardGameTableSpace in Spaces)
+            {
+                if (cardGameTableSpace.Name.ToLower() == name.ToLower())
+                {
+                    return cardGameTableSpace;
+                }
+            }
+            return null;
+        }
+        public GameCardGameTextArea GetTextByName(string name)
+        {
+            foreach (var gameCardGameTextArea in TextAreas)
+            { 
+                if (gameCardGameTextArea.Name.ToLower() == name.ToLower())
+                {
+                    return gameCardGameTextArea;
+                }
+            }
+            return null;
         }
 
         //arg0: cards per player
         //arg1: CardState
         //return undefined 
-        [ScriptName("dealCards")]
         public void DealCards(int numberOfCards, int state) {}
     }
 }

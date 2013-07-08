@@ -82,7 +82,6 @@
 	// ClientLibs.Managers.ClientDebugManager
 	var $ClientLibs_Managers_ClientDebugManager = function(gateway) {
 		this.$myGateway = null;
-		this.$1$OnGetGameSourceField = null;
 		this.$1$OnGetDebugLogField = null;
 		this.$1$OnGetDebugBreakField = null;
 		this.$1$OnDebugGameOverField = null;
@@ -90,12 +89,6 @@
 		this.$setup();
 	};
 	$ClientLibs_Managers_ClientDebugManager.prototype = {
-		add_onGetGameSource: function(value) {
-			this.$1$OnGetGameSourceField = ss.delegateCombine(this.$1$OnGetGameSourceField, value);
-		},
-		remove_onGetGameSource: function(value) {
-			this.$1$OnGetGameSourceField = ss.delegateRemove(this.$1$OnGetGameSourceField, value);
-		},
 		add_onGetDebugLog: function(value) {
 			this.$1$OnGetDebugLogField = ss.delegateCombine(this.$1$OnGetDebugLogField, value);
 		},
@@ -115,27 +108,21 @@
 			this.$1$OnDebugGameOverField = ss.delegateRemove(this.$1$OnDebugGameOverField, value);
 		},
 		$setup: function() {
-			this.$myGateway.on('Area.Debug.GetGameSource.Response', ss.mkdel(this, function(user, data) {
-				this.$1$OnGetGameSourceField(user, data);
-			}));
-			this.$myGateway.on('Area.Debug.Log', ss.mkdel(this, function(user1, data1) {
+			this.$myGateway.on('Area.Debug.Log', ss.mkdel(this, function(user, data) {
 				if (!ss.staticEquals(this.$1$OnGetDebugLogField, null)) {
-					this.$1$OnGetDebugLogField(user1, data1);
+					this.$1$OnGetDebugLogField(user, data);
 				}
 			}));
-			this.$myGateway.on('Area.Debug.Break', ss.mkdel(this, function(user2, data2) {
+			this.$myGateway.on('Area.Debug.Break', ss.mkdel(this, function(user1, data1) {
 				if (!ss.staticEquals(this.$1$OnGetDebugBreakField, null)) {
-					this.$1$OnGetDebugBreakField(user2, data2);
+					this.$1$OnGetDebugBreakField(user1, data1);
 				}
 			}));
-			this.$myGateway.on('Area.Debug.GameOver', ss.mkdel(this, function(user3, data3) {
+			this.$myGateway.on('Area.Debug.GameOver', ss.mkdel(this, function(user2, data2) {
 				if (!ss.staticEquals(this.$1$OnDebugGameOverField, null)) {
-					this.$1$OnDebugGameOverField(user3, ss.cast(data3, String));
+					this.$1$OnDebugGameOverField(user2, ss.cast(data2, String));
 				}
 			}));
-		},
-		requestGameSource: function(gameSourceRequestModel) {
-			this.$myGateway.emit('Area.Debug2.GetGameSource.Request', gameSourceRequestModel);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

@@ -14,14 +14,14 @@ namespace ServerManager.GameServer
         {
             gameServerIndex = "GameServer" + Guid.NewGuid();
             Logger.Start(gameServerIndex);
-            
+
             childProcess = Global.Require<ChildProcess>("child_process");
-            Global.Scope.Fiber= Global.Require<NodeModule>("fibers");
+            Global.Scope.Fiber = Global.Require<NodeModule>("fibers");
             Global.Process.On("exit", () => Logger.Log("exi", LogLevel.Information));
 
             GameManager gameManager = new GameManager(gameServerIndex);
         }
 
- 
+
     }
 }

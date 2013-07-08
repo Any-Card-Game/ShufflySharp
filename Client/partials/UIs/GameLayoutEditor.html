@@ -3,9 +3,9 @@
         visible="visible">
         <div style="width: 50%; float: left;">
             Width: 
-            <input type="range" ng-model="model.game.gameLayout.width" />
+            <input type="number" ng-model="model.game.gameLayout.width" />
             Height: 
-            <input type="range" ng-model="model.game.gameLayout.height" />
+            <input type="number" ng-model="model.game.gameLayout.height" />
             <button ng-click="model.toggleGrid()">Toggle Grid</button>
             Spaces:
             <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.spaces" bind="model.selection.selectedSpace">

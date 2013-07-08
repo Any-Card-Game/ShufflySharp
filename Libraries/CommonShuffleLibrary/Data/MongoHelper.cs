@@ -9,6 +9,10 @@ namespace CommonShuffleLibrary.Data
         {
             collection.Find<T>(query, (a, b) => b.ToArray((c, d) => result(a, d)));
         }
+        public static void FirstOrDefault<T>(this MongoCollection collection, object query, Action<string, T> result) where T : MongoDocument
+        {
+            collection.Find<T>(query, (a, b) => b.ToArray((c, d) => result(a, d[0])));
+        }
         public static void Any<T>(this MongoCollection collection, object query, Action<string, bool> result) where T : MongoDocument
         {
             collection.Find<T>(query, (a, b) => b.ToArray((c, d) => result(a, d.Count > 0)));

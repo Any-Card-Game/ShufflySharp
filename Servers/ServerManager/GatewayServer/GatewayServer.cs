@@ -51,11 +51,12 @@ namespace ServerManager.GatewayServer
                 content = string.Format("http://{0}", currentIP);
             else
                 content = string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com");
-             
-            Console.Log(content);
+
+            Logger.Log(content,LogLevel.Information);
             app.Listen(port);
             io.Set("log level", 0);
 
+            Global.SetInterval(() => Logger.Log(string.Format("Wooooww {0}'s still alive.", myGatewayName), LogLevel.Information), 10000);
             ps = new PubSub(() =>
                             {
                                
@@ -108,7 +109,7 @@ namespace ServerManager.GatewayServer
                                                     channel = "SiteServer";
                                                     break;
                                                 case "Debug":
-                                                    channel = user.CurrentGameServer ?? "GameServer";
+                                                    channel = user.CurrentDebugServer ?? "DebugServer";
                                                     break;
                                                 case "Debug2":
                                                     channel = "DebugServer";

@@ -8,32 +8,28 @@ namespace global
     [ScriptName("shuff")]
     public static class Shuff
     {
-        [ScriptName("askQuestion")]
         public static int AskQuestion(UserLogicModel user, string question, string[] answers, GameCardGame cardGame)
         {
             cardGame.Emulating = false;
-            if (cardGame.Answers.Count - 1 > cardGame.AnswerIndex) {
+            if (cardGame.EmulatedAnswers.Count - 1 > cardGame.EmulatedAnswerIndex) {
                 cardGame.Emulating = true;
-                return cardGame.Answers[cardGame.AnswerIndex++].Value; //todo .value
+                return cardGame.EmulatedAnswers[cardGame.EmulatedAnswerIndex++].Value; //todo .value
             }
             var m = new CardGameQuestion(user, question, answers, cardGame);
 
             var answer = Fiber<CardGameAnswer>.Yield(new FiberYieldResponse(FiberYieldResponseType.AskQuestion, m));
-            cardGame.AnswerIndex++;
+            cardGame.EmulatedAnswerIndex++;
             return answer == null ? 0 : answer.Value;
         }
 
-        [ScriptName("declareWinner")]
         public static void DeclareWinner(UserLogicModel user)
         {
             Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.GameOver));
         }
-        [ScriptName("gameOver")]
         public static void GameOver()
         {
             Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.GameOver));
         }
-        [ScriptName("playersLeave")]
         public static void PlayersLeave(Action<List<UserLogicModel>> usersLeft)
         {
 
@@ -45,7 +41,6 @@ namespace global
         
         }
 
-        [ScriptName("log")]
         public static void Log(string msg)
         {
             Fiber<FiberYieldResponse>.Yield(new FiberYieldResponse(FiberYieldResponseType.Log, msg));

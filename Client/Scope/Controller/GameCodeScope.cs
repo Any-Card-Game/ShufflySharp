@@ -13,8 +13,10 @@ namespace Client.Scope.Controller
         public GameCodeScopeModel Model { get; set; }
     }
     [Serializable]
-    public class GameCodeScopeModel
+    public class GameCodeScopeModel : GameUpdater
     {
-        public GameCodeModel Code { get; set; }
+        public GameModel Game { get; set; }
+        public bool ForceUpdate { get; set; }
+        public GameEditorSelectionScopeModel Selection { get; set; }
     }
 }

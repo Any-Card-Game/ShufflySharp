@@ -12,6 +12,7 @@ namespace Models
         public string Password { get; set; }
         public string Hash { get; set; }
         public SocketIOConnection Socket { get; set; }
+        public string CurrentDebugServer { get; set; }
         public string CurrentGameServer { get; set; }
         public string CurrentChatServer { get; set; }
         public UserSocketModel() {}
@@ -34,6 +35,7 @@ namespace Models
             m.Hash = Hash;
             m.CurrentChatServer = CurrentChatServer;
             m.CurrentGameServer = CurrentGameServer;
+            m.CurrentDebugServer = CurrentDebugServer;
             m.Password = Password;
             m.UserName = UserName;
             return m;

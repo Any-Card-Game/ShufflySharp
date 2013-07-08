@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModels", "DataModels\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffleInformation", "ShuffleInformation\ShuffleInformation.csproj", "{EC0843A4-1AE6-462C-8755-BC4E5D579178}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShuffleGames", "ShuffleGames\ShuffleGames.csproj", "{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientLibs", "ClientLibs\ClientLibs.csproj", "{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerSlammer", "ServerSlammer\ServerSlammer.csproj", "{76D08C79-8160-4C95-A35B-AEC3A527C000}"
@@ -56,6 +54,28 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "output", "output\", "{695D0
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "58533"
 		StartServerOnDebug = "false"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ShuffleGames", "http://localhost:50921", "{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}"
+	ProjectSection(WebsiteProperties) = preProject
+		UseIISExpress = "true"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_50921"
+		Debug.AspNetCompiler.PhysicalPath = "ShuffleGames\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_50921\"
+		Debug.AspNetCompiler.Updateable = "false"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_50921"
+		Release.AspNetCompiler.PhysicalPath = "ShuffleGames\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_50921\"
+		Release.AspNetCompiler.Updateable = "false"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "ShuffleGames\"
+		DefaultWebSiteLanguage = "Visual Basic"
 	EndProjectSection
 EndProject
 Global
@@ -156,14 +176,6 @@ Global
 		{EC0843A4-1AE6-462C-8755-BC4E5D579178}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{EC0843A4-1AE6-462C-8755-BC4E5D579178}.Release|x86.ActiveCfg = Release|x86
 		{EC0843A4-1AE6-462C-8755-BC4E5D579178}.Release|x86.Build.0 = Release|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Debug|x86.ActiveCfg = Debug|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Debug|x86.Build.0 = Debug|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|Any CPU.ActiveCfg = Release|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|x86.ActiveCfg = Release|x86
-		{4CC73A44-4ED9-4EED-BE6C-AD08A624B183}.Release|x86.Build.0 = Release|x86
 		{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ABAC6AE-3F67-43CF-BCC7-2E46C730CE45}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -225,6 +237,15 @@ Global
 		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
 		{695D02E9-9050-4C99-AAFC-7B2249D8523C}.Release|x86.ActiveCfg = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D6E4417A-9DA0-415F-947E-6B4F9CB2E2EB}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

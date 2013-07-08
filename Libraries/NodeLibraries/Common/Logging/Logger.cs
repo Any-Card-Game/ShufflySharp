@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using CommonLibraries;
 using NodeLibraries.NodeJS;
 namespace NodeLibraries.Common.Logging
@@ -54,6 +55,7 @@ namespace NodeLibraries.Common.Logging
         }
         public static void Log(string item, LogLevel level)
         {
+            item = string.Format("{0} - {1}", Common.ShortDate(), item);
             switch (level)
             {
                 case LogLevel.Error:
@@ -76,6 +78,7 @@ namespace NodeLibraries.Common.Logging
                                                          });
         }
     }
+    [NamedValues]
     public enum LogLevel { Error, DebugInformation, Information }
     public class ServerHelper
     {

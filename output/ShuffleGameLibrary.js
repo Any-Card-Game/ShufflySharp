@@ -372,48 +372,35 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// global.GameCardGame
-	var $global_CardGame = function(options) {
+	var $global_CardGame = function() {
 		this.emulating = false;
 		this.name = null;
-		this.answerIndex = 0;
+		this.emulatedAnswerIndex = 0;
 		this.spaces = null;
 		this.textAreas = null;
 		this.size = null;
-		this.answers = null;
+		this.emulatedAnswers = null;
 		this.users = null;
 		this.deck = null;
 		this.numberOfCards = 0;
 		this.numberOfJokers = 0;
 		this.spaces = [];
 		this.textAreas = [];
-		this.answers = [];
+		this.emulatedAnswers = [];
 		this.users = [];
-		this.numberOfCards = ((options.numberOfCards === 0) ? 52 : options.numberOfCards);
-		this.numberOfJokers = ((options.numberOfJokers === 0) ? 52 : options.numberOfJokers);
 		this.deck = new $global_Pile('deck');
-		for (var i = 0; i < this.numberOfCards; i++) {
-			ss.add(this.deck.cards, new $global_Card(i % 13, ss.Int32.trunc(Math.floor(i / 13))));
-		}
-		for (var i1 = 0; i1 < this.numberOfJokers; i1++) {
-			ss.add(this.deck.cards, new $global_Card(0, 0));
-		}
-		this.size = options.size || CommonLibraries.Size.$ctor1(15, 15);
-		//
-		//           
-		//
-		//    this.setAnswers = function (answers) {
-		//
-		//           
-		//
-		//    this.answers = answers;
-		//
-		//           
-		//
-		//    };
 	};
 	$global_CardGame.prototype = {
-		setAnswers: function(answers) {
-			this.answers = answers;
+		configurationCompleted: function() {
+			for (var i = 0; i < this.numberOfCards; i++) {
+				ss.add(this.deck.cards, new $global_Card(i % 13, ss.Int32.trunc(Math.floor(i / 13))));
+			}
+			for (var i1 = 0; i1 < this.numberOfJokers; i1++) {
+				ss.add(this.deck.cards, new $global_Card(0, 0));
+			}
+		},
+		setEmulatedAnswers: function(answers) {
+			this.emulatedAnswers = answers;
 		},
 		setPlayers: function(players) {
 			this.users = [];
@@ -426,6 +413,24 @@
 			for (var j = 0; j < players.length; j++) {
 				ss.add(this.users, new $global_User(players[j].userName));
 			}
+		},
+		getSpaceByName: function(name) {
+			for (var $t1 = 0; $t1 < this.spaces.length; $t1++) {
+				var cardGameTableSpace = this.spaces[$t1];
+				if (ss.referenceEquals(cardGameTableSpace.name.toLowerCase(), name.toLowerCase())) {
+					return cardGameTableSpace;
+				}
+			}
+			return null;
+		},
+		getTextByName: function(name) {
+			for (var $t1 = 0; $t1 < this.textAreas.length; $t1++) {
+				var gameCardGameTextArea = this.textAreas[$t1];
+				if (ss.referenceEquals(gameCardGameTextArea.name.toLowerCase(), name.toLowerCase())) {
+					return gameCardGameTextArea;
+				}
+			}
+			return null;
 		},
 		dealCards: function(numberOfCards, state) {
 		}
@@ -531,7 +536,6 @@
 		this.rotate = 0;
 		this.visible = false;
 		this.stackCards = false;
-		this.drawCardsBent = false;
 		this.name = null;
 		this.sortOrder = 0;
 		this.numerOfCardsHorizontal = 0;
@@ -550,6 +554,54 @@
 	var $global_CardType = function() {
 	};
 	$global_CardType.prototype = { heart: 0, diamond: 1, spade: 2, club: 3 };
+	////////////////////////////////////////////////////////////////////////////////
+	// global.DebugFiberYieldResponse
+	var $global_DebugFiberYieldResponse = function(type) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+	};
+	$global_DebugFiberYieldResponse.$ctor2 = function(type, question) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.question = question;
+	};
+	$global_DebugFiberYieldResponse.$ctor1 = function(type, contents) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.contents = contents;
+	};
+	$global_DebugFiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.lineNumber = lineNumber;
+		this.value = value;
+	};
+	$global_DebugFiberYieldResponse.$ctor2.prototype = $global_DebugFiberYieldResponse.$ctor1.prototype = $global_DebugFiberYieldResponse.$ctor3.prototype = $global_DebugFiberYieldResponse.prototype;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.DebugFiberYieldResponseType
+	var $global_DebugFiberYieldResponseType = function() {
+	};
+	$global_DebugFiberYieldResponseType.prototype = { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 };
 	////////////////////////////////////////////////////////////////////////////////
 	// global.DomUtils
 	var $global_domUtils = function() {
@@ -869,20 +921,6 @@
 	var $global_FiberYieldResponseType = function() {
 	};
 	$global_FiberYieldResponseType.prototype = { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.GameCardGameOptions
-	var $global_GameCardGameOptions = function() {
-	};
-	$global_GameCardGameOptions.createInstance = function() {
-		return $global_GameCardGameOptions.$ctor();
-	};
-	$global_GameCardGameOptions.$ctor = function() {
-		var $this = {};
-		$this.numberOfCards = 0;
-		$this.numberOfJokers = 0;
-		$this.size = null;
-		return $this;
-	};
 	////////////////////////////////////////////////////////////////////////////////
 	// global.GameCardGameTextAreaOptions
 	var $global_GameCardGameTextAreaOptions = function() {
@@ -2165,14 +2203,14 @@
 	};
 	$global_shuff.askQuestion = function(user, question, answers, cardGame) {
 		cardGame.emulating = false;
-		if (cardGame.answers.length - 1 > cardGame.answerIndex) {
+		if (cardGame.emulatedAnswers.length - 1 > cardGame.emulatedAnswerIndex) {
 			cardGame.emulating = true;
-			return cardGame.answers[cardGame.answerIndex++].value;
+			return cardGame.emulatedAnswers[cardGame.emulatedAnswerIndex++].value;
 			//todo .value
 		}
 		var m = new $global_CardGameQuestion(user, question, answers, cardGame);
 		var answer = Fiber.yield(new $global_FiberYieldResponse.$ctor2(0, m));
-		cardGame.answerIndex++;
+		cardGame.emulatedAnswerIndex++;
 		return (ss.isNullOrUndefined(answer) ? 0 : answer.value);
 	};
 	$global_shuff.declareWinner = function(user) {
@@ -2242,17 +2280,20 @@
 		this.name = ss.coalesce(options.name, 'TableSpace');
 		this.width = ((options.width === 0) ? 0 : options.width);
 		this.height = ((options.height === 0) ? 0 : options.height);
-		this.pile = options.pile || new $global_Pile(this.name);
 		//Rotate = options.Rotate == 0 ? 0 : options.Rotate;
 		this.visible = (!options.visible ? true : options.visible);
 		this.stackCards = (!options.stackCards ? false : options.stackCards);
-		this.drawCardsBent = (!options.drawCardsBent ? true : options.drawCardsBent);
 		this.sortOrder = options.sortOrder;
 		this.numberOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 		this.numberOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
 		this.resizeType = options.resizeType;
 		//Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
 		this.appearance = new $global_Appearance();
+	};
+	$global_TableSpace.prototype = {
+		applyPile: function(pile) {
+			this.pile = pile;
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// global.TableSpaceResizeType
@@ -2309,6 +2350,8 @@
 	ss.registerClass(global, 'global.CardGameTableSpaceOptions', $global_CardGameTableSpaceOptions);
 	ss.registerEnum(global, 'global.CardState', $global_CardState);
 	ss.registerEnum(global, 'global.CardType', $global_CardType);
+	ss.registerClass(global, 'global.DebugFiberYieldResponse', $global_DebugFiberYieldResponse);
+	ss.registerEnum(global, 'global.DebugFiberYieldResponseType', $global_DebugFiberYieldResponseType);
 	ss.registerClass(global, 'global.domUtils', $global_domUtils);
 	ss.registerClass(global, 'global.Effect$Bend', $global_Effect$Bend, $global_Effect);
 	ss.registerClass(global, 'global.Effect$Highlight', $global_Effect$Highlight, $global_Effect);
@@ -2317,7 +2360,6 @@
 	ss.registerEnum(global, 'global.EffectType', $global_EffectType);
 	ss.registerClass(global, 'global.FiberYieldResponse', $global_FiberYieldResponse);
 	ss.registerEnum(global, 'global.FiberYieldResponseType', $global_FiberYieldResponseType);
-	ss.registerClass(global, 'global.GameCardGameOptions', $global_GameCardGameOptions);
 	ss.registerClass(global, 'global.GameCardGameTextAreaOptions', $global_GameCardGameTextAreaOptions);
 	ss.registerClass(global, 'global.InternalStyle', $global_InternalStyle);
 	ss.registerEnum(global, 'global.Order', $global_Order);

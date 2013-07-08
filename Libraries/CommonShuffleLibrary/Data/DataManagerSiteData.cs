@@ -251,7 +251,9 @@ namespace CommonShuffleLibrary.Data
                                                                                     Spaces =
                                                                                         new List
                                                                                         <GameLayoutScenarioSpace>(),
-                                                                                    Effects =new List<GameLayoutScenarioEffect>(){},
+                                                                                    Effects =
+                                                                                        new List
+                                                                                        <GameLayoutScenarioEffect>() {},
                                                                                     Name = "Default",
                                                                                     NumberOfPlayers = 6,
                                                                                     ScreenSize = new IntPoint(1024, 768)
@@ -302,6 +304,19 @@ namespace CommonShuffleLibrary.Data
                     result(true);
 
                 });
+        }
+
+        public void Game_GetGamesByName(string gameName, Action<GameDataModel> action)
+        {
+
+            manager.client.Collection("Games",
+                (err, collection) =>
+                {
+
+                    var j = new {name = gameName};
+                    collection.FirstOrDefault<GameDataModel>(j, (a, b) => action(b));
+                });
+
         }
     }
 }

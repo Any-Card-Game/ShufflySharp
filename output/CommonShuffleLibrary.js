@@ -56,10 +56,10 @@ require('./NodeLibraries.js');
 		this.$subClient = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		this.$pubClient = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		this.$subClient.on('subscribe', function(channel, count) {
-			NodeLibraries.Common.Logging.Logger.log('subscribed: ' + channel + ' ' + count, 2);
+			NodeLibraries.Common.Logging.Logger.log('subscribed: ' + channel + ' ' + count, 'information');
 		});
 		this.$subClient.on('unsubscribe', function(channel1, count1) {
-			NodeLibraries.Common.Logging.Logger.log('unsubscribed: ' + channel1 + ' ' + count1, 2);
+			NodeLibraries.Common.Logging.Logger.log('unsubscribed: ' + channel1 + ' ' + count1, 'information');
 		});
 		this.$subClient.on('message', function(channel2, message) {
 			if (!!ss.isValue(someSubbed[channel2])) {
@@ -164,12 +164,12 @@ require('./NodeLibraries.js');
 		},
 		sendMessage: function(channel, eventChannel, user, content) {
 			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
-				NodeLibraries.Common.Logging.Logger.log('Cannot send message:' + channel + ' No Existy', 0);
-				NodeLibraries.Common.Logging.Logger.log('       ' + eventChannel + ' ' + JSON.stringify(content), 0);
+				NodeLibraries.Common.Logging.Logger.log('Cannot send message:' + channel + ' No Existy', 'error');
+				NodeLibraries.Common.Logging.Logger.log('       ' + eventChannel + ' ' + JSON.stringify(content), 'error');
 				return;
 			}
 			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			NodeLibraries.Common.Logging.Logger.log(ss.formatString('  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}', channel, this.name, user.toString(), eventChannel, content), 2);
+			NodeLibraries.Common.Logging.Logger.log(ss.formatString('  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}', channel, this.name, user, eventChannel, content), 'information');
 			pusher.message(channel, this.name, user, eventChannel, content);
 		}
 	};
@@ -207,7 +207,7 @@ require('./NodeLibraries.js');
 			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
 			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
 			if (CommonLibraries.Help.verbose) {
-				NodeLibraries.Common.Logging.Logger.log(channel + 'RPush ' + value, 2);
+				NodeLibraries.Common.Logging.Logger.log(channel + 'RPush ' + value, 'information');
 			}
 			this.$client1.rpush(channel, value);
 			//todo:maybe sanitize
@@ -235,10 +235,10 @@ require('./NodeLibraries.js');
 		cycle: function(channel) {
 			this.$client1.blpop([channel, 10], ss.mkdel(this, function(caller, dtj) {
 				var data = ss.cast(dtj, Array);
-				NodeLibraries.Common.Logging.Logger.log(channel + ' BLPop Data: ' + data, 2);
+				NodeLibraries.Common.Logging.Logger.log(channel + ' BLPop Data: ' + data, 'information');
 				if (ss.isValue(dtj)) {
 					if (CommonLibraries.Help.verbose) {
-						NodeLibraries.Common.Logging.Logger.log(data[1], 2);
+						NodeLibraries.Common.Logging.Logger.log(data[1], 'information');
 					}
 					var dt = JSON.parse(data[1]);
 					this.get_callback()(dt.name, dt.user, dt.eventChannel, dt.content);
@@ -270,7 +270,7 @@ require('./NodeLibraries.js');
 				query['$push'] = { messages: messageModel };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
+						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 'error');
 					}
 					ss.add(roomData.messages, messageModel);
 					complete(messageModel);
@@ -283,7 +283,7 @@ require('./NodeLibraries.js');
 				query['$push'] = { users: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
+						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 'error');
 					}
 					ss.add(roomData.users, user);
 					complete(roomData);
@@ -296,7 +296,7 @@ require('./NodeLibraries.js');
 				query['$pop'] = { users: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
+						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 'error');
 					}
 					ss.remove(roomData.users, user);
 					complete(roomData);
@@ -409,7 +409,7 @@ require('./NodeLibraries.js');
 				query['$push'] = { players: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
+						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 'error');
 					}
 					ss.add(room.players, user);
 					complete(room);
@@ -422,7 +422,7 @@ require('./NodeLibraries.js');
 				query['$pop'] = { players: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
+						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 'error');
 					}
 					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 						var userLogicModel = room.players[$t1];
@@ -446,7 +446,7 @@ require('./NodeLibraries.js');
 				query['$set'] = { chatServer: chatServerIndex };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room.id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 0);
+						NodeLibraries.Common.Logging.Logger.log('Data Error: ' + err2, 'error');
 					}
 					room.chatServer = chatServerIndex;
 					complete(room);
@@ -523,6 +523,14 @@ require('./NodeLibraries.js');
 				collection.save($t1);
 				result(true);
 			});
+		},
+		game_GetGamesByName: function(gameName, action) {
+			this.$manager.client.collection('Games', function(err, collection) {
+				var j = { name: gameName };
+				$CommonShuffleLibrary_Data_MongoHelper.firstOrDefault(DataModels.SiteManagerModels.Game.GameDataModel).call(null, collection, j, function(a, b) {
+					action(b);
+				});
+			});
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -534,6 +542,15 @@ require('./NodeLibraries.js');
 			collection.find(query, function(a, b) {
 				b.toArray(function(c, d) {
 					result(a, d);
+				});
+			});
+		};
+	};
+	$CommonShuffleLibrary_Data_MongoHelper.firstOrDefault = function(T) {
+		return function(collection, query, result) {
+			collection.find(query, function(a, b) {
+				b.toArray(function(c, d) {
+					result(a, d[0]);
 				});
 			});
 		};

@@ -24,7 +24,7 @@ namespace ServerManager
                         break;
                     case "d":
                     case "debug":
-                        new DebugServer.DebugServer();
+                        new DebugGameServer.DebugGameServer();
                         break;
                     case "c":
                     case "chat":

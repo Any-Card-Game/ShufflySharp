@@ -68,26 +68,14 @@ namespace ServerManager.GameServer
         public void SendGameOver(GameRoom room)
         {
             SendMessageToAll(room, "Area.Game.GameOver", "a");
-
-            if (room.DebuggingSender != null)
-                qManager.SendMessage(room.DebuggingSender.Gateway, "Area.Debug.GameOver", room.DebuggingSender, new object());
+             
         }
 
         public void SendUpdateState(GameRoom room)
         {
             SendMessageToAll(room, "Area.Game.UpdateState", new Compressor().CompressText(Json.Stringify(room.Game.CardGame.CleanUp())));
         }
-
-        public void SendDebugLog(GameRoom room, GameAnswerModel ganswer)
-        {
-            qManager.SendMessage(room.DebuggingSender.Gateway, "Area.Debug.Log", room.DebuggingSender, ganswer);
-        }
-
-        public void SendDebugBreak(GameRoom room, GameAnswerModel ganswer)
-        {
-            qManager.SendMessage(room.DebuggingSender.Gateway, "Area.Debug.Break", room.DebuggingSender, ganswer);
-        }
-
+         
         public void SendAskQuestion(UserLogicModel user, GameSendAnswerModel gameAnswer)
         {
             qManager.SendMessage(user.Gateway, "Area.Game.AskQuestion", user, gameAnswer.CleanUp());

@@ -20,9 +20,7 @@ namespace global
         [IntrinsicProperty]
         public bool Visible { get; set; }
         [IntrinsicProperty]
-        public bool StackCards { get; set; }
-        [IntrinsicProperty]
-        public bool DrawCardsBent { get; set; }
+        public bool StackCards { get; set; } 
         [IntrinsicProperty]
         public string Name { get; set; }
         [IntrinsicProperty]

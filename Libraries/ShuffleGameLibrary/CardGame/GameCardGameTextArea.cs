@@ -7,9 +7,9 @@ namespace global
         [IntrinsicProperty]
         public string Name { get; set; }
         [IntrinsicProperty]
-        public int X { get; set; }
+        public double X { get; set; }
         [IntrinsicProperty]
-        public int Y { get; set; }
+        public double Y { get; set; }
         [IntrinsicProperty]
         public string Text { get; set; }
 

@@ -75,10 +75,11 @@
     <Compile Include="CardGame\CardGameTableSpaceOptions.cs" />
     <Compile Include="CardGame\CardGameUser.cs" />
     <Compile Include="CardGame\GameCardGame.cs" />
-    <Compile Include="CardGame\GameCardGameOptions.cs" />
     <Compile Include="CardGame\GameCardGameTextArea.cs" />
     <Compile Include="CardGame\GameCardGameTextAreaOptions.cs" />
     <Compile Include="CardGame\TableSpaceResizeType.cs" />
+    <Compile Include="DebugFiberYieldResponse.cs" />
+    <Compile Include="DebugFiberYieldResponseType.cs" />
     <Compile Include="DomUtils.cs" />
     <Compile Include="FiberYieldResponse.cs" />
     <Compile Include="FiberYieldResponseType.cs" />

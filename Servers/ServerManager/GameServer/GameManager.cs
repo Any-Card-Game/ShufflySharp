@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using CommonLibraries;
 using CommonShuffleLibrary;
+using DataModels.SiteManagerModels.Game;
 using Models;
 using Models.GameManagerModels;
 using NodeLibraries.Common.Logging;
@@ -9,8 +11,6 @@ using NodeLibraries.Fibers;
 using NodeLibraries.NodeJS;
 using ServerManager.GameServer.Models;
 using global;
-using DataManager = CommonShuffleLibrary.DataManager;
-using FiberYieldResponse = ServerManager.GameServer.Models.FiberYieldResponse;
 namespace ServerManager.GameServer
 {
     public class GameManager
@@ -44,9 +44,12 @@ namespace ServerManager.GameServer
 
         private void UserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            foreach (var gameRoom in rooms) {
-                foreach (var player in gameRoom.Players) {
-                    if (player.UserName == user.UserName) {
+            foreach (var gameRoom in rooms)
+            {
+                foreach (var player in gameRoom.Players)
+                {
+                    if (player.UserName == user.UserName)
+                    {
                         Console.Log("22User Left: " + player.UserName);
                         gameRoom.PlayerLeave(player);
                         break;
@@ -57,9 +60,12 @@ namespace ServerManager.GameServer
 
         private void UserLeave(UserLogicModel user, UserLeaveModel data)
         {
-            foreach (var gameRoom in rooms) {
-                foreach (var player in gameRoom.Players) {
-                    if (player.UserName == user.UserName) {
+            foreach (var gameRoom in rooms)
+            {
+                foreach (var player in gameRoom.Players)
+                {
+                    if (player.UserName == user.UserName)
+                    {
                         Console.Log("11User Left: " + player.UserName);
 
                         gameRoom.PlayerLeave(player);
@@ -71,38 +77,52 @@ namespace ServerManager.GameServer
 
         public void CreateGame(GameCreateRequestModel data)
         {
+
             Logger.Log("--game created ", LogLevel.DebugInformation);
-            GameRoom room;
-            rooms.Add(room = new GameRoom());
-            room.MaxUsers = data.Players.Count; //todo idk
-            room.GameType = data.GameType;
-            room.Started = false;
-            room.Players.AddRange(data.Players);
+            dataManager.SiteData.Game_GetGamesByName(data.GameType, (game) =>
+                                                                    {
+                                                                        if (game == null)
+                                                                        {
+                                                                            Logger.Log("--game not found " + game.Name, LogLevel.DebugInformation);
+                                                                            return;
+                                                                        }
+                                                                        Logger.Log("--game found " + game.Name, LogLevel.DebugInformation);
 
-            GameObject gameObject;
-            if (cachedGames.ContainsKey(room.GameType))
-                gameObject = cachedGames[room.GameType];
-            else
-                gameObject = cachedGames[room.GameType] = Global.Require<GameObject>(string.Format("./Games/{0}/app.js", room.GameType));
+                                                                        GameRoom room;
+                                                                        rooms.Add(room = new GameRoom());
+                                                                        room.MaxUsers = data.Players.Count; //todo idk
+                                                                        room.GameType = data.GameType;
+                                                                        room.Started = false;
+                                                                        room.Players.AddRange(data.Players);
 
-            room.Fiber = CreateFiber(room, gameObject, true);
-            room.Unwind = players => {
-                              gameData.FinishedGames++;
-                              Logger.Log("--game closed", LogLevel.DebugInformation);
-                          };
-            room.PlayerLeave += (player) => {
-                                    //todo laeve player api in the game
-                                    ////i think an action that it calls
+                                                                        GameObject gameObject;
+                                                                        if (cachedGames.ContainsKey(room.GameType))
+                                                                            gameObject = cachedGames[room.GameType];
+                                                                        else
+                                                                            gameObject = cachedGames[room.GameType] = Global.Require<GameObject>(string.Format("./Games/{0}/app.js", room.GameType));//todo game.GameCode.Code
 
-                                    room.Players.Remove(player);
-                                    room.PlayersLeft.Add(player);
-                                };
+                                                                        room.Fiber = CreateFiber(room, gameObject, true, game);
+                                                                        room.Unwind = players =>
+                                                                        {
+                                                                            gameData.FinishedGames++;
+                                                                            Logger.Log("--game closed", LogLevel.DebugInformation);
+                                                                        };
+                                                                        room.PlayerLeave += (player) =>
+                                                                        {
+                                                                            //todo laeve player api in the game
+                                                                            ////i think an action that it calls
 
-            foreach (var userLogicModel in room.Players) {
-                myServerManager.RegisterGameServer(userLogicModel);
-            }
+                                                                            room.Players.Remove(player);
+                                                                            room.PlayersLeft.Add(player);
+                                                                        };
 
-            startGame(room);
+                                                                        foreach (var userLogicModel in room.Players)
+                                                                        {
+                                                                            myServerManager.RegisterGameServer(userLogicModel);
+                                                                        }
+
+                                                                        startGame(room);
+                                                                    });
         }
 
         private void startGame(GameRoom room)
@@ -124,7 +144,8 @@ namespace ServerManager.GameServer
         {
             var ind = 0;
 
-            for (ind = 0; answerQueue.Count > 0 && ind < QUEUEPERTICK; ind++) {
+            for (ind = 0; answerQueue.Count > 0 && ind < QUEUEPERTICK; ind++)
+            {
                 Logger.Log("-- w pop", LogLevel.Information);
 
                 var arg2 = answerQueue[0];
@@ -132,7 +153,8 @@ namespace ServerManager.GameServer
                 var data = arg2;
 
                 var room = getRoomByPlayer(arg2.Item1.UserName);
-                if (room == null) {
+                if (room == null)
+                {
                     Logger.Log("Room not found for user: " + arg2.Item1.UserName, LogLevel.Error);
                     continue;
                     throw new Exception("idk");
@@ -140,7 +162,7 @@ namespace ServerManager.GameServer
 
                 var dict = new CardGameAnswer();
                 dict.Value = data.Item2.Answer;
-                room.Answers.Add(dict);
+                room.EmulatedAnswers.Add(dict);
                 var answ = room.Fiber.Run<FiberYieldResponse>(dict);
 
                 //dataManager.GameData.Insert(new GameInfoModel() {GameName = room.Name, AnswerIndex = answ.Contents});
@@ -149,52 +171,91 @@ namespace ServerManager.GameServer
 
             if (ind == 0)
                 skipped__++;
-            else {
+            else
+            {
                 total__ += ind;
-                if (( total__ + skipped__ ) % 20 == 0) {
+                if ((total__ + skipped__) % 20 == 0)
+                {
                     var dt = new DateTime();
                     Logger.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}",
                                              myServerManager.GameServerIndex.Substring(0, 19),
-                                             ( total__ + skipped__ ),
+                                             (total__ + skipped__),
                                              ind,
                                              total__,
                                              answerQueue.Count,
                                              rooms.Count,
-                                             ( gameData.TotalQuestionsAnswered / ( ( dt.GetTime() - startTime.GetTime() ) / 1000d ) )),
+                                             (gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d))),
                                LogLevel.DebugInformation);
                 }
             }
         }
 
-        private Fiber<List<UserLogicModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating)
+        private Fiber<List<UserLogicModel>> CreateFiber(GameRoom room, GameObject gameObject, bool emulating, GameDataModel game)
         {
-            return new Fiber<List<UserLogicModel>>(players => {
-                                                       if (players == null || players.Count == 0) return true;
-                                                       room.Players = players;
-                                                       Logger.Log("game started", LogLevel.Information);
-                                                       GameObject sev = null;
+            return new Fiber<List<UserLogicModel>>(players =>
+            {
+                if (players == null || players.Count == 0) return true;
+                room.Players = players;
+                Logger.Log("game started", LogLevel.Information);
+                GameObject sev = null;
 
-                                                       Script.Eval("sev = new gameObject();");
-                                                       room.PlayersLeft = new List<UserLogicModel>();
-                                                       sev.CardGame.Emulating = emulating;
-                                                       room.Game = sev;
-                                                       sev.CardGame.SetAnswers(room.Answers);
-                                                       sev.CardGame.SetPlayers(players);
-                                                       gameData.TotalGames++;
-                                                       gameData.TotalPlayers += players.Count;
-                                                       sev.CardGame.AnswerIndex = 0;
-                                                       sev.Constructor();
-                                                       sev.RunGame();
-                                                       Logger.Log("Doneski", LogLevel.DebugInformation);
+                Script.Eval("sev = new gameObject();");
+                room.PlayersLeft = new List<UserLogicModel>();
+                sev.CardGame.Emulating = emulating;
+                room.Game = sev;
+                sev.CardGame.SetEmulatedAnswers(room.EmulatedAnswers);
+                sev.CardGame.SetPlayers(players);
+                sev.CardGame.Size = new Size(game.GameLayout.Width, game.GameLayout.Height);
 
-                                                       room.Unwind(players);
-                                                       return true;
-                                                   });
+                foreach (var gameTextModel in game.GameLayout.Texts)
+                {
+                    sev.CardGame.TextAreas.Add(new GameCardGameTextArea(new GameCardGameTextAreaOptions()
+                    {
+                        X = gameTextModel.Left,
+                        Y = gameTextModel.Top, 
+                        Name = gameTextModel.Name,
+                        Text = gameTextModel.Text,
+
+                    }));
+                }
+
+
+                foreach (var gameSpaceModel in game.GameLayout.Spaces)
+                {
+                    sev.CardGame.Spaces.Add(new CardGameTableSpace(new CardGameTableSpaceOptions()
+                    {
+                        X = gameSpaceModel.Left,
+                        Y = gameSpaceModel.Top,
+                        Height = gameSpaceModel.Height,
+                        Width = gameSpaceModel.Width,
+                        Name = gameSpaceModel.Name,
+                        Vertical = gameSpaceModel.Vertical,
+
+                    }));
+                }
+
+                gameData.TotalGames++;
+                gameData.TotalPlayers += players.Count;
+                sev.CardGame.EmulatedAnswerIndex = 0;
+                
+                //todo to data
+                sev.CardGame.NumberOfCards = 52;
+                sev.CardGame.NumberOfJokers = 0;
+
+                sev.CardGame.ConfigurationCompleted();
+                sev.Constructor();
+                sev.RunGame();
+                Logger.Log("Doneski", LogLevel.DebugInformation);
+
+                room.Unwind(players);
+                return true;
+            });
         }
 
         private void processGameResponse(GameRoom room, FiberYieldResponse response)
         {
-            if (response == null) {
+            if (response == null)
+            {
                 Logger.Log("game request over", LogLevel.DebugInformation);
 
                 myServerManager.SendGameOver(room);
@@ -204,11 +265,11 @@ namespace ServerManager.GameServer
                 return;
             }
 
-            switch (response.Type) {
+            switch (response.Type)
+            {
                 case FiberYieldResponseType.AskQuestion:
                     askPlayerQuestion(room, response);
                     break;
-
                 case FiberYieldResponseType.PlayersLeft:
                     didPlayersLeave(room, response);
                     break;
@@ -216,10 +277,10 @@ namespace ServerManager.GameServer
                     gameOver(room);
                     break;
                 case FiberYieldResponseType.Log:
-                    logGameConsoleLine(room, response);
+                    gameNoop(room);
                     break;
                 case FiberYieldResponseType.Break:
-                    breakGameExecution(room, response);
+                    gameNoop(room);
                     break;
             }
         }
@@ -231,31 +292,12 @@ namespace ServerManager.GameServer
             room.PlayersLeft.Clear();
         }
 
-        private void breakGameExecution(GameRoom room, FiberYieldResponse response)
-        {
-            if (!room.Debuggable) {
-                var answ3 = room.Fiber.Run<FiberYieldResponse>();
-                processGameResponse(room, answ3);
-                return;
-            }
-            if (!room.Game.CardGame.Emulating) {
-                var ganswer = new GameAnswerModel(response.LineNumber + 2, 0);
 
-                myServerManager.SendDebugBreak(room, ganswer);
-            }
-        }
-
-        private void logGameConsoleLine(GameRoom room, FiberYieldResponse answer)
+        private void gameNoop(GameRoom room)
         {
             var answ2 = room.Fiber.Run<FiberYieldResponse>();
             processGameResponse(room, answ2);
 
-            if (!room.Game.CardGame.Emulating && room.Debuggable) {
-                //Logger.Log(gameData.toString());
-                var ganswer = new GameAnswerModel(0, answer.Contents);
-
-                myServerManager.SendDebugLog(room, ganswer);
-            }
         }
 
         private void gameOver(GameRoom room)
@@ -274,9 +316,10 @@ namespace ServerManager.GameServer
         {
             gameData.TotalQuestionsAnswered++;
 
-            var answ = answer.question;
+            var answ = answer.Question;
 
-            if (answ == null) {
+            if (answ == null)
+            {
                 Logger.Log("game question over", LogLevel.DebugInformation);
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
@@ -292,16 +335,18 @@ namespace ServerManager.GameServer
             //  Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
         }
 
-        private void askQuestion(GameQuestionAnswerModel answ, GameRoom room)
+        private void askQuestion(CardGameQuestion answ, GameRoom room)
         {
             var user = getPlayerByUsername(room, answ.User.UserName);
             myServerManager.SendAskQuestion(user, new GameSendAnswerModel(answ.Question, answ.Answers));
             myServerManager.SendUpdateState(room);
 
-            if (verbose) {
+            if (verbose)
+            {
                 Logger.Log(answ.User.UserName + ": " + answ.Question + "   ", LogLevel.Information);
                 var ind = 0;
-                foreach (var answer in answ.Answers) {
+                foreach (var answer in answ.Answers)
+                {
                     Logger.Log("     " + ind++ + ": " + answer, LogLevel.Information);
                 }
             }
@@ -309,7 +354,8 @@ namespace ServerManager.GameServer
 
         private UserLogicModel getPlayerByUsername(GameRoom room, string userName)
         {
-            foreach (var player in room.Players) {
+            foreach (var player in room.Players)
+            {
                 if (player.UserName == userName)
                     return player;
             }
@@ -318,8 +364,10 @@ namespace ServerManager.GameServer
 
         private GameRoom getRoomByPlayer(string userName)
         {
-            foreach (var gameRoom in rooms) {
-                foreach (var userLogicModel in gameRoom.Players) {
+            foreach (var gameRoom in rooms)
+            {
+                foreach (var userLogicModel in gameRoom.Players)
+                {
                     if (userLogicModel.UserName == userName)
                         return gameRoom;
                 }
@@ -327,36 +375,5 @@ namespace ServerManager.GameServer
             return null;
         }
 
-        /*
-             
-
-qManager.addChannel('Area.Game.GetRooms', function (sender, data) {
-socket.emit('Area.Game.GetRoomsResponse', JSON.parse(JSON.stringify(rooms, sanitize)));
-});
-
-qManager.addChannel('Area.Debug.Continue', function (sender, data) {
-var room = socket.room;
-var answ = room.fiber.run(null);
-processGameResponse(room, answ);
-});
-
-
-qManager.addChannel('Area.Debug.PushNewSource', function (sender, data) {
-var room = socket.room;
-
-var module = {};
-eval(applyBreakpoints(data.source, data.breakPoints));
-var sevens = module.exports;
-
-room.fiber = createFiber(room, sevens, true);
-var answ = room.fiber.run(room.players);
-processGameResponse(room, answ);
-
-});
-qManager.addChannel('Area.Debug.VariableLookup.Request', function (sender, data) {
-var room = socket.room;
-var answ = room.fiber.run({ variableLookup: data.variableName });
-if (!answ.type == 'variableLookup')
-         */
     }
 }

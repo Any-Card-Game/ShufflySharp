@@ -89,19 +89,20 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	$NodeLibraries_Common_Logging_Logger.start = function(key) {
 		console.log(key + ' - ' + $NodeLibraries_Common_Logging_Common.longDate());
 		$NodeLibraries_Common_Logging_Logger.$key = key + ' - ' + $NodeLibraries_Common_Logging_Common.longDate() + '.txt';
-		$NodeLibraries_Common_Logging_Logger.log('Start: ' + key, 2);
+		$NodeLibraries_Common_Logging_Logger.log('Start: ' + key, 'information');
 	};
 	$NodeLibraries_Common_Logging_Logger.log = function(item, level) {
+		item = ss.formatString('{0} - {1}', $NodeLibraries_Common_Logging_Common.shortDate(), item);
 		switch (level) {
-			case 0: {
+			case 'error': {
 				console.log(item);
 				break;
 			}
-			case 1: {
+			case 'debugInformation': {
 				console.log(item);
 				break;
 			}
-			case 2: {
+			case 'information': {
 				console.log(item);
 				break;
 			}
@@ -117,7 +118,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	// NodeLibraries.Common.Logging.LogLevel
 	var $NodeLibraries_Common_Logging_LogLevel = function() {
 	};
-	$NodeLibraries_Common_Logging_LogLevel.prototype = { error: 0, debugInformation: 1, information: 2 };
+	$NodeLibraries_Common_Logging_LogLevel.prototype = { error: 'error', debugInformation: 'debugInformation', information: 'information' };
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.ProgressBar
 	var $NodeLibraries_Common_Logging_ProgressBar = function(charm, minValue, maxValue) {

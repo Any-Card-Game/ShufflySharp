@@ -93,7 +93,8 @@ namespace Client.Controllers
             myCreateUIService.CreateSingleton<GameCodeScope>("GameCodeEditor", (scope, elem) =>
                                                                         {
                                                                             scope.Model=new GameCodeScopeModel();
-                                                                            scope.Model.Code = myScope.Model.Game.GameCode;
+                                                                            scope.Model.Game = myScope.Model.Game;
+                                                                            scope.Model.Selection = myScope.Model.Selection;
 
                                                                         });
         }

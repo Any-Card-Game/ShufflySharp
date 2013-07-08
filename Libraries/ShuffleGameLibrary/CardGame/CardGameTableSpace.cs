@@ -44,17 +44,20 @@ namespace global
             Name = options.Name ?? "TableSpace";
             Width = options.Width == 0 ? 0 : options.Width;
             Height = options.Height == 0 ? 0 : options.Height;
-            Pile = options.Pile??new CardGamePile(Name);
             //Rotate = options.Rotate == 0 ? 0 : options.Rotate;
             Visible = !options.Visible ? true : options.Visible;
             StackCards = !options.StackCards ? false : options.StackCards;
-            DrawCardsBent = !options.DrawCardsBent ? true : options.DrawCardsBent;
             SortOrder = options.SortOrder;
             NumberOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
             NumberOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
             ResizeType = options.ResizeType;
             //Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
             Appearance = new CardGameAppearance();
+        }
+
+        public void ApplyPile(CardGamePile pile)
+        {
+            Pile = pile;
         }
     }
     //[NamedValues]todo:::

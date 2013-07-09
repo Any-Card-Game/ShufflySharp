@@ -25,6 +25,8 @@ namespace Client.Scope.Controller
         public Action<GameTextModel> RemoveText { get; set; }
         public Action OpenScenarios { get; set; }
         public Action ToggleGrid { get; set; }
+        public Action ToggleCards { get; set; }
+        
     }
     [Serializable]
     public class GameEditorSelectionScopeModel : GameUpdater
@@ -42,6 +44,7 @@ namespace Client.Scope.Controller
         public SelectedGameScenarioPiece SelectedScenarioPiece { get; set; }
         public GameLayoutScenario SelectedScenario { get; set; }
         public bool ShowGrid { get; set; }
+        public bool ShowCards { get; set; }
     }
     [Serializable]
     public class SelectedScenarioPieces

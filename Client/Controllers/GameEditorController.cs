@@ -6,8 +6,10 @@ using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
 using Models;
+using Models.DebugGameManagerModels;
+using Models.GameManagerModels;
 using Models.SiteManagerModels;
-using Models.SiteManagerModels.Game; 
+using Models.SiteManagerModels.Game;
 namespace Client.Controllers
 {
     internal class GameEditorController
@@ -15,14 +17,16 @@ namespace Client.Controllers
         private readonly GameEditorScope myScope;
         private readonly UIManagerService myUIManager;
         private readonly ClientSiteManagerService myClientSiteManagerService;
+        private readonly ClientDebugManagerService clientDebugManagerService;
         private readonly MessageService myMessageService;
         private readonly CreateUIService myCreateUIService;
 
-        public GameEditorController(GameEditorScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, MessageService messageService,CreateUIService createUIService)
+        public GameEditorController(GameEditorScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, ClientDebugManagerService  clientDebugManagerService, MessageService messageService, CreateUIService createUIService)
         {
             myScope = scope;
             myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
+            this.clientDebugManagerService = clientDebugManagerService;
             myMessageService = messageService;
             myCreateUIService = createUIService;
             myScope.Model = new GameEditorModel();
@@ -30,11 +34,16 @@ namespace Client.Controllers
             myScope.Model.OpenEffects = OpenEffectsFn;
             myScope.Model.OpenLayout = OpenLayoutFn;
             myScope.Model.OpenTest = OpenTestFn;
-            myScope.Model.Selection = new GameEditorSelectionScopeModel() { ShowGrid = true ,SelectedScenarioPieces = new SelectedScenarioPieces()
-                                                                                                                      {
-                                                                                                                          Piece = SelectedScenarioPieceType.None
-                                                                                                                      
-                                                                                                                      }};
+            myScope.Model.Selection = new GameEditorSelectionScopeModel()
+                                      {
+                                          ShowGrid = true,
+                                          ShowCards = true,
+                                          SelectedScenarioPieces = new SelectedScenarioPieces()
+                                                                   {
+                                                                       Piece = SelectedScenarioPieceType.None
+
+                                                                   }
+                                      };
 
             myScope.Visible = false;
             uiManager.OpenGameEditor += (game) =>
@@ -50,7 +59,8 @@ namespace Client.Controllers
                                    //todo destroy spawned
                                };
             myScope.watch("model.game",
-                          () => {
+                          () =>
+                          {
                               myScope.Model.UpdateStatus = UpdateStatusType.Dirty;
                           },
                           true);
@@ -63,6 +73,9 @@ namespace Client.Controllers
 
         private void OpenTestFn()
         {
+
+            myCreateUIService.Create("DebugGameUI");
+            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));  
         }
 
         private void OpenLayoutFn()
@@ -80,7 +93,7 @@ namespace Client.Controllers
 
             myCreateUIService.CreateSingleton<GameEffectsEditorScope>("GameEffectsEditor", (scope, elem) =>
                                                                                            {
-                                                                                               scope.Model =new GameEffectsEditorScopeModel();
+                                                                                               scope.Model = new GameEffectsEditorScopeModel();
                                                                                                scope.Model.Game = myScope.Model.Game;
                                                                                                scope.Model.Selection = myScope.Model.Selection;
 
@@ -92,7 +105,7 @@ namespace Client.Controllers
         {
             myCreateUIService.CreateSingleton<GameCodeScope>("GameCodeEditor", (scope, elem) =>
                                                                         {
-                                                                            scope.Model=new GameCodeScopeModel();
+                                                                            scope.Model = new GameCodeScopeModel();
                                                                             scope.Model.Game = myScope.Model.Game;
                                                                             scope.Model.Selection = myScope.Model.Selection;
 
@@ -109,7 +122,7 @@ namespace Client.Controllers
         private void UpdateGameFn()
         {
             myScope.Model.UpdateStatus = UpdateStatusType.Syncing;
-        
+
             myClientSiteManagerService.DeveloperUpdateGame(myScope.Model.Game);
         }
     }

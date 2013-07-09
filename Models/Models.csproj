@@ -43,7 +43,7 @@
     <Compile Include="ChatManagerModels\RegisterChatChannelModel.cs" />
     <Compile Include="ChatManagerModels\SendChatMessageModel.cs" />
     <Compile Include="ClientInformation.cs" />
-    <Compile Include="DebugGameManagerModels\DebugGameCreateRequestModel.cs" />
+    <Compile Include="DebugGameManagerModels\CreateDebugGameRequest.cs" />
     <Compile Include="DebugGameManagerModels\DebugCreateGameRequestModel.cs" />
     <Compile Include="DebugGameManagerModels\DebuggerJoinRequestModel.cs" />
     <Compile Include="DebugGameManagerModels\DebugGameAnswerModel.cs" />
@@ -51,7 +51,6 @@
     <Compile Include="DebugGameManagerModels\DebugGameRoomModel.cs" />
     <Compile Include="DebugGameManagerModels\DebugGameSendAnswerModel.cs" />
     <Compile Include="DebugGameManagerModels\DebugJoinGameRequestModel.cs" />
-    <Compile Include="DebugGameManagerModels\DebugStartGameRequestModel.cs" />
     <Compile Include="GameManagerModels\DebugCreateGameRequestModel.cs" />
     <Compile Include="GatewayLoginMessageModel.cs" />
     <Compile Include="GatewayMessageModel.cs" />

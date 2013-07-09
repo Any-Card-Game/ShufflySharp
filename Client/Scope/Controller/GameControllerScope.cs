@@ -13,7 +13,19 @@ namespace Client.Scope.Controller
         [IntrinsicProperty]
         public Action MoveCard { get; set; }
         [IntrinsicProperty]
-        public Action AnimateCard { get; set; } 
+        public Action AnimateCard { get; set; }
+
+    }
+    public class DebugGameControllerScope : BaseScope
+    {
+        [IntrinsicProperty]
+        public GameCardGame MainArea { get; set; }
+        [IntrinsicProperty]
+        public Point Scale { get; set; }
+        [IntrinsicProperty]
+        public Action MoveCard { get; set; }
+        [IntrinsicProperty]
+        public Action AnimateCard { get; set; }
 
     }
 }

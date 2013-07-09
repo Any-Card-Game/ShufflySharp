@@ -74,8 +74,8 @@ namespace Client.Controllers
 
         private void OnOnGetGamesByUserReceivedFn(UserModel user, GetGamesByUserResponse response)
         {
-            myScope.Model.Games =  response.Games;
-            myScope.Model.SelectedGame = myScope.Model.Games[0];
+            myScope.Model.Games = response.Games;
+            //myScope.Model.SelectedGame = myScope.Model.Games[0];
             myScope.Apply();
 
         }

@@ -226,6 +226,10 @@ namespace Build
                     continue;
                 File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
 
+                if (!Directory.Exists(@"C:\code\node\games\"+game))
+                    Directory.CreateDirectory(@"C:\code\node\games\" + game);
+                File.WriteAllText(@"C:\code\node\games\" + game + @"\app.js", File.ReadAllText(to + @"\app.js"));
+
 #if FTP
 
                 Console.WriteLine("server ftp start ");

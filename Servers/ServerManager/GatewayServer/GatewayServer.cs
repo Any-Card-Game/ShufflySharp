@@ -110,10 +110,7 @@ namespace ServerManager.GatewayServer
                                                     break;
                                                 case "Debug":
                                                     channel = user.CurrentDebugServer ?? "DebugServer";
-                                                    break;
-                                                case "Debug2":
-                                                    channel = "DebugServer";
-                                                    break;
+                                                    break; 
                                                 case "Chat":
                                                     channel = user.CurrentChatServer ?? "ChatServer";
                                                     break;
@@ -207,6 +204,19 @@ namespace ServerManager.GatewayServer
             {
                 Logger.Log("Game Server UnRegistered", LogLevel.Information);
                 user.CurrentGameServer = null;
+                return false;
+            }
+
+            if (eventChannel == "Area.Debug.RegisterServer")
+            {
+                Logger.Log(string.Format("Debug Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
+                user.CurrentDebugServer= ((RegisterServerModel)content).Server;
+                return false;
+            }
+            if (eventChannel == "Area.Debug.UnregisterServer")
+            {
+                Logger.Log("Debug Server UnRegistered", LogLevel.Information);
+                user.CurrentDebugServer = null;
                 return false;
             }
             return true;

@@ -47,6 +47,7 @@ namespace global
             //Rotate = options.Rotate == 0 ? 0 : options.Rotate;
             Visible = !options.Visible ? true : options.Visible;
             StackCards = !options.StackCards ? false : options.StackCards;
+            Pile=new CardGamePile(Name+"Pile");
             SortOrder = options.SortOrder;
             NumberOfCardsHorizontal = options.NumerOfCardsHorizontal == 0 ? 1 : options.NumerOfCardsHorizontal;
             NumberOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;

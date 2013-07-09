@@ -34,10 +34,10 @@ namespace Client.Controllers
             myclientSiteManagerService.OnLogin += OnLoginFn;
             myclientSiteManagerService.OnUserCreate += OnUserCreateFn;
 
-            myScope.Model.Username = "dested1";
+           /* myScope.Model.Username = "dested1";
             myScope.Model.Password = "d";
 
-            Window.SetTimeout(LoginAccountFn, 1000);
+            Window.SetTimeout(LoginAccountFn, 1000);*/
 
         }
 

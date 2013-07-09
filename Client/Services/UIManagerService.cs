@@ -30,7 +30,7 @@ namespace Client.Services
         [IntrinsicProperty]
         public Action<GameModel> OpenGameEditor { get; set; }
 
-        public UIManagerService(ClientGameManagerService clientGameManagerService)
+        public UIManagerService( )
         { 
 
             ClientInfo = new ClientInformation();

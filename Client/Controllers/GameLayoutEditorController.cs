@@ -31,6 +31,14 @@ namespace Client.Controllers
             myCreateUIService = createUIService;
             myScope.Visible = true;
             myScope.Model.ToggleGrid = ToggleGridFn;
+            myScope.Model.ToggleCards = ToggleCardsFn;
+            myScope.Model.AddText = AddTextFn;
+            myScope.Model.AddArea = AddAreaFn;
+            myScope.Model.AddSpace = AddSpaceFn;
+            myScope.Model.RemoveArea = RemoveAreaFn;
+            myScope.Model.RemoveSpace = RemoveSpaceFn;
+            myScope.Model.RemoveText = RemoveTextFn;
+            myScope.Model.OpenScenarios = OpenScenariosFn;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
             myScope.watch("model.selection.selectedSpace", () =>
                                                  {
@@ -55,19 +63,7 @@ namespace Client.Controllers
                                                     myScope.Model.Selection.SelectedText = null;
                                                     myScope.Model.Selection.SelectedSpace = null;
                                                     myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Area;
-                                                });
-
-
-
-            myScope.Model.AddText = AddTextFn;
-            myScope.Model.AddArea = AddAreaFn;
-            myScope.Model.AddSpace = AddSpaceFn;
-            myScope.Model.RemoveArea = RemoveAreaFn;
-            myScope.Model.RemoveSpace = RemoveSpaceFn;
-            myScope.Model.RemoveText = RemoveTextFn;
-
-            myScope.Model.OpenScenarios = OpenScenariosFn;
-
+                                                }); 
             myScope.watch("model.game",
                        () =>
                        {
@@ -87,6 +83,11 @@ namespace Client.Controllers
             });
 
 
+        }
+
+        private void ToggleCardsFn()
+        {
+            myScope.Model.Selection.ShowCards = !myScope.Model.Selection.ShowCards;
         }
 
         private void ToggleGridFn()

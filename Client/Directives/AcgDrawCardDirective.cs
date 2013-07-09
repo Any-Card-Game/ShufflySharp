@@ -72,7 +72,7 @@ namespace Client.Directives
                 scope.CardStyle.left = (xx + (vertical ? scope.Space.Width * scale.X / 2 : 0));
                 scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height * scale.Y / 2 : 0));
 //                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
-                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
+//                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
                 scope.CardStyle.content = "\"\"";
 
 

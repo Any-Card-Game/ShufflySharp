@@ -14,4 +14,5 @@ namespace Models.GameManagerModels
             Answer = answer;
         }
     }
+
 }

@@ -103,8 +103,13 @@ namespace Client.Directives
                 //                element.me().rotate(scope.Space.Appearance.InnerStyle.Rotate);
                 scope.CardStyle.content = "\"\"";
 
+                scope.CardStyle.display = "block";
 
+                if (!scope.Model.Selection.ShowCards)
+                {
+                    scope.CardStyle.display = "none";
 
+                }
 
 
 
@@ -208,6 +213,7 @@ namespace Client.Directives
 
             scope.watch("space", redrawCard, true);
 
+            scope.watch("model.selection.showCards", redrawCard);
             scope.watch("model.selection.selectedScenario", redrawCard, true);
 
             scope.watch("model.selection.selectedEffect", redrawCard, true);

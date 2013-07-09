@@ -7,6 +7,7 @@
             Height: 
             <input type="number" ng-model="model.game.gameLayout.height" />
             <button ng-click="model.toggleGrid()">Toggle Grid</button>
+            <button ng-click="model.toggleCards()">Toggle Cards</button>
             Spaces:
             <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.spaces" bind="model.selection.selectedSpace">
                 {{item.name}}

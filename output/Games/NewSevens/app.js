@@ -11,92 +11,15 @@ module.exports = Sevens = function() {
         self.diamonds = new Pile('diamonds');
 
         self.cardGame.getSpaceByName('clubs').applyPile(self.clubs);
-        self.cardGame.getSpaceByName('spades').applyPile(self.clubs);
-        self.cardGame.getSpaceByName('hearts').applyPile(self.clubs);
-        self.cardGame.getSpaceByName('diamonds').applyPile(self.clubs);
+        self.cardGame.getSpaceByName('spades').applyPile(self.spades);
+        self.cardGame.getSpaceByName('hearts').applyPile(self.hearts);
+        self.cardGame.getSpaceByName('diamonds').applyPile(self.diamonds);
          
-    };
-    self.createUser = function(user, userIndex, text) {
-        var sp;
-        var tta;
-        //console.log("Create User " + userIndex);
-        user.userIndex = userIndex;
-        switch (userIndex) {
-        case 0:
-        case 1:
-        case 3:
-        case 4:
-            self.cardGame.spaces.push(sp = new TableSpace({
-                vertical: false,
-                visible: true,
-                stack: false,
-                name: 'User' + userIndex,
-                width: 3,
-                height: 0,
-            }));
-            self.cardGame.textAreas.push(tta = new TableTextArea({
-                name: 'Text' + userIndex,
-                text: text
-            }));
-            break;
-        case 2:
-        case 5:
-            var rotate = 0;
-            if (userIndex == 2) {
-                rotate = -90;
-            } else {
-                rotate = -90;
-            }
-            self.cardGame.spaces.push(sp = new TableSpace({
-                vertical: true,
-                visible: true,
-                stack: false,
-                name: 'User' + userIndex,
-                width: 0,
-                height: 3,
-            }));
-            sp.appearance.innerStyle.rotate = rotate;
+    }; 
 
-            self.cardGame.textAreas.push(tta = new TableTextArea({ name: 'Text' + userIndex, text: text }));
-            break;
-        }
-        sp.user = user;
-        sp.appearance.effects.push(new Effect$Bend({ degrees: userIndex > 2 ? -15 : 15 }));
+    self.runGame = function () {
+        debugger;
 
-        var space = sp;
-        switch (userIndex) {
-        case 0:
-            space.x = 4;
-            space.y = 2;
-            break;
-        case 1:
-            space.x = 9;
-            space.y = 2;
-            break;
-        case 2:
-            space.x = 13;
-            space.y = 5;
-            break;
-        case 3:
-            space.x = 9;
-            space.y = 12;
-            break;
-        case 4:
-            space.x = 4;
-            space.y = 12;
-            break;
-        case 5:
-            space.x = 3;
-            space.y = 5;
-            break;
-        }
-        var textArea = tta;
-        textArea.x = space.x;
-        textArea.y = space.y - 1;
-        return sp;
-    };
-
-    self.runGame = function() {
         if (!self.cardGame.users || self.cardGame.users.length == 0) {
             console.log("baaad");
             return true;
@@ -108,8 +31,8 @@ module.exports = Sevens = function() {
         self.cardGame.users.foreach(function(u, ind) {
             shuff.log('::' + u.userName);
 
-            var sp = self.createUser(u, ind, u.userName);
-            sp.pile = u.cards;
+            self.cardGame.getSpaceByName('User' + ind).applyPile(u.cards); 
+            self.cardGame.getTextByName('User' + ind).text = u.userName; 
         });
 
 

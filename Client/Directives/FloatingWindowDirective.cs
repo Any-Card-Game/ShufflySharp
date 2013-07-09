@@ -65,6 +65,11 @@ namespace Client.Directives
                 scope.Parent.Minimized = true;
                 scope.Minimize();
             };
+            scope.Parent.DestroyWindow = () =>
+            {
+                scope.Destroy();
+                element.Remove();
+            };
              
 
             scope.PositionStyles = new FloatingWindowPosition() { Left = scope.Left, Top = scope.Top, Display = "block" };

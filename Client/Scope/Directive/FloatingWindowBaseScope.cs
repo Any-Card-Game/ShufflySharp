@@ -15,9 +15,12 @@ namespace Client.Scope.Directive
         public bool Visible { get; set; }
         [IntrinsicProperty]
         public bool Minimized { get; set; }
-
+        
         [IntrinsicProperty]
         public Action OnClose { get; set; }
+        [IntrinsicProperty]
+        public Action DestroyWindow { get; set; }
+        
     }
     public enum SwingDirection
     {

@@ -126,8 +126,7 @@ namespace Models.SiteManagerModels.Game
     }
     [Serializable]
     public class GameSpaceModel : GameAreaModel
-    {
-        public string Guid { get; set; }
+    { 
         public GameSpaceLayoutType LayoutType { get; set; }
         public bool Vertical { get; set; }
 

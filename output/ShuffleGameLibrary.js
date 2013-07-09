@@ -2283,6 +2283,7 @@
 		//Rotate = options.Rotate == 0 ? 0 : options.Rotate;
 		this.visible = (!options.visible ? true : options.visible);
 		this.stackCards = (!options.stackCards ? false : options.stackCards);
+		this.pile = new $global_Pile(this.name + 'Pile');
 		this.sortOrder = options.sortOrder;
 		this.numberOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
 		this.numberOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);

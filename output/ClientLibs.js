@@ -82,13 +82,40 @@
 	// ClientLibs.Managers.ClientDebugManager
 	var $ClientLibs_Managers_ClientDebugManager = function(gateway) {
 		this.$myGateway = null;
+		this.$1$OnAskQuestionField = null;
+		this.$1$OnUpdateStateField = null;
+		this.$1$OnGameStartedField = null;
+		this.$1$OnGameOverField = null;
 		this.$1$OnGetDebugLogField = null;
 		this.$1$OnGetDebugBreakField = null;
-		this.$1$OnDebugGameOverField = null;
 		this.$myGateway = gateway;
 		this.$setup();
 	};
 	$ClientLibs_Managers_ClientDebugManager.prototype = {
+		add_onAskQuestion: function(value) {
+			this.$1$OnAskQuestionField = ss.delegateCombine(this.$1$OnAskQuestionField, value);
+		},
+		remove_onAskQuestion: function(value) {
+			this.$1$OnAskQuestionField = ss.delegateRemove(this.$1$OnAskQuestionField, value);
+		},
+		add_onUpdateState: function(value) {
+			this.$1$OnUpdateStateField = ss.delegateCombine(this.$1$OnUpdateStateField, value);
+		},
+		remove_onUpdateState: function(value) {
+			this.$1$OnUpdateStateField = ss.delegateRemove(this.$1$OnUpdateStateField, value);
+		},
+		add_onGameStarted: function(value) {
+			this.$1$OnGameStartedField = ss.delegateCombine(this.$1$OnGameStartedField, value);
+		},
+		remove_onGameStarted: function(value) {
+			this.$1$OnGameStartedField = ss.delegateRemove(this.$1$OnGameStartedField, value);
+		},
+		add_onGameOver: function(value) {
+			this.$1$OnGameOverField = ss.delegateCombine(this.$1$OnGameOverField, value);
+		},
+		remove_onGameOver: function(value) {
+			this.$1$OnGameOverField = ss.delegateRemove(this.$1$OnGameOverField, value);
+		},
 		add_onGetDebugLog: function(value) {
 			this.$1$OnGetDebugLogField = ss.delegateCombine(this.$1$OnGetDebugLogField, value);
 		},
@@ -101,28 +128,43 @@
 		remove_onGetDebugBreak: function(value) {
 			this.$1$OnGetDebugBreakField = ss.delegateRemove(this.$1$OnGetDebugBreakField, value);
 		},
-		add_onDebugGameOver: function(value) {
-			this.$1$OnDebugGameOverField = ss.delegateCombine(this.$1$OnDebugGameOverField, value);
-		},
-		remove_onDebugGameOver: function(value) {
-			this.$1$OnDebugGameOverField = ss.delegateRemove(this.$1$OnDebugGameOverField, value);
-		},
 		$setup: function() {
-			this.$myGateway.on('Area.Debug.Log', ss.mkdel(this, function(user, data) {
+			this.$myGateway.on('Area.Debug.AskQuestion', ss.mkdel(this, function(user, data) {
+				if (!ss.staticEquals(this.$1$OnAskQuestionField, null)) {
+					this.$1$OnAskQuestionField(user, data);
+				}
+			}));
+			this.$myGateway.on('Area.Debug.UpdateState', ss.mkdel(this, function(user1, data1) {
+				if (!ss.staticEquals(this.$1$OnUpdateStateField, null)) {
+					this.$1$OnUpdateStateField(user1, ss.cast(data1, String));
+				}
+			}));
+			this.$myGateway.on('Area.Debug.Started', ss.mkdel(this, function(user2, data2) {
+				if (!ss.staticEquals(this.$1$OnGameStartedField, null)) {
+					this.$1$OnGameStartedField(user2, data2);
+				}
+			}));
+			this.$myGateway.on('Area.Debug.GameOver', ss.mkdel(this, function(user3, data3) {
+				if (!ss.staticEquals(this.$1$OnGameOverField, null)) {
+					this.$1$OnGameOverField(user3, ss.cast(data3, String));
+				}
+			}));
+			this.$myGateway.on('Area.Debug.Log', ss.mkdel(this, function(user4, data4) {
 				if (!ss.staticEquals(this.$1$OnGetDebugLogField, null)) {
-					this.$1$OnGetDebugLogField(user, data);
+					this.$1$OnGetDebugLogField(user4, data4);
 				}
 			}));
-			this.$myGateway.on('Area.Debug.Break', ss.mkdel(this, function(user1, data1) {
+			this.$myGateway.on('Area.Debug.Break', ss.mkdel(this, function(user5, data5) {
 				if (!ss.staticEquals(this.$1$OnGetDebugBreakField, null)) {
-					this.$1$OnGetDebugBreakField(user1, data1);
+					this.$1$OnGetDebugBreakField(user5, data5);
 				}
 			}));
-			this.$myGateway.on('Area.Debug.GameOver', ss.mkdel(this, function(user2, data2) {
-				if (!ss.staticEquals(this.$1$OnDebugGameOverField, null)) {
-					this.$1$OnDebugGameOverField(user2, ss.cast(data2, String));
-				}
-			}));
+		},
+		answerQuestion: function(gameAnswerQuestionModel) {
+			this.$myGateway.emit('Area.Debug.AnswerQuestion', gameAnswerQuestionModel);
+		},
+		createGame: function(createDebugGameRequest) {
+			this.$myGateway.emit('Area.Debug.Create', createDebugGameRequest);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

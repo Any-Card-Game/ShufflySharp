@@ -41,6 +41,8 @@
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\DebugQuestionController.cs" />
+    <Compile Include="Controllers\DebugGameController.cs" />
     <Compile Include="Controllers\EffectTesterController.cs" />
     <Compile Include="Controllers\GameScenarioEditorController.cs" />
     <Compile Include="Controllers\TestGameController.cs" />
@@ -169,6 +171,8 @@
     <Content Include="partials\chatBox.html" />
     <Content Include="partials\fancyList.html" />
     <Content Include="partials\floatingWindow.html" />
+    <Content Include="partials\UIs\DebugQuestion.html" />
+    <Content Include="partials\UIs\DebugGameUI.html" />
     <Content Include="partials\UIs\EffectTester.html" />
     <Content Include="partials\UIs\GameScenarioEditor.html" />
     <Content Include="partials\UIs\TestGameUI.html" />

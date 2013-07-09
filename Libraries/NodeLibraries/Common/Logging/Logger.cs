@@ -44,6 +44,8 @@ namespace NodeLibraries.Common.Logging
         static Logger()
         {
             fs = Global.Require<FS>("fs");
+
+
         }
         public static void Start(string key)
         {
@@ -53,7 +55,7 @@ namespace NodeLibraries.Common.Logging
             Key = key + " - " + Common.LongDate() + ".txt";
             Log("Start: "+key, LogLevel.Information);
         }
-        public static void Log(string item, LogLevel level)
+        public static string Log(string item, LogLevel level)
         {
             item = string.Format("{0} - {1}", Common.ShortDate(), item);
             switch (level)
@@ -76,6 +78,7 @@ namespace NodeLibraries.Common.Logging
                                                                  Console.Log(outp);
                                                              }
                                                          });
+            return item;
         }
     }
     [NamedValues]

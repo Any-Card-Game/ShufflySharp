@@ -24,30 +24,45 @@ namespace ServerManager.MonitorServer
             var io = Global.Require<SocketIO>("socket.io").Listen(app);
             var fs = Global.Require<FS>("fs");
             QueueManager queueManager;
-            var port = 1800 + Math.Truncate( (Math.Random() * 4000d));
+            var port = 9991 ;
 
             string currentIP = ServerHelper.GetNetworkIPs()[0];
-            Console.Log(currentIP);
+            Console.Log(currentIP); 
+
             app.Listen(port);
             io.Set("log level", 0);
-             
+            string[] serverTypes = { "DebugServer", "AdminServer", "SiteServer", "GameServer", "ChatServer", "GatewayServer", "HeadServer" };
+            List<SocketIOConnection> connections = new List<SocketIOConnection>();
 
-     
-            io.Sockets.On("connection",
+            foreach (var serverType in serverTypes)
+            {
+                new ServerLogListener(serverType, (mess) =>
+                                                              {
+                                                                  foreach (var socketIoConnection in connections)
+                                                                  {
+                                                                      socketIoConnection.Emit(mess.ServerType, mess);
+                                                                  }
+                                                              });
+
+            }
+             io.Sockets.On("connection",
                           (SocketIOConnection socket) =>
                           {
-                              UserSocketModel user = null;
+                              connections.Add(socket);
                               socket.On("Gateway.Message",
                                         (GatewayMessageModel data) =>
                                         {
-                                         }); 
+
+                                        });
                               socket.On("disconnect",
                                         (string data) =>
                                         {
-                                         });
+                                            connections.Remove(socket);
+
+                                        });
                           });
         }
- 
-         
+
+
     }
 }

@@ -144,7 +144,7 @@ namespace ServerManager.ChatServer
 
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            Logger.Log("Awww, dat " + user.UserName + " disconnected", LogLevel.DebugInformation);
+            ServerLogger.Log("Awww, dat " + user.UserName + " disconnected", LogLevel.DebugInformation);
             myServerManager.UnregisterChatServer(user);
             leaveChatRoom(user);
 

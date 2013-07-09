@@ -113,6 +113,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 				console.log(outp);
 			}
 		});
+		return item;
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.LogLevel

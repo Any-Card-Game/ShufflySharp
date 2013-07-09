@@ -23,6 +23,7 @@ namespace ServerManager.HeadServer
         public HeadServer()
         {
             var name = "Head1";
+            ServerLogger.InitLogger("HeadServer", name);
             Logger.Start(name);
 
             qManager = new QueueManager(name,
@@ -36,7 +37,7 @@ namespace ServerManager.HeadServer
 
             fs.ReadFile(__dirname + "/index.html", "ascii", ready);
 
-            pubsub = new PubSub(() => pubsub.Subscribe<string>("PUBSUB.GatewayServers",
+            pubsub = new PubSub((ps) => ps.Subscribe ("PUBSUB.GatewayServers",
                                                                message => {
                                                                    indexForSites.Add(indexPageData.Replace("{{gateway}}", message));
                                                                    gateways.Add(message);

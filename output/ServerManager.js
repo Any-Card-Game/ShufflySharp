@@ -62,14 +62,16 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	// ServerManager.AdminServer.AdminServer
 	var $ServerManager_AdminServer_AdminServer = function() {
 		this.$__dirname = null;
-		this.$chats = null;
 		this.$debug = false;
-		this.$debugs = null;
 		this.$exec = null;
 		this.$fs = require('fs');
 		this.$games = null;
 		this.$gateways = null;
+		this.$chats = null;
+		this.$sites = null;
+		this.$debugs = null;
 		this.$head = null;
+		this.$monitor = null;
 		this.$indexPageData = 0;
 		this.$nodeInspector = null;
 		this.$nonDebuggable = null;
@@ -77,16 +79,15 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$numOfGameServers = 1;
 		this.$numOfGateways = 1;
 		this.$numOfSiteServers = 1;
-		this.$sites = null;
 		this.$util = null;
 		var fs = require('fs');
+		CommonShuffleLibrary.ServerLogger.initLogger('AdminServer', 'AdminServer');
 		NodeLibraries.Common.Logging.Logger.start('Admin');
-		NodeLibraries.Common.Logging.Logger.log('Shuffly Admin V0.49', 'debugInformation');
-		NodeLibraries.Common.Logging.Logger.log('Shuffly Admin V0.49', 'information');
+		CommonShuffleLibrary.ServerLogger.log('Shuffly Admin V0.51', 'debugInformation');
 		var redis = require('redis');
 		var client = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		// client.On<string,object>("monitor",(time, args) => {
-		// Logger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation);
+		// ServerLogger.Log("Monitor: "+time+" "+Json.Stringify(args),LogLevel.DebugInformation);
 		// });
 		this.$util = require('util');
 		this.$exec = require('child_process').exec;
@@ -98,7 +99,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			console.log('keep alive ' + NodeLibraries.Common.Logging.Common.shortDate());
 		}, 10000);
 		process.on('exit', ss.mkdel(this, function() {
-			NodeLibraries.Common.Logging.Logger.log('Exiting ', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('Exiting ', 'debugInformation');
 			this.$onAsk('k', false);
 			this.$runProcess('pkill', ['node'], 0, null);
 		}));
@@ -108,7 +109,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$onAsk('d', true);
 		if (this.$debug) {
 			this.$nodeInspector = this.$runProcess('node-inspector', [], 0, null);
-			NodeLibraries.Common.Logging.Logger.log('node-inspector Started', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('node-inspector Started', 'debugInformation');
 		}
 		this.$onAsk('s', false);
 	};
@@ -121,6 +122,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				fieldSets += this.$buildFieldset(this.$gateways, 'Gateway Servers');
 				fieldSets += this.$buildFieldset(this.$games, 'Game Servers');
 				fieldSets += this.$buildFieldset(this.$debugs, 'Debug Servers');
+				fieldSets += this.$buildFieldset(this.$chats, 'Chat Servers');
 				fieldSets += this.$buildFieldset(this.$chats, 'Chat Servers');
 				var dict = {};
 				dict['Content-Type'] = 'text/html';
@@ -154,7 +156,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			switch (data.charAt(0)) {
 				case 'd': {
 					this.$debug = !this.$debug;
-					NodeLibraries.Common.Logging.Logger.log('Debug ' + (this.$debug ? 'Enabled' : 'Disabled'), 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log('Debug ' + (this.$debug ? 'Enabled' : 'Disabled'), 'debugInformation');
 					break;
 				}
 				case 's': {
@@ -163,26 +165,28 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					this.$chats = [];
 					this.$debugs = [];
 					this.$gateways = [];
+					this.$monitor = new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'monitor'], 3900, null), 'Monitor Server', 0, 3900);
+					CommonShuffleLibrary.ServerLogger.log('Monitor Server Started', 'debugInformation');
 					this.$head = new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'head'], 4000, null), 'Head Server', 0, 4000);
-					NodeLibraries.Common.Logging.Logger.log('Head Server Started', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log('Head Server Started', 'debugInformation');
 					for (var j = 0; j < this.$numOfSiteServers; j++) {
 						ss.add(this.$sites, new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'site'], 4100 + j, null), 'Site Server', j, 4100 + j));
 					}
-					NodeLibraries.Common.Logging.Logger.log(this.$sites.length + ' Site Servers Started', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(this.$sites.length + ' Site Servers Started', 'debugInformation');
 					for (var j1 = 0; j1 < this.$numOfGateways; j1++) {
 						ss.add(this.$gateways, new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'gateway'], 4400 + j1, null), 'Gateway Server', j1, 4400 + j1));
 					}
-					NodeLibraries.Common.Logging.Logger.log(this.$gateways.length + ' Gateway Servers Started', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(this.$gateways.length + ' Gateway Servers Started', 'debugInformation');
 					for (var j2 = 0; j2 < this.$numOfGameServers; j2++) {
 						ss.add(this.$games, new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'game'], 4200 + j2, null), 'Game Server', j2, 4200 + j2));
 					}
-					NodeLibraries.Common.Logging.Logger.log(this.$games.length + ' Game Servers Started', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(this.$games.length + ' Game Servers Started', 'debugInformation');
 					for (var j3 = 0; j3 < this.$numOfChatServers; j3++) {
 						ss.add(this.$chats, new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'chat'], 4500 + j3, null), 'Chat Server', j3, 4500 + j3));
 					}
-					NodeLibraries.Common.Logging.Logger.log(this.$chats.length + ' Chat Servers Started', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(this.$chats.length + ' Chat Servers Started', 'debugInformation');
 					ss.add(this.$debugs, new $ServerManager_AdminServer_ProcessInformation(this.$runProcess('node', [this.$__dirname + 'ServerManager.js', 'debug'], 4300, null), 'Debug Server', 0, 4300));
-					NodeLibraries.Common.Logging.Logger.log(this.$debugs.length + ' Debug Servers Started', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(this.$debugs.length + ' Debug Servers Started', 'debugInformation');
 					break;
 				}
 				case 'q': {
@@ -440,7 +444,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$onUserDisconnect: function(user, data) {
-			NodeLibraries.Common.Logging.Logger.log('Awww, dat ' + user.userName + ' disconnected', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('Awww, dat ' + user.userName + ' disconnected', 'debugInformation');
 			this.$myServerManager.unregisterChatServer(user);
 			this.$leaveChatRoom(user);
 			//removeUserFromRoom(data.User, (room) => { });
@@ -451,10 +455,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	var $ServerManager_ChatServer_ChatServer = function() {
 		this.$chatServerIndex = null;
 		this.$chatServerIndex = 'ChatServer' + CommonLibraries.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('ChatServer', this.$chatServerIndex);
 		NodeLibraries.Common.Logging.Logger.start(this.$chatServerIndex);
 		new global.ArrayUtils();
 		process.on('exit', function() {
-			NodeLibraries.Common.Logging.Logger.log('exi ChatServer', 'information');
+			CommonShuffleLibrary.ServerLogger.log('exi ChatServer', 'information');
 		});
 		var chatManager = new $ServerManager_ChatServer_ChatManager(this.$chatServerIndex);
 	};
@@ -600,7 +605,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						console.log('22User Left: ' + player.userName);
+						CommonShuffleLibrary.ServerLogger.log('22User Left: ' + player.userName, 'debugInformation');
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -613,7 +618,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						console.log('11User Left: ' + player.userName);
+						CommonShuffleLibrary.ServerLogger.log('11User Left: ' + player.userName, 'debugInformation');
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -621,13 +626,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 		},
 		createGame: function(user, data) {
-			NodeLibraries.Common.Logging.Logger.log('--debug game created ', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('--debug game created ', 'debugInformation');
 			this.$dataManager.siteData.game_GetGamesByName(data.gameName, ss.mkdel(this, function(game) {
 				if (ss.isNullOrUndefined(game)) {
-					NodeLibraries.Common.Logging.Logger.log('--game not found ' + game.name, 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log('--game not found ' + game.name, 'debugInformation');
 					return;
 				}
-				NodeLibraries.Common.Logging.Logger.log('--game found ' + game.name, 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('--game found ' + game.name, 'debugInformation');
 				var room;
 				ss.add(this.$rooms, room = $ServerManager_DebugGameServer_Models_DebugGameRoom.$ctor());
 				room.maxUsers = data.numberOfPlayers;
@@ -648,7 +653,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				room.fiber = this.$createFiber(room, gameObject, true, game);
 				room.unwind = ss.mkdel(this, function(players) {
 					this.$gameData.finishedGames++;
-					NodeLibraries.Common.Logging.Logger.log('--game closed', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log('--game closed', 'debugInformation');
 				});
 				room.playerLeave = ss.delegateCombine(room.playerLeave, function(player) {
 					//todo laeve player api in the game
@@ -671,13 +676,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		$flushQueue: function() {
 			var ind = 0;
 			for (ind = 0; this.$answerQueue.length > 0 && ind < this.$QUEUEPERTICK; ind++) {
-				NodeLibraries.Common.Logging.Logger.log('-- w pop', 'information');
+				CommonShuffleLibrary.ServerLogger.log('-- w pop', 'information');
 				var arg2 = this.$answerQueue[0];
 				ss.removeAt(this.$answerQueue, 0);
 				var data = arg2;
 				var room = this.$getRoomByPlayer(arg2.item1.userName);
 				if (ss.isNullOrUndefined(room)) {
-					NodeLibraries.Common.Logging.Logger.log('Room not found for user: ' + arg2.item1.userName, 'error');
+					CommonShuffleLibrary.ServerLogger.log('Room not found for user: ' + arg2.item1.userName, 'error');
 					continue;
 					throw new ss.Exception('idk');
 				}
@@ -695,7 +700,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				this.$total__ += ind;
 				if ((this.$total__ + this.$skipped__) % 20 === 0) {
 					var dt = new Date();
-					NodeLibraries.Common.Logging.Logger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}', this.$myServerManager.get_debugGameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$answerQueue.length, this.$rooms.length, this.$gameData.totalQuestionsAnswered / ((dt.getTime() - this.$startTime.getTime()) / 1000)), 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}', this.$myServerManager.get_debugGameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$answerQueue.length, this.$rooms.length, this.$gameData.totalQuestionsAnswered / ((dt.getTime() - this.$startTime.getTime()) / 1000)), 'debugInformation');
 				}
 			}
 		},
@@ -705,7 +710,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					return true;
 				}
 				room.players = players;
-				NodeLibraries.Common.Logging.Logger.log('game started', 'information');
+				CommonShuffleLibrary.ServerLogger.log('game started', 'information');
 				var sev = null;
 				eval('sev = new gameObject();');
 				room.playersLeft = [];
@@ -745,14 +750,14 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				sev.cardGame.configurationCompleted();
 				sev.constructor();
 				sev.runGame();
-				NodeLibraries.Common.Logging.Logger.log('Doneski', 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('Doneski', 'debugInformation');
 				room.unwind(players);
 				return true;
 			}));
 		},
 		$processGameResponse: function(room, response) {
 			if (ss.isNullOrUndefined(response)) {
-				NodeLibraries.Common.Logging.Logger.log('game request over', 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('game request over', 'debugInformation');
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				ss.remove(this.$rooms, room);
@@ -796,13 +801,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			var answ2 = room.fiber.run();
 			this.$processGameResponse(room, answ2);
 			if (!room.game.cardGame.emulating) {
-				//Logger.Log(gameData.toString());
+				//ServerLogger.Log(gameData.toString());
 				var ganswer = { value: answer.contents };
 				this.$myServerManager.sendDebugLog(room, ganswer);
 			}
 		},
 		$gameOver: function(room) {
-			NodeLibraries.Common.Logging.Logger.log('game real over', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('game real over', 'debugInformation');
 			this.$myServerManager.sendUpdateState(room);
 			this.$myServerManager.sendGameOver(room);
 			room.fiber.reset();
@@ -812,29 +817,29 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$gameData.totalQuestionsAnswered++;
 			var answ = answer.question;
 			if (ss.isNullOrUndefined(answ)) {
-				NodeLibraries.Common.Logging.Logger.log('game question over', 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('game question over', 'debugInformation');
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				//     profiler.takeSnapshot('game over ' + room.roomID);
 				return;
 			}
 			this.$askQuestion(answ, room);
-			//Logger.Log(gameData.toString());
+			//ServerLogger.Log(gameData.toString());
 			var dt = new Date();
 			var then = dt.getMilliseconds();
-			//Logger.Log(then - now + " Milliseconds");
-			//  Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
+			//ServerLogger.Log(then - now + " Milliseconds");
+			//  ServerLogger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
 		},
 		$askQuestion: function(answ, room) {
 			var user = this.$getPlayerByUsername(room, answ.user.userName);
 			this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
 			this.$myServerManager.sendUpdateState(room);
 			if (this.$verbose) {
-				NodeLibraries.Common.Logging.Logger.log(answ.user.userName + ': ' + answ.question + '   ', 'information');
+				CommonShuffleLibrary.ServerLogger.log(answ.user.userName + ': ' + answ.question + '   ', 'information');
 				var ind = 0;
 				for (var $t1 = 0; $t1 < answ.answers.length; $t1++) {
 					var answer = answ.answers[$t1];
-					NodeLibraries.Common.Logging.Logger.log('     ' + ind++ + ': ' + answer, 'information');
+					CommonShuffleLibrary.ServerLogger.log('     ' + ind++ + ': ' + answer, 'information');
 				}
 			}
 		},
@@ -866,11 +871,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$childProcess = null;
 		this.$debugServerIndex = null;
 		this.$debugServerIndex = 'DebugServer' + CommonLibraries.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('DebugServer', this.$debugServerIndex);
 		NodeLibraries.Common.Logging.Logger.start(this.$debugServerIndex);
 		this.$childProcess = require('child_process');
 		global.Fiber = require('fibers');
 		process.on('exit', function() {
-			NodeLibraries.Common.Logging.Logger.log('exi', 'information');
+			CommonShuffleLibrary.ServerLogger.log('exi', 'information');
 		});
 		var debugGameManager = new $ServerManager_DebugGameServer_DebugGameManager(this.$debugServerIndex);
 	};
@@ -1033,7 +1039,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						console.log('22User Left: ' + player.userName);
+						CommonShuffleLibrary.ServerLogger.log('22User Left: ' + player.userName, 'debugInformation');
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -1046,7 +1052,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				for (var $t2 = 0; $t2 < gameRoom.players.length; $t2++) {
 					var player = gameRoom.players[$t2];
 					if (ss.referenceEquals(player.userName, user.userName)) {
-						console.log('11User Left: ' + player.userName);
+						CommonShuffleLibrary.ServerLogger.log('11User Left: ' + player.userName, 'debugInformation');
 						gameRoom.playerLeave(player);
 						break;
 					}
@@ -1054,13 +1060,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 		},
 		createGame: function(data) {
-			NodeLibraries.Common.Logging.Logger.log('--game created ', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('--game created ', 'debugInformation');
 			this.$dataManager.siteData.game_GetGamesByName(data.gameType, ss.mkdel(this, function(game) {
 				if (ss.isNullOrUndefined(game)) {
-					NodeLibraries.Common.Logging.Logger.log('--game not found ' + game.name, 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log('--game not found ' + game.name, 'debugInformation');
 					return;
 				}
-				NodeLibraries.Common.Logging.Logger.log('--game found ' + game.name, 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('--game found ' + game.name, 'debugInformation');
 				var room;
 				ss.add(this.$rooms, room = $ServerManager_GameServer_Models_GameRoom.$ctor());
 				room.maxUsers = data.players.length;
@@ -1079,7 +1085,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				room.fiber = this.$createFiber(room, gameObject, true, game);
 				room.unwind = ss.mkdel(this, function(players) {
 					this.$gameData.finishedGames++;
-					NodeLibraries.Common.Logging.Logger.log('--game closed', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log('--game closed', 'debugInformation');
 				});
 				room.playerLeave = ss.delegateCombine(room.playerLeave, function(player) {
 					//todo laeve player api in the game
@@ -1105,13 +1111,13 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		$flushQueue: function() {
 			var ind = 0;
 			for (ind = 0; this.$answerQueue.length > 0 && ind < this.$QUEUEPERTICK; ind++) {
-				NodeLibraries.Common.Logging.Logger.log('-- w pop', 'information');
+				CommonShuffleLibrary.ServerLogger.log('-- w pop', 'information');
 				var arg2 = this.$answerQueue[0];
 				ss.removeAt(this.$answerQueue, 0);
 				var data = arg2;
 				var room = this.$getRoomByPlayer(arg2.item1.userName);
 				if (ss.isNullOrUndefined(room)) {
-					NodeLibraries.Common.Logging.Logger.log('Room not found for user: ' + arg2.item1.userName, 'error');
+					CommonShuffleLibrary.ServerLogger.log('Room not found for user: ' + arg2.item1.userName, 'error');
 					continue;
 					throw new ss.Exception('idk');
 				}
@@ -1129,7 +1135,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				this.$total__ += ind;
 				if ((this.$total__ + this.$skipped__) % 20 === 0) {
 					var dt = new Date();
-					NodeLibraries.Common.Logging.Logger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}', this.$myServerManager.get_gameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$answerQueue.length, this.$rooms.length, this.$gameData.totalQuestionsAnswered / ((dt.getTime() - this.$startTime.getTime()) / 1000)), 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}', this.$myServerManager.get_gameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$answerQueue.length, this.$rooms.length, this.$gameData.totalQuestionsAnswered / ((dt.getTime() - this.$startTime.getTime()) / 1000)), 'debugInformation');
 				}
 			}
 		},
@@ -1139,7 +1145,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					return true;
 				}
 				room.players = players;
-				NodeLibraries.Common.Logging.Logger.log('game started', 'information');
+				CommonShuffleLibrary.ServerLogger.log('game started', 'information');
 				var sev = null;
 				eval('sev = new gameObject();');
 				room.playersLeft = [];
@@ -1179,14 +1185,14 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				sev.cardGame.configurationCompleted();
 				sev.constructor();
 				sev.runGame();
-				NodeLibraries.Common.Logging.Logger.log('Doneski', 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('Doneski', 'debugInformation');
 				room.unwind(players);
 				return true;
 			}));
 		},
 		$processGameResponse: function(room, response) {
 			if (ss.isNullOrUndefined(response)) {
-				NodeLibraries.Common.Logging.Logger.log('game request over', 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('game request over', 'debugInformation');
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				ss.remove(this.$rooms, room);
@@ -1225,7 +1231,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$processGameResponse(room, answ2);
 		},
 		$gameOver: function(room) {
-			NodeLibraries.Common.Logging.Logger.log('game real over', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log('game real over', 'debugInformation');
 			this.$myServerManager.sendUpdateState(room);
 			this.$myServerManager.sendGameOver(room);
 			room.fiber.reset();
@@ -1235,29 +1241,29 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$gameData.totalQuestionsAnswered++;
 			var answ = answer.question;
 			if (ss.isNullOrUndefined(answ)) {
-				NodeLibraries.Common.Logging.Logger.log('game question over', 'debugInformation');
+				CommonShuffleLibrary.ServerLogger.log('game question over', 'debugInformation');
 				this.$myServerManager.sendGameOver(room);
 				room.fiber.run();
 				//     profiler.takeSnapshot('game over ' + room.roomID);
 				return;
 			}
 			this.$askQuestion(answ, room);
-			//Logger.Log(gameData.toString());
+			//ServerLogger.Log(gameData.toString());
 			var dt = new Date();
 			var then = dt.getMilliseconds();
-			//Logger.Log(then - now + " Milliseconds");
-			//  Logger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
+			//ServerLogger.Log(then - now + " Milliseconds");
+			//  ServerLogger.Log(gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d) + " Answers per seconds", LogLevel.DebugInformation);
 		},
 		$askQuestion: function(answ, room) {
 			var user = this.$getPlayerByUsername(room, answ.user.userName);
 			this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
 			this.$myServerManager.sendUpdateState(room);
 			if (this.$verbose) {
-				NodeLibraries.Common.Logging.Logger.log(answ.user.userName + ': ' + answ.question + '   ', 'information');
+				CommonShuffleLibrary.ServerLogger.log(answ.user.userName + ': ' + answ.question + '   ', 'information');
 				var ind = 0;
 				for (var $t1 = 0; $t1 < answ.answers.length; $t1++) {
 					var answer = answ.answers[$t1];
-					NodeLibraries.Common.Logging.Logger.log('     ' + ind++ + ': ' + answer, 'information');
+					CommonShuffleLibrary.ServerLogger.log('     ' + ind++ + ': ' + answer, 'information');
 				}
 			}
 		},
@@ -1289,11 +1295,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$childProcess = null;
 		this.$gameServerIndex = null;
 		this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('GameServer', this.$gameServerIndex);
 		NodeLibraries.Common.Logging.Logger.start(this.$gameServerIndex);
 		this.$childProcess = require('child_process');
 		global.Fiber = require('fibers');
 		process.on('exit', function() {
-			NodeLibraries.Common.Logging.Logger.log('exi', 'information');
+			CommonShuffleLibrary.ServerLogger.log('exi', 'information');
 		});
 		var gameManager = new $ServerManager_GameServer_GameManager(this.$gameServerIndex);
 	};
@@ -1326,7 +1333,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	// ServerManager.GatewayServer.GatewayServer
 	var $ServerManager_GatewayServer_GatewayServer = function() {
 		this.$myGatewayName = null;
-		this.$ps = null;
 		this.$users = {};
 		this.$curc = 0;
 		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
@@ -1351,6 +1357,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		//
 		//
 		//                        },200);
+		CommonShuffleLibrary.ServerLogger.initLogger('GatewayServer', this.$myGatewayName);
 		NodeLibraries.Common.Logging.Logger.start(this.$myGatewayName);
 		//ExtensionMethods.debugger("");
 		var http = require('http');
@@ -1371,30 +1378,30 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		else {
 			content = ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com');
 		}
-		NodeLibraries.Common.Logging.Logger.log(content, 'information');
+		CommonShuffleLibrary.ServerLogger.log(content, 'information');
 		app.listen(port);
 		io.set('log level', 0);
 		setInterval(ss.mkdel(this, function() {
-			NodeLibraries.Common.Logging.Logger.log(ss.formatString('Wooooww {0}\'s still alive.', this.$myGatewayName), 'information');
+			CommonShuffleLibrary.ServerLogger.log(ss.formatString('Wooooww {0}\'s still alive.', this.$myGatewayName), 'information');
 		}), 10000);
-		this.$ps = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
-			this.$ps.subscribe(String).call(this.$ps, 'PUBSUB.GatewayServers.Ping', ss.mkdel(this, function(message) {
-				this.$ps.publish('PUBSUB.GatewayServers', content);
+		new CommonShuffleLibrary.PubSub(function(ps) {
+			ps.subscribe('PUBSUB.GatewayServers.Ping', function(message) {
+				ps.publish('PUBSUB.GatewayServers', content);
 				//                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
-			}));
+			});
 			//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
-			this.$ps.publish('PUBSUB.GatewayServers', content);
-		}));
+			ps.publish('PUBSUB.GatewayServers', content);
+		});
 		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
 		io.sockets.on('connection', ss.mkdel(this, function(socket) {
 			var j = ++this.$curc;
-			console.log('Socket Connected ' + j);
+			CommonShuffleLibrary.ServerLogger.log('Socket Connected ' + j, 'debugInformation');
 			var user = null;
 			socket.on('Gateway.Message', function(data) {
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
-				console.log('Socket message ' + j + '  ' + user.userName);
+				CommonShuffleLibrary.ServerLogger.log('Socket message ' + j + '  ' + user.userName, 'debugInformation');
 				var channel = 'Bad';
 				switch (data.channel.split(String.fromCharCode(46))[1]) {
 					case 'Game': {
@@ -1424,7 +1431,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				user.userName = data1.userName;
 				user.hash = data1.userName;
 				user.gateway = this.$myGatewayName;
-				console.log('Socket login ' + j + '  ' + user.toString());
+				CommonShuffleLibrary.ServerLogger.log('Socket login ' + j + '  ' + user.toString(), 'debugInformation');
 				this.$users[data1.userName] = user;
 				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
 			}));
@@ -1432,7 +1439,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				if (ss.isNullOrUndefined(user)) {
 					return;
 				}
-				console.log('Socket left ' + j + '  ' + user.userName);
+				CommonShuffleLibrary.ServerLogger.log('Socket left ' + j + '  ' + user.userName, 'debugInformation');
 				queueManager.sendMessage('SiteServer', 'Area.Site.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
 				//disconnecting from the room in site server disconencts from chat..
 				// if (user.CurrentChatServer != null)
@@ -1458,38 +1465,38 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		$sendMessage: function(user, eventChannel, content) {
 			if (this.$specialHandle(user, eventChannel, content)) {
 				var socketClientMessageModel = new Models.SocketClientMessageModel(Models.UserSocketModel.toUserModel(user), eventChannel, content);
-				NodeLibraries.Common.Logging.Logger.log(socketClientMessageModel.toString(), 'information');
+				CommonShuffleLibrary.ServerLogger.log(socketClientMessageModel.toString(), 'information');
 				user.socket.emit('Client.Message', socketClientMessageModel);
 			}
 		},
 		$specialHandle: function(user, eventChannel, content) {
 			if (eventChannel === 'Area.Chat.RegisterServer') {
-				NodeLibraries.Common.Logging.Logger.log(ss.formatString('Chat Server {0} Registered to {1}', content.server, user.hash), 'information');
+				CommonShuffleLibrary.ServerLogger.log(ss.formatString('Chat Server {0} Registered to {1}', content.server, user.hash), 'information');
 				user.currentChatServer = content.server;
 				return false;
 			}
 			if (eventChannel === 'Area.Chat.UnregisterServer') {
-				NodeLibraries.Common.Logging.Logger.log('Chat Server UnRegistered', 'information');
+				CommonShuffleLibrary.ServerLogger.log('Chat Server UnRegistered', 'information');
 				user.currentChatServer = null;
 				return false;
 			}
 			if (eventChannel === 'Area.Game.RegisterServer') {
-				NodeLibraries.Common.Logging.Logger.log(ss.formatString('Game Server {0} Registered to {1}', content.server, user.hash), 'information');
+				CommonShuffleLibrary.ServerLogger.log(ss.formatString('Game Server {0} Registered to {1}', content.server, user.hash), 'information');
 				user.currentGameServer = content.server;
 				return false;
 			}
 			if (eventChannel === 'Area.Game.UnregisterServer') {
-				NodeLibraries.Common.Logging.Logger.log('Game Server UnRegistered', 'information');
+				CommonShuffleLibrary.ServerLogger.log('Game Server UnRegistered', 'information');
 				user.currentGameServer = null;
 				return false;
 			}
 			if (eventChannel === 'Area.Debug.RegisterServer') {
-				NodeLibraries.Common.Logging.Logger.log(ss.formatString('Debug Server {0} Registered to {1}', content.server, user.hash), 'information');
+				CommonShuffleLibrary.ServerLogger.log(ss.formatString('Debug Server {0} Registered to {1}', content.server, user.hash), 'information');
 				user.currentDebugServer = content.server;
 				return false;
 			}
 			if (eventChannel === 'Area.Debug.UnregisterServer') {
-				NodeLibraries.Common.Logging.Logger.log('Debug Server UnRegistered', 'information');
+				CommonShuffleLibrary.ServerLogger.log('Debug Server UnRegistered', 'information');
 				user.currentDebugServer = null;
 				return false;
 			}
@@ -1510,11 +1517,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$qManager = null;
 		this.$siteIndex = 0;
 		var name = 'Head1';
+		CommonShuffleLibrary.ServerLogger.initLogger('HeadServer', name);
 		NodeLibraries.Common.Logging.Logger.start(name);
 		this.$qManager = new CommonShuffleLibrary.QueueManager(name, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher(name, null)], ['GatewayServer']));
 		this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', ss.mkdel(this, this.ready));
-		this.$pubsub = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function() {
-			this.$pubsub.subscribe(String).call(this.$pubsub, 'PUBSUB.GatewayServers', ss.mkdel(this, function(message) {
+		this.$pubsub = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function(ps) {
+			ps.subscribe('PUBSUB.GatewayServers', ss.mkdel(this, function(message) {
 				ss.add(this.$indexForSites, ss.replaceAllString(this.$indexPageData, '{{gateway}}', message));
 				ss.add(this.$gateways, message);
 			}));
@@ -1575,16 +1583,28 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		var io = require('socket.io').listen(app);
 		var fs = require('fs');
 		var queueManager;
-		var port = 1800 + (Math.random() * 4000 | 0);
+		var port = 9991;
 		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
 		console.log(currentIP);
 		app.listen(port);
 		io.set('log level', 0);
+		var serverTypes = ['DebugServer', 'AdminServer', 'SiteServer', 'GameServer', 'ChatServer', 'GatewayServer', 'HeadServer'];
+		var connections = [];
+		for (var $t1 = 0; $t1 < serverTypes.length; $t1++) {
+			var serverType = serverTypes[$t1];
+			new CommonShuffleLibrary.ServerLogListener(serverType, function(mess) {
+				for (var $t2 = 0; $t2 < connections.length; $t2++) {
+					var socketIoConnection = connections[$t2];
+					socketIoConnection.emit(mess.serverType, mess);
+				}
+			});
+		}
 		io.sockets.on('connection', function(socket) {
-			var user = null;
+			ss.add(connections, socket);
 			socket.on('Gateway.Message', function(data) {
 			});
 			socket.on('disconnect', function(data1) {
+				ss.remove(connections, socket);
 			});
 		});
 	};
@@ -1816,17 +1836,17 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 	};
 	$ServerManager_SiteServer_SiteManager.prototype = {
 		$onLeaveRoom: function(user, data) {
-			NodeLibraries.Common.Logging.Logger.log(user.userName + ' manual leave', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log(user.userName + ' manual leave', 'debugInformation');
 			this.$removeUserFromRoom(user, function(room) {
 			});
 		},
 		$onUserDisconnect: function(user, data) {
-			NodeLibraries.Common.Logging.Logger.log(user.userName + ' disconnected', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log(user.userName + ' disconnected', 'debugInformation');
 			this.$removeUserFromRoom(data.user, function(room) {
 			});
 		},
 		$removeUserFromRoom: function(user, result) {
-			NodeLibraries.Common.Logging.Logger.log(user.userName + ' removing', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log(user.userName + ' removing', 'debugInformation');
 			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					result(null);
@@ -1837,7 +1857,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				}
 				if (ss.isValue(user.currentGameServer)) {
 					this.$mySiteClientManager.leaveGameRoom(user);
-					NodeLibraries.Common.Logging.Logger.log(user.userName + ' left Game room', 'debugInformation');
+					CommonShuffleLibrary.ServerLogger.log(user.userName + ' left Game room', 'debugInformation');
 					user.currentGameServer = null;
 				}
 				for (var $t1 = 0; $t1 < room.players.length; $t1++) {
@@ -1868,12 +1888,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$onStartGame: function(user, data) {
-			//   Logger.Log("--game started 1 ", LogLevel.DebugInformation);
+			//   ServerLogger.Log("--game started 1 ", LogLevel.DebugInformation);
 			this.$myDataManager.siteData.room_GetRoomByUser(user, ss.mkdel(this, function(room) {
 				if (ss.isNullOrUndefined(room)) {
 					throw new ss.Exception('idk');
 				}
-				//       Logger.Log("--game started 2", LogLevel.DebugInformation);
+				//       ServerLogger.Log("--game started 2", LogLevel.DebugInformation);
 				this.$mySiteClientManager.createGame({ gameType: room.gameType, players: room.players });
 			}));
 		},
@@ -1883,7 +1903,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$onCreateRoom: function(user, data) {
-			NodeLibraries.Common.Logging.Logger.log(user.userName + ' create room', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log(user.userName + ' create room', 'debugInformation');
 			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
 				this.$myDataManager.siteData.room_CreateRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
 					this.$mySiteClientManager.createChatRoom(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
@@ -1897,7 +1917,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$onJoinRoom: function(user, data) {
-			NodeLibraries.Common.Logging.Logger.log(user.userName + ' join room', 'debugInformation');
+			CommonShuffleLibrary.ServerLogger.log(user.userName + ' join room', 'debugInformation');
 			this.$removeUserFromRoom(user, ss.mkdel(this, function(disconnectedRoom) {
 				this.$myDataManager.siteData.room_JoinRoom(data.gameType, data.roomName, user, ss.mkdel(this, function(room) {
 					this.$mySiteClientManager.roomJoined(user, { room: DataModels.SiteManagerModels.RoomDataModel.toModel(room) });
@@ -1967,9 +1987,10 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$siteServerIndex = null;
 		new global.ArrayUtils();
 		this.$siteServerIndex = 'SiteServer' + CommonLibraries.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('SiteServer', this.$siteServerIndex);
 		NodeLibraries.Common.Logging.Logger.start(this.$siteServerIndex);
 		process.on('exit', function() {
-			NodeLibraries.Common.Logging.Logger.log('exi SiteServer', 'information');
+			CommonShuffleLibrary.ServerLogger.log('exi SiteServer', 'information');
 		});
 		var siteManager = new $ServerManager_SiteServer_SiteManager(this.$siteServerIndex);
 	};

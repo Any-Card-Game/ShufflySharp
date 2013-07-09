@@ -21,7 +21,7 @@ namespace CommonShuffleLibrary
             var message = new QueueMessage(name, user, eventChannel, content);
             var value = Json.Stringify(message, Help.Sanitize);
             if (CommonLibraries.Help.Verbose)
-                Logger.Log(channel + "RPush " + value, LogLevel.Information);
+                ServerLogger.Log(channel + "RPush " + value, LogLevel.Information);
             client1.RPush(channel, value); //todo:maybe sanitize
         }
     }

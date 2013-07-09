@@ -1,5 +1,6 @@
 ﻿using System;
 using CommonLibraries;
+using CommonShuffleLibrary;
 using NodeLibraries.Common.Logging;
 using NodeLibraries.NodeJS;
 using global;
@@ -13,10 +14,11 @@ namespace ServerManager.SiteServer
         {
             new ArrayUtils();
             siteServerIndex = "SiteServer" + Guid.NewGuid();
+            ServerLogger.InitLogger("SiteServer", siteServerIndex);
             Logger.Start(siteServerIndex);
 
 
-            Global.Process.On("exit", () => Logger.Log("exi SiteServer",LogLevel.Information));
+            Global.Process.On("exit", () => ServerLogger.Log("exi SiteServer",LogLevel.Information));
 
             SiteManager siteManager = new SiteManager(siteServerIndex);
         }

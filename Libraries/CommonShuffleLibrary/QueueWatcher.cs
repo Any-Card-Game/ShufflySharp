@@ -30,13 +30,13 @@ namespace CommonShuffleLibrary
 
 
                               var data = (string[])dtj;
-                              Logger.Log(channel+ " BLPop Data: " + data, LogLevel.Information);
+                              ServerLogger.Log(channel+ " BLPop Data: " + data, LogLevel.Information);
 
                               if (dtj != null)
                               {
 
                                   if (CommonLibraries.Help.Verbose)
-                                      Logger.Log(data[1],LogLevel.Information);
+                                      ServerLogger.Log(data[1],LogLevel.Information);
 
                                   var dt = Json.ParseData<QueueMessage>(data[1]);
                                   Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);

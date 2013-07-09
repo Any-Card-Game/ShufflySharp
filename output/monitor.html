@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html ng-app="ACGMonitor">
+<head>
+    <title>Shuffly Monitor</title>
+    <style type="text/css">
+        body, html
+        {
+            height: 100%;
+        }
+
+        body
+        {
+            background-color: cadetblue;
+        }
+    </style>
+    <script data-require="angular.js@1.0.x" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js" data-semver="1.0.7"></script>
+    <script type="text/javascript" src="http://localhost:8881/lib/socket.io.js"></script>
+
+    <script type="text/javascript">
+        var app = angular.module('ACGMonitor', []);
+
+        app.controller('Main', function ($scope) {
+            $scope.name = 'World';
+            var socket=io.connect('127.0.0.1:9991');
+            socket.on('GameServer', function(data) {
+                console.log(data);
+            });
+            socket.on('DebugServer', function(data) {
+                console.log(data);
+            });
+            socket.on('GatewayServer', function(data) {
+                console.log(data);
+            });
+            socket.on('HeadServer', function(data) {
+                console.log(data);
+            });
+            socket.on('SiteServer', function(data) {
+                console.log(data);
+            });
+            socket.on('ChatServer', function(data) {
+                console.log(data);
+            });
+            socket.on('AdminServer', function(data) {
+                console.log(data);
+            });
+        });
+
+    </script>
+</head>
+<body>
+
+    <body ng-controller="Main">
+        <p>Hello {{name}}!</p>
+    </body>
+
+</body>
+</html>

@@ -141,7 +141,7 @@ namespace CommonShuffleLibrary.Data
                         (err2) =>
                         {
                             if (err2 != null)
-                                Logger.Log("Data Error: " + err2, LogLevel.Error);
+                                ServerLogger.Log("Data Error: " + err2, LogLevel.Error);
                             room.Players.Add(user);
 
                             complete(room);
@@ -165,7 +165,7 @@ namespace CommonShuffleLibrary.Data
                         (err2) =>
                         {
                             if (err2 != null)
-                                Logger.Log("Data Error: " + err2, LogLevel.Error);
+                                ServerLogger.Log("Data Error: " + err2, LogLevel.Error);
                             foreach (var userLogicModel in room.Players)
                             {
                                 if (userLogicModel.UserName == user.UserName)
@@ -200,7 +200,7 @@ namespace CommonShuffleLibrary.Data
                         (err2) =>
                         {
                             if (err2 != null)
-                                Logger.Log("Data Error: " + err2, LogLevel.Error);
+                                ServerLogger.Log("Data Error: " + err2, LogLevel.Error);
                             room.ChatServer = chatServerIndex;
 
                             complete(room);

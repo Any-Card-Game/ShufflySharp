@@ -41,7 +41,7 @@ namespace CommonShuffleLibrary.Data
                                                             query,
                                                             (err2) => {
                                                                 if (err2 != null)
-                                                                    Logger.Log("Data Error: " + err2,LogLevel.Error);
+                                                                    ServerLogger.Log("Data Error: " + err2,LogLevel.Error);
                                                                 roomData.Messages.Add(messageModel);
                                                                 complete(messageModel);
                                                             });
@@ -59,7 +59,7 @@ namespace CommonShuffleLibrary.Data
                                           collection.Update(new { _id = MongoDocument.GetID(roomData.ID) },
                                                             query,
                                                             (err2) => {
-                                                                if (err2 != null) Logger.Log("Data Error: " + err2,LogLevel.Error);
+                                                                if (err2 != null) ServerLogger.Log("Data Error: " + err2,LogLevel.Error);
                                                                 roomData.Users.Add(user);
 
                                                                 complete(roomData);
@@ -80,7 +80,7 @@ namespace CommonShuffleLibrary.Data
                                                             query,
                                                             (err2) =>
                                                             {
-                                                                if (err2 != null) Logger.Log("Data Error: " + err2, LogLevel.Error);
+                                                                if (err2 != null) ServerLogger.Log("Data Error: " + err2, LogLevel.Error);
                                                                 roomData.Users.Remove(user);
 
                                                                 complete(roomData);

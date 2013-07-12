@@ -40,14 +40,14 @@ namespace Client.Controllers
                                                             });
 
 
-
-            createUIService.CreateSingleton<EffectTesterControllerScope>("EffectTester", (_scope, elem) =>
+var effectTesterUI=            createUIService.CreateSingleton<EffectTesterControllerScope>("EffectTester", (_scope, elem) =>
             {
                 _scope.Model = new EffectTesterControllerScopeModel();
                 _scope.Model.Game = myScope.Model.Game;
                 _scope.Model.Selection = myScope.Model.Selection;
 
             });
+            myScope.OnClose += effectTesterUI.Destroy;
 
         }
 

@@ -81,8 +81,16 @@ namespace NodeLibraries.Common.Logging
             return item;
         }
     }
+
     [NamedValues]
-    public enum LogLevel { Error, DebugInformation, Information }
+    public enum LogLevel
+    {
+        Error,
+        DebugInformation,
+        Information,
+        TransportInfo
+    }
+
     public class ServerHelper
     {
 

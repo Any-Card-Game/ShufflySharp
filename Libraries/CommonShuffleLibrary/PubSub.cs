@@ -79,8 +79,14 @@ namespace CommonShuffleLibrary
         public static void Log(string item, LogLevel level)
         {
             Logger.Log(item, level);
-            pubsub.Publish(string.Format("PUBSUB.ServerLogger.{0}", ServerType), Json.Stringify(new ServerLogMessage(ServerType,ServerName,item,DateTime.Now)));
-            
+            pubsub.Publish(string.Format("PUBSUB.ServerLogger.{0}", ServerType), Json.Stringify(new ServerLogMessage(ServerType, ServerName, item,level)));
+
+        }
+        public static void LogTransport(string item)
+        {
+            Logger.Log(item, LogLevel.TransportInfo);
+            pubsub.Publish(string.Format("PUBSUB.ServerLogger.{0}", ServerType), Json.Stringify(new ServerLogMessage(ServerType, ServerName, item,LogLevel.TransportInfo)));
+
         }
 
     }
@@ -109,13 +115,16 @@ namespace CommonShuffleLibrary
         public string ServerType { get; set; }
         public string ServerName { get; set; }
         public string Content { get; set; }
+        public LogLevel LogLevel { get; set; }
+
         [ObjectLiteral]
-        public ServerLogMessage(string serverType,string serverName, string content, DateTime now)
+        public ServerLogMessage(string serverType, string serverName, string content, LogLevel logLevel)
         {
             ServerType = serverType;
             ServerName = serverName;
             Content = content;
-            Now = now;
+            LogLevel = logLevel;
+            Now = DateTime.Now;
         }
     }
 }

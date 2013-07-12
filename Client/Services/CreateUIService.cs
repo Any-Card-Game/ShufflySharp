@@ -19,11 +19,11 @@ namespace Client.Services
             myRootScopeService = rootScopeService;
         }
 
-        public T Create<T>(string ui) where T : BaseScope
+        public CreatedUI<T> Create<T>(string ui) where T : BaseScope
         {
             return Create<T>(ui, (a, b) => { });
         }
-        public T Create<T>(string ui, Action<T, jQueryObject> populateScope) where T : BaseScope
+        public CreatedUI<T> Create<T>(string ui, Action<T, jQueryObject> populateScope) where T : BaseScope
         {
 
             T scope = myRootScopeService.New<T>();
@@ -33,21 +33,21 @@ namespace Client.Services
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 
-            return scope;
+            return new CreatedUI<T>(scope,item);
         }
 
-        private JsDictionary<string, jQueryObject> singltons = new JsDictionary<string, jQueryObject>();
+        private JsDictionary<string, AngularElement> singltons = new JsDictionary<string, AngularElement>();
 
 
-        public BaseScope CreateSingleton(string ui)
+        public CreatedUI<BaseScope> CreateSingleton(string ui)
         {
             return CreateSingleton<BaseScope>(ui);
         }
-        public T CreateSingleton<T>(string ui) where T : BaseScope
+        public CreatedUI<T> CreateSingleton<T>(string ui) where T : BaseScope
         {
             return CreateSingleton<T>(ui, (a, b) => { });
         }
-        public T CreateSingleton<T>(string ui, Action<T, jQueryObject> populateScope) where T : BaseScope
+        public CreatedUI<T> CreateSingleton<T>(string ui, Action<T, jQueryObject> populateScope) where T : BaseScope
         {
             T scope;
 
@@ -55,11 +55,23 @@ namespace Client.Services
             {
 
                 var html = singltons[ui];
+                if (html.Parent().Length == 0)
+                {
+                    singltons.Remove(ui);
+                }
+            }
+
+            if (singltons.ContainsKey(ui))
+            {
+
+                var html = singltons[ui];
+                
                 scope = myRootScopeService.New<T>();
                 populateScope(scope, html);
                 myCompileService(html)(scope);
                 scope.Apply();
 
+                return new CreatedUI<T>(scope, html);
             }
             else
             {
@@ -69,30 +81,52 @@ namespace Client.Services
                 var item = myCompileService(html)(scope);
                 item.AppendTo(Window.Document.Body);
                 scope.Apply();
-                singltons[ui] = html;
-            }
-            return scope;
+                singltons[ui] = item;
+
+                return new CreatedUI<T>(scope, item);
+            } 
+
         }
 
 
-        public IScope Create(string ui)
+        public CreatedUI<IScope> Create(string ui)
         {
 
             var scope = myRootScopeService.New();
             var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
+             
 
-            return scope;
+            return new CreatedUI<IScope>(scope, item);
         }
-        public IScope Create(string ui, BaseScope scope)
+        public CreatedUI<IScope> Create(string ui, BaseScope scope)
         {
 
             var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 
-            return scope;
+            return new CreatedUI<IScope>(scope,item);
+        }
+    }
+
+    public class CreatedUI<T> where T: IScope
+    {
+        public T Scope { get; set; }
+        public AngularElement Element { get; set; }
+
+        public CreatedUI(T scope,AngularElement element)
+        {
+            Scope = scope;
+            Element = element;
+        }
+
+        public void Destroy()
+        {
+            Scope.Destroy();
+            Element.Remove();
+
         }
     }
 }

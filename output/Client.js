@@ -244,7 +244,7 @@
 			this.$myScope.$apply();
 		});
 		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, ss.mkdel(this, function() {
-			this.$myCreateUIService.create$1('GameUI');
+			this.$myCreateUIService.create('GameUI');
 			//                                           uiManager.GameManager.StartGame();
 			clientSiteManagerService.startGame({});
 			//UIWindow.Height = 200;
@@ -418,7 +418,7 @@
 	};
 	$Client_Controllers_$GameEditorController.prototype = {
 		$openTestFn: function() {
-			this.$myCreateUIService.create$1('DebugGameUI');
+			this.$myCreateUIService.create('DebugGameUI');
 			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$myScope.model.game.name });
 		},
 		$openLayoutFn: function() {
@@ -473,11 +473,12 @@
 			if (ss.isValue(this.$myScope.model.selection.selectedEffect)) {
 			}
 		}));
-		createUIService.createSingleton$2($Client_Scope_Controller_EffectTesterControllerScope).call(createUIService, 'EffectTester', ss.mkdel(this, function(_scope, elem) {
+		var effectTesterUI = createUIService.createSingleton$2($Client_Scope_Controller_EffectTesterControllerScope).call(createUIService, 'EffectTester', ss.mkdel(this, function(_scope, elem) {
 			_scope.model = $Client_Scope_Controller_EffectTesterControllerScopeModel.$ctor();
 			_scope.model.game = this.$myScope.model.game;
 			_scope.model.selection = this.$myScope.model.selection;
 		}));
+		this.$myScope.onClose = ss.delegateCombine(this.$myScope.onClose, ss.mkdel(effectTesterUI, effectTesterUI.destroy));
 	};
 	$Client_Controllers_$GameEffectsEditorController.prototype = {
 		$addEffectFn: function() {
@@ -1131,7 +1132,7 @@
 	};
 	$Client_Controllers_$HomeController.prototype = {
 		$createGameFn: function() {
-			this.$myCreateUIService.create$1('GameManager');
+			this.$myCreateUIService.create('GameManager');
 			this.$myScope.minimize();
 		},
 		$joinRoomFn: function() {
@@ -5311,6 +5312,41 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Services.CreatedUI
+	var $Client_Services_CreatedUI$1 = function(T) {
+		var $type = function(scope, element) {
+			this.$1$ScopeField = ss.getDefaultValue(T);
+			this.$1$ElementField = null;
+			this.set_scope(scope);
+			this.set_element(element);
+		};
+		$type.prototype = {
+			get_scope: function() {
+				return this.$1$ScopeField;
+			},
+			set_scope: function(value) {
+				this.$1$ScopeField = value;
+			},
+			get_element: function() {
+				return this.$1$ElementField;
+			},
+			set_element: function(value) {
+				this.$1$ElementField = value;
+			},
+			destroy: function() {
+				this.get_scope().$destroy();
+				this.get_element().remove();
+			}
+		};
+		ss.registerGenericClassInstance($type, $Client_Services_CreatedUI$1, [T], function() {
+			return null;
+		}, function() {
+			return [];
+		});
+		return $type;
+	};
+	ss.registerGenericClass(global, 'Client.Services.CreatedUI$1', $Client_Services_CreatedUI$1, 1);
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Services.CreateUIService
 	var $Client_Services_CreateUIService = function(compileService, rootScopeService) {
 		this.$myCompileService = null;
@@ -5320,7 +5356,7 @@
 		this.$myRootScopeService = rootScopeService;
 	};
 	$Client_Services_CreateUIService.prototype = {
-		create: function(T) {
+		create$1: function(T) {
 			return function(ui) {
 				return this.create$3(T).call(this, ui, function(a, b) {
 				});
@@ -5334,7 +5370,7 @@
 				var item = this.$myCompileService(html)(scope);
 				item.appendTo(window.document.body);
 				scope.$apply();
-				return scope;
+				return new (ss.makeGenericType($Client_Services_CreatedUI$1, [T]))(scope, item);
 			};
 		},
 		createSingleton: function(ui) {
@@ -5351,35 +5387,42 @@
 				var scope;
 				if (ss.keyExists(this.$singltons, ui)) {
 					var html = this.$singltons[ui];
+					if (html.parent().length === 0) {
+						delete this.$singltons[ui];
+					}
+				}
+				if (ss.keyExists(this.$singltons, ui)) {
+					var html1 = this.$singltons[ui];
 					scope = this.$myRootScopeService.$new();
-					populateScope(scope, html);
-					this.$myCompileService(html)(scope);
+					populateScope(scope, html1);
+					this.$myCompileService(html1)(scope);
 					scope.$apply();
+					return new (ss.makeGenericType($Client_Services_CreatedUI$1, [T]))(scope, html1);
 				}
 				else {
 					scope = this.$myRootScopeService.$new();
-					var html1 = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress));
-					populateScope(scope, html1);
-					var item = this.$myCompileService(html1)(scope);
+					var html2 = $(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress));
+					populateScope(scope, html2);
+					var item = this.$myCompileService(html2)(scope);
 					item.appendTo(window.document.body);
 					scope.$apply();
-					this.$singltons[ui] = html1;
+					this.$singltons[ui] = item;
+					return new (ss.makeGenericType($Client_Services_CreatedUI$1, [T]))(scope, item);
 				}
-				return scope;
 			};
 		},
-		create$1: function(ui) {
+		create: function(ui) {
 			var scope = this.$myRootScopeService.$new();
 			var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress)))(scope);
 			item.appendTo(window.document.body);
 			scope.$apply();
-			return scope;
+			return new (ss.makeGenericType($Client_Services_CreatedUI$1, [Object]))(scope, item);
 		},
 		create$2: function(ui, scope) {
 			var item = this.$myCompileService($(ss.formatString('<div ng-include src="\'{1}partials/UIs/{0}.html\'"></div>', ui, CommonLibraries.Constants.contentAddress)))(scope);
 			item.appendTo(window.document.body);
 			scope.$apply();
-			return scope;
+			return new (ss.makeGenericType($Client_Services_CreatedUI$1, [Object]))(scope, item);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////

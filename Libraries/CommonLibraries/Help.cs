@@ -21,6 +21,5 @@ namespace CommonLibraries
             return false;
         }
 
-        public const bool Verbose= true;
     }
 }

@@ -49,6 +49,7 @@
     <Compile Include="QueuePusher.cs" />
     <Compile Include="QueueWatcher.cs" />
     <Compile Include="QueueItemCollection.cs" />
+    <Compile Include="ServerLogger.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DataModels\DataModels.csproj">

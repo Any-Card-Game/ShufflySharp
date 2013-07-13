@@ -29,16 +29,14 @@ namespace CommonShuffleLibrary
                           (caller, dtj) => {
 
 
-                              var data = (string[])dtj;
-                              ServerLogger.Log(channel+ " BLPop Data: " + data, LogLevel.Information);
+                              var data = (string[])dtj; 
 
                               if (dtj != null)
                               {
 
-                                  if (CommonLibraries.Help.Verbose)
-                                      ServerLogger.Log(data[1],LogLevel.Information);
-
                                   var dt = Json.ParseData<QueueMessage>(data[1]);
+                                  ServerLogger.LogTransport("Channel: " + dt.EventChannel, dt.Content);
+
                                   Callback(dt.Name, dt.User, dt.EventChannel, dt.Content);
                               }
                               Cycle(channel);

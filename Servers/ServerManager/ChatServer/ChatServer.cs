@@ -17,7 +17,7 @@ namespace ServerManager.ChatServer
             Logger.Start(chatServerIndex);
 
             new ArrayUtils();
-            Global.Process.On("exit", () => ServerLogger.Log("exi ChatServer", LogLevel.Information));
+            Global.Process.On("exit", () => ServerLogger.LogError("exi ChatServer", null));
             ChatManager chatManager = new ChatManager(chatServerIndex);
         }
 

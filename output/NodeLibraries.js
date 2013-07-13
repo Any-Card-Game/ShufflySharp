@@ -106,6 +106,14 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 				console.log(item);
 				break;
 			}
+			case 'transportInfo': {
+				console.log(item);
+				break;
+			}
+			case 'dataInfo': {
+				console.log(item);
+				break;
+			}
 		}
 		$NodeLibraries_Common_Logging_Logger.$fs.appendFile('logs/' + $NodeLibraries_Common_Logging_Logger.$key, item + '\n', null, function(error, outp) {
 			if (ss.isValue(error)) {
@@ -119,7 +127,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 	// NodeLibraries.Common.Logging.LogLevel
 	var $NodeLibraries_Common_Logging_LogLevel = function() {
 	};
-	$NodeLibraries_Common_Logging_LogLevel.prototype = { error: 'error', debugInformation: 'debugInformation', information: 'information' };
+	$NodeLibraries_Common_Logging_LogLevel.prototype = { error: 'error', debugInformation: 'debugInformation', information: 'information', transportInfo: 'transportInfo', dataInfo: 'dataInfo' };
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.ProgressBar
 	var $NodeLibraries_Common_Logging_ProgressBar = function(charm, minValue, maxValue) {

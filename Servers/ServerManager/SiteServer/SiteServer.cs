@@ -18,7 +18,7 @@ namespace ServerManager.SiteServer
             Logger.Start(siteServerIndex);
 
 
-            Global.Process.On("exit", () => ServerLogger.Log("exi SiteServer",LogLevel.Information));
+            Global.Process.On("exit", () => ServerLogger.LogError("exi SiteServer",null));
 
             SiteManager siteManager = new SiteManager(siteServerIndex);
         }

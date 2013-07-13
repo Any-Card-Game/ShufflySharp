@@ -25,7 +25,6 @@ namespace ServerManager.GameServer
         private int skipped__;
         private DateTime startTime = new DateTime();
         private int total__;
-        private bool verbose = false;
 
         public GameManager(string gameServerIndex)
         {
@@ -50,7 +49,7 @@ namespace ServerManager.GameServer
                 {
                     if (player.UserName == user.UserName)
                     {
-                        ServerLogger.Log("22User Left: " + player.UserName,LogLevel.DebugInformation);
+                        ServerLogger.LogDebug("22User Left: " + player.UserName, player);
                         gameRoom.PlayerLeave(player);
                         break;
                     }
@@ -66,7 +65,7 @@ namespace ServerManager.GameServer
                 {
                     if (player.UserName == user.UserName)
                     {
-                        ServerLogger.Log("11User Left: " + player.UserName, LogLevel.DebugInformation);
+                        ServerLogger.LogDebug("11User Left: " + player.UserName, player);
 
                         gameRoom.PlayerLeave(player);
                         break;
@@ -78,15 +77,15 @@ namespace ServerManager.GameServer
         public void CreateGame(GameCreateRequestModel data)
         {
 
-            ServerLogger.Log("--game created ", LogLevel.DebugInformation);
+            ServerLogger.LogDebug("--game created ", data);
             dataManager.SiteData.Game_GetGamesByName(data.GameType, (game) =>
                                                                     {
                                                                         if (game == null)
                                                                         {
-                                                                            ServerLogger.Log("--game not found " + game.Name, LogLevel.DebugInformation);
+                                                                            ServerLogger.LogError("--game not found " + data.GameType, data);
                                                                             return;
                                                                         }
-                                                                        ServerLogger.Log("--game found " + game.Name, LogLevel.DebugInformation);
+                                                                        ServerLogger.LogDebug("--game found " + game.Name, game);
 
                                                                         GameRoom room;
                                                                         rooms.Add(room = new GameRoom());
@@ -105,7 +104,7 @@ namespace ServerManager.GameServer
                                                                         room.Unwind = players =>
                                                                         {
                                                                             gameData.FinishedGames++;
-                                                                            ServerLogger.Log("--game closed", LogLevel.DebugInformation);
+                                                                            ServerLogger.LogDebug("--game closed", gameData);
                                                                         };
                                                                         room.PlayerLeave += (player) =>
                                                                         {
@@ -146,22 +145,22 @@ namespace ServerManager.GameServer
 
             for (ind = 0; answerQueue.Count > 0 && ind < QUEUEPERTICK; ind++)
             {
-                ServerLogger.Log("-- w pop", LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("-- answer pop, queue length: {0}", answerQueue.Count), null);
 
-                var arg2 = answerQueue[0];
+                var answer = answerQueue[0];
                 answerQueue.RemoveAt(0);
-                var data = arg2;
+                
 
-                var room = getRoomByPlayer(arg2.Item1.UserName);
+                var room = getRoomByPlayer(answer.Item1.UserName);
                 if (room == null)
                 {
-                    ServerLogger.Log("Room not found for user: " + arg2.Item1.UserName, LogLevel.Error);
+                    ServerLogger.LogError("Room not found for user: " + answer.Item1.UserName, answer);
                     continue;
                     throw new Exception("idk");
                 }
 
                 var dict = new CardGameAnswer();
-                dict.Value = data.Item2.Answer;
+                dict.Value = answer.Item2.Answer;
                 room.EmulatedAnswers.Add(dict);
                 var answ = room.Fiber.Run<FiberYieldResponse>(dict);
 
@@ -177,7 +176,7 @@ namespace ServerManager.GameServer
                 if ((total__ + skipped__) % 20 == 0)
                 {
                     var dt = new DateTime();
-                    ServerLogger.Log(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}",
+                    ServerLogger.LogDebug(string.Format("{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}",
                                              myServerManager.GameServerIndex.Substring(0, 19),
                                              (total__ + skipped__),
                                              ind,
@@ -185,7 +184,7 @@ namespace ServerManager.GameServer
                                              answerQueue.Count,
                                              rooms.Count,
                                              (gameData.TotalQuestionsAnswered / ((dt.GetTime() - startTime.GetTime()) / 1000d))),
-                               LogLevel.DebugInformation);
+                               null);
                 }
             }
         }
@@ -196,7 +195,7 @@ namespace ServerManager.GameServer
             {
                 if (players == null || players.Count == 0) return true;
                 room.Players = players;
-                ServerLogger.Log("game started", LogLevel.Information);
+                ServerLogger.LogDebug("game started", room);
                 GameObject sev = null;
 
                 Script.Eval("sev = new gameObject();");
@@ -245,7 +244,7 @@ namespace ServerManager.GameServer
                 sev.CardGame.ConfigurationCompleted();
                 sev.Constructor();
                 sev.RunGame();
-                ServerLogger.Log("Doneski", LogLevel.DebugInformation);
+                ServerLogger.LogDebug("Doneski", gameData);
 
                 room.Unwind(players);
                 return true;
@@ -256,7 +255,7 @@ namespace ServerManager.GameServer
         {
             if (response == null)
             {
-                ServerLogger.Log("game request over", LogLevel.DebugInformation);
+                ServerLogger.LogDebug("game request over", room);
 
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
@@ -302,7 +301,7 @@ namespace ServerManager.GameServer
 
         private void gameOver(GameRoom room)
         {
-            ServerLogger.Log("game real over", LogLevel.DebugInformation);
+            ServerLogger.LogDebug("game real over", room);
 
             myServerManager.SendUpdateState(room);
 
@@ -320,7 +319,7 @@ namespace ServerManager.GameServer
 
             if (answ == null)
             {
-                ServerLogger.Log("game question over", LogLevel.DebugInformation);
+                ServerLogger.LogDebug("game question over", room);
                 myServerManager.SendGameOver(room);
                 room.Fiber.Run<FiberYieldResponse>();
                 //     profiler.takeSnapshot('game over ' + room.roomID);
@@ -341,15 +340,8 @@ namespace ServerManager.GameServer
             myServerManager.SendAskQuestion(user, new GameSendAnswerModel(answ.Question, answ.Answers));
             myServerManager.SendUpdateState(room);
 
-            if (verbose)
-            {
-                ServerLogger.Log(answ.User.UserName + ": " + answ.Question + "   ", LogLevel.Information);
-                var ind = 0;
-                foreach (var answer in answ.Answers)
-                {
-                    ServerLogger.Log("     " + ind++ + ": " + answer, LogLevel.Information);
-                }
-            }
+      
+                ServerLogger.LogDebug("Ask question   ", answ);
         }
 
         private UserLogicModel getPlayerByUsername(GameRoom room, string userName)

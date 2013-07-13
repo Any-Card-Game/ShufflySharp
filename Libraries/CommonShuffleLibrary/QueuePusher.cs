@@ -19,9 +19,7 @@ namespace CommonShuffleLibrary
         public void Message(string channel, string name, UserLogicModel user, string eventChannel, object content)
         {
             var message = new QueueMessage(name, user, eventChannel, content);
-            var value = Json.Stringify(message, Help.Sanitize);
-            if (CommonLibraries.Help.Verbose)
-                ServerLogger.Log(channel + "RPush " + value, LogLevel.Information);
+            var value = Json.Stringify(message, Help.Sanitize); 
             client1.RPush(channel, value); //todo:maybe sanitize
         }
     }

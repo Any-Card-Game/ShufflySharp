@@ -36,7 +36,7 @@ namespace ServerManager.AdminServer
             ServerLogger.InitLogger("AdminServer", "AdminServer");
             Logger.Start("Admin");
 
-            ServerLogger.Log("Shuffly Admin V0.51",LogLevel.DebugInformation);
+            ServerLogger.LogInformation("Shuffly Admin V0.51",null);
 
             var redis = Global.Require<Redis>("redis");
             var client = redis.CreateClient(6379, Constants.RedisIP);
@@ -56,7 +56,7 @@ namespace ServerManager.AdminServer
 
             Global.Process.On("exit",
                               () => {
-                                  ServerLogger.Log("Exiting ", LogLevel.DebugInformation);
+                                  ServerLogger.LogDebug("Exiting ",null);
                                   onAsk("k");
                                   runProcess("pkill", new[] {"node"});
                               });
@@ -66,7 +66,7 @@ namespace ServerManager.AdminServer
            onAsk("d", true);
             if (debug) {
                 nodeInspector = runProcess("node-inspector", new string[0]);
-                ServerLogger.Log("node-inspector Started", LogLevel.DebugInformation);
+                ServerLogger.LogDebug("node-inspector Started",null);
             }
 
             onAsk("s");
@@ -135,7 +135,7 @@ namespace ServerManager.AdminServer
                 case "d":
 
                     debug = !debug;
-                    ServerLogger.Log("Debug " + (debug ? "Enabled" : "Disabled"), LogLevel.DebugInformation);
+                    ServerLogger.LogDebug("Debug " + (debug ? "Enabled" : "Disabled"), null);
                     break;
                 case "s":
 
@@ -146,34 +146,34 @@ namespace ServerManager.AdminServer
                     gateways = new List<ProcessInformation>();
 
                     monitor = new ProcessInformation(runProcess("node", new[] { __dirname + "ServerManager.js", "monitor" }, 3900), "Monitor Server", 0, 3900);
-                    ServerLogger.Log("Monitor Server Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation("Monitor Server Started", null);
 
 
 
                     head = new ProcessInformation(runProcess("node", new[] { __dirname + "ServerManager.js", "head" }, 4000), "Head Server", 0, 4000);
-                    ServerLogger.Log("Head Server Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation("Head Server Started", null);
                     for (var j = 0; j < numOfSiteServers; j++) {
                         sites.Add(new ProcessInformation(runProcess("node", new string[] { __dirname + "ServerManager.js", "site" }, 4100 + j), "Site Server", j, 4100 + j));
                     }
 
-                    ServerLogger.Log(sites.Count + " Site Servers Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation(sites.Count + " Site Servers Started", null);
                     for (var j = 0; j < numOfGateways; j++) {
                         gateways.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "ServerManager.js", "gateway" }, 4400 + j), "Gateway Server", j, 4400 + j));
                     }
-                    ServerLogger.Log(gateways.Count + " Gateway Servers Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation(gateways.Count + " Gateway Servers Started", null);
 
                     for (var j = 0; j < numOfGameServers; j++) {
                         games.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "ServerManager.js", "game" }, 4200 + j), "Game Server", j, 4200 + j));
                     }
-                    ServerLogger.Log(games.Count + " Game Servers Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation(games.Count + " Game Servers Started", null);
 
                     for (var j = 0; j < numOfChatServers; j++) {
                         chats.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "ServerManager.js", "chat" }, 4500 + j), "Chat Server", j, 4500 + j));
                     }
-                    ServerLogger.Log(chats.Count + " Chat Servers Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation(chats.Count + " Chat Servers Started", null);
 
                     debugs.Add(new ProcessInformation(runProcess("node", new[] { __dirname + "ServerManager.js", "debug" }, 4300), "Debug Server", 0, 4300));
-                    ServerLogger.Log(debugs.Count + " Debug Servers Started", LogLevel.DebugInformation);
+                    ServerLogger.LogInformation(debugs.Count + " Debug Servers Started", null);
 
                     break;
                 case "q":

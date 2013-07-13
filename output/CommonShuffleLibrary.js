@@ -161,12 +161,11 @@ require('./NodeLibraries.js');
 		},
 		sendMessage: function(channel, eventChannel, user, content) {
 			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
-				$CommonShuffleLibrary_ServerLogger.log('Cannot send message:' + channel + ' No Existy', 'error');
-				$CommonShuffleLibrary_ServerLogger.log('       ' + eventChannel + ' ' + JSON.stringify(content), 'error');
+				$CommonShuffleLibrary_ServerLogger.logError(ss.formatString('Cannot send message:{0} - {1} No Existy', channel, eventChannel), content);
 				return;
 			}
 			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			$CommonShuffleLibrary_ServerLogger.log(ss.formatString('  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}', channel, this.name, user, eventChannel, content), 'information');
+			$CommonShuffleLibrary_ServerLogger.logTransport('Channel: ' + eventChannel, content);
 			pusher.message(channel, this.name, user, eventChannel, content);
 		}
 	};
@@ -203,9 +202,6 @@ require('./NodeLibraries.js');
 		message: function(channel, name, user, eventChannel, content) {
 			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
 			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
-			if (CommonLibraries.Help.verbose) {
-				$CommonShuffleLibrary_ServerLogger.log(channel + 'RPush ' + value, 'information');
-			}
 			this.$client1.rpush(channel, value);
 			//todo:maybe sanitize
 		}
@@ -232,12 +228,9 @@ require('./NodeLibraries.js');
 		cycle: function(channel) {
 			this.$client1.blpop([channel, 10], ss.mkdel(this, function(caller, dtj) {
 				var data = ss.cast(dtj, Array);
-				$CommonShuffleLibrary_ServerLogger.log(channel + ' BLPop Data: ' + data, 'information');
 				if (ss.isValue(dtj)) {
-					if (CommonLibraries.Help.verbose) {
-						$CommonShuffleLibrary_ServerLogger.log(data[1], 'information');
-					}
 					var dt = JSON.parse(data[1]);
+					$CommonShuffleLibrary_ServerLogger.logTransport('Channel: ' + dt.eventChannel, dt.content);
 					this.get_callback()(dt.name, dt.user, dt.eventChannel, dt.content);
 				}
 				this.cycle(channel);
@@ -254,9 +247,25 @@ require('./NodeLibraries.js');
 		$CommonShuffleLibrary_ServerLogger.$pubsub = new $CommonShuffleLibrary_PubSub(function(ps) {
 		});
 	};
-	$CommonShuffleLibrary_ServerLogger.log = function(item, level) {
-		NodeLibraries.Common.Logging.Logger.log(item, level);
-		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, content: item, now: new Date() }));
+	$CommonShuffleLibrary_ServerLogger.logInformation = function(item, jsonContent) {
+		NodeLibraries.Common.Logging.Logger.log(item, 'information');
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'information' }, CommonLibraries.Help.sanitize));
+	};
+	$CommonShuffleLibrary_ServerLogger.logDebug = function(item, jsonContent) {
+		NodeLibraries.Common.Logging.Logger.log(item, 'debugInformation');
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'debugInformation' }, CommonLibraries.Help.sanitize));
+	};
+	$CommonShuffleLibrary_ServerLogger.logError = function(item, jsonContent) {
+		NodeLibraries.Common.Logging.Logger.log(item, 'error');
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'error' }, CommonLibraries.Help.sanitize));
+	};
+	$CommonShuffleLibrary_ServerLogger.logTransport = function(item, jsonContent) {
+		NodeLibraries.Common.Logging.Logger.log(item, 'transportInfo');
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'transportInfo' }, CommonLibraries.Help.sanitize));
+	};
+	$CommonShuffleLibrary_ServerLogger.logData = function(item, jsonContent) {
+		NodeLibraries.Common.Logging.Logger.log(item, 'dataInfo');
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'dataInfo' }, CommonLibraries.Help.sanitize));
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.ServerLogListener
@@ -297,7 +306,7 @@ require('./NodeLibraries.js');
 				query['$push'] = { messages: messageModel };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						$CommonShuffleLibrary_ServerLogger.log('Data Error: ' + err2, 'error');
+						$CommonShuffleLibrary_ServerLogger.logError('Data Error: ' + err2, message);
 					}
 					ss.add(roomData.messages, messageModel);
 					complete(messageModel);
@@ -310,7 +319,7 @@ require('./NodeLibraries.js');
 				query['$push'] = { users: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						$CommonShuffleLibrary_ServerLogger.log('Data Error: ' + err2, 'error');
+						$CommonShuffleLibrary_ServerLogger.logError('Data Error: ' + err2, user);
 					}
 					ss.add(roomData.users, user);
 					complete(roomData);
@@ -323,7 +332,7 @@ require('./NodeLibraries.js');
 				query['$pop'] = { users: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(roomData._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						$CommonShuffleLibrary_ServerLogger.log('Data Error: ' + err2, 'error');
+						$CommonShuffleLibrary_ServerLogger.logError('Data Error: ' + err2, user);
 					}
 					ss.remove(roomData.users, user);
 					complete(roomData);
@@ -436,7 +445,7 @@ require('./NodeLibraries.js');
 				query['$push'] = { players: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						$CommonShuffleLibrary_ServerLogger.log('Data Error: ' + err2, 'error');
+						$CommonShuffleLibrary_ServerLogger.logError('Data Error: ' + err2, user);
 					}
 					ss.add(room.players, user);
 					complete(room);
@@ -449,7 +458,7 @@ require('./NodeLibraries.js');
 				query['$pop'] = { players: user };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room._id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						$CommonShuffleLibrary_ServerLogger.log('Data Error: ' + err2, 'error');
+						$CommonShuffleLibrary_ServerLogger.logError('Data Error: ' + err2, user);
 					}
 					for (var $t1 = 0; $t1 < room.players.length; $t1++) {
 						var userLogicModel = room.players[$t1];
@@ -473,7 +482,7 @@ require('./NodeLibraries.js');
 				query['$set'] = { chatServer: chatServerIndex };
 				collection.update({ _id: NodeLibraries.MongoDB.MongoDocument.getID(room.id) }, query, function(err2) {
 					if (ss.isValue(err2)) {
-						$CommonShuffleLibrary_ServerLogger.log('Data Error: ' + err2, 'error');
+						$CommonShuffleLibrary_ServerLogger.logError('Data Error: ' + err2, chatServerIndex);
 					}
 					room.chatServer = chatServerIndex;
 					complete(room);

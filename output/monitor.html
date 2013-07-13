@@ -1,57 +1,188 @@
 ﻿<!DOCTYPE html>
 <html ng-app="ACGMonitor">
-<head>
-    <title>Shuffly Monitor</title>
-    <style type="text/css">
-        body, html
-        {
-            height: 100%;
-        }
+   <head>
+      <title>Shuffly Monitor</title>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script data-require="angular.js@1.0.x" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js" data-semver="1.0.7"></script>
+      <script type="text/javascript" src="http://localhost:8881/lib/socket.io.js"></script>
+      <script type="text/javascript" src="http://localhost:8881/lib/ui-bootstrap.js"></script>
+      <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+      <script type="text/javascript">
+          var app = angular.module('ACGMonitor', ['ui.bootstrap']);
 
-        body
-        {
-            background-color: cadetblue;
-        }
-    </style>
-    <script data-require="angular.js@1.0.x" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js" data-semver="1.0.7"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/socket.io.js"></script>
+          app.controller('Main', function ($scope) {
 
-    <script type="text/javascript">
-        var app = angular.module('ACGMonitor', []);
+              var socket = io.connect('127.0.0.1:9991');
+              var servers = ['GameServer', 'DebugServer', 'GatewayServer', 'HeadServer', 'SiteServer', 'ChatServer', 'AdminServer'];
+              var logTypes = ['Information', 'Debug Information', 'Errors', 'Transport', 'Data Transport'];
+              $scope.model = {};
+              $scope.model.selectedLogPiece = null;
+              $scope.model.tabs = [];
 
-        app.controller('Main', function ($scope) {
-            $scope.name = 'World';
-            var socket=io.connect('127.0.0.1:9991');
-            socket.on('GameServer', function(data) {
-                console.log(data);
-            });
-            socket.on('DebugServer', function(data) {
-                console.log(data);
-            });
-            socket.on('GatewayServer', function(data) {
-                console.log(data);
-            });
-            socket.on('HeadServer', function(data) {
-                console.log(data);
-            });
-            socket.on('SiteServer', function(data) {
-                console.log(data);
-            });
-            socket.on('ChatServer', function(data) {
-                console.log(data);
-            });
-            socket.on('AdminServer', function(data) {
-                console.log(data);
-            });
-        });
+              for (var i = 0; i < servers.length; i++) {
 
-    </script>
-</head>
-<body>
+                  (function (serverName) {
+                      socket.on(serverName, function (data) {
 
-    <body ng-controller="Main">
-        <p>Hello {{name}}!</p>
-    </body>
 
-</body>
+                          var logType;
+                          switch (data.logLevel) {
+                              case "information":
+                                  logType = 'Information';
+                                  break;
+                              case "debugInformation":
+                                  logType = 'Debug Information';
+                                  break;
+                              case "error":
+                                  logType = 'Errors';
+                                  break;
+                              case "transportInfo":
+                                  logType = 'Transport';
+                                  break;
+                              case "dataInfo":
+                                  logType = 'Data Transport';
+                                  break;
+                          }
+
+
+                          for (var k = 0; k < $scope.model.tabs.length; k++) {
+                              if ($scope.model.tabs[k].title == data.serverType) {
+                                  var tab = $scope.model.tabs[k];
+
+                                  var selectedServer = undefined;
+                                  for (var l = 0; l < tab.servers.length; l++) {
+                                      var server = tab.servers[l];
+                                      if (server.name == data.serverName) {
+                                          selectedServer = server;
+                                      }
+                                  }
+                                  if (!selectedServer) {
+                                      var logPieces = [];
+                                      for (var j = 0; j < logTypes.length; j++) {
+                                          logPieces.push({ logTitle: logTypes[j], logs: [], currentLogIndex: 0 });
+                                      }
+                                      tab.servers.push(selectedServer = { name: data.serverName, logPieces: logPieces })
+                                  }
+
+
+
+
+
+                                  for (var m = 0; m < selectedServer.logPieces.length; m++) {
+                                      var logPiece = selectedServer.logPieces[m];
+                                      if (logPiece.logTitle == logType) {
+                                          logPiece.logs.push({ message: data.message, content: data.content });
+
+                                          if (logPiece == $scope.model.selectedLogPiece) {
+                                              $scope.model.selectedLogPiece.currentLogIndex = logPiece.logs.length;
+                                          }
+
+                                          $scope.$apply();
+                                          return;
+                                      }
+                                  }
+
+                              }
+                          }
+
+                          alert('BAD' + JSON.stringify(data));
+                          console.log(data);
+                      });
+                  })(servers[i]);
+
+
+
+                  $scope.model.tabs.push({ title: servers[i], servers: [] })
+              }
+
+              $scope.model.isOutOfSync = function (logPiece) {
+                  if (logPiece.currentLogIndex < logPiece.logs.length) {
+
+                      return { backgroundColor: 'yellow' };
+                  }
+                  return {};
+              };
+              $scope.model.isParentOutOfSync = function (tab) {
+                  var right = 0;
+                  var left = 0;
+                  for (var fm = 0; fm < tab.servers.length; fm++) {
+                      var server = tab.servers[fm];
+                      for (var i = 0; i < server.logPieces.length; i++) {
+                          right += server.logPieces[i].logs.length;
+                          left += server.logPieces[i].currentLogIndex;
+                      }
+
+                  }
+                  if (left < right) {
+
+                      return { backgroundColor: 'yellow' };
+                  }
+                  return {};
+              };
+
+
+          }).directive('forceScroll', function () {
+              return {
+                  link: function (scope, elem, attr) {
+                      scope.$watch(attr.forceScroll, function () {
+                          elem[0].scrollTop = elem.height();
+                      }, true)
+                  }
+              };
+          });
+
+      </script>
+      <style>
+         body, html
+         {
+         height: 100%;
+         }
+         body
+         {
+         background-color: cadetblue;
+         }
+         .container
+         {
+         margin: auto;
+         width: 800px;
+         background-color: white;
+         height: 700px;
+         }
+         .warning
+         {
+         background-color: yellow;
+         }
+         hr {
+             margin: 5px;
+         }
+      </style>
+   </head>
+   <body ng-controller="Main">
+      <div class="container">
+         <tabset>
+            <tab ng-repeat="tab in model.tabs" heading="{{tab.title}}" ng-style="$parent.model.isParentOutOfSync($parent.tab)"   >
+               <tabset  >
+                  <tab  ng-repeat="server in tab.servers" heading="{{server.name}}"      >
+                     <tabset  >
+                        <tab  ng-repeat="logPiece in server.logPieces" heading="{{logPiece.logTitle}}" ng-style="$parent.model.isOutOfSync($parent.logPiece)" select="logPiece.currentLogIndex=logPiece.logs.length;model.selectedLogPiece=logPiece;" >
+                           <div style="width:100%;height:100%;overflow-y:scroll; overflow-x:hidden; max-height:526px;min-height:526px;" force-scroll="logPiece.logs">
+                              <div ng-repeat="log in logPiece.logs">
+                                 <div  style="height:50px;" >
+                                    <span >{{log.message}}</span>
+                                    <button class="btn" ng-show="log.content" ng-click="isCollapsed = !isCollapsed"> Expand </button>
+                                    <div collapse="!isCollapsed">
+                                       <pre class="well well-large">{{log.content}}</pre>
+                                    </div>
+                                    <hr/>
+                                 </div>
+                              </div>
+                           </div>
+                        </tab>
+                     </tabset>
+                  </tab>
+               </tabset>
+            </tab>
+         </tabset>
+      </div>
+   </body>
 </html>

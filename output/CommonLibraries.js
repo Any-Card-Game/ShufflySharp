@@ -236,5 +236,4 @@
 	$CommonLibraries_Constants.redisIP = '198.211.107.101';
 	$CommonLibraries_Constants.mongoIP = '198.211.107.101';
 	$CommonLibraries_Constants.HARDLOCATION = 'C:\\code\\node\\';
-	$CommonLibraries_Help.verbose = true;
 })();

@@ -43,19 +43,19 @@ namespace ServerManager.SiteServer
 
         private void OnLeaveRoom(UserLogicModel user, LeaveRoomRequest data)
         {
-            ServerLogger.Log(user.UserName + " manual leave", LogLevel.DebugInformation);
+            ServerLogger.LogDebug(user.UserName + " manual leave", user);
             removeUserFromRoom(user, (room) => { });
         }
 
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            ServerLogger.Log(user.UserName + " disconnected", LogLevel.DebugInformation);
+            ServerLogger.LogDebug(user.UserName + " disconnected", user);
             removeUserFromRoom(data.User, (room) => { });
         }
 
         private void removeUserFromRoom(UserLogicModel user, Action<RoomModel> result)
         {
-            ServerLogger.Log(user.UserName + " removing", LogLevel.DebugInformation);
+            ServerLogger.LogDebug(user.UserName + " removing", user);
             myDataManager.SiteData.Room_GetRoomByUser(user,
                                                       room =>
                                                       {
@@ -69,7 +69,7 @@ namespace ServerManager.SiteServer
                                                           if (user.CurrentGameServer != null)
                                                           {
                                                               mySiteClientManager.LeaveGameRoom(user);
-                                                              ServerLogger.Log(user.UserName + " left Game room", LogLevel.DebugInformation);
+                                                              ServerLogger.LogDebug(user.UserName + " left Game room", user);
                                                               user.CurrentGameServer = null;
                                                           }
                                                           foreach (var player in room.Players)
@@ -125,7 +125,7 @@ namespace ServerManager.SiteServer
         private void OnCreateRoom(UserLogicModel user, CreateRoomRequest data)
         {
 
-            ServerLogger.Log(user.UserName + " create room", LogLevel.DebugInformation);
+            ServerLogger.LogDebug(user.UserName + " create room", user);
             removeUserFromRoom(user,
                                disconnectedRoom =>
                                {
@@ -144,7 +144,7 @@ namespace ServerManager.SiteServer
 
         private void OnJoinRoom(UserLogicModel user, RoomJoinRequest data)
         {
-            ServerLogger.Log(user.UserName + " join room", LogLevel.DebugInformation);
+            ServerLogger.LogDebug(user.UserName + " join room", user);
 
             removeUserFromRoom(user,
                                disconnectedRoom =>

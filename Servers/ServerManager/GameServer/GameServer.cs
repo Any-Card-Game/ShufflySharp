@@ -19,7 +19,7 @@ namespace ServerManager.GameServer
 
             childProcess = Global.Require<ChildProcess>("child_process");
             Global.Scope.Fiber = Global.Require<NodeModule>("fibers");
-            Global.Process.On("exit", () => ServerLogger.Log("exi", LogLevel.Information));
+            Global.Process.On("exit", () => ServerLogger.LogError("exi", null));
 
             GameManager gameManager = new GameManager(gameServerIndex);
         }

@@ -54,13 +54,13 @@ namespace CommonShuffleLibrary
         public void SendMessage(string channel, string eventChannel, UserLogicModel user , object content)
         {
             if (qpCollection.GetByChannel(channel) == null) {
-                ServerLogger.Log("Cannot send message:" + channel + " No Existy",LogLevel.Error);
-                ServerLogger.Log("       " + eventChannel + " " + Json.Stringify(content),LogLevel.Error);
+                ServerLogger.LogError(string.Format("Cannot send message:{0} - {1} No Existy", channel, eventChannel), content);
                 return;
             }
 
             var pusher = ( (QueuePusher) qpCollection.GetByChannel(channel) );
-           ServerLogger.Log(string.Format("  -   Channel: {0}  Name: {1}  User: {2}  EventChannel: {3}  Content: {4}", channel, Name, user , eventChannel, content),LogLevel.Information);
+            ServerLogger.LogTransport("Channel: " + eventChannel, content);
+
             pusher.Message(channel, Name, user, eventChannel, content);
         }
     }

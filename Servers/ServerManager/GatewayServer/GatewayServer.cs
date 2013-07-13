@@ -51,11 +51,11 @@ namespace ServerManager.GatewayServer
             else
                 content = string.Format("http://{0}.{1}", currentSubdomain, "anycardgame.com");
 
-            ServerLogger.Log(content,LogLevel.Information);
+            ServerLogger.LogInformation("Server URL", content);
             app.Listen(port);
             io.Set("log level", 0);
 
-            Global.SetInterval(() => ServerLogger.Log(string.Format("Wooooww {0}'s still alive.", myGatewayName), LogLevel.Information), 10000);
+            Global.SetInterval(() => ServerLogger.LogDebug(string.Format("Wooooww {0}'s still alive.", myGatewayName), null), 10000);
             new PubSub((ps) =>
                             {
                                
@@ -89,14 +89,14 @@ namespace ServerManager.GatewayServer
                           (SocketIOConnection socket) =>
                           {
                               var j = ++curc;
-                              ServerLogger.Log("Socket Connected " + j,LogLevel.DebugInformation);
+                              ServerLogger.LogDebug("Socket Connected " + j,null);
                               UserSocketModel user = null;
                               socket.On("Gateway.Message",
                                         (GatewayMessageModel data) =>
                                         {
                                             if (user == null)
                                                 return;
-                                            ServerLogger.Log("Socket message " + j + "  " + user.UserName, LogLevel.DebugInformation);
+                                            ServerLogger.LogDebug("Socket message " + j + "  ", new {data, user});
 
                                             var channel = "Bad";
                                             switch (data.Channel.Split('.')[1])
@@ -128,7 +128,7 @@ namespace ServerManager.GatewayServer
                                             user.Hash = data.UserName;
                                             user.Gateway = myGatewayName;
 
-                                            ServerLogger.Log("Socket login " + j + "  " + user.ToString(), LogLevel.DebugInformation);
+                                            ServerLogger.LogDebug("Socket login " + j, new { data, user });
 
                                             users[data.UserName] = user;
                                             queueManager.SendMessage("SiteServer", "Area.Site.Login", user.ToLogicModel(), new SiteLoginRequest(user.Hash));
@@ -138,7 +138,7 @@ namespace ServerManager.GatewayServer
                                         {
                                             if (user == null)
                                                 return;
-                                            ServerLogger.Log("Socket left " + j + "  " + user.UserName, LogLevel.DebugInformation);
+                                            ServerLogger.LogDebug("Socket Left " + j, new { data, user });
 
                                             queueManager.SendMessage("SiteServer", "Area.Site.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
                                             //disconnecting from the room in site server disconencts from chat..
@@ -172,7 +172,7 @@ namespace ServerManager.GatewayServer
             if (specialHandle(user, eventChannel, content))
             {
                 var socketClientMessageModel = new SocketClientMessageModel(user.ToUserModel(), eventChannel, content);
-                ServerLogger.Log(socketClientMessageModel.ToString(), LogLevel.Information);
+                ServerLogger.LogTransport("Send Message", socketClientMessageModel);
                 user.Socket.Emit("Client.Message", socketClientMessageModel);
             }
         }
@@ -182,39 +182,41 @@ namespace ServerManager.GatewayServer
 
             if (eventChannel == "Area.Chat.RegisterServer")
             {
-                ServerLogger.Log(string.Format("Chat Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("Chat Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), user);
                 user.CurrentChatServer = ((RegisterServerModel)content).Server;
                 return false;
             }
             if (eventChannel == "Area.Chat.UnregisterServer")
             {
-                ServerLogger.Log("Chat Server UnRegistered", LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("Chat Server UnRegistered from {0}", user.CurrentChatServer), user);
 
                 user.CurrentChatServer = null;
                 return false;
             }
             if (eventChannel == "Area.Game.RegisterServer")
             {
-                ServerLogger.Log(string.Format("Game Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("Game Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), user);
                 user.CurrentGameServer = ((RegisterServerModel)content).Server;
                 return false;
             }
             if (eventChannel == "Area.Game.UnregisterServer")
             {
-                ServerLogger.Log("Game Server UnRegistered", LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("Game Server UnRegistered from {0}", user.CurrentGameServer), user);
                 user.CurrentGameServer = null;
                 return false;
             }
 
             if (eventChannel == "Area.Debug.RegisterServer")
             {
-                ServerLogger.Log(string.Format("Debug Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("Debug Server {0} Registered to {1}", ((RegisterServerModel)content).Server, user.Hash), user);
+
+
                 user.CurrentDebugServer= ((RegisterServerModel)content).Server;
                 return false;
             }
             if (eventChannel == "Area.Debug.UnregisterServer")
             {
-                ServerLogger.Log("Debug Server UnRegistered", LogLevel.Information);
+                ServerLogger.LogDebug(string.Format("Debug Server UnRegistered from {0}", user.CurrentDebugServer), user);
                 user.CurrentDebugServer = null;
                 return false;
             }

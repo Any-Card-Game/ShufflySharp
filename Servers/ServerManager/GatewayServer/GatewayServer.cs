@@ -55,7 +55,7 @@ namespace ServerManager.GatewayServer
             app.Listen(port);
             io.Set("log level", 0);
 
-            Global.SetInterval(() => ServerLogger.LogDebug(string.Format("Wooooww {0}'s still alive.", myGatewayName), null), 10000);
+      
             new PubSub((ps) =>
                             {
                                

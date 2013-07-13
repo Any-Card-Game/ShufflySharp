@@ -1363,9 +1363,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		CommonShuffleLibrary.ServerLogger.logInformation('Server URL', content);
 		app.listen(port);
 		io.set('log level', 0);
-		setInterval(ss.mkdel(this, function() {
-			CommonShuffleLibrary.ServerLogger.logDebug(ss.formatString('Wooooww {0}\'s still alive.', this.$myGatewayName), null);
-		}), 10000);
 		new CommonShuffleLibrary.PubSub(function(ps) {
 			ps.subscribe('PUBSUB.GatewayServers.Ping', function(message) {
 				ps.publish('PUBSUB.GatewayServers', content);

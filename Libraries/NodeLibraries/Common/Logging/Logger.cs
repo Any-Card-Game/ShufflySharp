@@ -64,17 +64,16 @@ namespace NodeLibraries.Common.Logging
                     Console.Log(item);
                     break;
                 case LogLevel.DebugInformation:
-                    Console.Log(item);
                     break;
                 case LogLevel.Information:
-                    Console.Log(item);
                     break;
                 case LogLevel.TransportInfo:
-                    Console.Log(item);
                     break;
                 case LogLevel.DataInfo:
-                    Console.Log(item);
                     break;
+                case LogLevel.KeepAlive:
+
+                    return item;
             }
             fs.AppendFile("logs/" + Key, item + "\n", null, (error, outp) =>
                                                          {
@@ -95,7 +94,8 @@ namespace NodeLibraries.Common.Logging
         DebugInformation,
         Information,
         TransportInfo,
-        DataInfo
+        DataInfo,
+        KeepAlive
     }
 
     public class ServerHelper

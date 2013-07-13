@@ -245,27 +245,33 @@ require('./NodeLibraries.js');
 		$CommonShuffleLibrary_ServerLogger.$serverName = serverName;
 		$CommonShuffleLibrary_ServerLogger.$serverType = serverType;
 		$CommonShuffleLibrary_ServerLogger.$pubsub = new $CommonShuffleLibrary_PubSub(function(ps) {
+			setInterval(function() {
+				$CommonShuffleLibrary_ServerLogger.logKeepAlive();
+			}, 500);
 		});
 	};
 	$CommonShuffleLibrary_ServerLogger.logInformation = function(item, jsonContent) {
 		NodeLibraries.Common.Logging.Logger.log(item, 'information');
-		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'information' }, CommonLibraries.Help.sanitize));
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'information', time: new Date() }, CommonLibraries.Help.sanitize));
 	};
 	$CommonShuffleLibrary_ServerLogger.logDebug = function(item, jsonContent) {
 		NodeLibraries.Common.Logging.Logger.log(item, 'debugInformation');
-		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'debugInformation' }, CommonLibraries.Help.sanitize));
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'debugInformation', time: new Date() }, CommonLibraries.Help.sanitize));
+	};
+	$CommonShuffleLibrary_ServerLogger.logKeepAlive = function() {
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: null, content: null, logLevel: 'keepAlive', time: new Date() }, CommonLibraries.Help.sanitize));
 	};
 	$CommonShuffleLibrary_ServerLogger.logError = function(item, jsonContent) {
 		NodeLibraries.Common.Logging.Logger.log(item, 'error');
-		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'error' }, CommonLibraries.Help.sanitize));
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'error', time: new Date() }, CommonLibraries.Help.sanitize));
 	};
 	$CommonShuffleLibrary_ServerLogger.logTransport = function(item, jsonContent) {
 		NodeLibraries.Common.Logging.Logger.log(item, 'transportInfo');
-		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'transportInfo' }, CommonLibraries.Help.sanitize));
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'transportInfo', time: new Date() }, CommonLibraries.Help.sanitize));
 	};
 	$CommonShuffleLibrary_ServerLogger.logData = function(item, jsonContent) {
 		NodeLibraries.Common.Logging.Logger.log(item, 'dataInfo');
-		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'dataInfo' }, CommonLibraries.Help.sanitize));
+		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'dataInfo', time: new Date() }, CommonLibraries.Help.sanitize));
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.ServerLogListener

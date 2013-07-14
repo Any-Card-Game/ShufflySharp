@@ -5,9 +5,9 @@ namespace global
     [ScriptName("CardType")]
     public enum CardGameCardType
     {
-        [ScriptName("heart")] Heart = 0,
-        [ScriptName("diamond")] Diamond = 1,
-        [ScriptName("spade")] Spade = 2,
-        [ScriptName("club")] Club = 3
+   Heart = 0,
+ Diamond = 1,
+     Spade = 2,
+     Club = 3
     }
 }

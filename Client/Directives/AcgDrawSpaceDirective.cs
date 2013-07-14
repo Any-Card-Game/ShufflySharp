@@ -79,6 +79,7 @@ namespace Client.Directives
                                      scope.SpaceStyle.backgroundColor = "red";
 
 
+/*
                                      foreach (var effect in scope.Space.Appearance.Effects)
                                      {
                                          switch (effect.Type)
@@ -113,6 +114,7 @@ namespace Client.Directives
                                                  break;
                                          }
                                      }
+*/
                                      scope.Broadcast("redrawCard");
                                  }, true);
         }

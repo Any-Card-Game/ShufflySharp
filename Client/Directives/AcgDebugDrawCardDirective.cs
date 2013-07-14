@@ -5,6 +5,7 @@ using Client.Scope.Directive;
 using CommonLibraries;
 using global;
 using jQueryApi;
+using Models.SiteManagerModels.Game;
 using EffectType = Models.SiteManagerModels.Game.EffectType;
 
 namespace Client.Directives
@@ -23,6 +24,7 @@ namespace Client.Directives
         {
             element.Attribute("style", "width:71px; height:96px;");
             element.Attribute("class", "card " + string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
+            var keys = new JsDictionary<string, string>() { };
 
 
             Action redrawCard = () =>
@@ -76,22 +78,95 @@ namespace Client.Directives
                                     scope.CardStyle.content = "\"\"";
 
 
-                                    if (scope.Space.Name.StartsWith("User"))
+
+
+
+
+                                    ClientHelpers.PurgeCSS(string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value) +
+                                             "::before");
+
+                                    keys = new JsDictionary<string, string>() { };
+                                    keys["content"] =
+                                        string.Format("url('{1}assets/cards/{0}.gif')",
+                                            (100 + (scope.Card.Value + 1) +
+                                             (scope.Card.Type) * 13), Constants.ContentAddress);
+                                    ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
+
+                                    foreach (var effectName in scope.Card.Effects)
                                     {
-                                        if (scope.Card.Appearance.EffectNames.Count == 0)
-                                            scope.Card.Appearance.EffectNames.Add(EffectType.Bend.ToString());
-                                    }
-                                    else
-                                    {
-                                        for (var index = scope.Card.Appearance.EffectNames.Count - 1;
-                                            index >= 0;
-                                            index--)
+                                        var effect = scope.MainArea.ClientGetEffectByName(effectName);
+
+                                        switch (effect.Type)
                                         {
-                                            var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
-                                            if (cardGameAppearanceEffect == EffectType.Bend.ToString())
-                                                scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
+                                            case EffectType.Highlight:
+                                                {
+                                                    var color = effect.GetString("color");
+                                                    var radius = effect.GetNumber("radius");
+                                                    var rotate = effect.GetNumber("rotate");
+                                                    var offsetX = effect.GetNumber("offsetx");
+                                                    var offsetY = effect.GetNumber("offsety");
+                                                    var opacity = effect.GetNumber("opacity");
+
+
+                                                    var beforeStyle = new JsDictionary<string, string>();
+                                                    beforeStyle["display"] = "block";
+                                                    beforeStyle["position"] = "relative";
+                                                    beforeStyle["z-index"] = "-1";
+                                                    beforeStyle["width"] = "100%";
+                                                    beforeStyle["height"] = "100%";
+                                                    beforeStyle["left"] = (-radius + offsetX) + "px";
+                                                    beforeStyle["top"] = (-radius + offsetY) + "px";
+                                                    beforeStyle["padding"] = (radius) + "px";
+                                                    beforeStyle["border-radius"] = "5px";
+                                                    beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
+                                                    beforeStyle["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13), Constants.ContentAddress);
+                                                    var hexcolor = ClientHelpers.HexToRGB(color);
+                                                    beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+                                                    beforeStyle["border"] = "2px solid black";
+
+                                                    ClientHelpers.ChangeCSS(string.Format("card{0}-{1}::before", scope.Card.Type, scope.Card.Value), beforeStyle);
+
+                                                
+                                                }
+                                                break;
+                                            case EffectType.Rotate:
+                                                { 
+                                                    var rotate = effect.GetNumber("degrees");
+                                                    scope.CardStyle["-webkit-transform"] = "rotate(" + rotate + "deg)";
+                                                    scope.CardStyle.transform = "rotate(" + rotate + "deg)";
+
+                                                     
+
+                                                }
+
+                                                break;
+                                            case EffectType.Bend:
+
+                                                /*
+
+
+                                                  var bEffect = (new CardGameAppearanceEffectBend(new CardGameEffectBendOptions()
+                                                  {
+                                                      Degrees = grabbedEffect.GetPropertyByName<double>("degrees"),
+                                                  }));
+
+
+                                                  var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
+
+                                                  element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))));
+                 
+                      */
+
+                                                break;
+                                            case EffectType.StyleProperty:
+                                                break;
+                                            case EffectType.Animated:
+                                                break;
                                         }
+
                                     }
+
+
 
 
 /*
@@ -164,7 +239,6 @@ namespace Client.Directives
                 }
 */
                                 };
-            var keys = new JsDictionary<string, string>() {};
             keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')",
                 (100 + (scope.Card.Value + 1) + (scope.Card.Type)*13), Constants.ContentAddress);
             ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);

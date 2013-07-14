@@ -1,4 +1,6 @@
 using System.Runtime.CompilerServices;
+using Models.SiteManagerModels.Game;
+
 namespace global
 {
     public class CardGameTableSpaceOptions

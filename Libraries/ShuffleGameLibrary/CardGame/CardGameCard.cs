@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace global
 {
@@ -11,13 +12,14 @@ namespace global
         [IntrinsicProperty]
         public CardGameCardState State { get; set; }
         [IntrinsicProperty]
-        public CardGameAppearance Appearance { get; set; }
+        public List<string> Effects { get; set; }
 
         public CardGameCard(int value, int type)
         {
             Value = value;
             Type = type;
-            Appearance = new CardGameAppearance();
+            Effects = new List<string>();
+
         }
     }
 }

@@ -5,8 +5,8 @@ namespace global
     [ScriptName("CardState")]
     public enum CardGameCardState
     {
-        [ScriptName("faceUp")] FaceUp = 0,
-        [ScriptName("faceDown")] FaceDown = 1,
-        [ScriptName("faceUpIfOwned")] FaceUpIfOwned = 2
+FaceUp = 0,
+       FaceDown = 1,
+      FaceUpIfOwned = 2
     }
 }

@@ -129,8 +129,14 @@ namespace Models.SiteManagerModels.Game
     { 
         public GameSpaceLayoutType LayoutType { get; set; }
         public bool Vertical { get; set; }
-
+        public TableSpaceResizeType ResizeType { get; set; }
     }
+    [NamedValues]
+    public enum TableSpaceResizeType
+    {
+        Grow,
+        Static
+    } 
     [NamedValues]
     public enum GameSpaceLayoutType
     {
@@ -181,7 +187,7 @@ namespace Models.SiteManagerModels.Game
                 }
             }
             return "";
-        }
+        } 
     }
     [NamedValues]
     public enum EffectType

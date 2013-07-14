@@ -146,6 +146,8 @@ namespace ServerManager.GatewayServer
                                             //     queueManager.SendMessage(user.ToLogicModel(), user.CurrentChatServer, "Area.Chat.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
                                             if (user.CurrentGameServer != null)
                                                 queueManager.SendMessage(user.CurrentGameServer, "Area.Game.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
+                                            if (user.CurrentDebugServer != null)
+                                                queueManager.SendMessage(user.CurrentDebugServer, "Area.Debug.UserDisconnect", user.ToLogicModel(), new UserDisconnectModel(user.ToLogicModel()));
 
                                             users.Remove(user.UserName);
                                             socket.RemoveAllListeners();

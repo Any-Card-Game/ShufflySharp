@@ -87,11 +87,11 @@ namespace Client.Controllers
 
                                                                     foreach (var card in space.Pile.Cards)
                                                                     {
-                                                                        card.Appearance.EffectNames = new List<string>();
+                                                                        card.Effects = new List<string>();
 
                                                                         if (space.Name.StartsWith("User"))
                                                                         {
-                                                                            card.Appearance.EffectNames.Add("bend");
+                                                                            card.Effects.Add("bend");
                                                                         }
 
                                                                         addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());

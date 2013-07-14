@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Models.SiteManagerModels.Game;
+
 namespace global
 {
     [ScriptName("TableSpace")]
@@ -16,15 +19,12 @@ namespace global
         public double Height { get; set; }
         [IntrinsicProperty]
         public CardGamePile Pile { get; set; }
-        /*      [IntrinsicProperty]        public double Rotate { get; set; }*/
         [IntrinsicProperty]
-        public CardGameAppearance Appearance { get; set; }
+        public List<string> Effects { get; set; }
         [IntrinsicProperty]
         public bool Visible { get; set; }
         [IntrinsicProperty]
-        public bool StackCards { get; set; }
-        [IntrinsicProperty]
-        public bool DrawCardsBent { get; set; }
+        public bool StackCards { get; set; } 
         [IntrinsicProperty]
         public string Name { get; set; }
         [IntrinsicProperty]
@@ -53,7 +53,7 @@ namespace global
             NumberOfCardsVertical = options.NumerOfCardsVertical == 0 ? 1 : options.NumerOfCardsVertical;
             ResizeType = options.ResizeType;
             //Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
-            Appearance = new CardGameAppearance();
+            Effects=new List<string>();
         }
 
         public void ApplyPile(CardGamePile pile)
@@ -61,5 +61,4 @@ namespace global
             Pile = pile;
         }
     }
-    //[NamedValues]todo:::
 }

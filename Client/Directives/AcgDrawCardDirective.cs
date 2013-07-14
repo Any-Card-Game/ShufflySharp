@@ -5,6 +5,7 @@ using Client.Scope.Directive;
 using CommonLibraries;
 using global;
 using jQueryApi;
+using Models.SiteManagerModels.Game;
 using EffectType = Models.SiteManagerModels.Game.EffectType;
 
 namespace Client.Directives
@@ -78,18 +79,18 @@ namespace Client.Directives
 
                                     if (scope.Space.Name.StartsWith("User"))
                                     {
-                                        if (scope.Card.Appearance.EffectNames.Count == 0)
-                                            scope.Card.Appearance.EffectNames.Add(EffectType.Bend.ToString());
+                                        if (scope.Card.Effects.Count == 0)
+                                            scope.Card.Effects.Add(EffectType.Bend.ToString());
                                     }
                                     else
                                     {
-                                        for (var index = scope.Card.Appearance.EffectNames.Count - 1;
+                                        for (var index = scope.Card.Effects.Count - 1;
                                             index >= 0;
                                             index--)
                                         {
-                                            var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
+                                            var cardGameAppearanceEffect = scope.Card.Effects[index];
                                             if (cardGameAppearanceEffect == EffectType.Bend.ToString())
-                                                scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
+                                                scope.Card.Effects.Remove(cardGameAppearanceEffect);
                                         }
                                     }
 

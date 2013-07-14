@@ -81,55 +81,32 @@ module.exports = Sevens = function() {
                 for (var i = 0; i < sp.length; i++) {
                     //sp[i].rotate += 10;
 
-                    sp[i].appearance.effects = [];
+                    sp[i].effects = [];
 
 
                     if (sp[i].user == u) {
                         if (usable.length == 0) {
-                            sp[i].appearance.effects.push(new Effect$Highlight({
-                                radius: 55,
-                                color: 'rgba(255,0,84,0.7)',
-                                opacity: .5
-                            }));
+                            sp[i].effects.push("CurrentPlayerNoCards");
                         } else {
 
-                            sp[i].appearance.effects.push(new Effect$Highlight({
-                                radius: 55,
-                                color: 'rgba(112,255,84,0.7)',
-                                opacity: .5
-                            }));
+                            sp[i].effects.push("CurrentPlayer");
                         }
                     } else if (sp[i].user) {
-                        sp[i].appearance.effects.push(new Effect$Highlight({
-                            radius: 55,
-                            color: 'rgba(119,25,84,0.2)',
-                            opacity: .2
-                        }));
+                        sp[i].effects.push("InactivePlayer");
 
                     }
 
 
                     if (!sp[i].user) {
-
-                        var op = sp[i].pile.cards.length / 13;
-
-                        var red = "112";
-                        if (sp[i].pile.cards.length == 13) {
-                            red = "255";
-                        }
-
-                        sp[i].appearance.effects.push(new Effect$Highlight({
-                            radius: 25 + sp[i].pile.cards.length * 2,
-                            color: 'rgba(' + red + ',12,' + parseInt(op * 255) + ',' + op + ')',
-                            opacity: op
-                        }));
+                        //25 + sp[i].pile.cards.length * 2
+                        sp[i].effects.push("CenterPiles");
                     } else {
-                        sp[i].appearance.effects.push(new Effect$Bend({ degrees: sp[i].user.userIndex > 2 ? -15 : 15 }));
+                        sp[i].effects.push("Bend");
                     }
 
                     for (var ij = 0; ij < sp[i].pile.cards.length; ij++) {
                         var card = sp[i].pile.cards[ij];
-                        card.appearance.effects = [];
+                        card.effects = [];
                         /*
 
                         card.appearance.addEffect(new AnimatedEffect$Between(
@@ -171,17 +148,13 @@ module.exports = Sevens = function() {
 
                         if (card.value == 6 && !sp[i].user) {
 
-                            card.appearance.innerStyle.rotate = 90;
+                            card.effects.push("Seven");
                         }
 
                         for (var j = 0; j < usable.length; j++) {
                             var m = usable[j];
                             if (m.value == card.value && m.type == card.type) {
-                                card.appearance.effects.push(new Effect$Highlight({
-                                    radius: 5,
-                                    color: 'rgba(35,170,255,0.55)',
-                                    opacity: .55
-                                }));
+                                card.effects.push("PlayableCard");
                                 break;
                             }
                         }
@@ -226,11 +199,7 @@ module.exports = Sevens = function() {
                         for (var i = 0; i < sp.length; i++) {
 
                             if (sp[i].user == u) {
-                                sp[i].appearance.effects.push(new Effect$Highlight({
-                                    radius: 100,
-                                    color: 'rgba(255,255,255,0.7)',
-                                    opacity: .7
-                                }));
+                                sp[i].effects.push("PlayerWon");
                                 break;
                             }
                         }

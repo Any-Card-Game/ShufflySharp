@@ -30,13 +30,16 @@ namespace global
         public int NumberOfCards { get; set; }
         [IntrinsicProperty]
         public int NumberOfJokers { get; set; }
+        [IntrinsicProperty]
+        public List<CardGameEffect> Effects { get; set; }
 
         public GameCardGame( )
         {
             Spaces = new List<CardGameTableSpace>();
             TextAreas = new List<GameCardGameTextArea>();
             EmulatedAnswers = new List<CardGameAnswer>();
-            Users = new List<CardGameUser>(); 
+            Users = new List<CardGameUser>();
+            Effects = new List<CardGameEffect>(); 
             Deck = new CardGamePile("deck"); 
         }
 
@@ -98,5 +101,56 @@ namespace global
         //arg1: CardState
         //return undefined 
         public void DealCards(int numberOfCards, int state) {}
+
+        public CardGameEffect GetEffectByName(string effectName)
+        {
+            foreach (var cardGameEffect in Effects)
+            {
+                if (cardGameEffect.Name.ToLower() == effectName.ToLower())
+                {
+                    return cardGameEffect;
+                }
+            }
+            return null;
+        }
+    }
+
+    public static class ClientGameCardGameHelper
+    {
+        public static CardGameEffect ClientGetEffectByName(this GameCardGame cardGame,string effectName)
+        {
+            foreach (var cardGameEffect in cardGame.Effects)
+            {
+                if (cardGameEffect.Name.ToLower() == effectName.ToLower())
+                {
+                    return cardGameEffect;
+                }
+            }
+            return null;
+        }
+
+        public static CardGameTableSpace ClientGetSpaceByName(this GameCardGame cardGame, string name)
+        {
+            foreach (var cardGameTableSpace in cardGame.Spaces)
+            {
+                if (cardGameTableSpace.Name.ToLower() == name.ToLower())
+                {
+                    return cardGameTableSpace;
+                }
+            }
+            return null;
+        }
+        public static GameCardGameTextArea ClientGetTextByName(this GameCardGame cardGame, string name)
+        {
+            foreach (var gameCardGameTextArea in cardGame.TextAreas)
+            {
+                if (gameCardGameTextArea.Name.ToLower() == name.ToLower())
+                {
+                    return gameCardGameTextArea;
+                }
+            }
+            return null;
+        }
+
     }
 }

@@ -1,0 +1,81 @@
+Border
+  left
+  top
+  right
+  bottom
+    color
+    radius
+    width
+    style
+      None,
+      Dotted
+      Dashed
+      Solid
+      Double
+      Groove
+      Ridge
+      Inset
+      Offset
+Cursor
+  Default
+  Auto
+  Pointer
+  Move
+  EResize
+  NEResize
+  NWResize
+  NResize
+  SEResize
+  SWResize
+  SResize
+  WResize
+  Text
+  Wait
+  Help
+  
+rotate
+  deg
+bend
+  deg
+  
+chaining
+
+animated
+  duration
+  pauseafter ms
+  pausebefore ms
+  type:
+    between
+  Ease
+    Linear
+    Swing
+    EaseInQuad
+    EaseOutQuad
+    EaseInOutQuad
+    EaseInCubic
+    EaseOutCubic
+    EaseInOutCubic
+    EaseInQuart
+    EaseOutQuart
+    EaseInOutQuart
+    EaseInQuint
+    EaseOutQuint
+    EaseInOutQuint
+    EaseInSine
+    EaseOutSine
+    EaseInOutSine
+    EaseInExpo
+    EaseOutExpo
+    EaseInOutExpo
+    EaseInCirc
+    EaseOutCirc
+    EaseInOutCirc
+    EaseInElastic
+    EaseOutElastic
+    EaseInOutElastic
+    EaseInBack
+    EaseOutBack
+    EaseInOutBack
+    EaseInBounce
+    EaseOutBounce
+    EaseInOutBounce

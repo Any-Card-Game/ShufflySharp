@@ -75,6 +75,13 @@
                         Vertical:
                         <input type="checkbox" ng-model="model.selection.selectedSpace.vertical" />
                     </div>
+                    <div>
+                        Resize Type:
+                        <select ng-model="model.selection.selectedSpace.resizeType">
+                            <option value="static">Static</option>
+                            <option value="grow">Grow</option>
+                        </select>
+                    </div>
                     <button ng-click="model.removeSpace(model.selection.selectedSpace)">Remove</button>
                 </div>
                 <div ng-switch-when="area">

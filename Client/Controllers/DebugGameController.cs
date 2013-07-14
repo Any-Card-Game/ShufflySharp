@@ -129,11 +129,11 @@ namespace Client.Controllers
 
                                                                      foreach (var card in space.Pile.Cards)
                                                                      {
-                                                                         card.Appearance.EffectNames = new List<string>();
+                                                                         card.Effects = new List<string>();
 
                                                                          if (space.Name.StartsWith("User"))
                                                                          {
-                                                                             card.Appearance.EffectNames.Add("bend");
+                                                                             card.Effects.Add("bend");
                                                                          }
 
                                                                          addRule(
@@ -153,7 +153,7 @@ namespace Client.Controllers
 
 
                                                              scope.Apply();
-                                                             myGameContentManagerService.Redraw();
+                                                    //         myGameContentManagerService.Redraw();
                                                          };
 
             jQuery.Window.Bind("resize", (a) =>

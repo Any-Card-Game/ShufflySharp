@@ -1422,7 +1422,7 @@
 				sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
 			};
 		})(document.createElement('style'));
-		this.$myClientDebugManagerService.add_onUpdateState(ss.mkdel(this, function(user1, update) {
+		this.$myClientDebugManagerService.add_onUpdateState(function(user1, update) {
 			var data = JSON.parse((new Compressor()).DecompressText(update));
 			var create = ss.isNullOrUndefined(scope.mainArea);
 			scope.mainArea = data;
@@ -1435,9 +1435,9 @@
 					addRule('.space' + space.name + '::after', {});
 					for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
 						var card = space.pile.cards[$t2];
-						card.appearance.effectNames = [];
+						card.effects = [];
 						if (ss.startsWithString(space.name, 'User')) {
-							ss.add(card.appearance.effectNames, 'bend');
+							ss.add(card.effects, 'bend');
 						}
 						addRule('.card' + card.type + '-' + card.value + '', {});
 						addRule('.card' + card.type + '-' + card.value + '::before', {});
@@ -1446,8 +1446,8 @@
 				}
 			}
 			scope.$apply();
-			this.$myGameContentManagerService.redraw();
-		}));
+			//         myGameContentManagerService.Redraw();
+		});
 		$(window).bind('resize', function(a) {
 			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, ($(window).height() - 250) / scope.mainArea.size.height * 0.9);
 			scope.$apply();
@@ -1720,9 +1720,9 @@
 					addRule('.space' + space.name + '::after', {});
 					for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
 						var card = space.pile.cards[$t2];
-						card.appearance.effectNames = [];
+						card.effects = [];
 						if (ss.startsWithString(space.name, 'User')) {
-							ss.add(card.appearance.effectNames, 'bend');
+							ss.add(card.effects, 'bend');
 						}
 						addRule('.card' + card.type + '-' + card.value + '', {});
 						addRule('.card' + card.type + '-' + card.value + '::before', {});
@@ -1923,6 +1923,7 @@
 		$linkFn: function(scope, element, attrs) {
 			element.attr('style', 'width:71px; height:96px;');
 			element.attr('class', 'card ' + ss.formatString('card{0}-{1}', scope.card.type, scope.card.value));
+			var keys = {};
 			var redrawCard = function() {
 				var scale = scope.scale;
 				var spaceScale = { width: scope.space.width / (scope.space.pile.cards.length - 1), height: scope.space.height / (scope.space.pile.cards.length - 1) };
@@ -1932,7 +1933,7 @@
 				var xx = 0;
 				var yy = 0;
 				switch (scope.space.resizeType) {
-					case 1: {
+					case 'static': {
 						if (vertical) {
 							yy = (scope.card.value + 1) / 13 * scope.space.height * scale.y;
 						}
@@ -1941,7 +1942,7 @@
 						}
 						break;
 					}
-					case 0: {
+					case 'grow': {
 						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
 						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
 						break;
@@ -1962,16 +1963,93 @@
 				//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
 				//                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
 				scope.cardStyle.content = '""';
-				if (ss.startsWithString(scope.space.name, 'User')) {
-					if (scope.card.appearance.effectNames.length === 0) {
-						ss.add(scope.card.appearance.effectNames, 'bend'.toString());
-					}
-				}
-				else {
-					for (var index = scope.card.appearance.effectNames.length - 1; index >= 0; index--) {
-						var cardGameAppearanceEffect = scope.card.appearance.effectNames[index];
-						if (ss.referenceEquals(cardGameAppearanceEffect, 'bend'.toString())) {
-							ss.remove(scope.card.appearance.effectNames, cardGameAppearanceEffect);
+				$Client_ClientHelpers.purgeCSS(ss.formatString('card{0}-{1}', scope.card.type, scope.card.value) + '::before');
+				keys = {};
+				keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
+				$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+				for (var $t1 = 0; $t1 < scope.card.effects.length; $t1++) {
+					var effectName = scope.card.effects[$t1];
+					var effect = global.ClientGameCardGameHelper.clientGetEffectByName(scope.mainArea, effectName);
+					switch (effect.type) {
+						case 'highlight': {
+							{
+								var color = global.EffectHelper.getString(effect, 'color');
+								var radius = global.EffectHelper.getNumber(effect, 'radius');
+								var rotate = global.EffectHelper.getNumber(effect, 'rotate');
+								var offsetX = global.EffectHelper.getNumber(effect, 'offsetx');
+								var offsetY = global.EffectHelper.getNumber(effect, 'offsety');
+								var opacity = global.EffectHelper.getNumber(effect, 'opacity');
+								var beforeStyle = {};
+								beforeStyle['display'] = 'block';
+								beforeStyle['position'] = 'relative';
+								beforeStyle['z-index'] = '-1';
+								beforeStyle['width'] = '100%';
+								beforeStyle['height'] = '100%';
+								beforeStyle['left'] = -radius + offsetX + 'px';
+								beforeStyle['top'] = -radius + offsetY + 'px';
+								beforeStyle['padding'] = radius + 'px';
+								beforeStyle['border-radius'] = '5px';
+								beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
+								beforeStyle['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
+								var hexcolor = $Client_ClientHelpers.hexToRGB(color);
+								beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+								beforeStyle['border'] = '2px solid black';
+								$Client_ClientHelpers.changeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value), beforeStyle);
+							}
+							break;
+						}
+						case 'rotate': {
+							{
+								var rotate1 = global.EffectHelper.getNumber(effect, 'degrees');
+								scope.cardStyle['-webkit-transform'] = 'rotate(' + rotate1 + 'deg)';
+								scope.cardStyle.transform = 'rotate(' + rotate1 + 'deg)';
+							}
+							break;
+						}
+						case 'bend': {
+							//
+							//
+							//
+							//                                                  var bEffect = (new CardGameAppearanceEffectBend(new CardGameEffectBendOptions()
+							//
+							//
+							//
+							//                                                  {
+							//
+							//
+							//
+							//                                                  Degrees = grabbedEffect.GetPropertyByName<double>("degrees"),
+							//
+							//
+							//
+							//                                                  }));
+							//
+							//
+							//
+							//                                                  
+							//
+							//
+							//
+							//                                                  
+							//
+							//
+							//
+							//                                                  var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
+							//
+							//
+							//
+							//                                                  
+							//
+							//
+							//
+							//                                                  element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))));
+							break;
+						}
+						case 'styleProperty': {
+							break;
+						}
+						case 'animated': {
+							break;
 						}
 					}
 				}
@@ -2110,7 +2188,6 @@
 				//
 				//                }
 			};
-			var keys = {};
 			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
 			$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$on('redrawCard', redrawCard);
@@ -2183,47 +2260,7 @@
 		$linkFn: function(scope, element, attrs) {
 			var scale = scope.scale;
 			element.attr('class', 'space ' + ss.formatString('space{0}', scope.space.name));
-			//  element.Resizable(new ResizableOptions()
-			//  {
-			//  Grid = new[] { scale.X, scale.Y },
-			//  MinHeight = -1,
-			//  MinWidth = -1,
-			//  Handles = "n, e, s, w,nw,sw,ne,se",
-			//  OnResize = (ev, ele) =>
-			//  {
-			//  scope.Space.Width = ele.Size.Width / scale.X;
-			//  scope.Space.Height = ele.Size.Height / scale.Y;
-			//  scope.Apply();
-			//  
-			//  }
-			//  });
-			//  element.Draggable(new DraggableOptions()
-			//  {
-			//  Cursor = "crosshair",
-			//  Grid = new[] { scale.X, scale.Y },
-			//  OnDrag = (ev, ele) =>
-			//  {
-			//  scope.Space.X = ele.Position.Left / scale.X;
-			//  scope.Space.Y = ele.Position.Top/ scale.Y;
-			//  scope.Apply();
-			//  
-			//  }
-			//  });
 			scope.$watch('space', function() {
-				var beforeStyle = {};
-				beforeStyle['display'] = 'block';
-				beforeStyle['position'] = 'relative';
-				beforeStyle['z-index'] = '-1';
-				beforeStyle['width'] = '100%';
-				beforeStyle['height'] = '100%';
-				beforeStyle['left'] = '-50px';
-				beforeStyle['top'] = '-50px';
-				beforeStyle['padding'] = '50px';
-				beforeStyle['border-radius'] = '15px';
-				beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
-				beforeStyle['content'] = '""';
-				beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
-				$Client_ClientHelpers.changeCSS('space' + scope.space.name + '::before', beforeStyle);
 				scope.spaceStyle = {};
 				scope.spaceStyle.position = 'absolute';
 				scope.spaceStyle.left = scope.space.x * scale.x;
@@ -2231,36 +2268,61 @@
 				scope.spaceStyle.width = scope.space.width * scale.x;
 				scope.spaceStyle.height = scope.space.height * scale.y;
 				scope.spaceStyle.backgroundColor = 'red';
-				for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
-					var effect = scope.space.appearance.effects[$t1];
+				scope.spaceStyle = {};
+				var l = scope.space.x;
+				var t = scope.space.y;
+				var w = scope.space.width;
+				var h = scope.space.height;
+				var sl = scale.x;
+				var st = scale.y;
+				scope.spaceStyle.position = 'absolute';
+				scope.spaceStyle.left = l * sl;
+				scope.spaceStyle.top = t * st;
+				scope.spaceStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
+				scope.spaceStyle.borderRadius = '15px';
+				scope.spaceStyle.width = w * sl;
+				scope.spaceStyle.height = h * st;
+				scope.spaceStyle.backgroundColor = 'red';
+				$Client_ClientHelpers.purgeCSS('space' + scope.space.name + '::before');
+				for (var $t1 = 0; $t1 < scope.space.effects.length; $t1++) {
+					var effectName = scope.space.effects[$t1];
+					var effect = global.ClientGameCardGameHelper.clientGetEffectByName(scope.mainArea, effectName);
 					switch (effect.type) {
-						case 0: {
-							var hEffect = effect;
-							scope.spaceStyle.padding = ss.formatString('{0} {0} {0} {0}', hEffect.radius);
-							scope.spaceStyle.backgroundColor = hEffect.color;
-							scope.spaceStyle.border = 'solid 2px black';
-							scope.spaceStyle.borderRadius = 15;
-							scope.spaceStyle.boxShadow = '4px 4px 2px #333';
+						case 'highlight': {
+							var color = global.EffectHelper.getString(effect, 'color');
+							var radius = global.EffectHelper.getNumber(effect, 'radius');
+							var rotate = global.EffectHelper.getNumber(effect, 'rotate');
+							var offsetX = global.EffectHelper.getNumber(effect, 'offsetx');
+							var offsetY = global.EffectHelper.getNumber(effect, 'offsety');
+							var opacity = global.EffectHelper.getNumber(effect, 'opacity');
+							var beforeStyle = {};
+							beforeStyle['display'] = 'block';
+							beforeStyle['position'] = 'relative';
+							beforeStyle['z-index'] = '-1';
+							beforeStyle['width'] = '100%';
+							beforeStyle['height'] = '100%';
+							beforeStyle['left'] = -radius + offsetX + 'px';
+							beforeStyle['top'] = -radius + offsetY + 'px';
+							beforeStyle['padding'] = radius + 'px';
+							beforeStyle['border-radius'] = '5px';
+							beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
+							var hexcolor = $Client_ClientHelpers.hexToRGB(color);
+							beforeStyle['content'] = '""';
+							beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+							beforeStyle['border'] = '2px solid black';
+							$Client_ClientHelpers.changeCSS('space' + scope.space.name + '::before', beforeStyle);
 							break;
 						}
-						case 1: {
-							window.alert(effect.type.toString());
+						case 'rotate': {
 							break;
 						}
-						case 2: {
-							var bEffect = effect;
-							//rotate
+						case 'bend': {
 							break;
 						}
-						case 3: {
-							window.alert(effect.type.toString());
+						case 'styleProperty': {
 							break;
 						}
-						case 4: {
-							window.alert(effect.type.toString());
-							break;
-						}
-						default: {
+						case 'animated': {
 							break;
 						}
 					}
@@ -2288,7 +2350,7 @@
 				var xx = 0;
 				var yy = 0;
 				switch (scope.space.resizeType) {
-					case 1: {
+					case 'static': {
 						if (vertical) {
 							yy = (scope.card.value + 1) / 13 * scope.space.height * scale.y;
 						}
@@ -2297,7 +2359,7 @@
 						}
 						break;
 					}
-					case 0: {
+					case 'grow': {
 						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
 						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
 						break;
@@ -2319,15 +2381,15 @@
 				//                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
 				scope.cardStyle.content = '""';
 				if (ss.startsWithString(scope.space.name, 'User')) {
-					if (scope.card.appearance.effectNames.length === 0) {
-						ss.add(scope.card.appearance.effectNames, 'bend'.toString());
+					if (scope.card.effects.length === 0) {
+						ss.add(scope.card.effects, 'bend'.toString());
 					}
 				}
 				else {
-					for (var index = scope.card.appearance.effectNames.length - 1; index >= 0; index--) {
-						var cardGameAppearanceEffect = scope.card.appearance.effectNames[index];
+					for (var index = scope.card.effects.length - 1; index >= 0; index--) {
+						var cardGameAppearanceEffect = scope.card.effects[index];
 						if (ss.referenceEquals(cardGameAppearanceEffect, 'bend'.toString())) {
-							ss.remove(scope.card.appearance.effectNames, cardGameAppearanceEffect);
+							ss.remove(scope.card.effects, cardGameAppearanceEffect);
 						}
 					}
 				}
@@ -2587,40 +2649,74 @@
 				scope.spaceStyle.width = scope.space.width * scale.x;
 				scope.spaceStyle.height = scope.space.height * scale.y;
 				scope.spaceStyle.backgroundColor = 'red';
-				for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
-					var effect = scope.space.appearance.effects[$t1];
-					switch (effect.type) {
-						case 0: {
-							var hEffect = effect;
-							scope.spaceStyle.padding = ss.formatString('{0} {0} {0} {0}', hEffect.radius);
-							scope.spaceStyle.backgroundColor = hEffect.color;
-							scope.spaceStyle.border = 'solid 2px black';
-							scope.spaceStyle.borderRadius = 15;
-							scope.spaceStyle.boxShadow = '4px 4px 2px #333';
-							break;
-						}
-						case 1: {
-							window.alert(effect.type.toString());
-							break;
-						}
-						case 2: {
-							var bEffect = effect;
-							//rotate
-							break;
-						}
-						case 3: {
-							window.alert(effect.type.toString());
-							break;
-						}
-						case 4: {
-							window.alert(effect.type.toString());
-							break;
-						}
-						default: {
-							break;
-						}
-					}
-				}
+				//
+				//                                     foreach (var effect in scope.Space.Appearance.Effects)
+				//
+				//                                     {
+				//
+				//                                     switch (effect.Type)
+				//
+				//                                     {
+				//
+				//                                     case EffectType.Highlight:
+				//
+				//                                     var hEffect = ((CardGameAppearanceEffectHighlight) effect);
+				//
+				//                                     scope.SpaceStyle.padding = string.Format("{0} {0} {0} {0}",
+				//
+				//                                     hEffect.Radius);
+				//
+				//                                     scope.SpaceStyle.backgroundColor = hEffect.Color;
+				//
+				//                                     scope.SpaceStyle.border = "solid 2px black";
+				//
+				//                                     scope.SpaceStyle.borderRadius = 15.0;
+				//
+				//                                     scope.SpaceStyle.boxShadow = "4px 4px 2px #333";
+				//
+				//                                     break;
+				//
+				//                                     case EffectType.Rotate:
+				//
+				//                                     Window.Alert(effect.Type.ToString());
+				//
+				//                                     break;
+				//
+				//                                     case EffectType.Bend:
+				//
+				//                                     var bEffect = (CardGameAppearanceEffectBend) effect;
+				//
+				//                                     
+				//
+				//                                     //rotate
+				//
+				//                                     
+				//
+				//                                     
+				//
+				//                                     break;
+				//
+				//                                     case EffectType.StyleProperty:
+				//
+				//                                     Window.Alert(effect.Type.ToString());
+				//
+				//                                     break;
+				//
+				//                                     case EffectType.Animated:
+				//
+				//                                     Window.Alert(effect.Type.ToString());
+				//
+				//                                     break;
+				//
+				//                                     default:
+				//
+				//                                     
+				//
+				//                                     break;
+				//
+				//                                     }
+				//
+				//                                     }
 				scope.$broadcast('redrawCard');
 			}, true);
 		}

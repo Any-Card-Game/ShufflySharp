@@ -676,6 +676,7 @@
 		var $this = $Models_SiteManagerModels_Game_GameAreaModel.$ctor();
 		$this.layoutType = 0;
 		$this.vertical = false;
+		$this.resizeType = 0;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -694,6 +695,11 @@
 		$this.text = null;
 		return $this;
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Models.SiteManagerModels.Game.TableSpaceResizeType
+	var $Models_SiteManagerModels_Game_TableSpaceResizeType = function() {
+	};
+	$Models_SiteManagerModels_Game_TableSpaceResizeType.prototype = { grow: 'grow', static: 'static' };
 	ss.registerClass(global, 'Models.ClientInformation', $Models_ClientInformation);
 	ss.registerClass(global, 'Models.GatewayLoginMessageModel', $Models_GatewayLoginMessageModel);
 	ss.registerClass(global, 'Models.GatewayMessageModel', $Models_GatewayMessageModel);
@@ -772,4 +778,5 @@
 	ss.registerEnum(global, 'Models.SiteManagerModels.Game.GameSpaceLayoutType', $Models_SiteManagerModels_Game_GameSpaceLayoutType);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameSpaceModel', $Models_SiteManagerModels_Game_GameSpaceModel, $Models_SiteManagerModels_Game_GameAreaModel);
 	ss.registerClass(global, 'Models.SiteManagerModels.Game.GameTextModel', $Models_SiteManagerModels_Game_GameTextModel);
+	ss.registerEnum(global, 'Models.SiteManagerModels.Game.TableSpaceResizeType', $Models_SiteManagerModels_Game_TableSpaceResizeType);
 })();

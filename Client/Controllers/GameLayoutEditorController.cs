@@ -70,15 +70,15 @@ namespace Client.Controllers
             myScope.Model.UpdateGame = UpdateGameFn;
 
             myCreateUIService.CreateSingleton<TestGameControllerScope>(TestGameController.View, (_scope, elem) =>
-                                                                                     {
-                                                                                         _scope.Model =
-                                                                                             new TestGameControllerScopeModel
-                                                                                                 ();
-                                                                                         _scope.Model.Game =
-                                                                                             myScope.Model.Game;
-                                                                                         _scope.Model.Selection =
-                                                                                             myScope.Model.Selection;
-                                                                                     });
+                                                                                                {
+                                                                                                    _scope.Model =
+                                                                                                        new TestGameControllerScopeModel
+                                                                                                            ();
+                                                                                                    _scope.Model.Game =
+                                                                                                        myScope.Model.Game;
+                                                                                                    _scope.Model.Selection =
+                                                                                                        myScope.Model.Selection;
+                                                                                                });
         }
 
 
@@ -95,17 +95,17 @@ namespace Client.Controllers
         private void OpenScenariosFn()
         {
             myCreateUIService.CreateSingleton<GameScenarioEditorScope>(GameScenarioEditorController.View, (_scope, elem) =>
-                                                                                             {
-                                                                                                 _scope.Model =
-                                                                                                     new GameScenarioEditorScopeModel
-                                                                                                         ();
-                                                                                                 _scope.Model.Game =
-                                                                                                     myScope.Model.Game;
-                                                                                                 _scope.Model.Selection
-                                                                                                     =
-                                                                                                     myScope.Model
-                                                                                                         .Selection;
-                                                                                             });
+                                                                                                          {
+                                                                                                              _scope.Model =
+                                                                                                                  new GameScenarioEditorScopeModel
+                                                                                                                      ();
+                                                                                                              _scope.Model.Game =
+                                                                                                                  myScope.Model.Game;
+                                                                                                              _scope.Model.Selection
+                                                                                                                  =
+                                                                                                                  myScope.Model
+                                                                                                                      .Selection;
+                                                                                                          });
         }
 
         private void RemoveSpaceFn(GameSpaceModel arg)

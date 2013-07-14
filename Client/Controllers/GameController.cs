@@ -14,12 +14,12 @@ namespace Client.Controllers
     {
         public const string Name = "GameController";
         public const string View = "GameUI";
+        private readonly CreateUIService createUIService;
         private readonly ClientGameManagerService myClientGameManagerService;
         private readonly GameContentManagerService myGameContentManagerService;
-        private readonly CreateUIService createUIService;
         private readonly GameControllerScope scope;
 
-        public GameController(GameControllerScope scope, ClientGameManagerService clientGameManagerService,GameContentManagerService gameContentManagerService,CreateUIService createUIService)
+        public GameController(GameControllerScope scope, ClientGameManagerService clientGameManagerService, GameContentManagerService gameContentManagerService, CreateUIService createUIService)
         {
             this.scope = scope;
             myClientGameManagerService = clientGameManagerService;
@@ -73,7 +73,7 @@ namespace Client.Controllers
                                                             if (create)
                                                             {
                                                                 scope.Scale =
-                                                                    new Point(jQuery.Window.GetWidth()/scope.MainArea.Size.Width*.9,((jQuery.Window.GetHeight() - 250)/scope.MainArea.Size.Height)*.9);
+                                                                    new Point(jQuery.Window.GetWidth()/scope.MainArea.Size.Width*.9, ((jQuery.Window.GetHeight() - 250)/scope.MainArea.Size.Height)*.9);
 
                                                                 foreach (var space in scope.MainArea.Spaces)
                                                                 {
@@ -94,9 +94,9 @@ namespace Client.Controllers
                                                                             card.Appearance.EffectNames.Add("bend");
                                                                         }
 
-                                                                        addRule(".card" + card.Type + "-" + card.Value + "",new JsDictionary<string, object>());
-                                                                        addRule(".card" + card.Type + "-" + card.Value +"::before",new JsDictionary<string, object>());
-                                                                        addRule(".card" + card.Type + "-" + card.Value +"::after",new JsDictionary<string, object>());
+                                                                        addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
+                                                                        addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
+                                                                        addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
                                                                     }
                                                                 }
                                                             }

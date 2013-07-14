@@ -18,10 +18,7 @@ namespace Client.Libs
             {
                 script.me().onreadystatechange =
                     (Action<object>)
-                        (a =>
-                         {
-                             if (script.me().readyState == "loaded" || script.me().readyState == "complete") callback();
-                         });
+                        (a => { if (script.me().readyState == "loaded" || script.me().readyState == "complete") callback(); });
                 script.me().onload = (Action<object>) (a => callback());
             }
             head.AppendChild(script);

@@ -75,6 +75,10 @@
 			return new $Client_Directives_AcgDrawCardDirective();
 		}]).directive($Client_Directives_AcgDrawSpaceDirective.name$1, [function() {
 			return new $Client_Directives_AcgDrawSpaceDirective();
+		}]).directive($Client_Directives_AcgDebugDrawCardDirective.name$1, [function() {
+			return new $Client_Directives_AcgDebugDrawCardDirective();
+		}]).directive($Client_Directives_AcgDebugDrawSpaceDirective.name$1, [function() {
+			return new $Client_Directives_AcgDebugDrawSpaceDirective();
 		}]).directive($Client_Directives_AcgTestDrawCardDirective.name$1, [function() {
 			return new $Client_Directives_AcgTestDrawCardDirective();
 		}]).directive($Client_Directives_AcgTestDrawSpaceDirective.name$1, [function() {
@@ -93,6 +97,9 @@
 			return new $Client_Directives_AcgTestDrawTextDirective();
 		}]).directive($Client_Directives_AcgSpacesDirective.name$1, [$Client_BuildAngular.$compileName, $Client_Services_GameContentManagerService.name$1, function(compile, gameContentManager2) {
 			return new $Client_Directives_AcgSpacesDirective(compile, gameContentManager2);
+		}]).filter($Client_Filters_RoundFilter.name$1, [function() {
+			var $t1 = new $Client_Filters_RoundFilter();
+			return ss.mkdel($t1, $t1.filter);
 		}]);
 	};
 	$Client_BuildAngular.$buildRouteProvider = function(provider) {
@@ -213,6 +220,76 @@
 			scriptLoader.load([url + 'lib/codemirror/mode/javascript/javascript.js', url + 'lib/WorkerConsole.js', url + 'lib/FunctionWorker.js', url + 'lib/Stats.js', url + 'lib/keyboardjs.js'], false, stepThree);
 		};
 		scriptLoader.load([url + 'lib/linq.js', url + 'lib/tween.js', url + 'lib/socket.io.js', url + 'lib/codemirror/lib/codemirror.js'], false, stepTwo);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.ClientHelpers
+	var $Client_ClientHelpers = function() {
+	};
+	$Client_ClientHelpers.hexToRGB = function(hex) {
+		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
+		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
+	};
+	$Client_ClientHelpers.transformRotate = function(ar) {
+		return ss.formatString('rotate({0}deg)', ar);
+	};
+	$Client_ClientHelpers.noTransformRotate = function(ar) {
+		if (ar === '') {
+			return 0;
+		}
+		return parseFloat(ss.replaceAllString(ss.replaceAllString(ar, 'rotate(', ''), 'deg)', ''));
+		//todo regex??
+	};
+	$Client_ClientHelpers.purgeCSS = function(myClass) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					document.styleSheets[a].removeRule(i);
+					document.styleSheets[a].insertRule(myClass + '{}');
+				}
+			}
+		}
+	};
+	$Client_ClientHelpers.changeCSS = function(myClass, values) {
+		myClass = '.' + myClass;
+		var CSSRules = '';
+		var document = eval('window.document');
+		if (document.all) {
+			CSSRules = 'rules';
+		}
+		else if (document.getElementById) {
+			CSSRules = 'cssRules';
+		}
+		for (var a = 0; a < document.styleSheets.length; a++) {
+			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
+				continue;
+			}
+			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
+				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
+					var $t1 = new ss.ObjectEnumerator(values);
+					try {
+						while ($t1.moveNext()) {
+							var m = $t1.current();
+							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
+						}
+					}
+					finally {
+						$t1.dispose();
+					}
+				}
+			}
+		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.ActiveLobbyController
@@ -1595,9 +1672,9 @@
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.GameController
 	var $Client_Controllers_GameController = function(scope, clientGameManagerService, gameContentManagerService, createUIService) {
+		this.$createUIService = null;
 		this.$myClientGameManagerService = null;
 		this.$myGameContentManagerService = null;
-		this.$createUIService = null;
 		this.$scope = null;
 		this.$scope = scope;
 		this.$myClientGameManagerService = clientGameManagerService;
@@ -1837,6 +1914,362 @@
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.AcgDebugDrawCardDirective
+	var $Client_Directives_AcgDebugDrawCardDirective = function() {
+		this.link = null;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Directives_AcgDebugDrawCardDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			element.attr('style', 'width:71px; height:96px;');
+			element.attr('class', 'card ' + ss.formatString('card{0}-{1}', scope.card.type, scope.card.value));
+			var redrawCard = function() {
+				var scale = scope.scale;
+				var spaceScale = { width: scope.space.width / (scope.space.pile.cards.length - 1), height: scope.space.height / (scope.space.pile.cards.length - 1) };
+				var vertical = scope.space.vertical;
+				var cardIndex = ss.indexOf(scope.space.pile.cards, scope.card);
+				scope.cardStyle = {};
+				var xx = 0;
+				var yy = 0;
+				switch (scope.space.resizeType) {
+					case 1: {
+						if (vertical) {
+							yy = (scope.card.value + 1) / 13 * scope.space.height * scale.y;
+						}
+						else {
+							xx = (scope.card.value + 1) / 13 * scope.space.width * scale.x;
+						}
+						break;
+					}
+					case 0: {
+						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
+						break;
+					}
+					default: {
+						xx = (!vertical ? (cardIndex * spaceScale.width * scale.x) : 0);
+						yy = (vertical ? (cardIndex * spaceScale.height * scale.y) : 0);
+						break;
+					}
+				}
+				xx -= 35;
+				yy -= 48;
+				scope.cardStyle.position = 'absolute';
+				scope.cardStyle.zIndex = cardIndex;
+				scope.cardStyle.borderRadius = '5px';
+				scope.cardStyle.left = xx + (vertical ? (scope.space.width * scale.x / 2) : 0);
+				scope.cardStyle.top = yy + (!vertical ? (scope.space.height * scale.y / 2) : 0);
+				//                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
+				//                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
+				scope.cardStyle.content = '""';
+				if (ss.startsWithString(scope.space.name, 'User')) {
+					if (scope.card.appearance.effectNames.length === 0) {
+						ss.add(scope.card.appearance.effectNames, 'bend'.toString());
+					}
+				}
+				else {
+					for (var index = scope.card.appearance.effectNames.length - 1; index >= 0; index--) {
+						var cardGameAppearanceEffect = scope.card.appearance.effectNames[index];
+						if (ss.referenceEquals(cardGameAppearanceEffect, 'bend'.toString())) {
+							ss.remove(scope.card.appearance.effectNames, cardGameAppearanceEffect);
+						}
+					}
+				}
+				//
+				//                foreach (var effect in scope.Card.Appearance.EffectNames)
+				//
+				//                {
+				//
+				//                GameEffectModel grabbedEffect = myEffectManager.GetEffectByName(effect);
+				//
+				//                if (grabbedEffect == null)
+				//
+				//                {
+				//
+				//                continue;
+				//
+				//                }
+				//
+				//                switch (grabbedEffect.Type)
+				//
+				//                {
+				//
+				//                case EffectType.Highlight:
+				//
+				//                
+				//
+				//                var _effect = new CardGameAppearanceEffectHighlight(new CardGameEffectHighlightOptions()
+				//
+				//                {
+				//
+				//                Color = grabbedEffect.GetPropertyByName<string>("color"),
+				//
+				//                Radius = grabbedEffect.GetPropertyByName<double>("radius"),
+				//
+				//                Rotate = grabbedEffect.GetPropertyByName<double>("rotate"),
+				//
+				//                OffsetX = grabbedEffect.GetPropertyByName<double>("offsetx"),
+				//
+				//                OffsetY = grabbedEffect.GetPropertyByName<double>("offsety"),
+				//
+				//                Opacity = grabbedEffect.GetPropertyByName<double>("opacity"),
+				//
+				//                });
+				//
+				//                
+				//
+				//                JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
+				//
+				//                beforeStyle["display"] = "block";
+				//
+				//                beforeStyle["position"] = "relative";
+				//
+				//                beforeStyle["z-index"] = "-1";
+				//
+				//                beforeStyle["width"] = "100%";
+				//
+				//                beforeStyle["height"] = "100%";
+				//
+				//                beforeStyle["left"] = (-_effect.Radius + _effect.OffsetX) + "px";
+				//
+				//                beforeStyle["top"] = (-_effect.Radius + _effect.OffsetY) + "px";
+				//
+				//                beforeStyle["padding"] = (_effect.Radius) + "px";
+				//
+				//                beforeStyle["border-radius"] = "5px";
+				//
+				//                beforeStyle["box-shadow"] = "rgb(44, 44, 44) 3px 3px 2px";
+				//
+				//                var color = hextorgb(_effect.Color);
+				//
+				//                
+				//
+				//                beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", color.R, color.G, color.B, _effect.Opacity);
+				//
+				//                beforeStyle["border"] = "2px solid black";
+				//
+				//                
+				//
+				//                ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", beforeStyle);
+				//
+				//                
+				//
+				//                
+				//
+				//                
+				//
+				//                
+				//
+				//                break;
+				//
+				//                case EffectType.Rotate:
+				//
+				//                break;
+				//
+				//                case EffectType.Bend:
+				//
+				//                
+				//
+				//                
+				//
+				//                
+				//
+				//                
+				//
+				//                var bEffect = (new CardGameAppearanceEffectBend(new CardGameEffectBendOptions()
+				//
+				//                {
+				//
+				//                Degrees = grabbedEffect.GetPropertyByName<double>("degrees"),
+				//
+				//                }));
+				//
+				//                
+				//
+				//                
+				//
+				//                var rotate = element.GetCSS("transform").Replace(" scale(1, 1)", "");
+				//
+				//                
+				//
+				//                element.me().rotate((((-bEffect.Degrees / 2 + bEffect.Degrees / (scope.Space.Pile.Cards.Count - 1) * cardIndex) + NoTransformRotate(rotate))) );
+				//
+				//                
+				//
+				//                break;
+				//
+				//                case EffectType.StyleProperty:
+				//
+				//                break;
+				//
+				//                case EffectType.Animated:
+				//
+				//                break;
+				//
+				//                }
+				//
+				//                }
+			};
+			var keys = {};
+			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
+			$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+			scope.$on('redrawCard', redrawCard);
+			//   redrawCard();
+			//
+			//                          
+			// 
+			//            scope.watch("$parent.space", () =>
+			//
+			//                          
+			// 
+			//            {
+			//
+			//                          
+			// 
+			//            Console.Log("ac");
+			//
+			//                          
+			// 
+			//            redrawCard();
+			//
+			//                          
+			// 
+			//            }, true);
+			//
+			//                          
+			// 
+			//            scope.watch("card.appearance.effectNames.join()", () =>
+			//
+			//                          
+			// 
+			//            {
+			//
+			//                          
+			// 
+			//            Console.Log("b");
+			//
+			//                          
+			// 
+			//            redrawCard();
+			//
+			//                          
+			// 
+			//            }, true);
+			//scope.watch<CardScope>((_scope) =>
+			//{
+			//
+			//List<Effect> effects = new List<Effect>();
+			//
+			//foreach (var ef in _scope.Card.Appearance.EffectNames)
+			//{
+			//var _ef = myEffectManager.GetEffectByName(ef);
+			//effects.Add(_ef);
+			//}
+			//return effects;
+			//}, () => {
+			//Console.Log("c");
+			//redrawCard();
+			//}, true);
+			redrawCard();
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.AcgDebugDrawSpaceDirective
+	var $Client_Directives_AcgDebugDrawSpaceDirective = function() {
+		this.link = null;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Directives_AcgDebugDrawSpaceDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			var scale = scope.scale;
+			element.attr('class', 'space ' + ss.formatString('space{0}', scope.space.name));
+			//  element.Resizable(new ResizableOptions()
+			//  {
+			//  Grid = new[] { scale.X, scale.Y },
+			//  MinHeight = -1,
+			//  MinWidth = -1,
+			//  Handles = "n, e, s, w,nw,sw,ne,se",
+			//  OnResize = (ev, ele) =>
+			//  {
+			//  scope.Space.Width = ele.Size.Width / scale.X;
+			//  scope.Space.Height = ele.Size.Height / scale.Y;
+			//  scope.Apply();
+			//  
+			//  }
+			//  });
+			//  element.Draggable(new DraggableOptions()
+			//  {
+			//  Cursor = "crosshair",
+			//  Grid = new[] { scale.X, scale.Y },
+			//  OnDrag = (ev, ele) =>
+			//  {
+			//  scope.Space.X = ele.Position.Left / scale.X;
+			//  scope.Space.Y = ele.Position.Top/ scale.Y;
+			//  scope.Apply();
+			//  
+			//  }
+			//  });
+			scope.$watch('space', function() {
+				var beforeStyle = {};
+				beforeStyle['display'] = 'block';
+				beforeStyle['position'] = 'relative';
+				beforeStyle['z-index'] = '-1';
+				beforeStyle['width'] = '100%';
+				beforeStyle['height'] = '100%';
+				beforeStyle['left'] = '-50px';
+				beforeStyle['top'] = '-50px';
+				beforeStyle['padding'] = '50px';
+				beforeStyle['border-radius'] = '15px';
+				beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
+				beforeStyle['content'] = '""';
+				beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
+				$Client_ClientHelpers.changeCSS('space' + scope.space.name + '::before', beforeStyle);
+				scope.spaceStyle = {};
+				scope.spaceStyle.position = 'absolute';
+				scope.spaceStyle.left = scope.space.x * scale.x;
+				scope.spaceStyle.top = scope.space.y * scale.y;
+				scope.spaceStyle.width = scope.space.width * scale.x;
+				scope.spaceStyle.height = scope.space.height * scale.y;
+				scope.spaceStyle.backgroundColor = 'red';
+				for (var $t1 = 0; $t1 < scope.space.appearance.effects.length; $t1++) {
+					var effect = scope.space.appearance.effects[$t1];
+					switch (effect.type) {
+						case 0: {
+							var hEffect = effect;
+							scope.spaceStyle.padding = ss.formatString('{0} {0} {0} {0}', hEffect.radius);
+							scope.spaceStyle.backgroundColor = hEffect.color;
+							scope.spaceStyle.border = 'solid 2px black';
+							scope.spaceStyle.borderRadius = 15;
+							scope.spaceStyle.boxShadow = '4px 4px 2px #333';
+							break;
+						}
+						case 1: {
+							window.alert(effect.type.toString());
+							break;
+						}
+						case 2: {
+							var bEffect = effect;
+							//rotate
+							break;
+						}
+						case 3: {
+							window.alert(effect.type.toString());
+							break;
+						}
+						case 4: {
+							window.alert(effect.type.toString());
+							break;
+						}
+						default: {
+							break;
+						}
+					}
+				}
+				scope.$broadcast('redrawCard');
+			}, true);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgDrawCardDirective
 	var $Client_Directives_AcgDrawCardDirective = function() {
 		this.link = null;
@@ -2035,7 +2468,7 @@
 			};
 			var keys = {};
 			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
-			$Client_Directives_AcgDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+			$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$on('redrawCard', redrawCard);
 			//   redrawCard();
 			//
@@ -2096,50 +2529,6 @@
 			redrawCard();
 		}
 	};
-	$Client_Directives_AcgDrawCardDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
-	$Client_Directives_AcgDrawCardDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgDrawCardDirective.noTransformRotate = function(ar) {
-		if (ar === '') {
-			return 0;
-		}
-		return parseFloat(ss.replaceAllString(ss.replaceAllString(ar, 'rotate(', ''), 'deg)', ''));
-		//todo regex??
-	};
-	$Client_Directives_AcgDrawCardDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgDrawSpaceDirective
 	var $Client_Directives_AcgDrawSpaceDirective = function() {
@@ -2190,7 +2579,7 @@
 				beforeStyle['box-shadow'] = 'rgb(51, 51, 51) 4px 4px 2px';
 				beforeStyle['content'] = '""';
 				beforeStyle['background'] = 'rgba(112, 12, 58, 0.231373)';
-				$Client_Directives_AcgDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
+				$Client_ClientHelpers.changeCSS('space' + scope.space.name + '::before', beforeStyle);
 				scope.spaceStyle = {};
 				scope.spaceStyle.position = 'absolute';
 				scope.spaceStyle.left = scope.space.x * scale.x;
@@ -2234,39 +2623,6 @@
 				}
 				scope.$broadcast('redrawCard');
 			}, true);
-		}
-	};
-	$Client_Directives_AcgDrawSpaceDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgDrawSpaceDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2317,7 +2673,7 @@
 				scope.areaStyle.backgroundColor = 'blue';
 			};
 			scope.$watch('model.selection.selectedEffect', function() {
-				$Client_Directives_AcgEffectTestDrawAreaDirective.$purgeCSS('area' + area.name + '::before');
+				$Client_ClientHelpers.purgeCSS('area' + area.name + '::before');
 				var effect = scope.model.selection.selectedEffect;
 				if (ss.isNullOrUndefined(effect)) {
 					return;
@@ -2341,11 +2697,11 @@
 						beforeStyle['padding'] = radius + 'px';
 						beforeStyle['border-radius'] = '5px';
 						beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-						var hexcolor = $Client_Directives_AcgEffectTestDrawAreaDirective.hextorgb(color);
+						var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 						beforeStyle['content'] = '""';
 						beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 						beforeStyle['border'] = '2px solid black';
-						$Client_Directives_AcgEffectTestDrawAreaDirective.$changeCSS('area' + area.name + '::before', beforeStyle);
+						$Client_ClientHelpers.changeCSS('area' + area.name + '::before', beforeStyle);
 						break;
 					}
 					case 'rotate': {
@@ -2363,65 +2719,6 @@
 				}
 			}, true);
 			scope.$watch('area', reApplyAreaBind, true);
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawAreaDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgEffectTestDrawAreaDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
-	$Client_Directives_AcgEffectTestDrawAreaDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawAreaDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2507,10 +2804,10 @@
 				if (test !== 'card') {
 					return;
 				}
-				$Client_Directives_AcgEffectTestDrawCardDirective.$purgeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value));
+				$Client_ClientHelpers.purgeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value));
 				keys = {};
 				keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
-				$Client_Directives_AcgEffectTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+				$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 				var effect = scope.model.selection.selectedEffect;
 				if (ss.isNullOrUndefined(effect)) {
 					return;
@@ -2534,10 +2831,10 @@
 						beforeStyle['padding'] = radius + 'px';
 						beforeStyle['border-radius'] = '5px';
 						beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-						var hexcolor = $Client_Directives_AcgEffectTestDrawCardDirective.hextorgb(color);
+						var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 						beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 						beforeStyle['border'] = '2px solid black';
-						$Client_Directives_AcgEffectTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', beforeStyle);
+						$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', beforeStyle);
 						break;
 					}
 					case 'rotate': {
@@ -2583,7 +2880,7 @@
 			}, true);
 			keys = {};
 			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
-			$Client_Directives_AcgEffectTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+			$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$watch('space', redrawCard, true);
 			scope.$watch('model.selection.selectedScenario', redrawCard, true);
 			//            scope.On("redrawCard", redrawCard);
@@ -2646,72 +2943,6 @@
 			redrawCard();
 		}
 	};
-	$Client_Directives_AcgEffectTestDrawCardDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawCardDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
-	$Client_Directives_AcgEffectTestDrawCardDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgEffectTestDrawCardDirective.noTransformRotate = function(ar) {
-		if (ar === '') {
-			return 0;
-		}
-		return parseFloat(ss.replaceAllString(ss.replaceAllString(ar, 'rotate(', ''), 'deg)', ''));
-		//todo regex??
-	};
-	$Client_Directives_AcgEffectTestDrawCardDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgEffectTestDrawSpaceDirective
 	var $Client_Directives_AcgEffectTestDrawSpaceDirective = function() {
@@ -2760,7 +2991,7 @@
 				scope.spaceStyle.backgroundColor = 'red';
 			};
 			scope.$watch('model.selection.selectedEffect', function() {
-				$Client_Directives_AcgEffectTestDrawSpaceDirective.$purgeCSS('space' + space.name + '::before');
+				$Client_ClientHelpers.purgeCSS('space' + space.name + '::before');
 				var effect = scope.model.selection.selectedEffect;
 				if (ss.isNullOrUndefined(effect)) {
 					return;
@@ -2784,11 +3015,11 @@
 						beforeStyle['padding'] = radius + 'px';
 						beforeStyle['border-radius'] = '5px';
 						beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-						var hexcolor = $Client_Directives_AcgEffectTestDrawSpaceDirective.hextorgb(color);
+						var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 						beforeStyle['content'] = '""';
 						beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 						beforeStyle['border'] = '2px solid black';
-						$Client_Directives_AcgEffectTestDrawSpaceDirective.$changeCSS('space' + space.name + '::before', beforeStyle);
+						$Client_ClientHelpers.changeCSS('space' + space.name + '::before', beforeStyle);
 						break;
 					}
 					case 'rotate': {
@@ -2806,65 +3037,6 @@
 				}
 			}, true);
 			scope.$watch('space', reApplySpaceBind, true);
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawSpaceDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgEffectTestDrawSpaceDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
-	$Client_Directives_AcgEffectTestDrawSpaceDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawSpaceDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -2911,7 +3083,7 @@
 				element.text(scope.text.text);
 			};
 			scope.$watch('model.selection.selectedEffect', function() {
-				$Client_Directives_AcgEffectTestDrawTextDirective.$purgeCSS('text' + text.name + '::before');
+				$Client_ClientHelpers.purgeCSS('text' + text.name + '::before');
 				var effect = scope.model.selection.selectedEffect;
 				if (ss.isNullOrUndefined(effect)) {
 					return;
@@ -2935,11 +3107,11 @@
 						beforeStyle['padding'] = radius + 'px';
 						beforeStyle['border-radius'] = '5px';
 						beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-						var hexcolor = $Client_Directives_AcgEffectTestDrawTextDirective.hextorgb(color);
+						var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 						beforeStyle['content'] = '""';
 						beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 						beforeStyle['border'] = '2px solid black';
-						$Client_Directives_AcgEffectTestDrawTextDirective.$changeCSS('text' + text.name + '::before', beforeStyle);
+						$Client_ClientHelpers.changeCSS('text' + text.name + '::before', beforeStyle);
 						break;
 					}
 					case 'rotate': {
@@ -2957,65 +3129,6 @@
 				}
 			}, true);
 			scope.$watch('text', reApplyTextBind, true);
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawTextDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgEffectTestDrawTextDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
-	$Client_Directives_AcgEffectTestDrawTextDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgEffectTestDrawTextDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -3086,7 +3199,7 @@
 				scope.areaStyle.width = scope.area.width * scale.x;
 				scope.areaStyle.height = scope.area.height * scale.y;
 				scope.areaStyle.backgroundColor = 'blue';
-				$Client_Directives_AcgTestDrawAreaDirective.$purgeCSS('area' + scope.area.name + '::before');
+				$Client_ClientHelpers.purgeCSS('area' + scope.area.name + '::before');
 				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
 					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
 					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.areaGuids.length; $t2++) {
@@ -3115,11 +3228,11 @@
 											beforeStyle['padding'] = radius + 'px';
 											beforeStyle['border-radius'] = '5px';
 											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-											var hexcolor = $Client_Directives_AcgTestDrawAreaDirective.hextorgb(color);
+											var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 											beforeStyle['content'] = '""';
 											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 											beforeStyle['border'] = '2px solid black';
-											$Client_Directives_AcgTestDrawAreaDirective.$changeCSS('area' + scope.area.name + '::before', beforeStyle);
+											$Client_ClientHelpers.changeCSS('area' + scope.area.name + '::before', beforeStyle);
 											break;
 										}
 										case 'rotate': {
@@ -3172,65 +3285,6 @@
 			scope.$watch('model.selection.selectedEffect', reApplyAreaBind, true);
 			scope.$watch('model.selection.selectedScenario.effects', reApplyAreaBind, true);
 		}
-	};
-	$Client_Directives_AcgTestDrawAreaDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgTestDrawAreaDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawAreaDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawAreaDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawCardDirective
@@ -3308,10 +3362,10 @@
 				if (!scope.model.selection.showCards) {
 					scope.cardStyle.display = 'none';
 				}
-				$Client_Directives_AcgTestDrawCardDirective.$purgeCSS(ss.formatString('card{0}-{1}', scope.card.type, scope.card.value) + '::before');
+				$Client_ClientHelpers.purgeCSS(ss.formatString('card{0}-{1}', scope.card.type, scope.card.value) + '::before');
 				keys = {};
 				keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
-				$Client_Directives_AcgTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+				$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
 					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
 					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.cardGuids.length; $t2++) {
@@ -3341,10 +3395,10 @@
 											beforeStyle['border-radius'] = '5px';
 											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
 											beforeStyle['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
-											var hexcolor = $Client_Directives_AcgTestDrawCardDirective.hextorgb(color);
+											var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 											beforeStyle['border'] = '2px solid black';
-											$Client_Directives_AcgTestDrawCardDirective.$changeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value), beforeStyle);
+											$Client_ClientHelpers.changeCSS(ss.formatString('card{0}-{1}::before', scope.card.type, scope.card.value), beforeStyle);
 											break;
 										}
 										case 'rotate': {
@@ -3404,7 +3458,7 @@
 			};
 			keys = {};
 			keys['content'] = ss.formatString('url(\'{1}assets/cards/{0}.gif\')', 100 + (scope.card.value + 1) + scope.card.type * 13, CommonLibraries.Constants.contentAddress);
-			$Client_Directives_AcgTestDrawCardDirective.$changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
+			$Client_ClientHelpers.changeCSS('card' + scope.card.type + '-' + scope.card.value + '::before', keys);
 			scope.$watch('space', redrawCard, true);
 			scope.$watch('model.selection.showCards', redrawCard);
 			scope.$watch('model.selection.selectedScenario', redrawCard, true);
@@ -3469,72 +3523,6 @@
 			redrawCard();
 		}
 	};
-	$Client_Directives_AcgTestDrawCardDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
-	$Client_Directives_AcgTestDrawCardDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgTestDrawCardDirective.noTransformRotate = function(ar) {
-		if (ar === '') {
-			return 0;
-		}
-		return parseFloat(ss.replaceAllString(ss.replaceAllString(ar, 'rotate(', ''), 'deg)', ''));
-		//todo regex??
-	};
-	$Client_Directives_AcgTestDrawCardDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawCardDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
-		}
-	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawSpaceDirective
 	var $Client_Directives_AcgTestDrawSpaceDirective = function() {
@@ -3570,7 +3558,7 @@
 				scope.spaceStyle.width = w * sl;
 				scope.spaceStyle.height = h * st;
 				scope.spaceStyle.backgroundColor = 'red';
-				$Client_Directives_AcgTestDrawSpaceDirective.$purgeCSS('space' + scope.space.name + '::before');
+				$Client_ClientHelpers.purgeCSS('space' + scope.space.name + '::before');
 				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
 					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
 					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.spaceGuids.length; $t2++) {
@@ -3599,11 +3587,11 @@
 											beforeStyle['padding'] = radius + 'px';
 											beforeStyle['border-radius'] = '5px';
 											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-											var hexcolor = $Client_Directives_AcgTestDrawSpaceDirective.hextorgb(color);
+											var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 											beforeStyle['content'] = '""';
 											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 											beforeStyle['border'] = '2px solid black';
-											$Client_Directives_AcgTestDrawSpaceDirective.$changeCSS('space' + scope.space.name + '::before', beforeStyle);
+											$Client_ClientHelpers.changeCSS('space' + scope.space.name + '::before', beforeStyle);
 											break;
 										}
 										case 'rotate': {
@@ -3656,65 +3644,6 @@
 			scope.$watch('model.selection.selectedScenario.effects', reApplySpaceBind, true);
 		}
 	};
-	$Client_Directives_AcgTestDrawSpaceDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgTestDrawSpaceDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawSpaceDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawSpaceDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
-	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.AcgTestDrawTextDirective
 	var $Client_Directives_AcgTestDrawTextDirective = function() {
@@ -3737,7 +3666,7 @@
 				scope.textStyle.boxShadow = 'rgb(51, 51, 51) 4px 4px 2px';
 				scope.textStyle.borderRadius = '15px';
 				element.text(scope.text.text);
-				$Client_Directives_AcgTestDrawTextDirective.$purgeCSS('text' + scope.text.name + '::before');
+				$Client_ClientHelpers.purgeCSS('text' + scope.text.name + '::before');
 				for (var $t1 = 0; $t1 < scope.model.selection.selectedScenario.effects.length; $t1++) {
 					var gameLayoutScenarioEffect = scope.model.selection.selectedScenario.effects[$t1];
 					for (var $t2 = 0; $t2 < gameLayoutScenarioEffect.textGuids.length; $t2++) {
@@ -3766,11 +3695,11 @@
 											beforeStyle['padding'] = radius + 'px';
 											beforeStyle['border-radius'] = '5px';
 											beforeStyle['box-shadow'] = 'rgb(44, 44, 44) 3px 3px 2px';
-											var hexcolor = $Client_Directives_AcgTestDrawTextDirective.hextorgb(color);
+											var hexcolor = $Client_ClientHelpers.hexToRGB(color);
 											beforeStyle['content'] = '""';
 											beforeStyle['background-color'] = ss.formatString('rgba({0}, {1}, {2}, {3})', hexcolor.R, hexcolor.G, hexcolor.B, opacity);
 											beforeStyle['border'] = '2px solid black';
-											$Client_Directives_AcgTestDrawTextDirective.$changeCSS('text' + scope.text.name + '::before', beforeStyle);
+											$Client_ClientHelpers.changeCSS('text' + scope.text.name + '::before', beforeStyle);
 											break;
 										}
 										case 'rotate': {
@@ -3809,65 +3738,6 @@
 			scope.$watch('model.selection.selectedEffect', reApplyTextBind, true);
 			scope.$watch('model.selection.selectedScenario.effects', reApplyTextBind, true);
 		}
-	};
-	$Client_Directives_AcgTestDrawTextDirective.transformRotate = function(ar) {
-		return ss.formatString('rotate({0}deg)', ar);
-	};
-	$Client_Directives_AcgTestDrawTextDirective.$changeCSS = function(myClass, values) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							document.styleSheets[a][CSSRules][i].style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
-					}
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawTextDirective.$purgeCSS = function(myClass) {
-		myClass = '.' + myClass;
-		var CSSRules = '';
-		var document = eval('window.document');
-		if (document.all) {
-			CSSRules = 'rules';
-		}
-		else if (document.getElementById) {
-			CSSRules = 'cssRules';
-		}
-		for (var a = 0; a < document.styleSheets.length; a++) {
-			if (ss.isNullOrUndefined(document.styleSheets[a][CSSRules])) {
-				continue;
-			}
-			for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++) {
-				if (ss.referenceEquals(document.styleSheets[a][CSSRules][i].selectorText, myClass)) {
-					document.styleSheets[a].removeRule(i);
-					document.styleSheets[a].insertRule(myClass + '{}');
-				}
-			}
-		}
-	};
-	$Client_Directives_AcgTestDrawTextDirective.hextorgb = function(hex) {
-		var result = (new RegExp('^#?([a-f\\d]{2})([a-f\\d]{2})([a-f\\d]{2})$')).exec(hex);
-		return (ss.isValue(result) ? { R: parseInt(result[1], 16), G: parseInt(result[2], 16), B: parseInt(result[3], 16) } : null);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Directives.ChatBoxDirective
@@ -4208,6 +4078,15 @@
 					break;
 				}
 			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Filters.RoundFilter
+	var $Client_Filters_RoundFilter = function() {
+	};
+	$Client_Filters_RoundFilter.prototype = {
+		filter: function(input) {
+			return parseInt(input.toString());
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -4819,6 +4698,21 @@
 		this.space = null;
 		this.$parent = null;
 		Client.Scope.BaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Directive.DebugCardScope
+	var $Client_Scope_Directive_DebugCardScope = function() {
+		this.card = null;
+		this.cardStyle = null;
+		this.cardClick = null;
+		$Client_Scope_Directive_DebugSpaceScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Directive.DebugSpaceScope
+	var $Client_Scope_Directive_DebugSpaceScope = function() {
+		this.space = null;
+		this.spaceStyle = null;
+		$Client_Scope_Controller_DebugGameControllerScope.call(this);
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Directive.EffectTestAreaScope
@@ -5483,6 +5377,7 @@
 	};
 	ss.registerClass(global, 'Client.BuildAngular', $Client_BuildAngular);
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
+	ss.registerClass(global, 'Client.ClientHelpers', $Client_ClientHelpers);
 	ss.registerClass(null, 'Client.Controllers.$ActiveLobbyController', $Client_Controllers_$ActiveLobbyController);
 	ss.registerClass(null, 'Client.Controllers.$CreateRoomController', $Client_Controllers_$CreateRoomController);
 	ss.registerClass(null, 'Client.Controllers.$DebugQuestionController', $Client_Controllers_$DebugQuestionController);
@@ -5501,6 +5396,8 @@
 	ss.registerClass(global, 'Client.Controllers.EffectTesterController', $Client_Controllers_EffectTesterController);
 	ss.registerClass(global, 'Client.Controllers.GameController', $Client_Controllers_GameController);
 	ss.registerClass(global, 'Client.Controllers.TestGameController', $Client_Controllers_TestGameController);
+	ss.registerClass(global, 'Client.Directives.AcgDebugDrawCardDirective', $Client_Directives_AcgDebugDrawCardDirective);
+	ss.registerClass(global, 'Client.Directives.AcgDebugDrawSpaceDirective', $Client_Directives_AcgDebugDrawSpaceDirective);
 	ss.registerClass(global, 'Client.Directives.AcgDrawCardDirective', $Client_Directives_AcgDrawCardDirective);
 	ss.registerClass(global, 'Client.Directives.AcgDrawSpaceDirective', $Client_Directives_AcgDrawSpaceDirective);
 	ss.registerClass(global, 'Client.Directives.AcgEffectTestDrawAreaDirective', $Client_Directives_AcgEffectTestDrawAreaDirective);
@@ -5518,6 +5415,7 @@
 	ss.registerClass(global, 'Client.Directives.FloatingWindowDirective', $Client_Directives_FloatingWindowDirective);
 	ss.registerClass(global, 'Client.Directives.GridDirective', $Client_Directives_GridDirective);
 	ss.registerClass(global, 'Client.Directives.PropertyDirective', $Client_Directives_PropertyDirective);
+	ss.registerClass(global, 'Client.Filters.RoundFilter', $Client_Filters_RoundFilter);
 	ss.registerClass(global, 'Client.Libs.Extensions', $Client_Libs_Extensions);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
 	ss.registerClass(global, 'Client.Libs.TimeTracker', $Client_Libs_TimeTracker);
@@ -5568,6 +5466,8 @@
 	ss.registerEnum(global, 'Client.Scope.Controller.UpdateStatusType', $Client_Scope_Controller_UpdateStatusType);
 	ss.registerClass(global, 'Client.Scope.Directive.AcgSpacesScope', $Client_Scope_Directive_AcgSpacesScope, Client.Scope.BaseScope);
 	ss.registerClass(global, 'Client.Scope.Directive.CardScope', $Client_Scope_Directive_CardScope, Client.Scope.BaseScope);
+	ss.registerClass(global, 'Client.Scope.Directive.DebugSpaceScope', $Client_Scope_Directive_DebugSpaceScope, $Client_Scope_Controller_DebugGameControllerScope);
+	ss.registerClass(global, 'Client.Scope.Directive.DebugCardScope', $Client_Scope_Directive_DebugCardScope, $Client_Scope_Directive_DebugSpaceScope);
 	ss.registerClass(global, 'Client.Scope.Directive.EffectTestAreaScope', $Client_Scope_Directive_EffectTestAreaScope, $Client_Scope_Controller_EffectTesterControllerScope);
 	ss.registerClass(global, 'Client.Scope.Directive.EffectTestSpaceScope', $Client_Scope_Directive_EffectTestSpaceScope, $Client_Scope_Controller_EffectTesterControllerScope);
 	ss.registerClass(global, 'Client.Scope.Directive.EffectTestCardScope', $Client_Scope_Directive_EffectTestCardScope, $Client_Scope_Directive_EffectTestSpaceScope);
@@ -5644,6 +5544,8 @@
 	$Client_Directives_PropertyDirective.name$1 = 'property';
 	$Client_Directives_AcgDrawCardDirective.name$1 = 'acgDrawCard';
 	$Client_Directives_AcgDrawSpaceDirective.name$1 = 'acgDrawSpace';
+	$Client_Directives_AcgDebugDrawCardDirective.name$1 = 'acgDebugDrawCard';
+	$Client_Directives_AcgDebugDrawSpaceDirective.name$1 = 'acgDebugDrawSpace';
 	$Client_Directives_AcgTestDrawCardDirective.name$1 = 'acgTestDrawCard';
 	$Client_Directives_AcgTestDrawSpaceDirective.name$1 = 'acgTestDrawSpace';
 	$Client_Directives_AcgEffectTestDrawAreaDirective.name$1 = 'acgEffectTestDrawArea';
@@ -5653,6 +5555,7 @@
 	$Client_Directives_AcgTestDrawAreaDirective.name$1 = 'acgTestDrawArea';
 	$Client_Directives_AcgTestDrawTextDirective.name$1 = 'acgTestDrawText';
 	$Client_Directives_AcgSpacesDirective.name$1 = 'acgSpaces';
+	$Client_Filters_RoundFilter.name$1 = 'round';
 	$Client_BuildAngular.$scopeName = '$scope';
 	$Client_BuildAngular.$rootScopeName = '$rootScope';
 	$Client_BuildAngular.$compileName = '$compile';

@@ -6,6 +6,7 @@ namespace Client.Services
     public class GameContentManagerService
     {
         public const string Name = "GameContentManagerService";
+
         public GameContentManagerService()
         {
         }

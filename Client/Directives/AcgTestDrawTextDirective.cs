@@ -31,24 +31,21 @@ namespace Client.Directives
             var scale = scope.Model.Scale;
             Action reApplyTextBind = () =>
                                      {
-                                         scope.TextStyle = new {};
+                                         scope.TextStyle = new { };
 
 
                                          scope.TextStyle.position = "absolute";
-                                         scope.TextStyle.left = scope.Text.Left*scale.X;
-                                         scope.TextStyle.top = scope.Text.Top*scale.Y;
+                                         scope.TextStyle.left = scope.Text.Left * scale.X;
+                                         scope.TextStyle.top = scope.Text.Top * scale.Y;
                                          scope.TextStyle.boxShadow = "rgb(51, 51, 51) 4px 4px 2px";
                                          scope.TextStyle.borderRadius = "15px";
 
 
                                          element.Text(scope.Text.Text);
 
+                                         ClientHelpers.PurgeCSS("text" + scope.Text.Name + "::before");
 
-                                         PurgeCSS("text" + scope.Text.Name + "::before");
-
-                                         foreach (
-                                             var gameLayoutScenarioEffect in
-                                                 scope.Model.Selection.SelectedScenario.Effects)
+                                         foreach (var gameLayoutScenarioEffect in scope.Model.Selection.SelectedScenario.Effects)
                                          {
                                              foreach (var textGuid in gameLayoutScenarioEffect.TextGuids)
                                              {
@@ -84,16 +81,13 @@ namespace Client.Directives
                                                                      beforeStyle["border-radius"] = "5px";
                                                                      beforeStyle["box-shadow"] =
                                                                          "rgb(44, 44, 44) 3px 3px 2px";
-                                                                     var hexcolor = hextorgb(color);
+                                                                     var hexcolor = ClientHelpers.HexToRGB(color);
                                                                      beforeStyle["content"] = "\"\"";
 
-                                                                     beforeStyle["background-color"] =
-                                                                         string.Format("rgba({0}, {1}, {2}, {3})",
-                                                                             hexcolor.R, hexcolor.G, hexcolor.B, opacity);
+                                                                     beforeStyle["background-color"] = string.Format("rgba({0}, {1}, {2}, {3})", hexcolor.R, hexcolor.G, hexcolor.B, opacity);
                                                                      beforeStyle["border"] = "2px solid black";
 
-                                                                     ChangeCSS("text" + scope.Text.Name + "::before",
-                                                                         beforeStyle);
+                                                                     ClientHelpers.ChangeCSS("text" + scope.Text.Name + "::before", beforeStyle);
 
                                                                      break;
 
@@ -120,12 +114,12 @@ namespace Client.Directives
                                            element.Draggable(new DraggableOptions()
                                                              {
                                                                  Cursor = "crosshair",
-                                                                 Grid = new[] {scale.X, scale.Y},
+                                                                 Grid = new[] { scale.X, scale.Y },
                                                                  OnDrag = (ev, ele) =>
                                                                           {
-                                                                              scope.Text.Left = (ele.Position.Left/
+                                                                              scope.Text.Left = (ele.Position.Left /
                                                                                                  scale.X);
-                                                                              scope.Text.Top = (ele.Position.Top/scale.Y);
+                                                                              scope.Text.Top = (ele.Position.Top / scale.Y);
                                                                               scope.Apply();
                                                                           }
                                                              });
@@ -136,72 +130,6 @@ namespace Client.Directives
             scope.watch("text", reApplyTextBind, true);
             scope.watch("model.selection.selectedEffect", reApplyTextBind, true);
             scope.watch("model.selection.selectedScenario.effects", reApplyTextBind, true);
-        }
-
-        public static string TransformRotate(double ar)
-        {
-            return string.Format("rotate({0}deg)", ar);
-        }
-
-        private static void ChangeCSS(string myClass, JsDictionary<string, string> values)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        foreach (var m in values)
-                        {
-                            document.styleSheets[a][CSSRules][i].style[m.Key] = m.Value;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void PurgeCSS(string myClass)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        document.styleSheets[a].removeRule(i);
-                        document.styleSheets[a].insertRule(myClass + "{}");
-                    }
-                }
-            }
-        }
-
-        public static dynamic hextorgb(string hex)
-        {
-            var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
-            return result != null
-                ? new
-                  {
-                      R = int.Parse(result[1], 16),
-                      G = int.Parse(result[2], 16),
-                      B = int.Parse(result[3], 16)
-                  }
-                : null;
         }
     }
 }

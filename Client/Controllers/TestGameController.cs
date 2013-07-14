@@ -29,7 +29,7 @@ namespace Client.Controllers
             {
                 this.scope.Model.Selection.SelectedScenario =
                     this.scope.Model.Game.GameLayoutScenarios.Filter((scen) => scen.Name == "Default")[0];
-                    //todo fix default to guid idiot
+                //todo fix default to guid idiot
             }
 
 

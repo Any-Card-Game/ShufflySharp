@@ -15,9 +15,9 @@ namespace Client.Controllers
         private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly CreateUIService myCreateUIService;
         private readonly MessageService myMessageService;
-        private readonly GameEditorScope myScope; 
+        private readonly GameEditorScope myScope;
 
-        public GameEditorController(GameEditorScope scope,  
+        public GameEditorController(GameEditorScope scope,
             ClientSiteManagerService clientSiteManagerService, ClientDebugManagerService clientDebugManagerService,
             MessageService messageService, CreateUIService createUIService)
         {
@@ -68,32 +68,32 @@ namespace Client.Controllers
         private void OpenLayoutFn()
         {
             myCreateUIService.CreateSingleton<GameLayoutEditorScope>(GameLayoutEditorController.View, (scope, elem) =>
-                                                                                         {
-                                                                                             scope.Model =new GameLayoutEditorScopeModel();
-                                                                                             scope.Model.Game =myScope.Model.Game;
-                                                                                             scope.Model.Selection =myScope.Model.Selection;
-                                                                                         });
+                                                                                                      {
+                                                                                                          scope.Model = new GameLayoutEditorScopeModel();
+                                                                                                          scope.Model.Game = myScope.Model.Game;
+                                                                                                          scope.Model.Selection = myScope.Model.Selection;
+                                                                                                      });
         }
 
         private void OpenEffectsFn()
         {
             myCreateUIService.CreateSingleton<GameEffectsEditorScope>(GameEffectsEditorController.View, (scope, elem) =>
-                                                                                           {
-                                                                                               scope.Model =new GameEffectsEditorScopeModel();
-                                                                                               scope.Model.Game =
-                                                                                                   myScope.Model.Game;
-                                                                                               scope.Model.Selection =myScope.Model.Selection;
-                                                                                           });
+                                                                                                        {
+                                                                                                            scope.Model = new GameEffectsEditorScopeModel();
+                                                                                                            scope.Model.Game =
+                                                                                                                myScope.Model.Game;
+                                                                                                            scope.Model.Selection = myScope.Model.Selection;
+                                                                                                        });
         }
 
         private void OpenCodeFn()
         {
             myCreateUIService.CreateSingleton<GameCodeScope>(GameCodeController.View, (scope, elem) =>
-                                                                               {
-                                                                                   scope.Model =new GameCodeScopeModel();
-                                                                                   scope.Model.Game = myScope.Model.Game;
-                                                                                   scope.Model.Selection =myScope.Model.Selection;
-                                                                               });
+                                                                                      {
+                                                                                          scope.Model = new GameCodeScopeModel();
+                                                                                          scope.Model.Game = myScope.Model.Game;
+                                                                                          scope.Model.Selection = myScope.Model.Selection;
+                                                                                      });
         }
 
         private void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)

@@ -17,7 +17,7 @@ namespace Client.Controllers
         private readonly MessageService myMessageService;
         private readonly GameScenarioEditorScope myScope;
 
-        public GameScenarioEditorController(GameScenarioEditorScope scope, 
+        public GameScenarioEditorController(GameScenarioEditorScope scope,
             ClientSiteManagerService clientSiteManagerService, MessageService messageService,
             CreateUIService createUIService)
         {

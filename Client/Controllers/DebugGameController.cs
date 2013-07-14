@@ -28,18 +28,18 @@ namespace Client.Controllers
             this.createUIService = createUIService;
 
             myClientDebugManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
-                                                        {
-                                                            createUIService.CreateSingleton<QuestionScope>(DebugQuestionController.View,
-                                                                (myScope, elem) =>
-                                                                {
-                                                                    myScope.Model = new QuestionScopeModel();
-                                                                    myScope.Model.Question =
-                                                                        gameSendAnswerModel.Question;
-                                                                    myScope.Model.Answers = gameSendAnswerModel.Answers;
-                                                                    myScope.Model.SelectedAnswer =
-                                                                        gameSendAnswerModel.Answers[0];
-                                                                });
-                                                        };
+                                                         {
+                                                             createUIService.CreateSingleton<QuestionScope>(DebugQuestionController.View,
+                                                                 (myScope, elem) =>
+                                                                 {
+                                                                     myScope.Model = new QuestionScopeModel();
+                                                                     myScope.Model.Question =
+                                                                         gameSendAnswerModel.Question;
+                                                                     myScope.Model.Answers = gameSendAnswerModel.Answers;
+                                                                     myScope.Model.SelectedAnswer =
+                                                                         gameSendAnswerModel.Answers[0];
+                                                                 });
+                                                         };
 
 
             /* effectManager.Effects =new List<GameEffectModel>();
@@ -98,63 +98,63 @@ namespace Client.Controllers
 
 
             myClientDebugManagerService.OnUpdateState += (user, update) =>
-                                                        {
-                                                            var data =
-                                                                Json.Parse<GameCardGame>(
-                                                                    new Compressor().DecompressText(update));
+                                                         {
+                                                             var data =
+                                                                 Json.Parse<GameCardGame>(
+                                                                     new Compressor().DecompressText(update));
 
-                                                            bool create = scope.MainArea == null;
+                                                             bool create = scope.MainArea == null;
 
-                                                            scope.MainArea = data;
-
-
-                                                            if (create)
-                                                            {
-                                                                scope.Scale =
-                                                                    new Point(
-                                                                        jQuery.Window.GetWidth()/
-                                                                        scope.MainArea.Size.Width*.9,
-                                                                        ((jQuery.Window.GetHeight() - 250)/
-                                                                         scope.MainArea.Size.Height)*.9);
-
-                                                                foreach (var space in scope.MainArea.Spaces)
-                                                                {
-                                                                    addRule(".space" + space.Name,
-                                                                        new JsDictionary<string, object>());
-                                                                    addRule(".space" + space.Name + "::before",
-                                                                        new JsDictionary<string, object>());
-                                                                    addRule(".space" + space.Name + "::after",
-                                                                        new JsDictionary<string, object>());
+                                                             scope.MainArea = data;
 
 
-                                                                    foreach (var card in space.Pile.Cards)
-                                                                    {
-                                                                        card.Appearance.EffectNames = new List<string>();
+                                                             if (create)
+                                                             {
+                                                                 scope.Scale =
+                                                                     new Point(
+                                                                         jQuery.Window.GetWidth()/
+                                                                         scope.MainArea.Size.Width*.9,
+                                                                         ((jQuery.Window.GetHeight() - 250)/
+                                                                          scope.MainArea.Size.Height)*.9);
 
-                                                                        if (space.Name.StartsWith("User"))
-                                                                        {
-                                                                            card.Appearance.EffectNames.Add("bend");
-                                                                        }
-
-                                                                        addRule(
-                                                                            ".card" + card.Type + "-" + card.Value + "",
-                                                                            new JsDictionary<string, object>());
-                                                                        addRule(
-                                                                            ".card" + card.Type + "-" + card.Value +
-                                                                            "::before",
-                                                                            new JsDictionary<string, object>());
-                                                                        addRule(
-                                                                            ".card" + card.Type + "-" + card.Value +
-                                                                            "::after",
-                                                                            new JsDictionary<string, object>());
-                                                                    }
-                                                                }
-                                                            }
+                                                                 foreach (var space in scope.MainArea.Spaces)
+                                                                 {
+                                                                     addRule(".space" + space.Name,
+                                                                         new JsDictionary<string, object>());
+                                                                     addRule(".space" + space.Name + "::before",
+                                                                         new JsDictionary<string, object>());
+                                                                     addRule(".space" + space.Name + "::after",
+                                                                         new JsDictionary<string, object>());
 
 
-                                                            scope.Apply();
-                                                            myGameContentManagerService.Redraw();
-                                                        };
+                                                                     foreach (var card in space.Pile.Cards)
+                                                                     {
+                                                                         card.Appearance.EffectNames = new List<string>();
+
+                                                                         if (space.Name.StartsWith("User"))
+                                                                         {
+                                                                             card.Appearance.EffectNames.Add("bend");
+                                                                         }
+
+                                                                         addRule(
+                                                                             ".card" + card.Type + "-" + card.Value + "",
+                                                                             new JsDictionary<string, object>());
+                                                                         addRule(
+                                                                             ".card" + card.Type + "-" + card.Value +
+                                                                             "::before",
+                                                                             new JsDictionary<string, object>());
+                                                                         addRule(
+                                                                             ".card" + card.Type + "-" + card.Value +
+                                                                             "::after",
+                                                                             new JsDictionary<string, object>());
+                                                                     }
+                                                                 }
+                                                             }
+
+
+                                                             scope.Apply();
+                                                             myGameContentManagerService.Redraw();
+                                                         };
 
             jQuery.Window.Bind("resize", (a) =>
                                          {
@@ -168,14 +168,14 @@ namespace Client.Controllers
 
 
             myClientDebugManagerService.OnGameStarted += (user, room) =>
-                                                        {
-                                                            //alert(JSON.stringify(data));
-                                                        };
+                                                         {
+                                                             //alert(JSON.stringify(data));
+                                                         };
 
             myClientDebugManagerService.OnGameOver += (user, room) =>
-                                                     {
-                                                         //alert(JSON.stringify(data));
-                                                     };
+                                                      {
+                                                          //alert(JSON.stringify(data));
+                                                      };
 
 
             scope.MainArea = null;
@@ -268,6 +268,5 @@ namespace Client.Controllers
                  }
              };*/
         }
-
     }
 }

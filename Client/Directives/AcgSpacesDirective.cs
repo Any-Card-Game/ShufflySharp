@@ -66,11 +66,11 @@ namespace Client.Directives
             //scope["$watch"]("spaces",updater);
 
             myGameContentManagerService.Redraw += () =>
-                                           {
-                                               Console.Log("updating board");
-                                               updater();
-                                               scope.Apply();
-                                           };
+                                                  {
+                                                      Console.Log("updating board");
+                                                      updater();
+                                                      scope.Apply();
+                                                  };
 
             updater();
         }

@@ -1,6 +1,6 @@
 <div ng-controller="GameScenarioEditorController">
     <div floating-window left="'82%'" top="'40%'" height="'600px'" width="'400px'" title="'Game Scenario Editor!'"
-        visible="visible">
+         visible="visible">
         <div style="width: 100%; height: 100px;" fancy-list items="model.game.gameLayoutScenarios" bind="model.selection.selectedScenario">
             {{item.name}}
         </div>
@@ -12,38 +12,38 @@
             <div style="width: 50%; float: left;">
                 <div>
                     Name:
-                <input type="text" ng-model="model.selection.selectedScenario.name" />
+                    <input type="text" ng-model="model.selection.selectedScenario.name" />
                 </div>
                 <div>
                     Number Of Players:
-                <input type="range" min="1" max="8" ng-model="model.selection.selectedScenario.numberOfPlayers" />{{model.selection.selectedScenario.numberOfPlayers}}
+                    <input type="range" min="1" max="8" ng-model="model.selection.selectedScenario.numberOfPlayers" />{{model.selection.selectedScenario.numberOfPlayers}}
                 </div>
                 <div>
                     Screen Width:
-                <input type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.x" />{{model.selection.selectedScenario.screenSize.x}}
+                    <input type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.x" />{{model.selection.selectedScenario.screenSize.x}}
                 </div>
                 <div>
                     Screen Height:
-                <input type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.y" />{{model.selection.selectedScenario.screenSize.y}}
+                    <input type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.y" />{{model.selection.selectedScenario.screenSize.y}}
                 </div>
 
                 <div>
                     Spaces:
             
-                <div style="width: 150px; height: 100px;" fancy-list items="model.selection.selectedScenario.spaces" bind="model.selection.selectedScenarioSpace">
-                    <div ng-init="space=parentScope.model.getSpaceBySpaceGuid(item.spaceGuid)">
-                        {{space.name}}
-                    </div>
+                    <div style="width: 150px; height: 100px;" fancy-list items="model.selection.selectedScenario.spaces" bind="model.selection.selectedScenarioSpace">
+                        <div ng-init="space=parentScope.model.getSpaceBySpaceGuid(item.spaceGuid)">
+                            {{space.name}}
+                        </div>
 
-                </div>
+                    </div>
                 </div>
                 <div>
                     Effects:
-                <div style="width: 150px; height: 100px;" fancy-list items="model.selection.selectedScenario.effects" bind="model.selection.selectedScenarioEffect">
-                    <div ng-init="effect=parentScope.model.getEffectByScenarioEffect(item)">
-                        {{effect.name}}
+                    <div style="width: 150px; height: 100px;" fancy-list items="model.selection.selectedScenario.effects" bind="model.selection.selectedScenarioEffect">
+                        <div ng-init="effect=parentScope.model.getEffectByScenarioEffect(item)">
+                            {{effect.name}}
+                        </div>
                     </div>
-                </div>
                 </div>
 
             </div>

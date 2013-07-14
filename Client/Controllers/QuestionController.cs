@@ -25,20 +25,20 @@ namespace Client.Controllers
             myScope.Visible = false;
 
             myScope.OnReady += () =>
-            {
-                myScope.Visible = true;
-                myScope.SwingAway(SwingDirection.TopLeft, true, null);
-                myScope.SwingBack(null);
-            };
+                               {
+                                   myScope.Visible = true;
+                                   myScope.SwingAway(SwingDirection.TopLeft, true, null);
+                                   myScope.SwingBack(null);
+                               };
         }
 
         private void AnswerQuestionFn()
         {
             myScope.SwingAway(SwingDirection.BottomRight, false, () =>
-            {
-                myClientGameManagerService.AnswerQuestion(new GameAnswerQuestionModel(myScope.Model.Answers.IndexOf(myScope.Model.SelectedAnswer)));
-                myScope.DestroyWindow();
-            });
+                                                                 {
+                                                                     myClientGameManagerService.AnswerQuestion(new GameAnswerQuestionModel(myScope.Model.Answers.IndexOf(myScope.Model.SelectedAnswer)));
+                                                                     myScope.DestroyWindow();
+                                                                 });
         }
     }
 }

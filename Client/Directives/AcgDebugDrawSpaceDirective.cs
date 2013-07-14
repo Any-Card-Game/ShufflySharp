@@ -8,19 +8,19 @@ using jQueryApi;
 
 namespace Client.Directives
 {
-    public class AcgDrawSpaceDirective
+    public class AcgDebugDrawSpaceDirective
     {
-        public const string Name = "acgDrawSpace";
-        public Action<SpaceScope, jQueryObject, object> link;
+        public const string Name = "acgDebugDrawSpace";
+        public Action<DebugSpaceScope, jQueryObject, object> link;
 
-        public AcgDrawSpaceDirective()
+        public AcgDebugDrawSpaceDirective()
         {
             link = linkFn;
         }
 
-        private void linkFn(SpaceScope scope, jQueryObject element, object attrs)
+        private void linkFn(DebugSpaceScope scope, jQueryObject element, object attrs)
         {
-            var scale = ((Point) ((dynamic) scope.Parent)["$parent"].scale);
+            var scale = scope.Scale;
 
             element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
             /*  element.Resizable(new ResizableOptions()
@@ -116,6 +116,6 @@ namespace Client.Directives
                                      scope.Broadcast("redrawCard");
                                  }, true);
         }
-          
+         
     }
 }

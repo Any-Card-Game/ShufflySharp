@@ -66,7 +66,7 @@ namespace Client.Directives
                                       };
             scope.watch("model.selection.selectedEffect", () =>
                                                           {
-                                                              PurgeCSS("space" + space.Name + "::before");
+                                                              ClientHelpers.PurgeCSS("space" + space.Name + "::before");
 
                                                               var effect = scope.Model.Selection.SelectedEffect;
                                                               if (effect == null) return;
@@ -95,7 +95,7 @@ namespace Client.Directives
                                                                       beforeStyle["border-radius"] = "5px";
                                                                       beforeStyle["box-shadow"] =
                                                                           "rgb(44, 44, 44) 3px 3px 2px";
-                                                                      var hexcolor = hextorgb(color);
+                                                                      var hexcolor = ClientHelpers.HexToRGB(color);
                                                                       beforeStyle["content"] = "\"\"";
 
                                                                       beforeStyle["background-color"] =
@@ -104,7 +104,7 @@ namespace Client.Directives
                                                                               opacity);
                                                                       beforeStyle["border"] = "2px solid black";
 
-                                                                      ChangeCSS("space" + space.Name + "::before",
+                                                                      ClientHelpers.ChangeCSS("space" + space.Name + "::before",
                                                                           beforeStyle);
 
                                                                       break;
@@ -121,71 +121,6 @@ namespace Client.Directives
 
             scope.watch("space", reApplySpaceBind, true);
         }
-
-        public static string TransformRotate(double ar)
-        {
-            return string.Format("rotate({0}deg)", ar);
-        }
-
-        public static dynamic hextorgb(string hex)
-        {
-            var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
-            return result != null
-                ? new
-                  {
-                      R = int.Parse(result[1], 16),
-                      G = int.Parse(result[2], 16),
-                      B = int.Parse(result[3], 16)
-                  }
-                : null;
-        }
-
-        private static void ChangeCSS(string myClass, JsDictionary<string, string> values)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        foreach (var m in values)
-                        {
-                            document.styleSheets[a][CSSRules][i].style[m.Key] = m.Value;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void PurgeCSS(string myClass)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        document.styleSheets[a].removeRule(i);
-                        document.styleSheets[a].insertRule(myClass + "{}");
-                    }
-                }
-            }
-        }
+         
     }
 }

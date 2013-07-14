@@ -8,6 +8,7 @@ namespace Client.Services
     public class UIManagerService
     {
         public const string Name = "UIManagerService";
+
         public UIManagerService()
         {
             ClientInfo = new ClientInformation();

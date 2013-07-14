@@ -27,15 +27,9 @@ namespace Client.Services
             clientSiteManager.OnDoesGameNameExistReceived +=
                 (user, model) => { if (OnDoesGameNameExistReceived != null) OnDoesGameNameExistReceived(user, model); };
             clientSiteManager.OnDeveloperCreateGameReceived +=
-                (user, model) =>
-                {
-                    if (OnDeveloperCreateGameReceived != null) OnDeveloperCreateGameReceived(user, model);
-                };
+                (user, model) => { if (OnDeveloperCreateGameReceived != null) OnDeveloperCreateGameReceived(user, model); };
             clientSiteManager.OnDeveloperUpdateGameReceived +=
-                (user, model) =>
-                {
-                    if (OnDeveloperUpdateGameReceived != null) OnDeveloperUpdateGameReceived(user, model);
-                };
+                (user, model) => { if (OnDeveloperUpdateGameReceived != null) OnDeveloperUpdateGameReceived(user, model); };
         }
 
         public event ClientSiteManager.GetGameTypesReceived OnGetGameTypesReceived;

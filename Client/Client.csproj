@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="BuildAngular.cs" />
     <Compile Include="BuildSite.cs" />
+    <Compile Include="ClientHelpers.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
     <Compile Include="Controllers\DebugQuestionController.cs" />
     <Compile Include="Controllers\DebugGameController.cs" />
@@ -70,11 +71,14 @@
     <Compile Include="Directives\AcgEffectTestDrawCardDirective.cs" />
     <Compile Include="Directives\AcgEffectTestDrawAreaDirective.cs" />
     <Compile Include="Directives\AcgEffectTestDrawTextDirective.cs" />
+    <Compile Include="Directives\AcgDebugDrawCardDirective.cs" />
+    <Compile Include="Directives\AcgDebugDrawSpaceDirective.cs" />
     <Compile Include="Directives\GridDirective.cs" />
     <Compile Include="Directives\DraggableDirective.cs" />
     <Compile Include="Directives\FancyListDirective.cs" />
     <Compile Include="Directives\FloatingWindowDirective.cs" />
     <Compile Include="Directives\PropertyDirective.cs" />
+    <Compile Include="Filters\RoundFilter.cs" />
     <Compile Include="Libs\Extensions.cs" />
     <Compile Include="Libs\ScriptLoader.cs" />
     <Compile Include="Libs\TimeTracker.cs" />
@@ -97,6 +101,8 @@
     <Compile Include="Scope\Controller\TestGameControllerScope.cs" />
     <Compile Include="Scope\Directive\AcgSpacesScope.cs" />
     <Compile Include="Scope\Directive\CardScope.cs" />
+    <Compile Include="Scope\Directive\DebugCardScope.cs" />
+    <Compile Include="Scope\Directive\DebugSpaceScope.cs" />
     <Compile Include="Scope\Directive\FloatingWindowBaseScope.cs" />
     <Compile Include="Scope\Directive\FloatingWindowScope.cs" />
     <Compile Include="Scope\Directive\SpaceScope.cs" />

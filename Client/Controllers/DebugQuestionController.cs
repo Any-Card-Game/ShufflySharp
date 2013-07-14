@@ -14,10 +14,9 @@ namespace Client.Controllers
         private readonly ClientDebugManagerService myClientDebugManagerService;
         private readonly QuestionScope myScope;
 
-        public DebugQuestionController(QuestionScope scope,  
-            ClientDebugManagerService clientDebugManagerService)
+        public DebugQuestionController(QuestionScope scope,ClientDebugManagerService clientDebugManagerService)
         {
-            myScope = scope; 
+            myScope = scope;
             myClientDebugManagerService = clientDebugManagerService;
 
             myScope.Model.AnswerQuestion = AnswerQuestionFn;

@@ -9,17 +9,17 @@ using EffectType = Models.SiteManagerModels.Game.EffectType;
 
 namespace Client.Directives
 {
-    public class AcgDrawCardDirective
+    public class AcgDebugDrawCardDirective
     {
-        public const string Name = "acgDrawCard";
-        public Action<CardScope, jQueryObject, object> link;
+        public const string Name = "acgDebugDrawCard";
+        public Action<DebugCardScope, jQueryObject, object> link;
 
-        public AcgDrawCardDirective()
+        public AcgDebugDrawCardDirective()
         {
             link = linkFn;
         }
 
-        private void linkFn(CardScope scope, jQueryObject element, object attrs)
+        private void linkFn(DebugCardScope scope, jQueryObject element, object attrs)
         {
             element.Attribute("style", "width:71px; height:96px;");
             element.Attribute("class", "card " + string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
@@ -27,7 +27,7 @@ namespace Client.Directives
 
             Action redrawCard = () =>
                                 {
-                                    var scale = ((Point) ((dynamic) scope.Parent.Parent)["$parent"].scale);
+                                    var scale = scope.Scale;
 
 
                                     var spaceScale =
@@ -204,6 +204,7 @@ namespace Client.Directives
 
 */
             redrawCard();
-        } 
+        }
+
     }
 }

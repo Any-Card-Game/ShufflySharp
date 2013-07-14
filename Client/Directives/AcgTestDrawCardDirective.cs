@@ -112,7 +112,7 @@ namespace Client.Directives
                                     }
 
 
-                                    PurgeCSS(string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value) +
+                                    ClientHelpers.PurgeCSS(string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value) +
                                              "::before");
 
                                     keys = new JsDictionary<string, string>() {};
@@ -120,7 +120,7 @@ namespace Client.Directives
                                         string.Format("url('{1}assets/cards/{0}.gif')",
                                             (100 + (scope.Card.Value + 1) +
                                              (scope.Card.Type)*13), Constants.ContentAddress);
-                                    ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
+                                    ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 
                                     foreach (
@@ -163,15 +163,12 @@ namespace Client.Directives
                                                                     string.Format("url('{1}assets/cards/{0}.gif')",
                                                                         (100 + (scope.Card.Value + 1) +
                                                                          (scope.Card.Type)*13), Constants.ContentAddress);
-                                                                var hexcolor = hextorgb(color);
+                                                                var hexcolor = ClientHelpers.HexToRGB(color);
                                                                 beforeStyle["background-color"] =
-                                                                    string.Format("rgba({0}, {1}, {2}, {3})", hexcolor.R,
-                                                                        hexcolor.G, hexcolor.B, opacity);
+                                                                    string.Format("rgba({0}, {1}, {2}, {3})", hexcolor.R,hexcolor.G, hexcolor.B, opacity);
                                                                 beforeStyle["border"] = "2px solid black";
 
-                                                                ChangeCSS(
-                                                                    string.Format("card{0}-{1}::before", scope.Card.Type,
-                                                                        scope.Card.Value), beforeStyle);
+                                                                ClientHelpers.ChangeCSS(string.Format("card{0}-{1}::before", scope.Card.Type,scope.Card.Value), beforeStyle);
 
                                                                 break;
 
@@ -210,7 +207,7 @@ namespace Client.Directives
             keys = new JsDictionary<string, string>() {};
             keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')",
                 (100 + (scope.Card.Value + 1) + (scope.Card.Type)*13), Constants.ContentAddress);
-            ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
+            ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
             scope.watch("space", redrawCard, true);
 
@@ -253,77 +250,6 @@ namespace Client.Directives
 */
             redrawCard();
         }
-
-        public static dynamic hextorgb(string hex)
-        {
-            var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
-            return result != null
-                ? new
-                  {
-                      R = int.Parse(result[1], 16),
-                      G = int.Parse(result[2], 16),
-                      B = int.Parse(result[3], 16)
-                  }
-                : null;
-        }
-
-        public static string TransformRotate(double ar)
-        {
-            return string.Format("rotate({0}deg)", ar);
-        }
-
-        public static double NoTransformRotate(string ar)
-        {
-            if (ar == "") return 0;
-            return double.Parse(ar.Replace("rotate(", "").Replace("deg)", "")); //todo regex??
-        }
-
-        private static void ChangeCSS(string myClass, JsDictionary<string, string> values)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        foreach (var m in values)
-                        {
-                            document.styleSheets[a][CSSRules][i].style[m.Key] = m.Value;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void PurgeCSS(string myClass)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        document.styleSheets[a].removeRule(i);
-                        document.styleSheets[a].insertRule(myClass + "{}");
-                    }
-                }
-            }
-        }
+         
     }
 }

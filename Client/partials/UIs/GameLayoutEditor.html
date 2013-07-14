@@ -57,19 +57,19 @@
                     </div>
                     <div>
                         Left:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.left" />{{model.selection.selectedSpace.left}}
+                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.left" />{{model.selection.selectedSpace.left | round}}
                     </div>
                     <div>
                         Top:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.top" />{{model.selection.selectedSpace.top}}
+                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.top" />{{model.selection.selectedSpace.top | round}}
                     </div>
                     <div>
                         Width:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.width" />{{model.selection.selectedSpace.width}}
+                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.width" />{{model.selection.selectedSpace.width | round}}
                     </div>
                     <div>
                         Height:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.height" />{{model.selection.selectedSpace.height}}
+                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.height" />{{model.selection.selectedSpace.height | round}}
                     </div>
                     <div>
                         Vertical:
@@ -85,19 +85,19 @@
                     </div>
                     <div>
                         Left:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.left" />{{model.selection.selectedArea.left}}   
+                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.left" />{{model.selection.selectedArea.left | round}}   
                     </div>
                     <div>
                         Top:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.top" />{{model.selection.selectedArea.top}}   
+                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.top" />{{model.selection.selectedArea.top | round}}   
                     </div>
                     <div>
                         Width:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.width" />{{model.selection.selectedArea.width}}   
+                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.width" />{{model.selection.selectedArea.width | round}}   
                     </div>
                     <div>
                         Height:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.height" />{{model.selection.selectedArea.height}}   
+                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.height" />{{model.selection.selectedArea.height | round}}   
                     </div>
                     <button ng-click="model.game.gameLayout.areas=model.game.gameLayout.areas.splice(model.game.gameLayout.areas.indexOf(model.selection.selectedArea),1);model.selection.selectedArea=null">Remove</button>
                 </div>
@@ -113,11 +113,11 @@
                     </div>
                     <div>
                         Left:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedText.left" />{{model.selection.selectedText.left}}   
+                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedText.left" />{{model.selection.selectedText.left | round}}   
                     </div>
                     <div>
                         Top:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedText.top" />{{model.selection.selectedText.top}}   
+                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedText.top" />{{model.selection.selectedText.top | round}}   
                     </div>
                     <button ng-click="model.game.gameLayout.texts=model.game.gameLayout.texts.splice(model.game.gameLayout.texts.indexOf(model.selection.selectedText),1);model.selection.selectedText=null">Remove</button>
                 </div>

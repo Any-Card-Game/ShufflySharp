@@ -14,11 +14,11 @@ public static class angular
 {
     public static ng.IAngularStatic _;
 
-    public static ng.IModule module(string name)
+    public static ng.IModule Module(string name)
     {
         return null;
     }
-    public static ng.IModule module(string name, string[] requires)
+    public static ng.IModule Module(string name, string[] requires)
     {
         return null;
     }

@@ -44,7 +44,7 @@ namespace Client.Directives
                                          scope.AreaStyle.backgroundColor = "blue";
 
 
-                                         PurgeCSS("area" + scope.Area.Name + "::before");
+                                         ClientHelpers.PurgeCSS("area" + scope.Area.Name + "::before");
 
 
                                          foreach (
@@ -85,7 +85,7 @@ namespace Client.Directives
                                                                      beforeStyle["border-radius"] = "5px";
                                                                      beforeStyle["box-shadow"] =
                                                                          "rgb(44, 44, 44) 3px 3px 2px";
-                                                                     var hexcolor = hextorgb(color);
+                                                                     var hexcolor = ClientHelpers.HexToRGB(color);
                                                                      beforeStyle["content"] = "\"\"";
 
                                                                      beforeStyle["background-color"] =
@@ -93,8 +93,7 @@ namespace Client.Directives
                                                                              hexcolor.R, hexcolor.G, hexcolor.B, opacity);
                                                                      beforeStyle["border"] = "2px solid black";
 
-                                                                     ChangeCSS("area" + scope.Area.Name + "::before",
-                                                                         beforeStyle);
+                                                                     ClientHelpers.ChangeCSS("area" + scope.Area.Name + "::before",beforeStyle);
 
                                                                      break;
                                                                  case EffectType.Rotate:
@@ -164,71 +163,6 @@ namespace Client.Directives
             scope.watch("model.selection.selectedEffect", reApplyAreaBind, true);
             scope.watch("model.selection.selectedScenario.effects", reApplyAreaBind, true);
         }
-
-        public static string TransformRotate(double ar)
-        {
-            return string.Format("rotate({0}deg)", ar);
-        }
-
-        private static void ChangeCSS(string myClass, JsDictionary<string, string> values)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        foreach (var m in values)
-                        {
-                            document.styleSheets[a][CSSRules][i].style[m.Key] = m.Value;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static void PurgeCSS(string myClass)
-        {
-            myClass = "." + myClass;
-            string CSSRules = "";
-            var document = (dynamic) Script.Eval("window.document");
-            if (document.all)
-                CSSRules = "rules";
-            else if (document.getElementById)
-                CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++)
-            {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
-                {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
-                    {
-                        document.styleSheets[a].removeRule(i);
-                        document.styleSheets[a].insertRule(myClass + "{}");
-                    }
-                }
-            }
-        }
-
-        public static dynamic hextorgb(string hex)
-        {
-            var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
-            return result != null
-                ? new
-                  {
-                      R = int.Parse(result[1], 16),
-                      G = int.Parse(result[2], 16),
-                      B = int.Parse(result[3], 16)
-                  }
-                : null;
-        }
+         
     }
 }

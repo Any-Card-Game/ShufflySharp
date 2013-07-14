@@ -14,7 +14,7 @@ namespace Client.Controllers
         private readonly MessageService myMessageService;
         private readonly GameCodeScope myScope;
 
-        public GameCodeController(GameCodeScope scope, 
+        public GameCodeController(GameCodeScope scope,
             ClientSiteManagerService clientSiteManagerService, MessageService messageService)
         {
             Instance = this;

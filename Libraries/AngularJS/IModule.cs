@@ -9,82 +9,82 @@ namespace ng
     [Imported]
     public interface IModule
     {
-        IModule value(string name, object value);
+        IModule Value(string name, object value);
 
-        IModule controller(string name, object[] injectionArgs);
+        IModule Controller(string name, object[] injectionArgs);
         
         [AlternateSignature]
-        IModule controller<TR>(string name, Func<TR> controllerConstructor);
+        IModule Controller<TR>(string name, Func<TR> controllerConstructor);
 
         [AlternateSignature]
 
-        IModule controller<T1, TR>(string name, Func<T1, TR> directiveFactory);
+        IModule Controller<T1, TR>(string name, Func<T1, TR> directiveFactory);
 
         [AlternateSignature]
 
-        IModule controller<T1, T2, TR>(string name, Func<T1, T2, TR> directiveFactory);
+        IModule Controller<T1, T2, TR>(string name, Func<T1, T2, TR> directiveFactory);
 
         [AlternateSignature]
 
-        IModule controller<T1, T2, T3, TR>(string name, Func<T1, T2, T3, TR> directiveFactory);
+        IModule Controller<T1, T2, T3, TR>(string name, Func<T1, T2, T3, TR> directiveFactory);
 
         [AlternateSignature]
 
-        IModule controller<T1, T2, T3, T4, TR>(string name, Func<T1, T2, T3, T4, TR> directiveFactory);
+        IModule Controller<T1, T2, T3, T4, TR>(string name, Func<T1, T2, T3, T4, TR> directiveFactory);
 
         [AlternateSignature]
 
-        IModule controller<T1, T2, T3, T4, T5, TR>(string name, Func<T1, T2, T3, T4, T5, TR> directiveFactory);
+        IModule Controller<T1, T2, T3, T4, T5, TR>(string name, Func<T1, T2, T3, T4, T5, TR> directiveFactory);
 
 
-        IModule config( object[] injectionArgs);
+        IModule Config( object[] injectionArgs);
 
 
         [AlternateSignature]
-        IModule config( Action controllerConstructor);
+        IModule Config( Action controllerConstructor);
 
         [AlternateSignature]
 
-        IModule config<T1>(  Action<T1> directiveFactory);
+        IModule Config<T1>(  Action<T1> directiveFactory);
 
         [AlternateSignature]
 
-        IModule config<T1, T2>( Action<T1, T2> directiveFactory);
+        IModule Config<T1, T2>( Action<T1, T2> directiveFactory);
 
         [AlternateSignature]
 
-        IModule config<T1, T2, T3>( Action<T1, T2, T3> directiveFactory);
+        IModule Config<T1, T2, T3>( Action<T1, T2, T3> directiveFactory);
 
         [AlternateSignature]
 
-        IModule config<T1, T2, T3, T4>(Action<T1, T2, T3, T4> directiveFactory);
+        IModule Config<T1, T2, T3, T4>(Action<T1, T2, T3, T4> directiveFactory);
 
         [AlternateSignature]
 
-        IModule config<T1, T2, T3, T4, T5>( Action<T1, T2, T3, T4, T5> directiveFactory);
+        IModule Config<T1, T2, T3, T4, T5>( Action<T1, T2, T3, T4, T5> directiveFactory);
 
 
 
 
 
-        IModule directive(string name, object[] injectionArgs);
+        IModule Directive(string name, object[] injectionArgs);
 
-        [AlternateSignature]
-        
-        IModule directive<TR>(string name, Func<TR> directiveFactory);
-        
         [AlternateSignature]
         
-        IModule directive<T1, TR>(string name, Func<T1, TR> directiveFactory);
+        IModule Directive<TR>(string name, Func<TR> directiveFactory);
         
         [AlternateSignature]
         
-        IModule directive<T1, T2, TR>(string name, Func<T1, T2, TR> directiveFactory);
+        IModule Directive<T1, TR>(string name, Func<T1, TR> directiveFactory);
+        
+        [AlternateSignature]
+        
+        IModule Directive<T1, T2, TR>(string name, Func<T1, T2, TR> directiveFactory);
 
         
-        IModule service<TR>(string name, Func<TR> serviceConstructor);
+        IModule Service<TR>(string name, Func<TR> serviceConstructor);
         [AlternateSignature]
-        IModule service(string name, object[] injectionArgs);
+        IModule Service(string name, object[] injectionArgs);
 
 
 #if TODO
@@ -105,5 +105,6 @@ namespace ng
         name: string;
         requires: string[];
 #endif
+        IModule Filter(string name, object[] injectionArgs);
     }
 }

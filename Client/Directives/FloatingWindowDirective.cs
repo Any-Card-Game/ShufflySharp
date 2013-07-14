@@ -1,26 +1,28 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Client.Scope;
 using Client.Scope.Directive;
 using Client.Services;
 using CommonLibraries;
-using Client.Scope.Directive;
 using jQueryApi;
 using Size = Client.Scope.Directive.Size;
+
 namespace Client.Directives
 {
-
-
     public class FloatingWindowDirective
     {
+        public const string Name = "floatingWindow";
+        private static Dictionary<jQueryObject, FloatingWindowScope> items = new Dictionary<jQueryObject, FloatingWindowScope>();
+
         private readonly UIManagerService myUIManagerService;
         public Action<FloatingWindowScope, jQueryObject, dynamic> link;
-        public string templateUrl;
-        public string restrict;
+        private jQueryObject myElement;
+        private FloatingWindowScope myScope;
         public bool replace;
-        public bool transclude;
+        public string restrict;
         public dynamic scope;
+        public string templateUrl;
+        public bool transclude;
+
         public FloatingWindowDirective(UIManagerService uiManagerService)
         {
             myUIManagerService = uiManagerService;
@@ -29,21 +31,17 @@ namespace Client.Directives
             replace = true;
             transclude = true;
             scope = new
-            {
-                width = "=",
-                height = "=",
-                left = "=",
-                top = "=",
-                title = "=",
-                visible = "=",
-                onclose = "&",
-            };
+                    {
+                        width = "=",
+                        height = "=",
+                        left = "=",
+                        top = "=",
+                        title = "=",
+                        visible = "=",
+                        onclose = "&",
+                    };
             link = LinkFn;
-
         }
-        static Dictionary<jQueryObject, FloatingWindowScope> items = new Dictionary<jQueryObject, FloatingWindowScope>();
-        private jQueryObject myElement;
-        private FloatingWindowScope myScope;
 
         private void LinkFn(FloatingWindowScope scope, jQueryObject element, dynamic attr)
         {
@@ -52,86 +50,78 @@ namespace Client.Directives
 
             element.Click((elem, @event) => Focus());
 
-            scope.Parent.SwingAway = (a, b, c) =>
-            {
-                SwingAway(a, b, element, c);
-            };
-            scope.Parent.SwingBack = (c) =>
-            {
-                SwingBack(scope, element, c);
-            };
+            scope.Parent.SwingAway = (a, b, c) => { SwingAway(a, b, element, c); };
+            scope.Parent.SwingBack = (c) => { SwingBack(scope, element, c); };
             scope.Parent.Minimize = () =>
-            {
-                scope.Parent.Minimized = true;
-                scope.Minimize();
-            };
+                                    {
+                                        scope.Parent.Minimized = true;
+                                        scope.Minimize();
+                                    };
             scope.Parent.DestroyWindow = () =>
-            {
-                scope.Destroy();
-                element.Remove();
-            };
-             
+                                         {
+                                             scope.Destroy();
+                                             element.Remove();
+                                         };
 
-            scope.PositionStyles = new FloatingWindowPosition() { Left = scope.Left, Top = scope.Top, Display = "block" };
+
+            scope.PositionStyles = new FloatingWindowPosition() {Left = scope.Left, Top = scope.Top, Display = "block"};
             scope.PositionStyles.ZIndex = 10000;
 
             if (scope.Left.IndexOf("%") != -1)
             {
-                scope.PositionStyles.MarginLeft = (-(int.Parse(scope.Width.Replace("px", "")) / 2)) + "px";
+                scope.PositionStyles.MarginLeft = (-(int.Parse(scope.Width.Replace("px", ""))/2)) + "px";
             }
             if (scope.Top.IndexOf("%") != -1)
             {
-                scope.PositionStyles.MarginTop = (-(int.Parse(scope.Height.Replace("px", "")) / 2)) + "px";
+                scope.PositionStyles.MarginTop = (-(int.Parse(scope.Height.Replace("px", ""))/2)) + "px";
             }
-             
 
-            
-            scope.SizeStyle = new Size() { Width = scope.Width, Height = scope.Height, };
+
+            scope.SizeStyle = new Size() {Width = scope.Width, Height = scope.Height,};
             scope.Maximize = () =>
-            {
-                if (!scope.IsMaximized)
-                {
-                    scope.LastPositionStyles = scope.PositionStyles;
-                    scope.LastSizeStyle = scope.SizeStyle;
-                    scope.PositionStyles = new FloatingWindowPosition() { Left = "0", Top = "0", Display = "block" };
-                    scope.SizeStyle = new Size() { Width = "100%", Height = "100%", };
-                }
-                else
-                {
-                    scope.PositionStyles = scope.LastPositionStyles;
-                    scope.SizeStyle = scope.LastSizeStyle;
-                    scope.LastPositionStyles = null;
-                    scope.LastSizeStyle = null;
+                             {
+                                 if (!scope.IsMaximized)
+                                 {
+                                     scope.LastPositionStyles = scope.PositionStyles;
+                                     scope.LastSizeStyle = scope.SizeStyle;
+                                     scope.PositionStyles = new FloatingWindowPosition()
+                                                            {
+                                                                Left = "0",
+                                                                Top = "0",
+                                                                Display = "block"
+                                                            };
+                                     scope.SizeStyle = new Size() {Width = "100%", Height = "100%",};
+                                 }
+                                 else
+                                 {
+                                     scope.PositionStyles = scope.LastPositionStyles;
+                                     scope.SizeStyle = scope.LastSizeStyle;
+                                     scope.LastPositionStyles = null;
+                                     scope.LastSizeStyle = null;
+                                 }
 
-                }
-
-                scope.IsMaximized = !scope.IsMaximized;
-
-            };
+                                 scope.IsMaximized = !scope.IsMaximized;
+                             };
             scope.Close = () =>
-            {
-
-                if (scope.OnClose != null)
-                {
-                    scope.OnClose();
-                }
-                if (scope.Parent.OnClose!=null)
-                {
-                    scope.Parent.OnClose();
-                }
-                //todo destroy
-                scope.PositionStyles.Display = "none";
-            };
+                          {
+                              if (scope.OnClose != null)
+                              {
+                                  scope.OnClose();
+                              }
+                              if (scope.Parent.OnClose != null)
+                              {
+                                  scope.Parent.OnClose();
+                              }
+                              //todo destroy
+                              scope.PositionStyles.Display = "none";
+                          };
             scope.Minimize = () =>
-            {
-                myUIManagerService.OnMinimize(scope);
-                scope.Parent.SwingAway(SwingDirection.Bottom,
-                                       false,
-                                       () =>
-                                       {
-                                           scope.PositionStyles.Display = "none";
-                                       });
-            };
+                             {
+                                 myUIManagerService.OnMinimize(scope);
+                                 scope.Parent.SwingAway(SwingDirection.Bottom,
+                                     false,
+                                     () => { scope.PositionStyles.Display = "none"; });
+                             };
             scope.Restore = () =>
                             {
                                 scope.Parent.SwingBack(null);
@@ -139,6 +129,8 @@ namespace Client.Directives
                             };
             Focus();
 
+            if (scope.Parent.OnReady != null)
+                scope.Parent.OnReady();
         }
 
         private void Focus()
@@ -156,7 +148,7 @@ namespace Client.Directives
 
         public void SwingBack(FloatingWindowScope scope, jQueryObject element, Action callback)
         {
-            JsDictionary<string, object> js = new JsDictionary<string, object>();
+            var js = new JsDictionary<string, object>();
 
             js["left"] = scope.Left;
             js["top"] = scope.Top;
@@ -166,7 +158,7 @@ namespace Client.Directives
 
         public void SwingAway(SwingDirection direction, bool simulate, jQueryObject element, Action callback)
         {
-            JsDictionary<string, object> js = new JsDictionary<string, object>();
+            var js = new JsDictionary<string, object>();
 
             string distance = "3000";
 
@@ -205,6 +197,5 @@ namespace Client.Directives
             if (simulate) element.CSS(js);
             else element.Animate(js, EffectDuration.Slow, EffectEasing.Swing, callback);
         }
-
     }
 }

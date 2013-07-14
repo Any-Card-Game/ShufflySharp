@@ -1,11 +1,13 @@
 using System;
 using System.Runtime.CompilerServices;
+
 namespace Client.Services
 {
-    public class GameContentManager
+    public class GameContentManagerService
     {
-        public GameContentManager( )
-        { 
+        public const string Name = "GameContentManagerService";
+        public GameContentManagerService()
+        {
         }
 
         [IntrinsicProperty]

@@ -1,28 +1,29 @@
 using System;
-using System.Html;
-using Client.Scope;
 using Client.Scope.Controller;
+using Client.Scope.Directive;
 using Client.Services;
 using Models;
 using Models.SiteManagerModels;
-using Client.Scope.Directive;
+
 namespace Client.Controllers
 {
     internal class HomeController
     {
-        private readonly HomeScope myScope;
-        private readonly UIManagerService myUIManager;
+        public const string Name = "HomeController";
+        public const string View = "Home";
         private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly CreateUIService myCreateUIService;
+        private readonly HomeScope myScope;
+        private readonly UIManagerService myUIManager;
 
-        public HomeController(HomeScope scope, UIManagerService uiManager,ClientSiteManagerService clientSiteManagerService,CreateUIService createUIService)
+        public HomeController(HomeScope scope, UIManagerService uiManager,
+            ClientSiteManagerService clientSiteManagerService, CreateUIService createUIService)
         {
             myScope = scope;
             myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
             myCreateUIService = createUIService;
-            myScope .Model= new HomeModel();
-            myUIManager.UserLoggedIn += myUIManager_UserLoggedIn;
+            myScope.Model = new HomeModel();
             myScope.Visible = false;
             scope.Model.GameTypeSelected += GameTypeSelectedFn;
             scope.Model.RoomSelected += RoomSelectedFn;
@@ -30,54 +31,68 @@ namespace Client.Controllers
             scope.Model.CreateGame += CreateGameFn;
             scope.Model.JoinRoom += JoinRoomFn;
             scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedGameType; },
-                                   () =>
-                                   {
-                                       scope.Model.GameTypeSelected();
-                                   });
+                () => { scope.Model.GameTypeSelected(); });
             /*  scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedRoom; },
                                  () =>
                                    {
                                        scope.Model.RoomSelected();
                                    });*/
 
-            myUIManager.RoomLeft += () => {
-                                        myScope.SwingBack(null);
-                                    };
 
             myClientSiteManagerService.OnGetGameTypesReceived += PopulateGames;
             myClientSiteManagerService.OnGetRoomsReceived += PopulateRooms;
             myClientSiteManagerService.OnRoomJoined += RoomJoined;
             myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfoReceived;
-       
 
+            scope.OnReady += () =>
+                             {
+                                 myScope.Visible = true;
+                                 myScope.SwingAway(SwingDirection.BottomLeft, true, null);
+                                 myScope.SwingBack(null);
+                                 myScope.Apply();
+                                 myScope.Model.User = myUIManager.ClientInfo.LoggedInUser;
+                                 myClientSiteManagerService.GetGameTypes();
+                             };
         }
+
 
         private void CreateGameFn()
         {
-            myCreateUIService.Create("GameManager");
+            myCreateUIService.Create(GameManagerController.View);
             myScope.Minimize();
         }
 
         private void JoinRoomFn()
         {
-            myClientSiteManagerService.JoinRoom(new RoomJoinRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
+            myClientSiteManagerService.JoinRoom(new RoomJoinRequest(myScope.Model.SelectedGameType.Name,
+                myScope.Model.SelectedRoom.RoomName));
         }
 
         private void CreateRoomFn()
         {
-            Action<string> action=null;
-            action = (roomName) => {
-                         myClientSiteManagerService.CreateRoom(new CreateRoomRequest(myScope.Model.SelectedGameType.Name, roomName));
-                         myUIManager.CreateRoom -= action;
+            Action<string> action = null;
+            CreatedUI<CreateRoomScope> singleton = null;
+
+            action = (roomName) =>
+                     {
+                         myClientSiteManagerService.CreateRoom(new CreateRoomRequest(
+                             myScope.Model.SelectedGameType.Name, roomName));
+                         singleton.Destroy();
                      };
-            myUIManager.CreateRoom += action;
-            myUIManager.OpenCreateRoomDialog();
+
+            singleton = myCreateUIService.CreateSingleton<CreateRoomScope>(CreateRoomController.View,
+                (scope, elem) =>
+                {
+                    scope.Model = new CreateRoomModel();
+                    scope.Model.OnCreateRoom = action;
+                });
         }
 
         private void RoomSelectedFn()
         {
-            if (myScope.Model.SelectedGameType == null || myScope.Model.SelectedRoom==null) return;
-            myClientSiteManagerService.GetRoomInfo(new GetRoomInfoRequest(myScope.Model.SelectedGameType.Name, myScope.Model.SelectedRoom.RoomName));
+            if (myScope.Model.SelectedGameType == null || myScope.Model.SelectedRoom == null) return;
+            myClientSiteManagerService.GetRoomInfo(new GetRoomInfoRequest(myScope.Model.SelectedGameType.Name,
+                myScope.Model.SelectedRoom.RoomName));
         }
 
         private void GameTypeSelectedFn()
@@ -105,12 +120,18 @@ namespace Client.Controllers
         private void RoomJoined(UserModel user, RoomJoinResponse o)
         {
             PopulateRoom(o.Room);
+            myScope.SwingAway(SwingDirection.TopLeft, false, () => myScope.DestroyWindow());
 
-            myScope.SwingAway(SwingDirection.TopLeft, false, null);
-            myUIManager.OnRoomJoined(o.Room);
-
+            myCreateUIService.CreateSingleton<ActiveLobbyScope>(ActiveLobbyController.View, (scope, elem) =>
+                                                                                            {
+                                                                                                scope.Model =
+                                                                                                    new ActiveLobbyModel
+                                                                                                        ();
+                                                                                                scope.Model.Room =
+                                                                                                    o.Room;
+                                                                                            });
         }
-         
+
 
         private void PopulateGames(UserModel user, GetGameTypesReceivedResponse o)
         {
@@ -137,14 +158,5 @@ namespace Client.Controllers
             myScope.Model.SelectedRoom = roomModel;
             myScope.Apply();
         }
-        void myUIManager_UserLoggedIn()
-        {
-            myScope.Visible = true;
-            myScope.SwingAway(SwingDirection.BottomLeft, true, null);
-            myScope.SwingBack(null);
-            myScope.Apply();
-            myScope.Model.User= myUIManager.ClientInfo.LoggedInUser;
-            myClientSiteManagerService.GetGameTypes();
-        } 
-    } 
+    }
 }

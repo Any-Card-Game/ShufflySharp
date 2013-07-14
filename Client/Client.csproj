@@ -110,10 +110,9 @@
     <Compile Include="Services\ClientSiteManagerService.cs" />
     <Compile Include="Services\CreateUIService.cs" />
     <Compile Include="Services\MessageService.cs" />
-    <Compile Include="Services\GameContentManager.cs" />
+    <Compile Include="Services\GameContentManagerService.cs" />
     <Compile Include="Services\GatewayService.cs" />
     <Compile Include="Services\UIManagerService.cs" />
-    <Compile Include="UIWindow\CodeEditorUI.cs" />
     <Compile Include="UIWindow\DebugUI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +176,6 @@
     <Content Include="partials\UIs\GameScenarioEditor.html" />
     <Content Include="partials\UIs\TestGameUI.html" />
     <Content Include="partials\UIs\GameUI.html" />
-    <Content Include="partials\UIs.html" />
     <Content Include="partials\UIs\ActiveLobby.html" />
     <Content Include="partials\UIs\GameCodeEditor.html" />
     <Content Include="partials\UIs\GameEditor.html" />

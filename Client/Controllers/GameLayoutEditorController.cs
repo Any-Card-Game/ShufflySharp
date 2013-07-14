@@ -1,31 +1,27 @@
-
-using System;
 using System.Collections.Generic;
-using System.Html;
-using System.Linq;
-using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
 using CommonLibraries;
-using global;
 using Models;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
-using Client.Scope.Directive;
+
 namespace Client.Controllers
 {
     internal class GameLayoutEditorController
     {
-        private readonly GameLayoutEditorScope myScope;
-        private readonly UIManagerService myUIManager;
+        public const string Name = "GameLayoutEditorController";
+        public const string View = "GameLayoutEditor";
         private readonly ClientSiteManagerService myClientSiteManagerService;
-        private readonly MessageService myMessageService;
         private readonly CreateUIService myCreateUIService;
+        private readonly MessageService myMessageService;
+        private readonly GameLayoutEditorScope myScope;
 
-        public GameLayoutEditorController(GameLayoutEditorScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, MessageService messageService, CreateUIService createUIService)
+        public GameLayoutEditorController(GameLayoutEditorScope scope,
+            ClientSiteManagerService clientSiteManagerService, MessageService messageService,
+            CreateUIService createUIService)
         {
             myScope = scope;
-            myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
             myMessageService = messageService;
             myCreateUIService = createUIService;
@@ -41,49 +37,50 @@ namespace Client.Controllers
             myScope.Model.OpenScenarios = OpenScenariosFn;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
             myScope.watch("model.selection.selectedSpace", () =>
-                                                 {
-                                                     if (myScope.Model.Selection.SelectedSpace == null) return;
-                                                     myScope.Model.Selection.SelectedText = null;
-                                                     myScope.Model.Selection.SelectedArea = null;
-                                                     myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Space;
-                                                     myScope.Model.Selection.SelectedCard = null; 
-
-                                                 });
+                                                           {
+                                                               if (myScope.Model.Selection.SelectedSpace == null)
+                                                                   return;
+                                                               myScope.Model.Selection.SelectedText = null;
+                                                               myScope.Model.Selection.SelectedArea = null;
+                                                               myScope.Model.Selection.SelectedLayoutPiece =
+                                                                   SelectedGameLayoutPiece.Space;
+                                                               myScope.Model.Selection.SelectedCard = null;
+                                                           });
             myScope.watch("model.selection.selectedText", () =>
-                                                {
-                                                    if (myScope.Model.Selection.SelectedText == null) return;
-                                                    myScope.Model.Selection.SelectedSpace = null;
-                                                    myScope.Model.Selection.SelectedArea = null;
-                                                    myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Text;
-
-                                                });
+                                                          {
+                                                              if (myScope.Model.Selection.SelectedText == null) return;
+                                                              myScope.Model.Selection.SelectedSpace = null;
+                                                              myScope.Model.Selection.SelectedArea = null;
+                                                              myScope.Model.Selection.SelectedLayoutPiece =
+                                                                  SelectedGameLayoutPiece.Text;
+                                                          });
             myScope.watch("model.selection.selectedArea", () =>
-                                                {
-                                                    if (myScope.Model.Selection.SelectedArea == null) return;
-                                                    myScope.Model.Selection.SelectedText = null;
-                                                    myScope.Model.Selection.SelectedSpace = null;
-                                                    myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Area;
-                                                }); 
+                                                          {
+                                                              if (myScope.Model.Selection.SelectedArea == null) return;
+                                                              myScope.Model.Selection.SelectedText = null;
+                                                              myScope.Model.Selection.SelectedSpace = null;
+                                                              myScope.Model.Selection.SelectedLayoutPiece =
+                                                                  SelectedGameLayoutPiece.Area;
+                                                          });
             myScope.watch("model.game",
-                       () =>
-                       {
-                           myScope.Model.UpdateStatus = UpdateStatusType.Dirty;
-                       },
-                       true);
+                () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
+                true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
 
-            myCreateUIService.CreateSingleton<TestGameControllerScope>("TestGameUI", (_scope, elem) =>
-            {
-                _scope.Model = new TestGameControllerScopeModel();
-                _scope.Model.Game = myScope.Model.Game;
-                _scope.Model.Selection = myScope.Model.Selection;
-
-            });
-
-
+            myCreateUIService.CreateSingleton<TestGameControllerScope>(TestGameController.View, (_scope, elem) =>
+                                                                                     {
+                                                                                         _scope.Model =
+                                                                                             new TestGameControllerScopeModel
+                                                                                                 ();
+                                                                                         _scope.Model.Game =
+                                                                                             myScope.Model.Game;
+                                                                                         _scope.Model.Selection =
+                                                                                             myScope.Model.Selection;
+                                                                                     });
         }
+
 
         private void ToggleCardsFn()
         {
@@ -97,12 +94,18 @@ namespace Client.Controllers
 
         private void OpenScenariosFn()
         {
-            myCreateUIService.CreateSingleton<GameScenarioEditorScope>("GameScenarioEditor", (_scope, elem) =>
-            {
-                _scope.Model = new GameScenarioEditorScopeModel();
-                _scope.Model.Game = myScope.Model.Game;
-                _scope.Model.Selection = myScope.Model.Selection;
-            });
+            myCreateUIService.CreateSingleton<GameScenarioEditorScope>(GameScenarioEditorController.View, (_scope, elem) =>
+                                                                                             {
+                                                                                                 _scope.Model =
+                                                                                                     new GameScenarioEditorScopeModel
+                                                                                                         ();
+                                                                                                 _scope.Model.Game =
+                                                                                                     myScope.Model.Game;
+                                                                                                 _scope.Model.Selection
+                                                                                                     =
+                                                                                                     myScope.Model
+                                                                                                         .Selection;
+                                                                                             });
         }
 
         private void RemoveSpaceFn(GameSpaceModel arg)
@@ -110,7 +113,7 @@ namespace Client.Controllers
             myScope.Model.Game.GameLayout.Spaces.Remove(arg);
             myScope.Model.Selection.SelectedSpace = null;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
-            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
+            SureUpScenarios(myScope.Model.Game);
         }
 
         private void RemoveAreaFn(GameAreaModel arg)
@@ -118,7 +121,7 @@ namespace Client.Controllers
             myScope.Model.Game.GameLayout.Areas.Remove(arg);
             myScope.Model.Selection.SelectedArea = null;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
-            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
+            SureUpScenarios(myScope.Model.Game);
         }
 
         private void RemoveTextFn(GameTextModel arg)
@@ -126,7 +129,7 @@ namespace Client.Controllers
             myScope.Model.Game.GameLayout.Texts.Remove(arg);
             myScope.Model.Selection.SelectedText = null;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
-            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
+            SureUpScenarios(myScope.Model.Game);
         }
 
 
@@ -144,28 +147,67 @@ namespace Client.Controllers
                            Height = 1,
                            Width = 1
                        });
-            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
+            SureUpScenarios(myScope.Model.Game);
         }
 
         public static void SureUpScenarios(GameModel gameModel)
         {
             foreach (var gameLayoutScenario in gameModel.GameLayoutScenarios)
             {
-
                 foreach (var gameSpaceModel in gameModel.GameLayout.Spaces)
                 {
                     if (gameLayoutScenario.Spaces.Filter(a => a.SpaceGuid == gameSpaceModel.Guid).Count == 0)
                     {
                         var defaultCards = new List<GameLayoutScenarioCard>()
-                               {
-                                   new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid(),Type = 1,Value=5,State = GameLayoutCardState.FaceDown},
-                                   new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid(),Type = 1,Value=5,State = GameLayoutCardState.FaceUp},
-                                   new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid(),Type = 1,Value=5,State = GameLayoutCardState.FaceDown},
-                                   new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid(),Type = 1,Value=5,State = GameLayoutCardState.FaceUp},
-                                   new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid(),Type = 1,Value=5,State = GameLayoutCardState.FaceDown},
-                                   new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid(),Type = 1,Value=5,State = GameLayoutCardState.FaceUp},
-                               };
-                        gameLayoutScenario.Spaces.Add(new GameLayoutScenarioSpace() { SpaceGuid = gameSpaceModel.Guid, Cards = defaultCards });
+                                           {
+                                               new GameLayoutScenarioCard()
+                                               {
+                                                   CardGuid = Guid.NewGuid(),
+                                                   Type = 1,
+                                                   Value = 5,
+                                                   State = GameLayoutCardState.FaceDown
+                                               },
+                                               new GameLayoutScenarioCard()
+                                               {
+                                                   CardGuid = Guid.NewGuid(),
+                                                   Type = 1,
+                                                   Value = 5,
+                                                   State = GameLayoutCardState.FaceUp
+                                               },
+                                               new GameLayoutScenarioCard()
+                                               {
+                                                   CardGuid = Guid.NewGuid(),
+                                                   Type = 1,
+                                                   Value = 5,
+                                                   State = GameLayoutCardState.FaceDown
+                                               },
+                                               new GameLayoutScenarioCard()
+                                               {
+                                                   CardGuid = Guid.NewGuid(),
+                                                   Type = 1,
+                                                   Value = 5,
+                                                   State = GameLayoutCardState.FaceUp
+                                               },
+                                               new GameLayoutScenarioCard()
+                                               {
+                                                   CardGuid = Guid.NewGuid(),
+                                                   Type = 1,
+                                                   Value = 5,
+                                                   State = GameLayoutCardState.FaceDown
+                                               },
+                                               new GameLayoutScenarioCard()
+                                               {
+                                                   CardGuid = Guid.NewGuid(),
+                                                   Type = 1,
+                                                   Value = 5,
+                                                   State = GameLayoutCardState.FaceUp
+                                               },
+                                           };
+                        gameLayoutScenario.Spaces.Add(new GameLayoutScenarioSpace()
+                                                      {
+                                                          SpaceGuid = gameSpaceModel.Guid,
+                                                          Cards = defaultCards
+                                                      });
                     }
                 }
 
@@ -177,15 +219,15 @@ namespace Client.Controllers
                         gameLayoutScenario.Spaces.Remove(gameSpaceModel);
                     }
                 }
-                
-                
+
+
                 foreach (var gameEffectModel in gameModel.Effects)
                 {
                     if (gameLayoutScenario.Effects.Filter(a => a.EffectGuid == gameEffectModel.Guid).Count == 0)
                     {
                         gameLayoutScenario.Effects.Add(new GameLayoutScenarioEffect()
                                                        {
-                                                           EffectGuid=gameEffectModel.Guid,
+                                                           EffectGuid = gameEffectModel.Guid,
                                                            AreaGuids = new List<string>(),
                                                            TextGuids = new List<string>(),
                                                            SpaceGuids = new List<string>(),
@@ -200,8 +242,6 @@ namespace Client.Controllers
                         gameLayoutScenario.Effects.Remove(gameEffectModel);
                     }
                 }
-
-
             }
         }
 
@@ -210,15 +250,15 @@ namespace Client.Controllers
             var areas = myScope.Model.Game.GameLayout.Areas;
 
             areas.Add(new GameAreaModel()
-            {Guid = Guid.NewGuid(),
-                Name = "Area" + (areas.Count + 1),
-                Left = 0,
-                Top = 0,
-                Width=1,
-                Height=1
-
-            });
-            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
+                      {
+                          Guid = Guid.NewGuid(),
+                          Name = "Area" + (areas.Count + 1),
+                          Left = 0,
+                          Top = 0,
+                          Width = 1,
+                          Height = 1
+                      });
+            SureUpScenarios(myScope.Model.Game);
         }
 
         private void AddTextFn()
@@ -226,19 +266,19 @@ namespace Client.Controllers
             var texts = myScope.Model.Game.GameLayout.Texts;
 
             texts.Add(new GameTextModel()
-            {Guid = Guid.NewGuid(),
-                Name = "Text" + (texts.Count + 1),
-                Left = 0,
-                Top = 0,
-            });
-            GameLayoutEditorController.SureUpScenarios(myScope.Model.Game);
+                      {
+                          Guid = Guid.NewGuid(),
+                          Name = "Text" + (texts.Count + 1),
+                          Left = 0,
+                          Top = 0,
+                      });
+            SureUpScenarios(myScope.Model.Game);
         }
 
-        void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
+        private void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
         {
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Apply();
-
         }
 
         private void UpdateGameFn()

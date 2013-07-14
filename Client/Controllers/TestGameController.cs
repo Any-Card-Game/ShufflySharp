@@ -1,20 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Html;
-using System.Linq;
-using Client.Scope;
 using Client.Scope.Controller;
-using Client.Services;
 using CommonLibraries;
-using jQueryApi;
 using Models.SiteManagerModels.Game;
-using WebLibraries.Common;
-using global;
-using EffectType = Models.SiteManagerModels.Game.EffectType;
+
 namespace Client.Controllers
 {
     public class TestGameController
     {
+        public const string Name = "TestGameController";
+        public const string View = "TestGameUI";
         private readonly TestGameControllerScope scope;
 
         public TestGameController(TestGameControllerScope scope)
@@ -31,26 +27,54 @@ namespace Client.Controllers
 
             if (scenario == null)
             {
-                this.scope.Model.Selection.SelectedScenario = this.scope.Model.Game.GameLayoutScenarios.Filter((scen) => scen.Name == "Default")[0];//todo fix default to guid idiot
+                this.scope.Model.Selection.SelectedScenario =
+                    this.scope.Model.Game.GameLayoutScenarios.Filter((scen) => scen.Name == "Default")[0];
+                    //todo fix default to guid idiot
             }
-             
+
 
             var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
-            {
-                var document = (dynamic)Script.Eval("window.document");
+                                                                                           {
+                                                                                               var document =
+                                                                                                   (dynamic)
+                                                                                                       Script.Eval(
+                                                                                                           "window.document");
 
-                var sheet = document.head.appendChild(style).sheet;
-                return (selector, css) =>
-                {
-                    var propText = Object.Keys(css).Map((p) =>
-                    {
-                        return p + ":" + css[p];
-                    }).Join(";");
-                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
-
-                };
-            }))(Document.CreateElement("style"));
-
+                                                                                               var sheet =
+                                                                                                   document.head
+                                                                                                       .appendChild(
+                                                                                                           style).sheet;
+                                                                                               return (selector, css) =>
+                                                                                                      {
+                                                                                                          var propText =
+                                                                                                              Keys(css)
+                                                                                                                  .Map(
+                                                                                                                      (p)
+                                                                                                                          =>
+                                                                                                                      {
+                                                                                                                          return
+                                                                                                                              p +
+                                                                                                                              ":" +
+                                                                                                                              css
+                                                                                                                                  [
+                                                                                                                                      p
+                                                                                                                                  ];
+                                                                                                                      })
+                                                                                                                  .Join(
+                                                                                                                      ";");
+                                                                                                          sheet
+                                                                                                              .insertRule
+                                                                                                              (selector +
+                                                                                                               "{" +
+                                                                                                               propText +
+                                                                                                               "}",
+                                                                                                                  sheet
+                                                                                                                      .cssRules
+                                                                                                                      .length);
+                                                                                                      };
+                                                                                           }))(
+                                                                                               Document.CreateElement(
+                                                                                                   "style"));
 
 
             /*
@@ -63,18 +87,35 @@ namespace Client.Controllers
                         };
             */
 
-            scope.watch("model.game.gameLayout.width + model.game.gameLayout.height", () =>
-            {
-                scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
-            });
+            scope.watch("model.game.gameLayout.width + model.game.gameLayout.height",
+                () =>
+                {
+                    scope.Model.Scale =
+                        new Point(
+                            scope.Model.Selection.SelectedScenario.ScreenSize.X/
+                            (double) scope.Model.Game.GameLayout.Width*.9,
+                            ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/
+                             (double) scope.Model.Game.GameLayout.Height)*.9);
+                });
 
 
-            scope.watch("model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y", () =>
-            {
-                scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
-            });
+            scope.watch(
+                "model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y",
+                () =>
+                {
+                    scope.Model.Scale =
+                        new Point(
+                            scope.Model.Selection.SelectedScenario.ScreenSize.X/
+                            (double) scope.Model.Game.GameLayout.Width*.9,
+                            ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/
+                             (double) scope.Model.Game.GameLayout.Height)*.9);
+                });
 
-            scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X / (double)scope.Model.Game.GameLayout.Width * .9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y) / (double)scope.Model.Game.GameLayout.Height) * .9);
+            scope.Model.Scale =
+                new Point(
+                    scope.Model.Selection.SelectedScenario.ScreenSize.X/(double) scope.Model.Game.GameLayout.Width*.9,
+                    ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/(double) scope.Model.Game.GameLayout.Height)*
+                    .9);
 
             //            scope.Model.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.Model.Game.GameLayout.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.Model.Game.GameLayout.Height) * .9);
 
@@ -103,22 +144,17 @@ namespace Client.Controllers
                     addRule(".card" + t + "-" + c + "", new JsDictionary<string, object>());
                     addRule(".card" + t + "-" + c + "::before", new JsDictionary<string, object>());
                     addRule(".card" + t + "-" + c + "::after", new JsDictionary<string, object>());
-
                 }
             }
 
 
-
-
-
             //  myGameContentManager.Redraw();
-
-
         }
+
 
         private List<GameLayoutScenarioCard> GetCardsFromScenarioFn(GameSpaceModel arg)
         {
-            var scenario = this.scope.Model.Selection.SelectedScenario;
+            var scenario = scope.Model.Selection.SelectedScenario;
             return scenario.Spaces.Filter((s) => s.SpaceGuid == arg.Guid)[0].Cards;
         }
     }

@@ -1,14 +1,12 @@
-using System;
-using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
-using Models;
-using Models.SiteManagerModels;
-using Client.Scope.Directive;
+
 namespace Client.Controllers
 {
     internal class MessageController
     {
+        public const string Name = "MessageController";
+        public const string View = "Message";
         private readonly MessageScope myScope;
         private readonly UIManagerService myUIManager;
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
-using global;
 using Models.SiteManagerModels.Game;
 
 namespace Client.Scope.Controller
@@ -11,8 +10,8 @@ namespace Client.Scope.Controller
     {
         [IntrinsicProperty]
         public TestGameControllerScopeModel Model { get; set; }
-
     }
+
     [Serializable]
     public class TestGameControllerScopeModel
     {
@@ -23,7 +22,4 @@ namespace Client.Scope.Controller
         public GameEditorSelectionScopeModel Selection { get; set; }
         public Func<GameSpaceModel, List<GameLayoutScenarioCard>> GetCardsFromScenario { get; set; }
     }
-
- 
-
 }

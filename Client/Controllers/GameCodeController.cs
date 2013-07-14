@@ -1,75 +1,56 @@
-using System;
-using System.Collections.Generic;
-using System.Html;
-using System.Html.Media.Audio;
-using System.Runtime.CompilerServices;
-using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
-using CommonLibraries;
 using Models;
 using Models.SiteManagerModels;
-using Models.SiteManagerModels.Game;
-using WebLibraries.CodeMirror;
-using Client.Scope.Directive;
-using WebLibraries.UglifyJS;
 
 namespace Client.Controllers
 {
     internal class GameCodeController
     {
+        public const string Name = "GameCodeController";
+        public const string View = "GameCodeEditor";
         public static GameCodeController Instance;
-        private readonly GameCodeScope myScope;
-        private readonly UIManagerService myUIManager;
         private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly MessageService myMessageService;
+        private readonly GameCodeScope myScope;
 
-        public GameCodeController(GameCodeScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, MessageService messageService)
+        public GameCodeController(GameCodeScope scope, 
+            ClientSiteManagerService clientSiteManagerService, MessageService messageService)
         {
-
             Instance = this;
             //scope.Model.
             myScope = scope;
-            myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
             myMessageService = messageService;
             scope.Visible = true;
-            
-            scope.watch("model.game.gameCode.code", () =>
-                                      {
-                                       
-                                      });
+
+            scope.watch("model.game.gameCode.code", () => { });
 
             myScope.watch("model.game",
-              () =>
-              {
-                  myScope.Model.UpdateStatus = UpdateStatusType.Dirty;
-              },
-              true);
+                () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
+                true);
 
             scope.Model.ForceUpdate = false;
-            Window.SetTimeout(() =>
-                              {
-                                  scope.Model.ForceUpdate = true;
-                                  scope.Apply(); 
-                              }, 500 );
-
+            scope.OnReady += () =>
+                             {
+                                 scope.Model.ForceUpdate = true;
+                                 scope.Apply();
+                             };
 
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
-
         }
 
         public void Save()
         {
             UpdateGameFn();
-        } 
-        void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
+        }
+
+        private void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
         {
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Apply();
-
         }
 
         private void UpdateGameFn()
@@ -78,19 +59,8 @@ namespace Client.Controllers
 
             myClientSiteManagerService.DeveloperUpdateGame(myScope.Model.Game);
         }
-         
     }
-    
 }
-
-
-
-
-
-
-
-
-
 
 /*      Script.Eval("window.ACGIntellisense= $Client_Controllers_$GameCodeController.$build");
        public static IntellisenseReturn Build(CodeMirror editor,object options )

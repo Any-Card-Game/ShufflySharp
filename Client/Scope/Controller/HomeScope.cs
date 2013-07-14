@@ -4,13 +4,15 @@ using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
 using Models;
 using Models.SiteManagerModels;
+
 namespace Client.Scope.Controller
-{       
+{
     public class HomeScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
-        public HomeModel Model { get; set; } 
+        public HomeModel Model { get; set; }
     }
+
     [Serializable]
     public class HomeModel
     {

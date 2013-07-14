@@ -9,8 +9,8 @@ app.controller('Main', function ($scope) {
     $scope.model.selectedLogPiece = null;
     $scope.model.tabs = [];
 
-    var longWait = 4 * 1000; 
-    var shortWait = 600; 
+    var longWait = 5 * 1000;
+    
 
 
     setInterval(function () {
@@ -26,23 +26,11 @@ app.controller('Main', function ($scope) {
 
             }
         }
-        $scope.$apply();
     }, longWait);
     setInterval(function () {
+           $scope.$apply();
+    }, 2000);
 
-        for (var k = 0; k < $scope.model.tabs.length; k++) {
-            var tab = $scope.model.tabs[k];
-
-            for (var l = 0; l < tab.servers.length; l++) {
-                var server = tab.servers[l];
-                if (((new Date()) - server.lastAlive) > shortWait) {
-                    server.online = 'maybe';
-                }
-
-            }
-        }
-        $scope.$apply();
-    }, shortWait);
 
 
     for (var i = 0; i < servers.length; i++) {
@@ -98,7 +86,6 @@ app.controller('Main', function ($scope) {
                             case "keepAlive":
                                 selectedServer.lastAlive = new Date();
                                 selectedServer.online = true;
-                                $scope.$apply();
                                 return;
                         }
 
@@ -111,8 +98,7 @@ app.controller('Main', function ($scope) {
                                 if (logPiece == $scope.model.selectedLogPiece) {
                                     $scope.model.selectedLogPiece.currentLogIndex = logPiece.logs.length;
                                 }
-
-                                $scope.$apply();
+                                 
                                 return;
                             }
                         }

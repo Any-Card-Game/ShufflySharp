@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
 using Models.SiteManagerModels.Game;
+
 namespace Client.Scope.Controller
 {
     public class GameEffectsEditorScope : FloatingWindowBaseScope
     {
-         
         [IntrinsicProperty]
         public GameEffectsEditorScopeModel Model { get; set; }
     }
+
     [Serializable]
     public class GameEffectsEditorScopeModel : GameUpdater
     {

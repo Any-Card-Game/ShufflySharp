@@ -1,30 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Html;
-using Client.Scope;
 using Client.Scope.Directive;
 using CommonLibraries;
 using global;
 using jQueryApi;
-using jQueryApi.UI.Interactions;
+
 namespace Client.Directives
 {
     public class AcgDrawSpaceDirective
     {
+        public const string Name = "acgDrawSpace";
         public Action<SpaceScope, jQueryObject, object> link;
+
         public AcgDrawSpaceDirective()
         {
             link = linkFn;
-
         }
 
         private void linkFn(SpaceScope scope, jQueryObject element, object attrs)
         {
+            var scale = ((Point) ((dynamic) scope.Parent)["$parent"].scale);
 
-            var scale = ((Point)((dynamic)scope.Parent)["$parent"].scale);
-            
             element.Attribute("class", "space " + string.Format("space{0}", scope.Space.Name));
-          /*  element.Resizable(new ResizableOptions()
+            /*  element.Resizable(new ResizableOptions()
             {
                 Grid = new[] { scale.X, scale.Y },
                 MinHeight = -1,
@@ -53,8 +52,7 @@ namespace Client.Directives
 
             scope.watch("space", () =>
                                  {
-
-                                     JsDictionary<string, string> beforeStyle = new JsDictionary<string, string>();
+                                     var beforeStyle = new JsDictionary<string, string>();
                                      beforeStyle["display"] = "block";
                                      beforeStyle["position"] = "relative";
                                      beforeStyle["z-index"] = "-1";
@@ -72,7 +70,6 @@ namespace Client.Directives
                                      scope.SpaceStyle = new {};
 
 
-
                                      scope.SpaceStyle.position = "absolute";
                                      scope.SpaceStyle.left = scope.Space.X*scale.X;
                                      scope.SpaceStyle.top = scope.Space.Y*scale.Y;
@@ -80,7 +77,6 @@ namespace Client.Directives
                                      scope.SpaceStyle.width = scope.Space.Width*scale.X;
                                      scope.SpaceStyle.height = scope.Space.Height*scale.Y;
                                      scope.SpaceStyle.backgroundColor = "red";
-
 
 
                                      foreach (var effect in scope.Space.Appearance.Effects)
@@ -118,8 +114,9 @@ namespace Client.Directives
                                          }
                                      }
                                      scope.Broadcast("redrawCard");
-                                 },true);
+                                 }, true);
         }
+
         public static string TransformRotate(double ar)
         {
             return string.Format("rotate({0}deg)", ar);
@@ -129,7 +126,7 @@ namespace Client.Directives
         {
             myClass = "." + myClass;
             string CSSRules = "";
-            var document = (dynamic)Script.Eval("window.document");
+            var document = (dynamic) Script.Eval("window.document");
             if (document.all)
                 CSSRules = "rules";
             else if (document.getElementById)
@@ -148,7 +145,6 @@ namespace Client.Directives
                     }
                 }
             }
-
         }
     }
 }

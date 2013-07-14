@@ -1,18 +1,17 @@
 using System;
 using System.Runtime.CompilerServices;
 using ng;
+
 namespace Client.Scope
 {
     public class _KeepBaseScopeAlive
     {
-
     }
 
     [Imported]
-    public abstract class BaseScope:IScope
+    public abstract class BaseScope : IScope
     {
- 
-
+        public const string Name = "$scope";
         /*
             Function watch(string watchExpression, Func<object, object> listener);
             Function watch(string watchExpression, Func<object, object, object> listener);
@@ -68,8 +67,7 @@ namespace Client.Scope
         }
 
 
-
-        public Function watch<T>(Func<T, object> watchExpression) where T:IScope
+        public Function watch<T>(Func<T, object> watchExpression) where T : IScope
         {
             return null;
         }
@@ -89,7 +87,8 @@ namespace Client.Scope
             return null;
         }
 
-        public Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener) where T : IScope
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener)
+            where T : IScope
         {
             return null;
         }
@@ -99,22 +98,23 @@ namespace Client.Scope
             return null;
         }
 
-        public Function watch<T>(Func<T, object> watchExpression, Action<object> listener, bool objectEquality) where T : IScope
+        public Function watch<T>(Func<T, object> watchExpression, Action<object> listener, bool objectEquality)
+            where T : IScope
         {
             return null;
         }
 
-        public Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener, bool objectEquality) where T : IScope
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener, bool objectEquality)
+            where T : IScope
         {
             return null;
         }
 
-        public Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener, bool objectEquality) where T : IScope
+        public Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener,
+            bool objectEquality) where T : IScope
         {
             return null;
         }
-
-
 
 
         public object Apply(Func<IScope, object> exp)
@@ -130,7 +130,6 @@ namespace Client.Scope
 
         public void Destroy()
         {
-            
         }
 
         public object Apply(string exp)
@@ -142,6 +141,7 @@ namespace Client.Scope
         {
             return default(T);
         }
+
         public IScope New()
         {
             return default(IScope);
@@ -150,6 +150,7 @@ namespace Client.Scope
         public void Broadcast<T>(string channel, T value)
         {
         }
+
         public void Broadcast(string channel)
         {
         }
@@ -157,13 +158,14 @@ namespace Client.Scope
         public void On<T>(string channel, Action<T> callback)
         {
         }
+
         public void On(string channel, Action callback)
         {
         }
 
 
 #if TODO
-        // Documentation says exp is optional, but actual implementaton counts on it
+    // Documentation says exp is optional, but actual implementaton counts on it
         
         $broadcast(name: string, ...args: any[]): IAngularEvent;
         $destroy(): void;

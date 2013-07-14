@@ -1,28 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Html;
-using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
 using CommonLibraries;
-using jQueryApi;
-using Models.SiteManagerModels.Game;
-using WebLibraries.Common;
 using global;
-using EffectType = Models.SiteManagerModels.Game.EffectType;
+using jQueryApi;
+using WebLibraries.Common;
+
 namespace Client.Controllers
 {
     public class GameController
     {
-        private readonly GameControllerScope scope;
+        public const string Name = "GameController";
+        public const string View = "GameUI";
         private readonly ClientGameManagerService myClientGameManagerService;
-        private readonly GameContentManager myGameContentManager;
+        private readonly GameContentManagerService myGameContentManagerService;
+        private readonly CreateUIService createUIService;
+        private readonly GameControllerScope scope;
 
-        public GameController(GameControllerScope scope, ClientGameManagerService clientGameManagerService, GameContentManager gameContentManager)
+        public GameController(GameControllerScope scope, ClientGameManagerService clientGameManagerService,GameContentManagerService gameContentManagerService,CreateUIService createUIService)
         {
             this.scope = scope;
             myClientGameManagerService = clientGameManagerService;
-            myGameContentManager = gameContentManager;
+            myGameContentManagerService = gameContentManagerService;
+            this.createUIService = createUIService;
             /* effectManager.Effects =new List<GameEffectModel>();
              effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
               */
@@ -34,98 +36,102 @@ namespace Client.Controllers
                                                       PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
                                                     }; */
 
+            myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
+                                                        {
+                                                            createUIService.CreateSingleton<QuestionScope>(QuestionController.View,
+                                                                (myScope, elem) =>
+                                                                {
+                                                                    myScope.Model = new QuestionScopeModel();
+                                                                    myScope.Model.Question = gameSendAnswerModel.Question;
+                                                                    myScope.Model.Answers = gameSendAnswerModel.Answers;
+                                                                    myScope.Model.SelectedAnswer = gameSendAnswerModel.Answers[0];
+                                                                });
+                                                        };
+
             var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
-            {
-                var document = (dynamic)Script.Eval("window.document");
-
-                var sheet = document.head.appendChild(style).sheet;
-                return (selector, css) =>
-                {
-                    var propText = Object.Keys(css).Map((p) =>
-                    {
-                        return p + ":" + css[p];
-                    }).Join(";");
-                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
-
-                };
-            }))(Document.CreateElement("style"));
-
-
+                                                                                           {
+                                                                                               var document = (dynamic) Script.Eval("window.document");
+                                                                                               var sheet = document.head.appendChild(style).sheet;
+                                                                                               return (selector, css) =>
+                                                                                                      {
+                                                                                                          var propText = Keys(css).Map((p) => { return p + ":" + css[p]; }).Join(";");
+                                                                                                          sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+                                                                                                      };
+                                                                                           }))(Document.CreateElement("style"));
 
             myClientGameManagerService.OnUpdateState += (user, update) =>
-            {
-                var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
+                                                        {
+                                                            var data =
+                                                                Json.Parse<GameCardGame>(
+                                                                    new Compressor().DecompressText(update));
 
-                bool create = scope.MainArea == null;
+                                                            bool create = scope.MainArea == null;
 
-                scope.MainArea = data;
-
-
-                if (create)
-                {
-                    scope.Scale = new Point(jQueryApi.jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ((jQueryApi.jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9);
-
-                    foreach (var space in scope.MainArea.Spaces)
-                    {
-                        addRule(".space" + space.Name, new JsDictionary<string, object>());
-                        addRule(".space" + space.Name + "::before", new JsDictionary<string, object>());
-                        addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
+                                                            scope.MainArea = data;
 
 
-                        foreach (var card in space.Pile.Cards)
-                        {
-                            card.Appearance.EffectNames = new List<string>();
+                                                            if (create)
+                                                            {
+                                                                scope.Scale =
+                                                                    new Point(jQuery.Window.GetWidth()/scope.MainArea.Size.Width*.9,((jQuery.Window.GetHeight() - 250)/scope.MainArea.Size.Height)*.9);
 
-                            if (space.Name.StartsWith("User"))
-                            {
-                                card.Appearance.EffectNames.Add("bend");
-
-                            }
-
-                            addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
-                            addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
-                            addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
-                        }
-                    }
-
-                }
+                                                                foreach (var space in scope.MainArea.Spaces)
+                                                                {
+                                                                    addRule(".space" + space.Name,
+                                                                        new JsDictionary<string, object>());
+                                                                    addRule(".space" + space.Name + "::before",
+                                                                        new JsDictionary<string, object>());
+                                                                    addRule(".space" + space.Name + "::after",
+                                                                        new JsDictionary<string, object>());
 
 
+                                                                    foreach (var card in space.Pile.Cards)
+                                                                    {
+                                                                        card.Appearance.EffectNames = new List<string>();
+
+                                                                        if (space.Name.StartsWith("User"))
+                                                                        {
+                                                                            card.Appearance.EffectNames.Add("bend");
+                                                                        }
+
+                                                                        addRule(".card" + card.Type + "-" + card.Value + "",new JsDictionary<string, object>());
+                                                                        addRule(".card" + card.Type + "-" + card.Value +"::before",new JsDictionary<string, object>());
+                                                                        addRule(".card" + card.Type + "-" + card.Value +"::after",new JsDictionary<string, object>());
+                                                                    }
+                                                                }
+                                                            }
 
 
-                scope.Apply();
-                myGameContentManager.Redraw();
-
-            };
+                                                            scope.Apply();
+                                                            myGameContentManagerService.Redraw();
+                                                        };
 
             jQuery.Window.Bind("resize", (a) =>
-            {
-
-                scope.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / (double)scope.MainArea.Size.Height) * .9);
-                scope.Apply();
-
-            });
+                                         {
+                                             scope.Scale =
+                                                 new Point(
+                                                     jQuery.Window.GetWidth()/(double) scope.MainArea.Size.Width*.9,
+                                                     ((jQuery.Window.GetHeight() - 250)/
+                                                      (double) scope.MainArea.Size.Height)*.9);
+                                             scope.Apply();
+                                         });
 
 
             myClientGameManagerService.OnGameStarted += (user, room) =>
-            {
-                //alert(JSON.stringify(data));
-            };
+                                                        {
+                                                            //alert(JSON.stringify(data));
+                                                        };
 
             myClientGameManagerService.OnGameOver += (user, room) =>
-            {
-                //alert(JSON.stringify(data));
-            };
-
+                                                     {
+                                                         //alert(JSON.stringify(data));
+                                                     };
 
 
             scope.MainArea = null;
 
 
             //new Action<string,JsDictionary<string,object>>()
-
-
-
 
 
             /* scope.MoveCard = () =>
@@ -211,11 +217,6 @@ namespace Client.Controllers
                      }
                  }
              };*/
-
-
-
         }
-
-
     }
 }

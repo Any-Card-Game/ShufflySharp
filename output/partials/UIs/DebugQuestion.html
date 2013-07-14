@@ -1,13 +1,12 @@
 <div ng-controller="DebugQuestionController">
     <div floating-window left="'25%'" top="'25%'" height="'275px'" width="'300px'"
-        title="'Question!'" onclose="model.windowClosed()" visible="visible">
-        <section style="width: 100%;">
+         title="'Question!'" onclose="model.windowClosed()" visible="visible">
+        <div style="width: 100%;">
             <label>Question: </label>{{model.question}}
-        </section>
+        </div>
         <div style="width: 100%; height: 100px; float: left;" fancy-list items="model.answers" bind="model.selectedAnswer">
             {{item}}
         </div>
         <button style="width: 100%;" ng-click="model.answerQuestion()">An5w3r Question!</button>
     </div>
 </div>
- 

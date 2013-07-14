@@ -1,97 +1,97 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Client.Scope;
 using Client.Scope.Directive;
-using Client.Services;
 using CommonLibraries;
-using Models.SiteManagerModels.Game;
 using global;
 using jQueryApi;
 using EffectType = Models.SiteManagerModels.Game.EffectType;
+
 namespace Client.Directives
 {
-
-
-
     public class AcgDrawCardDirective
-    { 
+    {
+        public const string Name = "acgDrawCard";
         public Action<CardScope, jQueryObject, object> link;
-        public AcgDrawCardDirective( )
-        { 
+
+        public AcgDrawCardDirective()
+        {
             link = linkFn;
         }
 
         private void linkFn(CardScope scope, jQueryObject element, object attrs)
         {
             element.Attribute("style", "width:71px; height:96px;");
-            element.Attribute("class", "card "+string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
+            element.Attribute("class", "card " + string.Format("card{0}-{1}", scope.Card.Type, scope.Card.Value));
 
 
-  
             Action redrawCard = () =>
-            {
+                                {
+                                    var scale = ((Point) ((dynamic) scope.Parent.Parent)["$parent"].scale);
 
-                var scale = ((Point)((dynamic)scope.Parent.Parent)["$parent"].scale);
 
+                                    var spaceScale =
+                                        new
+                                        {
+                                            width = scope.Space.Width/(scope.Space.Pile.Cards.Count - 1),
+                                            height = scope.Space.Height/(scope.Space.Pile.Cards.Count - 1)
+                                        };
+                                    var vertical = scope.Space.Vertical;
+                                    var cardIndex = scope.Space.Pile.Cards.IndexOf(scope.Card);
 
-                var spaceScale = new { width = scope.Space.Width / (scope.Space.Pile.Cards.Count - 1), height = scope.Space.Height / (scope.Space.Pile.Cards.Count-1) };
-                var vertical = scope.Space.Vertical;
-                var cardIndex = scope.Space.Pile.Cards.IndexOf(scope.Card);
+                                    scope.CardStyle = new {};
 
-                scope.CardStyle = new { };
-
-                var xx = 0.0;
-                var yy = 0.0;
+                                    var xx = 0.0;
+                                    var yy = 0.0;
 
 
                                     switch (scope.Space.ResizeType)
-                {
-                    case TableSpaceResizeType.Static:
-                        if (vertical)
-                            yy = ((scope.Card.Value + 1) / 13.0) * scope.Space.Height * scale.Y;
-                        else
-                            xx = ((scope.Card.Value + 1) / 13.0) * scope.Space.Width * scale.X;
-                        break;
-                    case TableSpaceResizeType.Grow:
-                        xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
-                        yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
-                        break;
-                    default:
-                        xx = (!vertical ? (cardIndex * spaceScale.width * scale.X) : 0);
-                        yy = (vertical ? (cardIndex * spaceScale.height * scale.Y) : 0);
-                        break;
-                }
+                                    {
+                                        case TableSpaceResizeType.Static:
+                                            if (vertical)
+                                                yy = ((scope.Card.Value + 1)/13.0)*scope.Space.Height*scale.Y;
+                                            else
+                                                xx = ((scope.Card.Value + 1)/13.0)*scope.Space.Width*scale.X;
+                                            break;
+                                        case TableSpaceResizeType.Grow:
+                                            xx = (!vertical ? (cardIndex*spaceScale.width*scale.X) : 0);
+                                            yy = (vertical ? (cardIndex*spaceScale.height*scale.Y) : 0);
+                                            break;
+                                        default:
+                                            xx = (!vertical ? (cardIndex*spaceScale.width*scale.X) : 0);
+                                            yy = (vertical ? (cardIndex*spaceScale.height*scale.Y) : 0);
+                                            break;
+                                    }
 
-                xx -= 71 / 2;
-                yy -= 96 / 2;
+                                    xx -= 71/2;
+                                    yy -= 96/2;
 
-                scope.CardStyle.position = "absolute";
-                scope.CardStyle.zIndex = cardIndex;
-                scope.CardStyle.borderRadius = "5px";
-                scope.CardStyle.left = (xx + (vertical ? scope.Space.Width * scale.X / 2 : 0));
-                scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height * scale.Y / 2 : 0));
+                                    scope.CardStyle.position = "absolute";
+                                    scope.CardStyle.zIndex = cardIndex;
+                                    scope.CardStyle.borderRadius = "5px";
+                                    scope.CardStyle.left = (xx + (vertical ? scope.Space.Width*scale.X/2 : 0));
+                                    scope.CardStyle.top = (yy + (!vertical ? scope.Space.Height*scale.Y/2 : 0));
 //                scope.CardStyle["-webkit-transform"] = "rotate(" + scope.Parent.Space.Appearance.InnerStyle.Rotate + "deg)";
 //                element.me().rotate(scope.Parent.Space.Appearance.InnerStyle.Rotate);
-                scope.CardStyle.content = "\"\"";
+                                    scope.CardStyle.content = "\"\"";
 
 
-                if (scope.Space.Name.StartsWith("User"))
-                {
-
-                    if (scope.Card.Appearance.EffectNames.Count == 0)
-                        scope.Card.Appearance.EffectNames.Add(EffectType.Bend.ToString());
-
-                }
-                else
-                {
-                    for (var index = scope.Card.Appearance.EffectNames.Count - 1; index >= 0; index--)
-                    {
-                        var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
-                        if (cardGameAppearanceEffect == EffectType.Bend.ToString())
-                            scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
-                    }
-                }
+                                    if (scope.Space.Name.StartsWith("User"))
+                                    {
+                                        if (scope.Card.Appearance.EffectNames.Count == 0)
+                                            scope.Card.Appearance.EffectNames.Add(EffectType.Bend.ToString());
+                                    }
+                                    else
+                                    {
+                                        for (var index = scope.Card.Appearance.EffectNames.Count - 1;
+                                            index >= 0;
+                                            index--)
+                                        {
+                                            var cardGameAppearanceEffect = scope.Card.Appearance.EffectNames[index];
+                                            if (cardGameAppearanceEffect == EffectType.Bend.ToString())
+                                                scope.Card.Appearance.EffectNames.Remove(cardGameAppearanceEffect);
+                                        }
+                                    }
 
 
 /*
@@ -163,22 +163,16 @@ namespace Client.Directives
                     }
                 }
 */
-
-
-
-
- 
-
-           
-            };
-            JsDictionary<string, string> keys = new JsDictionary<string, string>() { };
-            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13),Constants.ContentAddress);
+                                };
+            var keys = new JsDictionary<string, string>() {};
+            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')",
+                (100 + (scope.Card.Value + 1) + (scope.Card.Type)*13), Constants.ContentAddress);
             ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 
             scope.On("redrawCard", redrawCard);
 
-         //   redrawCard();
+            //   redrawCard();
             /*
                           
  
@@ -211,19 +205,20 @@ namespace Client.Directives
 */
             redrawCard();
         }
+
         public static dynamic hextorgb(string hex)
         {
-
             var result = new Regex(@"^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$").Exec(hex);
-            return result != null ? new
-            {
-                R = int.Parse(result[1], 16),
-                G = int.Parse(result[2], 16),
-                B = int.Parse(result[3], 16)
-            } : null;
-
-
+            return result != null
+                ? new
+                  {
+                      R = int.Parse(result[1], 16),
+                      G = int.Parse(result[2], 16),
+                      B = int.Parse(result[3], 16)
+                  }
+                : null;
         }
+
         public static string TransformRotate(double ar)
         {
             return string.Format("rotate({0}deg)", ar);
@@ -239,12 +234,13 @@ namespace Client.Directives
         {
             myClass = "." + myClass;
             string CSSRules = "";
-            var document = (dynamic)Script.Eval("window.document");
+            var document = (dynamic) Script.Eval("window.document");
             if (document.all)
                 CSSRules = "rules";
             else if (document.getElementById)
                 CSSRules = "cssRules";
-            for (var a = 0; a < document.styleSheets.length; a++) {
+            for (var a = 0; a < document.styleSheets.length; a++)
+            {
                 if (document.styleSheets[a][CSSRules] == null) continue;
                 for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
                 {
@@ -257,7 +253,6 @@ namespace Client.Directives
                     }
                 }
             }
-
         }
     }
 }

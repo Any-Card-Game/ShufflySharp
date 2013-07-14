@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using Client.Directives;
-using Client.Scope;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
+
 namespace Client.Controllers
 {
     internal class MinimizeController
     {
+        public const string Name = "MinimizeController";
         private readonly MinimizeScope myScope;
         private UIManagerService myUIManager;
 

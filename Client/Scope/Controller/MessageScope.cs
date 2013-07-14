@@ -1,16 +1,17 @@
 using System;
 using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
+
 namespace Client.Scope.Controller
 {
     public class MessageScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
-        public MessageModel Model { get; set; } 
-
+        public MessageModel Model { get; set; }
     }
+
     [Serializable]
-    public class MessageModel 
+    public class MessageModel
     {
         public string Title { get; set; }
         public string Message { get; set; }
@@ -18,9 +19,11 @@ namespace Client.Scope.Controller
         public MessageType MessageType { get; set; }
         public string Response { get; set; }
     }
+
     [NamedValues]
     public enum MessageType
     {
-        Okay,Question
+        Okay,
+        Question
     }
 }

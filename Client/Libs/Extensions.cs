@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using jQueryApi;
+
 namespace Client.Libs
 {
     public static class Extensions
     {
         public static T RandomElement<T>(this List<T> arr)
         {
-            return arr[(int)Math.Floor(Math.Random() * arr.Count)];
-
+            return arr[(int) Math.Floor(Math.Random()*arr.Count)];
         }
+
         public static jQueryObject FuckingClone(this jQueryObject elem)
         {
-
-
             var pos = elem.GetOffset();
 
             var m = elem.Clone();
@@ -32,9 +31,5 @@ namespace Client.Libs
             m.CSS("top", pos.Top + curTransformY);
             return m;
         }
-
- 
-
-
     }
 }

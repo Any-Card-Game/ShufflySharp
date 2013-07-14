@@ -5,11 +5,13 @@
         <input type="text" ng-model="model.game.name" placeholder="Name" />
         <input type="text" ng-model="model.game.description" placeholder="Description" />
         <input type="text" ng-model="model.game.maxNumberOfPlayers" placeholder="Max Number Of Players" />
-        <button ng-click="model.openCode()">Code</button>
-        <button ng-click="model.openLayout()">Layout</button>
-        <button ng-click="model.openEffects()">Effects</button>
-        <button ng-click="model.openTest()">Test</button>
-        <button ng-click="model.updateGame() ">save</button>
+        <section>
+            <button ng-click="model.openCode()">Code</button>
+            <button ng-click="model.openLayout()">Layout</button>
+            <button ng-click="model.openEffects()">Effects</button>
+            <button ng-click="model.openTest()">Test</button>
+            <button ng-click="model.updateGame() ">save</button>
+        </section>
         {{model.updateStatus}}
     </div>
 </div>

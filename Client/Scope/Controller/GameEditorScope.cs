@@ -2,15 +2,15 @@ using System;
 using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
 using Models.SiteManagerModels.Game;
+
 namespace Client.Scope.Controller
 {
-
-
     public class GameEditorScope : FloatingWindowBaseScope
     {
         [IntrinsicProperty]
         public GameEditorModel Model { get; set; }
     }
+
     [NamedValues]
     public enum UpdateStatusType
     {
@@ -18,6 +18,7 @@ namespace Client.Scope.Controller
         Syncing,
         Synced
     }
+
     [Serializable]
     public class GameEditorModel : GameUpdater
     {
@@ -32,7 +33,6 @@ namespace Client.Scope.Controller
     [Serializable]
     public class GameUpdater
     {
-
         public Action UpdateGame { get; set; }
         public UpdateStatusType UpdateStatus { get; set; }
     }

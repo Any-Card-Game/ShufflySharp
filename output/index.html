@@ -1,82 +1,74 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
-    <title>Shuffly</title>
-    <script type="text/javascript" src="http://localhost:8881/lib/jquery.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/jquery-animate-css-rotate-scale.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/angular.js"></script>
+    <head>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <title>Shuffly</title>
+        <script type="text/javascript" src="http://localhost:8881/lib/jquery.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/jquery-ui.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/jquery-animate-css-rotate-scale.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/angular.js"> </script>
     
-    <script type="text/javascript" src="http://localhost:8881/lib/codemirror/lib/codemirror.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/ui-codemirror.js"></script>
+        <script type="text/javascript" src="http://localhost:8881/lib/codemirror/lib/codemirror.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/ui-codemirror.js"> </script>
 
     
-    <script type="text/javascript" src="http://localhost:8881/lib/ui-utils.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/requirejs.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/mscorlib.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/WebLibraries.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/CommonLibraries.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/Client.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/ClientLibs.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/ShuffleGameLibrary.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/Models.js"></script>
+        <script type="text/javascript" src="http://localhost:8881/lib/ui-utils.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/requirejs.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/mscorlib.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/WebLibraries.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/CommonLibraries.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/Client.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/ClientLibs.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/ShuffleGameLibrary.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/Models.js"> </script>
      
-    <script type="text/javascript" src="http://localhost:8881/lib/loadData.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/esprima/doctrine.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/esprima/esprima.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/esprima/types.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/esprima/esprimaJsContentAssist.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/esprima/esprimaVisitor.js"></script>
-    <script type="text/javascript" src="http://localhost:8881/lib/esprima/proposalUtils.js"></script>
+        <script type="text/javascript" src="http://localhost:8881/lib/loadData.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/esprima/doctrine.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/esprima/esprima.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/esprima/types.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/esprima/esprimaJsContentAssist.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/esprima/esprimaVisitor.js"> </script>
+        <script type="text/javascript" src="http://localhost:8881/lib/esprima/proposalUtils.js"> </script>
 
-    <link rel="stylesheet" href="http://localhost:8881/lib/codemirror/theme/midnight.css"/>
+        <link rel="stylesheet" href="http://localhost:8881/lib/codemirror/theme/midnight.css"/>
     
 
 
-    <script type="text/javascript">
-        String.prototype.toString = function () { return this; };
+        <script type="text/javascript">
+            String.prototype.toString = function() { return this; };
 
-        new Client.BuildSite('{{gateway}}');
-        
-     
-    </script>
-    <style type="text/css">
-        .listItem:hover
-        {
-            background-color: yellow;
-        }
-        
-        html, body
-        {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-        }
-        
-        body
-        {
-            height: 100%;
-            position: relative;
-            width: 100%;
-        }
-        
-        body
-        {
-            background-color: cadetblue;
-        }
-    </style>
-</head>
-<body>
-    <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder;
-        position: absolute; text-align: center; top: 50%; width: 100%; overflow: hidden;"
-        id="loading">
-        Its loading...
-    </div>
-    <div ng-view>
-    </div>
-    <div ng-include src="'http://localhost:8881/partials/UIs.html'">
-    </div>
-</body>
+            new Client.BuildSite('{{gateway}}');
+
+        </script>
+        <style type="text/css">
+            .listItem:hover { background-color: yellow; }
+
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            body {
+                height: 100%;
+                position: relative;
+                width: 100%;
+            }
+
+            body { background-color: cadetblue; }
+        </style>
+    </head>
+    <body>
+        <div style="border: 5px black solid; color: white; font-size: x-large; font-weight: bolder; position: absolute; text-align: center; top: 50%; width: 100%; overflow: hidden;"
+             id="loading">
+            Its loading...
+        </div>
+        <div ng-view>
+        </div>
+        <div ng-include src="'http://localhost:8881/partials/UIs/MinimizeArea.html'">
+        </div>
+        <div ng-include src="'http://localhost:8881/partials/UIs/Login.html'">
+        </div>
+    </body>
 </html>

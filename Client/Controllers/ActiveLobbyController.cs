@@ -1,70 +1,69 @@
 using System.Collections.Generic;
-using System.Html;
-using Client.Scope;
 using Client.Scope.Controller;
+using Client.Scope.Directive;
 using Client.Services;
 using Models;
 using Models.ChatManagerModels;
 using Models.SiteManagerModels;
-using Client.Scope.Directive;
+
 namespace Client.Controllers
 {
     internal class ActiveLobbyController
     {
-        private readonly ActiveLobbyScope myScope;
-        private readonly UIManagerService myUIManager;
-        private readonly ClientSiteManagerService myClientSiteManagerService;
+        public const string View = "ActiveLobby";
+        public const string Name = "ActiveLobbyController";
         private readonly ClientChatManagerService myClientChatManagerService;
+        private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly CreateUIService myCreateUIService;
+        private readonly ActiveLobbyScope myScope;
 
-        public ActiveLobbyController(ActiveLobbyScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService,  ClientChatManagerService clientChatManagerService,CreateUIService createUIService)
+        public ActiveLobbyController(ActiveLobbyScope scope, ClientSiteManagerService clientSiteManagerService,
+            ClientChatManagerService clientChatManagerService, CreateUIService createUIService)
         {
-
-
             myScope = scope;
-            myUIManager = uiManager;
-            myClientSiteManagerService = clientSiteManagerService; 
+            myClientSiteManagerService = clientSiteManagerService;
             myClientChatManagerService = clientChatManagerService;
             myCreateUIService = createUIService;
-            myScope.Model = new ActiveLobbyModel();
             myScope.Model.ChatLines = new List<ChatMessageRoomModel>();
             myScope.Visible = false;
             myScope.Model.WindowClosed += () =>
-            {
-                myScope.SwingAway(SwingDirection.BottomRight, false, null);
-                myClientSiteManagerService.LeaveRoom(new LeaveRoomRequest(myScope.Model.Room));
-                uiManager.RoomLeft();
-            };
+                                          {
+                                              myScope.SwingAway(SwingDirection.BottomRight, false, null);
+                                              myClientSiteManagerService.LeaveRoom(
+                                                  new LeaveRoomRequest(myScope.Model.Room));
+                                              myCreateUIService.CreateSingleton(HomeController.View);
+                                              myScope.DestroyWindow();
+                                          };
 
-            uiManager.OnRoomJoined = (room) =>
-            {
-                myScope.Visible = true;
-                myScope.SwingAway(SwingDirection.BottomRight, true,null);
-                myScope.Model.Room = room;
-                PopulateGameRoom(room);
-                myScope.SwingBack(null);
-                myScope.Apply();
-            };
 
-            myScope.Model.StartGame += () => {
-                                           myCreateUIService.Create("GameUI");
-//                                           uiManager.GameManager.StartGame();
-                                            clientSiteManagerService.StartGame(new StartGameRequest());  
+            myScope.Model.StartGame += () =>
+                                       {
+                                           myCreateUIService.Create(GameController.View);
+                                           clientSiteManagerService.StartGame(new StartGameRequest());
                                            //UIWindow.Height = 200;
                                        };
             myScope.Model.SendChatMessage += () =>
-            {
-                if (myScope.Model.CurrentChatMessage.Trim() == string.Empty)
-                    return;
+                                             {
+                                                 if (myScope.Model.CurrentChatMessage.Trim() == string.Empty)
+                                                     return;
 
-                myClientChatManagerService.SendChatMessage(new SendChatMessageModel(myScope.Model.CurrentChatMessage.Trim()));
+                                                 myClientChatManagerService.SendChatMessage(
+                                                     new SendChatMessageModel(myScope.Model.CurrentChatMessage.Trim()));
 
-                myScope.Model.CurrentChatMessage = "";
-            };
+                                                 myScope.Model.CurrentChatMessage = "";
+                                             };
 
             myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfo;
             myClientChatManagerService.OnGetChatLines += GetChatLines;
             myClientChatManagerService.OnGetChatInfo += GetChatInfo;
+            myScope.OnReady = () =>
+                              {
+                                  myScope.Visible = true;
+                                  myScope.SwingAway(SwingDirection.BottomRight, true, null);
+                                  PopulateGameRoom(myScope.Model.Room);
+                                  myScope.SwingBack(null);
+                                  myScope.Apply();
+                              };
         }
 
         private void GetChatLines(UserModel user, ChatMessagesModel o)
@@ -92,9 +91,8 @@ namespace Client.Controllers
 
         private void PopulateGameRoom(RoomModel roomModel)
         {
-            
         }
-
     }
 }
+
 /* http://www.youtube.com/watch?v=dsQHNmaNxDg */

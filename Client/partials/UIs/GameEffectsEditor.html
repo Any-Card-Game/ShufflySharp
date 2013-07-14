@@ -9,11 +9,12 @@
         </div>
         <div style="width: 50%; float: left;">
             <div ng-show="model.selection.selectedEffect">
-                Name:
-                <input type="text" ng-model="model.selection.selectedEffect.name" />
-                Type: {{effect.type}}
-                <div ng-repeat="prop in model.selection.selectedEffect.properties">
-                    {{prop.name}}:<input ng-model="prop.value" property="prop" />{{prop.value}}
+                <div>Name:<input type="text" ng-model="model.selection.selectedEffect.name" /></div>
+                <div>
+                    Type: {{effect.type}}
+                    <div ng-repeat="prop in model.selection.selectedEffect.properties">
+                        {{prop.name}}:<input ng-model="prop.value" property="prop" />{{prop.value}}
+                    </div>
                 </div>
                 <button ng-click="model.removeEffect(model.selection.selectedEffect)">Remove</button>
             </div>

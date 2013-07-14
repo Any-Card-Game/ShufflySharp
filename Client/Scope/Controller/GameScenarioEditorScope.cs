@@ -10,6 +10,7 @@ namespace Client.Scope.Controller
         [IntrinsicProperty]
         public GameScenarioEditorScopeModel Model { get; set; }
     }
+
     [Serializable]
     public class GameScenarioEditorScopeModel : GameUpdater
     {
@@ -25,7 +26,7 @@ namespace Client.Scope.Controller
         public Action<GameLayoutScenarioCard> RemoveCardFromSpace { get; set; }
         public Action AddNewScenario { get; set; }
         public Action DeleteScenario { get; set; }
-        
+
         public Action CloneNewScenario { get; set; }
         public Func<string> GetCurrentlySelected { get; set; }
         public Action ApplyEffectToCurrentlySelected { get; set; }

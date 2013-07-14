@@ -521,25 +521,19 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				this.$1$OnUserLeaveField(user3, data3);
 			}));
 		},
-		$sendMessageToAll: function(room, message, val) {
-			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
-				var player = room.players[$t1];
-				this.$qManager.sendMessage(player.gateway, message, player, val);
-			}
+		$sendMessageToTester: function(room, message, val) {
+			this.$qManager.sendMessage(room.debuggingSender.gateway, message, room.debuggingSender, val);
 		},
 		sendGameStarted: function(room) {
 			var $t1 = Models.GameManagerModels.GameRoomModel.$ctor();
 			$t1.roomID = room.roomID;
-			this.$sendMessageToAll(room, 'Area.Debug.Started', $t1);
+			this.$sendMessageToTester(room, 'Area.Debug.Started', $t1);
 		},
 		sendGameOver: function(room) {
-			this.$sendMessageToAll(room, 'Area.Debug.GameOver', 'a');
-			if (ss.isValue(room.debuggingSender)) {
-				this.$qManager.sendMessage(room.debuggingSender.gateway, 'Area.Debug.GameOver', room.debuggingSender, new Object());
-			}
+			this.$sendMessageToTester(room, 'Area.Debug.GameOver', 'a');
 		},
 		sendUpdateState: function(room) {
-			this.$sendMessageToAll(room, 'Area.Debug.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
+			this.$sendMessageToTester(room, 'Area.Debug.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
 		},
 		sendDebugLog: function(room, ganswer) {
 			this.$qManager.sendMessage(room.debuggingSender.gateway, 'Area.Debug.Log', room.debuggingSender, ganswer);
@@ -641,6 +635,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				for (var i = 0; i < data.numberOfPlayers; i++) {
 					ss.add(room.players, user);
 				}
+				room.debuggingSender = user;
 				var gameObject;
 				if (ss.keyExists(this.$cachedGames, room.gameType)) {
 					gameObject = this.$cachedGames[room.gameType];
@@ -799,9 +794,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			var answ2 = room.fiber.run();
 			this.$processGameResponse(room, answ2);
 			if (!room.game.cardGame.emulating) {
-				//ServerLogger.Log(gameData.toString());
-				var ganswer = { value: answer.contents };
-				this.$myServerManager.sendDebugLog(room, ganswer);
+				this.$myServerManager.sendDebugLog(room, { value: answer.contents });
 			}
 		},
 		$gameOver: function(room) {

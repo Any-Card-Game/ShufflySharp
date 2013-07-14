@@ -10,14 +10,14 @@ namespace Client.Scope.Controller
     {
         [IntrinsicProperty]
         public EffectTesterControllerScopeModel Model { get; set; }
-
     }
+
     [Serializable]
     public class EffectTesterControllerScopeModel
     {
         public GameModel Game { get; set; }
         public GameEditorSelectionScopeModel Selection { get; set; }
-         
+
 
         public Point Scale { get; set; }
         public EffectTesterSpaceModel SpaceTest { get; set; }
@@ -25,23 +25,26 @@ namespace Client.Scope.Controller
         public EffectTesterTextModel TextTest { get; set; }
         public EffectTesterCardModel CardTest { get; set; }
     }
+
     [Serializable]
     public class EffectTesterSpaceModel
     {
         public GameSpaceModel Space { get; set; }
         public List<GameLayoutScenarioCard> Cards { get; set; }
     }
-    
+
     [Serializable]
     public class EffectTesterTextModel
     {
         public GameTextModel Text { get; set; }
     }
+
     [Serializable]
     public class EffectTesterAreaModel
     {
         public GameAreaModel Area { get; set; }
     }
+
     [Serializable]
     public class EffectTesterCardModel
     {

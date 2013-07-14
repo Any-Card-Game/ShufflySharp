@@ -1,6 +1,6 @@
 <div ng-controller="TestGameController">
 
-    <div   style="position: relative; margin: auto;top:0; bottom:0; left:0; right:0 " ng-style="{width:model.selection.selectedScenario.screenSize.x+'px',height:model.selection.selectedScenario.screenSize.y+'px'}">
+    <div   style="position: relative; margin: auto; top: 0; bottom: 0; left: 0; right: 0" ng-style="{width:model.selection.selectedScenario.screenSize.x+'px',height:model.selection.selectedScenario.screenSize.y+'px'}">
         <div grid="model.scale" show-grid="model.selection.showGrid"></div>
         <div ng-repeat='space in model.game.gameLayout.spaces'>
             <div acg-test-draw-space ng-style='spaceStyle'>

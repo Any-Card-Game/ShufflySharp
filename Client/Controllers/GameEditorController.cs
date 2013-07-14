@@ -1,35 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Html;
-using Client.Scope;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
 using Models;
 using Models.DebugGameManagerModels;
-using Models.GameManagerModels;
 using Models.SiteManagerModels;
-using Models.SiteManagerModels.Game;
+
 namespace Client.Controllers
 {
     internal class GameEditorController
     {
-        private readonly GameEditorScope myScope;
-        private readonly UIManagerService myUIManager;
-        private readonly ClientSiteManagerService myClientSiteManagerService;
+        public const string Name = "GameEditorController";
+        public const string View = "GameEditor";
         private readonly ClientDebugManagerService clientDebugManagerService;
-        private readonly MessageService myMessageService;
+        private readonly ClientSiteManagerService myClientSiteManagerService;
         private readonly CreateUIService myCreateUIService;
+        private readonly MessageService myMessageService;
+        private readonly GameEditorScope myScope; 
 
-        public GameEditorController(GameEditorScope scope, UIManagerService uiManager, ClientSiteManagerService clientSiteManagerService, ClientDebugManagerService  clientDebugManagerService, MessageService messageService, CreateUIService createUIService)
+        public GameEditorController(GameEditorScope scope,  
+            ClientSiteManagerService clientSiteManagerService, ClientDebugManagerService clientDebugManagerService,
+            MessageService messageService, CreateUIService createUIService)
         {
             myScope = scope;
-            myUIManager = uiManager;
             myClientSiteManagerService = clientSiteManagerService;
             this.clientDebugManagerService = clientDebugManagerService;
             myMessageService = messageService;
             myCreateUIService = createUIService;
-            myScope.Model = new GameEditorModel();
             myScope.Model.OpenCode = OpenCodeFn;
             myScope.Model.OpenEffects = OpenEffectsFn;
             myScope.Model.OpenLayout = OpenLayoutFn;
@@ -41,82 +37,69 @@ namespace Client.Controllers
                                           SelectedScenarioPieces = new SelectedScenarioPieces()
                                                                    {
                                                                        Piece = SelectedScenarioPieceType.None
-
                                                                    }
                                       };
 
             myScope.Visible = false;
-            uiManager.OpenGameEditor += (game) =>
-            {
-                myScope.Visible = true;
-
-                myScope.SwingAway(SwingDirection.TopRight, true, null);
-                myScope.SwingBack(null);
-                myScope.Model.Game = game;
-            };
             myScope.OnClose += () =>
                                {
                                    //todo destroy spawned
                                };
             myScope.watch("model.game",
-                          () =>
-                          {
-                              myScope.Model.UpdateStatus = UpdateStatusType.Dirty;
-                          },
-                          true);
+                () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
+                true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
-
-
+            myScope.OnReady += () =>
+                               {
+                                   myScope.Visible = true;
+                                   myScope.SwingAway(SwingDirection.TopRight, true, null);
+                                   myScope.SwingBack(null);
+                               };
         }
 
         private void OpenTestFn()
         {
-
-            myCreateUIService.Create("DebugGameUI");
-            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));  
+            myCreateUIService.Create(DebugGameController.View);
+            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));
         }
 
         private void OpenLayoutFn()
         {
-            myCreateUIService.CreateSingleton<GameLayoutEditorScope>("GameLayoutEditor", (scope, elem) =>
-            {
-                scope.Model = new GameLayoutEditorScopeModel();
-                scope.Model.Game = myScope.Model.Game;
-                scope.Model.Selection = myScope.Model.Selection;
-            });
+            myCreateUIService.CreateSingleton<GameLayoutEditorScope>(GameLayoutEditorController.View, (scope, elem) =>
+                                                                                         {
+                                                                                             scope.Model =new GameLayoutEditorScopeModel();
+                                                                                             scope.Model.Game =myScope.Model.Game;
+                                                                                             scope.Model.Selection =myScope.Model.Selection;
+                                                                                         });
         }
 
         private void OpenEffectsFn()
         {
-
-            myCreateUIService.CreateSingleton<GameEffectsEditorScope>("GameEffectsEditor", (scope, elem) =>
+            myCreateUIService.CreateSingleton<GameEffectsEditorScope>(GameEffectsEditorController.View, (scope, elem) =>
                                                                                            {
-                                                                                               scope.Model = new GameEffectsEditorScopeModel();
-                                                                                               scope.Model.Game = myScope.Model.Game;
-                                                                                               scope.Model.Selection = myScope.Model.Selection;
-
+                                                                                               scope.Model =new GameEffectsEditorScopeModel();
+                                                                                               scope.Model.Game =
+                                                                                                   myScope.Model.Game;
+                                                                                               scope.Model.Selection =myScope.Model.Selection;
                                                                                            });
-
         }
 
         private void OpenCodeFn()
         {
-            myCreateUIService.CreateSingleton<GameCodeScope>("GameCodeEditor", (scope, elem) =>
-                                                                        {
-                                                                            scope.Model = new GameCodeScopeModel();
-                                                                            scope.Model.Game = myScope.Model.Game;
-                                                                            scope.Model.Selection = myScope.Model.Selection;
-
-                                                                        });
+            myCreateUIService.CreateSingleton<GameCodeScope>(GameCodeController.View, (scope, elem) =>
+                                                                               {
+                                                                                   scope.Model =new GameCodeScopeModel();
+                                                                                   scope.Model.Game = myScope.Model.Game;
+                                                                                   scope.Model.Selection =myScope.Model.Selection;
+                                                                               });
         }
 
-        void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
+        private void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
         {
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Apply();
-
         }
 
         private void UpdateGameFn()

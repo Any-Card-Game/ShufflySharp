@@ -1,6 +1,7 @@
 using System;
 using System.Html;
 using CommonLibraries;
+
 namespace Client.Libs
 {
     public class ScriptLoader
@@ -12,10 +13,16 @@ namespace Client.Libs
 
             var script = (ScriptElement) Document.CreateElement("script");
             script.Type = "text/javascript";
-            script.Src = url + ( cache ? "?" + ( Math.Floor(Math.Random() * 10000) ) : "" ); //caching
-            if (callback != null) {
-                script.me().onreadystatechange = (Action<object>) ( a => { if (script.me().readyState == "loaded" || script.me().readyState == "complete") callback(); } );
-                script.me().onload = (Action<object>) ( a => callback() );
+            script.Src = url + (cache ? "?" + (Math.Floor(Math.Random()*10000)) : ""); //caching
+            if (callback != null)
+            {
+                script.me().onreadystatechange =
+                    (Action<object>)
+                        (a =>
+                         {
+                             if (script.me().readyState == "loaded" || script.me().readyState == "complete") callback();
+                         });
+                script.me().onload = (Action<object>) (a => callback());
             }
             head.AppendChild(script);
         }
@@ -32,14 +39,16 @@ namespace Client.Libs
         public void Load(string[] items, bool cache, Action done)
         {
             var counter = 0;
-            for (var i = 0; i < items.Length; i++) {
+            for (var i = 0; i < items.Length; i++)
+            {
                 loadScript(items[i],
-                           cache,
-                           () => {
-                               counter++;
-                               if (counter >= items.Length)
-                                   done();
-                           });
+                    cache,
+                    () =>
+                    {
+                        counter++;
+                        if (counter >= items.Length)
+                            done();
+                    });
             }
         }
 
@@ -47,7 +56,8 @@ namespace Client.Libs
         {
             var counter = 0;
             Action nextOne = null;
-            nextOne = () => {
+            nextOne = () =>
+                      {
                           counter++;
                           if (counter >= items.Length)
                               done();

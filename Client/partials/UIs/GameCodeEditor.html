@@ -1,60 +1,57 @@
 <script type="text/javascript">
     var espri;
-try {
-    require(["plugins/esprima/esprimaJsContentAssist"], function(esprimaJsContentAssist) {
-        espri = new esprimaJsContentAssist.EsprimaJavaScriptContentAssistProvider();
-    });
-} catch(ex) {
-    
-    require(["plugins/esprima/esprimaJsContentAssist"], function (esprimaJsContentAssist) {
-        espri = new esprimaJsContentAssist.EsprimaJavaScriptContentAssistProvider();
-    });
-}
+    try {
+        require(["plugins/esprima/esprimaJsContentAssist"], function(esprimaJsContentAssist) {
+            espri = new esprimaJsContentAssist.EsprimaJavaScriptContentAssistProvider();
+        });
+    } catch(ex) {
 
-CodeMirror.commands.autocomplete = function (cm) {
+        require(["plugins/esprima/esprimaJsContentAssist"], function(esprimaJsContentAssist) {
+            espri = new esprimaJsContentAssist.EsprimaJavaScriptContentAssistProvider();
+        });
+    }
 
-    CodeMirror.showHint(cm, function (editor, options) {
+    CodeMirror.commands.autocomplete = function(cm) {
 
-        var cur = editor.getCursor();
-        var token = editor.getTokenAt(cur);
-        var val = editor.getValue();
-        var ind = editor.indexFromPos(cur);
+        CodeMirror.showHint(cm, function(editor, options) {
 
-
-        function getPrefixStart(a) {
-            for (; a > 0 && /[A-Za-z0-9_]/.test(getText(val, a - 1, a)) ;)
-                a--;
-            return a
-        }
-
-        function getText(str, start, end) {
-            return str.substring(start, end);
-        }
-        var items = espri.computeProposals(val, ind, { line: cur.line, prefix: getText(val, getPrefixStart(ind), ind), selection: { start: ind, end: ind } });
-        debugger;
-
-        return { list: items.map(function (c) { return c.proposal }), from: CodeMirror.Pos(cur.line, token.end), to: CodeMirror.Pos(cur.line, token.end) }
-    });
-}
+            var cur = editor.getCursor();
+            var token = editor.getTokenAt(cur);
+            var val = editor.getValue();
+            var ind = editor.indexFromPos(cur);
 
 
-CodeMirror.commands.save = function (cm) {
-    $Client_Controllers_$GameCodeController.$instance.$save();
-}
+            function getPrefixStart(a) {
+                for (; a > 0 && /[A-Za-z0-9_]/.test(getText(val, a - 1, a));)
+                    a--;
+                return a;
+            }
 
+            function getText(str, start, end) {
+                return str.substring(start, end);
+            }
 
+            var items = espri.computeProposals(val, ind, { line: cur.line, prefix: getText(val, getPrefixStart(ind), ind), selection: { start: ind, end: ind } });
+            debugger;
+
+            return { list: items.map(function(c) { return c.proposal; }), from: CodeMirror.Pos(cur.line, token.end), to: CodeMirror.Pos(cur.line, token.end) };
+        });
+    };
+    CodeMirror.commands.save = function(cm) {
+        $Client_Controllers_$GameCodeController.$instance.$save();
+    };
 </script>
 
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.js"></script>
-    <link rel="stylesheet" href="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.css">
-    <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/mode/javascript/javascript.js"></script>
+<script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.js"> </script>
+<link rel="stylesheet" href="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.css">
+<script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/mode/javascript/javascript.js"> </script>
       
 <div ng-controller="GameCodeController">
     <div floating-window left="'25%'" top="'50%'" height="'700px'" width="'1000px'" title="'Code Editor!'" visible="visible">
         
         
         <textarea ui-codemirror="{lineNumbers: true,theme:'midnight',mode:'javascript',extraKeys: { 'Ctrl-Space': 'autocomplete','Ctrl-S': 'save' }}" 
-            ng-model="model.game.gameCode.code" ui-refresh="model.forceUpdate"></textarea>
+                  ng-model="model.game.gameCode.code" ui-refresh="model.forceUpdate"></textarea>
         
         <button ng-click="model.updateGame() ">save</button>
         {{model.updateStatus}}

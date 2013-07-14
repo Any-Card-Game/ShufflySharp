@@ -26,8 +26,8 @@ namespace Client.Scope.Controller
         public Action OpenScenarios { get; set; }
         public Action ToggleGrid { get; set; }
         public Action ToggleCards { get; set; }
-        
     }
+
     [Serializable]
     public class GameEditorSelectionScopeModel : GameUpdater
     {
@@ -46,6 +46,7 @@ namespace Client.Scope.Controller
         public bool ShowGrid { get; set; }
         public bool ShowCards { get; set; }
     }
+
     [Serializable]
     public class SelectedScenarioPieces
     {
@@ -55,20 +56,31 @@ namespace Client.Scope.Controller
         public string Text { get; set; }
         public SelectedScenarioPieceType Piece { get; set; }
     }
+
     [NamedValues]
     public enum SelectedScenarioPieceType
     {
-      None,  Space,Area,Text,Card
+        None,
+        Space,
+        Area,
+        Text,
+        Card
     }
 
     [NamedValues]
     public enum SelectedGameLayoutPiece
     {
-        None, Space, Text, Area
+        None,
+        Space,
+        Text,
+        Area
     }
+
     [NamedValues]
     public enum SelectedGameScenarioPiece
     {
-        None, Space,Effect
+        None,
+        Space,
+        Effect
     }
 }

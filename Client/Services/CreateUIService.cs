@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Html;
@@ -6,12 +5,15 @@ using Client.Scope;
 using CommonLibraries;
 using jQueryApi;
 using ng;
+
 namespace Client.Services
 {
     public class CreateUIService
     {
+        public const string Name = "CreateUIService";
         private readonly CompileService myCompileService;
         private readonly IRootScopeService myRootScopeService;
+        private JsDictionary<string, AngularElement> singltons = new JsDictionary<string, AngularElement>();
 
         public CreateUIService(CompileService compileService, IRootScopeService rootScopeService)
         {
@@ -23,37 +25,38 @@ namespace Client.Services
         {
             return Create<T>(ui, (a, b) => { });
         }
+
         public CreatedUI<T> Create<T>(string ui, Action<T, jQueryObject> populateScope) where T : BaseScope
         {
-
-            T scope = myRootScopeService.New<T>();
-            var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress));
+            var scope = myRootScopeService.New<T>();
+            var html =
+                jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui,
+                    Constants.ContentAddress));
             populateScope(scope, html);
             var item = myCompileService(html)(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 
-            return new CreatedUI<T>(scope,item);
+            return new CreatedUI<T>(scope, item);
         }
-
-        private JsDictionary<string, AngularElement> singltons = new JsDictionary<string, AngularElement>();
 
 
         public CreatedUI<BaseScope> CreateSingleton(string ui)
         {
             return CreateSingleton<BaseScope>(ui);
         }
+
         public CreatedUI<T> CreateSingleton<T>(string ui) where T : BaseScope
         {
             return CreateSingleton<T>(ui, (a, b) => { });
         }
+
         public CreatedUI<T> CreateSingleton<T>(string ui, Action<T, jQueryObject> populateScope) where T : BaseScope
         {
             T scope;
 
             if (singltons.ContainsKey(ui))
             {
-
                 var html = singltons[ui];
                 if (html.Parent().Length == 0)
                 {
@@ -63,9 +66,8 @@ namespace Client.Services
 
             if (singltons.ContainsKey(ui))
             {
-
                 var html = singltons[ui];
-                
+
                 scope = myRootScopeService.New<T>();
                 populateScope(scope, html);
                 myCompileService(html)(scope);
@@ -76,7 +78,9 @@ namespace Client.Services
             else
             {
                 scope = myRootScopeService.New<T>();
-                var html = jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress));
+                var html =
+                    jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui,
+                        Constants.ContentAddress));
                 populateScope(scope, html);
                 var item = myCompileService(html)(scope);
                 item.AppendTo(Window.Document.Body);
@@ -84,50 +88,52 @@ namespace Client.Services
                 singltons[ui] = item;
 
                 return new CreatedUI<T>(scope, item);
-            } 
-
+            }
         }
 
 
         public CreatedUI<IScope> Create(string ui)
         {
-
             var scope = myRootScopeService.New();
-            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
+            var item =
+                myCompileService(
+                    jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui,
+                        Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
-             
+
 
             return new CreatedUI<IScope>(scope, item);
         }
+
         public CreatedUI<IScope> Create(string ui, BaseScope scope)
         {
-
-            var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
+            var item =
+                myCompileService(
+                    jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui,
+                        Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
             scope.Apply();
 
-            return new CreatedUI<IScope>(scope,item);
+            return new CreatedUI<IScope>(scope, item);
         }
     }
 
-    public class CreatedUI<T> where T: IScope
+    public class CreatedUI<T> where T : IScope
     {
-        public T Scope { get; set; }
-        public AngularElement Element { get; set; }
-
-        public CreatedUI(T scope,AngularElement element)
+        public CreatedUI(T scope, AngularElement element)
         {
             Scope = scope;
             Element = element;
         }
 
+        public T Scope { get; set; }
+        public AngularElement Element { get; set; }
+
         public void Destroy()
         {
             Scope.Destroy();
             Element.Remove();
-
         }
     }
 }
-

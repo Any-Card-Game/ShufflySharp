@@ -1,4 +1,4 @@
-﻿//#define FTP
+﻿#define FTP
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -49,11 +49,13 @@ namespace Build
 
 
             tryCopyHtml(pre + shufSharp + @"\Client\index.html", pre + shufSharp + @"\output\index.html");
+            tryCopyHtml(pre + shufSharp + @"\Client\site.css", pre + shufSharp + @"\output\site.css");
             tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\", pre + shufSharp + @"\output\partials\");
             tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\UIs\", pre + shufSharp + @"\output\partials\UIs\");
 
 
-            tryCopyHtml(pre + shufSharp + @"\Client\index.html", @"C:\code\node\index.html");/*
+            tryCopyHtml(pre + shufSharp + @"\Client\index.html", @"C:\code\node\index.html");
+            tryCopyHtml(pre + shufSharp + @"\Client\site.css", @"C:\code\node\site.css");/*
             tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\", @"C:\code\node\partials\");
             tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\UIs\", @"C:\code\node\partials\UIs\");
 */
@@ -187,6 +189,15 @@ namespace Build
             Console.WriteLine("web ftp html start ");
             fileStream = new FileInfo(send).OpenRead();
             webclient.UploadFile(fileStream, serverloc2 + "index.html", true);
+            fileStream.Close();
+            Console.WriteLine("web ftp html complete " + send);
+
+
+              send = pre + shufSharp + @"\output\site.css"; 
+
+            Console.WriteLine("web ftp html start ");
+            fileStream = new FileInfo(send).OpenRead();
+            webclient.UploadFile(fileStream, serverloc2 + "site.css", true);
             fileStream.Close();
             Console.WriteLine("web ftp html complete " + send);
 

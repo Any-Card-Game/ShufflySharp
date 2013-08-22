@@ -1,10 +1,16 @@
-<div ng-controller="LoginController" >
-    <div floating-window  left="'15%'" top="'15%'" height="'200px'" width="'200px'" title="'Login'" onclose=" model.windowClosed()" visible="visible">
+<div ng-controller="LoginController">
+    <div floating-window left="'15%'" top="'15%'" height="'200px'" width="'200px'" window-title="'Login'" onclose=" model.windowClosed()" visible="visible">
         <section>
-            <div><label>Username:</label><input type="text" ng-model="model.username" /></div>
-            <div><label>Password:</label><input type="password" ng-model="model.password" /></div>
+            <div class="form-group">
+                <label for-next>Username:</label><input type="text" class="form-control" ng-model="model.username" />
+            </div>
+            <div class="form-group">
+                <label for-next>Password:</label><input type="password"  class="form-control" ng-model="model.password" />
+            </div>
         </section>
-        <button ng-click="model.createAccount()">Cr34te</button>
-        <button ng-click="model.loginAccount()">L0gin</button>
+        <div class="btn-group">
+            <button class="btn btn-primary" ng-click="model.createAccount()">Create</button>
+            <button class="btn btn-primary" ng-click="model.loginAccount()">L0gin</button>
+        </div>
     </div>
 </div>

@@ -42,6 +42,7 @@
     <Compile Include="BuildSite.cs" />
     <Compile Include="ClientHelpers.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\GameTestEditorController.cs" />
     <Compile Include="Controllers\DebugQuestionController.cs" />
     <Compile Include="Controllers\DebugGameController.cs" />
     <Compile Include="Controllers\EffectTesterController.cs" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="site.less" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib">
@@ -176,6 +178,7 @@
     <Content Include="partials\chatBox.html" />
     <Content Include="partials\fancyList.html" />
     <Content Include="partials\floatingWindow.html" />
+    <Content Include="partials\UIs\GameTestEditor.html" />
     <Content Include="partials\UIs\DebugQuestion.html" />
     <Content Include="partials\UIs\DebugGameUI.html" />
     <Content Include="partials\UIs\EffectTester.html" />
@@ -194,6 +197,12 @@
     <Content Include="partials\UIs\Login.html" />
     <Content Include="partials\UIs\MinimizeArea.html" />
     <Content Include="partials\UIs\Question.html" />
+    <Content Include="site.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
+    <Content Include="site.min.css">
+      <DependentUpon>site.less</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="!Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.2.0\tools\Saltarelle.Compiler.targets')" />
   <Import Project="$(SolutionDir)packages\Saltarelle.Compiler.2.2.0\tools\Saltarelle.Compiler.targets" Condition="Exists('$(SolutionDir)packages\Saltarelle.Compiler.2.2.0\tools\Saltarelle.Compiler.targets')" />

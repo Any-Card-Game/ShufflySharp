@@ -1,34 +1,48 @@
 <div ng-controller="HomeController">
     <div floating-window left="'50%'" top="'50%'" height="'450px'" width="'600px'"
-         title="'Home'" visible="visible">
-        <span>Welcome {{model.user.userName}}!</span>
+        window-title="'Home'" visible="visible">
+        <h3>Welcome {{model.user.userName}}!</h3>
         <div style="width: 100%; height: 100%;">
             <div style="width: 33%; float: left;">
-                <span>Game Types:</span> 
+                <h5 class="column-header text-center">
+                    <span class="label label-default">Game Types
+                    </span>
+                </h5>
+
                 <div fancy-list items="model.gameTypes" bind="model.selectedGameType" style="height: 300px;">
-                    <div style="width: 100%; height: 40px">{{item.name}}</div>
-                </div> 
-                <button style="width: 100%;" ng-click="model.createGame()">Create Game!</button>
+                    <button class="btn" style="width: 100%; height: 30px">{{item.name}}</button>
+                </div>
+                <button class="btn btn-primary icon-plus-sign" style="width: 100%;" ng-click="model.createGame()">&nbsp;&nbsp;Create Game!</button>
             </div>
             <div style="width: 33%; float: left;">
-                <span>Rooms:</span>
-                <button ng-click="model.gameTypeSelected()">Refresh!</button>
+                <h5 class="column-header text-center">
+                    <span class="label label-default">Rooms</span>
+                    <button class="btn btn-success icon-refresh right-justify" ng-click="model.gameTypeSelected()"></button>
+                </h5>
+
                 <div fancy-list items="model.rooms" bind="model.selectedRoom" style="height: 300px;">
-                    <div style="width: 100%; height: 40px">Room: {{item.roomName}}</div>
-                </div> 
-                <button style="width: 100%;" ng-click="model.createRoom()">Create Room!</button>
+                    <button class="btn" style="width: 100%; height: 40px">Room: {{item.roomName}}</button>
+                </div>
+                <button class="btn  btn-primary icon-plus-sign" style="width: 100%;" ng-click="model.createRoom()">&nbsp;&nbsp;Create Room!</button>
             </div>
             <div style="width: 34%; float: left;">
                 <div ng-show="model.selectedRoom">
-                    <span>Game Type: {{model.selectedGameType.name}}</span> <span>Room Name: {{model.selectedRoom.roomName}}</span>
+
+                    <h5 class="column-header text-center">
+                        <span>Game Type: </span>
+                        <span class="label label-primary">{{model.selectedGameType.name}}</span>
+                        <br />
+                        <span>Room Name: </span>
+                        <span class="label label-primary">{{model.selectedRoom.roomName}}</span>
+                    </h5>
                     <div>
-                        <button style="width: 46%;" ng-click="model.joinRoom()">Join!</button>
-                        <button style="width: 46%;" ng-click="">Spectate!</button>
+                        <button class="btn btn-primary" style="width: 46%;" ng-click="model.joinRoom()">Join!</button>
+                        <button class="btn btn-primary" style="width: 46%;" ng-click="">Spectate!</button>
                     </div>
-                    <div fancy-list items="model.selectedRoom.players" bind="model.highlightedPlayer" style="height: 300px;">
-                        <div style="width: 100%; height: 40px">User: {{item.userName}}</div>
+                    <div fancy-list items="model.selectedRoom.players" bind="model.highlightedPlayer" style="height: 266px;">
+                        <div style="width: 100%; height: 30px">User: {{item.userName}}</div>
                     </div>
-                    <button style="width: 100%;" ng-click="model.roomSelected()">Refresh!</button>
+                    <button class="btn  btn-success icon-refresh" style="width: 100%;" ng-click="model.roomSelected()"></button>
                 </div>
             </div>
         </div>

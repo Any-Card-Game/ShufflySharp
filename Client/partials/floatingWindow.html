@@ -1,21 +1,19 @@
-<div draggable style="background-color: aqua; border-radius: 9px; border: 2px dashed brown; z-index: 10000; position: absolute; display: block;" ng-style="positionStyles" ng-show="visible">
-    <h1>
-        {{title}}</h1>
-    <div style="position: absolute; top: 0; right: 0">
-        <button ng-click="minimize()" style="position: relative; right: 0px; top: 0px;" class="button">
-            minimize
+<div draggable class="window" style="z-index: 10000; position: absolute; display: block;" ng-style="positionStyles" ng-show="visible">
+    <h1>{{windowTitle}}</h1>
+    <div class="control-buttons btn-group">
+        <button ng-click="minimize()" class="button btn btn-info btn-xs icon-double-angle-left">
+            
         </button>
-        <button ng-click="maximize()" style="position: relative; right: 0px; top: 0px;" class="button">
-            maximize
+        <button ng-click="maximize()"  class="button btn btn-warning btn-xs icon-plus">
+            
         </button>
-        <button ng-click="close()" style="position: relative; right: 0px; top: 0px;" class="button">
-            close
+        <button ng-click="close()"  class="button btn btn-danger btn-xs icon-remove">
+            
         </button>
     </div>
-    <div  >
-        <div style="margin: 20px; background-color: burlywood;" ng-style="sizeStyle" class="floating-window-inner">
+    <div class="inner-window">
+        <div  ng-style="sizeStyle">
             <section ng-transclude>
-        
             </section>
         </div>
     </div>

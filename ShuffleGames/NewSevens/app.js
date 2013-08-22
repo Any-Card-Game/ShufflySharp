@@ -169,7 +169,7 @@ module.exports = Sevens = function() {
                 shuff.log('asked question: ' + de);
 
                 if (de > 0 && usable.length >= de) {
-                    var rm = usable[de - 1];
+                    var rm = usable[de - 1]; 
 
                     switch (rm.type) {
                     case 3:

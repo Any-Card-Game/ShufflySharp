@@ -33,14 +33,16 @@
 			return new $Client_Controllers_$GameEditorController(scope12, clientSiteManagerService4, clientDebugManagerService1, messageService2, createUIService7);
 		}]).controller($Client_Controllers_$GameLayoutEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope13, clientSiteManagerService5, messageService3, createUIService8) {
 			return new $Client_Controllers_$GameLayoutEditorController(scope13, clientSiteManagerService5, messageService3, createUIService8);
-		}]).controller($Client_Controllers_$GameScenarioEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientGameManagerService.name$1, function(scope14, clientSiteManagerService6, messageService4, createUIService9) {
-			return new $Client_Controllers_$GameScenarioEditorController(scope14, clientSiteManagerService6, messageService4, createUIService9);
-		}]).controller($Client_Controllers_$GameCodeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, function(scope15, clientSiteManagerService7, messageService5) {
-			return new $Client_Controllers_$GameCodeController(scope15, clientSiteManagerService7, messageService5);
-		}]).controller($Client_Controllers_$MessageController.$name, [$Client_BuildAngular.$scopeName, function(scope16) {
-			return new $Client_Controllers_$MessageController(scope16);
-		}]).controller($Client_Controllers_EffectTesterController.name$1, [$Client_BuildAngular.$scopeName, function(scope17) {
-			return new $Client_Controllers_EffectTesterController(scope17);
+		}]).controller($Client_Controllers_$GameTestEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientDebugManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope14, clientSiteManagerService6, clientDebugManagerService2, messageService4, createUIService9) {
+			return new $Client_Controllers_$GameTestEditorController(scope14, clientSiteManagerService6, clientDebugManagerService2, messageService4, createUIService9);
+		}]).controller($Client_Controllers_$GameScenarioEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientGameManagerService.name$1, function(scope15, clientSiteManagerService7, messageService5, createUIService10) {
+			return new $Client_Controllers_$GameScenarioEditorController(scope15, clientSiteManagerService7, messageService5, createUIService10);
+		}]).controller($Client_Controllers_$GameCodeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, function(scope16, clientSiteManagerService8, messageService6) {
+			return new $Client_Controllers_$GameCodeController(scope16, clientSiteManagerService8, messageService6);
+		}]).controller($Client_Controllers_$MessageController.$name, [$Client_BuildAngular.$scopeName, function(scope17) {
+			return new $Client_Controllers_$MessageController(scope17);
+		}]).controller($Client_Controllers_EffectTesterController.name$1, [$Client_BuildAngular.$scopeName, function(scope18) {
+			return new $Client_Controllers_EffectTesterController(scope18);
 		}]).service($Client_Services_UIManagerService.name$1, [$Client_Services_ClientGameManagerService.name$1, function() {
 			return new $Client_Services_UIManagerService();
 		}]).service($Client_Services_ClientChatManagerService.name$1, [$Client_Services_GatewayService.name$1, function(gatewayService) {
@@ -55,8 +57,8 @@
 			return new $Client_Services_GatewayService(serverUrl);
 		}]).service($Client_Services_GameContentManagerService.name$1, [function() {
 			return new $Client_Services_GameContentManagerService();
-		}]).service($Client_Services_MessageService.name$1, [$Client_Services_CreateUIService.name$1, $Client_BuildAngular.$rootScopeName, function(createUIService10, rootScopeService) {
-			return new $Client_Services_MessageService(createUIService10, rootScopeService);
+		}]).service($Client_Services_MessageService.name$1, [$Client_Services_CreateUIService.name$1, $Client_BuildAngular.$rootScopeName, function(createUIService11, rootScopeService) {
+			return new $Client_Services_MessageService(createUIService11, rootScopeService);
 		}]).service($Client_Services_CreateUIService.name$1, [$Client_BuildAngular.$compileName, $Client_BuildAngular.$rootScopeName, function(compileService, rootScopeService1) {
 			return new $Client_Services_CreateUIService(compileService, rootScopeService1);
 		}]).directive($Client_Directives_GridDirective.name$1, [function() {
@@ -95,6 +97,8 @@
 			return new $Client_Directives_AcgTestDrawAreaDirective();
 		}]).directive($Client_Directives_AcgTestDrawTextDirective.name$1, [function() {
 			return new $Client_Directives_AcgTestDrawTextDirective();
+		}]).directive($Client_Directives_ForNextDirective.name$1, [function() {
+			return new $Client_Directives_ForNextDirective();
 		}]).directive($Client_Directives_AcgSpacesDirective.name$1, [$Client_BuildAngular.$compileName, $Client_Services_GameContentManagerService.name$1, function(compile, gameContentManager2) {
 			return new $Client_Directives_AcgSpacesDirective(compile, gameContentManager2);
 		}]).filter($Client_Filters_RoundFilter.name$1, [function() {
@@ -480,8 +484,10 @@
 	};
 	$Client_Controllers_$GameEditorController.prototype = {
 		$openTestFn: function() {
-			this.$myCreateUIService.create($Client_Controllers_DebugGameController.view);
-			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$myScope.model.game.name });
+			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameTestEditorScope).call(this.$myCreateUIService, $Client_Controllers_$GameTestEditorController.$view, ss.mkdel(this, function(scope, elem) {
+				scope.model = $Client_Scope_Controller_GameTestEditorScopeModel.$ctor();
+				scope.model.game = this.$myScope.model.game;
+			}));
 		},
 		$openLayoutFn: function() {
 			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameLayoutEditorScope).call(this.$myCreateUIService, $Client_Controllers_$GameLayoutEditorController.$view, ss.mkdel(this, function(scope, elem) {
@@ -1146,6 +1152,52 @@
 				}
 			}
 			return null;
+		},
+		$onDeveloperUpdateGameReceivedFn: function(user, o) {
+			this.$myScope.model.updateStatus = 'synced';
+			this.$myScope.$apply();
+		},
+		$updateGameFn: function() {
+			this.$myScope.model.updateStatus = 'syncing';
+			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.game);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Controllers.GameTestEditorController
+	var $Client_Controllers_$GameTestEditorController = function(scope, clientSiteManagerService, clientDebugManagerService, messageService, createUIService) {
+		this.$myClientSiteManagerService = null;
+		this.$clientDebugManagerService = null;
+		this.$myCreateUIService = null;
+		this.$myMessageService = null;
+		this.$myScope = null;
+		this.$myScope = scope;
+		this.$myClientSiteManagerService = clientSiteManagerService;
+		this.$clientDebugManagerService = clientDebugManagerService;
+		this.$myMessageService = messageService;
+		this.$myCreateUIService = createUIService;
+		this.$myScope.visible = false;
+		this.$myScope.onReady = ss.delegateCombine(this.$myScope.onReady, ss.mkdel(this, function() {
+			this.$myScope.visible = true;
+			this.$myScope.swingAway(3, true, null);
+			this.$myScope.swingBack(null);
+		}));
+		this.$myScope.model.startGame = ss.mkdel(this, this.$startGameFn);
+		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
+			this.$myScope.model.updateStatus = 'dirty';
+		}), true);
+		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myScope.model.updateStatus = 'synced';
+		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
+	};
+	$Client_Controllers_$GameTestEditorController.prototype = {
+		$startGameFn: function() {
+			this.$myCreateUIService.createSingleton($Client_Controllers_DebugGameController.view);
+			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$myScope.model.game.name });
+			this.$clientDebugManagerService.add_onGetDebugLog(ss.mkdel(this, this.$clientDebugManagerService_OnGetDebugLog));
+		},
+		$clientDebugManagerService_OnGetDebugLog: function(user, o) {
+			this.$myScope.model.log += o.value + '\r\n';
+			this.$myScope.$apply();
 		},
 		$onDeveloperUpdateGameReceivedFn: function(user, o) {
 			this.$myScope.model.updateStatus = 'synced';
@@ -3862,7 +3914,7 @@
 	};
 	$Client_Directives_DraggableDirective.prototype = {
 		$linkFn: function(scope, element, attrs) {
-			element.draggable({ cancel: '.floating-window-inner' });
+			element.draggable({ cancel: '.window .inner-window' });
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -3886,8 +3938,8 @@
 			scope.itemClick = function(item) {
 				scope.bind = item;
 			};
-			scope.currentStyle = function(item1) {
-				return { backgroundColor: (ss.referenceEquals(item1, scope.bind) ? 'blue' : 'white') };
+			scope.currentClass = function(item1) {
+				return (ss.referenceEquals(item1, scope.bind) ? 'fancy-list-item fancy-list-item-selected' : 'fancy-list-item ');
 			};
 			scope.parentScope = scope['$parent']['$parent']['$parent'];
 		}
@@ -3909,7 +3961,7 @@
 		this.templateUrl = ss.formatString('{0}partials/floatingWindow.html', CommonLibraries.Constants.contentAddress);
 		this.replace = true;
 		this.transclude = true;
-		this.scope = { width: '=', height: '=', left: '=', top: '=', title: '=', visible: '=', onclose: '&' };
+		this.scope = { width: '=', height: '=', left: '=', top: '=', windowTitle: '=', visible: '=', onclose: '&' };
 		this.link = ss.mkdel(this, this.$linkFn);
 	};
 	$Client_Directives_FloatingWindowDirective.prototype = {
@@ -4064,6 +4116,24 @@
 			else {
 				element.animate(js, 'slow', 'swing', callback);
 			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.ForNextDirective
+	var $Client_Directives_ForNextDirective = function() {
+		this.link = null;
+		this.link = ss.mkdel(this, this.$linkFn);
+	};
+	$Client_Directives_ForNextDirective.prototype = {
+		$linkFn: function(scope, element, attrs) {
+			$Client_Directives_ForNextDirective.$forCounter++;
+			var next = element.next();
+			var id = next.attr('id');
+			if (ss.isNullOrUndefined(id)) {
+				id = 'forLink' + $Client_Directives_ForNextDirective.$forCounter;
+				next.attr('id', id);
+			}
+			element.attr('for', id);
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -4602,6 +4672,26 @@
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameTestEditorScope
+	var $Client_Scope_Controller_GameTestEditorScope = function() {
+		this.model = null;
+		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.GameTestEditorScopeModel
+	var $Client_Scope_Controller_GameTestEditorScopeModel = function() {
+	};
+	$Client_Scope_Controller_GameTestEditorScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_GameTestEditorScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_GameTestEditorScopeModel.$ctor = function() {
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
+		$this.game = null;
+		$this.startGame = null;
+		$this.log = null;
+		return $this;
+	};
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.GameUpdater
 	var $Client_Scope_Controller_GameUpdater = function() {
 	};
@@ -4887,7 +4977,7 @@
 		this.lastSizeStyle = null;
 		this.positionStyles = null;
 		this.lastPositionStyles = null;
-		this.title = null;
+		this.windowTitle = null;
 		this.onclose = null;
 		this.close = null;
 		this.minimize = null;
@@ -5483,6 +5573,7 @@
 	ss.registerClass(null, 'Client.Controllers.$GameLayoutEditorController', $Client_Controllers_$GameLayoutEditorController);
 	ss.registerClass(null, 'Client.Controllers.$GameManagerController', $Client_Controllers_$GameManagerController);
 	ss.registerClass(null, 'Client.Controllers.$GameScenarioEditorController', $Client_Controllers_$GameScenarioEditorController);
+	ss.registerClass(null, 'Client.Controllers.$GameTestEditorController', $Client_Controllers_$GameTestEditorController);
 	ss.registerClass(null, 'Client.Controllers.$HomeController', $Client_Controllers_$HomeController);
 	ss.registerClass(null, 'Client.Controllers.$LoginController', $Client_Controllers_$LoginController);
 	ss.registerClass(null, 'Client.Controllers.$MessageController', $Client_Controllers_$MessageController);
@@ -5509,6 +5600,7 @@
 	ss.registerClass(global, 'Client.Directives.DraggableDirective', $Client_Directives_DraggableDirective);
 	ss.registerClass(global, 'Client.Directives.FancyListDirective', $Client_Directives_FancyListDirective);
 	ss.registerClass(global, 'Client.Directives.FloatingWindowDirective', $Client_Directives_FloatingWindowDirective);
+	ss.registerClass(global, 'Client.Directives.ForNextDirective', $Client_Directives_ForNextDirective);
 	ss.registerClass(global, 'Client.Directives.GridDirective', $Client_Directives_GridDirective);
 	ss.registerClass(global, 'Client.Directives.PropertyDirective', $Client_Directives_PropertyDirective);
 	ss.registerClass(global, 'Client.Filters.RoundFilter', $Client_Filters_RoundFilter);
@@ -5543,6 +5635,8 @@
 	ss.registerClass(global, 'Client.Scope.Controller.GameManagerScope', $Client_Scope_Controller_GameManagerScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameScenarioEditorScope', $Client_Scope_Controller_GameScenarioEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.GameScenarioEditorScopeModel', $Client_Scope_Controller_GameScenarioEditorScopeModel, $Client_Scope_Controller_GameUpdater);
+	ss.registerClass(global, 'Client.Scope.Controller.GameTestEditorScope', $Client_Scope_Controller_GameTestEditorScope, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.registerClass(global, 'Client.Scope.Controller.GameTestEditorScopeModel', $Client_Scope_Controller_GameTestEditorScopeModel, $Client_Scope_Controller_GameUpdater);
 	ss.registerClass(global, 'Client.Scope.Controller.HomeModel', $Client_Scope_Controller_HomeModel);
 	ss.registerClass(global, 'Client.Scope.Controller.HomeScope', $Client_Scope_Controller_HomeScope, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.registerClass(global, 'Client.Scope.Controller.LoginScope', $Client_Scope_Controller_LoginScope, $Client_Scope_Directive_FloatingWindowBaseScope);
@@ -5611,6 +5705,8 @@
 	$Client_Controllers_EffectTesterController.view = 'EffectTester';
 	$Client_Controllers_$GameEffectsEditorController.$name = 'GameEffectsEditorController';
 	$Client_Controllers_$GameEffectsEditorController.$view = 'GameEffectsEditor';
+	$Client_Controllers_$GameTestEditorController.$name = 'GameTestEditorController';
+	$Client_Controllers_$GameTestEditorController.$view = 'GameTestEditor';
 	$Client_Controllers_$GameCodeController.$name = 'GameCodeController';
 	$Client_Controllers_$GameCodeController.$view = 'GameCodeEditor';
 	$Client_Controllers_$GameCodeController.$instance = null;
@@ -5650,6 +5746,8 @@
 	$Client_Directives_AcgEffectTestDrawSpaceDirective.name$1 = 'acgEffectTestDrawSpace';
 	$Client_Directives_AcgTestDrawAreaDirective.name$1 = 'acgTestDrawArea';
 	$Client_Directives_AcgTestDrawTextDirective.name$1 = 'acgTestDrawText';
+	$Client_Directives_ForNextDirective.name$1 = 'forNext';
+	$Client_Directives_ForNextDirective.$forCounter = 0;
 	$Client_Directives_AcgSpacesDirective.name$1 = 'acgSpaces';
 	$Client_Filters_RoundFilter.name$1 = 'round';
 	$Client_BuildAngular.$scopeName = '$scope';

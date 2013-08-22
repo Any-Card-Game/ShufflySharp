@@ -1,6 +1,6 @@
-<div style="background-color: gainsboro; padding: 2px; overflow-y: scroll; overflow-x: hidden;">
+<div style="overflow-y: scroll; overflow-x: hidden;" class="fancy-list">
     <div ng-repeat="item in items">
-        <div class="listItem" ng-click="itemClick(item)" ng-transclude ng-style="currentStyle(item)">
+        <div ng-click="itemClick(item)" ng-transclude ng-class="currentClass(item)">
         </div>
     </div>
 </div>

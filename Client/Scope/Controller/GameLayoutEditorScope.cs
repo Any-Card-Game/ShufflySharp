@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
 using Models.SiteManagerModels.Game;
@@ -26,6 +27,21 @@ namespace Client.Scope.Controller
         public Action OpenScenarios { get; set; }
         public Action ToggleGrid { get; set; }
         public Action ToggleCards { get; set; }
+    }
+
+    public class GameTestEditorScope : FloatingWindowBaseScope
+    {
+        [IntrinsicProperty]
+        public GameTestEditorScopeModel Model { get; set; }
+    }
+
+
+    [Serializable]
+    public class GameTestEditorScopeModel : GameUpdater
+    { 
+        public GameModel Game { get; set; }
+        public Action StartGame { get; set; }
+        public string Log { get; set; }
     }
 
     [Serializable]

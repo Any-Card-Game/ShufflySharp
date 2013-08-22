@@ -61,8 +61,13 @@ namespace Client.Controllers
 
         private void OpenTestFn()
         {
-            myCreateUIService.Create(DebugGameController.View);
-            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));
+            myCreateUIService.CreateSingleton<GameTestEditorScope>(GameTestEditorController.View, (scope, elem) =>
+            {
+                scope.Model = new GameTestEditorScopeModel();
+                scope.Model.Game = myScope.Model.Game;
+            });
+
+
         }
 
         private void OpenLayoutFn()

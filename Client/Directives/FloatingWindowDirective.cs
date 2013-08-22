@@ -36,7 +36,7 @@ namespace Client.Directives
                         height = "=",
                         left = "=",
                         top = "=",
-                        title = "=",
+                        windowTitle = "=",
                         visible = "=",
                         onclose = "&",
                     };

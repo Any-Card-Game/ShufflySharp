@@ -37,7 +37,7 @@ namespace Client.Scope.Directive
         public FloatingWindowPosition LastPositionStyles { get; set; }
 
         [IntrinsicProperty]
-        public string Title { get; set; }
+        public string WindowTitle { get; set; }
 
         [ScriptName("onclose")]
         [IntrinsicProperty]

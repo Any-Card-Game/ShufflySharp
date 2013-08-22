@@ -16,7 +16,7 @@ namespace Client.Directives
 
         private void linkFn(dynamic scope, jQueryObject element, dynamic attrs)
         {
-            element.me().draggable(new {cancel = ".floating-window-inner"});
+            element.me().draggable(new {cancel = ".window .inner-window"});
         }
     }
 }

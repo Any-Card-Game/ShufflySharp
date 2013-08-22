@@ -32,9 +32,7 @@ namespace Client.Directives
         {
             scope.itemClick = new Action<dynamic>((item) => { scope.bind = item; });
 
-            scope.currentStyle =
-                new Func<dynamic, dynamic>(
-                    (item) => { return new {backgroundColor = (item == scope.bind) ? "blue" : "white"}; });
+            scope.currentClass = new Func<dynamic, dynamic>((item) => (item == scope.bind) ? "fancy-list-item fancy-list-item-selected" : "fancy-list-item ");
             scope.parentScope = scope["$parent"]["$parent"]["$parent"];
         }
     }

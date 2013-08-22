@@ -1,0 +1,161 @@
+﻿html, body
+{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+body
+{
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+
+body
+{
+    background-image: url(http://content.anycardgame.com/assets/feltgreen.png);
+    background-repeat: repeat-x repeat-y;
+}
+
+.card, .card:before, .card:after
+{
+    box-sizing: content-box;
+}
+
+.area, .area:before, .area:after
+{
+    box-sizing: content-box;
+}
+
+.text, .text:before, .text:after
+{
+    box-sizing: content-box;
+}
+
+.space, .space:before, .space:after
+{
+    box-sizing: content-box;
+}
+
+
+.window
+{
+    background-color: #479bd2;
+    border-radius: 9px;
+    border: 3px solid #691409;
+    padding: 15px;
+
+    h1
+    {
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 28px;
+        margin: 0;
+        margin-bottom: 6px;
+        color: white;
+    }
+
+    .inner-window
+    {
+        margin: 0px;
+        padding: 10px;
+        background-color: #67bc7d;
+        border-radius: 5px;
+    }
+
+    .control-buttons
+    {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        .button
+        {
+        }
+    }
+
+    .fancy-list
+    {
+        background-color: #47bc66;
+        padding: 2px;
+        color: white;
+
+        .fancy-list-item
+        {
+            background-color: #479bd2;
+            padding: 6px;
+        }
+
+        .fancy-list-item-selected
+        {
+            background-color: #145564;
+        }
+    }
+}
+
+.column-header
+{
+    position: relative;
+    height: 20px;
+    color: white;
+}
+
+.right-justify
+{
+    position: absolute;
+    right: 0;
+}
+
+.minimizedItem
+{
+    width: 100px;
+    height: 30px;
+    background-color: blueviolet;
+    border: solid 2px black;
+    moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    -o-transition: 0.5s;
+    transition: 0.5s;
+}
+
+    .minimizedItem:hover
+    {
+        width: 200px;
+        height: 30px;
+        background-color: rgb(177, 124, 226);
+        border: solid 2px black;
+    }
+
+.minimizeList
+{
+    list-style: none;
+    z-index: 9999;
+    padding: 0;
+}
+
+
+
+
+//http://css-tricks.com/custom-scrollbars-in-webkit/
+/* Let's get this party started */
+::-webkit-scrollbar
+{
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track
+{
+    -box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    background: #a22c1c;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}

@@ -74,6 +74,8 @@
     <Compile Include="Directives\AcgEffectTestDrawTextDirective.cs" />
     <Compile Include="Directives\AcgDebugDrawCardDirective.cs" />
     <Compile Include="Directives\AcgDebugDrawSpaceDirective.cs" />
+    <Compile Include="Directives\ForNextDirective.cs" />
+    <Compile Include="Directives\SpecialNgRepeatDirective.cs" />
     <Compile Include="Directives\GridDirective.cs" />
     <Compile Include="Directives\DraggableDirective.cs" />
     <Compile Include="Directives\FancyListDirective.cs" />

@@ -1,17 +1,26 @@
 <div ng-controller="GameEditorController">
-    <div floating-window left="'35%'" top="'35%'" height="'200px'" width="'320px'" window-title="'Game Editor!'"
-         visible="visible">
-        EDit your game heres
-        <input class="form-control" type="text" ng-model="model.game.name" placeholder="Name" />
-        <input class="form-control" type="text" ng-model="model.game.description" placeholder="Description" />
-        <input class="form-control" type="text" ng-model="model.game.maxNumberOfPlayers" placeholder="Max Number Of Players" />
+    <div floating-window left="'35%'" top="'35%'" height="'275px'" width="'326px'" window-title="'Game Editor'"
+        visible="visible">
+        Edit {{model.game.name}} ({{model.updateStatus}})
+        <div class="form-group">
+            <label for-next>Name</label>
+            <input class="form-control" type="text" ng-model="model.game.name" placeholder="Name" />
+        </div>
+        <div class="form-group">
+            <label for-next>Description</label>
+            <input class="form-control" type="text" ng-model="model.game.description" placeholder="Description" />
+        </div>
+        <div class="form-group">
+            <label for-next>Max Number Of Players</label>
+            <input class="form-control" type="text" ng-model="model.game.maxNumberOfPlayers" placeholder="Max Number Of Players" />
+        </div>
         <section class="btn-group">
-            <button class="btn btn-primary" ng-click="model.openCode()">Code</button>
-            <button class="btn btn-primary" ng-click="model.openLayout()">Layout</button>
-            <button class="btn btn-primary" ng-click="model.openEffects()">Effects</button>
-            <button class="btn btn-primary" ng-click="model.openTest()">Test</button>
-            <button class="btn btn-primary" ng-click="model.updateGame() ">save</button>
+            <button class="btn col-main" ng-click="model.openCode()">Code</button>
+            <button class="btn col-main" ng-click="model.openLayout()">Layout</button>
+            <button class="btn col-main" ng-click="model.openEffects()">Effects</button>
+            <button class="btn col-main" ng-click="model.openTest()">Test</button>
+            <button class="btn col-main" ng-click="model.updateGame() ">save</button>
         </section>
-        {{model.updateStatus}}
+        
     </div>
 </div>

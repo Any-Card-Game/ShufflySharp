@@ -50,6 +50,7 @@ namespace Client.Directives
                                                     n.Width = (int) w + 1;
                                                     n.Height = (int) h + 1;
                                                     var context = (CanvasContext2D) n.GetContext("2d");
+                                                    context.StrokeStyle = "#EEEEEE";
                                                     context.LineWidth = 1;
                                                     context.MoveTo(w, 0);
                                                     context.LineTo(w, h);

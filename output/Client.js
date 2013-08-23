@@ -99,6 +99,8 @@
 			return new $Client_Directives_AcgTestDrawTextDirective();
 		}]).directive($Client_Directives_ForNextDirective.name$1, [function() {
 			return new $Client_Directives_ForNextDirective();
+		}]).directive($Client_Directives_SpecialNgRepeatDirective.name$1, [$Client_BuildAngular.$compileName, function(compilerService) {
+			return new $Client_Directives_SpecialNgRepeatDirective(compilerService);
 		}]).directive($Client_Directives_AcgSpacesDirective.name$1, [$Client_BuildAngular.$compileName, $Client_Services_GameContentManagerService.name$1, function(compile, gameContentManager2) {
 			return new $Client_Directives_AcgSpacesDirective(compile, gameContentManager2);
 		}]).filter($Client_Filters_RoundFilter.name$1, [function() {
@@ -1337,6 +1339,9 @@
 		this.$myMessageService = messageService;
 		this.$myCreateUIService = createUIService;
 		this.$myScope.model = $Client_Scope_Controller_LoginScopeModel.$ctor();
+		scope.model.dosomething = ss.delegateCombine(scope.model.dosomething, function(o) {
+			console.log(o);
+		});
 		this.$myScope.model.windowClosed = function() {
 			window.alert('woooo');
 		};
@@ -4165,6 +4170,7 @@
 				n.width = ss.Int32.trunc(w) + 1;
 				n.height = ss.Int32.trunc(h) + 1;
 				var context = n.getContext('2d');
+				context.strokeStyle = '#EEEEEE';
 				context.lineWidth = 1;
 				context.moveTo(w, 0);
 				context.lineTo(w, h);
@@ -4244,6 +4250,43 @@
 					break;
 				}
 			}
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Directives.SpecialNgRepeatDirective
+	var $Client_Directives_SpecialNgRepeatDirective = function(compileService) {
+		this.$compileService = null;
+		this.link = null;
+		this.$myElement = null;
+		this.$myScope = null;
+		this.replace = false;
+		this.restrict = null;
+		this.scope = null;
+		this.templateUrl = null;
+		this.transclude = false;
+		this.$compileService = compileService;
+		this.restrict = 'EA';
+		this.replace = true;
+		this.link = ss.mkdel(this, this.$linkFn);
+		this.scope = true;
+	};
+	$Client_Directives_SpecialNgRepeatDirective.prototype = {
+		$linkFn: function(scope, element, attr) {
+			var expression = attr.specialNgRepeat;
+			scope.$watch(expression, ss.mkdel(this, function(cur) {
+				var items = cur;
+				var cloner = $(element[0]);
+				var p = element.parent();
+				for (var $t1 = 0; $t1 < items.length; $t1++) {
+					var item = items[$t1];
+					var e = angular.element(cloner.clone());
+					var _scope = scope.$new();
+					_scope.item = item;
+					var elk = this.$compileService(e.contents())(_scope);
+					p.append(elk);
+				}
+				cloner.remove();
+			}));
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -4751,6 +4794,7 @@
 		$this.password = null;
 		$this.createAccount = null;
 		$this.loginAccount = null;
+		$this.dosomething = null;
 		return $this;
 	};
 	////////////////////////////////////////////////////////////////////////////////
@@ -5603,6 +5647,7 @@
 	ss.registerClass(global, 'Client.Directives.ForNextDirective', $Client_Directives_ForNextDirective);
 	ss.registerClass(global, 'Client.Directives.GridDirective', $Client_Directives_GridDirective);
 	ss.registerClass(global, 'Client.Directives.PropertyDirective', $Client_Directives_PropertyDirective);
+	ss.registerClass(global, 'Client.Directives.SpecialNgRepeatDirective', $Client_Directives_SpecialNgRepeatDirective);
 	ss.registerClass(global, 'Client.Filters.RoundFilter', $Client_Filters_RoundFilter);
 	ss.registerClass(global, 'Client.Libs.Extensions', $Client_Libs_Extensions);
 	ss.registerClass(global, 'Client.Libs.ScriptLoader', $Client_Libs_ScriptLoader);
@@ -5748,6 +5793,7 @@
 	$Client_Directives_AcgTestDrawTextDirective.name$1 = 'acgTestDrawText';
 	$Client_Directives_ForNextDirective.name$1 = 'forNext';
 	$Client_Directives_ForNextDirective.$forCounter = 0;
+	$Client_Directives_SpecialNgRepeatDirective.name$1 = 'specialNgRepeat';
 	$Client_Directives_AcgSpacesDirective.name$1 = 'acgSpaces';
 	$Client_Filters_RoundFilter.name$1 = 'round';
 	$Client_BuildAngular.$scopeName = '$scope';

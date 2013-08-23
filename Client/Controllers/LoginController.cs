@@ -2,6 +2,7 @@ using System.Html;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
+using CommonLibraries;
 using Models;
 
 namespace Client.Controllers
@@ -26,6 +27,10 @@ namespace Client.Controllers
             myMessageService = messageService;
             myCreateUIService = createUIService;
             myScope.Model = new LoginScopeModel();
+            scope.Model.dosomething += (o) =>
+            {
+                Console.Log(o);
+            };
 
             myScope.Model.WindowClosed = () => { Window.Alert("woooo"); };
             myScope.Model.LoginAccount = LoginAccountFn;

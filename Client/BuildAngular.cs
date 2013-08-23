@@ -68,6 +68,7 @@ namespace Client
                 .Directive(AcgTestDrawAreaDirective.Name, new object[] {new Func<object>(() => new AcgTestDrawAreaDirective())})
                 .Directive(AcgTestDrawTextDirective.Name, new object[] { new Func<object>(() => new AcgTestDrawTextDirective()) })
                 .Directive(ForNextDirective.Name, new object[] { new Func<object>(() => new ForNextDirective()) })
+                .Directive(SpecialNgRepeatDirective.Name, new object[] {CompileName, new Func<CompileService, object>((compilerService) => new SpecialNgRepeatDirective(compilerService)) })
                 .Directive(AcgSpacesDirective.Name, new object[] {CompileName, GameContentManagerService.Name, new Func<CompileService, GameContentManagerService, object>((compile, gameContentManager) => new AcgSpacesDirective(compile, gameContentManager))})
                 .Filter(RoundFilter.Name, new object[] {new Func<Func<object, object>>(() => new RoundFilter().Filter)});
         }

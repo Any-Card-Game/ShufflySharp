@@ -18,5 +18,6 @@ namespace Client.Scope.Controller
         public string Password { get; set; }
         public Action CreateAccount { get; set; }
         public Action LoginAccount { get; set; }
+        public Action<object> dosomething { get; set; }        
     }
 }

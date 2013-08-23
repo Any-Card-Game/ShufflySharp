@@ -1,12 +1,13 @@
 <div ng-controller="GameManagerController">
-    <div floating-window left="'25%'" top="'25%'" height="'400px'" width="'250px'"
-         window-title="'Game Manager!'" visible="visible">
+    <div floating-window left="'25%'" top="'25%'" height="'235px'" width="'275px'"
+         window-title="'Game Manager'" visible="visible">
         
-        <div fancy-list items="model.games" bind="model.selectedGame" style="height: 90%; width: 100%;">
+        <div fancy-list items="model.games" bind="model.selectedGame" style="min-height: 200px; width: 100%;">
             <div style="width: 100%; height: 40px">Game: {{item.name}}</div>
         </div> 
-
-        <button ng-click="model.deleteGame()">Delete Game.</button>
-        <button ng-click="model.createGame()">Cr43t3 N3w G4m3!</button>
+        <div class="btn-group">
+        <button class="btn col-main" ng-click="model.deleteGame()">Delete Game</button>
+            <button class="btn col-main" ng-click="model.createGame()">Create New Game</button>
+            </div>
     </div>
 </div>

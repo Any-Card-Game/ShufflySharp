@@ -42,8 +42,7 @@ namespace Client.Controllers
                                                                    return;
                                                                myScope.Model.Selection.SelectedText = null;
                                                                myScope.Model.Selection.SelectedArea = null;
-                                                               myScope.Model.Selection.SelectedLayoutPiece =
-                                                                   SelectedGameLayoutPiece.Space;
+                                                               myScope.Model.Selection.SelectedLayoutPiece =SelectedGameLayoutPiece.Space;
                                                                myScope.Model.Selection.SelectedCard = null;
                                                            });
             myScope.watch("model.selection.selectedText", () =>
@@ -51,33 +50,25 @@ namespace Client.Controllers
                                                               if (myScope.Model.Selection.SelectedText == null) return;
                                                               myScope.Model.Selection.SelectedSpace = null;
                                                               myScope.Model.Selection.SelectedArea = null;
-                                                              myScope.Model.Selection.SelectedLayoutPiece =
-                                                                  SelectedGameLayoutPiece.Text;
+                                                              myScope.Model.Selection.SelectedLayoutPiece =SelectedGameLayoutPiece.Text;
                                                           });
             myScope.watch("model.selection.selectedArea", () =>
                                                           {
                                                               if (myScope.Model.Selection.SelectedArea == null) return;
                                                               myScope.Model.Selection.SelectedText = null;
                                                               myScope.Model.Selection.SelectedSpace = null;
-                                                              myScope.Model.Selection.SelectedLayoutPiece =
-                                                                  SelectedGameLayoutPiece.Area;
+                                                              myScope.Model.Selection.SelectedLayoutPiece =SelectedGameLayoutPiece.Area;
                                                           });
-            myScope.watch("model.game",
-                () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
-                true);
+            myScope.watch("model.game", () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; }, true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
 
             myCreateUIService.CreateSingleton<TestGameControllerScope>(TestGameController.View, (_scope, elem) =>
                                                                                                 {
-                                                                                                    _scope.Model =
-                                                                                                        new TestGameControllerScopeModel
-                                                                                                            ();
-                                                                                                    _scope.Model.Game =
-                                                                                                        myScope.Model.Game;
-                                                                                                    _scope.Model.Selection =
-                                                                                                        myScope.Model.Selection;
+                                                                                                    _scope.Model = new TestGameControllerScopeModel();
+                                                                                                    _scope.Model.Game = myScope.Model.Game;
+                                                                                                    _scope.Model.Selection = myScope.Model.Selection;
                                                                                                 });
         }
 
@@ -96,15 +87,9 @@ namespace Client.Controllers
         {
             myCreateUIService.CreateSingleton<GameScenarioEditorScope>(GameScenarioEditorController.View, (_scope, elem) =>
                                                                                                           {
-                                                                                                              _scope.Model =
-                                                                                                                  new GameScenarioEditorScopeModel
-                                                                                                                      ();
-                                                                                                              _scope.Model.Game =
-                                                                                                                  myScope.Model.Game;
-                                                                                                              _scope.Model.Selection
-                                                                                                                  =
-                                                                                                                  myScope.Model
-                                                                                                                      .Selection;
+                                                                                                              _scope.Model =new GameScenarioEditorScopeModel();
+                                                                                                              _scope.Model.Game =myScope.Model.Game;
+                                                                                                              _scope.Model.Selection=myScope.Model.Selection;
                                                                                                           });
         }
 

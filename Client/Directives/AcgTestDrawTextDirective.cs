@@ -5,7 +5,6 @@ using Client.Scope.Directive;
 using jQueryApi;
 using jQueryApi.UI.Interactions;
 using Models.SiteManagerModels.Game;
-using ng;
 
 namespace Client.Directives
 {
@@ -133,34 +132,4 @@ namespace Client.Directives
             scope.watch("model.selection.selectedScenario.effects", reApplyTextBind, true);
         }
     }
-
-
-
-    public class ForNextDirective
-    {
-        public const string Name = "forNext";
-        public Action<IScope, jQueryObject, object> link;
-
-        public ForNextDirective()
-        {
-            link = linkFn;
-        }
-        private static int forCounter=0;
-        private void linkFn(IScope scope, jQueryObject element, object attrs)
-        {
-
-            forCounter++;
-
-            var next = element.Next();
-            string id = next.GetAttribute("id");
-            if (id == null)
-            {
-                id = "forLink" + forCounter;
-                next.Attribute("id", id);
-            }
-
-            element.Attribute("for", id);
-        }
-    }
-
 }

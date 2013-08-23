@@ -1,134 +1,131 @@
 <div ng-controller="GameLayoutEditorController">
-    <div floating-window left="'55%'" top="'40%'" height="'500px'" width="'400px'" window-title="'Game Layout Editor!'"
-         visible="visible">
-        <div style="width: 50%; float: left;">
-            <div>
-                Width: 
-                <input type="number" ng-model="model.game.gameLayout.width" />
+    <div floating-window left="'55%'" top="'40%'" height="'768px'" width="'498px'" window-title="'Game Layout Editor'"
+        visible="visible">
+        <div class="left-side">
+            <div class="form-group">
+                <label for-next>Width</label>
+                <input type="number" class="form-control" ng-model="model.game.gameLayout.width" />
             </div>
-            <div>
-                Height: 
-                <input type="number" ng-model="model.game.gameLayout.height" />
+            <div class="form-group">
+                <label for-next>Height</label>
+                <input type="number" class="form-control" ng-model="model.game.gameLayout.height" />
             </div>
-            <div>
-                <button ng-click="model.toggleGrid()">Toggle Grid</button>
+            <div class="form-group btn-group">
+                <button class="btn col-main" ng-click="model.toggleGrid()">Toggle Grid</button>
+                <button class="btn col-main" ng-click="model.toggleCards()">Toggle Cards</button>
             </div>
-            <div>
-                <button ng-click="model.toggleCards()">Toggle Cards</button>
-            </div>
-            <div>
-                Spaces:
-                <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.spaces" bind="model.selection.selectedSpace">
+            <div class="form-group">
+                <label>Spaces</label>
+                <div style="height: 100px;" class="full-width" fancy-list items="model.game.gameLayout.spaces" bind="model.selection.selectedSpace">
                     {{item.name}}
                 </div>
-                <button ng-click="model.addSpace()">Add Space</button>
-
+                <button class="btn col-main full-width pad-top-small" ng-click="model.addSpace()">Add Space</button>
             </div>
-
-            <div>
-                Texts:
-                <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.texts" bind="model.selection.selectedText">
+            <div class="form-group">
+                <label>Areas</label>
+                <div style="height: 100px;" class="full-width" fancy-list items="model.game.gameLayout.areas" bind="model.selection.selectedArea">
                     {{item.name}}
                 </div>
-                <button ng-click="model.addText()">Add Text</button>
+                <button class="btn col-main full-width pad-top-small" ng-click="model.addArea()">Add Area</button>
             </div>
-            <div>
-                Areas:
-                <div style="width: 150px; height: 100px;" fancy-list items="model.game.gameLayout.areas" bind="model.selection.selectedArea">
+            <div class="form-group">
+                <label>Text Areas</label>
+                <div style="height: 100px;" class="full-width" fancy-list items="model.game.gameLayout.texts" bind="model.selection.selectedText">
                     {{item.name}}
                 </div>
-                <button ng-click="model.addArea()">Add Area</button>
+                <button class="btn col-main full-width pad-top-small" ng-click="model.addText()">Add Text</button>
             </div>
-            <button ng-click="model.updateGame() ">save</button>
-            {{model.updateStatus}} 
-            
-            <button ng-click="model.openScenarios()">Edit Scenarios</button>
-
 
         </div>
-        <div style="width: 50%; float: left;">
+        <div class="right-side">
             Edit {{model.selection.selectedLayoutPiece}}
             <div ng-switch="model.selection.selectedLayoutPiece">
                 <div ng-switch-when="space">
                     <h2>{{model.selection.selectedSpace.name}}</h2>
-                    <div>
-                        Name:
-                        <input type="text" ng-model="model.selection.selectedSpace.name" />
+                    <div class="form-group">
+                        <label for-next>Name</label>
+                        <input class="form-control" type="text" ng-model="model.selection.selectedSpace.name" />
                     </div>
-                    <div>
-                        Left:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.left" />{{model.selection.selectedSpace.left | round}}
+                    <div class="form-group">
+                        <label for-next>Left</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.left" />{{model.selection.selectedSpace.left | round}}
                     </div>
-                    <div>
-                        Top:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.top" />{{model.selection.selectedSpace.top | round}}
+                    <div class="form-group">
+                        <label for-next>Top</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.top" />{{model.selection.selectedSpace.top | round}}
                     </div>
-                    <div>
-                        Width:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.width" />{{model.selection.selectedSpace.width | round}}
+                    <div class="form-group">
+                        <label for-next>Width</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedSpace.width" />{{model.selection.selectedSpace.width | round}}
                     </div>
-                    <div>
-                        Height:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.height" />{{model.selection.selectedSpace.height | round}}
+                    <div class="form-group">
+                        <label for-next>Height</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedSpace.height" />{{model.selection.selectedSpace.height | round}}
                     </div>
-                    <div>
-                        Vertical:
-                        <input type="checkbox" ng-model="model.selection.selectedSpace.vertical" />
+                    <div class="form-group">
+                        <label for-next>Vertical</label>
+                        <input class="form-control" type="checkbox" ng-model="model.selection.selectedSpace.vertical" />
                     </div>
-                    <div>
-                        Resize Type:
-                        <select ng-model="model.selection.selectedSpace.resizeType">
+                    <div class="form-group">
+                        <label for-next>Resize Type</label>
+                        <select class="form-control" ng-model="model.selection.selectedSpace.resizeType">
                             <option value="static">Static</option>
                             <option value="grow">Grow</option>
                         </select>
                     </div>
-                    <button ng-click="model.removeSpace(model.selection.selectedSpace)">Remove</button>
+                    <button class="btn col-main full-width  pad-top-small" ng-click="model.removeSpace(model.selection.selectedSpace)">Remove</button>
                 </div>
                 <div ng-switch-when="area">
                     <h2>{{model.selection.selectedArea.name}}</h2>
                     <div>
-                        Name:
-                        <input type="text" ng-model="model.selection.selectedArea.name" />
+                        <label for-next>Name</label>
+                        <input class="form-control" type="text" ng-model="model.selection.selectedArea.name" />
                     </div>
                     <div>
-                        Left:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.left" />{{model.selection.selectedArea.left | round}}   
+                        <label for-next>Left</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.left" />{{model.selection.selectedArea.left | round}}   
                     </div>
                     <div>
-                        Top:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.top" />{{model.selection.selectedArea.top | round}}   
+                        <label for-next>Top</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.top" />{{model.selection.selectedArea.top | round}}   
                     </div>
                     <div>
-                        Width:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.width" />{{model.selection.selectedArea.width | round}}   
+                        <label for-next>Width</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedArea.width" />{{model.selection.selectedArea.width | round}}   
                     </div>
                     <div>
-                        Height:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.height" />{{model.selection.selectedArea.height | round}}   
+                        <label for-next>Height</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedArea.height" />{{model.selection.selectedArea.height | round}}   
                     </div>
-                    <button ng-click="model.game.gameLayout.areas=model.game.gameLayout.areas.splice(model.game.gameLayout.areas.indexOf(model.selection.selectedArea),1);model.selection.selectedArea=null">Remove</button>
+                    <button class="btn col-main full-width  pad-top-small" ng-click="model.game.gameLayout.areas=model.game.gameLayout.areas.splice(model.game.gameLayout.areas.indexOf(model.selection.selectedArea),1);model.selection.selectedArea=null">Remove</button>
                 </div>
                 <div ng-switch-when="text">
                     <h2>{{model.selection.selectedText.name}}</h2>
                     <div>
-                        Name:
-                        <input type="text" ng-model="model.selection.selectedText.name" />
+                        <label for-next>Name</label>
+                        <input class="form-control" type="text" ng-model="model.selection.selectedText.name" />
                     </div>
                     <div>
-                        Text:
-                        <input type="text" ng-model="model.selection.selectedText.text" />
+                        <label for-next>Text</label>
+                        <input class="form-control" type="text" ng-model="model.selection.selectedText.text" />
                     </div>
                     <div>
-                        Left:
-                        <input type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedText.left" />{{model.selection.selectedText.left | round}}   
+                        <label for-next>Left</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.width}}" ng-model="model.selection.selectedText.left" />{{model.selection.selectedText.left | round}}   
                     </div>
                     <div>
-                        Top:
-                        <input type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedText.top" />{{model.selection.selectedText.top | round}}   
+                        <label for-next>Top</label>
+                        <input class="form-control fit-numbers" type="range" min="0" max="{{model.game.gameLayout.height}}" ng-model="model.selection.selectedText.top" />{{model.selection.selectedText.top | round}}   
                     </div>
-                    <button ng-click="model.game.gameLayout.texts=model.game.gameLayout.texts.splice(model.game.gameLayout.texts.indexOf(model.selection.selectedText),1);model.selection.selectedText=null">Remove</button>
+                    <button class="btn col-main full-width  pad-top-small" ng-click="model.game.gameLayout.texts=model.game.gameLayout.texts.splice(model.game.gameLayout.texts.indexOf(model.selection.selectedText),1);model.selection.selectedText=null">Remove</button>
                 </div>
             </div>
         </div>
+        <div class="clearfix btn-group full-width">
+            <button class="btn col-main" ng-click="model.openScenarios()">Edit Scenarios</button>
+            <button class="btn col-second" style="width: 71%;" ng-click="model.updateGame() ">save</button>
+
+        </div>
+
     </div>
 </div>

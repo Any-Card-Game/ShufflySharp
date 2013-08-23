@@ -15,8 +15,8 @@ body
 
 body
 {
-    background-image: url(http://content.anycardgame.com/assets/feltgreen.png);
-    background-repeat: repeat-x repeat-y;
+    background-color: #012611;
+    font-family: 'Telex', sans-serif !important;
 }
 
 .card, .card:before, .card:after
@@ -42,9 +42,9 @@ body
 
 .window
 {
-    background-color: #479bd2;
-    border-radius: 9px;
-    border: 3px solid #691409;
+    background-color: #444444;
+    border-radius: 5px;
+    border: 1px solid #0f1f4f;
     padding: 15px;
 
     h1
@@ -55,14 +55,22 @@ body
         margin: 0;
         margin-bottom: 6px;
         color: white;
+        font-weight: 800;
     }
 
     .inner-window
     {
         margin: 0px;
         padding: 10px;
-        background-color: #67bc7d;
+        background-color: #EDEDED;
         border-radius: 5px;
+        position: relative;
+
+        .right
+        {
+            position: absolute;
+            right: 10px;
+        }
     }
 
     .control-buttons
@@ -78,28 +86,65 @@ body
 
     .fancy-list
     {
-        background-color: #47bc66;
+        background-color: #DADADA;
         padding: 2px;
-        color: white;
+        color: #DADADA;
 
         .fancy-list-item
         {
-            background-color: #479bd2;
+            background-color: #0F1F4f;
             padding: 6px;
         }
 
         .fancy-list-item-selected
         {
-            background-color: #145564;
+            background-color: #193485;
         }
     }
 }
+
+.col-main
+{
+    background-color: #3063FC !important;
+    color: #DADADA !important;
+    font-weight: 800 !important;
+    text-transform: lowercase;
+}
+
+    .col-main:hover,
+    .col-main:focus,
+    .col-main:active
+    {
+        background-color: #1F41A6 !important;
+        color: #DADADA !important;
+        font-weight: 800 !important;
+        text-transform: lowercase;
+    }
+
+
+.col-second
+{
+    background-color: #327330 !important;
+    color: #DADADA !important;
+    font-weight: 800 !important;
+    text-transform: lowercase;
+}
+
+    .col-second:hover,
+    .col-second:focus,
+    .col-second:active
+    {
+        background-color: #26591e !important;
+        color: #DADADA !important;
+        font-weight: 800 !important;
+        text-transform: lowercase;
+    }
 
 .column-header
 {
     position: relative;
     height: 20px;
-    color: white;
+    color: #DADADA;
 }
 
 .right-justify
@@ -135,9 +180,39 @@ body
     padding: 0;
 }
 
+.full-width
+{
+    width: 100%;
+}
+.left-side
+{
+    width: 49%;
+    float: left;
+    padding-right:15px;
+    border-right:1px dotted black;
+}
+.right-side
+{
+    padding-left:5px;
+    width: 49%;
+    float: left;
+}
 
+.pad-top-medium
+{
+    margin-top: 15px;
+}
 
+.pad-top-small
+{
+    margin-top: 5px;
+}
 
+.fit-numbers
+{
+    //width: 83%;
+//margin-right: 10px;
+}
 //http://css-tricks.com/custom-scrollbars-in-webkit/
 /* Let's get this party started */
 ::-webkit-scrollbar

@@ -1,9 +1,11 @@
 <div ng-controller="CreateRoomController">
-    <div floating-window left="'50%'" top="'50%'" height="'300px'" width="'300px'"
-         window-title="'Create Room'" onclose="model.windowClosed()" visible="visible">
+    <div floating-window left="'50%'" top="'50%'" height="'100px'" width="'300px'"
+        window-title="'Create Room'" onclose="model.windowClosed()" visible="visible">
         <section>
-            <label>Room Name:</label><input type="text" ng-model="model.roomName" /> <br/>
+            <div class="form-group">
+                <label for-next>Room Name:</label><input class="form-control" type="text" ng-model="model.roomName" />
+            </div>
         </section>
-        <button ng-click="model.createRoom()">Cr34te R00m</button>
+        <button class="btn col-main right" ng-click="model.createRoom()">Create Room</button>
     </div>
 </div>

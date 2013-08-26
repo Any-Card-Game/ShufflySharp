@@ -36,7 +36,7 @@ namespace Client.Controllers
                                                       PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
                                                     }; */
 
-            myClientGameManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
+            myClientGameManagerService.OnAskQuestion+= (user, gameSendAnswerModel) =>
                                                         {
                                                             createUIService.CreateSingleton<QuestionScope>(QuestionController.View,
                                                                 (myScope, elem) =>
@@ -117,10 +117,7 @@ namespace Client.Controllers
                                          });
 
 
-            myClientGameManagerService.OnGameStarted += (user, room) =>
-                                                        {
-                                                            //alert(JSON.stringify(data));
-                                                        };
+
 
             myClientGameManagerService.OnGameOver += (user, room) =>
                                                      {

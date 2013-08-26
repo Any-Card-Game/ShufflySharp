@@ -11,6 +11,7 @@ namespace Client.Controllers
     {
         public const string Name = "LoginController";
         private readonly CreateUIService myCreateUIService;
+        private readonly ClientManagerService clientManagerService;
         private readonly MessageService myMessageService;
         private readonly LoginScope myScope;
         private readonly UIManagerService myUIManager;
@@ -18,7 +19,7 @@ namespace Client.Controllers
 
         public LoginController(LoginScope scope, UIManagerService uiManager,
             ClientSiteManagerService clientSiteManagerService, MessageService messageService,
-            CreateUIService createUIService)
+            CreateUIService createUIService, ClientManagerService clientManagerService)
         {
             myScope = scope;
             myScope.Visible = true;
@@ -26,6 +27,7 @@ namespace Client.Controllers
             myclientSiteManagerService = clientSiteManagerService;
             myMessageService = messageService;
             myCreateUIService = createUIService;
+            this.clientManagerService = clientManagerService;
             myScope.Model = new LoginScopeModel();
             scope.Model.dosomething += (o) =>
             {

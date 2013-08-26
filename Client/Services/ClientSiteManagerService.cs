@@ -1,4 +1,5 @@
 using ClientLibs.Managers;
+using Models;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
 
@@ -12,37 +13,29 @@ namespace Client.Services
         public ClientSiteManagerService(GatewayService gateway)
         {
             clientSiteManager = new ClientSiteManager(gateway.Gateway);
-            clientSiteManager.OnGetGameTypesReceived +=
-                (user, model) => { if (OnGetGameTypesReceived != null) OnGetGameTypesReceived(user, model); };
-            clientSiteManager.OnLogin += (user, model) => { if (OnLogin != null) OnLogin(user, model); };
-            clientSiteManager.OnUserCreate += (user, model) => { if (OnUserCreate != null) OnUserCreate(user, model); };
-            clientSiteManager.OnGetRoomsReceived +=
-                (user, model) => { if (OnGetRoomsReceived != null) OnGetRoomsReceived(user, model); };
-            clientSiteManager.OnRoomJoined += (user, model) => { if (OnRoomJoined != null) OnRoomJoined(user, model); };
-            clientSiteManager.OnGetRoomInfoReceived +=
-                (user, model) => { if (OnGetRoomInfoReceived != null) OnGetRoomInfoReceived(user, model); };
-
-            clientSiteManager.OnGetGamesByUserReceived +=
-                (user, model) => { if (OnGetGamesByUserReceived != null) OnGetGamesByUserReceived(user, model); };
-            clientSiteManager.OnDoesGameNameExistReceived +=
-                (user, model) => { if (OnDoesGameNameExistReceived != null) OnDoesGameNameExistReceived(user, model); };
-            clientSiteManager.OnDeveloperCreateGameReceived +=
-                (user, model) => { if (OnDeveloperCreateGameReceived != null) OnDeveloperCreateGameReceived(user, model); };
-            clientSiteManager.OnDeveloperUpdateGameReceived +=
-                (user, model) => { if (OnDeveloperUpdateGameReceived != null) OnDeveloperUpdateGameReceived(user, model); };
+            clientSiteManager.OnGetGameTypesReceived += (user, model) => OnGetGameTypesReceived.Trigger(user, model);
+            clientSiteManager.OnLogin += (user, model) => OnLogin.Trigger(user, model);
+            clientSiteManager.OnUserCreate += (user, model) => OnUserCreate.Trigger(user, model);
+            clientSiteManager.OnGetRoomsReceived += (user, model) => OnGetRoomsReceived.Trigger(user, model);
+            clientSiteManager.OnRoomJoined += (user, model) => OnRoomJoined.Trigger(user, model);
+            clientSiteManager.OnGetRoomInfoReceived += (user, model) => OnGetRoomInfoReceived.Trigger(user, model);
+            clientSiteManager.OnGetGamesByUserReceived += (user, model) => OnGetGamesByUserReceived.Trigger(user, model);
+            clientSiteManager.OnDoesGameNameExistReceived += (user, model) => OnDoesGameNameExistReceived.Trigger(user, model);
+            clientSiteManager.OnDeveloperCreateGameReceived += (user, model) => OnDeveloperCreateGameReceived.Trigger(user, model);
+            clientSiteManager.OnDeveloperUpdateGameReceived += (user, model) => OnDeveloperUpdateGameReceived.Trigger(user, model);
         }
 
-        public event ClientSiteManager.GetGameTypesReceived OnGetGameTypesReceived;
-        public event ClientSiteManager.UserCreate OnUserCreate;
-        public event ClientSiteManager.UserLogin OnLogin;
-        public event ClientSiteManager.GetRoomsReceived OnGetRoomsReceived;
-        public event ClientSiteManager.RoomJoined OnRoomJoined;
-        public event ClientSiteManager.GetRoomInfoReceived OnGetRoomInfoReceived;
+        public UserEventCacher<GetGameTypesReceivedResponse> OnGetGameTypesReceived = new UserEventCacher<GetGameTypesReceivedResponse>();
+        public UserEventCacher<UserCreateResponse> OnUserCreate = new UserEventCacher<UserCreateResponse>();
+        public UserEventCacher<UserLoginResponse> OnLogin = new UserEventCacher<UserLoginResponse>();
+        public UserEventCacher<GetRoomsResponse> OnGetRoomsReceived = new UserEventCacher<GetRoomsResponse>();
+        public UserEventCacher<RoomJoinResponse> OnRoomJoined = new UserEventCacher<RoomJoinResponse>();
+        public UserEventCacher<GetRoomInfoResponse> OnGetRoomInfoReceived = new UserEventCacher<GetRoomInfoResponse>();
+        public UserEventCacher<GetGamesByUserResponse> OnGetGamesByUserReceived = new UserEventCacher<GetGamesByUserResponse>();
+        public UserEventCacher<DoesGameExistResponse> OnDoesGameNameExistReceived = new UserEventCacher<DoesGameExistResponse>();
+        public UserEventCacher<DeveloperCreateGameResponse> OnDeveloperCreateGameReceived = new UserEventCacher<DeveloperCreateGameResponse>();
+        public UserEventCacher<DeveloperUpdateGameResponse> OnDeveloperUpdateGameReceived = new UserEventCacher<DeveloperUpdateGameResponse>();
 
-        public event ClientSiteManager.GetGamesByUserReceived OnGetGamesByUserReceived;
-        public event ClientSiteManager.DoesGameNameExistReceived OnDoesGameNameExistReceived;
-        public event ClientSiteManager.DeveloperCreateGameReceived OnDeveloperCreateGameReceived;
-        public event ClientSiteManager.DeveloperUpdateGameReceived OnDeveloperUpdateGameReceived;
 
 
         public void Login(string userName, string password)
@@ -103,6 +96,24 @@ namespace Client.Services
         public void DeveloperUpdateGame(GameModel gameModel)
         {
             clientSiteManager.DeveloperUpdateGame(new DeveloperUpdateGameRequest(gameModel));
+        }
+    }
+
+    public class ClientManagerService
+    {
+        public ClientSiteManagerService ClientSiteManagerService { get; set; }
+        public ClientGameManagerService ClientGameManagerService { get; set; }
+        public ClientDebugManagerService ClientDebugManagerService { get; set; }
+        public ClientChatManagerService ClientChatManagerService { get; set; }
+        public const string Name = "ClientManagerService";
+
+
+        public ClientManagerService(ClientSiteManagerService clientSiteManagerService, ClientGameManagerService clientGameManagerService, ClientDebugManagerService clientDebugManagerService, ClientChatManagerService clientChatManagerService)
+        {
+            ClientSiteManagerService = clientSiteManagerService;
+            ClientGameManagerService = clientGameManagerService;
+            ClientDebugManagerService = clientDebugManagerService;
+            ClientChatManagerService = clientChatManagerService;
         }
     }
 }

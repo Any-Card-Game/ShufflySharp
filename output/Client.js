@@ -15,30 +15,30 @@
 			return new $Client_Controllers_TestGameController(scope3);
 		}]).controller($Client_Controllers_$GameEffectsEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_CreateUIService.name$1, function(scope4, createUIService2) {
 			return new $Client_Controllers_$GameEffectsEditorController(scope4, createUIService2);
-		}]).controller($Client_Controllers_$LoginController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_UIManagerService.name$1, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope5, uiManager1, clientSiteManagerService, messageService, createUIService3) {
-			return new $Client_Controllers_$LoginController(scope5, uiManager1, clientSiteManagerService, messageService, createUIService3);
+		}]).controller($Client_Controllers_$LoginController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_UIManagerService.name$1, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientManagerService.name$1, function(scope5, uiManager1, clientSiteManagerService, messageService, createUIService3, clientManagerService) {
+			return new $Client_Controllers_$LoginController(scope5, uiManager1, clientSiteManagerService, messageService, createUIService3, clientManagerService);
 		}]).controller($Client_Controllers_$DebugQuestionController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientDebugManagerService.name$1, function(scope6, clientDebugManagerService) {
 			return new $Client_Controllers_$DebugQuestionController(scope6, clientDebugManagerService);
 		}]).controller($Client_Controllers_$QuestionController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientGameManagerService.name$1, function(scope7, clientGameManagerService2) {
 			return new $Client_Controllers_$QuestionController(scope7, clientGameManagerService2);
 		}]).controller($Client_Controllers_$HomeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_UIManagerService.name$1, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_CreateUIService.name$1, function(scope8, uiManager2, clientSiteManagerService1, createUIService4) {
 			return new $Client_Controllers_$HomeController(scope8, uiManager2, clientSiteManagerService1, createUIService4);
-		}]).controller($Client_Controllers_$ActiveLobbyController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientChatManagerService.name$1, $Client_Services_CreateUIService.name$1, function(scope9, clientSiteManagerService2, clientChatManagerService, createUIService5) {
-			return new $Client_Controllers_$ActiveLobbyController(scope9, clientSiteManagerService2, clientChatManagerService, createUIService5);
+		}]).controller($Client_Controllers_$ActiveLobbyController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientManagerService.name$1, $Client_Services_CreateUIService.name$1, function(scope9, clientManagerService1, createUIService5) {
+			return new $Client_Controllers_$ActiveLobbyController(scope9, clientManagerService1, createUIService5);
 		}]).controller($Client_Controllers_$CreateRoomController.$name, [$Client_BuildAngular.$scopeName, function(scope10) {
 			return new $Client_Controllers_$CreateRoomController(scope10);
-		}]).controller($Client_Controllers_$GameManagerController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_UIManagerService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, function(scope11, uiManagerService, createUIService6, clientSiteManagerService3, messageService1) {
-			return new $Client_Controllers_$GameManagerController(scope11, uiManagerService, createUIService6, clientSiteManagerService3, messageService1);
-		}]).controller($Client_Controllers_$GameEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientDebugManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope12, clientSiteManagerService4, clientDebugManagerService1, messageService2, createUIService7) {
-			return new $Client_Controllers_$GameEditorController(scope12, clientSiteManagerService4, clientDebugManagerService1, messageService2, createUIService7);
-		}]).controller($Client_Controllers_$GameLayoutEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope13, clientSiteManagerService5, messageService3, createUIService8) {
-			return new $Client_Controllers_$GameLayoutEditorController(scope13, clientSiteManagerService5, messageService3, createUIService8);
-		}]).controller($Client_Controllers_$GameTestEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientDebugManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope14, clientSiteManagerService6, clientDebugManagerService2, messageService4, createUIService9) {
-			return new $Client_Controllers_$GameTestEditorController(scope14, clientSiteManagerService6, clientDebugManagerService2, messageService4, createUIService9);
-		}]).controller($Client_Controllers_$GameScenarioEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientGameManagerService.name$1, function(scope15, clientSiteManagerService7, messageService5, createUIService10) {
-			return new $Client_Controllers_$GameScenarioEditorController(scope15, clientSiteManagerService7, messageService5, createUIService10);
-		}]).controller($Client_Controllers_$GameCodeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, function(scope16, clientSiteManagerService8, messageService6) {
-			return new $Client_Controllers_$GameCodeController(scope16, clientSiteManagerService8, messageService6);
+		}]).controller($Client_Controllers_$GameManagerController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_UIManagerService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, function(scope11, uiManagerService, createUIService6, clientSiteManagerService2, messageService1) {
+			return new $Client_Controllers_$GameManagerController(scope11, uiManagerService, createUIService6, clientSiteManagerService2, messageService1);
+		}]).controller($Client_Controllers_$GameEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientDebugManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope12, clientSiteManagerService3, clientDebugManagerService1, messageService2, createUIService7) {
+			return new $Client_Controllers_$GameEditorController(scope12, clientSiteManagerService3, clientDebugManagerService1, messageService2, createUIService7);
+		}]).controller($Client_Controllers_$GameLayoutEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope13, clientSiteManagerService4, messageService3, createUIService8) {
+			return new $Client_Controllers_$GameLayoutEditorController(scope13, clientSiteManagerService4, messageService3, createUIService8);
+		}]).controller($Client_Controllers_$GameTestEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientDebugManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, function(scope14, clientSiteManagerService5, clientDebugManagerService2, messageService4, createUIService9) {
+			return new $Client_Controllers_$GameTestEditorController(scope14, clientSiteManagerService5, clientDebugManagerService2, messageService4, createUIService9);
+		}]).controller($Client_Controllers_$GameScenarioEditorController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, $Client_Services_CreateUIService.name$1, $Client_Services_ClientGameManagerService.name$1, function(scope15, clientSiteManagerService6, messageService5, createUIService10) {
+			return new $Client_Controllers_$GameScenarioEditorController(scope15, clientSiteManagerService6, messageService5, createUIService10);
+		}]).controller($Client_Controllers_$GameCodeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientSiteManagerService.name$1, $Client_Services_MessageService.name$1, function(scope16, clientSiteManagerService7, messageService6) {
+			return new $Client_Controllers_$GameCodeController(scope16, clientSiteManagerService7, messageService6);
 		}]).controller($Client_Controllers_$MessageController.$name, [$Client_BuildAngular.$scopeName, function(scope17) {
 			return new $Client_Controllers_$MessageController(scope17);
 		}]).controller($Client_Controllers_EffectTesterController.name$1, [$Client_BuildAngular.$scopeName, function(scope18) {
@@ -61,6 +61,8 @@
 			return new $Client_Services_MessageService(createUIService11, rootScopeService);
 		}]).service($Client_Services_CreateUIService.name$1, [$Client_BuildAngular.$compileName, $Client_BuildAngular.$rootScopeName, function(compileService, rootScopeService1) {
 			return new $Client_Services_CreateUIService(compileService, rootScopeService1);
+		}]).service($Client_Services_ClientManagerService.name$1, [$Client_Services_ClientSiteManagerService.name$1, $Client_Services_ClientGameManagerService.name$1, $Client_Services_ClientDebugManagerService.name$1, $Client_Services_ClientChatManagerService.name$1, function(clientSiteManagerService8, clientGameManagerService3, clientDebugManagerService3, clientChatManagerService) {
+			return new $Client_Services_ClientManagerService(clientSiteManagerService8, clientGameManagerService3, clientDebugManagerService3, clientChatManagerService);
 		}]).directive($Client_Directives_GridDirective.name$1, [function() {
 			return new $Client_Directives_GridDirective();
 		}]).directive($Client_Directives_DraggableDirective.name$1, [function() {
@@ -299,38 +301,42 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.ActiveLobbyController
-	var $Client_Controllers_$ActiveLobbyController = function(scope, clientSiteManagerService, clientChatManagerService, createUIService) {
-		this.$myClientChatManagerService = null;
-		this.$myClientSiteManagerService = null;
+	var $Client_Controllers_$ActiveLobbyController = function(scope, clientManagerService, createUIService) {
 		this.$myCreateUIService = null;
 		this.$myScope = null;
+		this.$clientManagerService = null;
 		this.$myScope = scope;
-		this.$myClientSiteManagerService = clientSiteManagerService;
-		this.$myClientChatManagerService = clientChatManagerService;
+		this.$clientManagerService = clientManagerService;
 		this.$myCreateUIService = createUIService;
 		this.$myScope.model.chatLines = [];
 		this.$myScope.visible = false;
 		this.$myScope.model.windowClosed = ss.delegateCombine(this.$myScope.model.windowClosed, ss.mkdel(this, function() {
 			this.$myScope.swingAway(4, false, null);
-			this.$myClientSiteManagerService.leaveRoom({ room: this.$myScope.model.room });
+			clientManagerService.get_clientSiteManagerService().leaveRoom({ room: this.$myScope.model.room });
 			this.$myCreateUIService.createSingleton($Client_Controllers_$HomeController.$view);
 			this.$myScope.destroyWindow();
 		}));
-		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, ss.mkdel(this, function() {
+		this.$myScope.model.startGame = ss.delegateCombine(this.$myScope.model.startGame, function() {
+			clientManagerService.get_clientSiteManagerService().startGame({});
+		});
+		var $t1 = clientManagerService.get_clientGameManagerService();
+		$t1.onGameStarted = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]).op_Addition($t1.onGameStarted, ss.mkdel(this, function(user, room) {
 			this.$myCreateUIService.create($Client_Controllers_GameController.view);
-			clientSiteManagerService.startGame({});
 			//UIWindow.Height = 200;
 		}));
 		this.$myScope.model.sendChatMessage = ss.delegateCombine(this.$myScope.model.sendChatMessage, ss.mkdel(this, function() {
 			if (this.$myScope.model.currentChatMessage.trim() === '') {
 				return;
 			}
-			this.$myClientChatManagerService.sendChatMessage({ message: this.$myScope.model.currentChatMessage.trim() });
+			clientManagerService.get_clientChatManagerService().sendChatMessage({ message: this.$myScope.model.currentChatMessage.trim() });
 			this.$myScope.model.currentChatMessage = '';
 		}));
-		this.$myClientSiteManagerService.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfo));
-		this.$myClientChatManagerService.add_onGetChatLines(ss.mkdel(this, this.$getChatLines));
-		this.$myClientChatManagerService.add_onGetChatInfo(ss.mkdel(this, this.$getChatInfo));
+		var $t2 = clientManagerService.get_clientSiteManagerService();
+		$t2.onGetRoomInfoReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetRoomInfoResponse]).op_Addition($t2.onGetRoomInfoReceived, ss.mkdel(this, this.$getRoomInfo));
+		var $t3 = clientManagerService.get_clientChatManagerService();
+		$t3.onGetChatLines = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.ChatManagerModels.ChatMessagesModel]).op_Addition($t3.onGetChatLines, ss.mkdel(this, this.$getChatLines));
+		var $t4 = clientManagerService.get_clientChatManagerService();
+		$t4.onGetChatInfo = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.ChatManagerModels.ChatRoomInfoModel]).op_Addition($t4.onGetChatInfo, ss.mkdel(this, this.$getChatInfo));
 		this.$myScope.onReady = ss.mkdel(this, function() {
 			this.$myScope.visible = true;
 			this.$myScope.swingAway(4, true, null);
@@ -352,7 +358,9 @@
 		},
 		$populateChatRoom: function(roomDataData) {
 			this.$myScope.model.users = roomDataData.users;
-			ss.arrayAddRange(this.$myScope.model.chatLines, roomDataData.messages);
+			if (ss.isValue(roomDataData.messages)) {
+				ss.arrayAddRange(this.$myScope.model.chatLines, roomDataData.messages);
+			}
 			this.$myScope.$apply();
 		},
 		$populateGameRoom: function(roomModel) {
@@ -426,7 +434,7 @@
 			scope.model.forceUpdate = true;
 			scope.$apply();
 		});
-		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myClientSiteManagerService.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 	};
@@ -475,7 +483,7 @@
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
 		}), true);
-		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myClientSiteManagerService.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 		this.$myScope.onReady = ss.delegateCombine(this.$myScope.onReady, ss.mkdel(this, function() {
@@ -664,6 +672,7 @@
 		this.$myCreateUIService = null;
 		this.$myMessageService = null;
 		this.$myScope = null;
+		this.$scenario = null;
 		this.$myScope = scope;
 		this.$myClientSiteManagerService = clientSiteManagerService;
 		this.$myMessageService = messageService;
@@ -707,13 +716,19 @@
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
 		}), true);
-		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myClientSiteManagerService.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
-		this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_TestGameControllerScope).call(this.$myCreateUIService, $Client_Controllers_TestGameController.view, ss.mkdel(this, function(_scope, elem) {
+		var testgame = this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_TestGameControllerScope).call(this.$myCreateUIService, $Client_Controllers_TestGameController.view, ss.mkdel(this, function(_scope, elem) {
 			_scope.model = $Client_Scope_Controller_TestGameControllerScopeModel.$ctor();
 			_scope.model.game = this.$myScope.model.game;
 			_scope.model.selection = this.$myScope.model.selection;
+		}));
+		this.$myScope.onClose = ss.delegateCombine(this.$myScope.onClose, ss.mkdel(this, function() {
+			testgame.destroy();
+			if (ss.isValue(this.$scenario)) {
+				this.$scenario.destroy();
+			}
 		}));
 	};
 	$Client_Controllers_$GameLayoutEditorController.prototype = {
@@ -724,7 +739,7 @@
 			this.$myScope.model.selection.showGrid = !this.$myScope.model.selection.showGrid;
 		},
 		$openScenariosFn: function() {
-			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameScenarioEditorScope).call(this.$myCreateUIService, $Client_Controllers_$GameScenarioEditorController.$view, ss.mkdel(this, function(_scope, elem) {
+			this.$scenario = this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameScenarioEditorScope).call(this.$myCreateUIService, $Client_Controllers_$GameScenarioEditorController.$view, ss.mkdel(this, function(_scope, elem) {
 				_scope.model = $Client_Scope_Controller_GameScenarioEditorScopeModel.$ctor();
 				_scope.model.game = this.$myScope.model.game;
 				_scope.model.selection = this.$myScope.model.selection;
@@ -894,9 +909,9 @@
 		this.$myScope.model = $Client_Scope_Controller_GameManagerModel.$ctor();
 		this.$myScope.visible = true;
 		this.$myClientSiteManagerService.getGamesByUser(this.$myUIManager.clientInfo.loggedInUser.hash);
-		this.$myClientSiteManagerService.add_onGetGamesByUserReceived(ss.mkdel(this, this.$onOnGetGamesByUserReceivedFn));
-		this.$myClientSiteManagerService.add_onDeveloperCreateGameReceived(ss.mkdel(this, this.$onDeveloperCreateGameReceivedFn));
-		this.$myClientSiteManagerService.add_onDoesGameNameExistReceived(ss.mkdel(this, this.$onDoesGameNameExistReceivedFn));
+		this.$myClientSiteManagerService.onGetGamesByUserReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetGamesByUserResponse]).op_Addition(this.$myClientSiteManagerService.onGetGamesByUserReceived, ss.mkdel(this, this.$onOnGetGamesByUserReceivedFn));
+		this.$myClientSiteManagerService.onDeveloperCreateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperCreateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperCreateGameReceived, ss.mkdel(this, this.$onDeveloperCreateGameReceivedFn));
+		this.$myClientSiteManagerService.onDoesGameNameExistReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DoesGameExistResponse]).op_Addition(this.$myClientSiteManagerService.onDoesGameNameExistReceived, ss.mkdel(this, this.$onDoesGameNameExistReceivedFn));
 		this.$myScope.model.createGame = ss.delegateCombine(this.$myScope.model.createGame, ss.mkdel(this, this.$createGameFn));
 		this.$myScope.model.deleteGame = ss.delegateCombine(this.$myScope.model.deleteGame, ss.mkdel(this, this.$deleteGameFn));
 		this.$myScope.$watch('model.selectedGame', ss.mkdel(this, function() {
@@ -996,7 +1011,7 @@
 		this.$myScope.model.deleteScenario = ss.mkdel(this, this.$deleteScenarioFn);
 		this.$myScope.model.getCurrentlySelected = ss.mkdel(this, this.$getCurrentlySelectedFn);
 		this.$myScope.model.applyEffectToCurrentlySelected = ss.mkdel(this, this.$applyEffectToCurrentlySelectedFn);
-		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myClientSiteManagerService.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 	};
@@ -1187,7 +1202,7 @@
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
 		}), true);
-		this.$myClientSiteManagerService.add_onDeveloperUpdateGameReceived(ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$myClientSiteManagerService.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
 		this.$myScope.model.updateStatus = 'synced';
 		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 	};
@@ -1195,7 +1210,7 @@
 		$startGameFn: function() {
 			this.$myCreateUIService.createSingleton($Client_Controllers_DebugGameController.view);
 			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$myScope.model.game.name });
-			this.$clientDebugManagerService.add_onGetDebugLog(ss.mkdel(this, this.$clientDebugManagerService_OnGetDebugLog));
+			this.$clientDebugManagerService.onGetDebugLog = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.DebugGameManagerModels.DebugGameLogModel]).op_Addition(this.$clientDebugManagerService.onGetDebugLog, ss.mkdel(this, this.$clientDebugManagerService_OnGetDebugLog));
 		},
 		$clientDebugManagerService_OnGetDebugLog: function(user, o) {
 			this.$myScope.model.log += o.value + '\r\n';
@@ -1238,10 +1253,10 @@
 		//  {
 		//  scope.Model.RoomSelected();
 		//  });
-		this.$myClientSiteManagerService.add_onGetGameTypesReceived(ss.mkdel(this, this.$populateGames));
-		this.$myClientSiteManagerService.add_onGetRoomsReceived(ss.mkdel(this, this.$populateRooms));
-		this.$myClientSiteManagerService.add_onRoomJoined(ss.mkdel(this, this.$roomJoined));
-		this.$myClientSiteManagerService.add_onGetRoomInfoReceived(ss.mkdel(this, this.$getRoomInfoReceived));
+		this.$myClientSiteManagerService.onGetGameTypesReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetGameTypesReceivedResponse]).op_Addition(this.$myClientSiteManagerService.onGetGameTypesReceived, ss.mkdel(this, this.$populateGames));
+		this.$myClientSiteManagerService.onGetRoomsReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetRoomsResponse]).op_Addition(this.$myClientSiteManagerService.onGetRoomsReceived, ss.mkdel(this, this.$populateRooms));
+		this.$myClientSiteManagerService.onRoomJoined = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.RoomJoinResponse]).op_Addition(this.$myClientSiteManagerService.onRoomJoined, ss.mkdel(this, this.$roomJoined));
+		this.$myClientSiteManagerService.onGetRoomInfoReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetRoomInfoResponse]).op_Addition(this.$myClientSiteManagerService.onGetRoomInfoReceived, ss.mkdel(this, this.$getRoomInfoReceived));
 		scope.onReady = ss.delegateCombine(scope.onReady, ss.mkdel(this, function() {
 			this.$myScope.visible = true;
 			this.$myScope.swingAway(6, true, null);
@@ -1326,8 +1341,9 @@
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.LoginController
-	var $Client_Controllers_$LoginController = function(scope, uiManager, clientSiteManagerService, messageService, createUIService) {
+	var $Client_Controllers_$LoginController = function(scope, uiManager, clientSiteManagerService, messageService, createUIService, clientManagerService) {
 		this.$myCreateUIService = null;
+		this.$clientManagerService = null;
 		this.$myMessageService = null;
 		this.$myScope = null;
 		this.$myUIManager = null;
@@ -1338,6 +1354,7 @@
 		this.$myclientSiteManagerService = clientSiteManagerService;
 		this.$myMessageService = messageService;
 		this.$myCreateUIService = createUIService;
+		this.$clientManagerService = clientManagerService;
 		this.$myScope.model = $Client_Scope_Controller_LoginScopeModel.$ctor();
 		scope.model.dosomething = ss.delegateCombine(scope.model.dosomething, function(o) {
 			console.log(o);
@@ -1347,8 +1364,8 @@
 		};
 		this.$myScope.model.loginAccount = ss.mkdel(this, this.$loginAccountFn);
 		this.$myScope.model.createAccount = ss.mkdel(this, this.$createAccountFn);
-		this.$myclientSiteManagerService.add_onLogin(ss.mkdel(this, this.$onLoginFn));
-		this.$myclientSiteManagerService.add_onUserCreate(ss.mkdel(this, this.$onUserCreateFn));
+		this.$myclientSiteManagerService.onLogin = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.UserLoginResponse]).op_Addition(this.$myclientSiteManagerService.onLogin, ss.mkdel(this, this.$onLoginFn));
+		this.$myclientSiteManagerService.onUserCreate = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.UserCreateResponse]).op_Addition(this.$myclientSiteManagerService.onUserCreate, ss.mkdel(this, this.$onUserCreateFn));
 		// myScope.Model.Username = "dested1";
 		// myScope.Model.Password = "d";
 		// 
@@ -1452,7 +1469,7 @@
 		this.$myClientDebugManagerService = clientDebugManagerService;
 		this.$myGameContentManagerService = gameContentManagerService;
 		this.$createUIService = createUIService;
-		this.$myClientDebugManagerService.add_onAskQuestion(function(user, gameSendAnswerModel) {
+		this.$myClientDebugManagerService.onAskQuestion = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameSendAnswerModel]).op_Addition(this.$myClientDebugManagerService.onAskQuestion, function(user, gameSendAnswerModel) {
 			createUIService.createSingleton$2($Client_Scope_Controller_QuestionScope).call(createUIService, $Client_Controllers_$DebugQuestionController.$view, function(myScope, elem) {
 				myScope.model = $Client_Scope_Controller_QuestionScopeModel.$ctor();
 				myScope.model.question = gameSendAnswerModel.question;
@@ -1479,7 +1496,7 @@
 				sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
 			};
 		})(document.createElement('style'));
-		this.$myClientDebugManagerService.add_onUpdateState(function(user1, update) {
+		this.$myClientDebugManagerService.onUpdateState = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientDebugManagerService.onUpdateState, function(user1, update) {
 			var data = JSON.parse((new Compressor()).DecompressText(update));
 			var create = ss.isNullOrUndefined(scope.mainArea);
 			scope.mainArea = data;
@@ -1509,10 +1526,10 @@
 			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, ($(window).height() - 250) / scope.mainArea.size.height * 0.9);
 			scope.$apply();
 		});
-		this.$myClientDebugManagerService.add_onGameStarted(function(user2, room) {
+		this.$myClientDebugManagerService.onGameStarted = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]).op_Addition(this.$myClientDebugManagerService.onGameStarted, function(user2, room) {
 			//alert(JSON.stringify(data));
 		});
-		this.$myClientDebugManagerService.add_onGameOver(function(user3, room1) {
+		this.$myClientDebugManagerService.onGameOver = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientDebugManagerService.onGameOver, function(user3, room1) {
 			//alert(JSON.stringify(data));
 		});
 		scope.mainArea = null;
@@ -1746,7 +1763,7 @@
 		//     var time = PageHandler.TimeTracker.EndTime - PageHandler.TimeTracker.StartTime;
 		//     PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time );
 		//     };
-		this.$myClientGameManagerService.add_onAskQuestion(function(user, gameSendAnswerModel) {
+		this.$myClientGameManagerService.onAskQuestion = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameSendAnswerModel]).op_Addition(this.$myClientGameManagerService.onAskQuestion, function(user, gameSendAnswerModel) {
 			createUIService.createSingleton$2($Client_Scope_Controller_QuestionScope).call(createUIService, $Client_Controllers_$QuestionController.$view, function(myScope, elem) {
 				myScope.model = $Client_Scope_Controller_QuestionScopeModel.$ctor();
 				myScope.model.question = gameSendAnswerModel.question;
@@ -1764,7 +1781,7 @@
 				sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
 			};
 		})(document.createElement('style'));
-		this.$myClientGameManagerService.add_onUpdateState(ss.mkdel(this, function(user1, update) {
+		this.$myClientGameManagerService.onUpdateState = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientGameManagerService.onUpdateState, ss.mkdel(this, function(user1, update) {
 			var data = JSON.parse((new Compressor()).DecompressText(update));
 			var create = ss.isNullOrUndefined(scope.mainArea);
 			scope.mainArea = data;
@@ -1794,10 +1811,7 @@
 			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, ($(window).height() - 250) / scope.mainArea.size.height * 0.9);
 			scope.$apply();
 		});
-		this.$myClientGameManagerService.add_onGameStarted(function(user2, room) {
-			//alert(JSON.stringify(data));
-		});
-		this.$myClientGameManagerService.add_onGameOver(function(user3, room1) {
+		this.$myClientGameManagerService.onGameOver = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientGameManagerService.onGameOver, function(user2, room) {
 			//alert(JSON.stringify(data));
 		});
 		scope.mainArea = null;
@@ -5089,33 +5103,17 @@
 	// Client.Services.ClientChatManagerService
 	var $Client_Services_ClientChatManagerService = function(gateway) {
 		this.$clientChatManager = null;
-		this.$1$OnGetChatLinesField = null;
-		this.$1$OnGetChatInfoField = null;
+		this.onGetChatInfo = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.ChatManagerModels.ChatRoomInfoModel]))();
+		this.onGetChatLines = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.ChatManagerModels.ChatMessagesModel]))();
 		this.$clientChatManager = new ClientLibs.Managers.ClientChatManager(gateway.get_gateway());
 		this.$clientChatManager.add_onGetChatInfo(ss.mkdel(this, function(user, model) {
-			if (!ss.staticEquals(this.$1$OnGetChatInfoField, null)) {
-				this.$1$OnGetChatInfoField(user, model);
-			}
+			this.onGetChatInfo.trigger(user, model);
 		}));
 		this.$clientChatManager.add_onGetChatLines(ss.mkdel(this, function(user1, model1) {
-			if (!ss.staticEquals(this.$1$OnGetChatLinesField, null)) {
-				this.$1$OnGetChatLinesField(user1, model1);
-			}
+			this.onGetChatLines.trigger(user1, model1);
 		}));
 	};
 	$Client_Services_ClientChatManagerService.prototype = {
-		add_onGetChatLines: function(value) {
-			this.$1$OnGetChatLinesField = ss.delegateCombine(this.$1$OnGetChatLinesField, value);
-		},
-		remove_onGetChatLines: function(value) {
-			this.$1$OnGetChatLinesField = ss.delegateRemove(this.$1$OnGetChatLinesField, value);
-		},
-		add_onGetChatInfo: function(value) {
-			this.$1$OnGetChatInfoField = ss.delegateCombine(this.$1$OnGetChatInfoField, value);
-		},
-		remove_onGetChatInfo: function(value) {
-			this.$1$OnGetChatInfoField = ss.delegateRemove(this.$1$OnGetChatInfoField, value);
-		},
 		sendChatMessage: function(sendChatMessageModel) {
 			this.$clientChatManager.sendChatMessage(sendChatMessageModel);
 		}
@@ -5124,81 +5122,33 @@
 	// Client.Services.ClientDebugManagerService
 	var $Client_Services_ClientDebugManagerService = function(gateway) {
 		this.$clientDebugManager = null;
-		this.$1$OnGetDebugLogField = null;
-		this.$1$OnGetDebugBreakField = null;
-		this.$1$OnGameOverField = null;
-		this.$1$OnAskQuestionField = null;
-		this.$1$OnUpdateStateField = null;
-		this.$1$OnGameStartedField = null;
+		this.onGetDebugLog = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.DebugGameManagerModels.DebugGameLogModel]))();
+		this.onGetDebugBreak = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.DebugGameManagerModels.DebugGameBreakModel]))();
+		this.onUpdateState = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [String]))();
+		this.onGameStarted = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]))();
+		this.onGameOver = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [String]))();
+		this.onAskQuestion = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameSendAnswerModel]))();
 		this.$clientDebugManager = new ClientLibs.Managers.ClientDebugManager(gateway.get_gateway());
 		this.$clientDebugManager.add_onGameOver(ss.mkdel(this, function(user, model) {
-			if (!ss.staticEquals(this.$1$OnGameOverField, null)) {
-				this.$1$OnGameOverField(user, model);
-			}
+			this.onGameOver.trigger(user, model);
 		}));
 		this.$clientDebugManager.add_onGetDebugBreak(ss.mkdel(this, function(user1, model1) {
-			if (!ss.staticEquals(this.$1$OnGetDebugBreakField, null)) {
-				this.$1$OnGetDebugBreakField(user1, model1);
-			}
+			this.onGetDebugBreak.trigger(user1, model1);
 		}));
 		this.$clientDebugManager.add_onGetDebugLog(ss.mkdel(this, function(user2, model2) {
-			if (!ss.staticEquals(this.$1$OnGetDebugLogField, null)) {
-				this.$1$OnGetDebugLogField(user2, model2);
-			}
+			this.onGetDebugLog.trigger(user2, model2);
 		}));
 		this.$clientDebugManager.add_onAskQuestion(ss.mkdel(this, function(user3, model3) {
-			if (!ss.staticEquals(this.$1$OnAskQuestionField, null)) {
-				this.$1$OnAskQuestionField(user3, model3);
-			}
+			this.onAskQuestion.trigger(user3, model3);
 		}));
 		this.$clientDebugManager.add_onGameStarted(ss.mkdel(this, function(user4, model4) {
-			if (!ss.staticEquals(this.$1$OnGameStartedField, null)) {
-				this.$1$OnGameStartedField(user4, model4);
-			}
+			this.onGameStarted.trigger(user4, model4);
 		}));
 		this.$clientDebugManager.add_onUpdateState(ss.mkdel(this, function(user5, model5) {
-			if (!ss.staticEquals(this.$1$OnUpdateStateField, null)) {
-				this.$1$OnUpdateStateField(user5, model5);
-			}
+			this.onUpdateState.trigger(user5, model5);
 		}));
 	};
 	$Client_Services_ClientDebugManagerService.prototype = {
-		add_onGetDebugLog: function(value) {
-			this.$1$OnGetDebugLogField = ss.delegateCombine(this.$1$OnGetDebugLogField, value);
-		},
-		remove_onGetDebugLog: function(value) {
-			this.$1$OnGetDebugLogField = ss.delegateRemove(this.$1$OnGetDebugLogField, value);
-		},
-		add_onGetDebugBreak: function(value) {
-			this.$1$OnGetDebugBreakField = ss.delegateCombine(this.$1$OnGetDebugBreakField, value);
-		},
-		remove_onGetDebugBreak: function(value) {
-			this.$1$OnGetDebugBreakField = ss.delegateRemove(this.$1$OnGetDebugBreakField, value);
-		},
-		add_onGameOver: function(value) {
-			this.$1$OnGameOverField = ss.delegateCombine(this.$1$OnGameOverField, value);
-		},
-		remove_onGameOver: function(value) {
-			this.$1$OnGameOverField = ss.delegateRemove(this.$1$OnGameOverField, value);
-		},
-		add_onAskQuestion: function(value) {
-			this.$1$OnAskQuestionField = ss.delegateCombine(this.$1$OnAskQuestionField, value);
-		},
-		remove_onAskQuestion: function(value) {
-			this.$1$OnAskQuestionField = ss.delegateRemove(this.$1$OnAskQuestionField, value);
-		},
-		add_onUpdateState: function(value) {
-			this.$1$OnUpdateStateField = ss.delegateCombine(this.$1$OnUpdateStateField, value);
-		},
-		remove_onUpdateState: function(value) {
-			this.$1$OnUpdateStateField = ss.delegateRemove(this.$1$OnUpdateStateField, value);
-		},
-		add_onGameStarted: function(value) {
-			this.$1$OnGameStartedField = ss.delegateCombine(this.$1$OnGameStartedField, value);
-		},
-		remove_onGameStarted: function(value) {
-			this.$1$OnGameStartedField = ss.delegateRemove(this.$1$OnGameStartedField, value);
-		},
 		answerQuestion: function(gameAnswerQuestionModel) {
 			this.$clientDebugManager.answerQuestion(gameAnswerQuestionModel);
 		},
@@ -5210,188 +5160,114 @@
 	// Client.Services.ClientGameManagerService
 	var $Client_Services_ClientGameManagerService = function(gateway) {
 		this.$clientGameManager = null;
-		this.$1$OnAskQuestionField = null;
-		this.$1$OnUpdateStateField = null;
-		this.$1$OnGameStartedField = null;
-		this.$1$OnGameOverField = null;
+		this.onAskQuestion = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameSendAnswerModel]))();
+		this.onUpdateState = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [String]))();
+		this.onGameStarted = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]))();
+		this.onGameOver = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [String]))();
 		this.$clientGameManager = new ClientLibs.Managers.ClientGameManager(gateway.get_gateway());
 		this.$clientGameManager.add_onAskQuestion(ss.mkdel(this, function(user, model) {
-			if (!ss.staticEquals(this.$1$OnAskQuestionField, null)) {
-				this.$1$OnAskQuestionField(user, model);
-			}
+			this.onAskQuestion.trigger(user, model);
 		}));
 		this.$clientGameManager.add_onGameOver(ss.mkdel(this, function(user1, model1) {
-			if (!ss.staticEquals(this.$1$OnGameOverField, null)) {
-				this.$1$OnGameOverField(user1, model1);
-			}
+			this.onGameOver.trigger(user1, model1);
 		}));
 		this.$clientGameManager.add_onGameStarted(ss.mkdel(this, function(user2, model2) {
-			if (!ss.staticEquals(this.$1$OnGameStartedField, null)) {
-				this.$1$OnGameStartedField(user2, model2);
-			}
+			this.onGameStarted.trigger(user2, model2);
 		}));
 		this.$clientGameManager.add_onUpdateState(ss.mkdel(this, function(user3, model3) {
-			if (!ss.staticEquals(this.$1$OnUpdateStateField, null)) {
-				this.$1$OnUpdateStateField(user3, model3);
-			}
+			this.onUpdateState.trigger(user3, model3);
 		}));
 	};
 	$Client_Services_ClientGameManagerService.prototype = {
-		add_onAskQuestion: function(value) {
-			this.$1$OnAskQuestionField = ss.delegateCombine(this.$1$OnAskQuestionField, value);
-		},
-		remove_onAskQuestion: function(value) {
-			this.$1$OnAskQuestionField = ss.delegateRemove(this.$1$OnAskQuestionField, value);
-		},
-		add_onUpdateState: function(value) {
-			this.$1$OnUpdateStateField = ss.delegateCombine(this.$1$OnUpdateStateField, value);
-		},
-		remove_onUpdateState: function(value) {
-			this.$1$OnUpdateStateField = ss.delegateRemove(this.$1$OnUpdateStateField, value);
-		},
-		add_onGameStarted: function(value) {
-			this.$1$OnGameStartedField = ss.delegateCombine(this.$1$OnGameStartedField, value);
-		},
-		remove_onGameStarted: function(value) {
-			this.$1$OnGameStartedField = ss.delegateRemove(this.$1$OnGameStartedField, value);
-		},
-		add_onGameOver: function(value) {
-			this.$1$OnGameOverField = ss.delegateCombine(this.$1$OnGameOverField, value);
-		},
-		remove_onGameOver: function(value) {
-			this.$1$OnGameOverField = ss.delegateRemove(this.$1$OnGameOverField, value);
-		},
 		answerQuestion: function(gameAnswerQuestionModel) {
 			this.$clientGameManager.answerQuestion(gameAnswerQuestionModel);
+		}
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Services.ClientManagerService
+	var $Client_Services_ClientManagerService = function(clientSiteManagerService, clientGameManagerService, clientDebugManagerService, clientChatManagerService) {
+		this.$1$ClientSiteManagerServiceField = null;
+		this.$1$ClientGameManagerServiceField = null;
+		this.$1$ClientDebugManagerServiceField = null;
+		this.$1$ClientChatManagerServiceField = null;
+		this.set_clientSiteManagerService(clientSiteManagerService);
+		this.set_clientGameManagerService(clientGameManagerService);
+		this.set_clientDebugManagerService(clientDebugManagerService);
+		this.set_clientChatManagerService(clientChatManagerService);
+	};
+	$Client_Services_ClientManagerService.prototype = {
+		get_clientSiteManagerService: function() {
+			return this.$1$ClientSiteManagerServiceField;
+		},
+		set_clientSiteManagerService: function(value) {
+			this.$1$ClientSiteManagerServiceField = value;
+		},
+		get_clientGameManagerService: function() {
+			return this.$1$ClientGameManagerServiceField;
+		},
+		set_clientGameManagerService: function(value) {
+			this.$1$ClientGameManagerServiceField = value;
+		},
+		get_clientDebugManagerService: function() {
+			return this.$1$ClientDebugManagerServiceField;
+		},
+		set_clientDebugManagerService: function(value) {
+			this.$1$ClientDebugManagerServiceField = value;
+		},
+		get_clientChatManagerService: function() {
+			return this.$1$ClientChatManagerServiceField;
+		},
+		set_clientChatManagerService: function(value) {
+			this.$1$ClientChatManagerServiceField = value;
 		}
 	};
 	////////////////////////////////////////////////////////////////////////////////
 	// Client.Services.ClientSiteManagerService
 	var $Client_Services_ClientSiteManagerService = function(gateway) {
 		this.$clientSiteManager = null;
-		this.$1$OnGetGameTypesReceivedField = null;
-		this.$1$OnUserCreateField = null;
-		this.$1$OnLoginField = null;
-		this.$1$OnGetRoomsReceivedField = null;
-		this.$1$OnRoomJoinedField = null;
-		this.$1$OnGetRoomInfoReceivedField = null;
-		this.$1$OnGetGamesByUserReceivedField = null;
-		this.$1$OnDoesGameNameExistReceivedField = null;
-		this.$1$OnDeveloperCreateGameReceivedField = null;
-		this.$1$OnDeveloperUpdateGameReceivedField = null;
+		this.onGetGameTypesReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetGameTypesReceivedResponse]))();
+		this.onUserCreate = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.UserCreateResponse]))();
+		this.onLogin = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.UserLoginResponse]))();
+		this.onGetRoomsReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetRoomsResponse]))();
+		this.onRoomJoined = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.RoomJoinResponse]))();
+		this.onGetRoomInfoReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetRoomInfoResponse]))();
+		this.onGetGamesByUserReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.GetGamesByUserResponse]))();
+		this.onDoesGameNameExistReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DoesGameExistResponse]))();
+		this.onDeveloperCreateGameReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperCreateGameResponse]))();
+		this.onDeveloperUpdateGameReceived = new (ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]))();
 		this.$clientSiteManager = new ClientLibs.Managers.ClientSiteManager(gateway.get_gateway());
 		this.$clientSiteManager.add_onGetGameTypesReceived(ss.mkdel(this, function(user, model) {
-			if (!ss.staticEquals(this.$1$OnGetGameTypesReceivedField, null)) {
-				this.$1$OnGetGameTypesReceivedField(user, model);
-			}
+			this.onGetGameTypesReceived.trigger(user, model);
 		}));
 		this.$clientSiteManager.add_onLogin(ss.mkdel(this, function(user1, model1) {
-			if (!ss.staticEquals(this.$1$OnLoginField, null)) {
-				this.$1$OnLoginField(user1, model1);
-			}
+			this.onLogin.trigger(user1, model1);
 		}));
 		this.$clientSiteManager.add_onUserCreate(ss.mkdel(this, function(user2, model2) {
-			if (!ss.staticEquals(this.$1$OnUserCreateField, null)) {
-				this.$1$OnUserCreateField(user2, model2);
-			}
+			this.onUserCreate.trigger(user2, model2);
 		}));
 		this.$clientSiteManager.add_onGetRoomsReceived(ss.mkdel(this, function(user3, model3) {
-			if (!ss.staticEquals(this.$1$OnGetRoomsReceivedField, null)) {
-				this.$1$OnGetRoomsReceivedField(user3, model3);
-			}
+			this.onGetRoomsReceived.trigger(user3, model3);
 		}));
 		this.$clientSiteManager.add_onRoomJoined(ss.mkdel(this, function(user4, model4) {
-			if (!ss.staticEquals(this.$1$OnRoomJoinedField, null)) {
-				this.$1$OnRoomJoinedField(user4, model4);
-			}
+			this.onRoomJoined.trigger(user4, model4);
 		}));
 		this.$clientSiteManager.add_onGetRoomInfoReceived(ss.mkdel(this, function(user5, model5) {
-			if (!ss.staticEquals(this.$1$OnGetRoomInfoReceivedField, null)) {
-				this.$1$OnGetRoomInfoReceivedField(user5, model5);
-			}
+			this.onGetRoomInfoReceived.trigger(user5, model5);
 		}));
 		this.$clientSiteManager.add_onGetGamesByUserReceived(ss.mkdel(this, function(user6, model6) {
-			if (!ss.staticEquals(this.$1$OnGetGamesByUserReceivedField, null)) {
-				this.$1$OnGetGamesByUserReceivedField(user6, model6);
-			}
+			this.onGetGamesByUserReceived.trigger(user6, model6);
 		}));
 		this.$clientSiteManager.add_onDoesGameNameExistReceived(ss.mkdel(this, function(user7, model7) {
-			if (!ss.staticEquals(this.$1$OnDoesGameNameExistReceivedField, null)) {
-				this.$1$OnDoesGameNameExistReceivedField(user7, model7);
-			}
+			this.onDoesGameNameExistReceived.trigger(user7, model7);
 		}));
 		this.$clientSiteManager.add_onDeveloperCreateGameReceived(ss.mkdel(this, function(user8, model8) {
-			if (!ss.staticEquals(this.$1$OnDeveloperCreateGameReceivedField, null)) {
-				this.$1$OnDeveloperCreateGameReceivedField(user8, model8);
-			}
+			this.onDeveloperCreateGameReceived.trigger(user8, model8);
 		}));
 		this.$clientSiteManager.add_onDeveloperUpdateGameReceived(ss.mkdel(this, function(user9, model9) {
-			if (!ss.staticEquals(this.$1$OnDeveloperUpdateGameReceivedField, null)) {
-				this.$1$OnDeveloperUpdateGameReceivedField(user9, model9);
-			}
+			this.onDeveloperUpdateGameReceived.trigger(user9, model9);
 		}));
 	};
 	$Client_Services_ClientSiteManagerService.prototype = {
-		add_onGetGameTypesReceived: function(value) {
-			this.$1$OnGetGameTypesReceivedField = ss.delegateCombine(this.$1$OnGetGameTypesReceivedField, value);
-		},
-		remove_onGetGameTypesReceived: function(value) {
-			this.$1$OnGetGameTypesReceivedField = ss.delegateRemove(this.$1$OnGetGameTypesReceivedField, value);
-		},
-		add_onUserCreate: function(value) {
-			this.$1$OnUserCreateField = ss.delegateCombine(this.$1$OnUserCreateField, value);
-		},
-		remove_onUserCreate: function(value) {
-			this.$1$OnUserCreateField = ss.delegateRemove(this.$1$OnUserCreateField, value);
-		},
-		add_onLogin: function(value) {
-			this.$1$OnLoginField = ss.delegateCombine(this.$1$OnLoginField, value);
-		},
-		remove_onLogin: function(value) {
-			this.$1$OnLoginField = ss.delegateRemove(this.$1$OnLoginField, value);
-		},
-		add_onGetRoomsReceived: function(value) {
-			this.$1$OnGetRoomsReceivedField = ss.delegateCombine(this.$1$OnGetRoomsReceivedField, value);
-		},
-		remove_onGetRoomsReceived: function(value) {
-			this.$1$OnGetRoomsReceivedField = ss.delegateRemove(this.$1$OnGetRoomsReceivedField, value);
-		},
-		add_onRoomJoined: function(value) {
-			this.$1$OnRoomJoinedField = ss.delegateCombine(this.$1$OnRoomJoinedField, value);
-		},
-		remove_onRoomJoined: function(value) {
-			this.$1$OnRoomJoinedField = ss.delegateRemove(this.$1$OnRoomJoinedField, value);
-		},
-		add_onGetRoomInfoReceived: function(value) {
-			this.$1$OnGetRoomInfoReceivedField = ss.delegateCombine(this.$1$OnGetRoomInfoReceivedField, value);
-		},
-		remove_onGetRoomInfoReceived: function(value) {
-			this.$1$OnGetRoomInfoReceivedField = ss.delegateRemove(this.$1$OnGetRoomInfoReceivedField, value);
-		},
-		add_onGetGamesByUserReceived: function(value) {
-			this.$1$OnGetGamesByUserReceivedField = ss.delegateCombine(this.$1$OnGetGamesByUserReceivedField, value);
-		},
-		remove_onGetGamesByUserReceived: function(value) {
-			this.$1$OnGetGamesByUserReceivedField = ss.delegateRemove(this.$1$OnGetGamesByUserReceivedField, value);
-		},
-		add_onDoesGameNameExistReceived: function(value) {
-			this.$1$OnDoesGameNameExistReceivedField = ss.delegateCombine(this.$1$OnDoesGameNameExistReceivedField, value);
-		},
-		remove_onDoesGameNameExistReceived: function(value) {
-			this.$1$OnDoesGameNameExistReceivedField = ss.delegateRemove(this.$1$OnDoesGameNameExistReceivedField, value);
-		},
-		add_onDeveloperCreateGameReceived: function(value) {
-			this.$1$OnDeveloperCreateGameReceivedField = ss.delegateCombine(this.$1$OnDeveloperCreateGameReceivedField, value);
-		},
-		remove_onDeveloperCreateGameReceived: function(value) {
-			this.$1$OnDeveloperCreateGameReceivedField = ss.delegateRemove(this.$1$OnDeveloperCreateGameReceivedField, value);
-		},
-		add_onDeveloperUpdateGameReceived: function(value) {
-			this.$1$OnDeveloperUpdateGameReceivedField = ss.delegateCombine(this.$1$OnDeveloperUpdateGameReceivedField, value);
-		},
-		remove_onDeveloperUpdateGameReceived: function(value) {
-			this.$1$OnDeveloperUpdateGameReceivedField = ss.delegateRemove(this.$1$OnDeveloperUpdateGameReceivedField, value);
-		},
 		login: function(userName, password) {
 			this.$clientSiteManager.login(userName, password);
 		},
@@ -5605,6 +5481,50 @@
 		this.onMinimize = null;
 		this.clientInfo = Models.ClientInformation.$ctor();
 	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Services.UserEventCacher
+	var $Client_Services_UserEventCacher$1 = function(T) {
+		var $type = function() {
+			this.$registeredEvents = [];
+			this.$cachedTriggers = [];
+		};
+		$type.prototype = {
+			add_$event: function(value) {
+				ss.add(this.$registeredEvents, value);
+				if (this.$cachedTriggers.length > 0) {
+					for (var $t1 = 0; $t1 < this.$cachedTriggers.length; $t1++) {
+						var cachedTrigger = this.$cachedTriggers[$t1];
+						this.trigger(cachedTrigger.item1, cachedTrigger.item2);
+					}
+					ss.clear(this.$cachedTriggers);
+				}
+			},
+			remove_$event: function(value) {
+				ss.remove(this.$registeredEvents, value);
+			},
+			trigger: function(user, model) {
+				if (this.$registeredEvents.length === 0) {
+					ss.add(this.$cachedTriggers, { item1: user, item2: model });
+					return;
+				}
+				for (var $t1 = 0; $t1 < this.$registeredEvents.length; $t1++) {
+					var registeredEvent = this.$registeredEvents[$t1];
+					registeredEvent(user, model);
+				}
+			}
+		};
+		$type.op_Addition = function(me, ev) {
+			me.add_$event(ev);
+			return me;
+		};
+		ss.registerGenericClassInstance($type, $Client_Services_UserEventCacher$1, [T], function() {
+			return null;
+		}, function() {
+			return [];
+		});
+		return $type;
+	};
+	ss.registerGenericClass(global, 'Client.Services.UserEventCacher$1', $Client_Services_UserEventCacher$1, 1);
 	ss.registerClass(global, 'Client.BuildAngular', $Client_BuildAngular);
 	ss.registerClass(global, 'Client.BuildSite', $Client_BuildSite);
 	ss.registerClass(global, 'Client.ClientHelpers', $Client_ClientHelpers);
@@ -5720,6 +5640,7 @@
 	ss.registerClass(global, 'Client.Services.ClientChatManagerService', $Client_Services_ClientChatManagerService);
 	ss.registerClass(global, 'Client.Services.ClientDebugManagerService', $Client_Services_ClientDebugManagerService);
 	ss.registerClass(global, 'Client.Services.ClientGameManagerService', $Client_Services_ClientGameManagerService);
+	ss.registerClass(global, 'Client.Services.ClientManagerService', $Client_Services_ClientManagerService);
 	ss.registerClass(global, 'Client.Services.ClientSiteManagerService', $Client_Services_ClientSiteManagerService);
 	ss.registerClass(global, 'Client.Services.CreateUIService', $Client_Services_CreateUIService);
 	ss.registerClass(global, 'Client.Services.GameContentManagerService', $Client_Services_GameContentManagerService);
@@ -5770,6 +5691,7 @@
 	$Client_Controllers_$MessageController.$name = 'MessageController';
 	$Client_Controllers_$MessageController.$view = 'Message';
 	$Client_Services_MessageService.name$1 = 'MessageService';
+	$Client_Services_ClientManagerService.name$1 = 'ClientManagerService';
 	$Client_Services_ClientChatManagerService.name$1 = 'ClientChatManagerService';
 	$Client_Services_GatewayService.name$1 = 'GatewayService';
 	$Client_Directives_GridDirective.name$1 = 'grid';

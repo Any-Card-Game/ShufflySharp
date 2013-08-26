@@ -11,25 +11,22 @@ namespace Client.Controllers
     internal class ActiveLobbyController
     {
         public const string View = "ActiveLobby";
-        public const string Name = "ActiveLobbyController";
-        private readonly ClientChatManagerService myClientChatManagerService;
-        private readonly ClientSiteManagerService myClientSiteManagerService;
+        public const string Name = "ActiveLobbyController"; 
         private readonly CreateUIService myCreateUIService;
         private readonly ActiveLobbyScope myScope;
+        private readonly ClientManagerService clientManagerService;
 
-        public ActiveLobbyController(ActiveLobbyScope scope, ClientSiteManagerService clientSiteManagerService,
-            ClientChatManagerService clientChatManagerService, CreateUIService createUIService)
+        public ActiveLobbyController(ActiveLobbyScope scope, ClientManagerService clientManagerService,CreateUIService createUIService)
         {
             myScope = scope;
-            myClientSiteManagerService = clientSiteManagerService;
-            myClientChatManagerService = clientChatManagerService;
+            this.clientManagerService = clientManagerService; 
             myCreateUIService = createUIService;
             myScope.Model.ChatLines = new List<ChatMessageRoomModel>();
             myScope.Visible = false;
             myScope.Model.WindowClosed += () =>
                                           {
                                               myScope.SwingAway(SwingDirection.BottomRight, false, null);
-                                              myClientSiteManagerService.LeaveRoom(
+                                              clientManagerService.ClientSiteManagerService.LeaveRoom(
                                                   new LeaveRoomRequest(myScope.Model.Room));
                                               myCreateUIService.CreateSingleton(HomeController.View);
                                               myScope.DestroyWindow();
@@ -38,24 +35,29 @@ namespace Client.Controllers
 
             myScope.Model.StartGame += () =>
                                        {
-                                           myCreateUIService.Create(GameController.View);
-                                           clientSiteManagerService.StartGame(new StartGameRequest());
-                                           //UIWindow.Height = 200;
+                                           clientManagerService.ClientSiteManagerService.StartGame(new StartGameRequest());
                                        };
+            clientManagerService.ClientGameManagerService.OnGameStarted += (user, room) =>
+            {
+                myCreateUIService.Create(GameController.View);
+                //UIWindow.Height = 200;
+            };
+
+
             myScope.Model.SendChatMessage += () =>
                                              {
                                                  if (myScope.Model.CurrentChatMessage.Trim() == string.Empty)
                                                      return;
 
-                                                 myClientChatManagerService.SendChatMessage(
+                                                 clientManagerService.ClientChatManagerService.SendChatMessage(
                                                      new SendChatMessageModel(myScope.Model.CurrentChatMessage.Trim()));
 
                                                  myScope.Model.CurrentChatMessage = "";
                                              };
 
-            myClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfo;
-            myClientChatManagerService.OnGetChatLines += GetChatLines;
-            myClientChatManagerService.OnGetChatInfo += GetChatInfo;
+            clientManagerService.ClientSiteManagerService.OnGetRoomInfoReceived += GetRoomInfo;
+            clientManagerService.ClientChatManagerService.OnGetChatLines += GetChatLines;
+            clientManagerService.ClientChatManagerService.OnGetChatInfo += GetChatInfo;
             myScope.OnReady = () =>
                               {
                                   myScope.Visible = true;
@@ -72,7 +74,7 @@ namespace Client.Controllers
             myScope.Apply();
         }
 
-        private void GetChatInfo(UserModel user, ChatRoomInfoModel o)
+        private void  GetChatInfo(UserModel user, ChatRoomInfoModel o)
         {
             PopulateChatRoom(o.Info);
         }
@@ -85,7 +87,8 @@ namespace Client.Controllers
         private void PopulateChatRoom(ChatRoomModel roomDataData)
         {
             myScope.Model.Users = roomDataData.Users;
-            myScope.Model.ChatLines.AddRange(roomDataData.Messages);
+            if (roomDataData.Messages!=null)
+                myScope.Model.ChatLines.AddRange(roomDataData.Messages);
             myScope.Apply();
         }
 

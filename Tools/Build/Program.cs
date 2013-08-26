@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Renci.SshNet;
+
 namespace Build
 {
     internal class Program
@@ -36,14 +37,15 @@ namespace Build
             var pre = Directory.GetCurrentDirectory() + @"\..\..\..\..\..\";
             string to;
             string from;
-            foreach (var proj in projs) {
+            foreach (var proj in projs)
+            {
 #if DEBUG
-                from = pre + proj + @"\bin\debug\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+                from = pre + proj + @"\bin\debug\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #else
                 var from = pre + proj + @"\bin\release\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
 #endif
-                to = pre + shufSharp + @"\output\" + proj.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
-                 
+                to = pre + shufSharp + @"\output\" + proj.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+
                 tryCopy(from, to);
             }
 
@@ -59,7 +61,7 @@ namespace Build
             tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\", @"C:\code\node\partials\");
             tryCopyHtmlDir(pre + shufSharp + @"\Client\partials\UIs\", @"C:\code\node\partials\UIs\");
 */
-             
+
 
             //client happens in buildsite.cs
             var depends = new Dictionary<string, Application>();
@@ -123,20 +125,25 @@ namespace Build
 #endif
 
             FileStream fileStream;
-            foreach (var depend in depends) {
-                to = pre + shufSharp + @"\output\" + depend.Key.Split(new[] {"\\"}, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
+            foreach (var depend in depends)
+            {
+                to = pre + shufSharp + @"\output\" + depend.Key.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last() + ".js";
                 var output = "";
 
                 Application application = depend.Value;
 
-                if (application.Node) {
+                if (application.Node)
+                {
                     output += "require('./mscorlib.js');";
                     output += "EventEmitter= require('events').EventEmitter;";
-                } else {
+                }
+                else
+                {
                     //output += "require('./mscorlib.debug.js');";
                 }
 
-                foreach (var depe in application.IncludesAfter) {
+                foreach (var depe in application.IncludesAfter)
+                {
                     output += string.Format("require('{0}');", depe);
                 }
 
@@ -147,7 +154,7 @@ namespace Build
                 //      lines.Add(application.After);
 
                 File.WriteAllLines(to, lines);
-                var name = to.Split(new char[] {'\\'}, StringSplitOptions.RemoveEmptyEntries).Last();
+                var name = to.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
 
 #if FTP
 
@@ -159,21 +166,23 @@ namespace Build
                     Console.WriteLine("ftp complete " + to);
                 }
 */
-                if (true || !client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length) {
+                if (true || !client.Exists(serverloc + name) || client.GetAttributes(serverloc + name).Size != length)
+                {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
                     fileStream = new FileInfo(to).OpenRead();
                     client.UploadFile(fileStream, serverloc + name, true);
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
-                if (true || !client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length) {
+                if (true || !client.Exists(serverloc2 + name) || client.GetAttributes(serverloc2 + name).Size != length)
+                {
                     Console.WriteLine("server ftp start " + length.ToString("N0"));
                     fileStream = new FileInfo(to).OpenRead();
                     webclient.UploadFile(fileStream, serverloc2 + name, true);
                     fileStream.Close();
                     Console.WriteLine("server ftp complete " + to);
                 }
-#endif 
+#endif
                 tryCopy(to, @"C:\code\node\" + name);
             }
 #if FTP
@@ -193,13 +202,28 @@ namespace Build
             Console.WriteLine("web ftp html complete " + send);
 
 
-              send = pre + shufSharp + @"\output\site.css"; 
+            send = pre + shufSharp + @"\output\site.css";
 
             Console.WriteLine("web ftp html start ");
             fileStream = new FileInfo(send).OpenRead();
             webclient.UploadFile(fileStream, serverloc2 + "site.css", true);
             fileStream.Close();
             Console.WriteLine("web ftp html complete " + send);
+
+
+            send = pre + shufSharp + @"\output\monitor\monitor.js";
+
+            Console.WriteLine("web ftp html start ");
+            webclient.WriteAllText(serverloc2 + @"monitor/monitor.js", File.ReadAllText(send).Replace("http://localhost:8881/", WebIP).Replace("127.0.0.1:9991", "198.211.107.235:9991"));
+            Console.WriteLine("web ftp html complete " + send);
+
+            send = pre + shufSharp + @"\output\monitor\monitor.html";
+
+            Console.WriteLine("web ftp html start ");
+            webclient.WriteAllText(serverloc2 + @"monitor/monitor.html", File.ReadAllText(send).Replace("http://localhost:8881/", WebIP).Replace("127.0.0.1:9991", "198.211.107.235:9991"));
+            Console.WriteLine("web ftp html complete " + send);
+
+
 
 
             foreach (var file in new DirectoryInfo(pre + shufSharp + @"\output\partials\").GetFiles())
@@ -227,7 +251,8 @@ namespace Build
 
 
 
-            foreach (var d in Directory.GetDirectories(pre + shufSharp + @"\ShuffleGames\")) {
+            foreach (var d in Directory.GetDirectories(pre + shufSharp + @"\ShuffleGames\"))
+            {
                 string game = d.Split('\\').Last();
                 to = pre + shufSharp + @"\output\Games\" + game;
                 if (!Directory.Exists(to))
@@ -237,7 +262,7 @@ namespace Build
                     continue;
                 File.WriteAllText(to + @"\app.js", File.ReadAllText(d + @"\app.js"));
 
-                if (!Directory.Exists(@"C:\code\node\games\"+game))
+                if (!Directory.Exists(@"C:\code\node\games\" + game))
                     Directory.CreateDirectory(@"C:\code\node\games\" + game);
                 File.WriteAllText(@"C:\code\node\games\" + game + @"\app.js", File.ReadAllText(to + @"\app.js"));
 
@@ -254,17 +279,17 @@ namespace Build
                 Console.WriteLine("server ftp complete " + to);
 #endif
             }
-     
-        Debug.WriteLine("Finished");
+
+            Debug.WriteLine("Finished");
         }
- 
+
 
         private static void tryCopy(string from, string to)
         {
         top:
             try
             {
-                File.Copy(from, to,true);
+                File.Copy(from, to, true);
             }
             catch (Exception)
             {
@@ -296,10 +321,10 @@ namespace Build
             try
             {
 
-                
-                    File.Copy(from, to , true);
-                    File.WriteAllText(to , File.ReadAllText(to ).Replace(ReplaceWebIP, WebIP));
-                
+
+                File.Copy(from, to, true);
+                File.WriteAllText(to, File.ReadAllText(to).Replace(ReplaceWebIP, WebIP));
+
             }
             catch (Exception)
             {
@@ -308,7 +333,7 @@ namespace Build
             }
         }
 
-     }
+    }
     public class Application
     {
         public bool Node { get; set; }

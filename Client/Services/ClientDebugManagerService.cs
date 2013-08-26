@@ -12,26 +12,22 @@ namespace Client.Services
         public ClientDebugManagerService(GatewayService gateway)
         {
             clientDebugManager = new ClientDebugManager(gateway.Gateway);
-            clientDebugManager.OnGameOver += (user, model) => { if (OnGameOver != null) OnGameOver(user, model); };
-            clientDebugManager.OnGetDebugBreak +=
-                (user, model) => { if (OnGetDebugBreak != null) OnGetDebugBreak(user, model); };
-            clientDebugManager.OnGetDebugLog +=
-                (user, model) => { if (OnGetDebugLog != null) OnGetDebugLog(user, model); };
-            clientDebugManager.OnAskQuestion +=
-                (user, model) => { if (OnAskQuestion != null) OnAskQuestion(user, model); };
-            clientDebugManager.OnGameStarted +=
-                (user, model) => { if (OnGameStarted != null) OnGameStarted(user, model); };
-            clientDebugManager.OnUpdateState +=
-                (user, model) => { if (OnUpdateState != null) OnUpdateState(user, model); };
+            clientDebugManager.OnGameOver += (user, model) => OnGameOver.Trigger(user, model);
+            clientDebugManager.OnGetDebugBreak += (user, model) => OnGetDebugBreak.Trigger(user, model);
+            clientDebugManager.OnGetDebugLog += (user, model) => OnGetDebugLog.Trigger(user,model);
+            clientDebugManager.OnAskQuestion += (user, model) => OnAskQuestion.Trigger(user, model);
+            clientDebugManager.OnGameStarted += (user, model) => OnGameStarted.Trigger(user, model);
+            clientDebugManager.OnUpdateState += (user, model) => OnUpdateState.Trigger(user, model);
         }
 
-        public event ClientDebugManager.GetDebugLog OnGetDebugLog;
-        public event ClientDebugManager.GetDebugBreak OnGetDebugBreak;
-        public event ClientDebugManager.GameOver OnGameOver;
 
-        public event ClientDebugManager.AskQuestion OnAskQuestion;
-        public event ClientDebugManager.UpdateState OnUpdateState;
-        public event ClientDebugManager.GameStarted OnGameStarted;
+        public UserEventCacher<DebugGameLogModel> OnGetDebugLog=new UserEventCacher<DebugGameLogModel>();
+        public UserEventCacher<DebugGameBreakModel> OnGetDebugBreak=new UserEventCacher<DebugGameBreakModel>();
+        public UserEventCacher<string> OnUpdateState=new UserEventCacher<string>();
+        public UserEventCacher<GameRoomModel> OnGameStarted=new UserEventCacher<GameRoomModel>();
+        public UserEventCacher<string> OnGameOver=new UserEventCacher<string>();
+        public UserEventCacher<GameSendAnswerModel> OnAskQuestion=new UserEventCacher<GameSendAnswerModel>();
+
 
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)
         {

@@ -1,5 +1,5 @@
 <div ng-controller="GameScenarioEditorController">
-    <div floating-window left="'82%'" top="'40%'" height="'787px'" width="'465px'" window-title="'Game Scenario Editor'"
+    <div floating-window left="'82%'" top="'40%'" height="'787px'" width="'626px'" window-title="'Game Scenario Editor'"
         visible="visible">
         <div style="width: 100%; height: 100px;" fancy-list items="model.game.gameLayoutScenarios" bind="model.selection.selectedScenario">
             {{item.name}}
@@ -11,23 +11,25 @@
         </div>
         <div ng-show="model.selection.selectedScenario">
 
-            <div   class="left-side">
-                <div class="form-group">
-                    <label for-next>Name</label>
-                    <input class="form-control" type="text" ng-model="model.selection.selectedScenario.name" />
-                </div>
-                <div class="form-group">
-                    <label for-next>Number Of Players</label>
-                    <input class="form-control fit-numbers" type="range" min="1" max="8" ng-model="model.selection.selectedScenario.numberOfPlayers" />{{model.selection.selectedScenario.numberOfPlayers}}
-                </div>
-                <div class="form-group">
-                    <label for-next>Screen Width</label>
-                    <input class="form-control fit-numbers" type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.x" />{{model.selection.selectedScenario.screenSize.x}}
-                </div>
-                <div class="form-group">
-                    <label for-next>Screen Height</label>
-                    <input class="form-control fit-numbers" type="range" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.y" />{{model.selection.selectedScenario.screenSize.y}}
-                </div>
+            <div class="left-side">
+                <ol class="property-box">
+                    <li>
+                        <label for-next>Name</label>
+                        <input type="text" ng-model="model.selection.selectedScenario.name" />
+                    </li>
+                    <li>
+                        <label for-next>Number Of Players</label>
+                        <input type="number" min="1" max="8" ng-model="model.selection.selectedScenario.numberOfPlayers" /><span>{{model.selection.selectedScenario.numberOfPlayers}}</span>
+                    </li>
+                    <li>
+                        <label for-next>Screen Width</label>
+                        <input type="number" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.x" /><span>{{model.selection.selectedScenario.screenSize.x}}</span>
+                    </li>
+                    <li>
+                        <label for-next>Screen Height</label>
+                        <input type="number" min="0" max="1800" ng-model="model.selection.selectedScenario.screenSize.y" /><span>{{model.selection.selectedScenario.screenSize.y}}</span>
+                    </li>
+                </ol>
 
                 <div class="form-group">
                     <label for-next>Spaces</label>
@@ -58,15 +60,14 @@
                             <label for-next>{{space.name}} Cards</label>
                             <div style="width: 100%; height: 100px;" fancy-list items="model.selection.selectedScenarioSpace.cards" bind="model.selection.selectedScenarioCard">
                                 {{item.state}} {{item.type}} {{item.value}} 
-                                <button class="btn btn-xs col-main " ng-click="parentScope.model.removeCardFromSpace(item)">Remove</button>
+                                <button class="btn btn-xs col-main button-in-listbox " ng-click="parentScope.model.removeCardFromSpace(item)">Remove</button>
                             </div>
                             <button class="btn col-main pad-top-small full-width" ng-click="model.addCardToSpace()">Add New Card</button>
                         </div>
 
                     </div>
                     <div ng-switch-when="effect">
-                        <h4>{{model.selection.selectedScenarioEffect.name}}</h4>
-
+                        <h4>{{model.selection.selectedScenarioEffect.name}}</h4> 
                         <h5>Currently Selected: {{model.getCurrentlySelected()}}</h5>
                         <button class="btn col-main full-width" ng-show="model.getCurrentlySelected()!='Nothing Selected'" ng-click="model.applyEffectToCurrentlySelected()">Apply Effect</button>
                         <br />
@@ -74,28 +75,28 @@
                         <div style="width: 100%; height: 100px;" fancy-list items="model.selection.selectedScenarioEffect.spaceGuids" bind="model.selection.selectedScenarioPieces.space">
                             <div ng-init="space=parentScope.model.getSpaceBySpaceGuid(item)">
                                 {{space.name}} 
-                                <button class="btn btn-xs col-main " ng-click="parentScope.model.removeSpaceFromEffect(item)">Remove</button>
+                                <button class="btn btn-xs col-main button-in-listbox " ng-click="parentScope.model.removeSpaceFromEffect(item)">Remove</button>
                             </div>
                         </div>
                         <label for-next>Areas</label>
                         <div style="width: 100%; height: 100px;" fancy-list items="model.selection.selectedScenarioEffect.areaGuids" bind="model.selection.selectedScenarioPieces.area">
                             <div ng-init="area=parentScope.model.getAreaByAreaGuid(item)">
                                 {{area.name}} 
-                                <button class="btn btn-xs col-main " ng-click="parentScope.model.removeAreaFromEffect(item)">Remove</button>
+                                <button class="btn btn-xs col-main button-in-listbox" ng-click="parentScope.model.removeAreaFromEffect(item)">Remove</button>
                             </div>
                         </div>
                         <label for-next>Text Areas</label>
                         <div style="width: 100%; height: 100px;" fancy-list items="model.selection.selectedScenarioEffect.textGuids" bind="model.selection.selectedScenarioPieces.text">
                             <div ng-init="text=parentScope.model.getTextByTextGuid(item)">
                                 {{text.name}} 
-                                <button class="btn btn-xs col-main " ng-click="parentScope.model.removeTextFromEffect(item)">Remove</button>
+                                <button class="btn btn-xs col-main button-in-listbox" ng-click="parentScope.model.removeTextFromEffect(item)">Remove</button>
                             </div>
                         </div>
                         <label for-next>Cards</label>
                         <div style="width: 100%; height: 100px;" fancy-list items="model.selection.selectedScenarioEffect.cardGuids" bind="model.selection.selectedScenarioPieces.card">
                             <div ng-init="card=parentScope.model.getCardByCardGuid(item)">
                                 {{card.type}} {{card.value}} 
-                                <button class="btn btn-xs col-main " ng-click="parentScope.model.removeCardFromEffect(item)">Remove</button>
+                                <button class="btn btn-xs col-main button-in-listbox" ng-click="parentScope.model.removeCardFromEffect(item)">Remove</button>
                             </div>
                         </div>
 

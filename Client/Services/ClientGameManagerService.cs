@@ -11,20 +11,16 @@ namespace Client.Services
         public ClientGameManagerService(GatewayService gateway)
         {
             clientGameManager = new ClientGameManager(gateway.Gateway);
-            clientGameManager.OnAskQuestion +=
-                (user, model) => { if (OnAskQuestion != null) OnAskQuestion(user, model); };
-            clientGameManager.OnGameOver += (user, model) => { if (OnGameOver != null) OnGameOver(user, model); };
-            clientGameManager.OnGameStarted +=
-                (user, model) => { if (OnGameStarted != null) OnGameStarted(user, model); };
-            clientGameManager.OnUpdateState +=
-                (user, model) => { if (OnUpdateState != null) OnUpdateState(user, model); };
+            clientGameManager.OnAskQuestion += (user, model) => OnAskQuestion.Trigger(user, model);
+            clientGameManager.OnGameOver += (user, model) => OnGameOver.Trigger(user, model);
+            clientGameManager.OnGameStarted += (user, model) => OnGameStarted.Trigger(user, model);
+            clientGameManager.OnUpdateState += (user, model) => OnUpdateState.Trigger(user, model);
         }
 
-        public event ClientGameManager.AskQuestion OnAskQuestion;
-        public event ClientGameManager.UpdateState OnUpdateState;
-        public event ClientGameManager.GameStarted OnGameStarted;
-        public event ClientGameManager.GameOver OnGameOver;
-
+        public UserEventCacher<GameSendAnswerModel> OnAskQuestion = new UserEventCacher<GameSendAnswerModel>();
+        public UserEventCacher<string> OnUpdateState = new UserEventCacher<string>();
+        public UserEventCacher<GameRoomModel> OnGameStarted = new UserEventCacher<GameRoomModel>();
+        public UserEventCacher<string> OnGameOver = new UserEventCacher<string>();
 
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)
         {

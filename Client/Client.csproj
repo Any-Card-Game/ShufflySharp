@@ -122,6 +122,7 @@
     <Compile Include="Services\GameContentManagerService.cs" />
     <Compile Include="Services\GatewayService.cs" />
     <Compile Include="Services\UIManagerService.cs" />
+    <Compile Include="Services\UserEventCacher.cs" />
     <Compile Include="UIWindow\DebugUI.cs" />
   </ItemGroup>
   <ItemGroup>

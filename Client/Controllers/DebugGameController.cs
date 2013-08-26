@@ -27,7 +27,7 @@ namespace Client.Controllers
             myGameContentManagerService = gameContentManagerService;
             this.createUIService = createUIService;
 
-            myClientDebugManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
+            myClientDebugManagerService.OnAskQuestion+= (user, gameSendAnswerModel) =>
                                                          {
                                                              createUIService.CreateSingleton<QuestionScope>(DebugQuestionController.View,
                                                                  (myScope, elem) =>

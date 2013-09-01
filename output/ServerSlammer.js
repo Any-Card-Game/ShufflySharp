@@ -1,5 +1,7 @@
 require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('./NodeLibraries.js');require('./Models.js');require('./ClientLibs.js');
 (function() {
+	'use strict';
+	global.ServerSlammer = global.ServerSlammer || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerSlammer.Program
 	var $ServerSlammer_$Program = function() {
@@ -12,7 +14,29 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$myHttp = require('http');
 		this.$runGame();
 	};
-	$ServerSlammer_$Program.prototype = {
+	$ServerSlammer_$Program.__typeName = 'ServerSlammer.$Program';
+	$ServerSlammer_$Program.$main = function() {
+		new $ServerSlammer_$Program();
+	};
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerSlammer.Program2
+	var $ServerSlammer_Program2 = function() {
+		this.$exec = null;
+		this.$util = null;
+		this.$fs = null;
+		this.$ind = 0;
+		this.$fs = require('fs');
+		this.$util = require('util');
+		this.$exec = require('child_process').exec;
+		for (var i = 0; i < 100; i++) {
+			setTimeout(ss.mkdel(this, function() {
+				this.$runProcess('node ServerSlammer.js');
+			}), i * 1000);
+		}
+	};
+	$ServerSlammer_Program2.__typeName = 'ServerSlammer.Program2';
+	global.ServerSlammer.Program2 = $ServerSlammer_Program2;
+	ss.initClass($ServerSlammer_$Program, {
 		$runGame: function() {
 			var gameName = this.$randomString(20);
 			this.$grabIP(ss.mkdel(this, function(data) {
@@ -89,27 +113,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 			return sb;
 		}
-	};
-	$ServerSlammer_$Program.$main = function() {
-		new $ServerSlammer_$Program();
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerSlammer.Program2
-	var $ServerSlammer_Program2 = function() {
-		this.$exec = null;
-		this.$util = null;
-		this.$fs = null;
-		this.$ind = 0;
-		this.$fs = require('fs');
-		this.$util = require('util');
-		this.$exec = require('child_process').exec;
-		for (var i = 0; i < 100; i++) {
-			setTimeout(ss.mkdel(this, function() {
-				this.$runProcess('node ServerSlammer.js');
-			}), i * 1000);
-		}
-	};
-	$ServerSlammer_Program2.prototype = {
+	});
+	ss.initClass($ServerSlammer_Program2, {
 		$runProcess: function(process) {
 			var al;
 			var name = '';
@@ -136,8 +141,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 			return dummy;
 		}
-	};
-	ss.registerClass(null, 'ServerSlammer.$Program', $ServerSlammer_$Program);
-	ss.registerClass(global, 'ServerSlammer.Program2', $ServerSlammer_Program2);
+	});
 	$ServerSlammer_$Program.$main();
 })();

@@ -67,7 +67,7 @@ namespace Client.Directives
 
             myGameContentManagerService.Redraw += () =>
                                                   {
-                                                      Console.Log("updating board");
+                                                      Console.WriteLine("updating board");
                                                       updater();
                                                       scope.Apply();
                                                   };

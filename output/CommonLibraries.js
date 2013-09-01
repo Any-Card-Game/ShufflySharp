@@ -1,9 +1,13 @@
 
 (function() {
+	'use strict';
+	global.CommonLibraries = global.CommonLibraries || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Constants
 	var $CommonLibraries_Constants = function() {
 	};
+	$CommonLibraries_Constants.__typeName = 'CommonLibraries.Constants';
+	global.CommonLibraries.Constants = $CommonLibraries_Constants;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.DelegateOrValue
 	var $CommonLibraries_DelegateOrValue$1 = function(T) {
@@ -17,7 +21,25 @@
 			this.isValue = false;
 			this.$oldValue = this.$method();
 		};
-		$type.prototype = {
+		$type.$ctor1 = function(d) {
+			this.isValue = false;
+			this.$method = null;
+			this.$oldValue = ss.getDefaultValue(T);
+			this.$value = ss.getDefaultValue(T);
+			this.$1$StaticValueChangesField = null;
+			this.$value = d;
+			this.isValue = true;
+		};
+		$type.op_Implicit$2 = function(d) {
+			return new $type.$ctor1(d);
+		};
+		$type.op_Implicit$1 = function(d) {
+			return new $type(d);
+		};
+		$type.op_Implicit = function(d) {
+			return d.$evaluate();
+		};
+		ss.registerGenericClassInstance($type, $CommonLibraries_DelegateOrValue$1, [T], {
 			get_staticValueChanges: function() {
 				return this.$1$StaticValueChangesField;
 			},
@@ -38,38 +60,22 @@
 				}
 				return ss.getDefaultValue(T);
 			}
-		};
-		$type.$ctor1 = function(d) {
-			this.isValue = false;
-			this.$method = null;
-			this.$oldValue = ss.getDefaultValue(T);
-			this.$value = ss.getDefaultValue(T);
-			this.$1$StaticValueChangesField = null;
-			this.$value = d;
-			this.isValue = true;
-		};
-		$type.$ctor1.prototype = $type.prototype;
-		$type.op_Implicit$2 = function(d) {
-			return new $type.$ctor1(d);
-		};
-		$type.op_Implicit$1 = function(d) {
-			return new $type(d);
-		};
-		$type.op_Implicit = function(d) {
-			return d.$evaluate();
-		};
-		ss.registerGenericClassInstance($type, $CommonLibraries_DelegateOrValue$1, [T], function() {
+		}, function() {
 			return null;
 		}, function() {
 			return [];
 		});
+		$type.$ctor1.prototype = $type.prototype;
 		return $type;
 	};
-	ss.registerGenericClass(global, 'CommonLibraries.DelegateOrValue$1', $CommonLibraries_DelegateOrValue$1, 1);
+	$CommonLibraries_DelegateOrValue$1.__typeName = 'CommonLibraries.DelegateOrValue$1';
+	ss.initGenericClass($CommonLibraries_DelegateOrValue$1, 1);
+	global.CommonLibraries.DelegateOrValue$1 = $CommonLibraries_DelegateOrValue$1;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.ExtensionMethods
 	var $CommonLibraries_ExtensionMethods = function() {
 	};
+	$CommonLibraries_ExtensionMethods.__typeName = 'CommonLibraries.ExtensionMethods';
 	$CommonLibraries_ExtensionMethods.goodMessage = function(ex) {
 		return ex.get_message() + '  ' + ex.get_innerException();
 	};
@@ -78,21 +84,12 @@
 			return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));
 		};
 	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CommonLibraries.Guid
-	var $CommonLibraries_Guid = function() {
-	};
-	$CommonLibraries_Guid.newGuid = function() {
-		var guid = '';
-		for (var i = 0; i < 12; i++) {
-			guid += String.fromCharCode(parseInt((Math.random() * 26 + 65).toString()));
-		}
-		return guid;
-	};
+	global.CommonLibraries.ExtensionMethods = $CommonLibraries_ExtensionMethods;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Help
 	var $CommonLibraries_Help = function() {
 	};
+	$CommonLibraries_Help.__typeName = 'CommonLibraries.Help';
 	$CommonLibraries_Help.cleanUp = function(T) {
 		return function(o) {
 			return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));
@@ -107,6 +104,7 @@
 		}
 		return null;
 	};
+	global.CommonLibraries.Help = $CommonLibraries_Help;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.IntPoint
 	var $CommonLibraries_IntPoint = function(x, y) {
@@ -115,17 +113,19 @@
 		this.x = x;
 		this.y = y;
 	};
+	$CommonLibraries_IntPoint.__typeName = 'CommonLibraries.IntPoint';
+	global.CommonLibraries.IntPoint = $CommonLibraries_IntPoint;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Number
 	var $CommonLibraries_Number = function(s) {
 		this.$value = null;
 		this.$value = s.toString();
 	};
+	$CommonLibraries_Number.__typeName = 'CommonLibraries.Number';
 	$CommonLibraries_Number.$ctor1 = function(s) {
 		this.$value = null;
 		this.$value = s;
 	};
-	$CommonLibraries_Number.$ctor1.prototype = $CommonLibraries_Number.prototype;
 	$CommonLibraries_Number.op_Implicit = function(d) {
 		return parseFloat(d.$value);
 	};
@@ -138,6 +138,7 @@
 	$CommonLibraries_Number.op_Implicit$1 = function(d) {
 		return ((d.$value.indexOf('%') < 0) ? (d.$value + 'px') : d.$value);
 	};
+	global.CommonLibraries.Number = $CommonLibraries_Number;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Point
 	var $CommonLibraries_Point = function(x, y) {
@@ -146,10 +147,13 @@
 		this.x = x;
 		this.y = y;
 	};
+	$CommonLibraries_Point.__typeName = 'CommonLibraries.Point';
+	global.CommonLibraries.Point = $CommonLibraries_Point;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.Size
 	var $CommonLibraries_Size = function() {
 	};
+	$CommonLibraries_Size.__typeName = 'CommonLibraries.Size';
 	$CommonLibraries_Size.createInstance = function() {
 		return $CommonLibraries_Size.$ctor();
 	};
@@ -167,6 +171,7 @@
 		$this.height = 0;
 		return $this;
 	};
+	global.CommonLibraries.Size = $CommonLibraries_Size;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.TypeOrFunction
 	var $CommonLibraries_TypeOrFunction$1 = function(T) {
@@ -176,7 +181,14 @@
 			this.$1$TypeValueField = ss.getDefaultValue(T);
 			this.set_typeValue(type);
 		};
-		$type.prototype = {
+		$type.$ctor1 = function(_get, _set) {
+			this.$1$FuncSetField = null;
+			this.$1$FuncGetField = null;
+			this.$1$TypeValueField = ss.getDefaultValue(T);
+			this.set_funcGet(_get);
+			this.set_funcSet(_set);
+		};
+		ss.registerGenericClassInstance($type, $CommonLibraries_TypeOrFunction$1, [T], {
 			get_funcSet: function() {
 				return this.$1$FuncSetField;
 			},
@@ -204,31 +216,25 @@
 				}
 				return this.get_typeValue();
 			}
-		};
-		$type.$ctor1 = function(_get, _set) {
-			this.$1$FuncSetField = null;
-			this.$1$FuncGetField = null;
-			this.$1$TypeValueField = ss.getDefaultValue(T);
-			this.set_funcGet(_get);
-			this.set_funcSet(_set);
-		};
-		$type.$ctor1.prototype = $type.prototype;
-		ss.registerGenericClassInstance($type, $CommonLibraries_TypeOrFunction$1, [T], function() {
+		}, function() {
 			return null;
 		}, function() {
 			return [];
 		});
+		$type.$ctor1.prototype = $type.prototype;
 		return $type;
 	};
-	ss.registerGenericClass(global, 'CommonLibraries.TypeOrFunction$1', $CommonLibraries_TypeOrFunction$1, 1);
-	ss.registerClass(global, 'CommonLibraries.Constants', $CommonLibraries_Constants);
-	ss.registerClass(global, 'CommonLibraries.ExtensionMethods', $CommonLibraries_ExtensionMethods);
-	ss.registerClass(global, 'CommonLibraries.Guid', $CommonLibraries_Guid);
-	ss.registerClass(global, 'CommonLibraries.Help', $CommonLibraries_Help);
-	ss.registerClass(global, 'CommonLibraries.IntPoint', $CommonLibraries_IntPoint);
-	ss.registerClass(global, 'CommonLibraries.Number', $CommonLibraries_Number);
-	ss.registerClass(global, 'CommonLibraries.Point', $CommonLibraries_Point);
-	ss.registerClass(global, 'CommonLibraries.Size', $CommonLibraries_Size);
+	$CommonLibraries_TypeOrFunction$1.__typeName = 'CommonLibraries.TypeOrFunction$1';
+	ss.initGenericClass($CommonLibraries_TypeOrFunction$1, 1);
+	global.CommonLibraries.TypeOrFunction$1 = $CommonLibraries_TypeOrFunction$1;
+	ss.initClass($CommonLibraries_Constants, {});
+	ss.initClass($CommonLibraries_ExtensionMethods, {});
+	ss.initClass($CommonLibraries_Help, {});
+	ss.initClass($CommonLibraries_IntPoint, {});
+	ss.initClass($CommonLibraries_Number, {});
+	$CommonLibraries_Number.$ctor1.prototype = $CommonLibraries_Number.prototype;
+	ss.initClass($CommonLibraries_Point, {});
+	ss.initClass($CommonLibraries_Size, {});
 	$CommonLibraries_Constants.local = false;
 	$CommonLibraries_Constants.rootAddress = 'http://198.211.107.235';
 	$CommonLibraries_Constants.homeAddress = 'http://198.211.107.235';

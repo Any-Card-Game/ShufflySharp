@@ -1,5 +1,8 @@
 
 (function() {
+	'use strict';
+	global.ClientLibs = global.ClientLibs || {};
+	global.ClientLibs.Managers = global.ClientLibs.Managers || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// ClientLibs.Gateway
 	var $ClientLibs_Gateway = function(gatewayServer, server) {
@@ -19,10 +22,71 @@
 			this.$channels.get_item(data.channel)(data.user, data.content);
 		}));
 		this.gatewaySocket.on('disconnect', function(data1) {
-			console.log('Disconnected');
+			console.log('Disconnected ' + new Date());
+			null;
 		});
 	};
-	$ClientLibs_Gateway.prototype = {
+	$ClientLibs_Gateway.__typeName = 'ClientLibs.Gateway';
+	global.ClientLibs.Gateway = $ClientLibs_Gateway;
+	////////////////////////////////////////////////////////////////////////////////
+	// ClientLibs.Managers.ClientChatManager
+	var $ClientLibs_Managers_ClientChatManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$OnGetChatLinesField = null;
+		this.$1$OnGetChatInfoField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$ClientLibs_Managers_ClientChatManager.__typeName = 'ClientLibs.Managers.ClientChatManager';
+	global.ClientLibs.Managers.ClientChatManager = $ClientLibs_Managers_ClientChatManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ClientLibs.Managers.ClientDebugManager
+	var $ClientLibs_Managers_ClientDebugManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$OnAskQuestionField = null;
+		this.$1$OnUpdateStateField = null;
+		this.$1$OnGameStartedField = null;
+		this.$1$OnGameOverField = null;
+		this.$1$OnGetDebugLogField = null;
+		this.$1$OnGetDebugBreakField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$ClientLibs_Managers_ClientDebugManager.__typeName = 'ClientLibs.Managers.ClientDebugManager';
+	global.ClientLibs.Managers.ClientDebugManager = $ClientLibs_Managers_ClientDebugManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ClientLibs.Managers.ClientGameManager
+	var $ClientLibs_Managers_ClientGameManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$OnAskQuestionField = null;
+		this.$1$OnUpdateStateField = null;
+		this.$1$OnGameStartedField = null;
+		this.$1$OnGameOverField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$ClientLibs_Managers_ClientGameManager.__typeName = 'ClientLibs.Managers.ClientGameManager';
+	global.ClientLibs.Managers.ClientGameManager = $ClientLibs_Managers_ClientGameManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ClientLibs.Managers.ClientSiteManager
+	var $ClientLibs_Managers_ClientSiteManager = function(gateway) {
+		this.$myGateway = null;
+		this.$1$OnGetGameTypesReceivedField = null;
+		this.$1$OnLoginField = null;
+		this.$1$OnUserCreateField = null;
+		this.$1$OnGetRoomsReceivedField = null;
+		this.$1$OnRoomJoinedField = null;
+		this.$1$OnGetRoomInfoReceivedField = null;
+		this.$1$OnGetGamesByUserReceivedField = null;
+		this.$1$OnDoesGameNameExistReceivedField = null;
+		this.$1$OnDeveloperCreateGameReceivedField = null;
+		this.$1$OnDeveloperUpdateGameReceivedField = null;
+		this.$myGateway = gateway;
+		this.$setup();
+	};
+	$ClientLibs_Managers_ClientSiteManager.__typeName = 'ClientLibs.Managers.ClientSiteManager';
+	global.ClientLibs.Managers.ClientSiteManager = $ClientLibs_Managers_ClientSiteManager;
+	ss.initClass($ClientLibs_Gateway, {
 		emit: function(channel, content) {
 			this.gatewaySocket.emit('Gateway.Message', Models.GatewayMessageModel.$ctor(channel, content));
 		},
@@ -39,17 +103,8 @@
 			$t1.password = password;
 			$t2.emit('Gateway.Login', $t1);
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ClientLibs.Managers.ClientChatManager
-	var $ClientLibs_Managers_ClientChatManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$OnGetChatLinesField = null;
-		this.$1$OnGetChatInfoField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$ClientLibs_Managers_ClientChatManager.prototype = {
+	});
+	ss.initClass($ClientLibs_Managers_ClientChatManager, {
 		add_onGetChatLines: function(value) {
 			this.$1$OnGetChatLinesField = ss.delegateCombine(this.$1$OnGetChatLinesField, value);
 		},
@@ -77,21 +132,8 @@
 		sendChatMessage: function(sendChatMessageModel) {
 			this.$myGateway.emit('Area.Chat.SendMessage', sendChatMessageModel);
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ClientLibs.Managers.ClientDebugManager
-	var $ClientLibs_Managers_ClientDebugManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$OnAskQuestionField = null;
-		this.$1$OnUpdateStateField = null;
-		this.$1$OnGameStartedField = null;
-		this.$1$OnGameOverField = null;
-		this.$1$OnGetDebugLogField = null;
-		this.$1$OnGetDebugBreakField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$ClientLibs_Managers_ClientDebugManager.prototype = {
+	});
+	ss.initClass($ClientLibs_Managers_ClientDebugManager, {
 		add_onAskQuestion: function(value) {
 			this.$1$OnAskQuestionField = ss.delegateCombine(this.$1$OnAskQuestionField, value);
 		},
@@ -165,20 +207,12 @@
 		},
 		createGame: function(createDebugGameRequest) {
 			this.$myGateway.emit('Area.Debug.Create', createDebugGameRequest);
+		},
+		destroyGame: function(destroyDebugGameRequest) {
+			this.$myGateway.emit('Area.Debug.Destory', destroyDebugGameRequest);
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ClientLibs.Managers.ClientGameManager
-	var $ClientLibs_Managers_ClientGameManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$OnAskQuestionField = null;
-		this.$1$OnUpdateStateField = null;
-		this.$1$OnGameStartedField = null;
-		this.$1$OnGameOverField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$ClientLibs_Managers_ClientGameManager.prototype = {
+	});
+	ss.initClass($ClientLibs_Managers_ClientGameManager, {
 		add_onAskQuestion: function(value) {
 			this.$1$OnAskQuestionField = ss.delegateCombine(this.$1$OnAskQuestionField, value);
 		},
@@ -228,25 +262,8 @@
 		answerQuestion: function(gameAnswerQuestionModel) {
 			this.$myGateway.emit('Area.Game.AnswerQuestion', gameAnswerQuestionModel);
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ClientLibs.Managers.ClientSiteManager
-	var $ClientLibs_Managers_ClientSiteManager = function(gateway) {
-		this.$myGateway = null;
-		this.$1$OnGetGameTypesReceivedField = null;
-		this.$1$OnLoginField = null;
-		this.$1$OnUserCreateField = null;
-		this.$1$OnGetRoomsReceivedField = null;
-		this.$1$OnRoomJoinedField = null;
-		this.$1$OnGetRoomInfoReceivedField = null;
-		this.$1$OnGetGamesByUserReceivedField = null;
-		this.$1$OnDoesGameNameExistReceivedField = null;
-		this.$1$OnDeveloperCreateGameReceivedField = null;
-		this.$1$OnDeveloperUpdateGameReceivedField = null;
-		this.$myGateway = gateway;
-		this.$setup();
-	};
-	$ClientLibs_Managers_ClientSiteManager.prototype = {
+	});
+	ss.initClass($ClientLibs_Managers_ClientSiteManager, {
 		add_onGetGameTypesReceived: function(value) {
 			this.$1$OnGetGameTypesReceivedField = ss.delegateCombine(this.$1$OnGetGameTypesReceivedField, value);
 		},
@@ -398,10 +415,5 @@
 		developerUpdateGame: function(getGamesByUser) {
 			this.$myGateway.emit('Area.Site.DeveloperUpdateGame', getGamesByUser);
 		}
-	};
-	ss.registerClass(global, 'ClientLibs.Gateway', $ClientLibs_Gateway);
-	ss.registerClass(global, 'ClientLibs.Managers.ClientChatManager', $ClientLibs_Managers_ClientChatManager);
-	ss.registerClass(global, 'ClientLibs.Managers.ClientDebugManager', $ClientLibs_Managers_ClientDebugManager);
-	ss.registerClass(global, 'ClientLibs.Managers.ClientGameManager', $ClientLibs_Managers_ClientGameManager);
-	ss.registerClass(global, 'ClientLibs.Managers.ClientSiteManager', $ClientLibs_Managers_ClientSiteManager);
+	});
 })();

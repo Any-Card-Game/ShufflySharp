@@ -93,12 +93,13 @@ namespace ServerManager.GameServer
                                                                         room.GameType = data.GameType;
                                                                         room.Started = false;
                                                                         room.Players.AddRange(data.Players);
-
+                                                                        GameObject evaluated_game=null;
+                                                                        Script.Eval("evaluated_game=" + game.GameCode.Code);
                                                                         GameObject gameObject;
                                                                         if (cachedGames.ContainsKey(room.GameType))
                                                                             gameObject = cachedGames[room.GameType];
                                                                         else
-                                                                            gameObject = cachedGames[room.GameType] = Global.Require<GameObject>(string.Format("./Games/{0}/app.js", room.GameType));//todo game.GameCode.Code
+                                                                            gameObject = cachedGames[room.GameType] = evaluated_game;
 
                                                                         room.Fiber = CreateFiber(room, gameObject, true, game);
                                                                         room.Unwind = players =>
@@ -303,7 +304,7 @@ namespace ServerManager.GameServer
         {
             ServerLogger.LogDebug("game real over", room);
 
-            myServerManager.SendUpdateState(room);
+            myServerManager.SendUpdateState(room,null);
 
             myServerManager.SendGameOver(room);
             room.Fiber.Reset();
@@ -338,7 +339,7 @@ namespace ServerManager.GameServer
         {
             var user = getPlayerByUsername(room, answ.User.UserName);
             myServerManager.SendAskQuestion(user, new GameSendAnswerModel(answ.Question, answ.Answers));
-            myServerManager.SendUpdateState(room);
+            myServerManager.SendUpdateState(room, answ.User);
 
       
                 ServerLogger.LogDebug("Ask question   ", answ);

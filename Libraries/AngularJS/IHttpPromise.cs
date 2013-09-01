@@ -1,13 +1,16 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace ng
 {
     [Imported]
     public interface IHttpPromise : IPromise
     {
-#if TODO
-        success(callback: (response: IDestructuredResponse) => any): IHttpPromise;
-        error(callback: (response: IDestructuredResponse) => any): IHttpPromise;
-#endif
+        IHttpPromise Success(Func<string, object> callback);
+        IHttpPromise Error(Func<string, object> callback);
+
+        IHttpPromise Success(Action<string> callback);
+        IHttpPromise Error(Action<string> callback);
+
     }
 }

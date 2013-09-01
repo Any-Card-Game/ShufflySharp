@@ -1,9 +1,22 @@
 require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('./NodeLibraries.js');require('./CommonLibraries.js');require('./CommonShuffleLibrary.js');require('./ShuffleGameLibrary.js');require('./Models.js');require('./DataModels.js');require('./RawDeflate.js');
 (function() {
+	'use strict';
+	global.ServerManager = global.ServerManager || {};
+	global.ServerManager.AdminServer = global.ServerManager.AdminServer || {};
+	global.ServerManager.ChatServer = global.ServerManager.ChatServer || {};
+	global.ServerManager.DebugGameServer = global.ServerManager.DebugGameServer || {};
+	global.ServerManager.DebugGameServer.Models = global.ServerManager.DebugGameServer.Models || {};
+	global.ServerManager.GameServer = global.ServerManager.GameServer || {};
+	global.ServerManager.GameServer.Models = global.ServerManager.GameServer.Models || {};
+	global.ServerManager.GatewayServer = global.ServerManager.GatewayServer || {};
+	global.ServerManager.HeadServer = global.ServerManager.HeadServer || {};
+	global.ServerManager.MonitorServer = global.ServerManager.MonitorServer || {};
+	global.ServerManager.SiteServer = global.ServerManager.SiteServer || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.ServerManager
 	var $ServerManager_$ServerManager = function() {
 	};
+	$ServerManager_$ServerManager.__typeName = 'ServerManager.$ServerManager';
 	$ServerManager_$ServerManager.$main = function() {
 		try {
 			switch (process.argv[2].toLowerCase()) {
@@ -113,7 +126,520 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		}
 		this.$onAsk('s', false);
 	};
-	$ServerManager_AdminServer_AdminServer.prototype = {
+	$ServerManager_AdminServer_AdminServer.__typeName = 'ServerManager.AdminServer.AdminServer';
+	global.ServerManager.AdminServer.AdminServer = $ServerManager_AdminServer_AdminServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.AdminServer.ProcessInformation
+	var $ServerManager_AdminServer_ProcessInformation = function(process, name, index, debugPort) {
+		this.process = null;
+		this.name = null;
+		this.index = 0;
+		this.debugPort = 0;
+		this.process = process;
+		this.name = name;
+		this.index = index;
+		this.debugPort = debugPort;
+	};
+	$ServerManager_AdminServer_ProcessInformation.__typeName = 'ServerManager.AdminServer.ProcessInformation';
+	global.ServerManager.AdminServer.ProcessInformation = $ServerManager_AdminServer_ProcessInformation;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.ChatServer.ChatClientManager
+	var $ServerManager_ChatServer_ChatClientManager = function(chatServerIndex) {
+		this.$qManager = null;
+		this.$1$ChatServerIndexField = null;
+		this.$1$OnCreateChatChannelField = null;
+		this.$1$OnSendMessageField = null;
+		this.$1$OnJoinChatChannelField = null;
+		this.$1$OnUserDisconnectField = null;
+		this.$1$OnLeaveChatRoomField = null;
+		this.set_chatServerIndex(chatServerIndex);
+		this.$setup();
+	};
+	$ServerManager_ChatServer_ChatClientManager.__typeName = 'ServerManager.ChatServer.ChatClientManager';
+	global.ServerManager.ChatServer.ChatClientManager = $ServerManager_ChatServer_ChatClientManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.ChatServer.ChatManager
+	var $ServerManager_ChatServer_ChatManager = function(chatServerIndex) {
+		this.$myDataManager = null;
+		this.$myServerManager = null;
+		this.$runningRooms = [];
+		this.$myDataManager = new CommonShuffleLibrary.DataManager();
+		this.$myServerManager = new $ServerManager_ChatServer_ChatClientManager(chatServerIndex);
+		this.$myServerManager.add_onCreateChatChannel(ss.mkdel(this, this.$onCreateChatChannel));
+		this.$myServerManager.add_onJoinChatChannel(ss.mkdel(this, this.$onJoinChatChannel));
+		this.$myServerManager.add_onSendMessage(ss.mkdel(this, this.$onSendMessage));
+		this.$myServerManager.add_onLeaveChatRoom(ss.mkdel(this, this.$onLeaveChatRoom));
+		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
+	};
+	$ServerManager_ChatServer_ChatManager.__typeName = 'ServerManager.ChatServer.ChatManager';
+	global.ServerManager.ChatServer.ChatManager = $ServerManager_ChatServer_ChatManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.ChatServer.ChatServer
+	var $ServerManager_ChatServer_ChatServer = function() {
+		this.$chatServerIndex = null;
+		this.$chatServerIndex = 'ChatServer' + ss.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('ChatServer', this.$chatServerIndex);
+		NodeLibraries.Common.Logging.Logger.start(this.$chatServerIndex);
+		new global.ArrayUtils();
+		process.on('exit', function() {
+			CommonShuffleLibrary.ServerLogger.logError('exi ChatServer', null);
+		});
+		var chatManager = new $ServerManager_ChatServer_ChatManager(this.$chatServerIndex);
+	};
+	$ServerManager_ChatServer_ChatServer.__typeName = 'ServerManager.ChatServer.ChatServer';
+	global.ServerManager.ChatServer.ChatServer = $ServerManager_ChatServer_ChatServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.DebugGameServer.DebugGameClientManager
+	var $ServerManager_DebugGameServer_DebugGameClientManager = function(debugGameServerIndex) {
+		this.$qManager = null;
+		this.$1$DebugGameServerIndexField = null;
+		this.$1$OnGameCreateField = null;
+		this.$1$OnGameDestroyField = null;
+		this.$1$OnUserAnswerQuestionField = null;
+		this.$1$OnUserDisconnectField = null;
+		this.$1$OnUserLeaveField = null;
+		this.set_debugGameServerIndex(debugGameServerIndex);
+		this.$setup();
+	};
+	$ServerManager_DebugGameServer_DebugGameClientManager.__typeName = 'ServerManager.DebugGameServer.DebugGameClientManager';
+	global.ServerManager.DebugGameServer.DebugGameClientManager = $ServerManager_DebugGameServer_DebugGameClientManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.DebugGameServer.DebugGameData
+	var $ServerManager_DebugGameServer_DebugGameData = function() {
+		this.finishedGames = 0;
+		this.totalGames = 0;
+		this.totalPlayers = 0;
+		this.totalQuestionsAnswered = 0;
+	};
+	$ServerManager_DebugGameServer_DebugGameData.__typeName = 'ServerManager.DebugGameServer.DebugGameData';
+	global.ServerManager.DebugGameServer.DebugGameData = $ServerManager_DebugGameServer_DebugGameData;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.DebugGameServer.DebugGameManager
+	var $ServerManager_DebugGameServer_DebugGameManager = function(debugServerIndex) {
+		this.$QUEUEPERTICK = 1;
+		this.$answerQueue = [];
+		this.$dataManager = null;
+		this.$gameData = null;
+		this.$myServerManager = null;
+		this.$rooms = null;
+		this.$skipped__ = 0;
+		this.$startTime = new Date();
+		this.$total__ = 0;
+		this.$myServerManager = new $ServerManager_DebugGameServer_DebugGameClientManager(debugServerIndex);
+		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
+		this.$myServerManager.add_onGameDestroy(ss.mkdel(this, this.$gameDestroy));
+		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
+		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
+		this.$myServerManager.add_onUserLeave(ss.mkdel(this, this.$userLeave));
+		this.$rooms = [];
+		this.$gameData = new $ServerManager_DebugGameServer_DebugGameData();
+		this.$dataManager = new CommonShuffleLibrary.DataManager();
+		setInterval(ss.mkdel(this, this.$flushQueue), 50);
+	};
+	$ServerManager_DebugGameServer_DebugGameManager.__typeName = 'ServerManager.DebugGameServer.DebugGameManager';
+	global.ServerManager.DebugGameServer.DebugGameManager = $ServerManager_DebugGameServer_DebugGameManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.DebugGameServer.DebugGameServer
+	var $ServerManager_DebugGameServer_DebugGameServer = function() {
+		this.$childProcess = null;
+		this.$debugServerIndex = null;
+		this.$debugServerIndex = 'DebugServer' + ss.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('DebugServer', this.$debugServerIndex);
+		NodeLibraries.Common.Logging.Logger.start(this.$debugServerIndex);
+		this.$childProcess = require('child_process');
+		global.Fiber = require('fibers');
+		process.on('exit', function() {
+			CommonShuffleLibrary.ServerLogger.logError('exi', null);
+		});
+		var debugGameManager = new $ServerManager_DebugGameServer_DebugGameManager(this.$debugServerIndex);
+	};
+	$ServerManager_DebugGameServer_DebugGameServer.__typeName = 'ServerManager.DebugGameServer.DebugGameServer';
+	global.ServerManager.DebugGameServer.DebugGameServer = $ServerManager_DebugGameServer_DebugGameServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.DebugGameServer.Models.DebugGameRoom
+	var $ServerManager_DebugGameServer_Models_DebugGameRoom = function() {
+	};
+	$ServerManager_DebugGameServer_Models_DebugGameRoom.__typeName = 'ServerManager.DebugGameServer.Models.DebugGameRoom';
+	$ServerManager_DebugGameServer_Models_DebugGameRoom.createInstance = function() {
+		return $ServerManager_DebugGameServer_Models_DebugGameRoom.$ctor();
+	};
+	$ServerManager_DebugGameServer_Models_DebugGameRoom.$ctor = function() {
+		var $this = {};
+		$this.emulatedAnswers = null;
+		$this.debuggingSender = null;
+		$this.fiber = null;
+		$this.game = null;
+		$this.gameType = null;
+		$this.maxUsers = 0;
+		$this.players = null;
+		$this.roomID = null;
+		$this.started = false;
+		$this.unwind = null;
+		$this.playerLeave = null;
+		$this.playersLeft = null;
+		$this.players = [];
+		$this.roomID = ss.Guid.newGuid().toString();
+		$this.emulatedAnswers = [];
+		return $this;
+	};
+	global.ServerManager.DebugGameServer.Models.DebugGameRoom = $ServerManager_DebugGameServer_Models_DebugGameRoom;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.GameServer.GameClientManager
+	var $ServerManager_GameServer_GameClientManager = function(gameServerIndex) {
+		this.$qManager = null;
+		this.$1$GameServerIndexField = null;
+		this.$compress = new Compressor();
+		this.$1$OnGameCreateField = null;
+		this.$1$OnUserAnswerQuestionField = null;
+		this.$1$OnUserDisconnectField = null;
+		this.$1$OnUserLeaveField = null;
+		this.set_gameServerIndex(gameServerIndex);
+		this.$setup();
+	};
+	$ServerManager_GameServer_GameClientManager.__typeName = 'ServerManager.GameServer.GameClientManager';
+	global.ServerManager.GameServer.GameClientManager = $ServerManager_GameServer_GameClientManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.GameServer.GameData
+	var $ServerManager_GameServer_GameData = function() {
+		this.finishedGames = 0;
+		this.totalGames = 0;
+		this.totalPlayers = 0;
+		this.totalQuestionsAnswered = 0;
+	};
+	$ServerManager_GameServer_GameData.__typeName = 'ServerManager.GameServer.GameData';
+	global.ServerManager.GameServer.GameData = $ServerManager_GameServer_GameData;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.GameServer.GameManager
+	var $ServerManager_GameServer_GameManager = function(gameServerIndex) {
+		this.$QUEUEPERTICK = 1;
+		this.$answerQueue = [];
+		this.$cachedGames = null;
+		this.$dataManager = null;
+		this.$gameData = null;
+		this.$myServerManager = null;
+		this.$rooms = null;
+		this.$skipped__ = 0;
+		this.$startTime = new Date();
+		this.$total__ = 0;
+		this.$myServerManager = new $ServerManager_GameServer_GameClientManager(gameServerIndex);
+		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
+		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
+		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
+		this.$myServerManager.add_onUserLeave(ss.mkdel(this, this.$userLeave));
+		this.$rooms = [];
+		this.$cachedGames = {};
+		this.$gameData = new $ServerManager_GameServer_GameData();
+		this.$dataManager = new CommonShuffleLibrary.DataManager();
+		setInterval(ss.mkdel(this, this.$flushQueue), 50);
+	};
+	$ServerManager_GameServer_GameManager.__typeName = 'ServerManager.GameServer.GameManager';
+	global.ServerManager.GameServer.GameManager = $ServerManager_GameServer_GameManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.GameServer.GameServer
+	var $ServerManager_GameServer_GameServer = function() {
+		this.$childProcess = null;
+		this.$gameServerIndex = null;
+		this.$gameServerIndex = 'GameServer' + ss.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('GameServer', this.$gameServerIndex);
+		NodeLibraries.Common.Logging.Logger.start(this.$gameServerIndex);
+		this.$childProcess = require('child_process');
+		global.Fiber = require('fibers');
+		process.on('exit', function() {
+			CommonShuffleLibrary.ServerLogger.logError('exi', null);
+		});
+		var gameManager = new $ServerManager_GameServer_GameManager(this.$gameServerIndex);
+	};
+	$ServerManager_GameServer_GameServer.__typeName = 'ServerManager.GameServer.GameServer';
+	global.ServerManager.GameServer.GameServer = $ServerManager_GameServer_GameServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.GameServer.Models.GameRoom
+	var $ServerManager_GameServer_Models_GameRoom = function() {
+	};
+	$ServerManager_GameServer_Models_GameRoom.__typeName = 'ServerManager.GameServer.Models.GameRoom';
+	$ServerManager_GameServer_Models_GameRoom.createInstance = function() {
+		return $ServerManager_GameServer_Models_GameRoom.$ctor();
+	};
+	$ServerManager_GameServer_Models_GameRoom.$ctor = function() {
+		var $this = {};
+		$this.emulatedAnswers = null;
+		$this.fiber = null;
+		$this.game = null;
+		$this.gameType = null;
+		$this.maxUsers = 0;
+		$this.players = null;
+		$this.roomID = null;
+		$this.started = false;
+		$this.unwind = null;
+		$this.playerLeave = null;
+		$this.playersLeft = null;
+		$this.players = [];
+		$this.roomID = ss.Guid.newGuid().toString();
+		$this.emulatedAnswers = [];
+		return $this;
+	};
+	global.ServerManager.GameServer.Models.GameRoom = $ServerManager_GameServer_Models_GameRoom;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.GatewayServer.GatewayServer
+	var $ServerManager_GatewayServer_GatewayServer = function() {
+		this.$myGatewayName = null;
+		this.$users = {};
+		this.$curc = 0;
+		this.$myGatewayName = 'Gateway ' + ss.Guid.newGuid();
+		//
+		//
+		//                        var charm = Charmer.Setup();
+		//
+		//
+		//                        
+		//
+		//
+		//                        var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
+		//
+		//
+		//                        
+		//
+		//
+		//                        Global.SetInterval(() => {
+		//
+		//
+		//                        prog.CurValue++;
+		//
+		//
+		//                        },200);
+		CommonShuffleLibrary.ServerLogger.initLogger('GatewayServer', this.$myGatewayName);
+		NodeLibraries.Common.Logging.Logger.start(this.$myGatewayName);
+		//ExtensionMethods.debugger("");
+		var http = require('http');
+		var app = http.createServer(function(req, res) {
+			res.end();
+		});
+		var io = require('socket.io').listen(app);
+		var fs = require('fs');
+		var queueManager;
+		var port = 1800 + (Math.random() * 4000 | 0);
+		port = 1800;
+		var currentSubdomain = 'gateway1';
+		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0] + ':' + port;
+		var content;
+		if (CommonLibraries.Constants.local) {
+			content = ss.formatString('http://{0}', currentIP);
+		}
+		else {
+			content = ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com');
+		}
+		CommonShuffleLibrary.ServerLogger.logInformation('Server URL', content);
+		app.listen(port);
+		io.set('log level', 0);
+		new CommonShuffleLibrary.PubSub(function(ps) {
+			ps.subscribe('PUBSUB.GatewayServers.Ping', function(message) {
+				ps.publish('PUBSUB.GatewayServers', content);
+				//                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+			});
+			//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
+			ps.publish('PUBSUB.GatewayServers', content);
+		});
+		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
+		io.sockets.on('connection', ss.mkdel(this, function(socket) {
+			var j = ++this.$curc;
+			CommonShuffleLibrary.ServerLogger.logDebug('Socket Connected ' + j, null);
+			var user = null;
+			socket.on('Gateway.Message', function(data) {
+				if (ss.isNullOrUndefined(user)) {
+					return;
+				}
+				CommonShuffleLibrary.ServerLogger.logDebug('Socket message ' + j + '  ', { data: data, user: user });
+				var channel = 'Bad';
+				switch (data.channel.split(String.fromCharCode(46))[1]) {
+					case 'Game': {
+						channel = ss.coalesce(user.currentGameServer, 'GameServer');
+						break;
+					}
+					case 'Site': {
+						channel = 'SiteServer';
+						break;
+					}
+					case 'Debug': {
+						channel = ss.coalesce(user.currentDebugServer, 'DebugServer');
+						break;
+					}
+					case 'Chat': {
+						channel = ss.coalesce(user.currentChatServer, 'ChatServer');
+						break;
+					}
+				}
+				queueManager.sendMessage(channel, data.channel, Models.UserSocketModel.toLogicModel(user), data.content);
+			});
+			socket.on('Gateway.Login', ss.mkdel(this, function(data1) {
+				//ExtensionMethods.debugger();
+				user = Models.UserSocketModel.$ctor();
+				user.password = data1.password;
+				user.socket = socket;
+				user.userName = data1.userName;
+				user.hash = data1.userName;
+				user.gateway = this.$myGatewayName;
+				CommonShuffleLibrary.ServerLogger.logDebug('Socket login ' + j, { data: data1, user: user });
+				this.$users[data1.userName] = user;
+				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
+			}));
+			socket.on('disconnect', ss.mkdel(this, function(data2) {
+				if (ss.isNullOrUndefined(user)) {
+					return;
+				}
+				CommonShuffleLibrary.ServerLogger.logDebug('Socket Left ' + j, { data: data2, user: user });
+				queueManager.sendMessage('SiteServer', 'Area.Site.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
+				//disconnecting from the room in site server disconencts from chat..
+				// if (user.CurrentChatServer != null)
+				//     queueManager.SendMessage(user.ToLogicModel(), user.CurrentChatServer, "Area.Chat.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
+				if (ss.isValue(user.currentGameServer)) {
+					queueManager.sendMessage(user.currentGameServer, 'Area.Game.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
+				}
+				if (ss.isValue(user.currentDebugServer)) {
+					queueManager.sendMessage(user.currentDebugServer, 'Area.Debug.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
+				}
+				delete this.$users[user.userName];
+				socket.removeAllListeners();
+				//socket.Delete();
+				delete io.sockets.sockets[socket.id];
+				this.$curc--;
+			}));
+		}));
+	};
+	$ServerManager_GatewayServer_GatewayServer.__typeName = 'ServerManager.GatewayServer.GatewayServer';
+	global.ServerManager.GatewayServer.GatewayServer = $ServerManager_GatewayServer_GatewayServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.HeadServer.HeadServer
+	var $ServerManager_HeadServer_HeadServer = function() {
+		this.$__dirname = CommonLibraries.Constants.HARDLOCATION;
+		this.$fs = require('fs');
+		this.$gateways = [];
+		this.$indexForSites = [];
+		this.$indexPageData = null;
+		this.$oldGateways = [];
+		this.$oldIndex = [];
+		this.$pubsub = null;
+		this.$qManager = null;
+		this.$siteIndex = 0;
+		var name = 'Head1';
+		CommonShuffleLibrary.ServerLogger.initLogger('HeadServer', name);
+		NodeLibraries.Common.Logging.Logger.start(name);
+		this.$qManager = new CommonShuffleLibrary.QueueManager(name, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher(name, null)], ['GatewayServer']));
+		this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', ss.mkdel(this, this.ready));
+		this.$pubsub = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function(ps) {
+			ps.subscribe('PUBSUB.GatewayServers', ss.mkdel(this, function(message) {
+				ss.add(this.$indexForSites, ss.replaceAllString(this.$indexPageData, '{{gateway}}', message));
+				ss.add(this.$gateways, message);
+			}));
+		}));
+		require('http').createServer(ss.mkdel(this, this.$handlerWS)).listen(8844);
+		setInterval(ss.mkdel(this, this.$pollGateways), 5000);
+		this.$pollGateways();
+	};
+	$ServerManager_HeadServer_HeadServer.__typeName = 'ServerManager.HeadServer.HeadServer';
+	global.ServerManager.HeadServer.HeadServer = $ServerManager_HeadServer_HeadServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.MonitorServer.MonitorServer
+	var $ServerManager_MonitorServer_MonitorServer = function() {
+		this.users = {};
+		//ExtensionMethods.debugger("");
+		var http = require('http');
+		var app = http.createServer(function(req, res) {
+			res.end();
+		});
+		var io = require('socket.io').listen(app);
+		var fs = require('fs');
+		var queueManager;
+		var port = 9991;
+		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
+		console.log(currentIP);
+		app.listen(port);
+		io.set('log level', 0);
+		var serverTypes = ['DebugServer', 'AdminServer', 'SiteServer', 'GameServer', 'ChatServer', 'GatewayServer', 'HeadServer'];
+		var connections = [];
+		for (var $t1 = 0; $t1 < serverTypes.length; $t1++) {
+			var serverType = serverTypes[$t1];
+			new CommonShuffleLibrary.ServerLogListener(serverType, function(mess) {
+				for (var $t2 = 0; $t2 < connections.length; $t2++) {
+					var socketIoConnection = connections[$t2];
+					socketIoConnection.emit(mess.serverType, mess);
+				}
+			});
+		}
+		io.sockets.on('connection', function(socket) {
+			ss.add(connections, socket);
+			socket.on('Gateway.Message', function(data) {
+			});
+			socket.on('disconnect', function(data1) {
+				ss.remove(connections, socket);
+			});
+		});
+	};
+	$ServerManager_MonitorServer_MonitorServer.__typeName = 'ServerManager.MonitorServer.MonitorServer';
+	global.ServerManager.MonitorServer.MonitorServer = $ServerManager_MonitorServer_MonitorServer;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.SiteServer.SiteClientManager
+	var $ServerManager_SiteServer_SiteClientManager = function(siteServerIndex) {
+		this.$qManager = null;
+		this.$1$SiteServerIndexField = null;
+		this.$1$OnUserCreateField = null;
+		this.$1$OnUserLoginField = null;
+		this.$1$OnGetGameTypesField = null;
+		this.$1$OnGetRoomsField = null;
+		this.$1$OnGetRoomInfoField = null;
+		this.$1$OnUserDisconnectField = null;
+		this.$1$OnLeaveRoomField = null;
+		this.$1$OnCreateRoomField = null;
+		this.$1$OnJoinRoomField = null;
+		this.$1$OnStartGameField = null;
+		this.$1$OnGetGamesByUserField = null;
+		this.$1$OnDoesGameNameExistField = null;
+		this.$1$OnDeveloperCreateGameField = null;
+		this.$1$OnDeveloperUpdateGameField = null;
+		this.set_siteServerIndex(siteServerIndex);
+		this.$setup();
+	};
+	$ServerManager_SiteServer_SiteClientManager.__typeName = 'ServerManager.SiteServer.SiteClientManager';
+	global.ServerManager.SiteServer.SiteClientManager = $ServerManager_SiteServer_SiteClientManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.SiteServer.SiteManager
+	var $ServerManager_SiteServer_SiteManager = function(siteServerIndex) {
+		this.$myDataManager = null;
+		this.$mySiteClientManager = null;
+		this.$myDataManager = new CommonShuffleLibrary.DataManager();
+		this.$mySiteClientManager = new $ServerManager_SiteServer_SiteClientManager(siteServerIndex);
+		this.$mySiteClientManager.add_onUserLogin(ss.mkdel(this, this.$onUserLogin));
+		this.$mySiteClientManager.add_onUserCreate(ss.mkdel(this, this.$onUserCreate));
+		this.$mySiteClientManager.add_onGetGameTypes(ss.mkdel(this, this.$onGetGameTypes));
+		this.$mySiteClientManager.add_onGetRoomInfo(ss.mkdel(this, this.$onGetRoomInfo));
+		this.$mySiteClientManager.add_onGetRooms(ss.mkdel(this, this.$onGetRooms));
+		this.$mySiteClientManager.add_onCreateRoom(ss.mkdel(this, this.$onCreateRoom));
+		this.$mySiteClientManager.add_onJoinRoom(ss.mkdel(this, this.$onJoinRoom));
+		this.$mySiteClientManager.add_onLeaveRoom(ss.mkdel(this, this.$onLeaveRoom));
+		this.$mySiteClientManager.add_onStartGame(ss.mkdel(this, this.$onStartGame));
+		this.$mySiteClientManager.add_onGetGamesByUser(ss.mkdel(this, this.$onGetGamesByUser));
+		this.$mySiteClientManager.add_onDoesGameNameExist(ss.mkdel(this, this.$onDoesGameNameExist));
+		this.$mySiteClientManager.add_onDeveloperCreateGame(ss.mkdel(this, this.$onDeveloperCreateGame));
+		this.$mySiteClientManager.add_onDeveloperUpdateGame(ss.mkdel(this, this.$onDeveloperUpdateGame));
+		this.$mySiteClientManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
+	};
+	$ServerManager_SiteServer_SiteManager.__typeName = 'ServerManager.SiteServer.SiteManager';
+	global.ServerManager.SiteServer.SiteManager = $ServerManager_SiteServer_SiteManager;
+	////////////////////////////////////////////////////////////////////////////////
+	// ServerManager.SiteServer.SiteServer
+	var $ServerManager_SiteServer_SiteServer = function() {
+		this.$siteServerIndex = null;
+		new global.ArrayUtils();
+		this.$siteServerIndex = 'SiteServer' + ss.Guid.newGuid();
+		CommonShuffleLibrary.ServerLogger.initLogger('SiteServer', this.$siteServerIndex);
+		NodeLibraries.Common.Logging.Logger.start(this.$siteServerIndex);
+		process.on('exit', function() {
+			CommonShuffleLibrary.ServerLogger.logError('exi SiteServer', null);
+		});
+		var siteManager = new $ServerManager_SiteServer_SiteManager(this.$siteServerIndex);
+	};
+	$ServerManager_SiteServer_SiteServer.__typeName = 'ServerManager.SiteServer.SiteServer';
+	global.ServerManager.SiteServer.SiteServer = $ServerManager_SiteServer_SiteServer;
+	ss.initClass($ServerManager_$ServerManager, {});
+	ss.initClass($ServerManager_AdminServer_AdminServer, {
 		$handler: function(request, response) {
 			this.$fs.readFile(this.$__dirname + '/blank.html', 'ascii', ss.mkdel(this, function(err, content) {
 				var fieldSets = '';
@@ -132,7 +658,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		$buildFieldset: function(items, name) {
 			var str = '<fieldset>';
-			str += '<ul style=\'list-style-type:none;\'>';
+			str += "<ul style='list-style-type:none;'>";
 			str += ss.formatString('<li >{0}</li>', name);
 			str += ss.formatString('<li ></li>');
 			for (var $t1 = 0; $t1 < items.length; $t1++) {
@@ -236,33 +762,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 			return dummy;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.AdminServer.ProcessInformation
-	var $ServerManager_AdminServer_ProcessInformation = function(process, name, index, debugPort) {
-		this.process = null;
-		this.name = null;
-		this.index = 0;
-		this.debugPort = 0;
-		this.process = process;
-		this.name = name;
-		this.index = index;
-		this.debugPort = debugPort;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.ChatServer.ChatClientManager
-	var $ServerManager_ChatServer_ChatClientManager = function(chatServerIndex) {
-		this.$qManager = null;
-		this.$1$ChatServerIndexField = null;
-		this.$1$OnCreateChatChannelField = null;
-		this.$1$OnSendMessageField = null;
-		this.$1$OnJoinChatChannelField = null;
-		this.$1$OnUserDisconnectField = null;
-		this.$1$OnLeaveChatRoomField = null;
-		this.set_chatServerIndex(chatServerIndex);
-		this.$setup();
-	};
-	$ServerManager_ChatServer_ChatClientManager.prototype = {
+	});
+	ss.initClass($ServerManager_AdminServer_ProcessInformation, {});
+	ss.initClass($ServerManager_ChatServer_ChatClientManager, {
 		get_chatServerIndex: function() {
 			return this.$1$ChatServerIndexField;
 		},
@@ -329,22 +831,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		unregisterChatServer: function(user) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Chat.UnregisterServer', user, { server: this.get_chatServerIndex() });
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.ChatServer.ChatManager
-	var $ServerManager_ChatServer_ChatManager = function(chatServerIndex) {
-		this.$myDataManager = null;
-		this.$myServerManager = null;
-		this.$runningRooms = [];
-		this.$myDataManager = new CommonShuffleLibrary.DataManager();
-		this.$myServerManager = new $ServerManager_ChatServer_ChatClientManager(chatServerIndex);
-		this.$myServerManager.add_onCreateChatChannel(ss.mkdel(this, this.$onCreateChatChannel));
-		this.$myServerManager.add_onJoinChatChannel(ss.mkdel(this, this.$onJoinChatChannel));
-		this.$myServerManager.add_onSendMessage(ss.mkdel(this, this.$onSendMessage));
-		this.$myServerManager.add_onLeaveChatRoom(ss.mkdel(this, this.$onLeaveChatRoom));
-		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
-	};
-	$ServerManager_ChatServer_ChatManager.prototype = {
+	});
+	ss.initClass($ServerManager_ChatServer_ChatManager, {
 		$onLeaveChatRoom: function(user) {
 			this.$leaveChatRoom(user);
 		},
@@ -386,6 +874,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					var $t3 = this.$myServerManager;
 					var $t2 = [];
 					ss.add($t2, a);
+					null;
 					$t3.sendChatLines(userLogicModel, { messages: $t2 });
 				}
 			}));
@@ -444,38 +933,14 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$onUserDisconnect: function(user, data) {
-			CommonShuffleLibrary.ServerLogger.logDebug('Awww, dat ' + user.userName + ' disconnected', data);
+			CommonShuffleLibrary.ServerLogger.logDebug('Awww, dat ' + user.userName + ' disconnected ' + new Date(), data);
 			this.$myServerManager.unregisterChatServer(user);
 			this.$leaveChatRoom(user);
 			//removeUserFromRoom(data.User, (room) => { });
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.ChatServer.ChatServer
-	var $ServerManager_ChatServer_ChatServer = function() {
-		this.$chatServerIndex = null;
-		this.$chatServerIndex = 'ChatServer' + CommonLibraries.Guid.newGuid();
-		CommonShuffleLibrary.ServerLogger.initLogger('ChatServer', this.$chatServerIndex);
-		NodeLibraries.Common.Logging.Logger.start(this.$chatServerIndex);
-		new global.ArrayUtils();
-		process.on('exit', function() {
-			CommonShuffleLibrary.ServerLogger.logError('exi ChatServer', null);
-		});
-		var chatManager = new $ServerManager_ChatServer_ChatManager(this.$chatServerIndex);
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.DebugGameServer.DebugGameClientManager
-	var $ServerManager_DebugGameServer_DebugGameClientManager = function(debugGameServerIndex) {
-		this.$qManager = null;
-		this.$1$DebugGameServerIndexField = null;
-		this.$1$OnGameCreateField = null;
-		this.$1$OnUserAnswerQuestionField = null;
-		this.$1$OnUserDisconnectField = null;
-		this.$1$OnUserLeaveField = null;
-		this.set_debugGameServerIndex(debugGameServerIndex);
-		this.$setup();
-	};
-	$ServerManager_DebugGameServer_DebugGameClientManager.prototype = {
+	});
+	ss.initClass($ServerManager_ChatServer_ChatServer, {});
+	ss.initClass($ServerManager_DebugGameServer_DebugGameClientManager, {
 		get_debugGameServerIndex: function() {
 			return this.$1$DebugGameServerIndexField;
 		},
@@ -487,6 +952,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		remove_onGameCreate: function(value) {
 			this.$1$OnGameCreateField = ss.delegateRemove(this.$1$OnGameCreateField, value);
+		},
+		add_onGameDestroy: function(value) {
+			this.$1$OnGameDestroyField = ss.delegateCombine(this.$1$OnGameDestroyField, value);
+		},
+		remove_onGameDestroy: function(value) {
+			this.$1$OnGameDestroyField = ss.delegateRemove(this.$1$OnGameDestroyField, value);
 		},
 		add_onUserAnswerQuestion: function(value) {
 			this.$1$OnUserAnswerQuestionField = ss.delegateCombine(this.$1$OnUserAnswerQuestionField, value);
@@ -511,14 +982,17 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$qManager.addChannel('Area.Debug.Create', ss.mkdel(this, function(user, data) {
 				this.$1$OnGameCreateField(user, data);
 			}));
-			this.$qManager.addChannel('Area.Debug.AnswerQuestion', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnUserAnswerQuestionField(user1, data1);
+			this.$qManager.addChannel('Area.Debug.Destroy', ss.mkdel(this, function(user1, data1) {
+				this.$1$OnGameDestroyField(user1, data1);
 			}));
-			this.$qManager.addChannel('Area.Debug.UserDisconnect', ss.mkdel(this, function(user2, data2) {
-				this.$1$OnUserDisconnectField(user2, data2);
+			this.$qManager.addChannel('Area.Debug.AnswerQuestion', ss.mkdel(this, function(user2, data2) {
+				this.$1$OnUserAnswerQuestionField(user2, data2);
 			}));
-			this.$qManager.addChannel('Area.Debug.LeaveGameRoom', ss.mkdel(this, function(user3, data3) {
-				this.$1$OnUserLeaveField(user3, data3);
+			this.$qManager.addChannel('Area.Debug.UserDisconnect', ss.mkdel(this, function(user3, data3) {
+				this.$1$OnUserDisconnectField(user3, data3);
+			}));
+			this.$qManager.addChannel('Area.Debug.LeaveGameRoom', ss.mkdel(this, function(user4, data4) {
+				this.$1$OnUserLeaveField(user4, data4);
 			}));
 		},
 		$sendMessageToTester: function(room, message, val) {
@@ -550,48 +1024,16 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		unregisterGameServer: function(user) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Debug.UnregisterServer', user, { server: this.get_debugGameServerIndex() });
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.DebugGameServer.DebugGameData
-	var $ServerManager_DebugGameServer_DebugGameData = function() {
-		this.finishedGames = 0;
-		this.totalGames = 0;
-		this.totalPlayers = 0;
-		this.totalQuestionsAnswered = 0;
-	};
-	$ServerManager_DebugGameServer_DebugGameData.prototype = {
+	});
+	ss.initClass($ServerManager_DebugGameServer_DebugGameData, {
 		toString: function() {
 			return 'Total: ' + this.totalGames + '\n Running: ' + this.$runningGames() + '\n Total Players: ' + this.totalPlayers + '\n Answered: ' + this.totalQuestionsAnswered;
 		},
 		$runningGames: function() {
 			return this.totalGames - this.finishedGames;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.DebugGameServer.DebugGameManager
-	var $ServerManager_DebugGameServer_DebugGameManager = function(debugServerIndex) {
-		this.$QUEUEPERTICK = 1;
-		this.$answerQueue = [];
-		this.$cachedGames = null;
-		this.$dataManager = null;
-		this.$gameData = null;
-		this.$myServerManager = null;
-		this.$rooms = null;
-		this.$skipped__ = 0;
-		this.$startTime = new Date();
-		this.$total__ = 0;
-		this.$myServerManager = new $ServerManager_DebugGameServer_DebugGameClientManager(debugServerIndex);
-		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
-		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
-		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
-		this.$myServerManager.add_onUserLeave(ss.mkdel(this, this.$userLeave));
-		this.$rooms = [];
-		this.$cachedGames = {};
-		this.$gameData = new $ServerManager_DebugGameServer_DebugGameData();
-		this.$dataManager = new CommonShuffleLibrary.DataManager();
-		setInterval(ss.mkdel(this, this.$flushQueue), 50);
-	};
-	$ServerManager_DebugGameServer_DebugGameManager.prototype = {
+	});
+	ss.initClass($ServerManager_DebugGameServer_DebugGameManager, {
 		$userDisconnect: function(user, data) {
 			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
 				var gameRoom = this.$rooms[$t1];
@@ -618,6 +1060,18 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				}
 			}
 		},
+		$gameDestroy: function(user, data) {
+			this.$myServerManager.unregisterGameServer(user);
+			var room = this.$rooms.filter(function(a) {
+				return ss.referenceEquals(a.roomID, data.roomID);
+			})[0];
+			if (ss.isNullOrUndefined(room)) {
+				CommonShuffleLibrary.ServerLogger.logError('--room not found ', data);
+				return;
+			}
+			room.fiber.reset();
+			ss.remove(this.$rooms, room);
+		},
 		createGame: function(user, data) {
 			CommonShuffleLibrary.ServerLogger.logDebug('--debug game created ', data);
 			this.$dataManager.siteData.game_GetGamesByName(data.gameName, ss.mkdel(this, function(game) {
@@ -636,14 +1090,10 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					ss.add(room.players, user);
 				}
 				room.debuggingSender = user;
+				var evaluated_game = null;
+				eval('evaluated_game=' + game.gameCode.code);
 				var gameObject;
-				if (ss.keyExists(this.$cachedGames, room.gameType)) {
-					gameObject = this.$cachedGames[room.gameType];
-				}
-				else {
-					gameObject = this.$cachedGames[room.gameType] = require(ss.formatString('./Games/{0}/app.js', room.gameType));
-				}
-				//todo game.GameCode.Code
+				gameObject = evaluated_game;
 				room.fiber = this.$createFiber(room, gameObject, true, game);
 				room.unwind = ss.mkdel(this, function(players) {
 					this.$gameData.finishedGames++;
@@ -863,61 +1313,10 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 			return null;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.DebugGameServer.DebugGameServer
-	var $ServerManager_DebugGameServer_DebugGameServer = function() {
-		this.$childProcess = null;
-		this.$debugServerIndex = null;
-		this.$debugServerIndex = 'DebugServer' + CommonLibraries.Guid.newGuid();
-		CommonShuffleLibrary.ServerLogger.initLogger('DebugServer', this.$debugServerIndex);
-		NodeLibraries.Common.Logging.Logger.start(this.$debugServerIndex);
-		this.$childProcess = require('child_process');
-		global.Fiber = require('fibers');
-		process.on('exit', function() {
-			CommonShuffleLibrary.ServerLogger.logError('exi', null);
-		});
-		var debugGameManager = new $ServerManager_DebugGameServer_DebugGameManager(this.$debugServerIndex);
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.DebugGameServer.Models.DebugGameRoom
-	var $ServerManager_DebugGameServer_Models_DebugGameRoom = function() {
-	};
-	$ServerManager_DebugGameServer_Models_DebugGameRoom.createInstance = function() {
-		return $ServerManager_DebugGameServer_Models_DebugGameRoom.$ctor();
-	};
-	$ServerManager_DebugGameServer_Models_DebugGameRoom.$ctor = function() {
-		var $this = {};
-		$this.emulatedAnswers = null;
-		$this.debuggingSender = null;
-		$this.fiber = null;
-		$this.game = null;
-		$this.gameType = null;
-		$this.maxUsers = 0;
-		$this.players = null;
-		$this.roomID = null;
-		$this.started = false;
-		$this.unwind = null;
-		$this.playerLeave = null;
-		$this.playersLeft = null;
-		$this.players = [];
-		$this.roomID = CommonLibraries.Guid.newGuid();
-		$this.emulatedAnswers = [];
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.GameServer.GameClientManager
-	var $ServerManager_GameServer_GameClientManager = function(gameServerIndex) {
-		this.$qManager = null;
-		this.$1$GameServerIndexField = null;
-		this.$1$OnGameCreateField = null;
-		this.$1$OnUserAnswerQuestionField = null;
-		this.$1$OnUserDisconnectField = null;
-		this.$1$OnUserLeaveField = null;
-		this.set_gameServerIndex(gameServerIndex);
-		this.$setup();
-	};
-	$ServerManager_GameServer_GameClientManager.prototype = {
+	});
+	ss.initClass($ServerManager_DebugGameServer_DebugGameServer, {});
+	ss.initClass($ServerManager_DebugGameServer_Models_DebugGameRoom, {});
+	ss.initClass($ServerManager_GameServer_GameClientManager, {
 		get_gameServerIndex: function() {
 			return this.$1$GameServerIndexField;
 		},
@@ -977,8 +1376,51 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		sendGameOver: function(room) {
 			this.$sendMessageToAll(room, 'Area.Game.GameOver', 'a');
 		},
-		sendUpdateState: function(room) {
-			this.$sendMessageToAll(room, 'Area.Game.UpdateState', (new Compressor()).CompressText(JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, room.game.cardGame))));
+		sendUpdateState: function(room, user) {
+			for (var $t1 = 0; $t1 < room.players.length; $t1++) {
+				var player = room.players[$t1];
+				var tmp = JSON.parse(JSON.stringify(room.game.cardGame));
+				var piles = {};
+				for (var $t2 = 0; $t2 < tmp.users.length; $t2++) {
+					var cgUser = tmp.users[$t2];
+					piles[cgUser.cards.name] = cgUser.cards;
+					for (var $t3 = 0; $t3 < cgUser.cards.cards.length; $t3++) {
+						var card = cgUser.cards.cards[$t3];
+						if (card.state === 2 && !ss.referenceEquals(cgUser.userName, player.userName)) {
+							card.type = -1;
+							card.value = -1;
+						}
+						if (card.state === 1) {
+							card.type = -1;
+							card.value = -1;
+						}
+					}
+				}
+				for (var $t4 = 0; $t4 < tmp.spaces.length; $t4++) {
+					var space = tmp.spaces[$t4];
+					if (ss.isValue(piles[space.pileName])) {
+						space.pile = piles[space.pileName];
+					}
+					for (var $t5 = 0; $t5 < space.pile.cards.length; $t5++) {
+						var card1 = space.pile.cards[$t5];
+						if (card1.state === 1) {
+							card1.type = -1;
+							card1.value = -1;
+						}
+					}
+				}
+				for (var $t6 = 0; $t6 < tmp.deck.cards.length; $t6++) {
+					var card2 = tmp.deck.cards[$t6];
+					if (card2.state === 1) {
+						card2.type = -1;
+						card2.value = -1;
+					}
+				}
+				var stringify = JSON.stringify(CommonLibraries.Help.cleanUp(global.CardGame).call(null, tmp));
+				CommonShuffleLibrary.ServerLogger.logData('Send Data' + player.userName, stringify);
+				var val = this.$compress.CompressText(stringify);
+				this.$qManager.sendMessage(player.gateway, 'Area.Game.UpdateState', player, val);
+			}
 		},
 		sendAskQuestion: function(user, gameAnswer) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Game.AskQuestion', user, CommonLibraries.Help.cleanUp(Models.GameManagerModels.GameSendAnswerModel).call(null, gameAnswer));
@@ -989,48 +1431,16 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		unregisterGameServer: function(user) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Game.UnregisterServer', user, { server: this.get_gameServerIndex() });
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.GameServer.GameData
-	var $ServerManager_GameServer_GameData = function() {
-		this.finishedGames = 0;
-		this.totalGames = 0;
-		this.totalPlayers = 0;
-		this.totalQuestionsAnswered = 0;
-	};
-	$ServerManager_GameServer_GameData.prototype = {
+	});
+	ss.initClass($ServerManager_GameServer_GameData, {
 		toString: function() {
 			return 'Total: ' + this.totalGames + '\n Running: ' + this.$runningGames() + '\n Total Players: ' + this.totalPlayers + '\n Answered: ' + this.totalQuestionsAnswered;
 		},
 		$runningGames: function() {
 			return this.totalGames - this.finishedGames;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.GameServer.GameManager
-	var $ServerManager_GameServer_GameManager = function(gameServerIndex) {
-		this.$QUEUEPERTICK = 1;
-		this.$answerQueue = [];
-		this.$cachedGames = null;
-		this.$dataManager = null;
-		this.$gameData = null;
-		this.$myServerManager = null;
-		this.$rooms = null;
-		this.$skipped__ = 0;
-		this.$startTime = new Date();
-		this.$total__ = 0;
-		this.$myServerManager = new $ServerManager_GameServer_GameClientManager(gameServerIndex);
-		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
-		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
-		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
-		this.$myServerManager.add_onUserLeave(ss.mkdel(this, this.$userLeave));
-		this.$rooms = [];
-		this.$cachedGames = {};
-		this.$gameData = new $ServerManager_GameServer_GameData();
-		this.$dataManager = new CommonShuffleLibrary.DataManager();
-		setInterval(ss.mkdel(this, this.$flushQueue), 50);
-	};
-	$ServerManager_GameServer_GameManager.prototype = {
+	});
+	ss.initClass($ServerManager_GameServer_GameManager, {
 		$userDisconnect: function(user, data) {
 			for (var $t1 = 0; $t1 < this.$rooms.length; $t1++) {
 				var gameRoom = this.$rooms[$t1];
@@ -1072,14 +1482,15 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				room.gameType = data.gameType;
 				room.started = false;
 				ss.arrayAddRange(room.players, data.players);
+				var evaluated_game = null;
+				eval('evaluated_game=' + game.gameCode.code);
 				var gameObject;
 				if (ss.keyExists(this.$cachedGames, room.gameType)) {
 					gameObject = this.$cachedGames[room.gameType];
 				}
 				else {
-					gameObject = this.$cachedGames[room.gameType] = require(ss.formatString('./Games/{0}/app.js', room.gameType));
+					gameObject = this.$cachedGames[room.gameType] = evaluated_game;
 				}
-				//todo game.GameCode.Code
 				room.fiber = this.$createFiber(room, gameObject, true, game);
 				room.unwind = ss.mkdel(this, function(players) {
 					this.$gameData.finishedGames++;
@@ -1229,7 +1640,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		},
 		$gameOver: function(room) {
 			CommonShuffleLibrary.ServerLogger.logDebug('game real over', room);
-			this.$myServerManager.sendUpdateState(room);
+			this.$myServerManager.sendUpdateState(room, null);
 			this.$myServerManager.sendGameOver(room);
 			room.fiber.reset();
 			ss.remove(this.$rooms, room);
@@ -1254,7 +1665,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		$askQuestion: function(answ, room) {
 			var user = this.$getPlayerByUsername(room, answ.user.userName);
 			this.$myServerManager.sendAskQuestion(user, { question: answ.question, answers: answ.answers });
-			this.$myServerManager.sendUpdateState(room);
+			this.$myServerManager.sendUpdateState(room, answ.user);
 			CommonShuffleLibrary.ServerLogger.logDebug('Ask question   ', answ);
 		},
 		$getPlayerByUsername: function(room, userName) {
@@ -1278,174 +1689,10 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 			return null;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.GameServer.GameServer
-	var $ServerManager_GameServer_GameServer = function() {
-		this.$childProcess = null;
-		this.$gameServerIndex = null;
-		this.$gameServerIndex = 'GameServer' + CommonLibraries.Guid.newGuid();
-		CommonShuffleLibrary.ServerLogger.initLogger('GameServer', this.$gameServerIndex);
-		NodeLibraries.Common.Logging.Logger.start(this.$gameServerIndex);
-		this.$childProcess = require('child_process');
-		global.Fiber = require('fibers');
-		process.on('exit', function() {
-			CommonShuffleLibrary.ServerLogger.logError('exi', null);
-		});
-		var gameManager = new $ServerManager_GameServer_GameManager(this.$gameServerIndex);
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.GameServer.Models.GameRoom
-	var $ServerManager_GameServer_Models_GameRoom = function() {
-	};
-	$ServerManager_GameServer_Models_GameRoom.createInstance = function() {
-		return $ServerManager_GameServer_Models_GameRoom.$ctor();
-	};
-	$ServerManager_GameServer_Models_GameRoom.$ctor = function() {
-		var $this = {};
-		$this.emulatedAnswers = null;
-		$this.fiber = null;
-		$this.game = null;
-		$this.gameType = null;
-		$this.maxUsers = 0;
-		$this.players = null;
-		$this.roomID = null;
-		$this.started = false;
-		$this.unwind = null;
-		$this.playerLeave = null;
-		$this.playersLeft = null;
-		$this.players = [];
-		$this.roomID = CommonLibraries.Guid.newGuid();
-		$this.emulatedAnswers = [];
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.GatewayServer.GatewayServer
-	var $ServerManager_GatewayServer_GatewayServer = function() {
-		this.$myGatewayName = null;
-		this.$users = {};
-		this.$curc = 0;
-		this.$myGatewayName = 'Gateway ' + CommonLibraries.Guid.newGuid();
-		//
-		//
-		//                        var charm = Charmer.Setup();
-		//
-		//
-		//                        
-		//
-		//
-		//                        var prog = new ProgressBar(charm, 0, 100) {X = 5, Y = 5, Width = 10, CurValue = 12};
-		//
-		//
-		//                        
-		//
-		//
-		//                        Global.SetInterval(() => {
-		//
-		//
-		//                        prog.CurValue++;
-		//
-		//
-		//                        },200);
-		CommonShuffleLibrary.ServerLogger.initLogger('GatewayServer', this.$myGatewayName);
-		NodeLibraries.Common.Logging.Logger.start(this.$myGatewayName);
-		//ExtensionMethods.debugger("");
-		var http = require('http');
-		var app = http.createServer(function(req, res) {
-			res.end();
-		});
-		var io = require('socket.io').listen(app);
-		var fs = require('fs');
-		var queueManager;
-		var port = 1800 + (Math.random() * 4000 | 0);
-		port = 1800;
-		var currentSubdomain = 'gateway1';
-		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0] + ':' + port;
-		var content;
-		if (CommonLibraries.Constants.local) {
-			content = ss.formatString('http://{0}', currentIP);
-		}
-		else {
-			content = ss.formatString('http://{0}.{1}', currentSubdomain, 'anycardgame.com');
-		}
-		CommonShuffleLibrary.ServerLogger.logInformation('Server URL', content);
-		app.listen(port);
-		io.set('log level', 0);
-		new CommonShuffleLibrary.PubSub(function(ps) {
-			ps.subscribe('PUBSUB.GatewayServers.Ping', function(message) {
-				ps.publish('PUBSUB.GatewayServers', content);
-				//                          ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
-			});
-			//                                ps.Publish("PUBSUB.GatewayServers", string.Format("http://{0}:{1}", currentIP, port));
-			ps.publish('PUBSUB.GatewayServers', content);
-		});
-		queueManager = new CommonShuffleLibrary.QueueManager(this.$myGatewayName, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('GatewayServer', ss.mkdel(this, this.$messageReceived)), new CommonShuffleLibrary.QueueWatcher(this.$myGatewayName, ss.mkdel(this, this.$messageReceived))], ['SiteServer', 'GameServer*', 'GameServer', 'DebugServer', 'ChatServer', 'ChatServer*', 'HeadServer']));
-		io.sockets.on('connection', ss.mkdel(this, function(socket) {
-			var j = ++this.$curc;
-			CommonShuffleLibrary.ServerLogger.logDebug('Socket Connected ' + j, null);
-			var user = null;
-			socket.on('Gateway.Message', function(data) {
-				if (ss.isNullOrUndefined(user)) {
-					return;
-				}
-				CommonShuffleLibrary.ServerLogger.logDebug('Socket message ' + j + '  ', { data: data, user: user });
-				var channel = 'Bad';
-				switch (data.channel.split(String.fromCharCode(46))[1]) {
-					case 'Game': {
-						channel = ss.coalesce(user.currentGameServer, 'GameServer');
-						break;
-					}
-					case 'Site': {
-						channel = 'SiteServer';
-						break;
-					}
-					case 'Debug': {
-						channel = ss.coalesce(user.currentDebugServer, 'DebugServer');
-						break;
-					}
-					case 'Chat': {
-						channel = ss.coalesce(user.currentChatServer, 'ChatServer');
-						break;
-					}
-				}
-				queueManager.sendMessage(channel, data.channel, Models.UserSocketModel.toLogicModel(user), data.content);
-			});
-			socket.on('Gateway.Login', ss.mkdel(this, function(data1) {
-				//ExtensionMethods.debugger();
-				user = Models.UserSocketModel.$ctor();
-				user.password = data1.password;
-				user.socket = socket;
-				user.userName = data1.userName;
-				user.hash = data1.userName;
-				user.gateway = this.$myGatewayName;
-				CommonShuffleLibrary.ServerLogger.logDebug('Socket login ' + j, { data: data1, user: user });
-				this.$users[data1.userName] = user;
-				queueManager.sendMessage('SiteServer', 'Area.Site.Login', Models.UserSocketModel.toLogicModel(user), { hash: user.hash });
-			}));
-			socket.on('disconnect', ss.mkdel(this, function(data2) {
-				if (ss.isNullOrUndefined(user)) {
-					return;
-				}
-				CommonShuffleLibrary.ServerLogger.logDebug('Socket Left ' + j, { data: data2, user: user });
-				queueManager.sendMessage('SiteServer', 'Area.Site.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
-				//disconnecting from the room in site server disconencts from chat..
-				// if (user.CurrentChatServer != null)
-				//     queueManager.SendMessage(user.ToLogicModel(), user.CurrentChatServer, "Area.Chat.UserDisconnect", new UserDisconnectModel(user.ToLogicModel()));
-				if (ss.isValue(user.currentGameServer)) {
-					queueManager.sendMessage(user.currentGameServer, 'Area.Game.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
-				}
-				if (ss.isValue(user.currentDebugServer)) {
-					queueManager.sendMessage(user.currentDebugServer, 'Area.Debug.UserDisconnect', Models.UserSocketModel.toLogicModel(user), { user: Models.UserSocketModel.toLogicModel(user) });
-				}
-				delete this.$users[user.userName];
-				socket.removeAllListeners();
-				//socket.Delete();
-				delete io.sockets.sockets[socket.id];
-				this.$curc--;
-			}));
-		}));
-	};
-	$ServerManager_GatewayServer_GatewayServer.prototype = {
+	});
+	ss.initClass($ServerManager_GameServer_GameServer, {});
+	ss.initClass($ServerManager_GameServer_Models_GameRoom, {});
+	ss.initClass($ServerManager_GatewayServer_GatewayServer, {
 		$messageReceived: function(gateway, user, eventChannel, content) {
 			if (ss.keyExists(this.$users, user.userName)) {
 				var u = this.$users[user.userName];
@@ -1492,36 +1739,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}
 			return true;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.HeadServer.HeadServer
-	var $ServerManager_HeadServer_HeadServer = function() {
-		this.$__dirname = CommonLibraries.Constants.HARDLOCATION;
-		this.$fs = require('fs');
-		this.$gateways = [];
-		this.$indexForSites = [];
-		this.$indexPageData = null;
-		this.$oldGateways = [];
-		this.$oldIndex = [];
-		this.$pubsub = null;
-		this.$qManager = null;
-		this.$siteIndex = 0;
-		var name = 'Head1';
-		CommonShuffleLibrary.ServerLogger.initLogger('HeadServer', name);
-		NodeLibraries.Common.Logging.Logger.start(name);
-		this.$qManager = new CommonShuffleLibrary.QueueManager(name, new CommonShuffleLibrary.QueueManagerOptions([new CommonShuffleLibrary.QueueWatcher('HeadServer', null), new CommonShuffleLibrary.QueueWatcher(name, null)], ['GatewayServer']));
-		this.$fs.readFile(this.$__dirname + '/index.html', 'ascii', ss.mkdel(this, this.ready));
-		this.$pubsub = new CommonShuffleLibrary.PubSub(ss.mkdel(this, function(ps) {
-			ps.subscribe('PUBSUB.GatewayServers', ss.mkdel(this, function(message) {
-				ss.add(this.$indexForSites, ss.replaceAllString(this.$indexPageData, '{{gateway}}', message));
-				ss.add(this.$gateways, message);
-			}));
-		}));
-		require('http').createServer(ss.mkdel(this, this.$handlerWS)).listen(8844);
-		setInterval(ss.mkdel(this, this.$pollGateways), 5000);
-		this.$pollGateways();
-	};
-	$ServerManager_HeadServer_HeadServer.prototype = {
+	});
+	ss.initClass($ServerManager_HeadServer_HeadServer, {
 		$pollGateways: function() {
 			this.$pubsub.publish('PUBSUB.GatewayServers.Ping', '');
 			if (this.$indexForSites.length > 0) {
@@ -1560,67 +1779,9 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$indexPageData = content.toString();
 			require('http').createServer(ss.mkdel(this, this.$handler)).listen(1700);
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.MonitorServer.MonitorServer
-	var $ServerManager_MonitorServer_MonitorServer = function() {
-		this.users = {};
-		//ExtensionMethods.debugger("");
-		var http = require('http');
-		var app = http.createServer(function(req, res) {
-			res.end();
-		});
-		var io = require('socket.io').listen(app);
-		var fs = require('fs');
-		var queueManager;
-		var port = 9991;
-		var currentIP = NodeLibraries.Common.Logging.ServerHelper.getNetworkIPs()[0];
-		console.log(currentIP);
-		app.listen(port);
-		io.set('log level', 0);
-		var serverTypes = ['DebugServer', 'AdminServer', 'SiteServer', 'GameServer', 'ChatServer', 'GatewayServer', 'HeadServer'];
-		var connections = [];
-		for (var $t1 = 0; $t1 < serverTypes.length; $t1++) {
-			var serverType = serverTypes[$t1];
-			new CommonShuffleLibrary.ServerLogListener(serverType, function(mess) {
-				for (var $t2 = 0; $t2 < connections.length; $t2++) {
-					var socketIoConnection = connections[$t2];
-					socketIoConnection.emit(mess.serverType, mess);
-				}
-			});
-		}
-		io.sockets.on('connection', function(socket) {
-			ss.add(connections, socket);
-			socket.on('Gateway.Message', function(data) {
-			});
-			socket.on('disconnect', function(data1) {
-				ss.remove(connections, socket);
-			});
-		});
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.SiteServer.SiteClientManager
-	var $ServerManager_SiteServer_SiteClientManager = function(siteServerIndex) {
-		this.$qManager = null;
-		this.$1$SiteServerIndexField = null;
-		this.$1$OnUserCreateField = null;
-		this.$1$OnUserLoginField = null;
-		this.$1$OnGetGameTypesField = null;
-		this.$1$OnGetRoomsField = null;
-		this.$1$OnGetRoomInfoField = null;
-		this.$1$OnUserDisconnectField = null;
-		this.$1$OnLeaveRoomField = null;
-		this.$1$OnCreateRoomField = null;
-		this.$1$OnJoinRoomField = null;
-		this.$1$OnStartGameField = null;
-		this.$1$OnGetGamesByUserField = null;
-		this.$1$OnDoesGameNameExistField = null;
-		this.$1$OnDeveloperCreateGameField = null;
-		this.$1$OnDeveloperUpdateGameField = null;
-		this.set_siteServerIndex(siteServerIndex);
-		this.$setup();
-	};
-	$ServerManager_SiteServer_SiteClientManager.prototype = {
+	});
+	ss.initClass($ServerManager_MonitorServer_MonitorServer, {});
+	ss.initClass($ServerManager_SiteServer_SiteClientManager, {
 		get_siteServerIndex: function() {
 			return this.$1$SiteServerIndexField;
 		},
@@ -1801,37 +1962,15 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		sendCreateGameResponse: function(user, developerCreateGameResponse) {
 			this.$qManager.sendMessage(user.gateway, 'Area.Site.DeveloperCreateGame.Response', user, developerCreateGameResponse);
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.SiteServer.SiteManager
-	var $ServerManager_SiteServer_SiteManager = function(siteServerIndex) {
-		this.$myDataManager = null;
-		this.$mySiteClientManager = null;
-		this.$myDataManager = new CommonShuffleLibrary.DataManager();
-		this.$mySiteClientManager = new $ServerManager_SiteServer_SiteClientManager(siteServerIndex);
-		this.$mySiteClientManager.add_onUserLogin(ss.mkdel(this, this.$onUserLogin));
-		this.$mySiteClientManager.add_onUserCreate(ss.mkdel(this, this.$onUserCreate));
-		this.$mySiteClientManager.add_onGetGameTypes(ss.mkdel(this, this.$onGetGameTypes));
-		this.$mySiteClientManager.add_onGetRoomInfo(ss.mkdel(this, this.$onGetRoomInfo));
-		this.$mySiteClientManager.add_onGetRooms(ss.mkdel(this, this.$onGetRooms));
-		this.$mySiteClientManager.add_onCreateRoom(ss.mkdel(this, this.$onCreateRoom));
-		this.$mySiteClientManager.add_onJoinRoom(ss.mkdel(this, this.$onJoinRoom));
-		this.$mySiteClientManager.add_onLeaveRoom(ss.mkdel(this, this.$onLeaveRoom));
-		this.$mySiteClientManager.add_onStartGame(ss.mkdel(this, this.$onStartGame));
-		this.$mySiteClientManager.add_onGetGamesByUser(ss.mkdel(this, this.$onGetGamesByUser));
-		this.$mySiteClientManager.add_onDoesGameNameExist(ss.mkdel(this, this.$onDoesGameNameExist));
-		this.$mySiteClientManager.add_onDeveloperCreateGame(ss.mkdel(this, this.$onDeveloperCreateGame));
-		this.$mySiteClientManager.add_onDeveloperUpdateGame(ss.mkdel(this, this.$onDeveloperUpdateGame));
-		this.$mySiteClientManager.add_onUserDisconnect(ss.mkdel(this, this.$onUserDisconnect));
-	};
-	$ServerManager_SiteServer_SiteManager.prototype = {
+	});
+	ss.initClass($ServerManager_SiteServer_SiteManager, {
 		$onLeaveRoom: function(user, data) {
 			CommonShuffleLibrary.ServerLogger.logDebug(user.userName + ' manual leave', user);
 			this.$removeUserFromRoom(user, function(room) {
 			});
 		},
 		$onUserDisconnect: function(user, data) {
-			CommonShuffleLibrary.ServerLogger.logDebug(user.userName + ' disconnected', user);
+			CommonShuffleLibrary.ServerLogger.logDebug('Awww, dat ' + user.userName + ' disconnected ' + new Date(), user);
 			this.$removeUserFromRoom(data.user, function(room) {
 			});
 		},
@@ -1922,8 +2061,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		$onGetGameTypes: function(user) {
 			var $t1 = [];
 			ss.add($t1, { name: 'Blackjack' });
+			null;
 			ss.add($t1, { name: 'Sevens' });
+			null;
 			ss.add($t1, { name: 'NewSevens' });
+			null;
 			var types = $t1;
 			this.$mySiteClientManager.sendGameTypes(user, { gameTypes: types });
 		},
@@ -1970,41 +2112,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				this.$mySiteClientManager.sendCreateGameResponse(user, { gameModel: DataModels.SiteManagerModels.Game.GameDataModel.toModel(game) });
 			}));
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// ServerManager.SiteServer.SiteServer
-	var $ServerManager_SiteServer_SiteServer = function() {
-		this.$siteServerIndex = null;
-		new global.ArrayUtils();
-		this.$siteServerIndex = 'SiteServer' + CommonLibraries.Guid.newGuid();
-		CommonShuffleLibrary.ServerLogger.initLogger('SiteServer', this.$siteServerIndex);
-		NodeLibraries.Common.Logging.Logger.start(this.$siteServerIndex);
-		process.on('exit', function() {
-			CommonShuffleLibrary.ServerLogger.logError('exi SiteServer', null);
-		});
-		var siteManager = new $ServerManager_SiteServer_SiteManager(this.$siteServerIndex);
-	};
-	ss.registerClass(null, 'ServerManager.$ServerManager', $ServerManager_$ServerManager);
-	ss.registerClass(global, 'ServerManager.AdminServer.AdminServer', $ServerManager_AdminServer_AdminServer);
-	ss.registerClass(global, 'ServerManager.AdminServer.ProcessInformation', $ServerManager_AdminServer_ProcessInformation);
-	ss.registerClass(global, 'ServerManager.ChatServer.ChatClientManager', $ServerManager_ChatServer_ChatClientManager);
-	ss.registerClass(global, 'ServerManager.ChatServer.ChatManager', $ServerManager_ChatServer_ChatManager);
-	ss.registerClass(global, 'ServerManager.ChatServer.ChatServer', $ServerManager_ChatServer_ChatServer);
-	ss.registerClass(global, 'ServerManager.DebugGameServer.DebugGameClientManager', $ServerManager_DebugGameServer_DebugGameClientManager);
-	ss.registerClass(global, 'ServerManager.DebugGameServer.DebugGameData', $ServerManager_DebugGameServer_DebugGameData);
-	ss.registerClass(global, 'ServerManager.DebugGameServer.DebugGameManager', $ServerManager_DebugGameServer_DebugGameManager);
-	ss.registerClass(global, 'ServerManager.DebugGameServer.DebugGameServer', $ServerManager_DebugGameServer_DebugGameServer);
-	ss.registerClass(global, 'ServerManager.DebugGameServer.Models.DebugGameRoom', $ServerManager_DebugGameServer_Models_DebugGameRoom);
-	ss.registerClass(global, 'ServerManager.GameServer.GameClientManager', $ServerManager_GameServer_GameClientManager);
-	ss.registerClass(global, 'ServerManager.GameServer.GameData', $ServerManager_GameServer_GameData);
-	ss.registerClass(global, 'ServerManager.GameServer.GameManager', $ServerManager_GameServer_GameManager);
-	ss.registerClass(global, 'ServerManager.GameServer.GameServer', $ServerManager_GameServer_GameServer);
-	ss.registerClass(global, 'ServerManager.GameServer.Models.GameRoom', $ServerManager_GameServer_Models_GameRoom);
-	ss.registerClass(global, 'ServerManager.GatewayServer.GatewayServer', $ServerManager_GatewayServer_GatewayServer);
-	ss.registerClass(global, 'ServerManager.HeadServer.HeadServer', $ServerManager_HeadServer_HeadServer);
-	ss.registerClass(global, 'ServerManager.MonitorServer.MonitorServer', $ServerManager_MonitorServer_MonitorServer);
-	ss.registerClass(global, 'ServerManager.SiteServer.SiteClientManager', $ServerManager_SiteServer_SiteClientManager);
-	ss.registerClass(global, 'ServerManager.SiteServer.SiteManager', $ServerManager_SiteServer_SiteManager);
-	ss.registerClass(global, 'ServerManager.SiteServer.SiteServer', $ServerManager_SiteServer_SiteServer);
+	});
+	ss.initClass($ServerManager_SiteServer_SiteServer, {});
 	$ServerManager_$ServerManager.$main();
 })();

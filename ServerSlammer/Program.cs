@@ -58,7 +58,7 @@ namespace ServerSlammer
             ClientDebugManager debugManager = new ClientDebugManager(gateway);
             clientManager.Login(userName = randomString(10), "");
             clientManager.OnLogin += (user, response) => {
-                                         Console.Log("Success: " + response.Successful + "    " + user.UserName + myCount);
+                Console.WriteLine("Success: " + response.Successful + "    " + user.UserName + myCount);
                                          if (create)
                                              clientManager.CreateRoom(new CreateRoomRequest("Sevens", gameName));
                                          else {
@@ -77,7 +77,7 @@ namespace ServerSlammer
 
          
             clientManager.OnRoomJoined += (user, response) => {
-                                              Console.Log("joined " + response.Room.Players.Count + " Players");
+                Console.WriteLine("joined " + response.Room.Players.Count + " Players");
  
                                                   if (response.Room.Players.Count == 6)
                                                       clientManager.StartGame(new StartGameRequest());
@@ -86,7 +86,7 @@ namespace ServerSlammer
             clientManager.OnGetRoomInfoReceived += (user, response) => {
                                                        
                                                    };
-            gameManager.OnGameStarted += (user, model) => { Console.Log("Game Started: " + model.RoomID + "  " + userName); };
+            gameManager.OnGameStarted += (user, model) => { Console.WriteLine("Game Started: " + model.RoomID + "  " + userName); };
 
             gameManager.OnGameOver += (user, model) => { 
                                           gateway.Close();
@@ -95,7 +95,7 @@ namespace ServerSlammer
                                       };
 
             gameManager.OnAskQuestion += (user, model) => {
-                                             Console.Log("Question Asked: "+user.UserName+"   Num Of Answers: "+model.Answers.Length);
+                Console.WriteLine("Question Asked: " + user.UserName + "   Num Of Answers: " + model.Answers.Length);
                                              gameManager.AnswerQuestion(new GameAnswerQuestionModel(1));
                                          };
             gameManager.OnUpdateState += (user, s) => {

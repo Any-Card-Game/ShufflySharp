@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 namespace CommonLibraries
 {
+/*
     [IgnoreNamespace]
     [Imported]
     [ScriptName("console")]
@@ -11,4 +12,5 @@ namespace CommonLibraries
         public static void Error(Exception val) { }
         public static void Log() {}
     }
+*/
 }

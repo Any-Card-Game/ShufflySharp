@@ -23,24 +23,32 @@ namespace Client.Controllers
             GameContentManagerService gameContentManagerService, CreateUIService createUIService)
         {
             this.scope = scope;
+
             myClientDebugManagerService = clientDebugManagerService;
             myGameContentManagerService = gameContentManagerService;
             this.createUIService = createUIService;
 
-            myClientDebugManagerService.OnAskQuestion+= (user, gameSendAnswerModel) =>
-                                                         {
-                                                             createUIService.CreateSingleton<QuestionScope>(DebugQuestionController.View,
-                                                                 (myScope, elem) =>
-                                                                 {
-                                                                     myScope.Model = new QuestionScopeModel();
-                                                                     myScope.Model.Question =
-                                                                         gameSendAnswerModel.Question;
-                                                                     myScope.Model.Answers = gameSendAnswerModel.Answers;
-                                                                     myScope.Model.SelectedAnswer =
-                                                                         gameSendAnswerModel.Answers[0];
-                                                                 });
-                                                         };
 
+            CreatedUI<QuestionScope> lastQuestion = null;
+
+            myClientDebugManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
+                                                         {
+                                                             lastQuestion = createUIService.CreateSingleton<QuestionScope>(DebugQuestionController.View,
+                                                                                                                  (myScope, elem) =>
+                                                                                                                  {
+                                                                                                                      myScope.Model = new QuestionScopeModel();
+                                                                                                                      myScope.Model.Question = gameSendAnswerModel.Question;
+                                                                                                                      myScope.Model.Answers = gameSendAnswerModel.Answers;
+                                                                                                                      myScope.Model.SelectedAnswer = gameSendAnswerModel.Answers[0];
+                                                                                                                  });
+                                                         };
+            scope.OnDestroy += () =>
+                               {
+                                   if (lastQuestion != null)
+                                   {
+                                       lastQuestion.Destroy();
+                                   }
+                               };
 
             /* effectManager.Effects =new List<GameEffectModel>();
              effectManager.Effects.Add(GameEffectsEditorController.makeEffect("bend", EffectType.Bend));
@@ -55,46 +63,14 @@ namespace Client.Controllers
 
             var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
                                                                                            {
-                                                                                               var document =
-                                                                                                   (dynamic)
-                                                                                                       Script.Eval(
-                                                                                                           "window.document");
-
-                                                                                               var sheet =
-                                                                                                   document.head
-                                                                                                       .appendChild(
-                                                                                                           style).sheet;
+                                                                                               var document = (dynamic)Script.Eval("window.document");
+                                                                                               var sheet = document.head.appendChild(style).sheet;
                                                                                                return (selector, css) =>
                                                                                                       {
-                                                                                                          var propText =
-                                                                                                              Keys(css)
-                                                                                                                  .Map(
-                                                                                                                      (p)
-                                                                                                                          =>
-                                                                                                                      {
-                                                                                                                          return
-                                                                                                                              p +
-                                                                                                                              ":" +
-                                                                                                                              css
-                                                                                                                                  [
-                                                                                                                                      p
-                                                                                                                                  ];
-                                                                                                                      })
-                                                                                                                  .Join(
-                                                                                                                      ";");
-                                                                                                          sheet
-                                                                                                              .insertRule
-                                                                                                              (selector +
-                                                                                                               "{" +
-                                                                                                               propText +
-                                                                                                               "}",
-                                                                                                                  sheet
-                                                                                                                      .cssRules
-                                                                                                                      .length);
+                                                                                                          var propText = Keys(css).Map((p) => { return p + ":" + css[p]; }).Join(";");
+                                                                                                          sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
                                                                                                       };
-                                                                                           }))(
-                                                                                               Document.CreateElement(
-                                                                                                   "style"));
+                                                                                           }))(Document.CreateElement("style"));
 
 
             myClientDebugManagerService.OnUpdateState += (user, update) =>
@@ -110,21 +86,13 @@ namespace Client.Controllers
 
                                                              if (create)
                                                              {
-                                                                 scope.Scale =
-                                                                     new Point(
-                                                                         jQuery.Window.GetWidth()/
-                                                                         scope.MainArea.Size.Width*.9,
-                                                                         ((jQuery.Window.GetHeight() - 250)/
-                                                                          scope.MainArea.Size.Height)*.9);
+                                                                 scope.Scale = new Point(jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9);
 
                                                                  foreach (var space in scope.MainArea.Spaces)
                                                                  {
-                                                                     addRule(".space" + space.Name,
-                                                                         new JsDictionary<string, object>());
-                                                                     addRule(".space" + space.Name + "::before",
-                                                                         new JsDictionary<string, object>());
-                                                                     addRule(".space" + space.Name + "::after",
-                                                                         new JsDictionary<string, object>());
+                                                                     addRule(".space" + space.Name, new JsDictionary<string, object>());
+                                                                     addRule(".space" + space.Name + "::before", new JsDictionary<string, object>());
+                                                                     addRule(".space" + space.Name + "::after", new JsDictionary<string, object>());
 
 
                                                                      foreach (var card in space.Pile.Cards)
@@ -136,33 +104,25 @@ namespace Client.Controllers
                                                                              card.Effects.Add("bend");
                                                                          }
 
-                                                                         addRule(
-                                                                             ".card" + card.Type + "-" + card.Value + "",
-                                                                             new JsDictionary<string, object>());
-                                                                         addRule(
-                                                                             ".card" + card.Type + "-" + card.Value +
-                                                                             "::before",
-                                                                             new JsDictionary<string, object>());
-                                                                         addRule(
-                                                                             ".card" + card.Type + "-" + card.Value +
-                                                                             "::after",
-                                                                             new JsDictionary<string, object>());
+                                                                         addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
+                                                                         addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
+                                                                         addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
                                                                      }
                                                                  }
                                                              }
 
 
                                                              scope.Apply();
-                                                    //         myGameContentManagerService.Redraw();
+                                                             //         myGameContentManagerService.Redraw();
                                                          };
 
             jQuery.Window.Bind("resize", (a) =>
                                          {
                                              scope.Scale =
                                                  new Point(
-                                                     jQuery.Window.GetWidth()/(double) scope.MainArea.Size.Width*.9,
-                                                     ((jQuery.Window.GetHeight() - 250)/
-                                                      (double) scope.MainArea.Size.Height)*.9);
+                                                     jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9,
+                                                     ((jQuery.Window.GetHeight() - 250) /
+                                                      (double)scope.MainArea.Size.Height) * .9);
                                              scope.Apply();
                                          });
 

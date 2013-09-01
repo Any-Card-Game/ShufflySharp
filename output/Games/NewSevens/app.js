@@ -39,6 +39,7 @@ module.exports = Sevens = function() {
         while (self.cardGame.deck.cards.length > 0) {
             self.cardGame.users.foreach(function(u) {
                 if (self.cardGame.deck.cards.length > 0) {
+                    self.cardGame.deck.cards[0].state = 2;
                     u.cards.cards.push(self.cardGame.deck.cards[0]);
                     self.cardGame.deck.cards.remove(self.cardGame.deck.cards[0]);
                 }
@@ -170,6 +171,7 @@ module.exports = Sevens = function() {
 
                 if (de > 0 && usable.length >= de) {
                     var rm = usable[de - 1]; 
+                    rm.state = 0;
 
                     switch (rm.type) {
                     case 3:

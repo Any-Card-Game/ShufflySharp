@@ -17,7 +17,7 @@ namespace ClientLibs
 
         public Gateway(string gatewayServer,bool server)
         {
-            Console.Log("did " + gatewayServer);
+            Console.WriteLine("did " + gatewayServer);
             channels = new Dictionary<string, GatewayMessage>();
             if (server) {
                 var jv = new JsDictionary<string, bool>();
@@ -27,10 +27,7 @@ namespace ClientLibs
                 GatewaySocket = SocketIOClient.Connect(gatewayServer);
             }
             GatewaySocket.On<SocketClientMessageModel>("Client.Message", data => channels[data.Channel](data.User, data.Content));
-            GatewaySocket.On<string>("disconnect", data => {
-                                                       Console.Log("Disconnected");
-
-                                                   });
+            GatewaySocket.On<string>("disconnect", data => Console.WriteLine("Disconnected "+ DateTime.Now));
         }
 
         public void Emit(string channel, object content = null)

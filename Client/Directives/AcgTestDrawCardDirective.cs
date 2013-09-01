@@ -116,10 +116,15 @@ namespace Client.Directives
                                              "::before");
 
                                     keys = new JsDictionary<string, string>() {};
-                                    keys["content"] =
-                                        string.Format("url('{1}assets/cards/{0}.gif')",
-                                            (100 + (scope.Card.Value + 1) +
-                                             (scope.Card.Type)*13), Constants.ContentAddress);
+                                    if (scope.Card.Value == -1 && scope.Card.Type == -1)
+                                    {
+                                        keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", 155, Constants.ContentAddress);
+                                    }
+                                    else
+                                    {
+                                        keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13), Constants.ContentAddress);
+                                    }
+
                                     ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
 
@@ -205,8 +210,14 @@ namespace Client.Directives
                                 };
 
             keys = new JsDictionary<string, string>() {};
-            keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')",
-                (100 + (scope.Card.Value + 1) + (scope.Card.Type)*13), Constants.ContentAddress);
+            if (scope.Card.Value == -1 && scope.Card.Type == -1)
+            {
+                keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", 155, Constants.ContentAddress);
+            }
+            else
+            {
+                keys["content"] = string.Format("url('{1}assets/cards/{0}.gif')", (100 + (scope.Card.Value + 1) + (scope.Card.Type) * 13), Constants.ContentAddress);
+            }
             ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
             scope.watch("space", redrawCard, true);

@@ -5,6 +5,7 @@ using Client.Directives;
 using Client.Filters;
 using Client.Scope.Controller;
 using Client.Services;
+using CommonLibraries;
 using ng;
 
 namespace Client
@@ -14,6 +15,9 @@ namespace Client
         private const string ScopeName = "$scope";
         private const string RootScopeName = "$rootScope";
         private const string CompileName = "$compile";
+        private const string Http = "$http";
+        private const string TemplateCache = "$templateCache";
+
 
         public static void Setup(string gatewayServer)
         {
@@ -21,7 +25,9 @@ namespace Client
             var module = angular.Module("acg", new string[] { "ui.utils", "ui.codemirror" })
                             .Config(new object[] { "$routeProvider", new Action<IRouteProviderProvider>(buildRouteProvider) })
                             .Config(new object[] { "$httpProvider", new Action<dynamic>(buildHttpProvider) })
-                            .Value("gatewayServerURL", gatewayServer).Controller(GameController.Name, new object[] { ScopeName, ClientGameManagerService.Name, GameContentManagerService.Name, CreateUIService.Name, new Func<GameControllerScope, ClientGameManagerService, GameContentManagerService, CreateUIService, object>((scope, clientGameManagerService, gameContentManager, createUIService) => new GameController(scope, clientGameManagerService, gameContentManager, createUIService)) })
+                            .Value("gatewayServerURL", gatewayServer)
+                            .Controller(GameController.Name, new object[] { ScopeName, ClientGameManagerService.Name, GameContentManagerService.Name, CreateUIService.Name, new Func<GameControllerScope, ClientGameManagerService, GameContentManagerService, CreateUIService, object>((scope, clientGameManagerService, gameContentManager, createUIService) => new GameController(scope, clientGameManagerService, gameContentManager, createUIService)) })
+                            .Controller(MinimizeController.Name, new object[] { ScopeName, UIManagerService.Name, new Func<MinimizeScope, UIManagerService, object>((scope, uiManager) => new MinimizeController(scope, uiManager)) })
                             .Controller(DebugGameController.Name, new object[] { ScopeName, ClientDebugManagerService.Name, GameContentManagerService.Name, CreateUIService.Name, new Func<DebugGameControllerScope, ClientDebugManagerService, GameContentManagerService, CreateUIService, object>((scope, clientGameManagerService, gameContentManager, createUIService) => new DebugGameController(scope, clientGameManagerService, gameContentManager, createUIService)) })
                             .Controller(TestGameController.Name, new object[] { ScopeName, new Func<TestGameControllerScope, object>((scope) => new TestGameController(scope)) })
                             .Controller(GameEffectsEditorController.Name, new object[] { ScopeName, CreateUIService.Name, new Func<GameEffectsEditorScope, CreateUIService, object>((scope, createUIService) => new GameEffectsEditorController(scope, createUIService)) })
@@ -70,14 +76,45 @@ namespace Client
                             .Directive(ForNextDirective.Name, new object[] { new Func<object>(() => new ForNextDirective()) })
                             .Directive(SpecialNgRepeatDirective.Name, new object[] { CompileName, new Func<CompileService, object>((compilerService) => new SpecialNgRepeatDirective(compilerService)) })
                             .Directive(AcgSpacesDirective.Name, new object[] { CompileName, GameContentManagerService.Name, new Func<CompileService, GameContentManagerService, object>((compile, gameContentManager) => new AcgSpacesDirective(compile, gameContentManager)) })
-                            .Filter(RoundFilter.Name, new object[] { new Func<Func<object, object>>(() => new RoundFilter().Filter) }); ;
+                            .Filter(RoundFilter.Name, new object[] { new Func<Func<object, object>>(() => new RoundFilter().Filter) })
+                            .Run(new object[] { Http, TemplateCache, new Action<IHttpService, ITemplateCacheService>((http, templateCache) => buildCache(http, templateCache)) });
 
-            MinimizeController.Register(module);
+            //            MinimizeController.Register(module);
 
 
             /*                .Controller(MinimizeController.Name, new object[] { ScopeName, UIManagerService.Name, new Func<MinimizeScope, UIManagerService, object>((scope, uiManager) => new MinimizeController(scope, uiManager)) })
                
             */
+        }
+
+        private static void buildCache(IHttpService http, ITemplateCacheService templateCache)
+        {
+            string[] uis =
+            {  							GameController.View,
+  							MinimizeController.View,
+  							DebugGameController.View,
+  							TestGameController.View,
+  							GameEffectsEditorController.View,
+  							LoginController.View,
+  							DebugQuestionController.View,
+  							QuestionController.View,
+  							HomeController.View,
+  							ActiveLobbyController.View,
+  							CreateRoomController.View,
+  							GameManagerController.View,
+  							GameEditorController.View,
+  							GameLayoutEditorController.View,
+  							GameTestEditorController.View,
+  							GameScenarioEditorController.View,
+  							GameCodeController.View,
+  							MessageController.View,
+                            
+            };
+            for (int index = 0; index < uis.Length; index++)
+            {
+                var ui = string.Format("{1}partials/UIs/{0}.html", uis[index], Constants.ContentAddress);
+                http.Get(ui, null).Success(a => templateCache.Put(ui, a));
+            }
         }
 
         private static void buildRouteProvider(IRouteProviderProvider provider)

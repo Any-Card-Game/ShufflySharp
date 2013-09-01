@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Html;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
 using CommonLibraries;
 using Models;
 using Models.DebugGameManagerModels;
+using Models.GameManagerModels;
 using Models.SiteManagerModels;
 using Models.SiteManagerModels.Game;
 
@@ -37,22 +39,45 @@ namespace Client.Controllers
             };
 
             myScope.Model.StartGame = StartGameFn;
+            myScope.Model.DestroyGame = DestroyGameFn;
             
-            
+                myScope.Model.GameRunning = false;
+
+
+
             myScope.watch("model.game",
                 () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
-             
+
+
+            clientDebugManagerService.OnGetDebugLog += clientDebugManagerService_OnGetDebugLog;
+            clientDebugManagerService.OnGameStarted += (user, roomModel) =>
+            {
+                myScope.Model.GameRunning = true;
+                myScope.Model.Room = roomModel;
+            };
+
+
+
+        }
+
+        private void DestroyGameFn()
+        {
+            clientDebugManagerService.DestroyGame(new DestroyDebugGameRequest(myScope.Model.Room.RoomID));
+            myScope.Model.GameRunning = false;
+            myScope.Model.GameView.Destroy();
         }
 
         private void StartGameFn()
-        {
-            myCreateUIService.CreateSingleton(DebugGameController.View);
-            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));
-            clientDebugManagerService.OnGetDebugLog += clientDebugManagerService_OnGetDebugLog;
+        { 
+
+                                  myScope.Model.GameRunning = true;
+                                  myScope.Model.GameView = myCreateUIService.CreateSingleton(DebugGameController.View);
+                                  clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));
+
         }
 
         void clientDebugManagerService_OnGetDebugLog(UserModel user, DebugGameLogModel o)

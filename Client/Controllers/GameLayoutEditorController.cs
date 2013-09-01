@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Client.Scope.Controller;
 using Client.Services;
@@ -136,7 +137,7 @@ namespace Client.Controllers
                        {
                            Name = "Space" + (spaces.Count + 1),
                            LayoutType = GameSpaceLayoutType.Grow,
-                           Guid = Guid.NewGuid(),
+                           Guid = Guid.NewGuid().ToString(),
                            Left = 0,
                            Top = 0,
                            Height = 1,
@@ -157,42 +158,42 @@ namespace Client.Controllers
                                            {
                                                new GameLayoutScenarioCard()
                                                {
-                                                   CardGuid = Guid.NewGuid(),
+                                                   CardGuid = Guid.NewGuid().ToString(),
                                                    Type = 1,
                                                    Value = 5,
                                                    State = GameLayoutCardState.FaceDown
                                                },
                                                new GameLayoutScenarioCard()
                                                {
-                                                   CardGuid = Guid.NewGuid(),
+                                                   CardGuid = Guid.NewGuid().ToString(),
                                                    Type = 1,
                                                    Value = 5,
                                                    State = GameLayoutCardState.FaceUp
                                                },
                                                new GameLayoutScenarioCard()
                                                {
-                                                   CardGuid = Guid.NewGuid(),
+                                                   CardGuid = Guid.NewGuid().ToString(),
                                                    Type = 1,
                                                    Value = 5,
                                                    State = GameLayoutCardState.FaceDown
                                                },
                                                new GameLayoutScenarioCard()
                                                {
-                                                   CardGuid = Guid.NewGuid(),
+                                                   CardGuid = Guid.NewGuid().ToString(),
                                                    Type = 1,
                                                    Value = 5,
                                                    State = GameLayoutCardState.FaceUp
                                                },
                                                new GameLayoutScenarioCard()
                                                {
-                                                   CardGuid = Guid.NewGuid(),
+                                                   CardGuid = Guid.NewGuid().ToString(),
                                                    Type = 1,
                                                    Value = 5,
                                                    State = GameLayoutCardState.FaceDown
                                                },
                                                new GameLayoutScenarioCard()
                                                {
-                                                   CardGuid = Guid.NewGuid(),
+                                                   CardGuid = Guid.NewGuid().ToString(),
                                                    Type = 1,
                                                    Value = 5,
                                                    State = GameLayoutCardState.FaceUp
@@ -246,7 +247,7 @@ namespace Client.Controllers
 
             areas.Add(new GameAreaModel()
                       {
-                          Guid = Guid.NewGuid(),
+                          Guid = Guid.NewGuid().ToString(),
                           Name = "Area" + (areas.Count + 1),
                           Left = 0,
                           Top = 0,
@@ -262,7 +263,7 @@ namespace Client.Controllers
 
             texts.Add(new GameTextModel()
                       {
-                          Guid = Guid.NewGuid(),
+                          Guid = Guid.NewGuid().ToString(),
                           Name = "Text" + (texts.Count + 1),
                           Left = 0,
                           Top = 0,

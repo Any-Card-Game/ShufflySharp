@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Html;
 using Models;
 
 namespace Client.Services
@@ -17,7 +18,8 @@ namespace Client.Services
                 {
                     foreach (var cachedTrigger in cachedTriggers)
                     {
-                        Trigger(cachedTrigger.Item1, cachedTrigger.Item2);
+                        Tuple<UserModel, T> trigger = cachedTrigger;
+                        Window.SetTimeout(() => Trigger(trigger.Item1, trigger.Item2), 1);
                     }
                     cachedTriggers.Clear();
                 }

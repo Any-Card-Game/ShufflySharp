@@ -1,16 +1,25 @@
 
 (function() {
+	'use strict';
+	global.DataModels = global.DataModels || {};
+	global.DataModels.ChatManagerModels = global.DataModels.ChatManagerModels || {};
+	global.DataModels.GameManagerModels = global.DataModels.GameManagerModels || {};
+	global.DataModels.SiteManagerModels = global.DataModels.SiteManagerModels || {};
+	global.DataModels.SiteManagerModels.Game = global.DataModels.SiteManagerModels.Game || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// DataModels.ChatManagerModels.ChatRoomDataModel
 	var $DataModels_ChatManagerModels_ChatRoomDataModel = function() {
 	};
+	$DataModels_ChatManagerModels_ChatRoomDataModel.__typeName = 'DataModels.ChatManagerModels.ChatRoomDataModel';
 	$DataModels_ChatManagerModels_ChatRoomDataModel.toModel = function($this) {
 		return { roomName: $this.roomName, users: $this.users, messages: $this.messages };
 	};
+	global.DataModels.ChatManagerModels.ChatRoomDataModel = $DataModels_ChatManagerModels_ChatRoomDataModel;
 	////////////////////////////////////////////////////////////////////////////////
 	// DataModels.GameManagerModels.GameInfoDataModel
 	var $DataModels_GameManagerModels_GameInfoDataModel = function() {
 	};
+	$DataModels_GameManagerModels_GameInfoDataModel.__typeName = 'DataModels.GameManagerModels.GameInfoDataModel';
 	$DataModels_GameManagerModels_GameInfoDataModel.createInstance = function() {
 		return $DataModels_GameManagerModels_GameInfoDataModel.$ctor();
 	};
@@ -20,17 +29,21 @@
 		$this.gameName = null;
 		return $this;
 	};
+	global.DataModels.GameManagerModels.GameInfoDataModel = $DataModels_GameManagerModels_GameInfoDataModel;
 	////////////////////////////////////////////////////////////////////////////////
 	// DataModels.SiteManagerModels.RoomDataModel
 	var $DataModels_SiteManagerModels_RoomDataModel = function() {
 	};
+	$DataModels_SiteManagerModels_RoomDataModel.__typeName = 'DataModels.SiteManagerModels.RoomDataModel';
 	$DataModels_SiteManagerModels_RoomDataModel.toModel = function($this) {
 		return { gameType: $this.gameType, roomName: $this.roomName, chatChannel: $this.chatChannel, gameChannel: $this.gameChannel, players: $this.players, chatServer: $this.chatServer, gameServer: $this.gameServer, id: $this._id };
 	};
+	global.DataModels.SiteManagerModels.RoomDataModel = $DataModels_SiteManagerModels_RoomDataModel;
 	////////////////////////////////////////////////////////////////////////////////
 	// DataModels.SiteManagerModels.UserModelData
 	var $DataModels_SiteManagerModels_UserModelData = function() {
 	};
+	$DataModels_SiteManagerModels_UserModelData.__typeName = 'DataModels.SiteManagerModels.UserModelData';
 	$DataModels_SiteManagerModels_UserModelData.createInstance = function() {
 		return $DataModels_SiteManagerModels_UserModelData.$ctor();
 	};
@@ -40,10 +53,12 @@
 		$this.password = null;
 		return $this;
 	};
+	global.DataModels.SiteManagerModels.UserModelData = $DataModels_SiteManagerModels_UserModelData;
 	////////////////////////////////////////////////////////////////////////////////
 	// DataModels.SiteManagerModels.Game.GameDataModel
 	var $DataModels_SiteManagerModels_Game_GameDataModel = function() {
 	};
+	$DataModels_SiteManagerModels_Game_GameDataModel.__typeName = 'DataModels.SiteManagerModels.Game.GameDataModel';
 	$DataModels_SiteManagerModels_Game_GameDataModel.createInstance = function() {
 		return $DataModels_SiteManagerModels_Game_GameDataModel.$ctor();
 	};
@@ -78,9 +93,10 @@
 		$this.deleted = false;
 		return $this;
 	};
-	ss.registerClass(global, 'DataModels.ChatManagerModels.ChatRoomDataModel', $DataModels_ChatManagerModels_ChatRoomDataModel, NodeLibraries.MongoDB.MongoDocument);
-	ss.registerClass(global, 'DataModels.GameManagerModels.GameInfoDataModel', $DataModels_GameManagerModels_GameInfoDataModel, NodeLibraries.MongoDB.MongoDocument);
-	ss.registerClass(global, 'DataModels.SiteManagerModels.RoomDataModel', $DataModels_SiteManagerModels_RoomDataModel, NodeLibraries.MongoDB.MongoDocument);
-	ss.registerClass(global, 'DataModels.SiteManagerModels.UserModelData', $DataModels_SiteManagerModels_UserModelData, NodeLibraries.MongoDB.MongoDocument);
-	ss.registerClass(global, 'DataModels.SiteManagerModels.Game.GameDataModel', $DataModels_SiteManagerModels_Game_GameDataModel, NodeLibraries.MongoDB.MongoDocument);
+	global.DataModels.SiteManagerModels.Game.GameDataModel = $DataModels_SiteManagerModels_Game_GameDataModel;
+	ss.initClass($DataModels_ChatManagerModels_ChatRoomDataModel, {}, NodeLibraries.MongoDB.MongoDocument);
+	ss.initClass($DataModels_GameManagerModels_GameInfoDataModel, {}, NodeLibraries.MongoDB.MongoDocument);
+	ss.initClass($DataModels_SiteManagerModels_RoomDataModel, {}, NodeLibraries.MongoDB.MongoDocument);
+	ss.initClass($DataModels_SiteManagerModels_UserModelData, {}, NodeLibraries.MongoDB.MongoDocument);
+	ss.initClass($DataModels_SiteManagerModels_Game_GameDataModel, {}, NodeLibraries.MongoDB.MongoDocument);
 })();

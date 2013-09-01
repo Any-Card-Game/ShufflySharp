@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Client.Scope.Controller;
 using Client.Services;
@@ -77,7 +78,7 @@ namespace Client.Controllers
                          {
                              Name = effectName,
                              Properties = new List<GameEffectPropertyModel>(),
-                             Guid = Guid.NewGuid()
+                             Guid = Guid.NewGuid().ToString()
                          };
             effect.Type = type;
             switch (effect.Type)

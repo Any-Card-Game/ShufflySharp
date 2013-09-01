@@ -1,15 +1,15 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace ng
 {
     [Imported]
     public interface IDestructuredResponse
     {
-#if TODO
-        data: any;
-        status: number;
-        headers: (headerName: string) => string;
-        config: IRequestConfig;
-#endif
+        object Data { get; set; }
+        int Status { get; set; }
+        Func<string, string> Headers { get; set; }
+        IRequestConfig Config { get; set; }
+
     }
 }

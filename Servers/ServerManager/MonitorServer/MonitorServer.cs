@@ -27,7 +27,7 @@ namespace ServerManager.MonitorServer
             var port = 9991 ;
 
             string currentIP = ServerHelper.GetNetworkIPs()[0];
-            Console.Log(currentIP); 
+            Console.WriteLine(currentIP); 
 
             app.Listen(port);
             io.Set("log level", 0);

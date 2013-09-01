@@ -1,6 +1,7 @@
 using System;
 namespace CommonLibraries
 {
+/*
     public static class Guid
     {
         public static string NewGuid()
@@ -12,4 +13,5 @@ namespace CommonLibraries
             return guid;
         }
     }
+*/
 }

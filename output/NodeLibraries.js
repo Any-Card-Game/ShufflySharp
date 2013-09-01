@@ -1,14 +1,23 @@
 require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 (function() {
+	'use strict';
+	global.NodeLibraries = global.NodeLibraries || {};
+	global.NodeLibraries.Common = global.NodeLibraries.Common || {};
+	global.NodeLibraries.Common.Charm = global.NodeLibraries.Common.Charm || {};
+	global.NodeLibraries.Common.Logging = global.NodeLibraries.Common.Logging || {};
+	global.NodeLibraries.MongoDB = global.NodeLibraries.MongoDB || {};
+	global.NodeLibraries.Redis = global.NodeLibraries.Redis || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.CharmColors
 	var $NodeLibraries_Common_Charm_CharmColors = function() {
 	};
-	$NodeLibraries_Common_Charm_CharmColors.prototype = { red: 'red', cyan: 'cyan', yellow: 'yellow', green: 'green', blue: 'blue', magenta: 'magenta', black: 'black', white: 'white' };
+	$NodeLibraries_Common_Charm_CharmColors.__typeName = 'NodeLibraries.Common.Charm.CharmColors';
+	global.NodeLibraries.Common.Charm.CharmColors = $NodeLibraries_Common_Charm_CharmColors;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.Charmer
 	var $NodeLibraries_Common_Charm_Charmer = function() {
 	};
+	$NodeLibraries_Common_Charm_Charmer.__typeName = 'NodeLibraries.Common.Charm.Charmer';
 	$NodeLibraries_Common_Charm_Charmer.setup = function() {
 		var ch = require('charm');
 		var charm = ch();
@@ -43,20 +52,24 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 			theta += Math.PI / 40;
 		}, 50);
 	};
+	global.NodeLibraries.Common.Charm.Charmer = $NodeLibraries_Common_Charm_Charmer;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.DisplayType
 	var $NodeLibraries_Common_Charm_DisplayType = function() {
 	};
-	$NodeLibraries_Common_Charm_DisplayType.prototype = { reset: 'reset', bright: 'bright', dim: 'dim', underscore: 'underscore', blink: 'blink', reverse: 'reverse', hidden: 'hidden' };
+	$NodeLibraries_Common_Charm_DisplayType.__typeName = 'NodeLibraries.Common.Charm.DisplayType';
+	global.NodeLibraries.Common.Charm.DisplayType = $NodeLibraries_Common_Charm_DisplayType;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Charm.EraseType
 	var $NodeLibraries_Common_Charm_EraseType = function() {
 	};
-	$NodeLibraries_Common_Charm_EraseType.prototype = { end: 'end', start: 'start', line: 'line', down: 'down', Up: 'Up', screen: 'screen' };
+	$NodeLibraries_Common_Charm_EraseType.__typeName = 'NodeLibraries.Common.Charm.EraseType';
+	global.NodeLibraries.Common.Charm.EraseType = $NodeLibraries_Common_Charm_EraseType;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.Common
 	var $NodeLibraries_Common_Logging_Common = function() {
 	};
+	$NodeLibraries_Common_Logging_Common.__typeName = 'NodeLibraries.Common.Logging.Common';
 	$NodeLibraries_Common_Logging_Common.shortDate = function() {
 		var sb = '';
 		var dt = new Date();
@@ -82,10 +95,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 		sb += dt.getSeconds();
 		return sb;
 	};
+	global.NodeLibraries.Common.Logging.Common = $NodeLibraries_Common_Logging_Common;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.Logger
 	var $NodeLibraries_Common_Logging_Logger = function() {
 	};
+	$NodeLibraries_Common_Logging_Logger.__typeName = 'NodeLibraries.Common.Logging.Logger';
 	$NodeLibraries_Common_Logging_Logger.start = function(key) {
 		console.log(key + ' - ' + $NodeLibraries_Common_Logging_Common.longDate());
 		$NodeLibraries_Common_Logging_Logger.$key = key + ' - ' + $NodeLibraries_Common_Logging_Common.longDate() + '.txt';
@@ -116,17 +131,19 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 		}
 		$NodeLibraries_Common_Logging_Logger.$fs.appendFile('logs/' + $NodeLibraries_Common_Logging_Logger.$key, item + '\n', null, function(error, outp) {
 			if (ss.isValue(error)) {
-				console.log(error);
+				console.log(error.toString());
 				console.log(outp);
 			}
 		});
 		return item;
 	};
+	global.NodeLibraries.Common.Logging.Logger = $NodeLibraries_Common_Logging_Logger;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.LogLevel
 	var $NodeLibraries_Common_Logging_LogLevel = function() {
 	};
-	$NodeLibraries_Common_Logging_LogLevel.prototype = { error: 'error', debugInformation: 'debugInformation', information: 'information', transportInfo: 'transportInfo', dataInfo: 'dataInfo', keepAlive: 'keepAlive' };
+	$NodeLibraries_Common_Logging_LogLevel.__typeName = 'NodeLibraries.Common.Logging.LogLevel';
+	global.NodeLibraries.Common.Logging.LogLevel = $NodeLibraries_Common_Logging_LogLevel;
 	////////////////////////////////////////////////////////////////////////////////
 	// NodeLibraries.Common.Logging.ProgressBar
 	var $NodeLibraries_Common_Logging_ProgressBar = function(charm, minValue, maxValue) {
@@ -141,7 +158,80 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 		this.set_maxValue(maxValue);
 		this.$myCharm = charm;
 	};
-	$NodeLibraries_Common_Logging_ProgressBar.prototype = {
+	$NodeLibraries_Common_Logging_ProgressBar.__typeName = 'NodeLibraries.Common.Logging.ProgressBar';
+	global.NodeLibraries.Common.Logging.ProgressBar = $NodeLibraries_Common_Logging_ProgressBar;
+	////////////////////////////////////////////////////////////////////////////////
+	// NodeLibraries.Common.Logging.ServerHelper
+	var $NodeLibraries_Common_Logging_ServerHelper = function() {
+	};
+	$NodeLibraries_Common_Logging_ServerHelper.__typeName = 'NodeLibraries.Common.Logging.ServerHelper';
+	$NodeLibraries_Common_Logging_ServerHelper.getNetworkIPs = function() {
+		var os = require('os');
+		var interfaces = os.networkInterfaces();
+		var addresses = [];
+		var $t1 = new ss.ObjectEnumerator(interfaces);
+		try {
+			while ($t1.moveNext()) {
+				var k = $t1.current();
+				var $t2 = new ss.ObjectEnumerator(k.value);
+				try {
+					while ($t2.moveNext()) {
+						var k2 = $t2.current();
+						var address = k2.value;
+						if (!!(address.family === 'IPv4' && !address.internal)) {
+							ss.add(addresses, ss.cast(address.address, String));
+						}
+					}
+				}
+				finally {
+					$t2.dispose();
+				}
+			}
+		}
+		finally {
+			$t1.dispose();
+		}
+		return addresses;
+	};
+	global.NodeLibraries.Common.Logging.ServerHelper = $NodeLibraries_Common_Logging_ServerHelper;
+	////////////////////////////////////////////////////////////////////////////////
+	// NodeLibraries.MongoDB.MongoDocument
+	var $NodeLibraries_MongoDB_MongoDocument = function() {
+	};
+	$NodeLibraries_MongoDB_MongoDocument.__typeName = 'NodeLibraries.MongoDB.MongoDocument';
+	$NodeLibraries_MongoDB_MongoDocument.createInstance = function() {
+		return $NodeLibraries_MongoDB_MongoDocument.$ctor();
+	};
+	$NodeLibraries_MongoDB_MongoDocument.getID = function(id) {
+		if (ss.isNullOrUndefined(id)) {
+			return null;
+		}
+		if (ss.referenceEquals(ss.getInstanceType(id), String)) {
+			return $NodeLibraries_MongoDB_MongoDocument.objectID(id);
+		}
+		return id;
+	};
+	$NodeLibraries_MongoDB_MongoDocument.$ctor = function() {
+		var $this = {};
+		$this._id = null;
+		return $this;
+	};
+	global.NodeLibraries.MongoDB.MongoDocument = $NodeLibraries_MongoDB_MongoDocument;
+	////////////////////////////////////////////////////////////////////////////////
+	// NodeLibraries.Redis.RedisClient
+	var $NodeLibraries_Redis_RedisClient = function() {
+		EventEmitter.call(this);
+	};
+	$NodeLibraries_Redis_RedisClient.__typeName = 'NodeLibraries.Redis.RedisClient';
+	global.NodeLibraries.Redis.RedisClient = $NodeLibraries_Redis_RedisClient;
+	ss.initEnum($NodeLibraries_Common_Charm_CharmColors, { red: 'red', cyan: 'cyan', yellow: 'yellow', green: 'green', blue: 'blue', magenta: 'magenta', black: 'black', white: 'white' });
+	ss.initClass($NodeLibraries_Common_Charm_Charmer, {});
+	ss.initEnum($NodeLibraries_Common_Charm_DisplayType, { reset: 'reset', bright: 'bright', dim: 'dim', underscore: 'underscore', blink: 'blink', reverse: 'reverse', hidden: 'hidden' });
+	ss.initEnum($NodeLibraries_Common_Charm_EraseType, { end: 'end', start: 'start', line: 'line', down: 'down', Up: 'Up', screen: 'screen' });
+	ss.initClass($NodeLibraries_Common_Logging_Common, {});
+	ss.initClass($NodeLibraries_Common_Logging_Logger, {});
+	ss.initEnum($NodeLibraries_Common_Logging_LogLevel, { error: 'error', debugInformation: 'debugInformation', information: 'information', transportInfo: 'transportInfo', dataInfo: 'dataInfo', keepAlive: 'keepAlive' });
+	ss.initClass($NodeLibraries_Common_Logging_ProgressBar, {
 		get_minValue: function() {
 			return this.$1$MinValueField;
 		},
@@ -200,66 +290,10 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 		set_width: function(value) {
 			this.$1$WidthField = value;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// NodeLibraries.Common.Logging.ServerHelper
-	var $NodeLibraries_Common_Logging_ServerHelper = function() {
-	};
-	$NodeLibraries_Common_Logging_ServerHelper.getNetworkIPs = function() {
-		var os = require('os');
-		var interfaces = os.networkInterfaces();
-		var addresses = [];
-		var $t1 = new ss.ObjectEnumerator(interfaces);
-		try {
-			while ($t1.moveNext()) {
-				var k = $t1.current();
-				var $t2 = new ss.ObjectEnumerator(k.value);
-				try {
-					while ($t2.moveNext()) {
-						var k2 = $t2.current();
-						var address = k2.value;
-						if (!!(address.family === 'IPv4' && !address.internal)) {
-							ss.add(addresses, ss.cast(address.address, String));
-						}
-					}
-				}
-				finally {
-					$t2.dispose();
-				}
-			}
-		}
-		finally {
-			$t1.dispose();
-		}
-		return addresses;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// NodeLibraries.MongoDB.MongoDocument
-	var $NodeLibraries_MongoDB_MongoDocument = function() {
-	};
-	$NodeLibraries_MongoDB_MongoDocument.createInstance = function() {
-		return $NodeLibraries_MongoDB_MongoDocument.$ctor();
-	};
-	$NodeLibraries_MongoDB_MongoDocument.getID = function(id) {
-		if (ss.isNullOrUndefined(id)) {
-			return null;
-		}
-		if (ss.referenceEquals(ss.getInstanceType(id), String)) {
-			return $NodeLibraries_MongoDB_MongoDocument.objectID(id);
-		}
-		return id;
-	};
-	$NodeLibraries_MongoDB_MongoDocument.$ctor = function() {
-		var $this = {};
-		$this._id = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// NodeLibraries.Redis.RedisClient
-	var $NodeLibraries_Redis_RedisClient = function() {
-		EventEmitter.call(this);
-	};
-	$NodeLibraries_Redis_RedisClient.prototype = {
+	});
+	ss.initClass($NodeLibraries_Common_Logging_ServerHelper, {});
+	ss.initClass($NodeLibraries_MongoDB_MongoDocument, {});
+	ss.initClass($NodeLibraries_Redis_RedisClient, {
 		publish: function(channel, content) {
 		},
 		subscribe: function(channel) {
@@ -270,18 +304,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;
 		},
 		blpop: function(objectsAndTimeout, action) {
 		}
-	};
-	ss.registerEnum(global, 'NodeLibraries.Common.Charm.CharmColors', $NodeLibraries_Common_Charm_CharmColors);
-	ss.registerClass(global, 'NodeLibraries.Common.Charm.Charmer', $NodeLibraries_Common_Charm_Charmer);
-	ss.registerEnum(global, 'NodeLibraries.Common.Charm.DisplayType', $NodeLibraries_Common_Charm_DisplayType);
-	ss.registerEnum(global, 'NodeLibraries.Common.Charm.EraseType', $NodeLibraries_Common_Charm_EraseType);
-	ss.registerClass(global, 'NodeLibraries.Common.Logging.Common', $NodeLibraries_Common_Logging_Common);
-	ss.registerClass(global, 'NodeLibraries.Common.Logging.Logger', $NodeLibraries_Common_Logging_Logger);
-	ss.registerEnum(global, 'NodeLibraries.Common.Logging.LogLevel', $NodeLibraries_Common_Logging_LogLevel);
-	ss.registerClass(global, 'NodeLibraries.Common.Logging.ProgressBar', $NodeLibraries_Common_Logging_ProgressBar);
-	ss.registerClass(global, 'NodeLibraries.Common.Logging.ServerHelper', $NodeLibraries_Common_Logging_ServerHelper);
-	ss.registerClass(global, 'NodeLibraries.MongoDB.MongoDocument', $NodeLibraries_MongoDB_MongoDocument);
-	ss.registerClass(global, 'NodeLibraries.Redis.RedisClient', $NodeLibraries_Redis_RedisClient, EventEmitter);
+	}, EventEmitter);
 	$NodeLibraries_Common_Logging_Logger.$fs = null;
 	$NodeLibraries_Common_Logging_Logger.$key = null;
 	$NodeLibraries_Common_Logging_Logger.$fs = require('fs');

@@ -10,6 +10,7 @@ namespace Client.Controllers
     internal class MinimizeController:AngularController
     {
         public const string Name = "MinimizeController";
+        public const string View = "MinimizeArea";
         private readonly MinimizeScope myScope;
         private UIManagerService myUIManager;
 

@@ -47,13 +47,13 @@
 <script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/mode/javascript/javascript.js"> </script>
       
 <div ng-controller="GameCodeController">
-    <div floating-window left="'25%'" top="'50%'" height="'700px'" width="'1000px'" window-title="'Code Editor'" visible="visible">
+    <div floating-window left="'25%'" top="'50%'" height="'500px'" width="'1000px'" window-title="'Code Editor'" visible="visible">
         
         
         <textarea ui-codemirror="{lineNumbers: true,theme:'midnight',mode:'javascript',extraKeys: { 'Ctrl-Space': 'autocomplete','Ctrl-S': 'save' }}" 
                   ng-model="model.game.gameCode.code" ui-refresh="model.forceUpdate"></textarea>
         
-        <button ng-click="model.updateGame() ">save</button>
+        <button class="btn col-main full-width pad-top-small" ng-click="model.updateGame() ">save</button>
         {{model.updateStatus}}
     </div>
 </div>

@@ -8,6 +8,9 @@ namespace ng
     [Imported]
     public interface IHttpService
     {
+
+        IHttpPromise Get(string url, object requestConfig);
+
 #if TODO
 
     // At least moethod and url must be provided...

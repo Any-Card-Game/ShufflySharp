@@ -51,7 +51,7 @@ namespace NodeLibraries.Common.Logging
         {
 
 
-            Console.Log(key + " - " + Common.LongDate());
+            Console.WriteLine(key + " - " + Common.LongDate());
             Key = key + " - " + Common.LongDate() + ".txt";
             Log("Start: "+key, LogLevel.Information);
         }
@@ -61,7 +61,7 @@ namespace NodeLibraries.Common.Logging
             switch (level)
             {
                 case LogLevel.Error:
-                    Console.Log(item);
+                    Console.WriteLine(item);
                     break;
                 case LogLevel.DebugInformation:
                     break;
@@ -79,8 +79,8 @@ namespace NodeLibraries.Common.Logging
                                                          {
                                                              if (error != null)
                                                              {
-                                                                 Console.Log(error);
-                                                                 Console.Log(outp);
+                                                                 Console.WriteLine(error.ToString());
+                                                                 Console.WriteLine(outp);
                                                              }
                                                          });
             return item;

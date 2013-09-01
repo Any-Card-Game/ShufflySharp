@@ -38,5 +38,9 @@ namespace Client.Services
         {
             clientDebugManager.CreateGame(createDebugGameRequest);
         }
+        public void DestroyGame(DestroyDebugGameRequest destroyDebugGameRequest)
+        {
+            clientDebugManager.DestroyGame(destroyDebugGameRequest);
+        }
     }
 }

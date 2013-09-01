@@ -1,9 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
+using Client.Services;
 
 namespace Client.Scope.Directive
 {
-    public class FloatingWindowBaseScope : BaseScope
+    public class FloatingWindowBaseScope : ManagedScope
     {
         [IntrinsicProperty]
         public Action<SwingDirection, bool, Action> SwingAway { get; set; }

@@ -106,5 +106,6 @@ namespace ng
         requires: string[];
 #endif
         IModule Filter(string name, object[] injectionArgs);
+        IModule Run(object[] injectionArgs);
     }
 }

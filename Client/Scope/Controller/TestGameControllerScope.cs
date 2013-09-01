@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Client.Services;
 using CommonLibraries;
 using Models.SiteManagerModels.Game;
 
 namespace Client.Scope.Controller
 {
-    public class TestGameControllerScope : BaseScope
+    public class TestGameControllerScope : ManagedScope
     {
         [IntrinsicProperty]
         public TestGameControllerScopeModel Model { get; set; }

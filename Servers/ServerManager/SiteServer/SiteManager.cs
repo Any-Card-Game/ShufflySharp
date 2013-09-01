@@ -49,7 +49,7 @@ namespace ServerManager.SiteServer
 
         private void OnUserDisconnect(UserLogicModel user, UserDisconnectModel data)
         {
-            ServerLogger.LogDebug(user.UserName + " disconnected", user);
+            ServerLogger.LogDebug("Awww, dat " + user.UserName + " disconnected " + DateTime.Now, user);
             removeUserFromRoom(data.User, (room) => { });
         }
 

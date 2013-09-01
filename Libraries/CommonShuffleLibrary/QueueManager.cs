@@ -47,7 +47,7 @@ namespace CommonShuffleLibrary
                     channels[eventChannel](user, content);
 
             } catch (Exception ex) {
-                Console.Error(ex);
+                Console.WriteLine(ex.ToString());
             }
         }
 

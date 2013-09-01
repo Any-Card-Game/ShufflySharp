@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Client.Scope.Directive;
+using Client.Services;
+using Models.GameManagerModels;
 using Models.SiteManagerModels.Game;
 
 namespace Client.Scope.Controller
@@ -42,6 +44,10 @@ namespace Client.Scope.Controller
         public GameModel Game { get; set; }
         public Action StartGame { get; set; }
         public string Log { get; set; }
+        public bool GameRunning { get; set; }
+        public Action DestroyGame { get; set; }
+        public GameRoomModel Room { get; set; }
+        public CreatedUI<ManagedScope> GameView { get; set; }
     }
 
     [Serializable]

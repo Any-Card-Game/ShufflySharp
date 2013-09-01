@@ -24,7 +24,7 @@ namespace ServerManager.GameServer.Models
         public GameRoom()
         {
             Players = new List<UserLogicModel>();
-            RoomID = Guid.NewGuid();
+            RoomID = Guid.NewGuid().ToString();
             EmulatedAnswers = new List<CardGameAnswer>();
         }
     }

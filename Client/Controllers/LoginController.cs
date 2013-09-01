@@ -1,3 +1,4 @@
+using System;
 using System.Html;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
@@ -10,6 +11,7 @@ namespace Client.Controllers
     internal class LoginController
     {
         public const string Name = "LoginController";
+        public const string View = "Login";
         private readonly CreateUIService myCreateUIService;
         private readonly ClientManagerService clientManagerService;
         private readonly MessageService myMessageService;
@@ -29,10 +31,12 @@ namespace Client.Controllers
             myCreateUIService = createUIService;
             this.clientManagerService = clientManagerService;
             myScope.Model = new LoginScopeModel();
+/*
             scope.Model.dosomething += (o) =>
             {
-                Console.Log(o);
+                Console.WriteLine(o);
             };
+*/
 
             myScope.Model.WindowClosed = () => { Window.Alert("woooo"); };
             myScope.Model.LoginAccount = LoginAccountFn;

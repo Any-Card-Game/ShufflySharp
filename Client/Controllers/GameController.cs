@@ -12,6 +12,10 @@ namespace Client.Controllers
 {
     public class GameController
     {
+        static  GameController()
+        {
+            
+        }
         public const string Name = "GameController";
         public const string View = "GameUI";
         private readonly CreateUIService createUIService;
@@ -58,6 +62,20 @@ namespace Client.Controllers
                                                                                                           sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
                                                                                                       };
                                                                                            }))(Document.CreateElement("style"));
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 13; j++)
+                {
+                    addRule(".card" + i+ "-" + j+ "", new JsDictionary<string, object>());
+                    addRule(".card" + i+ "-" + j+ "::before", new JsDictionary<string, object>());
+                    addRule(".card" + i+ "-" + j+ "::after", new JsDictionary<string, object>());
+
+                }
+            }
+            addRule(".card" + -1 + "-" + -1 + "", new JsDictionary<string, object>());
+            addRule(".card" + -1 + "-" + -1 + "::before", new JsDictionary<string, object>());
+            addRule(".card" + -1 + "-" + -1 + "::after", new JsDictionary<string, object>());
+
 
             myClientGameManagerService.OnUpdateState += (user, update) =>
                                                         {
@@ -73,7 +91,7 @@ namespace Client.Controllers
                                                             if (create)
                                                             {
                                                                 scope.Scale =
-                                                                    new Point(jQuery.Window.GetWidth()/scope.MainArea.Size.Width*.9, ((jQuery.Window.GetHeight() - 250)/scope.MainArea.Size.Height)*.9);
+                                                                    new Point(jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9);
 
                                                                 foreach (var space in scope.MainArea.Spaces)
                                                                 {
@@ -85,20 +103,7 @@ namespace Client.Controllers
                                                                         new JsDictionary<string, object>());
 
 
-                                                                    foreach (var card in space.Pile.Cards)
-                                                                    {
-                                                                        card.Effects = new List<string>();
-
-                                                                        if (space.Name.StartsWith("User"))
-                                                                        {
-                                                                            card.Effects.Add("bend");
-                                                                        }
-
-                                                                        addRule(".card" + card.Type + "-" + card.Value + "", new JsDictionary<string, object>());
-                                                                        addRule(".card" + card.Type + "-" + card.Value + "::before", new JsDictionary<string, object>());
-                                                                        addRule(".card" + card.Type + "-" + card.Value + "::after", new JsDictionary<string, object>());
-                                                                    }
-                                                                }
+                                                                 }
                                                             }
 
 

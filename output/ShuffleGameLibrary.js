@@ -1,9 +1,12 @@
 
 (function() {
+	'use strict';
+	global.global = global.global || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// global.GameUtils
 	var $global__ = function() {
 	};
+	$global__.__typeName = 'global._';
 	$global__.numbers = function(start, finish) {
 		var items = new Array(finish - start);
 		for (var i = 0; i < finish - start; i++) {
@@ -12,7 +15,7 @@
 		return items;
 	};
 	$global__.clone = function(obj) {
-		if (!!(ss.isNullOrUndefined(obj) || !ss.isInstanceOfType(obj, Array) && (!ss.referenceEquals(ss.getInstanceType(obj), Object) && eval('({}).toString.call(obj) != \'[object Function]\'')))) {
+		if (!!(ss.isNullOrUndefined(obj) || !ss.isInstanceOfType(obj, Array) && (!ss.referenceEquals(ss.getInstanceType(obj), Object) && eval("({}).toString.call(obj) != '[object Function]'")))) {
 			return obj;
 		}
 		var ob = obj;
@@ -42,10 +45,12 @@
 	$global__.random = function() {
 		return Math.random();
 	};
+	global.global._ = $global__;
 	////////////////////////////////////////////////////////////////////////////////
 	// global.ArrayUtils
 	var $global_ArrayUtils = function() {
 	};
+	$global_ArrayUtils.__typeName = 'global.ArrayUtils';
 	$global_ArrayUtils.forEach = function(ts, does) {
 		for (var i = 0; i < ts.length; i++) {
 			var df = does(ts[i], i);
@@ -135,6 +140,7 @@
 		}
 		return false;
 	};
+	global.global.ArrayUtils = $global_ArrayUtils;
 	////////////////////////////////////////////////////////////////////////////////
 	// global.ArrayUtils.GroupByKey
 	var $global_ArrayUtils$GroupByKey$2 = function(T, T2) {
@@ -144,14 +150,16 @@
 			this.key = key;
 			this.items = items;
 		};
-		ss.registerGenericClassInstance($type, $global_ArrayUtils$GroupByKey$2, [T, T2], function() {
+		ss.registerGenericClassInstance($type, $global_ArrayUtils$GroupByKey$2, [T, T2], {}, function() {
 			return null;
 		}, function() {
 			return [];
 		});
 		return $type;
 	};
-	ss.registerGenericClass(global, 'global.ArrayUtils$GroupByKey$2', $global_ArrayUtils$GroupByKey$2, 2);
+	$global_ArrayUtils$GroupByKey$2.__typeName = 'global.ArrayUtils$GroupByKey$2';
+	ss.initGenericClass($global_ArrayUtils$GroupByKey$2, 2);
+	global.global.ArrayUtils$GroupByKey$2 = $global_ArrayUtils$GroupByKey$2;
 	////////////////////////////////////////////////////////////////////////////////
 	// global.CardGameCard
 	var $global_Card = function(value, type) {
@@ -163,6 +171,8 @@
 		this.type = type;
 		this.effects = [];
 	};
+	$global_Card.__typeName = 'global.Card';
+	global.global.Card = $global_Card;
 	////////////////////////////////////////////////////////////////////////////////
 	// global.GameCardGame
 	var $global_CardGame = function() {
@@ -185,7 +195,444 @@
 		this.effects = [];
 		this.deck = new $global_Pile('deck');
 	};
-	$global_CardGame.prototype = {
+	$global_CardGame.__typeName = 'global.CardGame';
+	global.global.CardGame = $global_CardGame;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameAnswer
+	var $global_CardGameAnswer = function() {
+	};
+	$global_CardGameAnswer.__typeName = 'global.CardGameAnswer';
+	$global_CardGameAnswer.createInstance = function() {
+		return $global_CardGameAnswer.$ctor();
+	};
+	$global_CardGameAnswer.$ctor = function() {
+		var $this = {};
+		$this.value = 0;
+		return $this;
+	};
+	global.global.CardGameAnswer = $global_CardGameAnswer;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameEffect
+	var $global_CardGameEffect = function(cardGameEffectOptions) {
+		this.name = null;
+		this.type = 0;
+		this.properties = null;
+		this.name = cardGameEffectOptions.name;
+		this.type = cardGameEffectOptions.type;
+		this.properties = cardGameEffectOptions.properties;
+	};
+	$global_CardGameEffect.__typeName = 'global.CardGameEffect';
+	global.global.CardGameEffect = $global_CardGameEffect;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameEffectOptions
+	var $global_CardGameEffectOptions = function() {
+	};
+	$global_CardGameEffectOptions.__typeName = 'global.CardGameEffectOptions';
+	$global_CardGameEffectOptions.createInstance = function() {
+		return $global_CardGameEffectOptions.$ctor();
+	};
+	$global_CardGameEffectOptions.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.type = 0;
+		$this.properties = null;
+		return $this;
+	};
+	global.global.CardGameEffectOptions = $global_CardGameEffectOptions;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameEffectProperty
+	var $global_CardGameEffectProperty = function() {
+	};
+	$global_CardGameEffectProperty.__typeName = 'global.CardGameEffectProperty';
+	$global_CardGameEffectProperty.createInstance = function() {
+		return $global_CardGameEffectProperty.$ctor();
+	};
+	$global_CardGameEffectProperty.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.value = null;
+		return $this;
+	};
+	global.global.CardGameEffectProperty = $global_CardGameEffectProperty;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameQuestion
+	var $global_CardGameQuestion = function(user, question, answers, cardGame) {
+		this.user = null;
+		this.question = null;
+		this.answers = null;
+		this.cardGame = null;
+		this.user = user;
+		this.question = question;
+		this.answers = answers;
+		this.cardGame = cardGame;
+	};
+	$global_CardGameQuestion.__typeName = 'global.CardGameQuestion';
+	global.global.CardGameQuestion = $global_CardGameQuestion;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameTableSpaceOptions
+	var $global_CardGameTableSpaceOptions = function() {
+		this.vertical = false;
+		this.x = 0;
+		this.y = 0;
+		this.width = 0;
+		this.height = 0;
+		this.pile = null;
+		this.rotate = 0;
+		this.visible = false;
+		this.stackCards = false;
+		this.name = null;
+		this.sortOrder = 0;
+		this.numerOfCardsHorizontal = 0;
+		this.numerOfCardsVertical = 0;
+		this.resizeType = 0;
+		this.resizeType = 'grow';
+		this.rotate = 0;
+	};
+	$global_CardGameTableSpaceOptions.__typeName = 'global.CardGameTableSpaceOptions';
+	global.global.CardGameTableSpaceOptions = $global_CardGameTableSpaceOptions;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameCardState
+	var $global_CardState = function() {
+	};
+	$global_CardState.__typeName = 'global.CardState';
+	global.global.CardState = $global_CardState;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameCardType
+	var $global_CardType = function() {
+	};
+	$global_CardType.__typeName = 'global.CardType';
+	global.global.CardType = $global_CardType;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.ClientGameCardGameHelper
+	var $global_ClientGameCardGameHelper = function() {
+	};
+	$global_ClientGameCardGameHelper.__typeName = 'global.ClientGameCardGameHelper';
+	$global_ClientGameCardGameHelper.clientGetEffectByName = function(cardGame, effectName) {
+		for (var $t1 = 0; $t1 < cardGame.effects.length; $t1++) {
+			var cardGameEffect = cardGame.effects[$t1];
+			if (ss.referenceEquals(cardGameEffect.name.toLowerCase(), effectName.toLowerCase())) {
+				return cardGameEffect;
+			}
+		}
+		return null;
+	};
+	$global_ClientGameCardGameHelper.clientGetSpaceByName = function(cardGame, name) {
+		for (var $t1 = 0; $t1 < cardGame.spaces.length; $t1++) {
+			var cardGameTableSpace = cardGame.spaces[$t1];
+			if (ss.referenceEquals(cardGameTableSpace.name.toLowerCase(), name.toLowerCase())) {
+				return cardGameTableSpace;
+			}
+		}
+		return null;
+	};
+	$global_ClientGameCardGameHelper.clientGetTextByName = function(cardGame, name) {
+		for (var $t1 = 0; $t1 < cardGame.textAreas.length; $t1++) {
+			var gameCardGameTextArea = cardGame.textAreas[$t1];
+			if (ss.referenceEquals(gameCardGameTextArea.name.toLowerCase(), name.toLowerCase())) {
+				return gameCardGameTextArea;
+			}
+		}
+		return null;
+	};
+	global.global.ClientGameCardGameHelper = $global_ClientGameCardGameHelper;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.DebugFiberYieldResponse
+	var $global_DebugFiberYieldResponse = function(type) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+	};
+	$global_DebugFiberYieldResponse.__typeName = 'global.DebugFiberYieldResponse';
+	$global_DebugFiberYieldResponse.$ctor2 = function(type, question) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.question = question;
+	};
+	$global_DebugFiberYieldResponse.$ctor1 = function(type, contents) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.contents = contents;
+	};
+	$global_DebugFiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.lineNumber = lineNumber;
+		this.value = value;
+	};
+	global.global.DebugFiberYieldResponse = $global_DebugFiberYieldResponse;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.DebugFiberYieldResponseType
+	var $global_DebugFiberYieldResponseType = function() {
+	};
+	$global_DebugFiberYieldResponseType.__typeName = 'global.DebugFiberYieldResponseType';
+	global.global.DebugFiberYieldResponseType = $global_DebugFiberYieldResponseType;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.EffectHelper
+	var $global_EffectHelper = function() {
+	};
+	$global_EffectHelper.__typeName = 'global.EffectHelper';
+	$global_EffectHelper.getNumber = function(effect, name) {
+		for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
+			var effectProperty = effect.properties[$t1];
+			if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
+				return parseFloat(effectProperty.value.toString());
+			}
+		}
+		return 0;
+	};
+	$global_EffectHelper.getString = function(effect, name) {
+		for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
+			var effectProperty = effect.properties[$t1];
+			if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
+				return effectProperty.value.toString();
+			}
+		}
+		return '';
+	};
+	global.global.EffectHelper = $global_EffectHelper;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.FiberYieldResponse
+	var $global_FiberYieldResponse = function(type) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+	};
+	$global_FiberYieldResponse.__typeName = 'global.FiberYieldResponse';
+	$global_FiberYieldResponse.$ctor2 = function(type, question) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.question = question;
+	};
+	$global_FiberYieldResponse.$ctor1 = function(type, contents) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.contents = contents;
+	};
+	$global_FiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
+		this.variableLookup = null;
+		this.type = 0;
+		this.contents = null;
+		this.question = null;
+		this.lineNumber = 0;
+		this.value = null;
+		this.type = type;
+		this.lineNumber = lineNumber;
+		this.value = value;
+	};
+	global.global.FiberYieldResponse = $global_FiberYieldResponse;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.FiberYieldResponseType
+	var $global_FiberYieldResponseType = function() {
+	};
+	$global_FiberYieldResponseType.__typeName = 'global.FiberYieldResponseType';
+	global.global.FiberYieldResponseType = $global_FiberYieldResponseType;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.GameCardGameTextAreaOptions
+	var $global_GameCardGameTextAreaOptions = function() {
+	};
+	$global_GameCardGameTextAreaOptions.__typeName = 'global.GameCardGameTextAreaOptions';
+	$global_GameCardGameTextAreaOptions.createInstance = function() {
+		return $global_GameCardGameTextAreaOptions.$ctor();
+	};
+	$global_GameCardGameTextAreaOptions.$ctor = function() {
+		var $this = {};
+		$this.name = null;
+		$this.x = 0;
+		$this.y = 0;
+		$this.text = null;
+		return $this;
+	};
+	global.global.GameCardGameTextAreaOptions = $global_GameCardGameTextAreaOptions;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameOrder
+	var $global_Order = function() {
+	};
+	$global_Order.__typeName = 'global.Order';
+	global.global.Order = $global_Order;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGamePile
+	var $global_Pile = function(name) {
+		this.name = null;
+		this.cards = null;
+		this.name = name;
+		this.cards = [];
+	};
+	$global_Pile.__typeName = 'global.Pile';
+	global.global.Pile = $global_Pile;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGamePokerResult
+	var $global_PokerResult = function(weight, type, cards) {
+		this.weight = 0;
+		this.state = 0;
+		this.cards = null;
+		this.weight = weight;
+		this.state = type;
+		this.cards = cards;
+	};
+	$global_PokerResult.__typeName = 'global.PokerResult';
+	global.global.PokerResult = $global_PokerResult;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGamePokerWinType
+	var $global_PokerWinType = function() {
+	};
+	$global_PokerWinType.__typeName = 'global.PokerWinType';
+	global.global.PokerWinType = $global_PokerWinType;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.Rectangle
+	var $global_Rectangle = function() {
+	};
+	$global_Rectangle.__typeName = 'global.Rectangle';
+	global.global.Rectangle = $global_Rectangle;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.Shuff
+	var $global_shuff = function() {
+	};
+	$global_shuff.__typeName = 'global.shuff';
+	$global_shuff.askQuestion = function(user, question, answers, cardGame) {
+		cardGame.emulating = false;
+		if (cardGame.emulatedAnswers.length - 1 > cardGame.emulatedAnswerIndex) {
+			cardGame.emulating = true;
+			return cardGame.emulatedAnswers[cardGame.emulatedAnswerIndex++].value;
+			//todo .value
+		}
+		var m = new $global_CardGameQuestion(user, question, answers, cardGame);
+		var answer = Fiber.yield(new $global_FiberYieldResponse.$ctor2(0, m));
+		cardGame.emulatedAnswerIndex++;
+		return (ss.isNullOrUndefined(answer) ? 0 : answer.value);
+	};
+	$global_shuff.declareWinner = function(user) {
+		Fiber.yield(new $global_FiberYieldResponse(2));
+	};
+	$global_shuff.gameOver = function() {
+		Fiber.yield(new $global_FiberYieldResponse(2));
+	};
+	$global_shuff.playersLeave = function(usersLeft) {
+		var users = Fiber.yield(new $global_FiberYieldResponse(5));
+		if (users.length > 0) {
+			usersLeft(users);
+		}
+	};
+	$global_shuff.log = function(msg) {
+		Fiber.yield(new $global_FiberYieldResponse.$ctor1(1, msg));
+	};
+	$global_shuff.break_ = function(lineNumber, cardGame, varLookup) {
+		if (cardGame.emulating) {
+			return;
+		}
+		var yieldObject = new $global_FiberYieldResponse.$ctor3(3, lineNumber - 1, '');
+		while (true) {
+			var answ = Fiber.yield(yieldObject);
+			if (ss.isNullOrUndefined(answ)) {
+				//continue
+				return;
+			}
+			if (ss.isValue(answ.variableLookup)) {
+				yieldObject = new $global_FiberYieldResponse.$ctor3(4, 0, varLookup(answ.variableLookup));
+				continue;
+			}
+			break;
+		}
+	};
+	global.global.shuff = $global_shuff;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameTableSpace
+	var $global_TableSpace = function(options) {
+		this.vertical = false;
+		this.x = 0;
+		this.y = 0;
+		this.width = 0;
+		this.height = 0;
+		this.pile = null;
+		this.effects = null;
+		this.visible = false;
+		this.stackCards = false;
+		this.name = null;
+		this.sortOrder = 0;
+		this.numberOfCardsHorizontal = 0;
+		this.numberOfCardsVertical = 0;
+		this.resizeType = 0;
+		this.pileName = null;
+		this.vertical = (!options.vertical ? false : options.vertical);
+		this.x = ((options.x === 0) ? 0 : options.x);
+		this.y = ((options.y === 0) ? 0 : options.y);
+		this.name = ss.coalesce(options.name, 'TableSpace');
+		this.width = ((options.width === 0) ? 0 : options.width);
+		this.height = ((options.height === 0) ? 0 : options.height);
+		//Rotate = options.Rotate == 0 ? 0 : options.Rotate;
+		this.visible = (!options.visible ? true : options.visible);
+		this.stackCards = (!options.stackCards ? false : options.stackCards);
+		this.pile = new $global_Pile(this.name + 'Pile');
+		this.sortOrder = options.sortOrder;
+		this.numberOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
+		this.numberOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
+		this.resizeType = options.resizeType;
+		//Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
+		this.effects = [];
+	};
+	$global_TableSpace.__typeName = 'global.TableSpace';
+	global.global.TableSpace = $global_TableSpace;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.GameCardGameTextArea
+	var $global_TableTextArea = function(options) {
+		this.name = null;
+		this.x = 0;
+		this.y = 0;
+		this.text = null;
+		this.name = ss.coalesce(options.name, 'Text Area');
+		this.x = ((options.x === 0) ? 0 : options.x);
+		this.y = ((options.y === 0) ? 0 : options.y);
+		this.text = ss.coalesce(options.text, 'Text');
+	};
+	$global_TableTextArea.__typeName = 'global.TableTextArea';
+	global.global.TableTextArea = $global_TableTextArea;
+	////////////////////////////////////////////////////////////////////////////////
+	// global.CardGameUser
+	var $global_User = function(name) {
+		this.userName = null;
+		this.playerDealingOrder = 0;
+		this.cards = null;
+		this.userName = name;
+		this.cards = new $global_Pile(name);
+	};
+	$global_User.__typeName = 'global.User';
+	global.global.User = $global_User;
+	ss.initClass($global__, {});
+	ss.initClass($global_ArrayUtils, {});
+	ss.initClass($global_Card, {});
+	ss.initClass($global_CardGame, {
 		configurationCompleted: function() {
 			for (var i = 0; i < this.numberOfCards; i++) {
 				ss.add(this.deck.cards, new $global_Card(i % 13, ss.Int32.trunc(Math.floor(i / 13))));
@@ -238,276 +685,26 @@
 			}
 			return null;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameAnswer
-	var $global_CardGameAnswer = function() {
-	};
-	$global_CardGameAnswer.createInstance = function() {
-		return $global_CardGameAnswer.$ctor();
-	};
-	$global_CardGameAnswer.$ctor = function() {
-		var $this = {};
-		$this.value = 0;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameEffect
-	var $global_CardGameEffect = function(cardGameEffectOptions) {
-		this.name = null;
-		this.type = 0;
-		this.properties = null;
-		this.name = cardGameEffectOptions.name;
-		this.type = cardGameEffectOptions.type;
-		this.properties = cardGameEffectOptions.properties;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameEffectOptions
-	var $global_CardGameEffectOptions = function() {
-	};
-	$global_CardGameEffectOptions.createInstance = function() {
-		return $global_CardGameEffectOptions.$ctor();
-	};
-	$global_CardGameEffectOptions.$ctor = function() {
-		var $this = {};
-		$this.name = null;
-		$this.type = 0;
-		$this.properties = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameEffectProperty
-	var $global_CardGameEffectProperty = function() {
-	};
-	$global_CardGameEffectProperty.createInstance = function() {
-		return $global_CardGameEffectProperty.$ctor();
-	};
-	$global_CardGameEffectProperty.$ctor = function() {
-		var $this = {};
-		$this.name = null;
-		$this.value = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameQuestion
-	var $global_CardGameQuestion = function(user, question, answers, cardGame) {
-		this.user = null;
-		this.question = null;
-		this.answers = null;
-		this.cardGame = null;
-		this.user = user;
-		this.question = question;
-		this.answers = answers;
-		this.cardGame = cardGame;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameTableSpaceOptions
-	var $global_CardGameTableSpaceOptions = function() {
-		this.vertical = false;
-		this.x = 0;
-		this.y = 0;
-		this.width = 0;
-		this.height = 0;
-		this.pile = null;
-		this.rotate = 0;
-		this.visible = false;
-		this.stackCards = false;
-		this.name = null;
-		this.sortOrder = 0;
-		this.numerOfCardsHorizontal = 0;
-		this.numerOfCardsVertical = 0;
-		this.resizeType = 0;
-		this.resizeType = 'grow';
-		this.rotate = 0;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameCardState
-	var $global_CardState = function() {
-	};
-	$global_CardState.prototype = { faceUp: 0, faceDown: 1, faceUpIfOwned: 2 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameCardType
-	var $global_CardType = function() {
-	};
-	$global_CardType.prototype = { heart: 0, diamond: 1, spade: 2, club: 3 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.ClientGameCardGameHelper
-	var $global_ClientGameCardGameHelper = function() {
-	};
-	$global_ClientGameCardGameHelper.clientGetEffectByName = function(cardGame, effectName) {
-		for (var $t1 = 0; $t1 < cardGame.effects.length; $t1++) {
-			var cardGameEffect = cardGame.effects[$t1];
-			if (ss.referenceEquals(cardGameEffect.name.toLowerCase(), effectName.toLowerCase())) {
-				return cardGameEffect;
-			}
-		}
-		return null;
-	};
-	$global_ClientGameCardGameHelper.clientGetSpaceByName = function(cardGame, name) {
-		for (var $t1 = 0; $t1 < cardGame.spaces.length; $t1++) {
-			var cardGameTableSpace = cardGame.spaces[$t1];
-			if (ss.referenceEquals(cardGameTableSpace.name.toLowerCase(), name.toLowerCase())) {
-				return cardGameTableSpace;
-			}
-		}
-		return null;
-	};
-	$global_ClientGameCardGameHelper.clientGetTextByName = function(cardGame, name) {
-		for (var $t1 = 0; $t1 < cardGame.textAreas.length; $t1++) {
-			var gameCardGameTextArea = cardGame.textAreas[$t1];
-			if (ss.referenceEquals(gameCardGameTextArea.name.toLowerCase(), name.toLowerCase())) {
-				return gameCardGameTextArea;
-			}
-		}
-		return null;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.DebugFiberYieldResponse
-	var $global_DebugFiberYieldResponse = function(type) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-	};
-	$global_DebugFiberYieldResponse.$ctor2 = function(type, question) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-		this.question = question;
-	};
-	$global_DebugFiberYieldResponse.$ctor1 = function(type, contents) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-		this.contents = contents;
-	};
-	$global_DebugFiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-		this.lineNumber = lineNumber;
-		this.value = value;
-	};
+	});
+	ss.initClass($global_CardGameAnswer, {});
+	ss.initClass($global_CardGameEffect, {});
+	ss.initClass($global_CardGameEffectOptions, {});
+	ss.initClass($global_CardGameEffectProperty, {});
+	ss.initClass($global_CardGameQuestion, {});
+	ss.initClass($global_CardGameTableSpaceOptions, {});
+	ss.initEnum($global_CardState, { faceUp: 0, faceDown: 1, faceUpIfOwned: 2 });
+	ss.initEnum($global_CardType, { heart: 0, diamond: 1, spade: 2, club: 3 });
+	ss.initClass($global_ClientGameCardGameHelper, {});
+	ss.initClass($global_DebugFiberYieldResponse, {});
 	$global_DebugFiberYieldResponse.$ctor2.prototype = $global_DebugFiberYieldResponse.$ctor1.prototype = $global_DebugFiberYieldResponse.$ctor3.prototype = $global_DebugFiberYieldResponse.prototype;
-	////////////////////////////////////////////////////////////////////////////////
-	// global.DebugFiberYieldResponseType
-	var $global_DebugFiberYieldResponseType = function() {
-	};
-	$global_DebugFiberYieldResponseType.prototype = { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.EffectHelper
-	var $global_EffectHelper = function() {
-	};
-	$global_EffectHelper.getNumber = function(effect, name) {
-		for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
-			var effectProperty = effect.properties[$t1];
-			if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
-				return parseFloat(effectProperty.value.toString());
-			}
-		}
-		return 0;
-	};
-	$global_EffectHelper.getString = function(effect, name) {
-		for (var $t1 = 0; $t1 < effect.properties.length; $t1++) {
-			var effectProperty = effect.properties[$t1];
-			if (ss.referenceEquals(effectProperty.name.toLowerCase(), name.toLowerCase())) {
-				return effectProperty.value.toString();
-			}
-		}
-		return '';
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.FiberYieldResponse
-	var $global_FiberYieldResponse = function(type) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-	};
-	$global_FiberYieldResponse.$ctor2 = function(type, question) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-		this.question = question;
-	};
-	$global_FiberYieldResponse.$ctor1 = function(type, contents) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-		this.contents = contents;
-	};
-	$global_FiberYieldResponse.$ctor3 = function(type, lineNumber, value) {
-		this.variableLookup = null;
-		this.type = 0;
-		this.contents = null;
-		this.question = null;
-		this.lineNumber = 0;
-		this.value = null;
-		this.type = type;
-		this.lineNumber = lineNumber;
-		this.value = value;
-	};
+	ss.initEnum($global_DebugFiberYieldResponseType, { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 });
+	ss.initClass($global_EffectHelper, {});
+	ss.initClass($global_FiberYieldResponse, {});
 	$global_FiberYieldResponse.$ctor2.prototype = $global_FiberYieldResponse.$ctor1.prototype = $global_FiberYieldResponse.$ctor3.prototype = $global_FiberYieldResponse.prototype;
-	////////////////////////////////////////////////////////////////////////////////
-	// global.FiberYieldResponseType
-	var $global_FiberYieldResponseType = function() {
-	};
-	$global_FiberYieldResponseType.prototype = { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.GameCardGameTextAreaOptions
-	var $global_GameCardGameTextAreaOptions = function() {
-	};
-	$global_GameCardGameTextAreaOptions.createInstance = function() {
-		return $global_GameCardGameTextAreaOptions.$ctor();
-	};
-	$global_GameCardGameTextAreaOptions.$ctor = function() {
-		var $this = {};
-		$this.name = null;
-		$this.x = 0;
-		$this.y = 0;
-		$this.text = null;
-		return $this;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameOrder
-	var $global_Order = function() {
-	};
-	$global_Order.prototype = { noOrder: 0, ascending: 1, descending: 2 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGamePile
-	var $global_Pile = function(name) {
-		this.name = null;
-		this.cards = null;
-		this.name = name;
-		this.cards = [];
-	};
-	$global_Pile.prototype = {
+	ss.initEnum($global_FiberYieldResponseType, { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 });
+	ss.initClass($global_GameCardGameTextAreaOptions, {});
+	ss.initEnum($global_Order, { noOrder: 0, ascending: 1, descending: 2 });
+	ss.initClass($global_Pile, {
 		shuffle: function() {
 			var o = this.cards;
 			var x;
@@ -517,163 +714,19 @@
 			//lol
 			this.cards = o;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGamePokerResult
-	var $global_PokerResult = function(weight, type, cards) {
-		this.weight = 0;
-		this.state = 0;
-		this.cards = null;
-		this.weight = weight;
-		this.state = type;
-		this.cards = cards;
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGamePokerWinType
-	var $global_PokerWinType = function() {
-	};
-	$global_PokerWinType.prototype = { straight: 1, flush: 2, pair: 3, threeOfAKind: 4, fourOfAKind: 5, straightFlush: 6 };
-	////////////////////////////////////////////////////////////////////////////////
-	// global.Rectangle
-	var $global_Rectangle = function() {
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.Shuff
-	var $global_shuff = function() {
-	};
-	$global_shuff.askQuestion = function(user, question, answers, cardGame) {
-		cardGame.emulating = false;
-		if (cardGame.emulatedAnswers.length - 1 > cardGame.emulatedAnswerIndex) {
-			cardGame.emulating = true;
-			return cardGame.emulatedAnswers[cardGame.emulatedAnswerIndex++].value;
-			//todo .value
-		}
-		var m = new $global_CardGameQuestion(user, question, answers, cardGame);
-		var answer = Fiber.yield(new $global_FiberYieldResponse.$ctor2(0, m));
-		cardGame.emulatedAnswerIndex++;
-		return (ss.isNullOrUndefined(answer) ? 0 : answer.value);
-	};
-	$global_shuff.declareWinner = function(user) {
-		Fiber.yield(new $global_FiberYieldResponse(2));
-	};
-	$global_shuff.gameOver = function() {
-		Fiber.yield(new $global_FiberYieldResponse(2));
-	};
-	$global_shuff.playersLeave = function(usersLeft) {
-		var users = Fiber.yield(new $global_FiberYieldResponse(5));
-		if (users.length > 0) {
-			usersLeft(users);
-		}
-	};
-	$global_shuff.log = function(msg) {
-		Fiber.yield(new $global_FiberYieldResponse.$ctor1(1, msg));
-	};
-	$global_shuff.break_ = function(lineNumber, cardGame, varLookup) {
-		if (cardGame.emulating) {
-			return;
-		}
-		var yieldObject = new $global_FiberYieldResponse.$ctor3(3, lineNumber - 1, '');
-		while (true) {
-			var answ = Fiber.yield(yieldObject);
-			if (ss.isNullOrUndefined(answ)) {
-				//continue
-				return;
-			}
-			if (ss.isValue(answ.variableLookup)) {
-				yieldObject = new $global_FiberYieldResponse.$ctor3(4, 0, varLookup(answ.variableLookup));
-				continue;
-			}
-			break;
-		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameTableSpace
-	var $global_TableSpace = function(options) {
-		this.vertical = false;
-		this.x = 0;
-		this.y = 0;
-		this.width = 0;
-		this.height = 0;
-		this.pile = null;
-		this.effects = null;
-		this.visible = false;
-		this.stackCards = false;
-		this.name = null;
-		this.sortOrder = 0;
-		this.numberOfCardsHorizontal = 0;
-		this.numberOfCardsVertical = 0;
-		this.resizeType = 0;
-		this.vertical = (!options.vertical ? false : options.vertical);
-		this.x = ((options.x === 0) ? 0 : options.x);
-		this.y = ((options.y === 0) ? 0 : options.y);
-		this.name = ss.coalesce(options.name, 'TableSpace');
-		this.width = ((options.width === 0) ? 0 : options.width);
-		this.height = ((options.height === 0) ? 0 : options.height);
-		//Rotate = options.Rotate == 0 ? 0 : options.Rotate;
-		this.visible = (!options.visible ? true : options.visible);
-		this.stackCards = (!options.stackCards ? false : options.stackCards);
-		this.pile = new $global_Pile(this.name + 'Pile');
-		this.sortOrder = options.sortOrder;
-		this.numberOfCardsHorizontal = ((options.numerOfCardsHorizontal === 0) ? 1 : options.numerOfCardsHorizontal);
-		this.numberOfCardsVertical = ((options.numerOfCardsVertical === 0) ? 1 : options.numerOfCardsVertical);
-		this.resizeType = options.resizeType;
-		//Rotate = ExtensionMethods.eval("options.rotate? options.rotate : 0");
-		this.effects = [];
-	};
-	$global_TableSpace.prototype = {
+	});
+	ss.initClass($global_PokerResult, {});
+	ss.initEnum($global_PokerWinType, { straight: 1, flush: 2, pair: 3, threeOfAKind: 4, fourOfAKind: 5, straightFlush: 6 });
+	ss.initClass($global_Rectangle, {});
+	ss.initClass($global_shuff, {});
+	ss.initClass($global_TableSpace, {
 		applyPile: function(pile) {
 			this.pile = pile;
+			this.pileName = pile.name;
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.GameCardGameTextArea
-	var $global_TableTextArea = function(options) {
-		this.name = null;
-		this.x = 0;
-		this.y = 0;
-		this.text = null;
-		this.name = ss.coalesce(options.name, 'Text Area');
-		this.x = ((options.x === 0) ? 0 : options.x);
-		this.y = ((options.y === 0) ? 0 : options.y);
-		this.text = ss.coalesce(options.text, 'Text');
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// global.CardGameUser
-	var $global_User = function(name) {
-		this.userName = null;
-		this.playerDealingOrder = 0;
-		this.cards = null;
-		this.userName = name;
-		this.cards = new $global_Pile(name);
-	};
-	ss.registerClass(global, 'global._', $global__);
-	ss.registerClass(global, 'global.ArrayUtils', $global_ArrayUtils);
-	ss.registerClass(global, 'global.Card', $global_Card);
-	ss.registerClass(global, 'global.CardGame', $global_CardGame);
-	ss.registerClass(global, 'global.CardGameAnswer', $global_CardGameAnswer);
-	ss.registerClass(global, 'global.CardGameEffect', $global_CardGameEffect);
-	ss.registerClass(global, 'global.CardGameEffectOptions', $global_CardGameEffectOptions);
-	ss.registerClass(global, 'global.CardGameEffectProperty', $global_CardGameEffectProperty);
-	ss.registerClass(global, 'global.CardGameQuestion', $global_CardGameQuestion);
-	ss.registerClass(global, 'global.CardGameTableSpaceOptions', $global_CardGameTableSpaceOptions);
-	ss.registerEnum(global, 'global.CardState', $global_CardState);
-	ss.registerEnum(global, 'global.CardType', $global_CardType);
-	ss.registerClass(global, 'global.ClientGameCardGameHelper', $global_ClientGameCardGameHelper);
-	ss.registerClass(global, 'global.DebugFiberYieldResponse', $global_DebugFiberYieldResponse);
-	ss.registerEnum(global, 'global.DebugFiberYieldResponseType', $global_DebugFiberYieldResponseType);
-	ss.registerClass(global, 'global.EffectHelper', $global_EffectHelper);
-	ss.registerClass(global, 'global.FiberYieldResponse', $global_FiberYieldResponse);
-	ss.registerEnum(global, 'global.FiberYieldResponseType', $global_FiberYieldResponseType);
-	ss.registerClass(global, 'global.GameCardGameTextAreaOptions', $global_GameCardGameTextAreaOptions);
-	ss.registerEnum(global, 'global.Order', $global_Order);
-	ss.registerClass(global, 'global.Pile', $global_Pile);
-	ss.registerClass(global, 'global.PokerResult', $global_PokerResult);
-	ss.registerEnum(global, 'global.PokerWinType', $global_PokerWinType);
-	ss.registerClass(global, 'global.Rectangle', $global_Rectangle);
-	ss.registerClass(global, 'global.shuff', $global_shuff);
-	ss.registerClass(global, 'global.TableSpace', $global_TableSpace);
-	ss.registerClass(global, 'global.TableTextArea', $global_TableTextArea);
-	ss.registerClass(global, 'global.User', $global_User);
+	});
+	ss.initClass($global_TableTextArea, {});
+	ss.initClass($global_User, {});
 	eval('Array.prototype.foreach=function(does){return global.ArrayUtils.forEach(this,does);};');
 	eval('Array.prototype.sortCards=function(){return global.ArrayUtils.sortCards(this);};');
 	eval('Array.prototype.where=function(does){return global.ArrayUtils.where(this,does);};');

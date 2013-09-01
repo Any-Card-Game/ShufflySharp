@@ -1,5 +1,8 @@
 require('./NodeLibraries.js');
 (function() {
+	'use strict';
+	global.CommonShuffleLibrary = global.CommonShuffleLibrary || {};
+	global.CommonShuffleLibrary.Data = global.CommonShuffleLibrary.Data || {};
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Consumer
 	var $CommonShuffleLibrary_Consumer = function(obj) {
@@ -15,6 +18,8 @@ require('./NodeLibraries.js');
 			$t1.dispose();
 		}
 	};
+	$CommonShuffleLibrary_Consumer.__typeName = 'CommonShuffleLibrary.Consumer';
+	global.CommonShuffleLibrary.Consumer = $CommonShuffleLibrary_Consumer;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.DataManager
 	var $CommonShuffleLibrary_DataManager = function() {
@@ -34,13 +39,8 @@ require('./NodeLibraries.js');
 		});
 		this.$initData();
 	};
-	$CommonShuffleLibrary_DataManager.prototype = {
-		$initData: function() {
-			this.gameData = new $CommonShuffleLibrary_Data_DataManagerGameData(this);
-			this.chatData = new $CommonShuffleLibrary_Data_DataManagerChatData(this);
-			this.siteData = new $CommonShuffleLibrary_Data_DataManagerSiteData(this);
-		}
-	};
+	$CommonShuffleLibrary_DataManager.__typeName = 'CommonShuffleLibrary.DataManager';
+	global.CommonShuffleLibrary.DataManager = $CommonShuffleLibrary_DataManager;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.PubSub
 	var $CommonShuffleLibrary_PubSub = function(ready) {
@@ -78,43 +78,23 @@ require('./NodeLibraries.js');
 			}
 		}));
 	};
-	$CommonShuffleLibrary_PubSub.prototype = {
-		publish: function(channel, content) {
-			this.$pubClient.publish(channel, content);
-		},
-		subscribe: function(channel, callback) {
-			this.$subClient.subscribe(channel);
-			this.$subbed[channel] = callback;
-		}
-	};
+	$CommonShuffleLibrary_PubSub.__typeName = 'CommonShuffleLibrary.PubSub';
+	global.CommonShuffleLibrary.PubSub = $CommonShuffleLibrary_PubSub;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueItem
 	var $CommonShuffleLibrary_QueueItem = function() {
 		this.channel = null;
 	};
+	$CommonShuffleLibrary_QueueItem.__typeName = 'CommonShuffleLibrary.QueueItem';
+	global.CommonShuffleLibrary.QueueItem = $CommonShuffleLibrary_QueueItem;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueItemCollection
 	var $CommonShuffleLibrary_QueueItemCollection = function(queueItems) {
 		this.$queueItems = null;
 		this.$queueItems = queueItems;
 	};
-	$CommonShuffleLibrary_QueueItemCollection.prototype = {
-		getByChannel: function(channel) {
-			var $t1 = ss.getEnumerator(this.$queueItems);
-			try {
-				while ($t1.moveNext()) {
-					var queueWatcher = $t1.current();
-					if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(ss.replaceAllString(queueWatcher.channel, '*', '')) === 0) {
-						return queueWatcher;
-					}
-				}
-			}
-			finally {
-				$t1.dispose();
-			}
-			return null;
-		}
-	};
+	$CommonShuffleLibrary_QueueItemCollection.__typeName = 'CommonShuffleLibrary.QueueItemCollection';
+	global.CommonShuffleLibrary.QueueItemCollection = $CommonShuffleLibrary_QueueItemCollection;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueManager
 	var $CommonShuffleLibrary_QueueManager = function(name, options) {
@@ -143,32 +123,8 @@ require('./NodeLibraries.js');
 		this.$qwCollection = new $CommonShuffleLibrary_QueueItemCollection(this.qw);
 		this.$qpCollection = new $CommonShuffleLibrary_QueueItemCollection(this.qp);
 	};
-	$CommonShuffleLibrary_QueueManager.prototype = {
-		addChannel: function(channel, callback) {
-			this.channels.set_item(channel, callback);
-		},
-		$messageReceived: function(name, user, eventChannel, content) {
-			//todo?        user.Gateway = name;
-			try {
-				if (!ss.staticEquals(this.channels.get_item(eventChannel), null)) {
-					this.channels.get_item(eventChannel)(user, content);
-				}
-			}
-			catch ($t1) {
-				var ex = ss.Exception.wrap($t1);
-				console.error(ex);
-			}
-		},
-		sendMessage: function(channel, eventChannel, user, content) {
-			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
-				$CommonShuffleLibrary_ServerLogger.logError(ss.formatString('Cannot send message:{0} - {1} No Existy', channel, eventChannel), content);
-				return;
-			}
-			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
-			$CommonShuffleLibrary_ServerLogger.logTransport('Channel: ' + eventChannel, content);
-			pusher.message(channel, this.name, user, eventChannel, content);
-		}
-	};
+	$CommonShuffleLibrary_QueueManager.__typeName = 'CommonShuffleLibrary.QueueManager';
+	global.CommonShuffleLibrary.QueueManager = $CommonShuffleLibrary_QueueManager;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueManagerOptions
 	var $CommonShuffleLibrary_QueueManagerOptions = function(watchers, pushers) {
@@ -177,6 +133,8 @@ require('./NodeLibraries.js');
 		this.pushers = pushers;
 		this.watchers = watchers;
 	};
+	$CommonShuffleLibrary_QueueManagerOptions.__typeName = 'CommonShuffleLibrary.QueueManagerOptions';
+	global.CommonShuffleLibrary.QueueManagerOptions = $CommonShuffleLibrary_QueueManagerOptions;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueMessage
 	var $CommonShuffleLibrary_QueueMessage = function(name, user, eventChannel, content) {
@@ -189,6 +147,8 @@ require('./NodeLibraries.js');
 		this.eventChannel = eventChannel;
 		this.content = content;
 	};
+	$CommonShuffleLibrary_QueueMessage.__typeName = 'CommonShuffleLibrary.QueueMessage';
+	global.CommonShuffleLibrary.QueueMessage = $CommonShuffleLibrary_QueueMessage;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueuePusher
 	var $CommonShuffleLibrary_QueuePusher = function(pusher) {
@@ -198,14 +158,8 @@ require('./NodeLibraries.js');
 		this.channel = pusher;
 		this.$client1 = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 	};
-	$CommonShuffleLibrary_QueuePusher.prototype = {
-		message: function(channel, name, user, eventChannel, content) {
-			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
-			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
-			this.$client1.rpush(channel, value);
-			//todo:maybe sanitize
-		}
-	};
+	$CommonShuffleLibrary_QueuePusher.__typeName = 'CommonShuffleLibrary.QueuePusher';
+	global.CommonShuffleLibrary.QueuePusher = $CommonShuffleLibrary_QueuePusher;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.QueueWatcher
 	var $CommonShuffleLibrary_QueueWatcher = function(queue, callback) {
@@ -218,29 +172,13 @@ require('./NodeLibraries.js');
 		this.$client1 = redis.createClient(6379, CommonLibraries.Constants.redisIP);
 		this.cycle(queue);
 	};
-	$CommonShuffleLibrary_QueueWatcher.prototype = {
-		get_callback: function() {
-			return this.$2$CallbackField;
-		},
-		set_callback: function(value) {
-			this.$2$CallbackField = value;
-		},
-		cycle: function(channel) {
-			this.$client1.blpop([channel, 10], ss.mkdel(this, function(caller, dtj) {
-				var data = ss.cast(dtj, Array);
-				if (ss.isValue(dtj)) {
-					var dt = JSON.parse(data[1]);
-					$CommonShuffleLibrary_ServerLogger.logTransport('Channel: ' + dt.eventChannel, dt.content);
-					this.get_callback()(dt.name, dt.user, dt.eventChannel, dt.content);
-				}
-				this.cycle(channel);
-			}));
-		}
-	};
+	$CommonShuffleLibrary_QueueWatcher.__typeName = 'CommonShuffleLibrary.QueueWatcher';
+	global.CommonShuffleLibrary.QueueWatcher = $CommonShuffleLibrary_QueueWatcher;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.ServerLogger
 	var $CommonShuffleLibrary_ServerLogger = function() {
 	};
+	$CommonShuffleLibrary_ServerLogger.__typeName = 'CommonShuffleLibrary.ServerLogger';
 	$CommonShuffleLibrary_ServerLogger.initLogger = function(serverType, serverName) {
 		$CommonShuffleLibrary_ServerLogger.$serverName = serverName;
 		$CommonShuffleLibrary_ServerLogger.$serverType = serverType;
@@ -273,6 +211,7 @@ require('./NodeLibraries.js');
 		NodeLibraries.Common.Logging.Logger.log(item, 'dataInfo');
 		$CommonShuffleLibrary_ServerLogger.$pubsub.publish(ss.formatString('PUBSUB.ServerLogger.{0}', $CommonShuffleLibrary_ServerLogger.$serverType), JSON.stringify({ serverType: $CommonShuffleLibrary_ServerLogger.$serverType, serverName: $CommonShuffleLibrary_ServerLogger.$serverName, message: item, content: jsonContent, logLevel: 'dataInfo', time: new Date() }, CommonLibraries.Help.sanitize));
 	};
+	global.CommonShuffleLibrary.ServerLogger = $CommonShuffleLibrary_ServerLogger;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.ServerLogListener
 	var $CommonShuffleLibrary_ServerLogListener = function(serverType, callback) {
@@ -285,21 +224,170 @@ require('./NodeLibraries.js');
 			});
 		}));
 	};
+	$CommonShuffleLibrary_ServerLogListener.__typeName = 'CommonShuffleLibrary.ServerLogListener';
+	global.CommonShuffleLibrary.ServerLogListener = $CommonShuffleLibrary_ServerLogListener;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.ServerLogMessage
 	var $CommonShuffleLibrary_ServerLogMessage = function() {
 	};
+	$CommonShuffleLibrary_ServerLogMessage.__typeName = 'CommonShuffleLibrary.ServerLogMessage';
+	global.CommonShuffleLibrary.ServerLogMessage = $CommonShuffleLibrary_ServerLogMessage;
 	////////////////////////////////////////////////////////////////////////////////
 	// CommonShuffleLibrary.Data.DataManagerChatData
 	var $CommonShuffleLibrary_Data_DataManagerChatData = function(manager) {
 		this.$manager = null;
 		this.$manager = manager;
 	};
-	$CommonShuffleLibrary_Data_DataManagerChatData.prototype = {
+	$CommonShuffleLibrary_Data_DataManagerChatData.__typeName = 'CommonShuffleLibrary.Data.DataManagerChatData';
+	global.CommonShuffleLibrary.Data.DataManagerChatData = $CommonShuffleLibrary_Data_DataManagerChatData;
+	////////////////////////////////////////////////////////////////////////////////
+	// CommonShuffleLibrary.Data.DataManagerGameData
+	var $CommonShuffleLibrary_Data_DataManagerGameData = function(manager) {
+		this.$manager = null;
+		this.$manager = manager;
+	};
+	$CommonShuffleLibrary_Data_DataManagerGameData.__typeName = 'CommonShuffleLibrary.Data.DataManagerGameData';
+	global.CommonShuffleLibrary.Data.DataManagerGameData = $CommonShuffleLibrary_Data_DataManagerGameData;
+	////////////////////////////////////////////////////////////////////////////////
+	// CommonShuffleLibrary.Data.DataManagerSiteData
+	var $CommonShuffleLibrary_Data_DataManagerSiteData = function(manager) {
+		this.$manager = null;
+		this.$manager = manager;
+	};
+	$CommonShuffleLibrary_Data_DataManagerSiteData.__typeName = 'CommonShuffleLibrary.Data.DataManagerSiteData';
+	global.CommonShuffleLibrary.Data.DataManagerSiteData = $CommonShuffleLibrary_Data_DataManagerSiteData;
+	////////////////////////////////////////////////////////////////////////////////
+	// CommonShuffleLibrary.Data.MongoHelper
+	var $CommonShuffleLibrary_Data_MongoHelper = function() {
+	};
+	$CommonShuffleLibrary_Data_MongoHelper.__typeName = 'CommonShuffleLibrary.Data.MongoHelper';
+	$CommonShuffleLibrary_Data_MongoHelper.where = function(T) {
+		return function(collection, query, result) {
+			collection.find(query, function(a, b) {
+				b.toArray(function(c, d) {
+					result(a, d);
+				});
+			});
+		};
+	};
+	$CommonShuffleLibrary_Data_MongoHelper.firstOrDefault = function(T) {
+		return function(collection, query, result) {
+			collection.find(query, function(a, b) {
+				b.toArray(function(c, d) {
+					result(a, d[0]);
+				});
+			});
+		};
+	};
+	$CommonShuffleLibrary_Data_MongoHelper.any = function(T) {
+		return function(collection, query, result) {
+			collection.find(query, function(a, b) {
+				b.toArray(function(c, d) {
+					result(a, d.length > 0);
+				});
+			});
+		};
+	};
+	global.CommonShuffleLibrary.Data.MongoHelper = $CommonShuffleLibrary_Data_MongoHelper;
+	ss.initClass($CommonShuffleLibrary_Consumer, {});
+	ss.initClass($CommonShuffleLibrary_DataManager, {
+		$initData: function() {
+			this.gameData = new $CommonShuffleLibrary_Data_DataManagerGameData(this);
+			this.chatData = new $CommonShuffleLibrary_Data_DataManagerChatData(this);
+			this.siteData = new $CommonShuffleLibrary_Data_DataManagerSiteData(this);
+		}
+	});
+	ss.initClass($CommonShuffleLibrary_PubSub, {
+		publish: function(channel, content) {
+			this.$pubClient.publish(channel, content);
+		},
+		subscribe: function(channel, callback) {
+			this.$subClient.subscribe(channel);
+			this.$subbed[channel] = callback;
+		}
+	});
+	ss.initClass($CommonShuffleLibrary_QueueItem, {});
+	ss.initClass($CommonShuffleLibrary_QueueItemCollection, {
+		getByChannel: function(channel) {
+			var $t1 = ss.getEnumerator(this.$queueItems);
+			try {
+				while ($t1.moveNext()) {
+					var queueWatcher = $t1.current();
+					if (ss.referenceEquals(queueWatcher.channel, channel) || channel.indexOf(ss.replaceAllString(queueWatcher.channel, '*', '')) === 0) {
+						return queueWatcher;
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			return null;
+		}
+	});
+	ss.initClass($CommonShuffleLibrary_QueueManager, {
+		addChannel: function(channel, callback) {
+			this.channels.set_item(channel, callback);
+		},
+		$messageReceived: function(name, user, eventChannel, content) {
+			//todo?        user.Gateway = name;
+			try {
+				if (!ss.staticEquals(this.channels.get_item(eventChannel), null)) {
+					this.channels.get_item(eventChannel)(user, content);
+				}
+			}
+			catch ($t1) {
+				var ex = ss.Exception.wrap($t1);
+				console.log(ex.toString());
+			}
+		},
+		sendMessage: function(channel, eventChannel, user, content) {
+			if (ss.isNullOrUndefined(this.$qpCollection.getByChannel(channel))) {
+				$CommonShuffleLibrary_ServerLogger.logError(ss.formatString('Cannot send message:{0} - {1} No Existy', channel, eventChannel), content);
+				return;
+			}
+			var pusher = ss.cast(this.$qpCollection.getByChannel(channel), $CommonShuffleLibrary_QueuePusher);
+			$CommonShuffleLibrary_ServerLogger.logTransport('Channel: ' + eventChannel, content);
+			pusher.message(channel, this.name, user, eventChannel, content);
+		}
+	});
+	ss.initClass($CommonShuffleLibrary_QueueManagerOptions, {});
+	ss.initClass($CommonShuffleLibrary_QueueMessage, {});
+	ss.initClass($CommonShuffleLibrary_QueuePusher, {
+		message: function(channel, name, user, eventChannel, content) {
+			var message = new $CommonShuffleLibrary_QueueMessage(name, user, eventChannel, content);
+			var value = JSON.stringify(message, CommonLibraries.Help.sanitize);
+			this.$client1.rpush(channel, value);
+			//todo:maybe sanitize
+		}
+	}, $CommonShuffleLibrary_QueueItem);
+	ss.initClass($CommonShuffleLibrary_QueueWatcher, {
+		get_callback: function() {
+			return this.$2$CallbackField;
+		},
+		set_callback: function(value) {
+			this.$2$CallbackField = value;
+		},
+		cycle: function(channel) {
+			this.$client1.blpop([channel, 10], ss.mkdel(this, function(caller, dtj) {
+				var data = ss.cast(dtj, Array);
+				if (ss.isValue(dtj)) {
+					var dt = JSON.parse(data[1]);
+					$CommonShuffleLibrary_ServerLogger.logTransport('Channel: ' + dt.eventChannel, dt.content);
+					this.get_callback()(dt.name, dt.user, dt.eventChannel, dt.content);
+				}
+				this.cycle(channel);
+			}));
+		}
+	}, $CommonShuffleLibrary_QueueItem);
+	ss.initClass($CommonShuffleLibrary_ServerLogger, {});
+	ss.initClass($CommonShuffleLibrary_ServerLogListener, {});
+	ss.initClass($CommonShuffleLibrary_ServerLogMessage, {});
+	ss.initClass($CommonShuffleLibrary_Data_DataManagerChatData, {
 		createChatChannel: function(roomName, user, complete) {
 			this.$manager.client.collection('ChatRoom', function(err, collection) {
 				var $t1 = [];
 				ss.add($t1, user);
+				null;
 				var chatRoomDataModel = { roomName: roomName, users: $t1, messages: [] };
 				collection.insert(chatRoomDataModel);
 				complete(chatRoomDataModel);
@@ -351,27 +439,15 @@ require('./NodeLibraries.js');
 				complete();
 			});
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CommonShuffleLibrary.Data.DataManagerGameData
-	var $CommonShuffleLibrary_Data_DataManagerGameData = function(manager) {
-		this.$manager = null;
-		this.$manager = manager;
-	};
-	$CommonShuffleLibrary_Data_DataManagerGameData.prototype = {
+	});
+	ss.initClass($CommonShuffleLibrary_Data_DataManagerGameData, {
 		insert: function(gmo) {
 			this.$manager.client.collection('gameInfo', function(err, collection) {
 				collection.insert(gmo);
 			});
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CommonShuffleLibrary.Data.DataManagerSiteData
-	var $CommonShuffleLibrary_Data_DataManagerSiteData = function(manager) {
-		this.$manager = null;
-		this.$manager = manager;
-	};
-	$CommonShuffleLibrary_Data_DataManagerSiteData.prototype = {
+	});
+	ss.initClass($CommonShuffleLibrary_Data_DataManagerSiteData, {
 		user_Insert: function(data, result) {
 			this.$manager.client.collection('User', function(err, collection) {
 				collection.insert(data);
@@ -415,6 +491,7 @@ require('./NodeLibraries.js');
 			//ExtensionMethods.debugger();
 			var $t1 = [];
 			ss.add($t1, user);
+			null;
 			var rd = { gameType: gameType, roomName: roomName, chatChannel: roomName + 'RoomName', gameChannel: roomName + 'GameRoom', players: $t1, chatServer: null, gameServer: null };
 			this.$manager.client.collection('Room', function(err, collection) {
 				collection.insert(rd);
@@ -528,6 +605,7 @@ require('./NodeLibraries.js');
 				$t5.numberOfPlayers = 6;
 				$t5.screenSize = new CommonLibraries.IntPoint(1024, 768);
 				ss.add($t4, $t5);
+				null;
 				$t1.gameLayoutScenarios = $t4;
 				$t1.userHash = userHash;
 				$t1.name = gameName;
@@ -574,55 +652,8 @@ require('./NodeLibraries.js');
 				});
 			});
 		}
-	};
-	////////////////////////////////////////////////////////////////////////////////
-	// CommonShuffleLibrary.Data.MongoHelper
-	var $CommonShuffleLibrary_Data_MongoHelper = function() {
-	};
-	$CommonShuffleLibrary_Data_MongoHelper.where = function(T) {
-		return function(collection, query, result) {
-			collection.find(query, function(a, b) {
-				b.toArray(function(c, d) {
-					result(a, d);
-				});
-			});
-		};
-	};
-	$CommonShuffleLibrary_Data_MongoHelper.firstOrDefault = function(T) {
-		return function(collection, query, result) {
-			collection.find(query, function(a, b) {
-				b.toArray(function(c, d) {
-					result(a, d[0]);
-				});
-			});
-		};
-	};
-	$CommonShuffleLibrary_Data_MongoHelper.any = function(T) {
-		return function(collection, query, result) {
-			collection.find(query, function(a, b) {
-				b.toArray(function(c, d) {
-					result(a, d.length > 0);
-				});
-			});
-		};
-	};
-	ss.registerClass(global, 'CommonShuffleLibrary.Consumer', $CommonShuffleLibrary_Consumer);
-	ss.registerClass(global, 'CommonShuffleLibrary.DataManager', $CommonShuffleLibrary_DataManager);
-	ss.registerClass(global, 'CommonShuffleLibrary.PubSub', $CommonShuffleLibrary_PubSub);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueueItem', $CommonShuffleLibrary_QueueItem);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueueItemCollection', $CommonShuffleLibrary_QueueItemCollection);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueueManager', $CommonShuffleLibrary_QueueManager);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueueManagerOptions', $CommonShuffleLibrary_QueueManagerOptions);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueueMessage', $CommonShuffleLibrary_QueueMessage);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueuePusher', $CommonShuffleLibrary_QueuePusher, $CommonShuffleLibrary_QueueItem);
-	ss.registerClass(global, 'CommonShuffleLibrary.QueueWatcher', $CommonShuffleLibrary_QueueWatcher, $CommonShuffleLibrary_QueueItem);
-	ss.registerClass(global, 'CommonShuffleLibrary.ServerLogger', $CommonShuffleLibrary_ServerLogger);
-	ss.registerClass(global, 'CommonShuffleLibrary.ServerLogListener', $CommonShuffleLibrary_ServerLogListener);
-	ss.registerClass(global, 'CommonShuffleLibrary.ServerLogMessage', $CommonShuffleLibrary_ServerLogMessage);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerChatData', $CommonShuffleLibrary_Data_DataManagerChatData);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerGameData', $CommonShuffleLibrary_Data_DataManagerGameData);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.DataManagerSiteData', $CommonShuffleLibrary_Data_DataManagerSiteData);
-	ss.registerClass(global, 'CommonShuffleLibrary.Data.MongoHelper', $CommonShuffleLibrary_Data_MongoHelper);
+	});
+	ss.initClass($CommonShuffleLibrary_Data_MongoHelper, {});
 	$CommonShuffleLibrary_ServerLogger.$pubsub = null;
 	$CommonShuffleLibrary_ServerLogger.$serverType = null;
 	$CommonShuffleLibrary_ServerLogger.$serverName = null;

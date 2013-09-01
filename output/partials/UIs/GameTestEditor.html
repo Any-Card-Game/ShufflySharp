@@ -1,9 +1,11 @@
 <div ng-controller="GameTestEditorController">
     <div floating-window left="'55%'" top="'40%'" height="'500px'" width="'400px'" window-title="'Game Test Editor'"
          visible="visible">
-        <button ng-click="model.startGame()">Debug Game!</button>
-        <div>
-            Log:<textarea ng-model="model.log"></textarea>
+        <button class="btn col-main full-width pad-top-small" ng-show="!model.gameRunning" ng-click="model.startGame()">Debug Game!</button>
+        <button class="btn col-main full-width pad-top-small" ng-show="model.gameRunning" ng-click="model.destroyGame()">Kill Game!</button>
+
+                <div>
+            <textarea class="field span12" style="width:400px; height:460px;" ng-model="model.log"></textarea>
         </div>
     </div>
 </div>

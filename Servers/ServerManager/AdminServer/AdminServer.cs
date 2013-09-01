@@ -52,7 +52,7 @@ namespace ServerManager.AdminServer
             Global.Require<Http>("http").CreateServer(handler).Listen(8090);
 
             debug = true;
-            Global.SetInterval(() => { Console.Log("keep alive " + Common.ShortDate()); }, 10 * 1000);
+            Global.SetInterval(() => { Console.WriteLine("keep alive " + Common.ShortDate()); }, 10 * 1000);
 
             Global.Process.On("exit",
                               () => {

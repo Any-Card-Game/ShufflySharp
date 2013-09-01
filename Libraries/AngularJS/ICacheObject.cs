@@ -5,6 +5,8 @@ namespace ng
     [Imported]
     public interface ICacheObject
     {
+        void Put(string key, object value);
+        object Get(string key);
 #if TODO
         info(): {
             id: string;

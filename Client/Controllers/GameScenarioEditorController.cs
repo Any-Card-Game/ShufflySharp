@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Client.Scope.Controller;
 using Client.Services;
@@ -244,27 +245,7 @@ namespace Client.Controllers
                                                                             Cards = e.Cards.Map(
                                                                                 c =>
                                                                                 {
-                                                                                    return
-                                                                                        new GameLayoutScenarioCard()
-                                                                                        {
-                                                                                            CardGuid
-                                                                                                =
-                                                                                                Guid
-                                                                                                .NewGuid
-                                                                                                (),
-                                                                                            State
-                                                                                                =
-                                                                                                c
-                                                                                                .State,
-                                                                                            Value
-                                                                                                =
-                                                                                                c
-                                                                                                .Value,
-                                                                                            Type
-                                                                                                =
-                                                                                                c
-                                                                                                .Type
-                                                                                        };
+                                                                                    return new GameLayoutScenarioCard() {CardGuid = Guid.NewGuid().ToString(), State = c.State, Value = c.Value, Type = c.Type};
                                                                                 })
                                                                         }),
                                                            Effects =
@@ -296,11 +277,8 @@ namespace Client.Controllers
         {
             myScope.Model.Selection.SelectedScenarioSpace.Cards.Add(new GameLayoutScenarioCard()
                                                                     {
-                                                                        CardGuid =
-                                                                            Guid.NewGuid(),
-                                                                        State =
-                                                                            GameLayoutCardState
-                                                                            .FaceUp,
+                                                                        CardGuid = Guid.NewGuid().ToString(),
+                                                                        State =GameLayoutCardState.FaceUp,
                                                                         Type = 3,
                                                                         Value = 11
                                                                     });

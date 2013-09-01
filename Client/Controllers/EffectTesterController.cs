@@ -20,7 +20,7 @@ namespace Client.Controllers
             scope.Model.SpaceTest = new EffectTesterSpaceModel();
             scope.Model.SpaceTest.Space = new GameSpaceModel()
                                           {
-                                              Guid = Guid.NewGuid(),
+                                              Guid = Guid.NewGuid().ToString(),
                                               Left = 3,
                                               Top = 3,
                                               Height = 2,
@@ -33,42 +33,42 @@ namespace Client.Controllers
                                           {
                                               new GameLayoutScenarioCard()
                                               {
-                                                  CardGuid = Guid.NewGuid(),
+                                                  CardGuid = Guid.NewGuid().ToString(),
                                                   State = GameLayoutCardState.FaceDown,
                                                   Type = 1,
                                                   Value = 5
                                               },
                                               new GameLayoutScenarioCard()
                                               {
-                                                  CardGuid = Guid.NewGuid(),
+                                                  CardGuid = Guid.NewGuid().ToString(),
                                                   State = GameLayoutCardState.FaceDown,
                                                   Type = 1,
                                                   Value = 6
                                               },
                                               new GameLayoutScenarioCard()
                                               {
-                                                  CardGuid = Guid.NewGuid(),
+                                                  CardGuid = Guid.NewGuid().ToString(),
                                                   State = GameLayoutCardState.FaceDown,
                                                   Type = 1,
                                                   Value = 7
                                               },
                                               new GameLayoutScenarioCard()
                                               {
-                                                  CardGuid = Guid.NewGuid(),
+                                                  CardGuid = Guid.NewGuid().ToString(),
                                                   State = GameLayoutCardState.FaceDown,
                                                   Type = 1,
                                                   Value = 8
                                               },
                                               new GameLayoutScenarioCard()
                                               {
-                                                  CardGuid = Guid.NewGuid(),
+                                                  CardGuid = Guid.NewGuid().ToString(),
                                                   State = GameLayoutCardState.FaceDown,
                                                   Type = 1,
                                                   Value = 9
                                               },
                                               new GameLayoutScenarioCard()
                                               {
-                                                  CardGuid = Guid.NewGuid(),
+                                                  CardGuid = Guid.NewGuid().ToString(),
                                                   State = GameLayoutCardState.FaceDown,
                                                   Type = 1,
                                                   Value = 10
@@ -79,7 +79,7 @@ namespace Client.Controllers
             scope.Model.CardTest = new EffectTesterCardModel();
             scope.Model.CardTest.Space = new GameSpaceModel()
                                          {
-                                             Guid = Guid.NewGuid(),
+                                             Guid = Guid.NewGuid().ToString(),
                                              Left = 3,
                                              Top = 8,
                                              Height = 2,
@@ -90,7 +90,7 @@ namespace Client.Controllers
                                          };
             scope.Model.CardTest.Card = new GameLayoutScenarioCard()
                                         {
-                                            CardGuid = Guid.NewGuid(),
+                                            CardGuid = Guid.NewGuid().ToString(),
                                             State = GameLayoutCardState.FaceDown,
                                             Type = 2,
                                             Value = 0
@@ -99,7 +99,7 @@ namespace Client.Controllers
             scope.Model.AreaTest = new EffectTesterAreaModel();
             scope.Model.AreaTest.Area = new GameAreaModel()
                                         {
-                                            Guid = Guid.NewGuid(),
+                                            Guid = Guid.NewGuid().ToString(),
                                             Left = 3,
                                             Top = 6,
                                             Height = 2,
@@ -110,7 +110,7 @@ namespace Client.Controllers
             scope.Model.TextTest = new EffectTesterTextModel();
             scope.Model.TextTest.Text = new GameTextModel()
                                         {
-                                            Guid = Guid.NewGuid(),
+                                            Guid = Guid.NewGuid().ToString(),
                                             Left = 7,
                                             Top = 6,
                                             Text = "This is some text!",

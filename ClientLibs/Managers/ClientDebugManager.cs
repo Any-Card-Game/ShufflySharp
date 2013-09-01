@@ -50,9 +50,13 @@ namespace ClientLibs.Managers
         public void CreateGame(CreateDebugGameRequest createDebugGameRequest)
         {
             myGateway.Emit("Area.Debug.Create", createDebugGameRequest);
-             
+
         }
 
+        public void DestroyGame(DestroyDebugGameRequest destroyDebugGameRequest)
+        {
+            myGateway.Emit("Area.Debug.Destory", destroyDebugGameRequest);
+        }
     }
 
 }

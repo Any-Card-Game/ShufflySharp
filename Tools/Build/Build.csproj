@@ -57,9 +57,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ftp, Version=2.0.13041.1517, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
+    <Reference Include="Ftp, Version=2.0.13217.1550, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Ftp.dll.2.0.13041.1517\lib\Ftp.dll</HintPath>
+      <HintPath>..\..\packages\Ftp.dll.2.0.13217.1550\lib\Ftp.dll</HintPath>
     </Reference>
     <Reference Include="Renci.SshNet, Version=2013.1.27.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

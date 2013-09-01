@@ -7,6 +7,7 @@ namespace global
     [ScriptName("TableSpace")]
     public class CardGameTableSpace
     {
+
         [IntrinsicProperty]
         public bool Vertical { get; set; }
         [IntrinsicProperty]
@@ -35,6 +36,9 @@ namespace global
         public int NumberOfCardsVertical { get; set; }
         [IntrinsicProperty]
         public TableSpaceResizeType ResizeType { get; set; }
+        [IntrinsicProperty]
+        public string PileName { get; set; }
+
 
         public CardGameTableSpace(CardGameTableSpaceOptions options)
         {
@@ -59,6 +63,7 @@ namespace global
         public void ApplyPile(CardGamePile pile)
         {
             Pile = pile;
+            PileName = pile.Name;
         }
     }
 }

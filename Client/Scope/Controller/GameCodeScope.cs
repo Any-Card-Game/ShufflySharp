@@ -17,5 +17,7 @@ namespace Client.Scope.Controller
         public GameModel Game { get; set; }
         public bool ForceUpdate { get; set; }
         public GameEditorSelectionScopeModel Selection { get; set; }
+        public object CodeMirrorOptions { get; set; }
+        public Action Doit { get; set; }
     }
 }

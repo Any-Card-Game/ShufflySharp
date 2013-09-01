@@ -1,6 +1,7 @@
-using Client.Scope.Controller;
+﻿using Client.Scope.Controller;
 using Client.Services;
 using Models;
+using Models.DebugGameManagerModels;
 using Models.SiteManagerModels;
 
 namespace Client.Controllers
@@ -10,19 +11,32 @@ namespace Client.Controllers
         public const string Name = "GameCodeController";
         public const string View = "GameCodeEditor";
         public static GameCodeController Instance;
-        private readonly ClientSiteManagerService myClientSiteManagerService;
+        private readonly ClientManagerService myClientManagerService;
         private readonly MessageService myMessageService;
         private readonly GameCodeScope myScope;
 
         public GameCodeController(GameCodeScope scope,
-            ClientSiteManagerService clientSiteManagerService, MessageService messageService)
+            ClientManagerService clientManagerService, MessageService messageService)
         {
             Instance = this;
             //scope.Model.
             myScope = scope;
-            myClientSiteManagerService = clientSiteManagerService;
+            myClientManagerService = clientManagerService;
             myMessageService = messageService;
             scope.Visible = true;
+/*
+            scope.Model.CodeMirrorOptions =new {lineNumbers= true,theme="midnight",mode="javascript"   ,         
+                onGutterClick= (cm, n) =>{
+                var info = cm.lineInfo(n);
+                if (info.markerText) {
+                    window.shuffUIManager.codeArea.breakPoints.splice(window.shuffUIManager.codeArea.breakPoints.indexOf(n-1), 0);
+                    cm.clearMarker(n);
+                } else {
+                    window.shuffUIManager.codeArea.breakPoints.push(n-1);
+                    cm.setMarker(n, "<span style='color: #900'>●</span> %N%");}},extraKeys=new { "Ctrl-Space"= "autocomplete","Ctrl-S"="save" }}
+            ;
+*/
+
 
             scope.watch("model.game.gameCode.code", () => { });
 
@@ -30,6 +44,10 @@ namespace Client.Controllers
                 () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
 
+            scope.Model.Doit = () =>
+                               {
+                                   //myClientManagerService.ClientDebugManagerService.ModifySource(new ModifySourceRequest());
+                               };
             scope.Model.ForceUpdate = false;
             scope.OnReady += () =>
                              {
@@ -37,7 +55,7 @@ namespace Client.Controllers
                                  scope.Apply();
                              };
 
-            myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
+            myClientManagerService.ClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;
         }
@@ -57,7 +75,7 @@ namespace Client.Controllers
         {
             myScope.Model.UpdateStatus = UpdateStatusType.Syncing;
 
-            myClientSiteManagerService.DeveloperUpdateGame(myScope.Model.Game);
+            myClientManagerService.ClientSiteManagerService.DeveloperUpdateGame(myScope.Model.Game);
         }
     }
 }

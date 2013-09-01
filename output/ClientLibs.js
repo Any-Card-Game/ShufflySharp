@@ -208,8 +208,11 @@
 		createGame: function(createDebugGameRequest) {
 			this.$myGateway.emit('Area.Debug.Create', createDebugGameRequest);
 		},
+		modifySource: function(modifySourceRequest) {
+			this.$myGateway.emit('Area.Debug.ModifySource', modifySourceRequest);
+		},
 		destroyGame: function(destroyDebugGameRequest) {
-			this.$myGateway.emit('Area.Debug.Destory', destroyDebugGameRequest);
+			this.$myGateway.emit('Area.Debug.Destroy', destroyDebugGameRequest);
 		}
 	});
 	ss.initClass($ClientLibs_Managers_ClientGameManager, {

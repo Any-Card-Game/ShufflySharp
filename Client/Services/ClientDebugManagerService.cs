@@ -33,6 +33,10 @@ namespace Client.Services
         {
             clientDebugManager.AnswerQuestion(gameAnswerQuestionModel);
         }
+        public void ModifySource(ModifySourceRequest modifySourceRequest)
+        {
+            clientDebugManager.ModifySource(modifySourceRequest);
+        }
 
         public void CreateGame(CreateDebugGameRequest createDebugGameRequest)
         {

@@ -549,11 +549,11 @@
 		Fiber.yield(new $global_FiberYieldResponse.$ctor1(1, msg));
 	};
 	$global_shuff.break_ = function(lineNumber, cardGame, varLookup) {
-		if (cardGame.emulating) {
-			return;
-		}
+		//   if (cardGame.Emulating)
+		//   return;
 		var yieldObject = new $global_FiberYieldResponse.$ctor3(3, lineNumber - 1, '');
 		while (true) {
+			console.log('breaking');
 			var answ = Fiber.yield(yieldObject);
 			if (ss.isNullOrUndefined(answ)) {
 				//continue
@@ -585,6 +585,8 @@
 		this.numberOfCardsVertical = 0;
 		this.resizeType = 0;
 		this.pileName = null;
+		this.userName = null;
+		this.user = null;
 		this.vertical = (!options.vertical ? false : options.vertical);
 		this.x = ((options.x === 0) ? 0 : options.x);
 		this.y = ((options.y === 0) ? 0 : options.y);
@@ -720,9 +722,15 @@
 	ss.initClass($global_Rectangle, {});
 	ss.initClass($global_shuff, {});
 	ss.initClass($global_TableSpace, {
-		applyPile: function(pile) {
+		assignPile: function(pile) {
 			this.pile = pile;
 			this.pileName = pile.name;
+			return this;
+		},
+		assignUser: function(user) {
+			this.user = user;
+			this.userName = user.userName;
+			return this;
 		}
 	});
 	ss.initClass($global_TableTextArea, {});

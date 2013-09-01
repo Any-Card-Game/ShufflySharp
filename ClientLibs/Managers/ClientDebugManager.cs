@@ -52,10 +52,15 @@ namespace ClientLibs.Managers
             myGateway.Emit("Area.Debug.Create", createDebugGameRequest);
 
         }
+        public void ModifySource(ModifySourceRequest modifySourceRequest)
+        {
+            myGateway.Emit("Area.Debug.ModifySource", modifySourceRequest);
+
+        }
 
         public void DestroyGame(DestroyDebugGameRequest destroyDebugGameRequest)
         {
-            myGateway.Emit("Area.Debug.Destory", destroyDebugGameRequest);
+            myGateway.Emit("Area.Debug.Destroy", destroyDebugGameRequest);
         }
     }
 

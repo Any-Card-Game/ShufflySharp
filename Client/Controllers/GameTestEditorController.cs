@@ -58,6 +58,11 @@ namespace Client.Controllers
             {
                 myScope.Model.GameRunning = true;
                 myScope.Model.Room = roomModel;
+                Window.SetTimeout(() =>
+                                  {
+                                    //  clientDebugManagerService.ModifySource(new ModifySourceRequest(roomModel.RoomID, null, new List<int>() {164}));
+
+                                  }, 3000);
             };
 
 

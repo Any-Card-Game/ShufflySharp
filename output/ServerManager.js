@@ -197,6 +197,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$1$OnGameDestroyField = null;
 		this.$1$OnUserAnswerQuestionField = null;
 		this.$1$OnUserDisconnectField = null;
+		this.$1$OnModifySourceField = null;
 		this.$1$OnUserLeaveField = null;
 		this.set_debugGameServerIndex(debugGameServerIndex);
 		this.$setup();
@@ -227,6 +228,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$total__ = 0;
 		this.$myServerManager = new $ServerManager_DebugGameServer_DebugGameClientManager(debugServerIndex);
 		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
+		this.$myServerManager.add_onModifySource(ss.mkdel(this, this.modifySource));
 		this.$myServerManager.add_onGameDestroy(ss.mkdel(this, this.$gameDestroy));
 		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
 		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
@@ -237,6 +239,16 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		setInterval(ss.mkdel(this, this.$flushQueue), 50);
 	};
 	$ServerManager_DebugGameServer_DebugGameManager.__typeName = 'ServerManager.DebugGameServer.DebugGameManager';
+	$ServerManager_DebugGameServer_DebugGameManager.$applyBreakpoints = function(source, points) {
+		var sourceLines = ss.arrayClone(source.split('\n'));
+		points.sort(function(a, b) {
+			return b - a;
+		});
+		for (var i = 0; i < points.length; i++) {
+			ss.insert(sourceLines, points[i], "console.log('breakingbreaking'); shuff.break_(" + points[i] + ",self.cardGame, function (variable) { var goodVar; eval('goodVar=' + variable); return goodVar; });");
+		}
+		return sourceLines.join('\n');
+	};
 	global.ServerManager.DebugGameServer.DebugGameManager = $ServerManager_DebugGameServer_DebugGameManager;
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.DebugGameServer.DebugGameServer
@@ -971,6 +983,12 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		remove_onUserDisconnect: function(value) {
 			this.$1$OnUserDisconnectField = ss.delegateRemove(this.$1$OnUserDisconnectField, value);
 		},
+		add_onModifySource: function(value) {
+			this.$1$OnModifySourceField = ss.delegateCombine(this.$1$OnModifySourceField, value);
+		},
+		remove_onModifySource: function(value) {
+			this.$1$OnModifySourceField = ss.delegateRemove(this.$1$OnModifySourceField, value);
+		},
 		add_onUserLeave: function(value) {
 			this.$1$OnUserLeaveField = ss.delegateCombine(this.$1$OnUserLeaveField, value);
 		},
@@ -982,17 +1000,20 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$qManager.addChannel('Area.Debug.Create', ss.mkdel(this, function(user, data) {
 				this.$1$OnGameCreateField(user, data);
 			}));
-			this.$qManager.addChannel('Area.Debug.Destroy', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnGameDestroyField(user1, data1);
+			this.$qManager.addChannel('Area.Debug.ModifySource', ss.mkdel(this, function(user1, data1) {
+				this.$1$OnModifySourceField(user1, data1);
 			}));
-			this.$qManager.addChannel('Area.Debug.AnswerQuestion', ss.mkdel(this, function(user2, data2) {
-				this.$1$OnUserAnswerQuestionField(user2, data2);
+			this.$qManager.addChannel('Area.Debug.Destroy', ss.mkdel(this, function(user2, data2) {
+				this.$1$OnGameDestroyField(user2, data2);
 			}));
-			this.$qManager.addChannel('Area.Debug.UserDisconnect', ss.mkdel(this, function(user3, data3) {
-				this.$1$OnUserDisconnectField(user3, data3);
+			this.$qManager.addChannel('Area.Debug.AnswerQuestion', ss.mkdel(this, function(user3, data3) {
+				this.$1$OnUserAnswerQuestionField(user3, data3);
 			}));
-			this.$qManager.addChannel('Area.Debug.LeaveGameRoom', ss.mkdel(this, function(user4, data4) {
-				this.$1$OnUserLeaveField(user4, data4);
+			this.$qManager.addChannel('Area.Debug.UserDisconnect', ss.mkdel(this, function(user4, data4) {
+				this.$1$OnUserDisconnectField(user4, data4);
+			}));
+			this.$qManager.addChannel('Area.Debug.LeaveGameRoom', ss.mkdel(this, function(user5, data5) {
+				this.$1$OnUserLeaveField(user5, data5);
 			}));
 		},
 		$sendMessageToTester: function(room, message, val) {
@@ -1069,8 +1090,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				CommonShuffleLibrary.ServerLogger.logError('--room not found ', data);
 				return;
 			}
-			room.fiber.reset();
 			ss.remove(this.$rooms, room);
+			room.fiber.reset();
 		},
 		createGame: function(user, data) {
 			CommonShuffleLibrary.ServerLogger.logDebug('--debug game created ', data);
@@ -1109,8 +1130,10 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			}));
 		},
 		$startGame: function(room) {
-			this.$myServerManager.sendGameStarted(room);
-			room.started = true;
+			if (!room.started) {
+				this.$myServerManager.sendGameStarted(room);
+				room.started = true;
+			}
 			var answer = room.fiber.run(room.players);
 			this.$processGameResponse(room, answer);
 		},
@@ -1146,6 +1169,33 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					CommonShuffleLibrary.ServerLogger.logDebug(ss.formatString('{0} =  tot: __{1}__ + shift: {2} + T: {3} + QSize: {4} + T Rooms: {5} + Per SecondL {6}', this.$myServerManager.get_debugGameServerIndex().substr(0, 19), this.$total__ + this.$skipped__, ind, this.$total__, this.$answerQueue.length, this.$rooms.length, this.$gameData.totalQuestionsAnswered / ((dt.getTime() - this.$startTime.getTime()) / 1000)), null);
 				}
 			}
+		},
+		modifySource: function(user, data) {
+			var room = this.$rooms.filter(function(a) {
+				return ss.referenceEquals(a.roomID, data.roomID);
+			})[0];
+			if (ss.isNullOrUndefined(room)) {
+				CommonShuffleLibrary.ServerLogger.logError('--room not found ', data);
+				return;
+			}
+			this.$dataManager.siteData.game_GetGamesByName(room.gameType, ss.mkdel(this, function(game) {
+				if (ss.isNullOrUndefined(game)) {
+					CommonShuffleLibrary.ServerLogger.logDebug('--game not found ' + room.gameType, null);
+					return;
+				}
+				CommonShuffleLibrary.ServerLogger.logDebug('--game found ' + game.name, game);
+				var $t1 = data.source;
+				if (ss.isNullOrUndefined($t1)) {
+					$t1 = game.gameCode.code;
+				}
+				var code = $t1;
+				code = $ServerManager_DebugGameServer_DebugGameManager.$applyBreakpoints(code, data.breakpoints);
+				var evaluated_game = null;
+				eval('evaluated_game=' + code);
+				var gameObject = evaluated_game;
+				room.fiber = this.$createFiber(room, gameObject, true, game);
+				this.$startGame(room);
+			}));
 		},
 		$createFiber: function(room, gameObject, emulating, game) {
 			return new Fiber(ss.mkdel(this, function(players) {
@@ -1222,6 +1272,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				room.unwind(room.players);
 				return;
 			}
+			console.log('process  ' + response.type.toString());
 			switch (response.type) {
 				case 0: {
 					this.$askPlayerQuestion(room, response);
@@ -1240,6 +1291,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					break;
 				}
 				case 3: {
+					console.log('broke  ' + JSON.stringify(response));
 					this.$breakGameExecution(room, response);
 					break;
 				}
@@ -1266,8 +1318,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			CommonShuffleLibrary.ServerLogger.logDebug('game real over', room);
 			this.$myServerManager.sendUpdateState(room);
 			this.$myServerManager.sendGameOver(room);
-			room.fiber.reset();
 			ss.remove(this.$rooms, room);
+			room.fiber.reset();
 		},
 		$askPlayerQuestion: function(room, answer) {
 			this.$gameData.totalQuestionsAnswered++;
@@ -1642,8 +1694,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			CommonShuffleLibrary.ServerLogger.logDebug('game real over', room);
 			this.$myServerManager.sendUpdateState(room, null);
 			this.$myServerManager.sendGameOver(room);
-			room.fiber.reset();
 			ss.remove(this.$rooms, room);
+			room.fiber.reset();
 		},
 		$askPlayerQuestion: function(room, answer) {
 			this.$gameData.totalQuestionsAnswered++;

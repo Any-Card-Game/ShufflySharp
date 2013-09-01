@@ -49,11 +49,12 @@ namespace global
         [ScriptName("break_")]
         public static void Break(int lineNumber, GameCardGame cardGame, Func<string, string> varLookup)
         {
-            if (cardGame.Emulating)
-                return;
+         /*   if (cardGame.Emulating)
+                return;*/
 
             var yieldObject = new FiberYieldResponse(FiberYieldResponseType.Break, lineNumber - 1, "");
             while (true) {
+                Console.WriteLine("breaking");
                 var answ = Fiber<FiberYieldResponse>.Yield(yieldObject);
 
                 if (answ == null) {

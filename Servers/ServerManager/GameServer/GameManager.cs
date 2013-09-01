@@ -307,9 +307,9 @@ namespace ServerManager.GameServer
             myServerManager.SendUpdateState(room,null);
 
             myServerManager.SendGameOver(room);
+            rooms.Remove(room);
             room.Fiber.Reset();
 
-            rooms.Remove(room);
         }
 
         private void askPlayerQuestion(GameRoom room, FiberYieldResponse answer)
@@ -345,6 +345,7 @@ namespace ServerManager.GameServer
                 ServerLogger.LogDebug("Ask question   ", answ);
         }
 
+ 
         private UserLogicModel getPlayerByUsername(GameRoom room, string userName)
         {
             foreach (var player in room.Players)

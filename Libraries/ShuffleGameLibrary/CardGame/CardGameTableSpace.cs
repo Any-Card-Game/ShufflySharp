@@ -38,6 +38,11 @@ namespace global
         public TableSpaceResizeType ResizeType { get; set; }
         [IntrinsicProperty]
         public string PileName { get; set; }
+        [IntrinsicProperty]
+        public string UserName { get; set; }
+        [IntrinsicProperty]
+        public CardGameUser User { get; set; }
+
 
 
         public CardGameTableSpace(CardGameTableSpaceOptions options)
@@ -60,10 +65,18 @@ namespace global
             Effects=new List<string>();
         }
 
-        public void ApplyPile(CardGamePile pile)
+        public CardGameTableSpace AssignPile(CardGamePile pile)
         {
             Pile = pile;
             PileName = pile.Name;
+            return this;
         }
+        public CardGameTableSpace AssignUser(CardGameUser user)
+        {
+            User = user;
+            UserName = user.UserName;
+            return AssignPile(user.Cards);
+        }
+
     }
 }

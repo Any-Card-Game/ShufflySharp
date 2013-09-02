@@ -91,7 +91,7 @@ namespace Client.Controllers
                                                             if (create)
                                                             {
                                                                 scope.Scale =
-                                                                    new Point(jQuery.Window.GetWidth() / scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight() - 250) / scope.MainArea.Size.Height) * .9);
+                                                                    new Point(jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight()) / (double)scope.MainArea.Size.Height) * .9);
 
                                                                 foreach (var space in scope.MainArea.Spaces)
                                                                 {
@@ -114,10 +114,7 @@ namespace Client.Controllers
             jQuery.Window.Bind("resize", (a) =>
                                          {
                                              scope.Scale =
-                                                 new Point(
-                                                     jQuery.Window.GetWidth()/(double) scope.MainArea.Size.Width*.9,
-                                                     ((jQuery.Window.GetHeight() - 250)/
-                                                      (double) scope.MainArea.Size.Height)*.9);
+                                                 new Point(jQuery.Window.GetWidth() / (double)scope.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight()) / (double)scope.MainArea.Size.Height) * .9);
                                              scope.Apply();
                                          });
 

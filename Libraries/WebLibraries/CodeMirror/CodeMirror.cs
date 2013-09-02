@@ -19,7 +19,7 @@ namespace WebLibraries.CodeMirror
         }
 
         public void Refresh() {}
-        public void SetGutterMarker(int lineIndex, string gutterID, string style) {}
+        public void SetGutterMarker(int lineIndex, string gutterID, Element style) { }
         public void SetValue(string data) {}
         public void ClearGutter(string gutterID) {}
         public void SetCursor(int lineNumber, int colNumber) {}
@@ -72,6 +72,14 @@ namespace WebLibraries.CodeMirror
         public CodeMirrorLine LineInfo(int lineIndex)
         {
             return null;
+        }
+
+        public void ClearMarker(int lineIndex)
+        {
+        }
+
+        public void SetMarker(int lineIndex, string element)
+        {
         }
     }
     [Imported]

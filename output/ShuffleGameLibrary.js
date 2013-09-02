@@ -730,7 +730,7 @@
 		assignUser: function(user) {
 			this.user = user;
 			this.userName = user.userName;
-			return this;
+			return this.assignPile(user.cards);
 		}
 	});
 	ss.initClass($global_TableTextArea, {});

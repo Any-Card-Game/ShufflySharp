@@ -65,6 +65,7 @@ namespace Client.Controllers
             {
                 scope.Model = new GameTestEditorScopeModel();
                 scope.Model.Game = myScope.Model.Game;
+                scope.Model.Selection = myScope.Model.Selection;
             });
 
 

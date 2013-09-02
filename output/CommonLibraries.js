@@ -235,11 +235,11 @@
 	$CommonLibraries_Number.$ctor1.prototype = $CommonLibraries_Number.prototype;
 	ss.initClass($CommonLibraries_Point, {});
 	ss.initClass($CommonLibraries_Size, {});
-	$CommonLibraries_Constants.local = false;
-	$CommonLibraries_Constants.rootAddress = 'http://198.211.107.235';
-	$CommonLibraries_Constants.homeAddress = 'http://198.211.107.235';
-	$CommonLibraries_Constants.contentAddress = 'http://content.anycardgame.com/';
+	$CommonLibraries_Constants.local = true;
+	$CommonLibraries_Constants.rootAddress = 'http://localhost';
+	$CommonLibraries_Constants.homeAddress = 'http://localhost:1700';
+	$CommonLibraries_Constants.contentAddress = 'http://localhost:8881/';
 	$CommonLibraries_Constants.redisIP = '198.211.107.101';
 	$CommonLibraries_Constants.mongoIP = '198.211.107.101';
-	$CommonLibraries_Constants.HARDLOCATION = '/usr/local/src/new/';
+	$CommonLibraries_Constants.HARDLOCATION = 'C:\\code\\node\\';
 })();

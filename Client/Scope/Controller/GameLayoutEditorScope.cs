@@ -40,14 +40,17 @@ namespace Client.Scope.Controller
 
     [Serializable]
     public class GameTestEditorScopeModel : GameUpdater
-    { 
+    {
         public GameModel Game { get; set; }
+        public GameEditorSelectionScopeModel Selection { get; set; }
         public Action StartGame { get; set; }
-        public string Log { get; set; }
+        public List<string> Log { get; set; }
         public bool GameRunning { get; set; }
         public Action DestroyGame { get; set; }
         public GameRoomModel Room { get; set; }
         public CreatedUI<ManagedScope> GameView { get; set; }
+        public Action DebugCode { get; set; }
+        public CreatedUI<DebugGameCodeScope> CodeEditor { get; set; }
     }
 
     [Serializable]

@@ -2,7 +2,7 @@ namespace CommonLibraries
 {
     public class Constants
     {  
-        public const bool Local = false;
+        public const bool Local = true;
         public const string RootAddress = Local ? "http://localhost" : "http://198.211.107.235";
         public const string HomeAddress = Local ? "http://localhost:1700" : "http://198.211.107.235";
         public const string ContentAddress = Local ? "http://localhost:8881/" : "http://content.anycardgame.com/";

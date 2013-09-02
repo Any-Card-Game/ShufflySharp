@@ -50,10 +50,12 @@
 			return new $Client_Controllers_$GameScenarioEditorController(scope15, clientSiteManagerService6, messageService5, createUIService10);
 		}]).controller($Client_Controllers_$GameCodeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientManagerService.name$1, $Client_Services_MessageService.name$1, function(scope16, clientManagerService2, messageService6) {
 			return new $Client_Controllers_$GameCodeController(scope16, clientManagerService2, messageService6);
-		}]).controller($Client_Controllers_$MessageController.$name, [$Client_BuildAngular.$scopeName, function(scope17) {
-			return new $Client_Controllers_$MessageController(scope17);
-		}]).controller($Client_Controllers_EffectTesterController.name$1, [$Client_BuildAngular.$scopeName, function(scope18) {
-			return new $Client_Controllers_EffectTesterController(scope18);
+		}]).controller($Client_Controllers_$DebugGameCodeController.$name, [$Client_BuildAngular.$scopeName, $Client_Services_ClientManagerService.name$1, $Client_Services_MessageService.name$1, function(scope17, clientManagerService3, messageService7) {
+			return new $Client_Controllers_$DebugGameCodeController(scope17, clientManagerService3, messageService7);
+		}]).controller($Client_Controllers_$MessageController.$name, [$Client_BuildAngular.$scopeName, function(scope18) {
+			return new $Client_Controllers_$MessageController(scope18);
+		}]).controller($Client_Controllers_EffectTesterController.name$1, [$Client_BuildAngular.$scopeName, function(scope19) {
+			return new $Client_Controllers_EffectTesterController(scope19);
 		}]).service($Client_Services_UIManagerService.name$1, [$Client_Services_ClientGameManagerService.name$1, function() {
 			return new $Client_Services_UIManagerService();
 		}]).service($Client_Services_ClientChatManagerService.name$1, [$Client_Services_GatewayService.name$1, function(gatewayService) {
@@ -398,6 +400,66 @@
 	};
 	$Client_Controllers_$CreateRoomController.__typeName = 'Client.Controllers.$CreateRoomController';
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Controllers.DebugGameCodeController
+	var $Client_Controllers_$DebugGameCodeController = function(scope, clientManagerService, messageService) {
+		this.$myClientManagerService = null;
+		this.$myMessageService = null;
+		this.$scope = null;
+		$Client_Controllers_$DebugGameCodeController.$instance = this;
+		//scope.Model.
+		this.$scope = scope;
+		this.$myClientManagerService = clientManagerService;
+		this.$myMessageService = messageService;
+		scope.visible = true;
+		scope.model.breakpoints = [];
+		var extraKeys = {};
+		extraKeys['Ctrl-Space'] = 'autocomplete';
+		extraKeys['Ctrl-S'] = 'save';
+		scope.model.codeMirrorOptions = {
+			lineNumbers: true,
+			theme: 'midnight',
+			mode: 'javascript',
+			gutters: ['CodeMirror-linenumbers', 'breakpoints'],
+			onGutterClick: ss.mkdel(this, function(cm, n, gutter, evt) {
+				var info = cm.lineInfo(n);
+				if (ss.isValue(info.gutterMarkers) && ss.isValue(info.gutterMarkers['breakpoints'])) {
+					ss.remove(scope.model.breakpoints, n);
+					cm.setGutterMarker(n, 'breakpoints', null);
+				}
+				else {
+					ss.add(scope.model.breakpoints, n);
+					cm.setGutterMarker(n, 'breakpoints', this.$makeMarker());
+				}
+				if (ss.isValue(scope.model.room)) {
+					clientManagerService.get_clientDebugManagerService().modifySource({ roomID: scope.model.room.roomID, source: scope.model.game.gameCode.code, breakpoints: scope.model.breakpoints });
+				}
+			}),
+			onLoad: function(editor) {
+				scope.model.codeMirror = editor;
+			},
+			extraKeys: extraKeys
+		};
+		var $t1 = clientManagerService.get_clientDebugManagerService();
+		$t1.onGetDebugBreak = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.DebugGameManagerModels.DebugGameBreakModel]).op_Addition($t1.onGetDebugBreak, function(user, debugBreak) {
+			scope.model.codeMirror.addLineClass(debugBreak.lineNumber, 'background', 'codemirror-highlight-line');
+		});
+		scope.$watch('model.game.gameCode.code', function() {
+		});
+		this.$scope.$watch('model.game', ss.mkdel(this, function() {
+			this.$scope.model.updateStatus = 'dirty';
+		}), true);
+		scope.model.forceUpdate = false;
+		scope.onReady = ss.delegateCombine(scope.onReady, function() {
+			scope.model.forceUpdate = true;
+			scope.$apply();
+		});
+		var $t2 = this.$myClientManagerService.get_clientSiteManagerService();
+		$t2.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition($t2.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
+		this.$scope.model.updateStatus = 'synced';
+		this.$scope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
+	};
+	$Client_Controllers_$DebugGameCodeController.__typeName = 'Client.Controllers.$DebugGameCodeController';
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Controllers.DebugQuestionController
 	var $Client_Controllers_$DebugQuestionController = function(scope, clientDebugManagerService) {
 		this.$myClientDebugManagerService = null;
@@ -450,9 +512,6 @@
 		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
 			this.$myScope.model.updateStatus = 'dirty';
 		}), true);
-		scope.model.doit = function() {
-			//myClientManagerService.ClientDebugManagerService.ModifySource(new ModifySourceRequest());
-		};
 		scope.model.forceUpdate = false;
 		scope.onReady = ss.delegateCombine(scope.onReady, function() {
 			scope.model.forceUpdate = true;
@@ -896,35 +955,44 @@
 		this.$clientDebugManagerService = null;
 		this.$myCreateUIService = null;
 		this.$myMessageService = null;
-		this.$myScope = null;
-		this.$myScope = scope;
+		this.$scope = null;
+		this.$scope = scope;
 		this.$myClientSiteManagerService = clientSiteManagerService;
 		this.$clientDebugManagerService = clientDebugManagerService;
 		this.$myMessageService = messageService;
 		this.$myCreateUIService = createUIService;
-		this.$myScope.visible = false;
-		this.$myScope.onReady = ss.delegateCombine(this.$myScope.onReady, ss.mkdel(this, function() {
-			this.$myScope.visible = true;
-			this.$myScope.swingAway(3, true, null);
-			this.$myScope.swingBack(null);
+		this.$scope.visible = false;
+		scope.model.log = [];
+		this.$scope.onReady = ss.delegateCombine(this.$scope.onReady, ss.mkdel(this, function() {
+			this.$scope.visible = true;
+			this.$scope.swingAway(3, true, null);
+			this.$scope.swingBack(null);
 		}));
-		this.$myScope.model.startGame = ss.mkdel(this, this.$startGameFn);
-		this.$myScope.model.destroyGame = ss.mkdel(this, this.$destroyGameFn);
-		this.$myScope.model.gameRunning = false;
-		this.$myScope.$watch('model.game', ss.mkdel(this, function() {
-			this.$myScope.model.updateStatus = 'dirty';
+		this.$scope.model.startGame = ss.mkdel(this, this.$startGameFn);
+		this.$scope.model.destroyGame = ss.mkdel(this, this.$destroyGameFn);
+		this.$scope.model.gameRunning = false;
+		this.$scope.$watch('model.game', ss.mkdel(this, function() {
+			this.$scope.model.updateStatus = 'dirty';
 		}), true);
 		this.$myClientSiteManagerService.onDeveloperUpdateGameReceived = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.SiteManagerModels.DeveloperUpdateGameResponse]).op_Addition(this.$myClientSiteManagerService.onDeveloperUpdateGameReceived, ss.mkdel(this, this.$onDeveloperUpdateGameReceivedFn));
-		this.$myScope.model.updateStatus = 'synced';
-		this.$myScope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
+		this.$scope.model.updateStatus = 'synced';
+		this.$scope.model.updateGame = ss.mkdel(this, this.$updateGameFn);
 		clientDebugManagerService.onGetDebugLog = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.DebugGameManagerModels.DebugGameLogModel]).op_Addition(clientDebugManagerService.onGetDebugLog, ss.mkdel(this, this.$clientDebugManagerService_OnGetDebugLog));
 		clientDebugManagerService.onGameStarted = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]).op_Addition(clientDebugManagerService.onGameStarted, ss.mkdel(this, function(user, roomModel) {
-			this.$myScope.model.gameRunning = true;
-			this.$myScope.model.room = roomModel;
+			this.$scope.model.gameRunning = true;
+			this.$scope.model.room = roomModel;
+			this.$scope.model.codeEditor.scope.model.room = roomModel;
 			window.setTimeout(function() {
 				//  clientDebugManagerService.ModifySource(new ModifySourceRequest(roomModel.RoomID, null, new List<int>() {164}));
 			}, 3000);
 		}));
+		this.$scope.model.debugCode = ss.mkdel(this, function() {
+			this.$scope.model.codeEditor = this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_DebugGameCodeScope).call(this.$myCreateUIService, $Client_Controllers_$DebugGameCodeController.$view, ss.mkdel(this, function(innerScope, elem) {
+				innerScope.model = $Client_Scope_Controller_DebugGameCodeScopeModel.$ctor();
+				innerScope.model.game = this.$scope.model.game;
+				innerScope.model.selection = this.$scope.model.selection;
+			}));
+		});
 	};
 	$Client_Controllers_$GameTestEditorController.__typeName = 'Client.Controllers.$GameTestEditorController';
 	////////////////////////////////////////////////////////////////////////////////
@@ -1100,34 +1168,29 @@
 				sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
 			};
 		})(document.createElement('style'));
+		for (var i = 0; i < 4; i++) {
+			for (var j = 0; j < 13; j++) {
+				addRule('.card' + i + '-' + j + '', {});
+				addRule('.card' + i + '-' + j + '::before', {});
+				addRule('.card' + i + '-' + j + '::after', {});
+			}
+		}
+		addRule('.card' + -1 + '-' + -1 + '', {});
+		addRule('.card' + -1 + '-' + -1 + '::before', {});
+		addRule('.card' + -1 + '-' + -1 + '::after', {});
 		this.$myClientDebugManagerService.onUpdateState = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientDebugManagerService.onUpdateState, function(user1, update) {
 			var data = JSON.parse((new Compressor()).DecompressText(update));
 			var create = ss.isNullOrUndefined(scope.mainArea);
 			scope.mainArea = data;
 			if (create) {
-				scope.scale = new CommonLibraries.Point(ss.Int32.div($(window).width(), scope.mainArea.size.width) * 0.9, ss.Int32.div($(window).height() - 250, scope.mainArea.size.height) * 0.9);
-				for (var $t1 = 0; $t1 < scope.mainArea.spaces.length; $t1++) {
-					var space = scope.mainArea.spaces[$t1];
-					addRule('.space' + space.name, {});
-					addRule('.space' + space.name + '::before', {});
-					addRule('.space' + space.name + '::after', {});
-					for (var $t2 = 0; $t2 < space.pile.cards.length; $t2++) {
-						var card = space.pile.cards[$t2];
-						card.effects = [];
-						if (ss.startsWithString(space.name, 'User')) {
-							ss.add(card.effects, 'bend');
-						}
-						addRule('.card' + card.type + '-' + card.value + '', {});
-						addRule('.card' + card.type + '-' + card.value + '::before', {});
-						addRule('.card' + card.type + '-' + card.value + '::after', {});
-					}
-				}
+				scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, $(window).height() / scope.mainArea.size.height * 0.9);
 			}
 			scope.$apply();
 			//         myGameContentManagerService.Redraw();
 		});
 		$(window).bind('resize', function(a) {
-			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, ($(window).height() - 250) / scope.mainArea.size.height * 0.9);
+			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, $(window).height() / scope.mainArea.size.height * 0.9);
+			scope.$broadcast('redraw');
 			scope.$apply();
 		});
 		this.$myClientDebugManagerService.onGameStarted = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]).op_Addition(this.$myClientDebugManagerService.onGameStarted, function(user2, room) {
@@ -1410,7 +1473,7 @@
 			var create = ss.isNullOrUndefined(scope.mainArea);
 			scope.mainArea = data;
 			if (create) {
-				scope.scale = new CommonLibraries.Point(ss.Int32.div($(window).width(), scope.mainArea.size.width) * 0.9, ss.Int32.div($(window).height() - 250, scope.mainArea.size.height) * 0.9);
+				scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, $(window).height() / scope.mainArea.size.height * 0.9);
 				for (var $t1 = 0; $t1 < scope.mainArea.spaces.length; $t1++) {
 					var space = scope.mainArea.spaces[$t1];
 					addRule('.space' + space.name, {});
@@ -1422,7 +1485,7 @@
 			this.$myGameContentManagerService.redraw();
 		}));
 		$(window).bind('resize', function(a) {
-			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, ($(window).height() - 250) / scope.mainArea.size.height * 0.9);
+			scope.scale = new CommonLibraries.Point($(window).width() / scope.mainArea.size.width * 0.9, $(window).height() / scope.mainArea.size.height * 0.9);
 			scope.$apply();
 		});
 		this.$myClientGameManagerService.onGameOver = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientGameManagerService.onGameOver, function(user2, room) {
@@ -1590,6 +1653,9 @@
 				addRule('.card' + t + '-' + c + '::after', {});
 			}
 		}
+		addRule('.card' + -1 + '-' + -1 + '', {});
+		addRule('.card' + -1 + '-' + -1 + '::before', {});
+		addRule('.card' + -1 + '-' + -1 + '::after', {});
 		//  myGameContentManager.Redraw();
 	};
 	$Client_Controllers_TestGameController.__typeName = 'Client.Controllers.TestGameController';
@@ -1958,6 +2024,35 @@
 	$Client_Scope_Controller_CreateRoomScope.__typeName = 'Client.Scope.Controller.CreateRoomScope';
 	global.Client.Scope.Controller.CreateRoomScope = $Client_Scope_Controller_CreateRoomScope;
 	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.DebugGameCodeScope
+	var $Client_Scope_Controller_DebugGameCodeScope = function() {
+		this.model = null;
+		$Client_Scope_Directive_FloatingWindowBaseScope.call(this);
+	};
+	$Client_Scope_Controller_DebugGameCodeScope.__typeName = 'Client.Scope.Controller.DebugGameCodeScope';
+	global.Client.Scope.Controller.DebugGameCodeScope = $Client_Scope_Controller_DebugGameCodeScope;
+	////////////////////////////////////////////////////////////////////////////////
+	// Client.Scope.Controller.DebugGameCodeScopeModel
+	var $Client_Scope_Controller_DebugGameCodeScopeModel = function() {
+	};
+	$Client_Scope_Controller_DebugGameCodeScopeModel.__typeName = 'Client.Scope.Controller.DebugGameCodeScopeModel';
+	$Client_Scope_Controller_DebugGameCodeScopeModel.createInstance = function() {
+		return $Client_Scope_Controller_DebugGameCodeScopeModel.$ctor();
+	};
+	$Client_Scope_Controller_DebugGameCodeScopeModel.$ctor = function() {
+		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
+		$this.game = null;
+		$this.room = null;
+		$this.forceUpdate = false;
+		$this.selection = null;
+		$this.codeMirrorOptions = null;
+		$this.breakpoints = null;
+		$this.gutterClick = null;
+		$this.codeMirror = null;
+		return $this;
+	};
+	global.Client.Scope.Controller.DebugGameCodeScopeModel = $Client_Scope_Controller_DebugGameCodeScopeModel;
+	////////////////////////////////////////////////////////////////////////////////
 	// Client.Scope.Controller.DebugGameControllerScope
 	var $Client_Scope_Controller_DebugGameControllerScope = function() {
 		this.mainArea = null;
@@ -2076,7 +2171,6 @@
 		$this.forceUpdate = false;
 		$this.selection = null;
 		$this.codeMirrorOptions = null;
-		$this.doit = null;
 		return $this;
 	};
 	global.Client.Scope.Controller.GameCodeScopeModel = $Client_Scope_Controller_GameCodeScopeModel;
@@ -2288,12 +2382,15 @@
 	$Client_Scope_Controller_GameTestEditorScopeModel.$ctor = function() {
 		var $this = $Client_Scope_Controller_GameUpdater.$ctor();
 		$this.game = null;
+		$this.selection = null;
 		$this.startGame = null;
 		$this.log = null;
 		$this.gameRunning = false;
 		$this.destroyGame = null;
 		$this.room = null;
 		$this.gameView = null;
+		$this.debugCode = null;
+		$this.codeEditor = null;
 		return $this;
 	};
 	global.Client.Scope.Controller.GameTestEditorScopeModel = $Client_Scope_Controller_GameTestEditorScopeModel;
@@ -3098,6 +3195,25 @@
 			this.$myScope.model.onCreateRoom(this.$myScope.model.roomName);
 		}
 	});
+	ss.initClass($Client_Controllers_$DebugGameCodeController, {
+		$makeMarker: function() {
+			var marker = document.createElement('div');
+			marker.innerHTML = 'o';
+			marker.className = 'breakpoint';
+			return marker;
+		},
+		$save: function() {
+			this.$updateGameFn();
+		},
+		$onDeveloperUpdateGameReceivedFn: function(user, o) {
+			this.$scope.model.updateStatus = 'synced';
+			this.$scope.$apply();
+		},
+		$updateGameFn: function() {
+			this.$scope.model.updateStatus = 'syncing';
+			this.$myClientManagerService.get_clientSiteManagerService().developerUpdateGame(this.$scope.model.game);
+		}
+	});
 	ss.initClass($Client_Controllers_$DebugQuestionController, {
 		$answerQuestionFn: function() {
 			this.$myScope.swingAway(4, false, ss.mkdel(this, function() {
@@ -3124,6 +3240,7 @@
 			this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_GameTestEditorScope).call(this.$myCreateUIService, $Client_Controllers_$GameTestEditorController.$view, ss.mkdel(this, function(scope, elem) {
 				scope.model = $Client_Scope_Controller_GameTestEditorScopeModel.$ctor();
 				scope.model.game = this.$myScope.model.game;
+				scope.model.selection = this.$myScope.model.selection;
 			}));
 		},
 		$openLayoutFn: function() {
@@ -3435,26 +3552,27 @@
 	});
 	ss.initClass($Client_Controllers_$GameTestEditorController, {
 		$destroyGameFn: function() {
-			this.$clientDebugManagerService.destroyGame({ roomID: this.$myScope.model.room.roomID });
-			this.$myScope.model.gameRunning = false;
-			this.$myScope.model.gameView.destroy();
+			this.$clientDebugManagerService.destroyGame({ roomID: this.$scope.model.room.roomID });
+			this.$scope.model.gameRunning = false;
+			this.$scope.model.codeEditor.scope.model.room = null;
+			this.$scope.model.gameView.destroy();
 		},
 		$startGameFn: function() {
-			this.$myScope.model.gameRunning = true;
-			this.$myScope.model.gameView = this.$myCreateUIService.createSingleton($Client_Controllers_DebugGameController.view);
-			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$myScope.model.game.name });
+			this.$scope.model.gameRunning = true;
+			this.$scope.model.gameView = this.$myCreateUIService.createSingleton($Client_Controllers_DebugGameController.view);
+			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$scope.model.game.name });
 		},
 		$clientDebugManagerService_OnGetDebugLog: function(user, o) {
-			this.$myScope.model.log += o.value + '\r\n';
-			this.$myScope.$apply();
+			ss.add(this.$scope.model.log, o.value);
+			this.$scope.$apply();
 		},
 		$onDeveloperUpdateGameReceivedFn: function(user, o) {
-			this.$myScope.model.updateStatus = 'synced';
-			this.$myScope.$apply();
+			this.$scope.model.updateStatus = 'synced';
+			this.$scope.$apply();
 		},
 		$updateGameFn: function() {
-			this.$myScope.model.updateStatus = 'syncing';
-			this.$myClientSiteManagerService.developerUpdateGame(this.$myScope.model.game);
+			this.$scope.model.updateStatus = 'syncing';
+			this.$myClientSiteManagerService.developerUpdateGame(this.$scope.model.game);
 		}
 	});
 	ss.initClass($Client_Controllers_$HomeController, {
@@ -5798,6 +5916,9 @@
 	ss.initClass($Client_Scope_Controller_ActiveLobbyScope, {}, $Client_Scope_Directive_FloatingWindowBaseScope);
 	ss.initClass($Client_Scope_Controller_CreateRoomModel, {});
 	ss.initClass($Client_Scope_Controller_CreateRoomScope, {}, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.initClass($Client_Scope_Controller_DebugGameCodeScope, {}, $Client_Scope_Directive_FloatingWindowBaseScope);
+	ss.initClass($Client_Scope_Controller_GameUpdater, {});
+	ss.initClass($Client_Scope_Controller_DebugGameCodeScopeModel, {}, $Client_Scope_Controller_GameUpdater);
 	ss.initClass($Client_Scope_Controller_DebugGameControllerScope, {}, $Client_Services_ManagedScope);
 	ss.initClass($Client_Scope_Controller_EffectTesterAreaModel, {});
 	ss.initClass($Client_Scope_Controller_EffectTesterCardModel, {});
@@ -5806,7 +5927,6 @@
 	ss.initClass($Client_Scope_Controller_EffectTesterSpaceModel, {});
 	ss.initClass($Client_Scope_Controller_EffectTesterTextModel, {});
 	ss.initClass($Client_Scope_Controller_GameCodeScope, {}, $Client_Scope_Directive_FloatingWindowBaseScope);
-	ss.initClass($Client_Scope_Controller_GameUpdater, {});
 	ss.initClass($Client_Scope_Controller_GameCodeScopeModel, {}, $Client_Scope_Controller_GameUpdater);
 	ss.initClass($Client_Scope_Controller_GameControllerScope, {}, $Client_Services_ManagedScope);
 	ss.initClass($Client_Scope_Controller_GameEditorModel, {}, $Client_Scope_Controller_GameUpdater);
@@ -6083,6 +6203,9 @@
 	$Client_Controllers_EffectTesterController.view = 'EffectTester';
 	$Client_Controllers_$GameEffectsEditorController.$name = 'GameEffectsEditorController';
 	$Client_Controllers_$GameEffectsEditorController.$view = 'GameEffectsEditor';
+	$Client_Controllers_$DebugGameCodeController.$name = 'DebugGameCodeController';
+	$Client_Controllers_$DebugGameCodeController.$view = 'DebugGameCodeEditor';
+	$Client_Controllers_$DebugGameCodeController.$instance = null;
 	$Client_Controllers_$GameTestEditorController.$name = 'GameTestEditorController';
 	$Client_Controllers_$GameTestEditorController.$view = 'GameTestEditor';
 	$Client_Controllers_$GameCodeController.$name = 'GameCodeController';

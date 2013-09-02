@@ -34,47 +34,15 @@ namespace Client.Controllers
 
 
             var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
-                                                                                           {
-                                                                                               var document =
-                                                                                                   (dynamic)
-                                                                                                       Script.Eval(
-                                                                                                           "window.document");
-
-                                                                                               var sheet =
-                                                                                                   document.head
-                                                                                                       .appendChild(
-                                                                                                           style).sheet;
-                                                                                               return (selector, css) =>
-                                                                                                      {
-                                                                                                          var propText =
-                                                                                                              Keys(css)
-                                                                                                                  .Map(
-                                                                                                                      (p)
-                                                                                                                          =>
-                                                                                                                      {
-                                                                                                                          return
-                                                                                                                              p +
-                                                                                                                              ":" +
-                                                                                                                              css
-                                                                                                                                  [
-                                                                                                                                      p
-                                                                                                                                  ];
-                                                                                                                      })
-                                                                                                                  .Join(
-                                                                                                                      ";");
-                                                                                                          sheet
-                                                                                                              .insertRule
-                                                                                                              (selector +
-                                                                                                               "{" +
-                                                                                                               propText +
-                                                                                                               "}",
-                                                                                                                  sheet
-                                                                                                                      .cssRules
-                                                                                                                      .length);
-                                                                                                      };
-                                                                                           }))(
-                                                                                               Document.CreateElement(
-                                                                                                   "style"));
+            {
+                var document = (dynamic)Script.Eval("window.document");
+                var sheet = document.head.appendChild(style).sheet;
+                return (selector, css) =>
+                {
+                    var propText = Keys(css).Map((p) => { return p + ":" + css[p]; }).Join(";");
+                    sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+                };
+            }))(Document.CreateElement("style"));
 
 
             /*
@@ -90,25 +58,14 @@ namespace Client.Controllers
             scope.watch("model.game.gameLayout.width + model.game.gameLayout.height",
                 () =>
                 {
-                    scope.Model.Scale =
-                        new Point(
-                            scope.Model.Selection.SelectedScenario.ScreenSize.X/
-                            (double) scope.Model.Game.GameLayout.Width*.9,
-                            ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/
-                             (double) scope.Model.Game.GameLayout.Height)*.9);
+                    scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X/(double) scope.Model.Game.GameLayout.Width*.9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/(double) scope.Model.Game.GameLayout.Height)*.9);
                 });
 
 
             scope.watch(
-                "model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y",
-                () =>
+                "model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y",() =>
                 {
-                    scope.Model.Scale =
-                        new Point(
-                            scope.Model.Selection.SelectedScenario.ScreenSize.X/
-                            (double) scope.Model.Game.GameLayout.Width*.9,
-                            ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/
-                             (double) scope.Model.Game.GameLayout.Height)*.9);
+                    scope.Model.Scale =new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X/(double) scope.Model.Game.GameLayout.Width*.9,((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/(double) scope.Model.Game.GameLayout.Height)*.9);
                 });
 
             scope.Model.Scale =
@@ -147,6 +104,9 @@ namespace Client.Controllers
                 }
             }
 
+            addRule(".card" + -1 + "-" + -1 + "", new JsDictionary<string, object>());
+            addRule(".card" + -1 + "-" + -1 + "::before", new JsDictionary<string, object>());
+            addRule(".card" + -1 + "-" + -1 + "::after", new JsDictionary<string, object>());
 
             //  myGameContentManager.Redraw();
         }

@@ -20,89 +20,102 @@ namespace Client.Controllers
         private readonly ClientDebugManagerService clientDebugManagerService;
         private readonly CreateUIService myCreateUIService;
         private readonly MessageService myMessageService;
-        private readonly GameTestEditorScope myScope;
+        private readonly GameTestEditorScope scope;
 
         public GameTestEditorController(GameTestEditorScope scope, ClientSiteManagerService clientSiteManagerService, ClientDebugManagerService clientDebugManagerService, MessageService messageService, CreateUIService createUIService)
         {
-            myScope = scope;
+            this.scope = scope;
             myClientSiteManagerService = clientSiteManagerService;
             this.clientDebugManagerService = clientDebugManagerService;
             myMessageService = messageService;
             myCreateUIService = createUIService;
-            myScope.Visible = false;
+            this.scope.Visible = false;
+            scope.Model.Log = new List<string>();
 
-            myScope.OnReady+=()=>
+            this.scope.OnReady += () =>
             {
-                myScope.Visible = true;
-                myScope.SwingAway(SwingDirection.Right, true, null);
-                myScope.SwingBack(null);
+                this.scope.Visible = true;
+                this.scope.SwingAway(SwingDirection.Right, true, null);
+                this.scope.SwingBack(null);
             };
 
-            myScope.Model.StartGame = StartGameFn;
-            myScope.Model.DestroyGame = DestroyGameFn;
-            
-                myScope.Model.GameRunning = false;
+            this.scope.Model.StartGame = StartGameFn;
+            this.scope.Model.DestroyGame = DestroyGameFn;
+
+            this.scope.Model.GameRunning = false;
 
 
 
-            myScope.watch("model.game",
-                () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
+            this.scope.watch("model.game",
+                () => { this.scope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
-            myScope.Model.UpdateStatus = UpdateStatusType.Synced;
-            myScope.Model.UpdateGame = UpdateGameFn;
+            this.scope.Model.UpdateStatus = UpdateStatusType.Synced;
+            this.scope.Model.UpdateGame = UpdateGameFn;
 
 
             clientDebugManagerService.OnGetDebugLog += clientDebugManagerService_OnGetDebugLog;
             clientDebugManagerService.OnGameStarted += (user, roomModel) =>
             {
-                myScope.Model.GameRunning = true;
-                myScope.Model.Room = roomModel;
+                this.scope.Model.GameRunning = true;
+                this.scope.Model.Room = roomModel;
+                this.scope.Model.CodeEditor.Scope.Model.Room = roomModel;
                 Window.SetTimeout(() =>
                                   {
-                                    //  clientDebugManagerService.ModifySource(new ModifySourceRequest(roomModel.RoomID, null, new List<int>() {164}));
+                                      //  clientDebugManagerService.ModifySource(new ModifySourceRequest(roomModel.RoomID, null, new List<int>() {164}));
 
                                   }, 3000);
             };
 
+            this.scope.Model.DebugCode = () =>
+                                         {
+                                             this.scope.Model.CodeEditor = myCreateUIService.CreateSingleton<DebugGameCodeScope>(DebugGameCodeController.View, (innerScope, elem) =>
+                                                                                                                                        {
+                                                                                                                                            innerScope.Model = new DebugGameCodeScopeModel();
+                                                                                                                                            innerScope.Model.Game = this.scope.Model.Game;
+                                                                                                                                            innerScope.Model.Selection = this.scope.Model.Selection;
+                                                                                                                                        });
+                                         };
 
 
         }
 
         private void DestroyGameFn()
         {
-            clientDebugManagerService.DestroyGame(new DestroyDebugGameRequest(myScope.Model.Room.RoomID));
-            myScope.Model.GameRunning = false;
-            myScope.Model.GameView.Destroy();
+            clientDebugManagerService.DestroyGame(new DestroyDebugGameRequest(scope.Model.Room.RoomID));
+            scope.Model.GameRunning = false;
+            scope.Model.CodeEditor.Scope.Model.Room = null;
+
+            scope.Model.GameView.Destroy();
         }
 
         private void StartGameFn()
-        { 
+        {
 
-                                  myScope.Model.GameRunning = true;
-                                  myScope.Model.GameView = myCreateUIService.CreateSingleton(DebugGameController.View);
-                                  clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, myScope.Model.Game.Name));
+            scope.Model.GameRunning = true;
+            scope.Model.GameView = myCreateUIService.CreateSingleton(DebugGameController.View);
+            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, scope.Model.Game.Name));
 
         }
 
         void clientDebugManagerService_OnGetDebugLog(UserModel user, DebugGameLogModel o)
         {
-            myScope.Model.Log+=(o.Value)+"\r\n";
-            myScope.Apply();
+            scope.Model.Log.Add(o.Value);
+            scope.Apply();
 
         }
 
         private void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
         {
-            myScope.Model.UpdateStatus = UpdateStatusType.Synced;
-            myScope.Apply();
+            scope.Model.UpdateStatus = UpdateStatusType.Synced;
+            scope.Apply();
         }
 
         private void UpdateGameFn()
         {
-            myScope.Model.UpdateStatus = UpdateStatusType.Syncing;
+            scope.Model.UpdateStatus = UpdateStatusType.Syncing;
 
-            myClientSiteManagerService.DeveloperUpdateGame(myScope.Model.Game);
+            myClientSiteManagerService.DeveloperUpdateGame(scope.Model.Game);
         }
     }
 }

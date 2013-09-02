@@ -42,6 +42,7 @@
     <Compile Include="BuildSite.cs" />
     <Compile Include="ClientHelpers.cs" />
     <Compile Include="Controllers\ActiveLobbyController.cs" />
+    <Compile Include="Controllers\DebugGameCodeController.cs" />
     <Compile Include="Controllers\GameTestEditorController.cs" />
     <Compile Include="Controllers\DebugQuestionController.cs" />
     <Compile Include="Controllers\DebugGameController.cs" />
@@ -185,6 +186,7 @@
     <Content Include="partials\chatBox.html" />
     <Content Include="partials\fancyList.html" />
     <Content Include="partials\floatingWindow.html" />
+    <Content Include="partials\UIs\DebugGameCodeEditor.html" />
     <Content Include="partials\UIs\GameTestEditor.html" />
     <Content Include="partials\UIs\DebugQuestion.html" />
     <Content Include="partials\UIs\DebugGameUI.html" />

@@ -1,50 +1,85 @@
-﻿using Client.Scope.Controller;
+﻿using System.Collections.Generic;
+using System.Html;
+using Client.Scope.Controller;
 using Client.Services;
 using Models;
 using Models.DebugGameManagerModels;
 using Models.SiteManagerModels;
+using WebLibraries.CodeMirror;
 
 namespace Client.Controllers
 {
-    internal class GameCodeController
+    internal class DebugGameCodeController
     {
-        public const string Name = "GameCodeController";
-        public const string View = "GameCodeEditor";
-        public static GameCodeController Instance;
+        public const string Name = "DebugGameCodeController";
+        public const string View = "DebugGameCodeEditor";
+        public static DebugGameCodeController Instance;
         private readonly ClientManagerService myClientManagerService;
         private readonly MessageService myMessageService;
-        private readonly GameCodeScope myScope;
+        private readonly DebugGameCodeScope scope;
 
-        public GameCodeController(GameCodeScope scope,
-            ClientManagerService clientManagerService, MessageService messageService)
+        public DebugGameCodeController(DebugGameCodeScope scope, ClientManagerService clientManagerService, MessageService messageService)
         {
             Instance = this;
             //scope.Model.
-            myScope = scope;
+            this.scope = scope;
             myClientManagerService = clientManagerService;
             myMessageService = messageService;
             scope.Visible = true;
-/*
-            scope.Model.CodeMirrorOptions =new {lineNumbers= true,theme="midnight",mode="javascript"   ,         
-                onGutterClick= (cm, n) =>{
-                var info = cm.lineInfo(n);
-                if (info.markerText) {
-                    window.shuffUIManager.codeArea.breakPoints.splice(window.shuffUIManager.codeArea.breakPoints.indexOf(n-1), 0);
-                    cm.clearMarker(n);
-                } else {
-                    window.shuffUIManager.codeArea.breakPoints.push(n-1);
-                    cm.setMarker(n, "<span style='color: #900'>●</span> %N%");}},extraKeys=new { "Ctrl-Space"= "autocomplete","Ctrl-S"="save" }}
-            ;
-*/
+            scope.Model.Breakpoints = new List<int>();
+
+
+            var extraKeys = new JsDictionary<string, string>();
+            extraKeys["Ctrl-Space"] = "autocomplete";
+            extraKeys["Ctrl-S"] = "save";
+
+            scope.Model.CodeMirrorOptions = new CodeMirrorOptions()
+                                            {
+                                                LineNumbers = true,
+                                                Theme = "midnight",
+                                                Mode = "javascript",
+                                                Gutters = new[] { "CodeMirror-linenumbers", "breakpoints" },
+                                                OnGutterClick = (cm, n, gutter, evt) =>
+                                                {
+                                                    var info = cm.LineInfo(n);
+                                                    if (info.GutterMarkers != null && info.GutterMarkers["breakpoints"] != null)
+                                                    {
+                                                        scope.Model.Breakpoints.Remove(n);
+                                                        cm.SetGutterMarker(n, "breakpoints", null);
+
+                                                    }
+                                                    else
+                                                    {
+                                                        scope.Model.Breakpoints.Add(n);
+
+                                                        cm.SetGutterMarker(n, "breakpoints", makeMarker());
+                                                    }
+                                                    if (scope.Model.Room != null)
+                                                    {
+                                                        clientManagerService.ClientDebugManagerService.ModifySource(new ModifySourceRequest(scope.Model.Room.RoomID, scope.Model.Game.GameCode.Code, scope.Model.Breakpoints));
+                                                    }
+                                                },
+                                                OnLoad= (editor) =>
+                                                        {
+                                                            scope.Model.CodeMirror = editor;
+                                                        },
+                                                ExtraKeys = extraKeys
+                                            };
+
+            clientManagerService.ClientDebugManagerService.OnGetDebugBreak+= (user,debugBreak ) =>
+                                                                             {
+                                                                                 scope.Model.CodeMirror.AddLineClass(debugBreak.LineNumber, "background", "codemirror-highlight-line");
+                                                                             };
 
 
             scope.watch("model.game.gameCode.code", () => { });
 
-            myScope.watch("model.game",
-                () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
+            this.scope.watch("model.game",
+                () => { this.scope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
 
-             scope.Model.ForceUpdate = false;
+
+            scope.Model.ForceUpdate = false;
             scope.OnReady += () =>
                              {
                                  scope.Model.ForceUpdate = true;
@@ -52,8 +87,16 @@ namespace Client.Controllers
                              };
 
             myClientManagerService.ClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
-            myScope.Model.UpdateStatus = UpdateStatusType.Synced;
-            myScope.Model.UpdateGame = UpdateGameFn;
+            this.scope.Model.UpdateStatus = UpdateStatusType.Synced;
+            this.scope.Model.UpdateGame = UpdateGameFn;
+        }
+
+        private Element makeMarker()
+        {
+            var marker = Document.CreateElement("div");
+            marker.InnerHTML = "o";
+            marker.ClassName = "breakpoint";
+            return marker;
         }
 
         public void Save()
@@ -63,15 +106,15 @@ namespace Client.Controllers
 
         private void OnDeveloperUpdateGameReceivedFn(UserModel user, DeveloperUpdateGameResponse o)
         {
-            myScope.Model.UpdateStatus = UpdateStatusType.Synced;
-            myScope.Apply();
+            scope.Model.UpdateStatus = UpdateStatusType.Synced;
+            scope.Apply();
         }
 
         private void UpdateGameFn()
         {
-            myScope.Model.UpdateStatus = UpdateStatusType.Syncing;
+            scope.Model.UpdateStatus = UpdateStatusType.Syncing;
 
-            myClientManagerService.ClientSiteManagerService.DeveloperUpdateGame(myScope.Model.Game);
+            myClientManagerService.ClientSiteManagerService.DeveloperUpdateGame(scope.Model.Game);
         }
     }
 }

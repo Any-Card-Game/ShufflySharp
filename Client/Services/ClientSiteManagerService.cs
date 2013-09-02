@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using ClientLibs.Managers;
 using Models;
 using Models.SiteManagerModels;
@@ -101,11 +102,17 @@ namespace Client.Services
 
     public class ClientManagerService
     {
-        public ClientSiteManagerService ClientSiteManagerService { get; set; }
-        public ClientGameManagerService ClientGameManagerService { get; set; }
-        public ClientDebugManagerService ClientDebugManagerService { get; set; }
-        public ClientChatManagerService ClientChatManagerService { get; set; }
         public const string Name = "ClientManagerService";
+
+        [IntrinsicProperty]
+        public ClientSiteManagerService ClientSiteManagerService { get; set; }
+        [IntrinsicProperty]
+        public ClientGameManagerService ClientGameManagerService { get; set; }
+        [IntrinsicProperty]
+        public ClientDebugManagerService ClientDebugManagerService { get; set; }
+        [IntrinsicProperty]
+        public ClientChatManagerService ClientChatManagerService { get; set; }
+
 
 
         public ClientManagerService(ClientSiteManagerService clientSiteManagerService, ClientGameManagerService clientGameManagerService, ClientDebugManagerService clientDebugManagerService, ClientChatManagerService clientChatManagerService)

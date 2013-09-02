@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Html;
 using System.Runtime.CompilerServices;
 namespace WebLibraries.CodeMirror
@@ -20,13 +21,15 @@ namespace WebLibraries.CodeMirror
         [ScriptName("rtlMoveVisually")]
         public bool RTLMoveVisually { get; set; }
         public CodeMirrorKeyMap KeyMap { get; set; }
-        public bool ExtraKeys { get; set; }
+        public JsDictionary<string,string> ExtraKeys { get; set; }
         public int FirstLineNumber { get; set; }
         public bool LineWrapping { get; set; }
         public bool MatchBrackets { get; set; }
-        public Action<CodeMirror, int, ElementEvent> OnGutterClick { get; set; }
+        public Action<CodeMirror, int,string, ElementEvent> OnGutterClick { get; set; }
         public Action<ElementEvent> OnCursorActivity { get; set; }
         public Action<ElementEvent> OnFocus { get; set; }
         public Action<ElementEvent> OnBlur { get; set; }
+        public string[] Gutters  { get; set; }
+        public Action<CodeMirror> OnLoad { get; set; }
     }
 }

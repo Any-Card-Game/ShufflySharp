@@ -123,6 +123,7 @@ namespace global
         public List<int> Breakpoints { get; set; }
         public bool StepThrough{ get; set; }
         public bool Action { get; set; }
+        public int LastBrokenLine { get; set; }
     }
 
     public static class ClientGameCardGameHelper

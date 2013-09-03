@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using CommonLibraries;
 using Models;
 using NodeLibraries.Fibers;
 namespace global
@@ -56,6 +57,8 @@ namespace global
             {
                 if (cardGame.DebugInfo.Breakpoints.Contains(breakInfo.Line) || cardGame.DebugInfo.StepThrough)
                 {
+                    if (cardGame.DebugInfo.LastBrokenLine == breakInfo.Line) return;
+                    cardGame.DebugInfo.LastBrokenLine = breakInfo.Line;
 
                     var yieldObject = new FiberYieldResponse(FiberYieldResponseType.Break, breakInfo.Line, "");
                     while (true)
@@ -70,7 +73,7 @@ namespace global
                         }
                         if (answ.VariableLookup != null)
                         {
-                            yieldObject = new FiberYieldResponse(FiberYieldResponseType.VariableLookup, 0, varLookup(answ.VariableLookup));
+                            yieldObject = new FiberYieldResponse(FiberYieldResponseType.VariableLookup, breakInfo.Line, Json.Stringify(varLookup(answ.VariableLookup)));
                             continue;
                         }
                         break;

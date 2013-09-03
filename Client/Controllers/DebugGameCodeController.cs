@@ -46,13 +46,13 @@ namespace Client.Controllers
                                                     var info = cm.LineInfo(n);
                                                     if (info.GutterMarkers != null && info.GutterMarkers["breakpoints"] != null)
                                                     {
-                                                        scope.Model.Breakpoints.Remove(n - 1);
+                                                        scope.Model.Breakpoints.Remove(n + 1);
                                                         cm.SetGutterMarker(n, "breakpoints", null);
 
                                                     }
                                                     else
                                                     {
-                                                        scope.Model.Breakpoints.Add(n-1);
+                                                        scope.Model.Breakpoints.Add(n+1);
 
                                                         cm.SetGutterMarker(n, "breakpoints", makeMarker());
                                                     }
@@ -70,6 +70,7 @@ namespace Client.Controllers
 
             clientManagerService.ClientDebugManagerService.OnGetDebugBreak += (user, debugBreak) =>
                                                                              {
+                                                                                 
                                                                                  for (int i = 0; i < scope.Model.CodeMirror.LineCount(); i++)
                                                                                  {
                                                                                      scope.Model.CodeMirror.RemoveLineClass(i, "background", "codemirror-highlight-line");
@@ -77,6 +78,10 @@ namespace Client.Controllers
 
                                                                                  scope.Model.CodeMirror.AddLineClass(debugBreak.LineNumber-1, "background", "codemirror-highlight-line");
                                                                                  scope.Model.CodeMirror.SetCursor(debugBreak.LineNumber-1, 0);
+
+                                                                                 scope.Model.VariableLookupResult = debugBreak.VariableLookupResult;
+                                                                                 scope.Apply();
+
                                                                              };
 
 
@@ -89,6 +94,10 @@ namespace Client.Controllers
             {
                 clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, false, true));
 
+            };
+            scope.Model.LookupVariable = () =>
+            {
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, true, true) { VariableLookup = scope.Model.VariableLookup });
             };
             scope.watch("model.game.gameCode.code", () => { });
 

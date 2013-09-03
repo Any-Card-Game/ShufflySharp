@@ -42,9 +42,9 @@
     };
 </script>
 
-<script type="text/javascript" src="http://localhost:8881/lib/codemirror/addon/hint/show-hint.js"> </script>
-<link rel="stylesheet" href="http://localhost:8881/lib/codemirror/addon/hint/show-hint.css">
-<script type="text/javascript" src="http://localhost:8881/lib/codemirror/mode/javascript/javascript.js"> </script>
+<script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.js"> </script>
+<link rel="stylesheet" href="http://content.anycardgame.com/lib/codemirror/addon/hint/show-hint.css">
+<script type="text/javascript" src="http://content.anycardgame.com/lib/codemirror/mode/javascript/javascript.js"> </script>
       
 <div ng-controller="DebugGameCodeController">
     <div floating-window left="'25%'" top="'50%'" height="'500px'" width="'1000px'" window-title="'Debug Code Editor'" visible="visible">
@@ -58,6 +58,9 @@
             <button class="btn col-main pad-top-small" ng-click="model.continue() ">Continue</button>
             <button class="btn col-main  pad-top-small" ng-click="model.updateGame() ">Save</button>
         </div>
+            <input ng-model="model.variableLookup" type="text" />
+            <button class="btn col-main  pad-top-small" ng-click="model.lookupVariable() ">Lookup Variable</button>
+        {{model.variableLookupResult}}
         {{model.updateStatus}}
     </div>
 </div>

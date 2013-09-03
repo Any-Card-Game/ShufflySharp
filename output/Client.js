@@ -420,11 +420,11 @@
 				scope.model.codeMirror = cm;
 				var info = cm.lineInfo(n);
 				if (ss.isValue(info.gutterMarkers) && ss.isValue(info.gutterMarkers['breakpoints'])) {
-					ss.remove(scope.model.breakpoints, n - 1);
+					ss.remove(scope.model.breakpoints, n + 1);
 					cm.setGutterMarker(n, 'breakpoints', null);
 				}
 				else {
-					ss.add(scope.model.breakpoints, n - 1);
+					ss.add(scope.model.breakpoints, n + 1);
 					cm.setGutterMarker(n, 'breakpoints', this.$makeMarker());
 				}
 				if (ss.isValue(scope.model.room)) {
@@ -442,12 +442,17 @@
 			}
 			scope.model.codeMirror.addLineClass(debugBreak.lineNumber - 1, 'background', 'codemirror-highlight-line');
 			scope.model.codeMirror.setCursor(debugBreak.lineNumber - 1, 0);
+			scope.model.variableLookupResult = debugBreak.variableLookupResult;
+			scope.$apply();
 		});
 		scope.model.step = function() {
 			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: true, action: true });
 		};
 		scope.model.continue = function() {
 			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: false, action: true });
+		};
+		scope.model.lookupVariable = function() {
+			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: true, action: true, variableLookup: scope.model.variableLookup });
 		};
 		scope.$watch('model.game.gameCode.code', function() {
 		});
@@ -2051,6 +2056,9 @@
 		$this.step = null;
 		$this.continue = null;
 		$this.codeMirror = null;
+		$this.lookupVariable = null;
+		$this.variableLookup = null;
+		$this.variableLookupResult = null;
 		return $this;
 	};
 	global.Client.Scope.Controller.DebugGameCodeScopeModel = $Client_Scope_Controller_DebugGameCodeScopeModel;

@@ -58,6 +58,9 @@
             <button class="btn col-main pad-top-small" ng-click="model.continue() ">Continue</button>
             <button class="btn col-main  pad-top-small" ng-click="model.updateGame() ">Save</button>
         </div>
+            <input ng-model="model.variableLookup" type="text" />
+            <button class="btn col-main  pad-top-small" ng-click="model.lookupVariable() ">Lookup Variable</button>
+        {{model.variableLookupResult}}
         {{model.updateStatus}}
     </div>
 </div>

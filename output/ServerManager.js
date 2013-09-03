@@ -226,6 +226,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$skipped__ = 0;
 		this.$startTime = new Date();
 		this.$total__ = 0;
+		this.$processor = null;
+		this.$processor = require('./uglify5.js');
 		this.$myServerManager = new $ServerManager_DebugGameServer_DebugGameClientManager(debugServerIndex);
 		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
 		this.$myServerManager.add_onHandleDebugResponse(ss.mkdel(this, this.handleDebugResponse));
@@ -1102,7 +1104,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				}
 				room.debuggingSender = user;
 				var evaluated_game = null;
-				eval('evaluated_game=' + game.gameCode.code);
+				eval('evaluated_game=' + this.$processor.processJSFile(game.gameCode.code));
 				var gameObject;
 				gameObject = evaluated_game;
 				room.fiber = this.$createFiber(room, gameObject, true, game, data.breakpoints);
@@ -1172,7 +1174,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			room.game.cardGame.debugInfo.stepThrough = data.step;
 			room.game.cardGame.debugInfo.action = data.action;
 			if (room.game.cardGame.debugInfo.action) {
-				this.$processGameResponse(room, room.fiber.run());
+				var $t2 = room.fiber;
+				var $t1 = new global.FiberYieldResponse.$ctor1(4, '');
+				$t1.variableLookup = data.variableLookup;
+				var debugFiberYieldResponse = $t2.run($t1);
+				this.$processGameResponse(room, debugFiberYieldResponse);
 			}
 		},
 		$createFiber: function(room, gameObject, emulating, game, breakpoints) {
@@ -1272,6 +1278,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					this.$logGameConsoleLine(room, response);
 					break;
 				}
+				case 4: {
+					console.log('vlook  ' + JSON.stringify(response));
+					this.$breakGameExecution(room, response);
+					break;
+				}
 				case 3: {
 					console.log('broke  ' + JSON.stringify(response));
 					this.$breakGameExecution(room, response);
@@ -1284,7 +1295,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			ss.clear(room.playersLeft);
 		},
 		$breakGameExecution: function(room, response) {
-			var ganswer = { lineNumber: response.lineNumber };
+			var ganswer = { lineNumber: response.lineNumber, variableLookupResult: response.value };
 			this.$myServerManager.sendDebugBreak(room, ganswer);
 		},
 		$logGameConsoleLine: function(room, answer) {

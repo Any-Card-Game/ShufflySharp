@@ -1,4 +1,4 @@
-﻿//#define FTP
+﻿#define FTP
 using System;
 using System.Collections.Generic;
 using System.Configuration;

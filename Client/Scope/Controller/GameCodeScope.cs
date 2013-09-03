@@ -43,6 +43,9 @@ namespace Client.Scope.Controller
         public Action Step { get; set; }
         public Action Continue { get; set; }
         public CodeMirror CodeMirror     { get; set; }
+        public Action LookupVariable { get; set; }
+        public string VariableLookup { get; set; }
+        public string VariableLookupResult { get; set; }
     }
 
 }

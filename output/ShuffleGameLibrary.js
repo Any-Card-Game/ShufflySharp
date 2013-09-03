@@ -415,6 +415,7 @@
 		$this.breakpoints = null;
 		$this.stepThrough = false;
 		$this.action = false;
+		$this.lastBrokenLine = 0;
 		return $this;
 	};
 	global.global.DebugInfo = $global_DebugInfo;
@@ -586,6 +587,10 @@
 		//   return;
 		if (ss.isValue(cardGame) && ss.isValue(cardGame.debugInfo)) {
 			if (ss.contains(cardGame.debugInfo.breakpoints, breakInfo.line) || cardGame.debugInfo.stepThrough) {
+				if (cardGame.debugInfo.lastBrokenLine === breakInfo.line) {
+					return;
+				}
+				cardGame.debugInfo.lastBrokenLine = breakInfo.line;
 				var yieldObject = new $global_FiberYieldResponse.$ctor3(3, breakInfo.line, '');
 				while (true) {
 					console.log('breaking');
@@ -595,7 +600,7 @@
 						return;
 					}
 					if (ss.isValue(answ.variableLookup)) {
-						yieldObject = new $global_FiberYieldResponse.$ctor3(4, 0, varLookup(answ.variableLookup));
+						yieldObject = new $global_FiberYieldResponse.$ctor3(4, breakInfo.line, JSON.stringify(varLookup(answ.variableLookup)));
 						continue;
 					}
 					break;

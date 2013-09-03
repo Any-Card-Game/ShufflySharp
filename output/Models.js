@@ -263,6 +263,7 @@
 	$Models_DebugGameManagerModels_DebugGameBreakModel.$ctor = function() {
 		var $this = {};
 		$this.lineNumber = 0;
+		$this.variableLookupResult = null;
 		return $this;
 	};
 	global.Models.DebugGameManagerModels.DebugGameBreakModel = $Models_DebugGameManagerModels_DebugGameBreakModel;

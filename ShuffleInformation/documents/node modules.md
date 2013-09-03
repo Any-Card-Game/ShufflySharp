@@ -9,6 +9,7 @@
 * npm install v8-profiler
 * npm install mongodb --mongodb:native
 * npm install charm
+* npm install uglify-js
 
 
 

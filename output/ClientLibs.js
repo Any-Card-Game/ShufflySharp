@@ -208,8 +208,8 @@
 		createGame: function(createDebugGameRequest) {
 			this.$myGateway.emit('Area.Debug.Create', createDebugGameRequest);
 		},
-		modifySource: function(modifySourceRequest) {
-			this.$myGateway.emit('Area.Debug.ModifySource', modifySourceRequest);
+		debugResponse: function(debugResponse) {
+			this.$myGateway.emit('Area.Debug.DebugResponse', debugResponse);
 		},
 		destroyGame: function(destroyDebugGameRequest) {
 			this.$myGateway.emit('Area.Debug.Destroy', destroyDebugGameRequest);

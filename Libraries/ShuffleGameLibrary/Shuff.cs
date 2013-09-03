@@ -47,27 +47,45 @@ namespace global
         }
 
         [ScriptName("break_")]
-        public static void Break(int lineNumber, GameCardGame cardGame, Func<string, string> varLookup)
+        public static void Break(BreakInfoObject breakInfo, GameCardGame cardGame, Func<string, string> varLookup)
         {
          /*   if (cardGame.Emulating)
                 return;*/
 
-            var yieldObject = new FiberYieldResponse(FiberYieldResponseType.Break, lineNumber - 1, "");
-            while (true) {
-                Console.WriteLine("breaking");
-                var answ = Fiber<FiberYieldResponse>.Yield(yieldObject);
+            if (cardGame!=null && cardGame.DebugInfo != null)
+            {
+                if (cardGame.DebugInfo.Breakpoints.Contains(breakInfo.Line) || cardGame.DebugInfo.StepThrough)
+                {
 
-                if (answ == null) {
-                    //continue
-                    return;
+                    var yieldObject = new FiberYieldResponse(FiberYieldResponseType.Break, breakInfo.Line, "");
+                    while (true)
+                    {
+                        Console.WriteLine("breaking");
+                        var answ = Fiber<FiberYieldResponse>.Yield(yieldObject);
+
+                        if (answ == null)
+                        {
+                            //continue
+                            return;
+                        }
+                        if (answ.VariableLookup != null)
+                        {
+                            yieldObject = new FiberYieldResponse(FiberYieldResponseType.VariableLookup, 0, varLookup(answ.VariableLookup));
+                            continue;
+                        }
+                        break;
+                    }
                 }
-                if (answ.VariableLookup != null) {
-                    yieldObject = new FiberYieldResponse(FiberYieldResponseType.VariableLookup, 0, varLookup(answ.VariableLookup));
-                    continue;
-                }
-                break;
             }
+
         }
     }
     //[NamedValues]todo:::
+}
+[Serializable]
+public class BreakInfoObject
+{
+    public int Line { get; set; }
+    public int Col { get; set; }
+    public int Funcdef { get; set; }
 }

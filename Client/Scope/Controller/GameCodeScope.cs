@@ -40,7 +40,8 @@ namespace Client.Scope.Controller
         public GameEditorSelectionScopeModel Selection { get; set; }
         public CodeMirrorOptions CodeMirrorOptions { get; set; }
         public List<int> Breakpoints { get; set; }
-        public Action<CodeMirror, int, string, ElementEvent> GutterClick { get; set; }
+        public Action Step { get; set; }
+        public Action Continue { get; set; }
         public CodeMirror CodeMirror     { get; set; }
     }
 

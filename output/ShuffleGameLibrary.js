@@ -3,6 +3,22 @@
 	'use strict';
 	global.global = global.global || {};
 	////////////////////////////////////////////////////////////////////////////////
+	// BreakInfoObject
+	var $BreakInfoObject = function() {
+	};
+	$BreakInfoObject.__typeName = 'BreakInfoObject';
+	$BreakInfoObject.createInstance = function() {
+		return $BreakInfoObject.$ctor();
+	};
+	$BreakInfoObject.$ctor = function() {
+		var $this = {};
+		$this.line = 0;
+		$this.col = 0;
+		$this.funcdef = 0;
+		return $this;
+	};
+	global.BreakInfoObject = $BreakInfoObject;
+	////////////////////////////////////////////////////////////////////////////////
 	// global.GameUtils
 	var $global__ = function() {
 	};
@@ -188,6 +204,7 @@
 		this.numberOfCards = 0;
 		this.numberOfJokers = 0;
 		this.effects = null;
+		this.debugInfo = null;
 		this.spaces = [];
 		this.textAreas = [];
 		this.emulatedAnswers = [];
@@ -386,6 +403,22 @@
 	$global_DebugFiberYieldResponseType.__typeName = 'global.DebugFiberYieldResponseType';
 	global.global.DebugFiberYieldResponseType = $global_DebugFiberYieldResponseType;
 	////////////////////////////////////////////////////////////////////////////////
+	// global.DebugInfo
+	var $global_DebugInfo = function() {
+	};
+	$global_DebugInfo.__typeName = 'global.DebugInfo';
+	$global_DebugInfo.createInstance = function() {
+		return $global_DebugInfo.$ctor();
+	};
+	$global_DebugInfo.$ctor = function() {
+		var $this = {};
+		$this.breakpoints = null;
+		$this.stepThrough = false;
+		$this.action = false;
+		return $this;
+	};
+	global.global.DebugInfo = $global_DebugInfo;
+	////////////////////////////////////////////////////////////////////////////////
 	// global.EffectHelper
 	var $global_EffectHelper = function() {
 	};
@@ -548,22 +581,26 @@
 	$global_shuff.log = function(msg) {
 		Fiber.yield(new $global_FiberYieldResponse.$ctor1(1, msg));
 	};
-	$global_shuff.break_ = function(lineNumber, cardGame, varLookup) {
+	$global_shuff.break_ = function(breakInfo, cardGame, varLookup) {
 		//   if (cardGame.Emulating)
 		//   return;
-		var yieldObject = new $global_FiberYieldResponse.$ctor3(3, lineNumber - 1, '');
-		while (true) {
-			console.log('breaking');
-			var answ = Fiber.yield(yieldObject);
-			if (ss.isNullOrUndefined(answ)) {
-				//continue
-				return;
+		if (ss.isValue(cardGame) && ss.isValue(cardGame.debugInfo)) {
+			if (ss.contains(cardGame.debugInfo.breakpoints, breakInfo.line) || cardGame.debugInfo.stepThrough) {
+				var yieldObject = new $global_FiberYieldResponse.$ctor3(3, breakInfo.line, '');
+				while (true) {
+					console.log('breaking');
+					var answ = Fiber.yield(yieldObject);
+					if (ss.isNullOrUndefined(answ)) {
+						//continue
+						return;
+					}
+					if (ss.isValue(answ.variableLookup)) {
+						yieldObject = new $global_FiberYieldResponse.$ctor3(4, 0, varLookup(answ.variableLookup));
+						continue;
+					}
+					break;
+				}
 			}
-			if (ss.isValue(answ.variableLookup)) {
-				yieldObject = new $global_FiberYieldResponse.$ctor3(4, 0, varLookup(answ.variableLookup));
-				continue;
-			}
-			break;
 		}
 	};
 	global.global.shuff = $global_shuff;
@@ -631,6 +668,7 @@
 	};
 	$global_User.__typeName = 'global.User';
 	global.global.User = $global_User;
+	ss.initClass($BreakInfoObject, {});
 	ss.initClass($global__, {});
 	ss.initClass($global_ArrayUtils, {});
 	ss.initClass($global_Card, {});
@@ -700,6 +738,7 @@
 	ss.initClass($global_DebugFiberYieldResponse, {});
 	$global_DebugFiberYieldResponse.$ctor2.prototype = $global_DebugFiberYieldResponse.$ctor1.prototype = $global_DebugFiberYieldResponse.$ctor3.prototype = $global_DebugFiberYieldResponse.prototype;
 	ss.initEnum($global_DebugFiberYieldResponseType, { askQuestion: 0, log: 1, gameOver: 2, break$1: 3, variableLookup: 4, playersLeft: 5 });
+	ss.initClass($global_DebugInfo, {});
 	ss.initClass($global_EffectHelper, {});
 	ss.initClass($global_FiberYieldResponse, {});
 	$global_FiberYieldResponse.$ctor2.prototype = $global_FiberYieldResponse.$ctor1.prototype = $global_FiberYieldResponse.$ctor3.prototype = $global_FiberYieldResponse.prototype;

@@ -327,17 +327,17 @@
 	};
 	global.Models.DebugGameManagerModels.DebugJoinGameRequestModel = $Models_DebugGameManagerModels_DebugJoinGameRequestModel;
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.DebugResponse
+	var $Models_DebugGameManagerModels_DebugResponse = function() {
+	};
+	$Models_DebugGameManagerModels_DebugResponse.__typeName = 'Models.DebugGameManagerModels.DebugResponse';
+	global.Models.DebugGameManagerModels.DebugResponse = $Models_DebugGameManagerModels_DebugResponse;
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.DebugGameManagerModels.DestroyDebugGameRequest
 	var $Models_DebugGameManagerModels_DestroyDebugGameRequest = function() {
 	};
 	$Models_DebugGameManagerModels_DestroyDebugGameRequest.__typeName = 'Models.DebugGameManagerModels.DestroyDebugGameRequest';
 	global.Models.DebugGameManagerModels.DestroyDebugGameRequest = $Models_DebugGameManagerModels_DestroyDebugGameRequest;
-	////////////////////////////////////////////////////////////////////////////////
-	// Models.DebugGameManagerModels.ModifySourceRequest
-	var $Models_DebugGameManagerModels_ModifySourceRequest = function() {
-	};
-	$Models_DebugGameManagerModels_ModifySourceRequest.__typeName = 'Models.DebugGameManagerModels.ModifySourceRequest';
-	global.Models.DebugGameManagerModels.ModifySourceRequest = $Models_DebugGameManagerModels_ModifySourceRequest;
 	////////////////////////////////////////////////////////////////////////////////
 	// Models.GameManagerModels.CreateGameRequestModel
 	var $Models_GameManagerModels_CreateGameRequestModel = function() {
@@ -900,8 +900,8 @@
 	ss.initClass($Models_DebugGameManagerModels_DebugGameSendAnswerModel, {});
 	ss.initClass($Models_DebugGameManagerModels_DebuggerJoinRequestModel, {});
 	ss.initClass($Models_DebugGameManagerModels_DebugJoinGameRequestModel, {});
+	ss.initClass($Models_DebugGameManagerModels_DebugResponse, {});
 	ss.initClass($Models_DebugGameManagerModels_DestroyDebugGameRequest, {});
-	ss.initClass($Models_DebugGameManagerModels_ModifySourceRequest, {});
 	ss.initClass($Models_GameManagerModels_CreateGameRequestModel, {});
 	ss.initClass($Models_GameManagerModels_DebugCreateGameRequestModel, {});
 	ss.initClass($Models_GameManagerModels_GameAnswerModel, {});

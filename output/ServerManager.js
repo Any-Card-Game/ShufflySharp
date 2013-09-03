@@ -197,7 +197,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$1$OnGameDestroyField = null;
 		this.$1$OnUserAnswerQuestionField = null;
 		this.$1$OnUserDisconnectField = null;
-		this.$1$OnModifySourceField = null;
+		this.$1$OnHandleDebugResponseField = null;
 		this.$1$OnUserLeaveField = null;
 		this.set_debugGameServerIndex(debugGameServerIndex);
 		this.$setup();
@@ -228,7 +228,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		this.$total__ = 0;
 		this.$myServerManager = new $ServerManager_DebugGameServer_DebugGameClientManager(debugServerIndex);
 		this.$myServerManager.add_onGameCreate(ss.mkdel(this, this.createGame));
-		this.$myServerManager.add_onModifySource(ss.mkdel(this, this.modifySource));
+		this.$myServerManager.add_onHandleDebugResponse(ss.mkdel(this, this.handleDebugResponse));
 		this.$myServerManager.add_onGameDestroy(ss.mkdel(this, this.$gameDestroy));
 		this.$myServerManager.add_onUserAnswerQuestion(ss.mkdel(this, this.userAnswerQuestion));
 		this.$myServerManager.add_onUserDisconnect(ss.mkdel(this, this.$userDisconnect));
@@ -239,16 +239,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		setInterval(ss.mkdel(this, this.$flushQueue), 50);
 	};
 	$ServerManager_DebugGameServer_DebugGameManager.__typeName = 'ServerManager.DebugGameServer.DebugGameManager';
-	$ServerManager_DebugGameServer_DebugGameManager.$applyBreakpoints = function(source, points) {
-		var sourceLines = ss.arrayClone(source.split('\n'));
-		points.sort(function(a, b) {
-			return b - a;
-		});
-		for (var i = 0; i < points.length; i++) {
-			ss.insert(sourceLines, points[i], "console.log('breakingbreaking'); shuff.break_(" + points[i] + ",self.cardGame, function (variable) { var goodVar; eval('goodVar=' + variable); return goodVar; });");
-		}
-		return sourceLines.join('\n');
-	};
 	global.ServerManager.DebugGameServer.DebugGameManager = $ServerManager_DebugGameServer_DebugGameManager;
 	////////////////////////////////////////////////////////////////////////////////
 	// ServerManager.DebugGameServer.DebugGameServer
@@ -983,11 +973,11 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 		remove_onUserDisconnect: function(value) {
 			this.$1$OnUserDisconnectField = ss.delegateRemove(this.$1$OnUserDisconnectField, value);
 		},
-		add_onModifySource: function(value) {
-			this.$1$OnModifySourceField = ss.delegateCombine(this.$1$OnModifySourceField, value);
+		add_onHandleDebugResponse: function(value) {
+			this.$1$OnHandleDebugResponseField = ss.delegateCombine(this.$1$OnHandleDebugResponseField, value);
 		},
-		remove_onModifySource: function(value) {
-			this.$1$OnModifySourceField = ss.delegateRemove(this.$1$OnModifySourceField, value);
+		remove_onHandleDebugResponse: function(value) {
+			this.$1$OnHandleDebugResponseField = ss.delegateRemove(this.$1$OnHandleDebugResponseField, value);
 		},
 		add_onUserLeave: function(value) {
 			this.$1$OnUserLeaveField = ss.delegateCombine(this.$1$OnUserLeaveField, value);
@@ -1000,8 +990,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			this.$qManager.addChannel('Area.Debug.Create', ss.mkdel(this, function(user, data) {
 				this.$1$OnGameCreateField(user, data);
 			}));
-			this.$qManager.addChannel('Area.Debug.ModifySource', ss.mkdel(this, function(user1, data1) {
-				this.$1$OnModifySourceField(user1, data1);
+			this.$qManager.addChannel('Area.Debug.DebugResponse', ss.mkdel(this, function(user1, data1) {
+				this.$1$OnHandleDebugResponseField(user1, data1);
 			}));
 			this.$qManager.addChannel('Area.Debug.Destroy', ss.mkdel(this, function(user2, data2) {
 				this.$1$OnGameDestroyField(user2, data2);
@@ -1115,7 +1105,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				eval('evaluated_game=' + game.gameCode.code);
 				var gameObject;
 				gameObject = evaluated_game;
-				room.fiber = this.$createFiber(room, gameObject, true, game);
+				room.fiber = this.$createFiber(room, gameObject, true, game, data.breakpoints);
 				room.unwind = ss.mkdel(this, function(players) {
 					this.$gameData.finishedGames++;
 					CommonShuffleLibrary.ServerLogger.logDebug('--game closed', game);
@@ -1170,7 +1160,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				}
 			}
 		},
-		modifySource: function(user, data) {
+		handleDebugResponse: function(user, data) {
 			var room = this.$rooms.filter(function(a) {
 				return ss.referenceEquals(a.roomID, data.roomID);
 			})[0];
@@ -1178,26 +1168,14 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				CommonShuffleLibrary.ServerLogger.logError('--room not found ', data);
 				return;
 			}
-			this.$dataManager.siteData.game_GetGamesByName(room.gameType, ss.mkdel(this, function(game) {
-				if (ss.isNullOrUndefined(game)) {
-					CommonShuffleLibrary.ServerLogger.logDebug('--game not found ' + room.gameType, null);
-					return;
-				}
-				CommonShuffleLibrary.ServerLogger.logDebug('--game found ' + game.name, game);
-				var $t1 = data.source;
-				if (ss.isNullOrUndefined($t1)) {
-					$t1 = game.gameCode.code;
-				}
-				var code = $t1;
-				code = $ServerManager_DebugGameServer_DebugGameManager.$applyBreakpoints(code, data.breakpoints);
-				var evaluated_game = null;
-				eval('evaluated_game=' + code);
-				var gameObject = evaluated_game;
-				room.fiber = this.$createFiber(room, gameObject, true, game);
-				this.$startGame(room);
-			}));
+			room.game.cardGame.debugInfo.breakpoints = data.breakpoints;
+			room.game.cardGame.debugInfo.stepThrough = data.step;
+			room.game.cardGame.debugInfo.action = data.action;
+			if (room.game.cardGame.debugInfo.action) {
+				this.$processGameResponse(room, room.fiber.run());
+			}
 		},
-		$createFiber: function(room, gameObject, emulating, game) {
+		$createFiber: function(room, gameObject, emulating, game, breakpoints) {
 			return new Fiber(ss.mkdel(this, function(players) {
 				if (ss.isNullOrUndefined(players) || players.length === 0) {
 					return true;
@@ -1209,45 +1187,49 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				room.playersLeft = [];
 				sev.cardGame.emulating = emulating;
 				room.game = sev;
+				var $t2 = sev.cardGame;
+				var $t1 = global.DebugInfo.$ctor();
+				$t1.breakpoints = breakpoints || [];
+				$t2.debugInfo = $t1;
 				sev.cardGame.setEmulatedAnswers(room.emulatedAnswers);
 				sev.cardGame.setPlayers(players);
 				sev.cardGame.size = CommonLibraries.Size.$ctor1(game.gameLayout.width, game.gameLayout.height);
-				for (var $t1 = 0; $t1 < game.gameLayout.texts.length; $t1++) {
-					var gameTextModel = game.gameLayout.texts[$t1];
-					var $t3 = sev.cardGame.textAreas;
-					var $t2 = global.GameCardGameTextAreaOptions.$ctor();
-					$t2.x = gameTextModel.left;
-					$t2.y = gameTextModel.top;
-					$t2.name = gameTextModel.name;
-					$t2.text = gameTextModel.text;
-					ss.add($t3, new global.TableTextArea($t2));
+				for (var $t3 = 0; $t3 < game.gameLayout.texts.length; $t3++) {
+					var gameTextModel = game.gameLayout.texts[$t3];
+					var $t5 = sev.cardGame.textAreas;
+					var $t4 = global.GameCardGameTextAreaOptions.$ctor();
+					$t4.x = gameTextModel.left;
+					$t4.y = gameTextModel.top;
+					$t4.name = gameTextModel.name;
+					$t4.text = gameTextModel.text;
+					ss.add($t5, new global.TableTextArea($t4));
 				}
-				for (var $t4 = 0; $t4 < game.gameLayout.spaces.length; $t4++) {
-					var gameSpaceModel = game.gameLayout.spaces[$t4];
-					var $t6 = sev.cardGame.spaces;
-					var $t5 = new global.CardGameTableSpaceOptions();
-					$t5.x = gameSpaceModel.left;
-					$t5.y = gameSpaceModel.top;
-					$t5.height = gameSpaceModel.height;
-					$t5.width = gameSpaceModel.width;
-					$t5.name = gameSpaceModel.name;
-					$t5.vertical = gameSpaceModel.vertical;
-					$t5.resizeType = gameSpaceModel.resizeType;
-					ss.add($t6, new global.TableSpace($t5));
+				for (var $t6 = 0; $t6 < game.gameLayout.spaces.length; $t6++) {
+					var gameSpaceModel = game.gameLayout.spaces[$t6];
+					var $t8 = sev.cardGame.spaces;
+					var $t7 = new global.CardGameTableSpaceOptions();
+					$t7.x = gameSpaceModel.left;
+					$t7.y = gameSpaceModel.top;
+					$t7.height = gameSpaceModel.height;
+					$t7.width = gameSpaceModel.width;
+					$t7.name = gameSpaceModel.name;
+					$t7.vertical = gameSpaceModel.vertical;
+					$t7.resizeType = gameSpaceModel.resizeType;
+					ss.add($t8, new global.TableSpace($t7));
 				}
-				for (var $t7 = 0; $t7 < game.effects.length; $t7++) {
-					var gameEffect = game.effects[$t7];
-					var $t10 = sev.cardGame.effects;
-					var $t8 = global.CardGameEffectOptions.$ctor();
-					$t8.name = gameEffect.name;
-					$t8.type = gameEffect.type;
-					$t8.properties = gameEffect.properties.map(function(a) {
-						var $t9 = global.CardGameEffectProperty.$ctor();
-						$t9.name = a.name;
-						$t9.value = a.value;
-						return $t9;
+				for (var $t9 = 0; $t9 < game.effects.length; $t9++) {
+					var gameEffect = game.effects[$t9];
+					var $t12 = sev.cardGame.effects;
+					var $t10 = global.CardGameEffectOptions.$ctor();
+					$t10.name = gameEffect.name;
+					$t10.type = gameEffect.type;
+					$t10.properties = gameEffect.properties.map(function(a) {
+						var $t11 = global.CardGameEffectProperty.$ctor();
+						$t11.name = a.name;
+						$t11.value = a.value;
+						return $t11;
 					});
-					ss.add($t10, new global.CardGameEffect($t8));
+					ss.add($t12, new global.CardGameEffect($t10));
 				}
 				this.$gameData.totalGames++;
 				this.$gameData.totalPlayers += players.length;
@@ -1302,10 +1284,8 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 			ss.clear(room.playersLeft);
 		},
 		$breakGameExecution: function(room, response) {
-			if (!room.game.cardGame.emulating) {
-				var ganswer = { lineNumber: response.lineNumber + 2 };
-				this.$myServerManager.sendDebugBreak(room, ganswer);
-			}
+			var ganswer = { lineNumber: response.lineNumber };
+			this.$myServerManager.sendDebugBreak(room, ganswer);
 		},
 		$logGameConsoleLine: function(room, answer) {
 			var answ2 = room.fiber.run();

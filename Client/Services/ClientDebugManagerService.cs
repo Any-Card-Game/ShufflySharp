@@ -33,9 +33,9 @@ namespace Client.Services
         {
             clientDebugManager.AnswerQuestion(gameAnswerQuestionModel);
         }
-        public void ModifySource(ModifySourceRequest modifySourceRequest)
+        public void DebugResponse(DebugResponse debugResponse)
         {
-            clientDebugManager.ModifySource(modifySourceRequest);
+            clientDebugManager.DebugResponse(debugResponse);
         }
 
         public void CreateGame(CreateDebugGameRequest createDebugGameRequest)

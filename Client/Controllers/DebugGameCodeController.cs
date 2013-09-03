@@ -41,37 +41,55 @@ namespace Client.Controllers
                                                 Gutters = new[] { "CodeMirror-linenumbers", "breakpoints" },
                                                 OnGutterClick = (cm, n, gutter, evt) =>
                                                 {
+                                                    scope.Model.CodeMirror = cm;
+
                                                     var info = cm.LineInfo(n);
                                                     if (info.GutterMarkers != null && info.GutterMarkers["breakpoints"] != null)
                                                     {
-                                                        scope.Model.Breakpoints.Remove(n);
+                                                        scope.Model.Breakpoints.Remove(n - 1);
                                                         cm.SetGutterMarker(n, "breakpoints", null);
 
                                                     }
                                                     else
                                                     {
-                                                        scope.Model.Breakpoints.Add(n);
+                                                        scope.Model.Breakpoints.Add(n-1);
 
                                                         cm.SetGutterMarker(n, "breakpoints", makeMarker());
                                                     }
                                                     if (scope.Model.Room != null)
                                                     {
-                                                        clientManagerService.ClientDebugManagerService.ModifySource(new ModifySourceRequest(scope.Model.Room.RoomID, scope.Model.Game.GameCode.Code, scope.Model.Breakpoints));
+                                                        clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, false, false));
                                                     }
                                                 },
-                                                OnLoad= (editor) =>
+                                                OnLoad = (editor) =>
                                                         {
                                                             scope.Model.CodeMirror = editor;
                                                         },
                                                 ExtraKeys = extraKeys
                                             };
 
-            clientManagerService.ClientDebugManagerService.OnGetDebugBreak+= (user,debugBreak ) =>
+            clientManagerService.ClientDebugManagerService.OnGetDebugBreak += (user, debugBreak) =>
                                                                              {
-                                                                                 scope.Model.CodeMirror.AddLineClass(debugBreak.LineNumber, "background", "codemirror-highlight-line");
+                                                                                 for (int i = 0; i < scope.Model.CodeMirror.LineCount(); i++)
+                                                                                 {
+                                                                                     scope.Model.CodeMirror.RemoveLineClass(i, "background", "codemirror-highlight-line");
+                                                                                 }
+
+                                                                                 scope.Model.CodeMirror.AddLineClass(debugBreak.LineNumber-1, "background", "codemirror-highlight-line");
+                                                                                 scope.Model.CodeMirror.SetCursor(debugBreak.LineNumber-1, 0);
                                                                              };
 
 
+            scope.Model.Step = () =>
+            {
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, true, true));
+
+            };
+            scope.Model.Continue = () =>
+            {
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, false, true));
+
+            };
             scope.watch("model.game.gameCode.code", () => { });
 
             this.scope.watch("model.game",

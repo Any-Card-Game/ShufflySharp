@@ -33,6 +33,9 @@ namespace global
         [IntrinsicProperty]
         public List<CardGameEffect> Effects { get; set; }
 
+        [IntrinsicProperty]
+        public DebugInfo DebugInfo { get; set; }
+
         public GameCardGame( )
         {
             Spaces = new List<CardGameTableSpace>();
@@ -113,6 +116,13 @@ namespace global
             }
             return null;
         }
+    }
+    [Serializable]
+    public class DebugInfo
+    {
+        public List<int> Breakpoints { get; set; }
+        public bool StepThrough{ get; set; }
+        public bool Action { get; set; }
     }
 
     public static class ClientGameCardGameHelper

@@ -59,12 +59,7 @@ namespace Client.Controllers
             {
                 this.scope.Model.GameRunning = true;
                 this.scope.Model.Room = roomModel;
-                this.scope.Model.CodeEditor.Scope.Model.Room = roomModel;
-                Window.SetTimeout(() =>
-                                  {
-                                      //  clientDebugManagerService.ModifySource(new ModifySourceRequest(roomModel.RoomID, null, new List<int>() {164}));
-
-                                  }, 3000);
+                this.scope.Model.CodeEditor.Scope.Model.Room = roomModel; 
             };
 
             this.scope.Model.DebugCode = () =>
@@ -94,7 +89,7 @@ namespace Client.Controllers
 
             scope.Model.GameRunning = true;
             scope.Model.GameView = myCreateUIService.CreateSingleton(DebugGameController.View);
-            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, scope.Model.Game.Name));
+            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, scope.Model.Game.Name, this.scope.Model.CodeEditor.Scope.Model.Breakpoints));
 
         }
 

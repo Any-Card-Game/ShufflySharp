@@ -52,9 +52,9 @@ namespace ClientLibs.Managers
             myGateway.Emit("Area.Debug.Create", createDebugGameRequest);
 
         }
-        public void ModifySource(ModifySourceRequest modifySourceRequest)
+        public void DebugResponse(DebugResponse debugResponse)
         {
-            myGateway.Emit("Area.Debug.ModifySource", modifySourceRequest);
+            myGateway.Emit("Area.Debug.DebugResponse", debugResponse);
 
         }
 

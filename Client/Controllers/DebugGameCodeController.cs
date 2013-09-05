@@ -58,7 +58,7 @@ namespace Client.Controllers
                                                     }
                                                     if (scope.Model.Room != null)
                                                     {
-                                                        clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, false, false));
+                                                        clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, StepType.Continue, false));
                                                     }
                                                 },
                                                 OnLoad = (editor) =>
@@ -85,19 +85,22 @@ namespace Client.Controllers
                                                                              };
 
 
-            scope.Model.Step = () =>
+            scope.Model.StepInto = () =>
             {
-                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, true, true));
-
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, StepType.Into, true));
+            };
+            scope.Model.StepOver = () =>
+            {
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, StepType.Over, true));
             };
             scope.Model.Continue = () =>
             {
-                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, false, true));
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, StepType.Continue, true));
 
             };
             scope.Model.LookupVariable = () =>
             {
-                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, true, true) { VariableLookup = scope.Model.VariableLookup });
+                clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, StepType.Lookup, true) { VariableLookup = scope.Model.VariableLookup });
             };
             scope.watch("model.game.gameCode.code", () => { });
 

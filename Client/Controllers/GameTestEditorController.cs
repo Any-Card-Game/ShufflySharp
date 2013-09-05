@@ -59,6 +59,7 @@ namespace Client.Controllers
             {
                 this.scope.Model.GameRunning = true;
                 this.scope.Model.Room = roomModel;
+                if (this.scope.Model.CodeEditor!=null)
                 this.scope.Model.CodeEditor.Scope.Model.Room = roomModel; 
             };
 
@@ -79,7 +80,8 @@ namespace Client.Controllers
         {
             clientDebugManagerService.DestroyGame(new DestroyDebugGameRequest(scope.Model.Room.RoomID));
             scope.Model.GameRunning = false;
-            scope.Model.CodeEditor.Scope.Model.Room = null;
+            if (this.scope.Model.CodeEditor != null)
+                scope.Model.CodeEditor.Scope.Model.Room = null;
 
             scope.Model.GameView.Destroy();
         }
@@ -89,8 +91,7 @@ namespace Client.Controllers
 
             scope.Model.GameRunning = true;
             scope.Model.GameView = myCreateUIService.CreateSingleton(DebugGameController.View);
-            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, scope.Model.Game.Name, this.scope.Model.CodeEditor.Scope.Model.Breakpoints));
-
+            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, scope.Model.Game.Name, this.scope.Model.CodeEditor==null ?new List<int>(): this.scope.Model.CodeEditor.Scope.Model.Breakpoints));
         }
 
         void clientDebugManagerService_OnGetDebugLog(UserModel user, DebugGameLogModel o)

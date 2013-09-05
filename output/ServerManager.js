@@ -1191,6 +1191,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				var sev = null;
 				eval('sev = new gameObject();');
 				room.playersLeft = [];
+				sev.cardGame = new global.CardGame();
 				sev.cardGame.emulating = emulating;
 				room.game = sev;
 				var $t2 = sev.cardGame;

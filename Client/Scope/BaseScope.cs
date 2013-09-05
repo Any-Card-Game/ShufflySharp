@@ -25,6 +25,10 @@ namespace Client.Scope
         {
             return null;
         }
+        [ScriptName("$parent")]
+        [IntrinsicProperty]
+        public BaseScope Parent { get; set; }
+        
 
         public Function watch(string watchExpression, Action listener)
         {
@@ -117,14 +121,15 @@ namespace Client.Scope
         }
 
 
-        public object Apply(Func<IScope, object> exp)
+        public void Apply(Func<IScope, object> exp)
         {
-            return null;
         }
 
-        public object Apply()
+        public void Apply()
         {
-            return null;
+        }
+        public void Digest()
+        {
         }
 
 
@@ -132,10 +137,9 @@ namespace Client.Scope
         {
         }
 
-        public object Apply(string exp)
+        public void Apply(string exp)
         {
-            return null;
-        }
+        }   
 
         public T New<T>()
         {
@@ -168,8 +172,6 @@ namespace Client.Scope
     // Documentation says exp is optional, but actual implementaton counts on it
         
         $broadcast(name: string, ...args: any[]): IAngularEvent;
-        $destroy(): void;
-        $digest(): void;
         $emit(name: string, ...args: any[]): IAngularEvent;
         
         // Documentation says exp is optional, but actual implementaton counts on it

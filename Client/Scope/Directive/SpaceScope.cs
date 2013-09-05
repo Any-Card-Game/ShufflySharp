@@ -8,10 +8,7 @@ namespace Client.Scope.Directive
     {
         [IntrinsicProperty]
         public CardGameTableSpace Space { get; set; }
-
-        [IntrinsicProperty]
-        [ScriptName("$parent")]
-        public GameControllerScope Parent { get; set; }
+         
 
         [IntrinsicProperty]
         public dynamic SpaceStyle { get; set; }

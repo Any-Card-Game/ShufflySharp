@@ -428,7 +428,7 @@
 					cm.setGutterMarker(n, 'breakpoints', this.$makeMarker());
 				}
 				if (ss.isValue(scope.model.room)) {
-					clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: false, action: false });
+					clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: 'continue', action: false });
 				}
 			}),
 			onLoad: function(editor) {
@@ -445,14 +445,17 @@
 			scope.model.variableLookupResult = debugBreak.variableLookupResult;
 			scope.$apply();
 		});
-		scope.model.step = function() {
-			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: true, action: true });
+		scope.model.stepInto = function() {
+			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: 'into', action: true });
+		};
+		scope.model.stepOver = function() {
+			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: 'over', action: true });
 		};
 		scope.model.continue = function() {
-			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: false, action: true });
+			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: 'continue', action: true });
 		};
 		scope.model.lookupVariable = function() {
-			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: true, action: true, variableLookup: scope.model.variableLookup });
+			clientManagerService.clientDebugManagerService.debugResponse({ roomID: scope.model.room.roomID, breakpoints: scope.model.breakpoints, step: 'lookup', action: true, variableLookup: scope.model.variableLookup });
 		};
 		scope.$watch('model.game.gameCode.code', function() {
 		});
@@ -990,7 +993,9 @@
 		clientDebugManagerService.onGameStarted = ss.makeGenericType($Client_Services_UserEventCacher$1, [Models.GameManagerModels.GameRoomModel]).op_Addition(clientDebugManagerService.onGameStarted, ss.mkdel(this, function(user, roomModel) {
 			this.$scope.model.gameRunning = true;
 			this.$scope.model.room = roomModel;
-			this.$scope.model.codeEditor.scope.model.room = roomModel;
+			if (ss.isValue(this.$scope.model.codeEditor)) {
+				this.$scope.model.codeEditor.scope.model.room = roomModel;
+			}
 		}));
 		this.$scope.model.debugCode = ss.mkdel(this, function() {
 			this.$scope.model.codeEditor = this.$myCreateUIService.createSingleton$2($Client_Scope_Controller_DebugGameCodeScope).call(this.$myCreateUIService, $Client_Controllers_$DebugGameCodeController.$view, ss.mkdel(this, function(innerScope, elem) {
@@ -1068,6 +1073,8 @@
 		//            Console.WriteLine(o);
 		//
 		//            };
+		scope.model.username = 'dested1';
+		scope.model.password = 'd';
 		this.$myScope.model.windowClosed = function() {
 			window.alert('woooo');
 		};
@@ -2053,7 +2060,8 @@
 		$this.selection = null;
 		$this.codeMirrorOptions = null;
 		$this.breakpoints = null;
-		$this.step = null;
+		$this.stepInto = null;
+		$this.stepOver = null;
 		$this.continue = null;
 		$this.codeMirror = null;
 		$this.lookupVariable = null;
@@ -2629,7 +2637,6 @@
 		this.card = null;
 		this.cardStyle = null;
 		this.space = null;
-		this.$parent = null;
 		Client.Scope.BaseScope.call(this);
 	};
 	$Client_Scope_Directive_CardScope.__typeName = 'Client.Scope.Directive.CardScope';
@@ -2773,7 +2780,6 @@
 	// Client.Scope.Directive.SpaceScope
 	var $Client_Scope_Directive_SpaceScope = function() {
 		this.space = null;
-		this.$parent = null;
 		this.spaceStyle = null;
 		Client.Scope.BaseScope.call(this);
 	};
@@ -3564,13 +3570,15 @@
 		$destroyGameFn: function() {
 			this.$clientDebugManagerService.destroyGame({ roomID: this.$scope.model.room.roomID });
 			this.$scope.model.gameRunning = false;
-			this.$scope.model.codeEditor.scope.model.room = null;
+			if (ss.isValue(this.$scope.model.codeEditor)) {
+				this.$scope.model.codeEditor.scope.model.room = null;
+			}
 			this.$scope.model.gameView.destroy();
 		},
 		$startGameFn: function() {
 			this.$scope.model.gameRunning = true;
 			this.$scope.model.gameView = this.$myCreateUIService.createSingleton($Client_Controllers_DebugGameController.view);
-			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$scope.model.game.name, breakpoints: this.$scope.model.codeEditor.scope.model.breakpoints });
+			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$scope.model.game.name, breakpoints: (ss.isNullOrUndefined(this.$scope.model.codeEditor) ? [] : this.$scope.model.codeEditor.scope.model.breakpoints) });
 		},
 		$clientDebugManagerService_OnGetDebugLog: function(user, o) {
 			ss.add(this.$scope.model.log, o.value);

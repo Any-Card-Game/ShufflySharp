@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using CommonLibraries;
 using Models;
+using Models.DebugGameManagerModels;
+
 namespace global
 {
     [ScriptName("CardGame")]
@@ -121,9 +123,12 @@ namespace global
     public class DebugInfo
     {
         public List<int> Breakpoints { get; set; }
-        public bool StepThrough{ get; set; }
+        public StepType StepThrough { get; set; }
+        public int LastFunction { get; set; }
         public bool Action { get; set; }
         public int LastBrokenLine { get; set; }
+        public bool LastWasEndOfFunction { get; set; }
+        public int LastWasEndOfFunctionIndex { get; set; }
     }
 
     public static class ClientGameCardGameHelper

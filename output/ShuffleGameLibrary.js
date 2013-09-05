@@ -12,6 +12,7 @@
 	};
 	$BreakInfoObject.$ctor = function() {
 		var $this = {};
+		$this.isLast = false;
 		$this.line = 0;
 		$this.col = 0;
 		$this.funcdef = 0;
@@ -413,9 +414,12 @@
 	$global_DebugInfo.$ctor = function() {
 		var $this = {};
 		$this.breakpoints = null;
-		$this.stepThrough = false;
+		$this.stepThrough = 0;
+		$this.lastFunction = 0;
 		$this.action = false;
 		$this.lastBrokenLine = 0;
+		$this.lastWasEndOfFunction = false;
+		$this.lastWasEndOfFunctionIndex = 0;
 		return $this;
 	};
 	global.global.DebugInfo = $global_DebugInfo;
@@ -586,11 +590,67 @@
 		//   if (cardGame.Emulating)
 		//   return;
 		if (ss.isValue(cardGame) && ss.isValue(cardGame.debugInfo)) {
-			if (ss.contains(cardGame.debugInfo.breakpoints, breakInfo.line) || cardGame.debugInfo.stepThrough) {
+			if (!!(ss.contains(cardGame.debugInfo.breakpoints, breakInfo.line) || !!cardGame.debugInfo.stepThrough && cardGame.debugInfo.stepThrough !== 'continue')) {
 				if (cardGame.debugInfo.lastBrokenLine === breakInfo.line) {
 					return;
 				}
 				cardGame.debugInfo.lastBrokenLine = breakInfo.line;
+				var wasLastBreakLast = cardGame.debugInfo.lastWasEndOfFunction;
+				var wasLastIndexBreakLast = cardGame.debugInfo.lastWasEndOfFunctionIndex;
+				cardGame.debugInfo.lastWasEndOfFunction = breakInfo.isLast;
+				if (cardGame.debugInfo.lastWasEndOfFunction) {
+					cardGame.debugInfo.lastWasEndOfFunctionIndex = breakInfo.funcdef;
+				}
+				//step out
+				// if step into/over 
+				//  if end of function is reached (determined at parse time) then
+				//    allow lastfunc to != funcdef
+				// if step out
+				//  wait until end of function, trigger next debug?
+				switch (cardGame.debugInfo.stepThrough) {
+					case 'into': {
+						if (cardGame.debugInfo.lastFunction === breakInfo.funcdef) {
+							console.log('step over happened ' + cardGame.debugInfo.lastFunction + ' == ' + breakInfo.funcdef);
+						}
+						else if (cardGame.debugInfo.lastFunction !== breakInfo.funcdef) {
+							console.log('step into happened ' + cardGame.debugInfo.lastFunction + ' != ' + breakInfo.funcdef);
+						}
+						break;
+					}
+					case 'out': {
+						if (cardGame.debugInfo.lastFunction !== breakInfo.funcdef) {
+							console.log('step over/out skipped ' + cardGame.debugInfo.lastFunction + ' != ' + breakInfo.funcdef);
+							return;
+						}
+						console.log('step over/out okay');
+						break;
+					}
+					case 'over': {
+						if (cardGame.debugInfo.lastFunction !== breakInfo.funcdef) {
+							console.log('step over skipped ' + cardGame.debugInfo.lastFunction + ' != ' + breakInfo.funcdef);
+							if (!wasLastBreakLast) {
+								console.log('wasnt last line, gonna skip ');
+								return;
+							}
+							if (wasLastIndexBreakLast !== breakInfo.funcdef) {
+								console.log('wasnt idk line, gonna skip ');
+								return;
+							}
+							console.log('was last line, gonna continue');
+						}
+						console.log('step over/out okay');
+						break;
+					}
+					case 'lookup': {
+						console.log('Lookup');
+						break;
+					}
+					default: {
+						console.log('idk step ' + cardGame.debugInfo.stepThrough);
+						break;
+					}
+				}
+				cardGame.debugInfo.lastFunction = breakInfo.funcdef;
 				var yieldObject = new $global_FiberYieldResponse.$ctor3(3, breakInfo.line, '');
 				while (true) {
 					console.log('breaking');
@@ -600,7 +660,15 @@
 						return;
 					}
 					if (ss.isValue(answ.variableLookup)) {
-						yieldObject = new $global_FiberYieldResponse.$ctor3(4, breakInfo.line, JSON.stringify(varLookup(answ.variableLookup)));
+						var lookup;
+						try {
+							lookup = varLookup(answ.variableLookup);
+						}
+						catch ($t1) {
+							var e = ss.Exception.wrap($t1);
+							lookup = e.get_message();
+						}
+						yieldObject = new $global_FiberYieldResponse.$ctor3(4, breakInfo.line, JSON.stringify(lookup));
 						continue;
 					}
 					break;

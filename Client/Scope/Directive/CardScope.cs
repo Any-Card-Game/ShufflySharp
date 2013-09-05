@@ -13,9 +13,6 @@ namespace Client.Scope.Directive
 
         [IntrinsicProperty]
         public CardGameTableSpace Space { get; set; }
-
-        [IntrinsicProperty]
-        [ScriptName("$parent")]
-        public SpaceScope Parent { get; set; }
+         
     }
 }

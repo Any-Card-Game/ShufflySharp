@@ -340,6 +340,12 @@
 	$Models_DebugGameManagerModels_DestroyDebugGameRequest.__typeName = 'Models.DebugGameManagerModels.DestroyDebugGameRequest';
 	global.Models.DebugGameManagerModels.DestroyDebugGameRequest = $Models_DebugGameManagerModels_DestroyDebugGameRequest;
 	////////////////////////////////////////////////////////////////////////////////
+	// Models.DebugGameManagerModels.StepType
+	var $Models_DebugGameManagerModels_StepType = function() {
+	};
+	$Models_DebugGameManagerModels_StepType.__typeName = 'Models.DebugGameManagerModels.StepType';
+	global.Models.DebugGameManagerModels.StepType = $Models_DebugGameManagerModels_StepType;
+	////////////////////////////////////////////////////////////////////////////////
 	// Models.GameManagerModels.CreateGameRequestModel
 	var $Models_GameManagerModels_CreateGameRequestModel = function() {
 	};
@@ -903,6 +909,7 @@
 	ss.initClass($Models_DebugGameManagerModels_DebugJoinGameRequestModel, {});
 	ss.initClass($Models_DebugGameManagerModels_DebugResponse, {});
 	ss.initClass($Models_DebugGameManagerModels_DestroyDebugGameRequest, {});
+	ss.initEnum($Models_DebugGameManagerModels_StepType, { into: 'into', over: 'over', out: 'out', continue: 'continue', lookup: 'lookup' });
 	ss.initClass($Models_GameManagerModels_CreateGameRequestModel, {});
 	ss.initClass($Models_GameManagerModels_DebugCreateGameRequestModel, {});
 	ss.initClass($Models_GameManagerModels_GameAnswerModel, {});

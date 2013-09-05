@@ -1,5 +1,6 @@
 using System;
 using System.Html;
+using System.Html.Media.Audio;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
@@ -37,6 +38,9 @@ namespace Client.Controllers
                 Console.WriteLine(o);
             };
 */
+            scope.Model.Username = "dested1";
+            scope.Model.Password = "d";
+
 
             myScope.Model.WindowClosed = () => { Window.Alert("woooo"); };
             myScope.Model.LoginAccount = LoginAccountFn;

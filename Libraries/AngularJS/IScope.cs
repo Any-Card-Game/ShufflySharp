@@ -10,8 +10,8 @@ namespace ng
     public interface IScope
     {
         [ScriptName("$watch")]
-        Function watch(string watchExpression);
-
+        Function watch(string watchExpression); 
+        
         [AlternateSignature]
         Function watch(string watchExpression, Action listener);
         [AlternateSignature]
@@ -66,11 +66,13 @@ namespace ng
          */
 
         [ScriptName("$apply")]
-        object Apply(Func<IScope, object> exp);
+        void Apply(Func<IScope, object> exp);
         [AlternateSignature]
-        object Apply(string exp);
+        void Apply(string exp);
         [AlternateSignature]
-        object Apply();
+        void Apply();
+        [ScriptName("$digest")]
+        void Digest();
 
         [ScriptName("$new")]
         T New<T>();

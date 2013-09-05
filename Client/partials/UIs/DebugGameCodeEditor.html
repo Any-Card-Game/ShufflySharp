@@ -54,7 +54,8 @@
                   ng-model="model.game.gameCode.code" ui-refresh="model.forceUpdate"></textarea>
         
         <div class="btn-group">
-            <button class="btn col-main pad-top-small" ng-click="model.step() ">Step</button>
+            <button class="btn col-main pad-top-small" ng-click="model.stepOver() ">Step Over</button>
+                        <button class="btn col-main pad-top-small" ng-click="model.stepInto() ">Step Into</button>
             <button class="btn col-main pad-top-small" ng-click="model.continue() ">Continue</button>
             <button class="btn col-main  pad-top-small" ng-click="model.updateGame() ">Save</button>
         </div>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Client.Services;
 using CommonLibraries;
@@ -23,16 +24,27 @@ namespace Client.Scope.Controller
 
     public class DebugGameControllerScope : ManagedScope
     {
-        [IntrinsicProperty]
-        public GameCardGame MainArea { get; set; }
 
         [IntrinsicProperty]
-        public Point Scale { get; set; }
+        public DebugGameModel GameModel { get; set; }
+          
 
         [IntrinsicProperty]
         public Action MoveCard { get; set; }
 
         [IntrinsicProperty]
         public Action AnimateCard { get; set; }
+    }
+    public class DebugGameModel
+    {
+
+        [IntrinsicProperty]
+        public GameCardGame MainArea { get; set; }
+
+        [IntrinsicProperty]
+        public List<DebugSpace> Spaces { get; set; }
+
+        [IntrinsicProperty]
+        public Point Scale { get; set; } 
     }
 }

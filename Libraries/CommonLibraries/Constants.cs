@@ -1,8 +1,13 @@
+#define FTP
 namespace CommonLibraries
 {
     public class Constants
-    {  
+    {
+#if FTP
         public const bool Local = false;
+#else
+        public const bool Local = true;
+#endif
         public const string RootAddress = Local ? "http://localhost" : "http://198.211.107.235";
         public const string HomeAddress = Local ? "http://localhost:1700" : "http://198.211.107.235";
         public const string ContentAddress = Local ? "http://localhost:8881/" : "http://content.anycardgame.com/";

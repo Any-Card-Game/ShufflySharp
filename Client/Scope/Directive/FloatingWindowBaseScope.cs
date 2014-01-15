@@ -30,16 +30,4 @@ namespace Client.Scope.Directive
         [IntrinsicProperty]
         public Action DestroyWindow { get; set; }
     }
-
-    public enum SwingDirection
-    {
-        TopLeft,
-        Top,
-        TopRight,
-        Right,
-        BottomRight,
-        Bottom,
-        BottomLeft,
-        Left
-    }
 }

@@ -107,9 +107,17 @@
     <Compile Include="Scope\Directive\CardScope.cs" />
     <Compile Include="Scope\Directive\DebugCardScope.cs" />
     <Compile Include="Scope\Directive\DebugSpaceScope.cs" />
+    <Compile Include="Scope\Directive\EffectTestAreaScope.cs" />
+    <Compile Include="Scope\Directive\EffectTestCardScope.cs" />
+    <Compile Include="Scope\Directive\EffectTestSpaceScope.cs" />
+    <Compile Include="Scope\Directive\EffectTestTextScope.cs" />
+    <Compile Include="Scope\Directive\EffectTestType.cs" />
     <Compile Include="Scope\Directive\FloatingWindowBaseScope.cs" />
+    <Compile Include="Scope\Directive\FloatingWindowPosition.cs" />
     <Compile Include="Scope\Directive\FloatingWindowScope.cs" />
+    <Compile Include="Scope\Directive\Size.cs" />
     <Compile Include="Scope\Directive\SpaceScope.cs" />
+    <Compile Include="Scope\Directive\SwingDirection.cs" />
     <Compile Include="Scope\Directive\TestAreaScope.cs" />
     <Compile Include="Scope\Directive\TestCardScope.cs" />
     <Compile Include="Scope\Directive\TestSpaceScope.cs" />
@@ -171,10 +179,6 @@
     <Reference Include="Saltarelle.jQuery.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=a4048e8fcc593f14, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Saltarelle.jQuery.UI.1.10.1\lib\Saltarelle.jQuery.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Saltarelle.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a4048e8fcc593f14, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Saltarelle.Linq.2.3.0\lib\Saltarelle.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Saltarelle.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a4048e8fcc593f14, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -1,12 +1,10 @@
 using System.Runtime.CompilerServices;
 using Client.Scope.Controller;
-using CommonLibraries;
-using global;
 using Models.SiteManagerModels.Game;
 
 namespace Client.Scope.Directive
 {
-    public class TestSpaceScope : TestGameControllerScope
+    public class EffectTestSpaceScope : EffectTesterControllerScope
     {
         [IntrinsicProperty]
         public GameSpaceModel Space { get; set; }
@@ -14,5 +12,4 @@ namespace Client.Scope.Directive
         [IntrinsicProperty]
         public dynamic SpaceStyle { get; set; }
     }
-
 }

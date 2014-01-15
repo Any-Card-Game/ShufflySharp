@@ -22,7 +22,7 @@ namespace Client.Controllers
             myScope.Model.CreateRoom = CreateRoomFn;
             myScope.OnReady += () =>
                                {
-                                   myScope.Visible = true;
+
                                    myScope.SwingAway(SwingDirection.BottomLeft, true, null);
                                    myScope.SwingBack(null);
                                };

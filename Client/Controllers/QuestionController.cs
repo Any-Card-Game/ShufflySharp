@@ -26,7 +26,6 @@ namespace Client.Controllers
 
             myScope.OnReady += () =>
                                {
-                                   myScope.Visible = true;
                                    myScope.SwingAway(SwingDirection.TopLeft, true, null);
                                    myScope.SwingBack(null);
                                };

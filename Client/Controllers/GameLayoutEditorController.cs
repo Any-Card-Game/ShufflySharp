@@ -38,7 +38,7 @@ namespace Client.Controllers
             myScope.Model.RemoveText = RemoveTextFn;
             myScope.Model.OpenScenarios = OpenScenariosFn;
             myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.None;
-            myScope.watch("model.selection.selectedSpace", () =>
+            myScope.Watch("model.selection.selectedSpace", () =>
                                                            {
                                                                if (myScope.Model.Selection.SelectedSpace == null)
                                                                    return;
@@ -47,21 +47,21 @@ namespace Client.Controllers
                                                                myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Space;
                                                                myScope.Model.Selection.SelectedCard = null;
                                                            });
-            myScope.watch("model.selection.selectedText", () =>
+            myScope.Watch("model.selection.selectedText", () =>
                                                           {
                                                               if (myScope.Model.Selection.SelectedText == null) return;
                                                               myScope.Model.Selection.SelectedSpace = null;
                                                               myScope.Model.Selection.SelectedArea = null;
                                                               myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Text;
                                                           });
-            myScope.watch("model.selection.selectedArea", () =>
+            myScope.Watch("model.selection.selectedArea", () =>
                                                           {
                                                               if (myScope.Model.Selection.SelectedArea == null) return;
                                                               myScope.Model.Selection.SelectedText = null;
                                                               myScope.Model.Selection.SelectedSpace = null;
                                                               myScope.Model.Selection.SelectedLayoutPiece = SelectedGameLayoutPiece.Area;
                                                           });
-            myScope.watch("model.game", () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; }, true);
+            myScope.Watch("model.game", () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; }, true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             myScope.Model.UpdateStatus = UpdateStatusType.Synced;
             myScope.Model.UpdateGame = UpdateGameFn;

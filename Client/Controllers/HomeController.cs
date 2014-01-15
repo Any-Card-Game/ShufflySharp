@@ -1,4 +1,5 @@
 using System;
+using System.Html;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
@@ -31,9 +32,9 @@ namespace Client.Controllers
             scope.Model.CreateRoom += CreateRoomFn;
             scope.Model.CreateGame += CreateGameFn;
             scope.Model.JoinRoom += JoinRoomFn;
-            scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedGameType; },
+            scope.Watch<HomeScope>((_scope) => { return myScope.Model.SelectedGameType; },
                 () => { scope.Model.GameTypeSelected(); });
-            /*  scope.watch<HomeScope>((_scope) => { return myScope.Model.SelectedRoom; },
+            /*  scope.Watch<HomeScope>((_scope) => { return myScope.Model.SelectedRoom; },
                                  () =>
                                    {
                                        scope.Model.RoomSelected();
@@ -47,13 +48,14 @@ namespace Client.Controllers
 
             scope.OnReady += () =>
                              {
-                                 myScope.Visible = true;
                                  myScope.SwingAway(SwingDirection.BottomLeft, true, null);
                                  myScope.SwingBack(null);
                                  myScope.Apply();
                                  myScope.Model.User = myUIManager.ClientInfo.LoggedInUser;
                                  myClientSiteManagerService.GetGameTypes();
                              };
+
+            //Window.SetTimeout(CreateGameFn, 100);
         }
 
 

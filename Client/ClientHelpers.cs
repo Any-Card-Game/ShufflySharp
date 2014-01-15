@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Html;
 using System.Text.RegularExpressions;
 
 namespace Client
@@ -31,9 +32,25 @@ namespace Client
             return double.Parse(ar.Replace("rotate(", "").Replace("deg)", "")); //todo regex??
         }
 
-        public static void PurgeCSS(string myClass)
+        public static void AddCSSRule(dynamic sheet, string selector, JsDictionary<string, object> css)
         {
-            myClass = "." + myClass;
+
+
+            var propText = Keys(css).Map((p) => { return p + ":" + css[p]; }).Join(";");
+            sheet.insertRule(selector + "{" + propText + "}", sheet.cssRules.length);
+
+        }
+        public static dynamic CreateCSSSheet()
+        {
+            var document = (dynamic)Script.Eval("window.document");
+            var sheet = document.head.appendChild(Document.CreateElement("style")).sheet;
+            return sheet;
+
+        }
+
+        public static void PurgeCSS(string classToChange)
+        {
+            var myClass = "." + classToChange;
             string CSSRules = "";
             var document = (dynamic)Script.Eval("window.document");
             if (document.all)
@@ -45,17 +62,18 @@ namespace Client
                 if (document.styleSheets[a][CSSRules] == null) continue;
                 for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
                 {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
+                    var sheet = document.styleSheets[a];
+                    if (sheet[CSSRules][i].selectorText == myClass)
                     {
-                        document.styleSheets[a].removeRule(i);
-                        document.styleSheets[a].insertRule(myClass + "{}");
+                        sheet.removeRule(i);
+                        sheet.insertRule(myClass + "{}", sheet.cssRules.length);
                     }
                 }
             }
         }
-        public static void ChangeCSS(string myClass, JsDictionary<string, string> values)
+        public static void ChangeCSS(string classToChange, JsDictionary<string, string> values)
         {
-            myClass = "." + myClass;
+            var myClass = "." + classToChange;
             string CSSRules = "";
             var document = (dynamic)Script.Eval("window.document");
             if (document.all)
@@ -64,14 +82,16 @@ namespace Client
                 CSSRules = "cssRules";
             for (var a = 0; a < document.styleSheets.length; a++)
             {
-                if (document.styleSheets[a][CSSRules] == null) continue;
-                for (var i = 0; i < document.styleSheets[a][CSSRules].length; i++)
+                var ruleSet = document.styleSheets[a][CSSRules];
+                if (ruleSet == null) continue;
+                for (var i = 0; i < ruleSet.length; i++)
                 {
-                    if (document.styleSheets[a][CSSRules][i].selectorText == myClass)
+                    var rule = ruleSet[i];
+                    if (rule.selectorText == myClass)
                     {
                         foreach (var m in values)
                         {
-                            document.styleSheets[a][CSSRules][i].style[m.Key] = m.Value;
+                            rule.style[m.Key] = m.Value;
                         }
                     }
                 }

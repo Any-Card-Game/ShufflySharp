@@ -35,7 +35,7 @@ namespace Client.Directives
         private void LinkFn(IScope scope, jQueryObject element, dynamic attr)
         {
             var expression = (string)attr.specialNgRepeat;
-            scope.watch(expression, (cur) =>
+            scope.Watch(expression, (cur) =>
                                     {
                                         var items = (List<object>)cur;
                                         var cloner = jQuery.FromElement(element[0]);

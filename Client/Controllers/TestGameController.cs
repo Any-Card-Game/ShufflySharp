@@ -55,14 +55,14 @@ namespace Client.Controllers
                         };
             */
 
-            scope.watch("model.game.gameLayout.width + model.game.gameLayout.height",
+            scope.Watch("model.game.gameLayout.width + model.game.gameLayout.height",
                 () =>
                 {
                     scope.Model.Scale = new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X/(double) scope.Model.Game.GameLayout.Width*.9, ((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/(double) scope.Model.Game.GameLayout.Height)*.9);
                 });
 
 
-            scope.watch(
+            scope.Watch(
                 "model.selection.selectedScenario.screenSize.x + model.selection.selectedScenario.screenSize.y",() =>
                 {
                     scope.Model.Scale =new Point(scope.Model.Selection.SelectedScenario.ScreenSize.X/(double) scope.Model.Game.GameLayout.Width*.9,((scope.Model.Selection.SelectedScenario.ScreenSize.Y)/(double) scope.Model.Game.GameLayout.Height)*.9);

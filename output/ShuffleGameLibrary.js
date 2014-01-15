@@ -182,11 +182,13 @@
 	var $global_Card = function(value, type) {
 		this.value = 0;
 		this.type = 0;
+		this.guid = ss.Guid.getDefaultValue();
 		this.state = 0;
 		this.effects = null;
 		this.value = value;
 		this.type = type;
 		this.effects = [];
+		this.guid = ss.Guid.newGuid();
 	};
 	$global_Card.__typeName = 'global.Card';
 	global.global.Card = $global_Card;
@@ -553,6 +555,23 @@
 	var $global_Rectangle = function() {
 	};
 	$global_Rectangle.__typeName = 'global.Rectangle';
+	$global_Rectangle.expand = function($this, i) {
+		return { x: $this.x - i, y: $this.y - i, width: $this.width + i, height: $this.height + i };
+	};
+	$global_Rectangle.toString = function($this) {
+		return ss.formatString('X: {0}, Y: {1}, Width: {2}, Height: {3}', $this.x, $this.y, $this.width, $this.height);
+	};
+	$global_Rectangle.contains = function($this, rect) {
+		if (rect.x < $this.x + $this.width && $this.x < rect.x + rect.width && rect.y < $this.y + $this.height) {
+			return $this.y < rect.y + rect.height;
+		}
+		else {
+			return false;
+		}
+	};
+	$global_Rectangle.offset = function($this, x, y) {
+		return { x: $this.x + x, y: $this.y + y, width: $this.width, height: $this.height };
+	};
 	global.global.Rectangle = $global_Rectangle;
 	////////////////////////////////////////////////////////////////////////////////
 	// global.Shuff

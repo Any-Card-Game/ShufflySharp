@@ -111,7 +111,7 @@ namespace Client.Directives
                                              }
                                          }
                                      };
-            scope.watch("model.scale", () =>
+            scope.Watch("model.scale", () =>
                                        {
                                            scale = scope.Model.Scale;
 
@@ -159,9 +159,9 @@ namespace Client.Directives
                                        });
 
 
-            scope.watch("area", reApplyAreaBind, true);
-            scope.watch("model.selection.selectedEffect", reApplyAreaBind, true);
-            scope.watch("model.selection.selectedScenario.effects", reApplyAreaBind, true);
+            scope.Watch("area", reApplyAreaBind, true);
+            scope.Watch("model.selection.selectedEffect", reApplyAreaBind, true);
+            scope.Watch("model.selection.selectedScenario.effects", reApplyAreaBind, true);
         }
          
     }

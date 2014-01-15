@@ -1112,11 +1112,15 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					this.$gameData.finishedGames++;
 					CommonShuffleLibrary.ServerLogger.logDebug('--game closed', game);
 				});
-				room.playerLeave = ss.delegateCombine(room.playerLeave, function(player) {
+				room.playerLeave = ss.delegateCombine(room.playerLeave, ss.mkdel(this, function(player) {
 					//todo laeve player api in the game
 					ss.remove(room.players, player);
 					ss.add(room.playersLeft, player);
-				});
+					if (room.players.length === 0) {
+						ss.remove(this.$rooms, room);
+						room.fiber.reset();
+					}
+				}));
 				this.$myServerManager.registerGameServer(user);
 				this.$startGame(room);
 			}));
@@ -1261,7 +1265,6 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				room.unwind(room.players);
 				return;
 			}
-			console.log('process  ' + response.type.toString());
 			switch (response.type) {
 				case 0: {
 					this.$askPlayerQuestion(room, response);

@@ -34,7 +34,7 @@ namespace Client.Controllers
             myScope.Model.AddEffect = AddEffectFn;
             myScope.Model.RemoveEffect = RemoveEffectFn;
 
-            myScope.watch("model.selection.selectedEffect", () =>
+            myScope.Watch("model.selection.selectedEffect", () =>
                                                             {
                                                                 if (myScope.Model.Selection.SelectedEffect != null)
                                                                 {

@@ -25,7 +25,7 @@ namespace Client.Directives
             JsDictionary<string, string> keys;
 
 
-            scope.watch("model.selection.selectedCard",
+            scope.Watch("model.selection.selectedCard",
                 (old, @new) =>
                 {
                     if (old == @new) return;
@@ -220,29 +220,29 @@ namespace Client.Directives
             }
             ClientHelpers.ChangeCSS("card" + scope.Card.Type + "-" + scope.Card.Value + "::before", keys);
 
-            scope.watch("space", redrawCard, true);
+            scope.Watch("space", redrawCard, true);
 
-            scope.watch("model.selection.showCards", redrawCard);
-            scope.watch("model.selection.selectedScenario", redrawCard, true);
+            scope.Watch("model.selection.showCards", redrawCard);
+            scope.Watch("model.selection.selectedScenario", redrawCard, true);
 
-            scope.watch("model.selection.selectedEffect", redrawCard, true);
+            scope.Watch("model.selection.selectedEffect", redrawCard, true);
             //            scope.On("redrawCard", redrawCard);
 
             //   redrawCard();
             /*
                           
  
-            scope.watch("$parent.space", () =>
+            scope.Watch("$parent.space", () =>
             {
                 Console.Log("ac");
                 redrawCard();
             }, true);
-            scope.watch("card.appearance.effectNames.join()", () =>
+            scope.Watch("card.appearance.effectNames.join()", () =>
             {
                 Console.Log("b");
                 redrawCard();
             }, true);*/
-            /*scope.watch<CardScope>((_scope) =>
+            /*scope.Watch<CardScope>((_scope) =>
             {
 
                 List<Effect> effects = new List<Effect>();

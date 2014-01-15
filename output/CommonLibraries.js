@@ -72,6 +72,36 @@
 	ss.initGenericClass($CommonLibraries_DelegateOrValue$1, 1);
 	global.CommonLibraries.DelegateOrValue$1 = $CommonLibraries_DelegateOrValue$1;
 	////////////////////////////////////////////////////////////////////////////////
+	// CommonLibraries.EnumerableExtensions
+	var $CommonLibraries_EnumerableExtensions = function() {
+	};
+	$CommonLibraries_EnumerableExtensions.__typeName = 'CommonLibraries.EnumerableExtensions';
+	$CommonLibraries_EnumerableExtensions.count = function(T) {
+		return function(enumerable, counter) {
+			var count = 0;
+			for (var $t1 = 0; $t1 < enumerable.length; $t1++) {
+				var v = enumerable[$t1];
+				if (counter(v)) {
+					count++;
+				}
+			}
+			return count;
+		};
+	};
+	$CommonLibraries_EnumerableExtensions.where = function(T) {
+		return function(enumerable, counter) {
+			var ts = [];
+			for (var $t1 = 0; $t1 < enumerable.length; $t1++) {
+				var v = enumerable[$t1];
+				if (counter(v)) {
+					ss.add(ts, v);
+				}
+			}
+			return ts;
+		};
+	};
+	global.CommonLibraries.EnumerableExtensions = $CommonLibraries_EnumerableExtensions;
+	////////////////////////////////////////////////////////////////////////////////
 	// CommonLibraries.ExtensionMethods
 	var $CommonLibraries_ExtensionMethods = function() {
 	};
@@ -79,9 +109,44 @@
 	$CommonLibraries_ExtensionMethods.goodMessage = function(ex) {
 		return ex.get_message() + '  ' + ex.get_innerException();
 	};
+	$CommonLibraries_ExtensionMethods.toPx = function(num) {
+		return num + 'px';
+	};
+	$CommonLibraries_ExtensionMethods.toPx$1 = function(num) {
+		return num + 'px';
+	};
 	$CommonLibraries_ExtensionMethods.cleanUp = function(T) {
 		return function(o) {
 			return JSON.parse(JSON.stringify(o, $CommonLibraries_Help.sanitize));
+		};
+	};
+	$CommonLibraries_ExtensionMethods.sameAs = function(T, T2) {
+		return function(left, right) {
+			var $t1 = new ss.ObjectEnumerator(left);
+			try {
+				while ($t1.moveNext()) {
+					var v = $t1.current();
+					if (!ss.staticEquals(right[v.key], v.value)) {
+						return false;
+					}
+				}
+			}
+			finally {
+				$t1.dispose();
+			}
+			var $t2 = new ss.ObjectEnumerator(right);
+			try {
+				while ($t2.moveNext()) {
+					var v1 = $t2.current();
+					if (!ss.staticEquals(left[v1.key], v1.value)) {
+						return false;
+					}
+				}
+			}
+			finally {
+				$t2.dispose();
+			}
+			return true;
 		};
 	};
 	global.CommonLibraries.ExtensionMethods = $CommonLibraries_ExtensionMethods;
@@ -228,6 +293,7 @@
 	ss.initGenericClass($CommonLibraries_TypeOrFunction$1, 1);
 	global.CommonLibraries.TypeOrFunction$1 = $CommonLibraries_TypeOrFunction$1;
 	ss.initClass($CommonLibraries_Constants, {});
+	ss.initClass($CommonLibraries_EnumerableExtensions, {});
 	ss.initClass($CommonLibraries_ExtensionMethods, {});
 	ss.initClass($CommonLibraries_Help, {});
 	ss.initClass($CommonLibraries_IntPoint, {});

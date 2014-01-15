@@ -173,17 +173,17 @@ namespace Client.Directives
             /*
                           
  
-            scope.watch("$parent.space", () =>
+            scope.Watch("$parent.space", () =>
             {
                 Console.Log("ac");
                 redrawCard();
             }, true);
-            scope.watch("card.appearance.effectNames.join()", () =>
+            scope.Watch("card.appearance.effectNames.join()", () =>
             {
                 Console.Log("b");
                 redrawCard();
             }, true);*/
-            /*scope.watch<CardScope>((_scope) =>
+            /*scope.Watch<CardScope>((_scope) =>
             {
 
                 List<Effect> effects = new List<Effect>();

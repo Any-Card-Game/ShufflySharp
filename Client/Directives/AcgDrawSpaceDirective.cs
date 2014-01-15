@@ -50,7 +50,7 @@ namespace Client.Directives
                 }
             });*/
 
-            scope.watch("space", () =>
+            scope.Watch("space", () =>
                                  {
                                      var beforeStyle = new JsDictionary<string, string>();
                                      beforeStyle["display"] = "block";

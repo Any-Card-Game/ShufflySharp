@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace global
@@ -10,6 +11,8 @@ namespace global
         [IntrinsicProperty]
         public int Type { get; set; }
         [IntrinsicProperty]
+        public Guid Guid { get; set; }
+        [IntrinsicProperty]
         public CardGameCardState State { get; set; }
         [IntrinsicProperty]
         public List<string> Effects { get; set; }
@@ -19,6 +22,7 @@ namespace global
             Value = value;
             Type = type;
             Effects = new List<string>();
+            Guid=Guid.NewGuid();
 
         }
     }

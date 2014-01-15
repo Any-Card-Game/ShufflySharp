@@ -34,7 +34,6 @@ namespace Client.Controllers
 
             this.scope.OnReady += () =>
             {
-                this.scope.Visible = true;
                 this.scope.SwingAway(SwingDirection.Right, true, null);
                 this.scope.SwingBack(null);
             };
@@ -46,7 +45,7 @@ namespace Client.Controllers
 
 
 
-            this.scope.watch("model.game",
+            this.scope.Watch("model.game",
                 () => { this.scope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
@@ -72,6 +71,15 @@ namespace Client.Controllers
                                                                                                                                             innerScope.Model.Selection = this.scope.Model.Selection;
                                                                                                                                         });
                                          };
+
+
+/*
+            Window.SetTimeout(() =>
+                              {
+                                  StartGameFn();
+                                  scope.Minimize();
+                              }, 250);
+*/
 
 
         }

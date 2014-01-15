@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 namespace CommonLibraries
 {
@@ -14,6 +15,14 @@ namespace CommonLibraries
         public static string GoodMessage(this Exception ex)
         {
             return ex.Message + "  " + ex.InnerException;
+        }
+        public static string ToPx(this double num)
+        {
+            return num + "px";
+        }
+        public static string ToPx(this int num)
+        {
+            return num + "px";
         }
 
         [InlineCode("debugger")]
@@ -44,6 +53,54 @@ namespace CommonLibraries
         public static T CleanUp<T>(T o)
         {
             return Json.Parse<T>(Json.Stringify(o, Help.Sanitize));
+        }
+        public static bool SameAs<T, T2>(this JsDictionary<T, T2> left, JsDictionary<T, T2> right)
+        {
+
+            foreach (var v in left)
+            {
+                if (!Equals(right[v.Key], v.Value))
+                {
+                    return false;
+                }
+            }
+            foreach (var v in right)
+            {
+                if (!Equals(left[v.Key], v.Value))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    public static class EnumerableExtensions
+    {
+        public static int Count<T>(this List<T> enumerable, Func<T, bool> counter)
+        {
+            int count = 0;
+            foreach (var v in enumerable)
+            {
+                if (counter(v))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+        public static List<T> Where<T>(this List<T> enumerable, Func<T, bool> counter)
+        {
+            List<T> ts = new List<T>();
+
+            foreach (var v in enumerable)
+            {
+                if (counter(v))
+                {
+                    ts.Add(v);
+                }
+            }
+            return ts;
         }
     }
 }

@@ -58,27 +58,4 @@ namespace Client.Scope.Directive
         [IntrinsicProperty]
         public bool IsMaximized { get; set; }
     }
-
-
-    [Serializable]
-    public class FloatingWindowPosition
-    {
-        public string Display { get; set; }
-
-        public string Left { get; set; }
-        public string Top { get; set; }
-
-        public string MarginLeft { get; set; }
-        public string MarginTop { get; set; }
-
-        [ScriptName("zIndex")]
-        public int ZIndex { get; set; }
-    }
-
-    [Serializable]
-    public class Size
-    {
-        public string Width { get; set; }
-        public string Height { get; set; }
-    }
 }

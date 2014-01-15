@@ -60,7 +60,7 @@ namespace Client.Directives
 
                                          element.Text(scope.Text.Text);
                                      };
-            scope.watch("model.selection.selectedEffect", () =>
+            scope.Watch("model.selection.selectedEffect", () =>
                                                           {
                                                               ClientHelpers.PurgeCSS("text" + text.Name + "::before");
 
@@ -110,7 +110,7 @@ namespace Client.Directives
                                                               }
                                                           }, true);
 
-            scope.watch("text", reApplyTextBind, true);
+            scope.Watch("text", reApplyTextBind, true);
         }
           
     }

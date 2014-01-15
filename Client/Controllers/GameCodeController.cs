@@ -38,9 +38,9 @@ namespace Client.Controllers
 */
 
 
-            scope.watch("model.game.gameCode.code", () => { });
+            scope.Watch("model.game.gameCode.code", () => { });
 
-            myScope.watch("model.game",
+            myScope.Watch("model.game",
                 () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
 

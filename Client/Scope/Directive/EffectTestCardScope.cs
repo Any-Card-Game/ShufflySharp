@@ -1,10 +1,9 @@
-using System;
 using System.Runtime.CompilerServices;
 using Models.SiteManagerModels.Game;
 
 namespace Client.Scope.Directive
 {
-    public class TestCardScope : TestSpaceScope
+    public class EffectTestCardScope : EffectTestSpaceScope
     {
         [IntrinsicProperty]
         public GameLayoutScenarioCard Card { get; set; }
@@ -13,6 +12,6 @@ namespace Client.Scope.Directive
         public dynamic CardStyle { get; set; }
 
         [IntrinsicProperty]
-        public Action CardClick { get; set; }
+        public EffectTestType Test { get; set; }
     }
 }

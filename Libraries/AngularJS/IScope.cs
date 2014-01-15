@@ -10,59 +10,59 @@ namespace ng
     public interface IScope
     {
         [ScriptName("$watch")]
-        Function watch(string watchExpression); 
+        Function Watch(string watchExpression); 
         
         [AlternateSignature]
-        Function watch(string watchExpression, Action listener);
+        Function Watch(string watchExpression, Action listener);
         [AlternateSignature]
-        Function watch(string watchExpression, Action<object> listener);
+        Function Watch(string watchExpression, Action<object> listener);
         [AlternateSignature]
-        Function watch(string watchExpression, Action<object, object> listener);
+        Function Watch(string watchExpression, Action<object, object> listener);
         [AlternateSignature]
-        Function watch(string watchExpression, Action<object, object, IScope> listener);
+        Function Watch(string watchExpression, Action<object, object, IScope> listener);
         [AlternateSignature]
-        Function watch(string watchExpression, Action listener, bool objectEquality);
+        Function Watch(string watchExpression, Action listener, bool objectEquality);
         [AlternateSignature]
-        Function watch(string watchExpression, Action<object> listener, bool objectEquality);
+        Function Watch(string watchExpression, Action<object> listener, bool objectEquality);
         [AlternateSignature]
-        Function watch(string watchExpression, Action<object, object> listener, bool objectEquality);
+        Function Watch(string watchExpression, Action<object, object> listener, bool objectEquality);
         [AlternateSignature]
-        Function watch(string watchExpression, Action<object, object, IScope> listener, bool objectEquality);
+        Function Watch(string watchExpression, Action<object, object, IScope> listener, bool objectEquality);
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action listener)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action listener)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action<object> listener)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action<object> listener)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action<object, object> listener)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action listener, bool objectEquality)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action listener, bool objectEquality)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action<object> listener, bool objectEquality)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action<object> listener, bool objectEquality)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action<object, object> listener, bool objectEquality)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action<object, object> listener, bool objectEquality)where T:IScope;
 
         [AlternateSignature]
-        Function watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener, bool objectEquality)where T:IScope;
+        Function Watch<T>(Func<T, object> watchExpression, Action<object, object, IScope> listener, bool objectEquality)where T:IScope;
 
 
         /*
-        Function watch(string watchExpression, Func<object, object> listener);
-        Function watch(string watchExpression, Func<object, object, object> listener);
-        Function watch(string watchExpression, Func<object, object, IScope, object> listener);
-        Function watch(string watchExpression, Func<object, object> listener, bool objectEquality);
-        Function watch(string watchExpression, Func<object, object, object> listener, bool objectEquality);
-        Function watch(string watchExpression, Func<object, object, IScope, object> listener, bool objectEquality);
+        Function Watch(string watchExpression, Func<object, object> listener);
+        Function Watch(string watchExpression, Func<object, object, object> listener);
+        Function Watch(string watchExpression, Func<object, object, IScope, object> listener);
+        Function Watch(string watchExpression, Func<object, object> listener, bool objectEquality);
+        Function Watch(string watchExpression, Func<object, object, object> listener, bool objectEquality);
+        Function Watch(string watchExpression, Func<object, object, IScope, object> listener, bool objectEquality);
          */
 
         [ScriptName("$apply")]
@@ -72,8 +72,7 @@ namespace ng
         [AlternateSignature]
         void Apply();
         [ScriptName("$digest")]
-        void Digest();
-
+        void Digest();  
         [ScriptName("$new")]
         T New<T>();
 
@@ -117,13 +116,13 @@ namespace ng
 
         $on(name: string, listener: (event: IAngularEvent, ...args: any[]) => any): Function;
 
-        $watch(watchExpression: string, listener?: (newValue: any, oldValue: any, scope: IScope) => any, objectEquality?: bool): Function;
+        $Watch(watchExpression: string, listener?: (newValue: any, oldValue: any, scope: IScope) => any, objectEquality?: bool): Function;
         
         /*
-        $watch(watchExpression: string, listener?: string, objectEquality?: bool): Function;
-        $watch(watchExpression: string, listener?: (newValue: any, oldValue: any, scope: IScope) => any, objectEquality?: bool): Function;
-        $watch(watchExpression: (scope: IScope) => Function, listener?: string, objectEquality?: bool): Function;
-        $watch(watchExpression: (scope: IScope) => Function, listener?: (newValue: any, oldValue: any, scope: IScope) => any, objectEquality?: bool): Function;
+        $Watch(watchExpression: string, listener?: string, objectEquality?: bool): Function;
+        $Watch(watchExpression: string, listener?: (newValue: any, oldValue: any, scope: IScope) => any, objectEquality?: bool): Function;
+        $Watch(watchExpression: (scope: IScope) => Function, listener?: string, objectEquality?: bool): Function;
+        $Watch(watchExpression: (scope: IScope) => Function, listener?: (newValue: any, oldValue: any, scope: IScope) => any, objectEquality?: bool): Function;
 */
         
         $id: number;

@@ -64,7 +64,7 @@ namespace Client.Directives
                                           scope.SpaceStyle.height = h*st;
                                           scope.SpaceStyle.backgroundColor = "red";
                                       };
-            scope.watch("model.selection.selectedEffect", () =>
+            scope.Watch("model.selection.selectedEffect", () =>
                                                           {
                                                               ClientHelpers.PurgeCSS("space" + space.Name + "::before");
 
@@ -119,7 +119,7 @@ namespace Client.Directives
                                                               }
                                                           }, true);
 
-            scope.watch("space", reApplySpaceBind, true);
+            scope.Watch("space", reApplySpaceBind, true);
         }
          
     }

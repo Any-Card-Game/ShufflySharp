@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Client.Controllers;
 using Client.Directives;
 using Client.Filters;
+using Client.Scope;
 using Client.Scope.Controller;
 using Client.Services;
 using CommonLibraries;
@@ -64,7 +65,7 @@ namespace Client
                             .Directive(PropertyDirective.Name, new object[] { new Func<object>(() => new PropertyDirective()) })
                             .Directive(AcgDrawCardDirective.Name, new object[] { new Func<object>(() => new AcgDrawCardDirective()) })
                             .Directive(AcgDrawSpaceDirective.Name, new object[] { new Func<object>(() => new AcgDrawSpaceDirective()) })
-                            .Directive(AcgDebugDrawCardDirective.Name, new object[] { new Func<object>(() => new AcgDebugDrawCardDirective()) })
+                            .Directive(AcgDebugDrawCardDirective.Name, new object[] { RootScopeName, new Func<BaseScope, object>((baseScope) => new AcgDebugDrawCardDirective(baseScope)) })
                             .Directive(AcgDebugDrawSpaceDirective.Name, new object[] { new Func<object>(() => new AcgDebugDrawSpaceDirective()) })
                             .Directive(AcgTestDrawCardDirective.Name, new object[] { new Func<object>(() => new AcgTestDrawCardDirective()) })
                             .Directive(AcgTestDrawSpaceDirective.Name, new object[] { new Func<object>(() => new AcgTestDrawSpaceDirective()) })

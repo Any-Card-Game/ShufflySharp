@@ -41,7 +41,7 @@ public static class angular
     {
         return null;
     }
-    public static void ForEach<T>(IEnumerable<T> items, Action<T> item)
+    public static void ForEach<T>(List<T> items, Action<T> item)
     {
     }
     public static void ForEach(JsDictionary items, Action<string,object> item)

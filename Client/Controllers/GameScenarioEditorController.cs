@@ -28,11 +28,11 @@ namespace Client.Controllers
             myCreateUIService = createUIService;
             myScope.Visible = true;
 
-            myScope.watch("model.game",
+            myScope.Watch("model.game",
                 () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
 
-            myScope.watch("model.selection.selectedScenario", () =>
+            myScope.Watch("model.selection.selectedScenario", () =>
                                                               {
                                                                   if (myScope.Model.Selection.SelectedScenario == null)
                                                                       return;
@@ -56,7 +56,7 @@ namespace Client.Controllers
                                                                   }
                                                               });
 
-            myScope.watch("model.selection.selectedScenarioSpace", () =>
+            myScope.Watch("model.selection.selectedScenarioSpace", () =>
                                                                    {
                                                                        if (
                                                                            myScope.Model.Selection.SelectedScenarioSpace ==
@@ -66,7 +66,7 @@ namespace Client.Controllers
                                                                        myScope.Model.Selection.SelectedScenarioPiece =
                                                                            SelectedGameScenarioPiece.Space;
                                                                    });
-            myScope.watch("model.selection.selectedScenarioEffect", () =>
+            myScope.Watch("model.selection.selectedScenarioEffect", () =>
                                                                     {
                                                                         if (
                                                                             myScope.Model.Selection

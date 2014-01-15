@@ -35,7 +35,12 @@ namespace Client.Services
             populateScope(scope, html);
             var item = myCompileService(html)(scope);
             item.AppendTo(Window.Document.Body);
-            scope.Apply();
+
+            if (scope.Phase == null)
+            {
+                scope.Apply();
+            }
+
             scope = angular.Element(item.Children()[0]).Scope<T>() ?? scope;
 
             return new CreatedUI<T>(scope, item);
@@ -72,7 +77,11 @@ namespace Client.Services
                 scope = myRootScopeService.New<T>();
                 populateScope(scope, html);
                 var item = myCompileService(html)(scope);
-                scope.Apply();
+                if (scope.Phase == null)
+                {
+                    scope.Apply();
+                }
+
                 scope = angular.Element(item.Children()[0]).Scope<T>() ?? scope;
                 return new CreatedUI<T>(scope, html);
             }
@@ -85,7 +94,11 @@ namespace Client.Services
                 populateScope(scope, html);
                 var item = myCompileService(html)(scope);
                 item.AppendTo(Window.Document.Body);
-                scope.Apply();
+                if (scope.Phase == null)
+                {
+                    scope.Apply();
+                }
+
                 scope = angular.Element(item.Children()[0]).Scope<T>() ?? scope;
                 singltons[ui] = item;
 
@@ -101,7 +114,11 @@ namespace Client.Services
                 myCompileService(
                     jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui,Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
-            scope.Apply();
+            if (scope.Phase == null)
+            {
+                scope.Apply();
+            }
+
             scope = angular.Element(item.Children()[0]).Scope<ManagedScope>() ?? scope;
 
 
@@ -112,7 +129,11 @@ namespace Client.Services
         {
             var item = myCompileService(jQuery.FromHtml(string.Format("<div ng-include src=\"'{1}partials/UIs/{0}.html'\"></div>", ui, Constants.ContentAddress)))(scope);
             item.AppendTo(Window.Document.Body);
-            scope.Apply();
+            if (scope.Phase == null)
+            {
+                scope.Apply();
+            }
+
             scope = angular.Element(item.Children()[0]).Scope<ManagedScope>() ?? scope;
             return new CreatedUI<ManagedScope>(scope, item);
         }

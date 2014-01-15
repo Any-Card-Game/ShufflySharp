@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Html;
 using Client.Scope.Directive;
 using Client.Services;
 using CommonLibraries;
@@ -45,8 +46,9 @@ namespace Client.Directives
 
         private void LinkFn(FloatingWindowScope scope, jQueryObject element, dynamic attr)
         {
+            myElement = element;
+            myScope = scope;
             items.Add(element, scope);
-
 
             element.Click((elem, @event) => Focus());
 
@@ -148,12 +150,17 @@ namespace Client.Directives
 
         public void SwingBack(FloatingWindowScope scope, jQueryObject element, Action callback)
         {
-            var js = new JsDictionary<string, object>();
+            Window.SetTimeout(() =>
+                              {
+                                  var js = new JsDictionary<string, object>();
 
-            js["left"] = scope.Left;
-            js["top"] = scope.Top;
+                                  js["left"] = scope.Left;
+                                  js["top"] = scope.Top;
+                                  element.CSS("display", "block");
 
-            element.Animate(js, EffectDuration.Fast, EffectEasing.Swing, callback);
+                                  element.Animate(js, EffectDuration.Fast, EffectEasing.Swing, callback);
+
+                              }, 1);
         }
 
         public void SwingAway(SwingDirection direction, bool simulate, jQueryObject element, Action callback)
@@ -194,8 +201,23 @@ namespace Client.Directives
                     break;
             }
 
-            if (simulate) element.CSS(js);
-            else element.Animate(js, EffectDuration.Slow, EffectEasing.Swing, callback);
+            if (simulate)
+            {
+                element.CSS(js);
+                element.CSS("display", "none");
+                if (callback != null)
+                {
+                    callback();
+                }
+            }
+            else element.Animate(js, EffectDuration.Slow, EffectEasing.Swing, () =>
+                                                                              {
+                                                                                  element.CSS("display", "none");
+                                                                                  if (callback != null)
+                                                                                  {
+                                                                                      callback();
+                                                                                  }
+                                                                              });
         }
     }
 }

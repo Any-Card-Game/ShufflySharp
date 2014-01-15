@@ -64,7 +64,7 @@ namespace Client.Directives
                                          scope.AreaStyle.height = h*st;
                                          scope.AreaStyle.backgroundColor = "blue";
                                      };
-            scope.watch("model.selection.selectedEffect", () =>
+            scope.Watch("model.selection.selectedEffect", () =>
                                                           {
                                                               ClientHelpers.PurgeCSS("area" + area.Name + "::before");
 
@@ -119,7 +119,7 @@ namespace Client.Directives
                                                               }
                                                           }, true);
 
-            scope.watch("area", reApplyAreaBind, true);
+            scope.Watch("area", reApplyAreaBind, true);
         }
          
     }

@@ -33,7 +33,7 @@ namespace Client.Controllers
 
             myScope.Model.CreateGame += CreateGameFn;
             myScope.Model.DeleteGame += DeleteGameFn;
-            myScope.watch("model.selectedGame",
+            myScope.Watch("model.selectedGame",
                 () =>
                 {
                     if (myScope.Model.SelectedGame == null) return;
@@ -81,7 +81,7 @@ namespace Client.Controllers
         private void OnOnGetGamesByUserReceivedFn(UserModel user, GetGamesByUserResponse response)
         {
             myScope.Model.Games = response.Games;
-            //myScope.Model.SelectedGame = myScope.Model.Games[0];
+            myScope.Model.SelectedGame = myScope.Model.Games[1];
             myScope.Apply();
         }
     }

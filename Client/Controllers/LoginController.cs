@@ -51,7 +51,8 @@ namespace Client.Controllers
             /* myScope.Model.Username = "dested1";
             myScope.Model.Password = "d";
 
-            Window.SetTimeout(LoginAccountFn, 1000);*/
+            */
+//            Window.SetTimeout(LoginAccountFn, 250);
         }
 
         private void OnLoginFn(UserModel user, UserLoginResponse data)

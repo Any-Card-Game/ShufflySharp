@@ -1,8 +1,8 @@
 <div ng-controller="DebugGameController">
-    <div ng-repeat='space in mainArea.spaces'>
-        <div acg-debug-draw-space ng-style='spaceStyle'>
-            <div ng-repeat='card in space.pile.cards'>
-                <div acg-debug-draw-card ng-style='cardStyle'></div>
+    <div ng-repeat="space in gameModel.spaces">
+        <div acg-debug-draw-space="space"  game-model="gameModel" ng-style="spaceStyle">
+            <div ng-repeat="card in space.cards| orderBy:index">
+                <div acg-debug-draw-card="card" class="card" ng-class="classes" space="space" game-model="gameModel" ng-style="cardStyle"></div>
             </div>
         </div>
     </div>

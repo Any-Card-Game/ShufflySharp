@@ -60,11 +60,9 @@ namespace Client.Controllers
             clientManagerService.ClientChatManagerService.OnGetChatInfo += GetChatInfo;
             myScope.OnReady = () =>
                               {
-                                  myScope.Visible = true;
                                   myScope.SwingAway(SwingDirection.BottomRight, true, null);
                                   PopulateGameRoom(myScope.Model.Room);
                                   myScope.SwingBack(null);
-                                  myScope.Apply();
                               };
         }
 

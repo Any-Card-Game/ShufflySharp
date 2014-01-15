@@ -102,9 +102,9 @@ namespace Client.Controllers
             {
                 clientManagerService.ClientDebugManagerService.DebugResponse(new DebugResponse(scope.Model.Room.RoomID, scope.Model.Breakpoints, StepType.Lookup, true) { VariableLookup = scope.Model.VariableLookup });
             };
-            scope.watch("model.game.gameCode.code", () => { });
+            scope.Watch("model.game.gameCode.code", () => { });
 
-            this.scope.watch("model.game",
+            this.scope.Watch("model.game",
                 () => { this.scope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
 

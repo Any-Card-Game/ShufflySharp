@@ -1,3 +1,4 @@
+using System.Html;
 using Client.Scope.Controller;
 using Client.Scope.Directive;
 using Client.Services;
@@ -45,7 +46,7 @@ namespace Client.Controllers
                                {
                                    //todo destroy spawned
                                };
-            myScope.watch("model.game",
+            myScope.Watch("model.game",
                 () => { myScope.Model.UpdateStatus = UpdateStatusType.Dirty; },
                 true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
@@ -53,10 +54,17 @@ namespace Client.Controllers
             myScope.Model.UpdateGame = UpdateGameFn;
             myScope.OnReady += () =>
                                {
-                                   myScope.Visible = true;
                                    myScope.SwingAway(SwingDirection.TopRight, true, null);
                                    myScope.SwingBack(null);
                                };
+/*
+            Window.SetTimeout(() =>
+                              {
+                                  OpenTestFn();
+                                  scope.Minimize();
+                              }, 100);
+*/
+
         }
 
         private void OpenTestFn()

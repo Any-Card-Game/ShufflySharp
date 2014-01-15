@@ -1,18 +1,15 @@
 using System.Runtime.CompilerServices;
 using Client.Scope.Controller;
-using CommonLibraries;
-using global;
 using Models.SiteManagerModels.Game;
 
 namespace Client.Scope.Directive
 {
-    public class TestSpaceScope : TestGameControllerScope
+    public class EffectTestAreaScope : EffectTesterControllerScope
     {
         [IntrinsicProperty]
-        public GameSpaceModel Space { get; set; }
+        public GameAreaModel Area { get; set; }
 
         [IntrinsicProperty]
-        public dynamic SpaceStyle { get; set; }
+        public dynamic AreaStyle { get; set; }
     }
-
 }

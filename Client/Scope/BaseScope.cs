@@ -136,6 +136,10 @@ namespace Client.Scope
         [ScriptName("$$phase")]
         public string Phase { get; set; }
 
+
+        [IntrinsicProperty]
+        [ScriptName("$root")]
+        public BaseScope Root { get; set; }
         public void Destroy()
         {
         }

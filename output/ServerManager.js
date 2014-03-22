@@ -1604,6 +1604,7 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 				var sev = null;
 				eval('sev = new gameObject();');
 				room.playersLeft = [];
+				sev.cardGame = new global.CardGame();
 				sev.cardGame.emulating = emulating;
 				room.game = sev;
 				sev.cardGame.setEmulatedAnswers(room.emulatedAnswers);
@@ -1629,7 +1630,22 @@ require('./mscorlib.js');EventEmitter= require('events').EventEmitter;require('.
 					$t5.width = gameSpaceModel.width;
 					$t5.name = gameSpaceModel.name;
 					$t5.vertical = gameSpaceModel.vertical;
+					$t5.resizeType = gameSpaceModel.resizeType;
 					ss.add($t6, new global.TableSpace($t5));
+				}
+				for (var $t7 = 0; $t7 < game.effects.length; $t7++) {
+					var gameEffect = game.effects[$t7];
+					var $t10 = sev.cardGame.effects;
+					var $t8 = global.CardGameEffectOptions.$ctor();
+					$t8.name = gameEffect.name;
+					$t8.type = gameEffect.type;
+					$t8.properties = gameEffect.properties.map(function(a) {
+						var $t9 = global.CardGameEffectProperty.$ctor();
+						$t9.name = a.name;
+						$t9.value = a.value;
+						return $t9;
+					});
+					ss.add($t10, new global.CardGameEffect($t8));
 				}
 				this.$gameData.totalGames++;
 				this.$gameData.totalPlayers += players.length;

@@ -66,20 +66,20 @@ namespace Client.Directives
                                          };
 
 
-            scope.PositionStyles = new FloatingWindowPosition() {Left = scope.Left, Top = scope.Top, Display = "block"};
+            scope.PositionStyles = new FloatingWindowPosition() { Left = scope.Left, Top = scope.Top, Display = "block" };
             scope.PositionStyles.ZIndex = 10000;
 
             if (scope.Left.IndexOf("%") != -1)
             {
-                scope.PositionStyles.MarginLeft = (-(int.Parse(scope.Width.Replace("px", ""))/2)) + "px";
+                scope.PositionStyles.MarginLeft = (-(int.Parse(scope.Width.Replace("px", "")) / 2)) + "px";
             }
             if (scope.Top.IndexOf("%") != -1)
             {
-                scope.PositionStyles.MarginTop = (-(int.Parse(scope.Height.Replace("px", ""))/2)) + "px";
+                scope.PositionStyles.MarginTop = (-(int.Parse(scope.Height.Replace("px", "")) / 2)) + "px";
             }
 
 
-            scope.SizeStyle = new Size() {Width = scope.Width, Height = scope.Height,};
+            scope.SizeStyle = new Size() { Width = scope.Width, Height = scope.Height, };
             scope.Maximize = () =>
                              {
                                  if (!scope.IsMaximized)
@@ -92,7 +92,7 @@ namespace Client.Directives
                                                                 Top = "0",
                                                                 Display = "block"
                                                             };
-                                     scope.SizeStyle = new Size() {Width = "100%", Height = "100%",};
+                                     scope.SizeStyle = new Size() { Width = "100%", Height = "100%", };
                                  }
                                  else
                                  {
@@ -144,7 +144,8 @@ namespace Client.Directives
             if (items.ContainsKey(myElement))
             {
                 items[myElement].PositionStyles.ZIndex = 10001;
-                myScope.Apply();
+                if (myScope.Root.Phase == null)
+                    myScope.Apply();
             }
         }
 

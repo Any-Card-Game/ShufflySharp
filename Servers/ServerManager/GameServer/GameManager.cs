@@ -93,7 +93,7 @@ namespace ServerManager.GameServer
                                                                         room.GameType = data.GameType;
                                                                         room.Started = false;
                                                                         room.Players.AddRange(data.Players);
-                                                                        GameObject evaluated_game=null;
+                                                                        GameObject evaluated_game = null;
                                                                         Script.Eval("evaluated_game=" + game.GameCode.Code);
                                                                         GameObject gameObject;
                                                                         if (cachedGames.ContainsKey(room.GameType))
@@ -150,7 +150,7 @@ namespace ServerManager.GameServer
 
                 var answer = answerQueue[0];
                 answerQueue.RemoveAt(0);
-                
+
 
                 var room = getRoomByPlayer(answer.Item1.UserName);
                 if (room == null)
@@ -201,6 +201,7 @@ namespace ServerManager.GameServer
 
                 Script.Eval("sev = new gameObject();");
                 room.PlayersLeft = new List<UserLogicModel>();
+                sev.CardGame = new GameCardGame();
                 sev.CardGame.Emulating = emulating;
                 room.Game = sev;
                 sev.CardGame.SetEmulatedAnswers(room.EmulatedAnswers);
@@ -212,7 +213,7 @@ namespace ServerManager.GameServer
                     sev.CardGame.TextAreas.Add(new GameCardGameTextArea(new GameCardGameTextAreaOptions()
                     {
                         X = gameTextModel.Left,
-                        Y = gameTextModel.Top, 
+                        Y = gameTextModel.Top,
                         Name = gameTextModel.Name,
                         Text = gameTextModel.Text,
 
@@ -230,14 +231,24 @@ namespace ServerManager.GameServer
                         Width = gameSpaceModel.Width,
                         Name = gameSpaceModel.Name,
                         Vertical = gameSpaceModel.Vertical,
+                        ResizeType = gameSpaceModel.ResizeType
+                    }));
+                }
 
+                foreach (var gameEffect in game.Effects)
+                {
+                    sev.CardGame.Effects.Add(new CardGameEffect(new CardGameEffectOptions()
+                    {
+                        Name = gameEffect.Name,
+                        Type = gameEffect.Type,
+                        Properties = gameEffect.Properties.Map(a => new CardGameEffectProperty() { Name = a.Name, Value = a.Value })
                     }));
                 }
 
                 gameData.TotalGames++;
                 gameData.TotalPlayers += players.Count;
                 sev.CardGame.EmulatedAnswerIndex = 0;
-                
+
                 //todo to data
                 sev.CardGame.NumberOfCards = 52;
                 sev.CardGame.NumberOfJokers = 0;
@@ -304,7 +315,7 @@ namespace ServerManager.GameServer
         {
             ServerLogger.LogDebug("game real over", room);
 
-            myServerManager.SendUpdateState(room,null);
+            myServerManager.SendUpdateState(room, null);
 
             myServerManager.SendGameOver(room);
             rooms.Remove(room);
@@ -341,11 +352,11 @@ namespace ServerManager.GameServer
             myServerManager.SendAskQuestion(user, new GameSendAnswerModel(answ.Question, answ.Answers));
             myServerManager.SendUpdateState(room, answ.User);
 
-      
-                ServerLogger.LogDebug("Ask question   ", answ);
+
+            ServerLogger.LogDebug("Ask question   ", answ);
         }
 
- 
+
         private UserLogicModel getPlayerByUsername(GameRoom room, string userName)
         {
             foreach (var player in room.Players)

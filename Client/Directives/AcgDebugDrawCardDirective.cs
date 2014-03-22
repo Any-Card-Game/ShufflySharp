@@ -142,7 +142,8 @@ namespace Client.Directives
 
             Action redrawCard = () =>
             {
-                Console.WriteLine("does");
+
+                Console.WriteLine(string.Format("card{0}-{1} being called ", card.Type, card.Value));
                 if (scope.Card.Dragging)
                 {
                     return;
@@ -304,7 +305,7 @@ namespace Client.Directives
 
                     if (!lastStyle.SameAs(beforeStyle))
                     {
-                        Console.WriteLine(string.Format("{2} card{0}-{1} being updated ", card.Type, card.Value,card.Guid));
+                        Console.WriteLine(string.Format("card{0}-{1} being updated ", card.Type, card.Value));
                         ClientHelpers.PurgeCSS(string.Format("card{0}-{1}", card.Type, card.Value) + "::before");
                         ClientHelpers.ChangeCSS(string.Format("card{0}-{1}::before", card.Type, card.Value), beforeStyle);
                     }

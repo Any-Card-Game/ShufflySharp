@@ -42,7 +42,7 @@ namespace Client
         }
         public static dynamic CreateCSSSheet()
         {
-            var document = (dynamic)Script.Eval("window.document");
+            var document = (dynamic)Window.Document;
             var sheet = document.head.appendChild(Document.CreateElement("style")).sheet;
             return sheet;
 
@@ -52,7 +52,7 @@ namespace Client
         {
             var myClass = "." + classToChange;
             string CSSRules = "";
-            var document = (dynamic)Script.Eval("window.document");
+            var document = (dynamic)Window.Document;
             if (document.all)
                 CSSRules = "rules";
             else if (document.getElementById)
@@ -75,7 +75,7 @@ namespace Client
         {
             var myClass = "." + classToChange;
             string CSSRules = "";
-            var document = (dynamic)Script.Eval("window.document");
+            var document = (dynamic) Window.Document;
             if (document.all)
                 CSSRules = "rules";
             else if (document.getElementById)
@@ -89,9 +89,10 @@ namespace Client
                     var rule = ruleSet[i];
                     if (rule.selectorText == myClass)
                     {
-                        foreach (var m in values)
+
+                        foreach (var m in Object.Keys(values))
                         {
-                            rule.style[m.Key] = m.Value;
+                            rule.style[m] = values[m];
                         }
                     }
                 }

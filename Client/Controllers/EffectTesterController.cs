@@ -123,9 +123,7 @@ namespace Client.Controllers
             var addRule = (new Func<Element, Action<string, JsDictionary<string, object>>>(style =>
                                                                                            {
                                                                                                var document =
-                                                                                                   (dynamic)
-                                                                                                       Script.Eval(
-                                                                                                           "window.document");
+                                                                                                   (dynamic)Window.Document;
 
                                                                                                var sheet =
                                                                                                    document.head

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Html;
 using Client.Scope.Controller;
 using Client.Services;
 using CommonLibraries;
@@ -35,13 +34,13 @@ namespace Client.Controllers
             myClientDebugManagerService.OnAskQuestion += (user, gameSendAnswerModel) =>
                                                          {
                                                              lastQuestion = createUIService.CreateSingleton<QuestionScope>(DebugQuestionController.View,
-                                                                                                                  (myScope, elem) =>
-                                                                                                                  {
-                                                                                                                      myScope.Model = new QuestionScopeModel();
-                                                                                                                      myScope.Model.Question = gameSendAnswerModel.Question;
-                                                                                                                      myScope.Model.Answers = gameSendAnswerModel.Answers;
-                                                                                                                      myScope.Model.SelectedAnswer = gameSendAnswerModel.Answers[0];
-                                                                                                                  });
+                                                                 (myScope, elem) =>
+                                                                 {
+                                                                     myScope.Model = new QuestionScopeModel();
+                                                                     myScope.Model.Question = gameSendAnswerModel.Question;
+                                                                     myScope.Model.Answers = gameSendAnswerModel.Answers;
+                                                                     myScope.Model.SelectedAnswer = gameSendAnswerModel.Answers[0];
+                                                                 });
                                                          };
             scope.OnDestroy += () =>
                                {
@@ -62,7 +61,6 @@ namespace Client.Controllers
                                                       PageHandler.  DebugUI.lblHowFast.Text = ( "how long: " + time ); 
                                                     }; */
 
-          
 
             var sheet = ClientHelpers.CreateCSSSheet();
 
@@ -71,10 +69,9 @@ namespace Client.Controllers
             {
                 for (int j = 0; j < 13; j++)
                 {
-                    ClientHelpers.AddCSSRule(sheet,".card" + i + "-" + j + "", new JsDictionary<string, object>());
+                    ClientHelpers.AddCSSRule(sheet, ".card" + i + "-" + j + "", new JsDictionary<string, object>());
                     ClientHelpers.AddCSSRule(sheet, ".card" + i + "-" + j + "::before", new JsDictionary<string, object>());
                     ClientHelpers.AddCSSRule(sheet, ".card" + i + "-" + j + "::after", new JsDictionary<string, object>());
-
                 }
             }
             ClientHelpers.AddCSSRule(sheet, ".card" + -1 + "-" + -1 + "", new JsDictionary<string, object>());
@@ -86,9 +83,8 @@ namespace Client.Controllers
 
             myClientDebugManagerService.OnUpdateState += (user, update) =>
                                                          {
-                                                             var data =
-                                                                 Json.Parse<GameCardGame>(
-                                                                     new Compressor().DecompressText(update));
+                                                             GoodConsole.Time("Render");
+                                                             var data = Json.Parse<GameCardGame>(new Compressor().DecompressText(update));
 
                                                              bool create = scope.GameModel.MainArea == null;
 
@@ -97,14 +93,13 @@ namespace Client.Controllers
 
                                                              if (create)
                                                              {
-                                                                 scope.GameModel.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.GameModel.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight()) / (double)scope.GameModel.MainArea.Size.Height) * .9);
+                                                                 scope.GameModel.Scale = new Point(jQuery.Window.GetWidth()/(double) scope.GameModel.MainArea.Size.Width*.9, ((jQuery.Window.GetHeight())/(double) scope.GameModel.MainArea.Size.Height)*.9);
                                                                  foreach (var cardGameTableSpace in scope.GameModel.MainArea.Spaces)
                                                                  {
-                                                                     ClientHelpers.AddCSSRule(sheet, "space" + cardGameTableSpace.Name + "", new JsDictionary<string, object>());
-                                                                     ClientHelpers.AddCSSRule(sheet, "space" + cardGameTableSpace.Name + "::before", new JsDictionary<string, object>());
-                                                                     ClientHelpers.AddCSSRule(sheet, "space" + cardGameTableSpace.Name + "::after", new JsDictionary<string, object>());
+                                                                     ClientHelpers.AddCSSRule(sheet, ".space" + cardGameTableSpace.Name + "", new JsDictionary<string, object>());
+                                                                     ClientHelpers.AddCSSRule(sheet, ".space" + cardGameTableSpace.Name + "::before", new JsDictionary<string, object>());
+                                                                     ClientHelpers.AddCSSRule(sheet, ".space" + cardGameTableSpace.Name + "::after", new JsDictionary<string, object>());
                                                                  }
-
                                                              }
 
 
@@ -117,12 +112,14 @@ namespace Client.Controllers
 
                                                              scope.Broadcast("spaceUpdated");
                                                              scope.Apply();
+                                                             GoodConsole.TimeEnd("Render");
+
                                                              //         myGameContentManagerService.Redraw();
                                                          };
 
             jQuery.Window.Bind("resize", (a) =>
                                          {
-                                             scope.GameModel.Scale = new Point(jQuery.Window.GetWidth() / (double)scope.GameModel.MainArea.Size.Width * .9, ((jQuery.Window.GetHeight()) / (double)scope.GameModel.MainArea.Size.Height) * .9);
+                                             scope.GameModel.Scale = new Point(jQuery.Window.GetWidth()/(double) scope.GameModel.MainArea.Size.Width*.9, ((jQuery.Window.GetHeight())/(double) scope.GameModel.MainArea.Size.Height)*.9);
                                              scope.Broadcast("redraw");
                                              scope.Apply();
                                          });

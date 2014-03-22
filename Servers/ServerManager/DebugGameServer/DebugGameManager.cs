@@ -390,8 +390,7 @@ namespace ServerManager.DebugGameServer
             processGameResponse(room, answ2);
 
             if (!room.Game.CardGame.Emulating)
-            {
-
+            { 
                 myServerManager.SendDebugLog(room, new DebugGameLogModel(answer.Contents));
             }
         }

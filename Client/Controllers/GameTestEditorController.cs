@@ -45,9 +45,7 @@ namespace Client.Controllers
 
 
 
-            this.scope.Watch("model.game",
-                () => { this.scope.Model.UpdateStatus = UpdateStatusType.Dirty; },
-                true);
+            this.scope.Watch("model.game", () => { this.scope.Model.UpdateStatus = UpdateStatusType.Dirty; }, true);
             myClientSiteManagerService.OnDeveloperUpdateGameReceived += OnDeveloperUpdateGameReceivedFn;
             this.scope.Model.UpdateStatus = UpdateStatusType.Synced;
             this.scope.Model.UpdateGame = UpdateGameFn;
@@ -58,8 +56,8 @@ namespace Client.Controllers
             {
                 this.scope.Model.GameRunning = true;
                 this.scope.Model.Room = roomModel;
-                if (this.scope.Model.CodeEditor!=null)
-                this.scope.Model.CodeEditor.Scope.Model.Room = roomModel; 
+                if (this.scope.Model.CodeEditor != null)
+                    this.scope.Model.CodeEditor.Scope.Model.Room = roomModel;
             };
 
             this.scope.Model.DebugCode = () =>
@@ -73,13 +71,13 @@ namespace Client.Controllers
                                          };
 
 
-/*
-            Window.SetTimeout(() =>
-                              {
-                                  StartGameFn();
-                                  scope.Minimize();
-                              }, 250);
-*/
+            /*
+                        Window.SetTimeout(() =>
+                                          {
+                                              StartGameFn();
+                                              scope.Minimize();
+                                          }, 250);
+            */
 
 
         }
@@ -99,7 +97,7 @@ namespace Client.Controllers
 
             scope.Model.GameRunning = true;
             scope.Model.GameView = myCreateUIService.CreateSingleton(DebugGameController.View);
-            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(6, scope.Model.Game.Name, this.scope.Model.CodeEditor==null ?new List<int>(): this.scope.Model.CodeEditor.Scope.Model.Breakpoints));
+            clientDebugManagerService.CreateGame(new CreateDebugGameRequest(4, scope.Model.Game.Name, this.scope.Model.CodeEditor == null ? new List<int>() : this.scope.Model.CodeEditor.Scope.Model.Breakpoints));
         }
 
         void clientDebugManagerService_OnGetDebugLog(UserModel user, DebugGameLogModel o)

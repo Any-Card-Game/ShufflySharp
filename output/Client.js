@@ -213,14 +213,14 @@
 		sheet.insertRule(selector + '{' + propText + '}', sheet.cssRules.length);
 	};
 	$Client_ClientHelpers.createCSSSheet = function() {
-		var document = eval('window.document');
+		var document = window.document;
 		var sheet = document.head.appendChild(document.createElement('style')).sheet;
 		return sheet;
 	};
 	$Client_ClientHelpers.purgeCSS = function(classToChange) {
 		var myClass = '.' + classToChange;
 		var CSSRules = '';
-		var document = eval('window.document');
+		var document = window.document;
 		if (document.all) {
 			CSSRules = 'rules';
 		}
@@ -243,7 +243,7 @@
 	$Client_ClientHelpers.changeCSS = function(classToChange, values) {
 		var myClass = '.' + classToChange;
 		var CSSRules = '';
-		var document = eval('window.document');
+		var document = window.document;
 		if (document.all) {
 			CSSRules = 'rules';
 		}
@@ -258,15 +258,10 @@
 			for (var i = 0; i < ruleSet.length; i++) {
 				var rule = ruleSet[i];
 				if (ss.referenceEquals(rule.selectorText, myClass)) {
-					var $t1 = new ss.ObjectEnumerator(values);
-					try {
-						while ($t1.moveNext()) {
-							var m = $t1.current();
-							rule.style[m.key] = m.value;
-						}
-					}
-					finally {
-						$t1.dispose();
+					var $t1 = Object.keys(values);
+					for (var $t2 = 0; $t2 < $t1.length; $t2++) {
+						var m = $t1[$t2];
+						rule.style[m] = values[m];
 					}
 				}
 			}
@@ -1043,15 +1038,15 @@
 			}));
 		});
 		//
-		//            Window.SetTimeout(() =>
+		//                        Window.SetTimeout(() =>
 		//
-		//            {
+		//                        {
 		//
-		//            StartGameFn();
+		//                        StartGameFn();
 		//
-		//            scope.Minimize();
+		//                        scope.Minimize();
 		//
-		//            }, 250);
+		//                        }, 250);
 	};
 	$Client_Controllers_$GameTestEditorController.__typeName = 'Client.Controllers.$GameTestEditorController';
 	////////////////////////////////////////////////////////////////////////////////
@@ -1231,6 +1226,7 @@
 		$Client_ClientHelpers.addCSSRule(sheet, '.card' + -1 + '-' + -1 + '::after', {});
 		var spaceLookups = {};
 		this.$myClientDebugManagerService.onUpdateState = ss.makeGenericType($Client_Services_UserEventCacher$1, [String]).op_Addition(this.$myClientDebugManagerService.onUpdateState, function(user1, update) {
+			console.time('Render');
 			var data = JSON.parse((new Compressor()).DecompressText(update));
 			var create = ss.isNullOrUndefined(scope.gameModel.mainArea);
 			scope.gameModel.mainArea = data;
@@ -1238,9 +1234,9 @@
 				scope.gameModel.scale = new CommonLibraries.Point($(window).width() / scope.gameModel.mainArea.size.width * 0.9, $(window).height() / scope.gameModel.mainArea.size.height * 0.9);
 				for (var $t1 = 0; $t1 < scope.gameModel.mainArea.spaces.length; $t1++) {
 					var cardGameTableSpace = scope.gameModel.mainArea.spaces[$t1];
-					$Client_ClientHelpers.addCSSRule(sheet, 'space' + cardGameTableSpace.name + '', {});
-					$Client_ClientHelpers.addCSSRule(sheet, 'space' + cardGameTableSpace.name + '::before', {});
-					$Client_ClientHelpers.addCSSRule(sheet, 'space' + cardGameTableSpace.name + '::after', {});
+					$Client_ClientHelpers.addCSSRule(sheet, '.space' + cardGameTableSpace.name + '', {});
+					$Client_ClientHelpers.addCSSRule(sheet, '.space' + cardGameTableSpace.name + '::before', {});
+					$Client_ClientHelpers.addCSSRule(sheet, '.space' + cardGameTableSpace.name + '::after', {});
 				}
 			}
 			scope.gameModel.spaces = scope.gameModel.mainArea.spaces.map(function(space) {
@@ -1250,6 +1246,7 @@
 			});
 			scope.$broadcast('spaceUpdated');
 			scope.$apply();
+			console.timeEnd('Render');
 			//         myGameContentManagerService.Redraw();
 		});
 		$(window).bind('resize', function(a) {
@@ -1453,7 +1450,7 @@
 		$t18.text = $t17;
 		scope.model.scale = new CommonLibraries.Point($(window).width() / scope.model.game.gameLayout.width * 0.9, $(window).height() / scope.model.game.gameLayout.height * 0.9);
 		var addRule = (function(style) {
-			var document = eval('window.document');
+			var document = window.document;
 			var sheet = document.head.appendChild(style).sheet;
 			return function(selector, css) {
 				var propText = Object.keys(css).map(function(p) {
@@ -1513,7 +1510,7 @@
 			});
 		});
 		var addRule = (function(style) {
-			var document = eval('window.document');
+			var document = window.document;
 			var sheet = document.head.appendChild(style).sheet;
 			return function(selector, css) {
 				var propText = Object.keys(css).map(function(p) {
@@ -1661,7 +1658,7 @@
 			//todo fix default to guid idiot
 		}
 		var addRule = (function(style) {
-			var document = eval('window.document');
+			var document = window.document;
 			var sheet = document.head.appendChild(style).sheet;
 			return function(selector, css) {
 				var propText = Object.keys(css).map(function(p) {
@@ -2930,6 +2927,7 @@
 			this.onGetDebugLog.trigger(user2, model2);
 		}));
 		this.$clientDebugManager.add_onAskQuestion(ss.mkdel(this, function(user3, model3) {
+			console.timeEnd('Question');
 			this.onAskQuestion.trigger(user3, model3);
 		}));
 		this.$clientDebugManager.add_onGameStarted(ss.mkdel(this, function(user4, model4) {
@@ -3465,7 +3463,6 @@
 		},
 		$onOnGetGamesByUserReceivedFn: function(user, response) {
 			this.$myScope.model.games = response.games;
-			this.$myScope.model.selectedGame = this.$myScope.model.games[1];
 			this.$myScope.$apply();
 		}
 	});
@@ -3645,7 +3642,7 @@
 		$startGameFn: function() {
 			this.$scope.model.gameRunning = true;
 			this.$scope.model.gameView = this.$myCreateUIService.createSingleton($Client_Controllers_DebugGameController.view);
-			this.$clientDebugManagerService.createGame({ numberOfPlayers: 6, gameName: this.$scope.model.game.name, breakpoints: (ss.isNullOrUndefined(this.$scope.model.codeEditor) ? [] : this.$scope.model.codeEditor.scope.model.breakpoints) });
+			this.$clientDebugManagerService.createGame({ numberOfPlayers: 4, gameName: this.$scope.model.game.name, breakpoints: (ss.isNullOrUndefined(this.$scope.model.codeEditor) ? [] : this.$scope.model.codeEditor.scope.model.breakpoints) });
 		},
 		$clientDebugManagerService_OnGetDebugLog: function(user, o) {
 			ss.add(this.$scope.model.log, o.value);
@@ -3890,7 +3887,7 @@
 				scope.$apply();
 			}) });
 			var redrawCard = function() {
-				console.log('does');
+				console.log(ss.formatString('card{0}-{1} being called ', card.type, card.value));
 				if (scope.card.dragging) {
 					return;
 				}
@@ -4039,7 +4036,7 @@
 						}
 					}
 					if (!CommonLibraries.ExtensionMethods.sameAs(String, String).call(null, lastStyle, beforeStyle)) {
-						console.log(ss.formatString('{2} card{0}-{1} being updated ', card.type, card.value, card.guid));
+						console.log(ss.formatString('card{0}-{1} being updated ', card.type, card.value));
 						$Client_ClientHelpers.purgeCSS(ss.formatString('card{0}-{1}', card.type, card.value) + '::before');
 						$Client_ClientHelpers.changeCSS(ss.formatString('card{0}-{1}::before', card.type, card.value), beforeStyle);
 					}
@@ -4271,7 +4268,7 @@
 			});
 			var process = function() {
 				debugSpace = scope.space.gameSpace;
-				console.log('did');
+				console.log('space process ' + debugSpace.name);
 				scope.spaceStyle = {};
 				scope.spaceStyle.position = 'absolute';
 				scope.spaceStyle.left = debugSpace.x * scale.x;
@@ -4342,7 +4339,6 @@
 				scope.$broadcast('redrawCard');
 			};
 			scope.$on('spaceUpdated', function() {
-				console.log('UpSmash');
 				debugSpace = scope.space.gameSpace;
 				scope.space.cards = debugSpace.pile.cards.map(function(card1, index1, cards1) {
 					var $t7 = cardLookups[card1.guid];
@@ -5913,7 +5909,9 @@
 			}
 			if ($Client_Directives_FloatingWindowDirective.$items.containsKey(this.$myElement)) {
 				$Client_Directives_FloatingWindowDirective.$items.get_item(this.$myElement).positionStyles.zIndex = 10001;
-				this.$myScope.$apply();
+				if (ss.isNullOrUndefined(this.$myScope.$root.$$phase)) {
+					this.$myScope.$apply();
+				}
 			}
 		},
 		swingBack: function(scope, element, callback) {
@@ -6239,6 +6237,7 @@
 	ss.initClass($Client_Services_ClientDebugManagerService, {
 		answerQuestion: function(gameAnswerQuestionModel) {
 			this.$clientDebugManager.answerQuestion(gameAnswerQuestionModel);
+			console.time('Question');
 		},
 		debugResponse: function(debugResponse) {
 			this.$clientDebugManager.debugResponse(debugResponse);

@@ -1,4 +1,4 @@
-using ClientLibs.Managers;
+using ClientLibs.Managers; 
 using Models.GameManagerModels;
 
 namespace Client.Services
@@ -11,7 +11,10 @@ namespace Client.Services
         public ClientGameManagerService(GatewayService gateway)
         {
             clientGameManager = new ClientGameManager(gateway.Gateway);
-            clientGameManager.OnAskQuestion += (user, model) => OnAskQuestion.Trigger(user, model);
+            clientGameManager.OnAskQuestion += (user, model) =>
+            {
+                OnAskQuestion.Trigger(user, model);
+            };
             clientGameManager.OnGameOver += (user, model) => OnGameOver.Trigger(user, model);
             clientGameManager.OnGameStarted += (user, model) => OnGameStarted.Trigger(user, model);
             clientGameManager.OnUpdateState += (user, model) => OnUpdateState.Trigger(user, model);
@@ -25,6 +28,7 @@ namespace Client.Services
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)
         {
             clientGameManager.AnswerQuestion(gameAnswerQuestionModel);
+
         }
     }
 }

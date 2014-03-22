@@ -1,4 +1,5 @@
 using ClientLibs.Managers;
+using CommonLibraries;
 using Models.DebugGameManagerModels;
 using Models.GameManagerModels;
 
@@ -15,7 +16,11 @@ namespace Client.Services
             clientDebugManager.OnGameOver += (user, model) => OnGameOver.Trigger(user, model);
             clientDebugManager.OnGetDebugBreak += (user, model) => OnGetDebugBreak.Trigger(user, model);
             clientDebugManager.OnGetDebugLog += (user, model) => OnGetDebugLog.Trigger(user,model);
-            clientDebugManager.OnAskQuestion += (user, model) => OnAskQuestion.Trigger(user, model);
+            clientDebugManager.OnAskQuestion += (user, model) =>
+                                                {
+                                                    GoodConsole.TimeEnd("Question");
+                                                    OnAskQuestion.Trigger(user, model);
+                                                };
             clientDebugManager.OnGameStarted += (user, model) => OnGameStarted.Trigger(user, model);
             clientDebugManager.OnUpdateState += (user, model) => OnUpdateState.Trigger(user, model);
         }
@@ -32,6 +37,7 @@ namespace Client.Services
         public void AnswerQuestion(GameAnswerQuestionModel gameAnswerQuestionModel)
         {
             clientDebugManager.AnswerQuestion(gameAnswerQuestionModel);
+            GoodConsole.Time("Question");
         }
         public void DebugResponse(DebugResponse debugResponse)
         {
